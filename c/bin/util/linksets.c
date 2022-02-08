@@ -50,25 +50,25 @@ sH(void *userData, const char *name, const char **atts)
     }
   else if (!strcmp(name,"xcl"))
     {
-      fprintf(stderr, "in xcl\n");
+      /*fprintf(stderr, "in xcl\n");*/
       in_xcl = 1;
     }
   else if (!strcmp(name,"l") && in_xcl)
     {
       const char *l_id = NULL, *w_id = NULL;
       int i;
-      fprintf(stderr, "found xcl:l\n");
+      /*fprintf(stderr, "found xcl:l\n");*/
       for (i = 0; atts[i] != NULL; i+=2)
 	{
-	  fprintf(stderr,"xcl:l @ %s\n", atts[i]);
-	  if (!strcmp(name, "xml:id"))
+	  /*fprintf(stderr,"xcl:l @ %s\n", atts[i]);*/
+	  if (!strcmp(atts[i], "xml:id"))
 	    l_id = atts[i+1];
-	  else if (!strcmp(name, "ref"))
+	  else if (!strcmp(atts[i], "ref"))
 	    w_id = atts[i+1];
 	}
       if (l_id && w_id)
 	{
-	  fprintf(stderr, "%s => %s\n", l_id, w_id);
+	  /*fprintf(stderr, "%s => %s\n", l_id, w_id);*/
 	  printf("%s\t%s\n",l_id,w_id);
 	}
     }
@@ -94,7 +94,7 @@ eH(void *userData, const char *name)
     }
   else if (!strcmp(name,"xcl"))
     {
-      fprintf(stderr, "out xcl\n");
+      /*fprintf(stderr, "out xcl\n");*/
       in_xcl = 0;
     }
 }
