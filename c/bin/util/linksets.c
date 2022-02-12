@@ -105,7 +105,7 @@ main(int argc, char **argv)
   char PQ[512];
   const char *fname[2];
   tab = stdout;
-  printf("File format:\n2 fields = LEM_ID\tWORD_ID\n3 fields = WORD_ID\tFILE\tLINE\n4 fields = LS\tROLE\tTITLE\tWORD_IDS\n");
+  printf("#File format:\n# 2 fields = LEM_ID\tWORD_ID\n# 3 fields = WORD_ID\tFILE\tLINE\n# 4 fields = LS\tROLE\tTITLE\tWORD_IDS\n");
   if (argc > 1)
     {
       if (!strcmp(argv[1], "-s"))

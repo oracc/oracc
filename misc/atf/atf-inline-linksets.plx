@@ -30,6 +30,7 @@ my %wrd2lin = ();
 my %linksets = ();
 
 foreach (@linksets) {
+    next if /^#/;
     chomp;
     my @f = split(/\t/,$_);
     if ($#f == 1) { # map lem id to word id
