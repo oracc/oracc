@@ -47,6 +47,14 @@
   `((t (:foreground "darkslateblue")))
   "Face for #-lines in ATF files")
 
+(defface atf-comment-bis-face
+  `((t (:foreground "gray80")))
+  "Face for ##-lines in ATF files")
+
+(defface atf-comment-ls-face
+  `((t (:foreground "MediumPurple1")))
+  "Face for ###ls.-lines in ATF files")
+
 (defface atf-linkline-face
   `((t (:foreground "royalblue")))
   "Face for ||, << and >> lines in ATF files")
@@ -55,6 +63,8 @@
 (defvar atf-block-face 'atf-block-face)
 (defvar atf-dollar-face 'atf-dollar-face)
 (defvar atf-comment-face 'atf-comment-face)
+(defvar atf-comment-bis-face 'atf-comment-bis-face)
+(defvar atf-comment-ls-face 'atf-comment-ls-face)
 (defvar atf-linkline-face 'atf-linkline-face)
 
 (defconst atf-font-lock-keywords-1
@@ -67,6 +77,8 @@
    '("^||.*" . atf-linkline-face)
    '("^<<.*" . atf-linkline-face)
    '("^>>.*" . atf-linkline-face)
+   '("^###ls.*" . atf-comment-ls-face)
+   '("^##.*" . atf-comment-bis-face)
    '("^#.*" . atf-comment-face)))
 
 (defvar atf-font-lock-keywords atf-font-lock-keywords-1 
