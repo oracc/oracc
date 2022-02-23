@@ -94,7 +94,7 @@ while (<F>) {
     } else {
 	warn "$form:$lnum: malformed line in .forms file\n";
     }
-    s/^\+//; s#\s/+# /#;
+    s/^\+//; s#\s/\+# /#;
     print;
 }
 ORACC::SL::BaseC::term();

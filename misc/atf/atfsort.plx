@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
+use Data::Dumper;
+
 my $keys = '';
 my %keys = ();
 my $order = ();
@@ -25,6 +27,8 @@ if ($keys) {
     }
     close(K);
 }
+
+# print Dumper \%keys; exit 1;
 
 my %texts = ();
 $/ = "\n\&";
