@@ -1,4 +1,7 @@
 #!/bin/sh
+
+# version of o2-web.sh for use with project-type=corpus
+
 [ -r 01bld/cancel ] && exit 1
 webdir=01bld/www
 buildpolicy=`oraccopt . build-approved-policy`;
@@ -21,12 +24,7 @@ if [ "$otl" != "" ]; then
     fi
 fi
 
-#if [ -d 00lib/lists ]; then
-#    liblists=`(cd 00lib/lists ; ls)`
-#    if [ "$liblists" != "" ]; then
-	weblists.sh $webdir/lists
-#    fi
-#fi
+weblists.sh $webdir/lists
 
 if [ -d 01bld/lists ]; then
     bldlists=`(cd 01bld/lists ; ls)`

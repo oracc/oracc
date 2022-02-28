@@ -3,6 +3,7 @@
 [ -r .nobuild ] && exit 1
 shopt -s nullglob
 webdir=01bld/www ; rm -fr $webdir
+weblists.sh $webdir/lists
 # N.B.: can't create empty $webdir/cbd like this because it causes 
 # oracc build portal to empty 02www/cbd
 mkdir -p $webdir/t $webdir/css

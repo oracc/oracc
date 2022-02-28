@@ -4,15 +4,25 @@ use lib '@@ORACC@@/lib';
 use ORACC::XMD::Fields;
 use ORACC::Expand2;
 use Getopt::Long;
+my $fields = 0; # use -fields to output field names in row 1
 my $project = '';
 my $verbose = 0;
+my @default_fields = qw/designation museum_no excavation_no accession_no primary_publication publication_history genre subgenre/;
 GetOptions(
+    'fields'=>\$fields,
     'project:s'=>\$project,
     'verbose'=>\$verbose,
     );
-my @fields = @ARGV;
+my @fields = @ARGV; @fields = @default_fields unless $#fields >= 0;
+
+if ($fields) {
+    print join("\t", 'id_text', @fields), "\n";
+}
+
 @ARGV = ();
-$project = `oraccopt` unless $project;
+unless ($project) {
+    $project = `oraccopt` if -r '02xml/config.xml';
+}
 warn "$0: working in $project\n" if $verbose;
 binmode STDOUT, ':utf8';
 while (<>) {

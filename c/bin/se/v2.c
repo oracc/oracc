@@ -19,7 +19,7 @@ int
 v2_ids(const char *proj, const char *indx)
 {
   const char *v2ids = se_file(proj,indx,"v2.ids");
-  fprintf (stderr, "checking %s\n", v2ids);
+  /*fprintf (stderr, "checking %s\n", v2ids);*/
   return !xaccess(v2ids, R_OK, 0);
 }
 

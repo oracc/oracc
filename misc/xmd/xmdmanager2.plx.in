@@ -24,8 +24,11 @@ binmode STDOUT, ':utf8';
 binmode STDERR, ':utf8';
 
 my %merge_periods_all = (
+    'Uruk V'=>'Archaic',
+    'Uruk IV'=>'Archaic',
+    'Uruk III'=>'Archaic',
     'Archaic'=>'Archaic',
-    'ED I-II'=>'Archaic',
+    'ED I-II'=>'Early Dynastic I-II',
     'ED IIIa'=>'Early Dynastic IIIa',
     'Early Dynastic IIIa'=>'Early Dynastic IIIa',
     'Early Dynastic'=>'Early Dynastic IIIb',
@@ -36,11 +39,13 @@ my %merge_periods_all = (
     'Lagash II'=>'Lagash II',
     'Lagaš II'=>'Lagash II',
     'Ur III'=>'Ur III',
+    'Harappan'=>'Ur III',
     'Early Old Babylonian'=>'Old Babylonian',
     'Old Assyrian'=>'Old Babylonian',
     'Old Babylonian'=>'Old Babylonian',
     'Middle Assyrian'=>'Middle Assyrian',
     'Middle Babylonian'=>'Middle Babylonian',
+    'Middle Hittite'=>'Middle Babylonian',
     'Kassite'=>'Kassite',
     'First Millennium'=>'Neo-Assyrian',
     'Standard Babylonian'=>'Neo-Assyrian',
@@ -65,7 +70,8 @@ foreach my $mp (keys %merge_periods_all) {
 	$merge_periods{$mp} = $merge_periods_all{$mp};
     }
 }
-open(MP, ">mergeperiods.dump"); print MP Dumper \%merge_periods; close(MP);
+
+# open(MP, ">mergeperiods.dump"); print MP Dumper \%merge_periods; close(MP);
 
 umask 022;
 
@@ -1137,10 +1143,25 @@ inherits {
     $cat;
 }
 
+sub cat_master {
+    my $p = $project;
+    my $cat_master = '';
+    while (1) {
+	if (-r "$ENV{'ORACC_BUILDS'}/$p/00lib/config.xml") {
+	    $cat_master = `oraccopt $p catalog-master-project`;
+	}
+	last if $cat_master;
+	last unless $p =~ s#/[^/]+##;
+    }
+    warn "$0: found cat-master $cat_master\n" if $cat_master;
+    $cat_master;
+}
+
 sub
 make_dynacat {
     my @todo = @_;
     my $cat_list = `oraccopt . catalog-build-list`;
+    my $cat_master = cat_master();
 
     if ($cat_list) {
 	die "$0: config.xml's catalog-build-list = $cat_list is unreadable or missing. Stop.\n"
@@ -1173,6 +1194,7 @@ make_dynacat {
     }
     local($/) = undef;
     my @trylist = ();
+    push (@trylist, $cat_master) if $cat_master;
     push @trylist, 'cdli', 'qcat', 'xcat';
     foreach my $f (@lst) {
 	my $xf = '';
