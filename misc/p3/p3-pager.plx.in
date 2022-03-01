@@ -769,6 +769,7 @@ run_item_maker {
     warn "### hilite_words = $hilite_words\n";
 
     my($eproject,$eid) = ($p{'project'},'');
+    
     my $catproject = $p{'project'};
     if ($id =~ /^(.*?):(.*?)$/) {
 	($eproject,$eid) = ($1,$2);
@@ -808,6 +809,11 @@ run_item_maker {
 #		if $p{'itemctxt'} && $p{'itemctxt'} ne 'none';
 #	}
 
+	if ($eproject eq 'epsd2/catalogue') {
+	    xsystem "$oraccbin/cdli-scraper.plx", '-o', "$p{'tmpdir'}/results.html", $eid;
+	    goto OUTLINE;
+	}
+	
 	# Find the HTML version of an XTF
 	my $html = $xmd;
 	my $html_en = '';

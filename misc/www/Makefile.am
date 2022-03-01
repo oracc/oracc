@@ -7,12 +7,12 @@ js_DATA = cbd.js notes.js oraccdoc.js outline.js winlib.js xdf.js
 scriptdata_DATA = corpusview.xsl ce-xtr-HTML.xsl cunei-used.xsl		\
 	cunei-used2.xsl cuneify-HTML.xsl cuneify-string.xsl cuneify-text.xsl	\
 	html-standard.xsl html-template.xsl html-util.xsl textdisplay.xsl	\
-	xmdoutline.xsl
+	xmdoutline.xsl cdli-scraper.xsl
 
 bin_SCRIPTS = atf.plx cdlhtml.plx cfgwview.plx cuneify.plx		\
 	htmlimage.plx htmlview.plx oase.plx oracchtml.plx rpc.plx atflog50.sh	\
 	atfpaste.sh datestamp.plx htmlbase.plx index-downloads.plx \
-	atftemplate.plx voltemplate.plx weblists.sh
+	atftemplate.plx voltemplate.plx weblists.sh cdli-scraper.plx
 
 css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
 	cuneify-mixed.css cuneify-na.css cuneify-ob.css cuneify.css		\
@@ -23,6 +23,8 @@ css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
 	SHU-white.css signlist.css stve.css undefined.css x.css xdf-print.css	\
 	xmd.css xo.css xtl.css oracchome.css oraccscreencss.xml oraccbasecss.xml \
 	cuneiformcss.xml oracc3home.css wwwhome.css oraccdoc.css
+
+data_DATA = tidy.conf
 
 img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
 	cdli-icon.png cdli.png dbl-l-arrow.png dbl-r-arrow.png f_logo.png	\
