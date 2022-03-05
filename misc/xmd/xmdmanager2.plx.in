@@ -1194,8 +1194,13 @@ make_dynacat {
     }
     local($/) = undef;
     my @trylist = ();
-    push (@trylist, $cat_master) if $cat_master;
-    push @trylist, 'cdli', 'qcat', 'xcat';
+    if ($cat_master) {
+	# cat_master is exclusive--if you use it you have to provide it with all the data
+	# you want in it
+	push (@trylist, $cat_master);
+    } else {
+	push @trylist, 'cdli', 'qcat', 'xcat';
+    }
     foreach my $f (@lst) {
 	my $xf = '';
 	$f =~ tr/\n\r//d;

@@ -38,6 +38,7 @@ my $oraccwww = "@@ORACC@@/www";
 my $force_page = 0;
 my $fragid = '';
 my $jumpfile = '';
+my $localhost = 0;
 my $no_html = "@@ORACC@@/www/no_html.xml";
 my $oas_instance = '';
 my $oas_template = "@@ORACC@@/lib/data/oas-template.xml";
@@ -252,6 +253,13 @@ if (!$ood_mode && (!$p{'glos'} || $p{'gxis'})) {
 dbgitems(4);
 set_runtime_vars();
 dbgitems(5);
+
+if ($ENV{'HTTP_REFERER'}) {
+    warn "HTTP_REFERER = $ENV{'HTTP_REFERER'}\n";
+    if ($ENV{'HTTP_REFERER'} =~ /localhost/) {
+	$localhost = 1;
+    }
+}
 
 # generate the content
 ## in page mode emit the pth page
@@ -531,13 +539,6 @@ run_form_maker {
     my $projectname = '';
     my $projabb = `@@ORACC@@/bin/oraccopt $p{'project'} abbrev`;
     my $projname = `@@ORACC@@/bin/oraccopt $p{'project'} name`;
-    my $localhost = 0;
-    if ($ENV{'HTTP_REFERER'}) {
-	warn "HTTP_REFERER = $ENV{'HTTP_REFERER'}\n";
-	if ($ENV{'HTTP_REFERER'} =~ /localhost/) {
-	    $localhost = 1;
-	}
-    }
     if ($projname =~ /^$projabb/) {
 	$projectname = $projname;
     } else {
@@ -809,7 +810,7 @@ run_item_maker {
 #		if $p{'itemctxt'} && $p{'itemctxt'} ne 'none';
 #	}
 
-	if ($eproject eq 'epsd2/catalogue') {
+	if ($eproject eq 'epsd2/catalogue' && $localhost) {
 	    xsystem "$oraccbin/cdli-scraper.plx", '-o', "$p{'tmpdir'}/results.html", $eid;
 	    goto OUTLINE;
 	}
