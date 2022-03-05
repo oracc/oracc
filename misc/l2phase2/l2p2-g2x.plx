@@ -223,7 +223,7 @@ foreach my $lang (sort keys %data) {
 		my $p = $parts[$p_i];
 		my $eid = '';
 		if ($cbd_oid) {
-		    $eid = oid_lookup('sux',$p);
+		    $eid = oid_lookup($baselang,$p);
 		}
 		$eid = $entry_ids{$p} unless $eid;
 		unless ($eid) {
@@ -268,7 +268,7 @@ foreach my $lang (sort keys %data) {
 	    my $sense_no_norm = $sense;
 	    $sense_no_norm =~ s/\$.*$//;
 	    my $oid = '';
-	    $oid = oid_lookup('sux',$sense_no_norm) if $baselang =~ /^sux/;
+	    $oid = oid_lookup($baselang,$sense_no_norm) if $cbd_oid;
 	    my $xsense = xmlify($sense_no_norm);
 	    print "<sense xml:id=\"$xid\" n=\"$xsense\"";
 	    print " oid=\"$oid\"" if $oid;
