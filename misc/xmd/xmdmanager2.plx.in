@@ -867,6 +867,7 @@ dump_xmd {
 	for (my $i = 0; $i <= $last; ++$i) {
 	    my $f = $$r[$i];
 	    my $tag = $$fields[$i];
+	    next if $tag eq 'images'; # always re-generate from images db
 	    push @{$xmd_outputs{$curr_xmd}}, "<$tag";
 	    if ($i == $#$fields && $f) {
 		# this is the xproject field
