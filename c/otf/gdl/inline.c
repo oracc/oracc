@@ -1933,6 +1933,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			{
 			  setName(f,e_g_nonw);
 			  set_nonw_id(f);
+			  appendAttr(f,attr(a_type,ucc("surro")));
 			}
 		      else
 			{
@@ -2508,6 +2509,9 @@ finish_word(struct node *wp)
 	appendAttr(wp,attr(a_type,ucc("punct")));
       else if (word_init_mutex == exciso)
 	appendAttr(wp,attr(a_type,ucc("excised")));
+      else if (((struct node*)firstChild(wp))->etype == e_g_surro)
+	appendAttr(wp,attr(a_type,ucc("surro")));
+      /* FIXME: should warn about lack of nonw type */
       if (nline_words > 0 && (!sparse_lem || w_sparse_lem))
 	--nline_words;
     }
