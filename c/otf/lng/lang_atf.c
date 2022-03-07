@@ -1,5 +1,5 @@
 /* C code produced by gperf version 3.0.3 */
-/* Command-line: gperf -N lang_atf -tT lang_atf.g  */
+/* Command-line: /Library/Developer/CommandLineTools/usr/bin/gperf -N lang_atf -tT lang_atf.g  */
 /* Computed positions: -k'1-2' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -34,7 +34,7 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <string.h>
 #include "lang.h"
 
-#define TOTAL_KEYWORDS 27
+#define TOTAL_KEYWORDS 28
 #define MIN_WORD_LENGTH 1
 #define MAX_WORD_LENGTH 4
 #define MIN_HASH_VALUE 1
@@ -51,7 +51,7 @@ inline
 static unsigned int
 hash (str, len)
      register const char *str;
-     register unsigned int len;
+     register size_t len;
 {
   static unsigned char asso_values[] =
     {
@@ -59,13 +59,13 @@ hash (str, len)
       43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
       43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
       43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 19,  1,
-      28, 18,  8, 43, 43, 43, 43, 43, 43, 43,
+      43, 43, 43, 43, 43, 43, 43, 43, 24, 19,
+       1, 28, 18, 43, 43, 43, 43, 43, 43, 43,
       43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
       43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
       43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
       43, 43, 43, 43, 43, 43, 43, 10,  5,  3,
-      43,  0, 43,  3, 30, 43, 43, 43, 43, 30,
+      43,  0, 43,  3,  8, 43, 43, 43, 43, 30,
       20, 10, 43, 43, 43,  5, 43, 15, 43, 43,
       25,  3, 43, 43, 43, 43, 43, 43, 43, 43,
       43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
@@ -82,7 +82,7 @@ hash (str, len)
       43, 43, 43, 43, 43, 43, 43, 43, 43, 43,
       43, 43, 43, 43, 43, 43
     };
-  register int hval = len;
+  register unsigned int hval = len;
 
   switch (hval)
     {
@@ -96,24 +96,18 @@ hash (str, len)
   return hval;
 }
 
-#ifdef __GNUC__
-__inline
-#ifdef __GNUC_STDC_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
 struct langatf *
 lang_atf (str, len)
      register const char *str;
-     register unsigned int len;
+     register size_t len;
 {
   static struct langatf wordlist[] =
     {
       {""},
 #line 15 "lang_atf.g"
       {"e",	"sux-x-emesal"},
-#line 8 "lang_atf.g"
-      {"1",	"sux-x-gloss"},
+#line 9 "lang_atf.g"
+      {"2",	"akk-935"},
       {""},
 #line 12 "lang_atf.g"
       {"g",	"akk"},
@@ -124,8 +118,8 @@ lang_atf (str, len)
 #line 17 "lang_atf.g"
       {"es",	"sux-x-emesal"},
       {""},
-#line 11 "lang_atf.g"
-      {"4",	"akk-x-neobab-937-x-dumusza"},
+#line 18 "lang_atf.g"
+      {"h",	"hit"},
 #line 23 "lang_atf.g"
       {"sy", "sux-x-syllabic"},
 #line 14 "lang_atf.g"
@@ -142,10 +136,10 @@ lang_atf (str, len)
 #line 31 "lang_atf.g"
       {"ob",	"akk-x-oldbab"},
       {""},
-#line 10 "lang_atf.g"
-      {"3",	"akk-936"},
-#line 7 "lang_atf.g"
-      {"0",	"sux-x-normal"},
+#line 11 "lang_atf.g"
+      {"4",	"akk-x-neobab-937-x-dumusza"},
+#line 8 "lang_atf.g"
+      {"1",	"sux-x-gloss"},
 #line 13 "lang_atf.g"
       {"n",	"akk-949"},
 #line 30 "lang_atf.g"
@@ -154,17 +148,18 @@ lang_atf (str, len)
       {"sux",	"sux"},
 #line 32 "lang_atf.g"
       {"oakk",	"akk-x-oldakk"},
-      {""},
+#line 7 "lang_atf.g"
+      {"0",	"sux-x-normal"},
 #line 22 "lang_atf.g"
       {"x",	"qcu"},
 #line 27 "lang_atf.g"
       {"nb",	"akk-x-neobab"},
       {""},
-#line 9 "lang_atf.g"
-      {"2",	"akk-935"},
+#line 10 "lang_atf.g"
+      {"3",	"akk-936"},
       {""},
-#line 18 "lang_atf.g"
-      {"h",	"hit"},
+#line 34 "lang_atf.g"
+      {"xco", "xco"},
 #line 26 "lang_atf.g"
       {"na",	"akk-x-neoass"},
       {""}, {""}, {""}, {""},
@@ -177,9 +172,9 @@ lang_atf (str, len)
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash (str, len);
+      unsigned int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE && key >= 0)
+      if (key <= MAX_HASH_VALUE)
         {
           register const char *s = wordlist[key].name;
 

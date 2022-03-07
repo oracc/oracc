@@ -7,6 +7,7 @@ struct langmode;
 020, m_graphemic
 030, m_graphemic
 040, m_alphabetic
+109, m_alphabetic
 900, m_graphemic
 901, m_graphemic
 902, m_graphemic

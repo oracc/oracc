@@ -28,6 +28,7 @@ xlu, "020", "xlu", m_logo, m_logo, c_xlu, LF_NORM|LF_SAC
 hlu, "080", "hlu", m_logo, m_logo, c_hlu, 
 uga, "020", "uga", m_logo, m_lang, c_uga, LF_NORM|LF_SAC
 qpn, "999", "qpn", m_sign, m_lang, c_qpn, LF_NORM|LF_SAC
+xco, "109", "xco", m_logo, m_logo, c_qam, LF_NORM|LF_LOGO
 %%
 struct langcore *
 langcore_of(const char *lang)

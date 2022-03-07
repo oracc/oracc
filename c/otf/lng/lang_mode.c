@@ -1,5 +1,5 @@
 /* C code produced by gperf version 3.0.3 */
-/* Command-line: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/gperf -N lang_mode -tT lang_mode.g  */
+/* Command-line: /Library/Developer/CommandLineTools/usr/bin/gperf -N lang_mode -tT lang_mode.g  */
 /* Computed positions: -k'1-3' */
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
@@ -34,7 +34,7 @@ error "gperf generated tables don't work with this execution character set. Plea
 #include <string.h>
 #include "langmode.h"
 
-#define TOTAL_KEYWORDS 27
+#define TOTAL_KEYWORDS 28
 #define MIN_WORD_LENGTH 3
 #define MAX_WORD_LENGTH 3
 #define MIN_HASH_VALUE 16
@@ -60,7 +60,7 @@ hash (str, len)
       84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
       84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
       84, 84, 84, 84, 84, 84, 84, 84,  3, 30,
-      10,  5,  0, 30, 16,  1, 18, 25, 10, 11,
+      10,  5,  0, 30, 21,  1, 18, 25, 10, 11,
       84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
       84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
       84, 84, 84, 84, 84, 84, 84, 84, 84, 84,
@@ -103,69 +103,70 @@ lang_mode (str, len)
 #line 7 "lang_mode.g"
       {"020", m_graphemic},
       {""}, {""},
-#line 27 "lang_mode.g"
+#line 28 "lang_mode.g"
       {"945", m_graphemic},
       {""},
-#line 12 "lang_mode.g"
+#line 13 "lang_mode.g"
       {"902", m_graphemic},
-#line 15 "lang_mode.g"
+#line 16 "lang_mode.g"
       {"905", m_graphemic},
       {""},
-#line 22 "lang_mode.g"
+#line 23 "lang_mode.g"
       {"935", m_graphemic},
       {""},
-#line 11 "lang_mode.g"
+#line 12 "lang_mode.g"
       {"901", m_graphemic},
       {""},
-#line 30 "lang_mode.g"
-      {"948", m_graphemic},
 #line 31 "lang_mode.g"
+      {"948", m_graphemic},
+#line 32 "lang_mode.g"
       {"949", m_normalized},
       {""},
-#line 10 "lang_mode.g"
+#line 11 "lang_mode.g"
       {"900", m_graphemic},
       {""},
-#line 25 "lang_mode.g"
-      {"938", m_graphemic},
 #line 26 "lang_mode.g"
+      {"938", m_graphemic},
+      {""}, {""},
+#line 29 "lang_mode.g"
+      {"946", m_graphemic},
+#line 10 "lang_mode.g"
+      {"109", m_alphabetic},
+#line 22 "lang_mode.g"
+      {"920", m_graphemic},
+#line 27 "lang_mode.g"
       {"944", m_graphemic},
       {""},
-#line 28 "lang_mode.g"
-      {"946", m_graphemic},
-#line 14 "lang_mode.g"
-      {"904", m_graphemic},
-#line 21 "lang_mode.g"
-      {"920", m_graphemic},
-      {""}, {""},
-#line 23 "lang_mode.g"
+#line 24 "lang_mode.g"
       {"936", m_graphemic},
-      {""},
-#line 29 "lang_mode.g"
+#line 15 "lang_mode.g"
+      {"904", m_graphemic},
+#line 30 "lang_mode.g"
       {"947", m_graphemic},
       {""}, {""},
-#line 32 "lang_mode.g"
+#line 33 "lang_mode.g"
       {"980", m_graphemic},
       {""},
-#line 24 "lang_mode.g"
+#line 25 "lang_mode.g"
       {"937", m_graphemic},
-#line 16 "lang_mode.g"
+#line 17 "lang_mode.g"
       {"915", m_graphemic},
       {""},
-#line 13 "lang_mode.g"
+#line 14 "lang_mode.g"
       {"903", m_graphemic},
       {""},
-#line 33 "lang_mode.g"
+#line 34 "lang_mode.g"
       {"998", m_graphemic},
       {""}, {""}, {""}, {""},
-#line 19 "lang_mode.g"
-      {"918", m_graphemic},
 #line 20 "lang_mode.g"
+      {"918", m_graphemic},
+#line 21 "lang_mode.g"
       {"919", m_graphemic},
       {""}, {""}, {""}, {""}, {""}, {""},
-#line 17 "lang_mode.g"
+#line 18 "lang_mode.g"
       {"916", m_graphemic},
       {""}, {""}, {""}, {""}, {""}, {""},
-#line 18 "lang_mode.g"
+#line 19 "lang_mode.g"
       {"917", m_graphemic}
     };
 

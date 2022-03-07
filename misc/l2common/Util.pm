@@ -163,6 +163,7 @@ $ORACC::L2GLO::Util::project = '';
     qka=>'Kassite',
     'sux-es'=>'Emesal',
     uga=>'Ugaritic',
+    xco=>'Chorasmian',
     xhu=>'Hurrian',
     xur=>'Urartian',
     ar=>'Arabic',

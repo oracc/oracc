@@ -66,6 +66,7 @@ my %longlang = (
     'sux-x-emesal'=>'Emesal Sumerian',
     tr=>'Turkish',
     uga=>'Ugaritic',
+    xco=>'Chorasmian',
     xhu=>'Hurrian',
     xur=>'Urartian',
     'qpn-x-celest'=>'Celestial Names',
