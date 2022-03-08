@@ -160,6 +160,7 @@ AC_CONFIG_FILES([Makefile
 	misc/ce/Makefile
 	misc/chi/Makefile
 	misc/cs/Makefile
+	misc/cuneifyplus/Makefile
 	misc/emacs/Makefile
 	misc/epsd/Makefile
 	misc/epsd2/Makefile

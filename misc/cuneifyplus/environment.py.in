@@ -12,7 +12,7 @@ if not "oracc" in socket.gethostname().lower():
     )
 
 
-MY_URL = "http://oracc.ub.uni-muenchen.de/cuneifyplus"
+MY_URL = "http://@@ORACC_HOST@@/cuneifyplus"
 
 
 def get_font_directory(environ):

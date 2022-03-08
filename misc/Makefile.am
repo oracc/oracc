@@ -8,6 +8,7 @@ SUBDIRS = \
 	ce \
 	chi \
 	cs \
+	cuneifyplus \
 	emacs \
 	epsd2 \
 	esp \

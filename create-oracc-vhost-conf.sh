@@ -33,6 +33,7 @@ cat >oracc-vhost.conf <<EOF
     ServerName $servername
     DocumentRoot "$ORACC/www"
     ScriptAliasMatch ^/cgi-bin/(.*$) "$ORACC/www/cgi-bin/\$1"
+    WSGIScriptAlias /cuneifyplus /home/oracc/www/cuneifyplus/wsgi.py
     ErrorLog "$LOGDIR/oracc-error_log"
     CustomLog "$LOGDIR/oracc-access_log" common
     <Directory "$ORACC/www">
@@ -48,6 +49,8 @@ cat >oracc-vhost.conf <<EOF
                Allow from all
     </Directory>
     RewriteEngine on
+    RewriteRule ^/cuneifyplus$ - [L]
+    RewriteRule ^/cuneifyplus/cuneify$ - [L]
     RewriteLog "$LOGDIR/oracc-rewrite.log"
     RewriteLogLevel 2
     RewriteCond $ORACC/www/%{REQUEST_FILENAME} -f

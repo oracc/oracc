@@ -1,9 +1,5 @@
 
-# -*- coding: latin-1 -*-
-
 import sys
-#reload(sys)
-#sys.setdefaultencoding('utf8')
 
 sys.path.append("/home/oracc/www/cuneifyplus")
 
@@ -39,7 +35,6 @@ FONT_NAMES = OrderedDict(
 )
 
 FONTS_PATH_NAME = "/fonts"
-
 
 def _get_input_form(initial="Enter transliteration here..."):
     """ Return a form that the user can use to enter some transliterated text """
