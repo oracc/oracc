@@ -15,6 +15,7 @@ use Data::Dumper;
 
 my $dryrun = 0;
 my $force = 0;
+my $linkbase = '01bld/linkbase.xml';
 my $project = `oraccopt`;
 my $quiet = 0;
 my $xtl_only = 0;
@@ -26,6 +27,7 @@ die "scoregen.plx: must be run from a project directory\n"
 warn "scoregen: beginning score generation\n";
 
 GetOptions(
+    'base:s'=>\$linkbase,
     'dryrun'=>\$dryrun,
     'force'=>\$force,
     'link'=>\$xtl_only,
@@ -34,9 +36,7 @@ GetOptions(
     'verbose'=>\$verbose,
     ) || pod2usage(1);
 
-my $linkbase = '';
-
-if ($project && $project ne 'cdli') {
+if (!$linkbase && $project && $project ne 'cdli') {
     $linkbase = "01bld/linkbase.xml";
 }
 
@@ -66,7 +66,7 @@ create_xtls();
 exemplar_links() unless $xtl_only;
 
 ## FIXME: who uses this and why? I don't think it is used in O2...
-system '@@ORACC@@/bin/linkmap.plx', $project;
+# system '@@ORACC@@/bin/linkmap.plx', $project;
 
 #################################################################
 
