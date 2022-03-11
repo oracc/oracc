@@ -7,7 +7,7 @@ use Getopt::Long;
 my $fields = 0; # use -fields to output field names in row 1
 my $project = '';
 my $verbose = 0;
-my @default_fields = qw/designation museum_no excavation_no accession_no primary_publication publication_history genre subgenre/;
+my @default_fields = qw/designation museum_no excavation_no accession_no primary_publication publication_history genre subgenre period/;
 GetOptions(
     'fields'=>\$fields,
     'project:s'=>\$project,

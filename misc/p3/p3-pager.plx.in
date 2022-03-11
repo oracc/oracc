@@ -882,12 +882,17 @@ run_item_maker {
 	}
       OUTLINE:
 	my @args = ('-stringparam', 'project', $eproject);
+	warn "xtl: eid = $eid\n";
 	if ($eid =~ /^Q/) {
+	    my $parentproj = $p{'project'}; $parentproj =~ s#/.*$##;
+	    my $catmaster = `@@ORACC@@/bin/oraccopt $parentproj catalog-master-project`;
+	    my $xtlproject = $catmaster || $p{'project'};
+	    warn "xtl: parentproj=$parentproj; catmaster=$catmaster; xtlproject=$xtlproject\n";
 	    my $eid4 = $eid;
 	    $eid4 =~ s/^(....).*$/$1/;
-	    my $xtl = "@@ORACC@@/bld/$p{'project'}/$eid4/$eid/$eid.xtl";
+	    my $xtl = "@@ORACC@@/bld/$xtlproject/$eid4/$eid/$eid.xtl";
 	    if (-r $xtl) {
-		push @args, '-param', 'xtl', 'true()';
+		push @args, '-stringparam', 'xtl', $xtl;
 	    }
 	}
 	xsystem('xsltproc', 

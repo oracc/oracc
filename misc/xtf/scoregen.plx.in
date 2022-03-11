@@ -462,8 +462,10 @@ sprefs {
 	my $xmd = ORACC::XMD::Fields::get_in_project($ref_project,$r_pq);
 	my $xmdproj = 1;
 	my $ex_attr = '';
+	my $x = '';
 	if ($ex) {
-	    $ex_attr = " sig=\"$ex\"";
+	    $x = xmlify($ex);
+	    $ex_attr = " sig=\"$x\"";
 	}
 	my $have_atf = '';
 	my $xtf = "$path/$r.xtf";
@@ -473,11 +475,13 @@ sprefs {
 	    $have_atf = " have_atf=\"no\"";	    
 	}
 	if ($$xmd{'designation'}) {
+	    $x = xmlify($$xmd{'designation'});
 	    push @items, [ ${$codes{$r}}{'designation'} , 
-			   "<item proj=\"$ref_project\" path=\"$path\"$have_atf $ex_attr text=\"$r_noproj\" n=\"$$xmd{'designation'}\"/>" ];
+			   "<item proj=\"$ref_project\" path=\"$path\"$have_atf $ex_attr text=\"$r_noproj\" n=\"$x\"/>" ];
 	} elsif ($$xmd{'name'}) {
+	    $x = xmlify($$xmd{'name'});
 	    push @items, [ ${$codes{$r}}{'name'} , 
-			   "<item proj=\"$ref_project\" path=\"$path\"$ex_attr text=\"$r_noproj\" n=\"$$xmd{'name'}\"/>" ];
+			   "<item proj=\"$ref_project\" path=\"$path\"$ex_attr text=\"$r_noproj\" n=\"$x\"/>" ];
 	} else {
 	    print STDERR "no designation for $r\n" unless $nocodes{$r};
 	}
