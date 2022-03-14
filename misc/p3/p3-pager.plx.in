@@ -320,7 +320,7 @@ sub
 decode_args {
     my %tmp = ();
     foreach my $a (@_) {
-#	warn "$a\n";
+	warn "decode_args: $a\n";
        	my($k,$v) = ($a =~ /^(.*?)=(.*)$/);
 	$tmp{$k} = $v;
     }
@@ -378,6 +378,7 @@ decode_args {
 	my $special_list = `@@ORACC@@/bin/oraccopt $tmp{'project'} outline-special-list-name`;
 	if ($special_list) {
 	    $tmp{'list'} = $special_list;
+	    warn "special list $special_list; p3outl=$tmp{'p3outl'}\n";
 	    $tmp{'p3outl'} = $tmp{'state'} = 'special' unless $tmp{'p3outl'};
 	} elsif (-r "01bld/lists/outlined.lst") {
 	    $tmp{'list'} = "01bld/lists/outlined.lst";
