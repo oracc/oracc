@@ -48,7 +48,14 @@ p2_load(const char *project, const char *state, struct npool *pool)
   struct p2_options *ret = calloc(1,sizeof(struct p2_options));
   char *opt = malloc(128);
   struct xpd *xpd = xpd_init(project, pool);
+  extern int verbose;
 
+  if (verbose)
+    {
+      char *vstate = (state ? state : "(not set)");
+      fprintf(stderr, "p2_load: state on entry = %s\n",vstate);
+    }
+  
   if (!state || strcmp(state, "special"))
     state = "default";
   else

@@ -407,8 +407,15 @@ update_lists {
 	xsystem 
 	    "grep :[PX] $out_approved | atflists.plx -p$project -o$out_outlined stdin -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
     } elsif ($opt eq 'Q') {
-	xsystem 
-	    "grep :Q $out_approved | atflists.plx -p$project -o$out_outlined stdin -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
+	if (-r '00lib/outlined.lst') {
+	    # 2022-03-13 00lib/outlined.lst had fallen out of use;
+	    # this reintroduction may break some projects if they have
+	    # a stale 00lib/outlined.lst
+	    xsystem "cp -av 00lib/outlined.lst 01bld/lists";
+	} else {
+	    xsystem 
+		"grep :Q $out_approved | atflists.plx -p$project -o$out_outlined stdin -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
+	}
     } elsif ($opt eq 'atf') {
 	xsystem 
 	    "atflists.plx -p$project -o$out_outlined $have_atf -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
