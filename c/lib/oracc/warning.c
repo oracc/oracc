@@ -37,7 +37,7 @@ vwarning(const char *fmt,...)
       if (atf_cbd_err)
 	fprintf(f_log,"%d: ",cbd_err_line);
       else if (with_textid)
-	fprintf(f_log,"%s:%d:%s: ",file,lnum,textid);
+	fprintf(f_log,"%s:%d:%s: ",file ? file : "",lnum,textid ? textid : textid);
       else
 	fprintf(f_log,"%s:%d: ",file,lnum);
       if (phase)
@@ -154,7 +154,7 @@ vnotice(const char *fmt,...)
       if (atf_cbd_err)
 	fprintf(f_log,"%d: ",cbd_err_line);
       else if (with_textid)
-	fprintf(f_log,"%s:%d:%s: ",file,lnum,textid);
+	fprintf(f_log,"%s:%d:%s: ",file ? file : "",lnum,textid ? textid : "");
       else
 	fprintf(f_log,"%s:%d: ",file,lnum);
       if (phase)

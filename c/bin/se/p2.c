@@ -58,9 +58,9 @@ p2_load(const char *project, const char *state, struct npool *pool)
   
   if (!state || strcmp(state, "special"))
     state = "default";
-  else
+  else if (strcmp(state,"special"))
     {
-      char *special_ok = xpd_option(xpd, "outline-special-select");
+      char *special_ok = xpd_option(xpd, "outline-special-select");      
       if (!special_ok || strcmp(special_ok, "true"))
 	state = "default";
     }

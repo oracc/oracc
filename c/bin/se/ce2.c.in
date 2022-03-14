@@ -27,6 +27,8 @@ extern char *strdup(const char *);
 
 extern const char *xmd_fields, *xmd_widths, *xmd_labels;
 
+extern FILE *f_log;
+
 int in_group = 0;
 int ood_mode = 0;
 
@@ -544,6 +546,8 @@ main(int argc, char * const*argv)
       usage();
     }
 
+  f_log = stderr;
+  
   if (lang)
     sprintf(langindex,"%s/%s",ce_index,lang);
   else
