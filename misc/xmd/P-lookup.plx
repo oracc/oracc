@@ -3,22 +3,36 @@ use warnings; use strict; use open 'utf8';
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 
 my $verbose = 0;
+use Getopt::Long;
+
+GetOptions(
+    v=>\$verbose,
+    );
 
 while (<>) {
     my $query = $_; chomp $query;
+    my $orig = $query;
     $query =~ s/^!//;
     $query =~ s/\t.*//;
+    $query =~ s/^\s*//; $query =~ s/\s*$//;
+    if ($query =~ /^K\./) {
+	$query =~ s/\s.*$//;
+	$query =~ s/\./ /;
+    }
     $query =~ s/N-T\s+/N-T/;
     if ($query =~ /N-T(\d+)/) {
 	my $z = '0'x(4-length($1));
 	$query =~ s/T/T$z/;
     }
-    $query =~ tr/-,.:;()//d;
+    if ($query !~ /^MMA/) {
+	$query =~ tr/-,:;.()//d;
+    }
     $query =~ s/^\s*(.*?)\s*$/$1/;
     $query =~ s/\s*[=\+].*$//;
+    $query =~ s/\s(?:obv|rev|lines).*$//;
     $query =~ s/\s+/_/g;
     if ($query =~ /[a-z0-9]/i) {
-	warn "$query\n" if $verbose;
+	warn "$orig => $query\n" if $verbose;
 	my @res = `se \#cdli \!cat $query`;
 	if ($#res >= 0) {
 	    chomp @res;
