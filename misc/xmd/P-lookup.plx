@@ -24,7 +24,12 @@ while (<>) {
 	my $z = '0'x(4-length($1));
 	$query =~ s/T/T$z/;
     }
-    if ($query !~ /^MMA/) {
+    if ($query =~ /Ash/i) {
+	warn "###Ash\n";
+	$query =~ s/Ash\.\s*/Ashm /i;
+	$query =~ s,(\d)\.,$1/,;
+    }
+    if ($query !~ /MMA/i) {
 	$query =~ tr/-,:;.()//d;
     }
     $query =~ s/^\s*(.*?)\s*$/$1/;
