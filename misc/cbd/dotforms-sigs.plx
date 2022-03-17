@@ -15,18 +15,25 @@ if ($file) {
 } else {
     @input = (<>);
 }
-   
+
+my $line = 0;
+
 foreach (@input) {
     chomp;
+    ++$line;
     my($cfgw,$form,$lxng,$base,$cont,$morph)
 	= (m#^(.*)\t\@form\s+(\S+)(\s+\%\S+)?\s+/(\S+)(\s+\+\S+)?\s+(\S+)\s*$#);
-    $cfgw =~ s/\s+(\[.*?\])\s+/$1/;
-    $cfgw =~ s#\[(.*?)\]#[$1//$1]#;
-    $cfgw =~ s/\](\S+)/\]$1'$1/;
-    $cont = '' unless $cont; $cont =~ s/^\s*//;
-    $lang =~ s/^\s*// if $lang;
-    $lang = "\%$lang" unless $lang =~ /^\%/;
-    print "\@$proj$lang:$form=$cfgw/$base$cont$morph\n";
+    if ($cfgw) {
+	$cfgw =~ s/\s+(\[.*?\])\s+/$1/;
+	$cfgw =~ s#\[(.*?)\]#[$1//$1]#;
+	$cfgw =~ s/\](\S+)/\]$1'$1/;
+	$cont = '' unless $cont; $cont =~ s/^\s*//;
+	$lang =~ s/^\s*// if $lang;
+	$lang = "\%$lang" unless $lang =~ /^\%/;
+	print "\@$proj$lang:$form=$cfgw/$base$cont$morph\n";
+    } else {
+	warn "$line: bad syntax in forms line\n";
+    }
 }
 
 1;

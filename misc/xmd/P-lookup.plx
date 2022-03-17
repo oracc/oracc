@@ -46,7 +46,7 @@ while (<>) {
 	    next;
 	}
     }
-    print;
+    print "\t$_";
 }
 
 1;
