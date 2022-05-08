@@ -87,6 +87,7 @@ unless ($p{'p3OSdefault'}) {
 	$p{'p3OSdefault'} = "period,subgenre,provenience";
     }
 }
+warn ">>>p3OSdefault = $p{'p3OSdefault'}\n";
 
 arg_state();
 setup_navigation();

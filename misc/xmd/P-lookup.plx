@@ -25,7 +25,7 @@ while (<>) {
 	$query =~ s/T/T$z/;
     }
     if ($query =~ /Ash/i) {
-	warn "###Ash\n";
+	# warn "###Ash\n";
 	$query =~ s/Ash\.\s*/Ashm /i;
 	$query =~ s,(\d)\.,$1/,;
     }

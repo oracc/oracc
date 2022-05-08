@@ -14,7 +14,7 @@ GetOptions(
 	   'atf'=>\$atf,
            'lst:s'=>\$lst,
 	   'jdf'=>\$jdf,
-           'project'=>\$project,
+           'project:s'=>\$project,
            'qualified'=>\$qualified,
 	   'sort'=>\$sort,
 	   ) || pod2usage(1);
@@ -36,7 +36,7 @@ if ($#files >= 0) {
 	if ($f =~ /\.ods$/) {
 	    open(F,"ods2atf.sh -s $f |") || die;
 	} else {
-	    open(F,$f) || die;
+	    open(F,$f) || die "$0: failed to open $f\n";
 	}
 	while (<F>) {
 	    next if $atf && !/^(?:\x{ef}\x{bb}\x{bf})?&/;
@@ -76,8 +76,14 @@ if ($jdf) {
     if ($ail) {
 	$ailtab = "\t = ";
 	print $ail, "\n$ailtab";
+	print join("\n$ailtab", @pq), "\n";
+    } elsif ($project) {
+	foreach (@pq) {
+	    print "$project:$_\n";
+	}
+    } else {
+	print join("\n", @pq), "\n";
     }
-    print join("\n$ailtab", @pq), "\n";
 }
 
 1;
