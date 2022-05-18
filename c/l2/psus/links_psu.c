@@ -9,7 +9,7 @@
 #include "sigs.h"
 #include <xmlutil.h>
 
-int psus_sig_check = 1;
+int psus_sig_check = 0; /* 1 */
 
 extern void per_text_mem(void *);
 

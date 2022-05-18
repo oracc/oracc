@@ -222,7 +222,7 @@
       <li>
 	<xsl:choose>	  
 	  <xsl:when test="starts-with(md:id_text,'P')">
-	    <a href="http://cdli.ucla.edu/{md:id_text/text()}" target="_blank">
+	    <a href="https://cdli.ucla.edu/{md:id_text/text()}" target="_blank">
 	      <xsl:value-of select="concat('CDLI ', md:id_text)"/>
 	    </a>
 	  </xsl:when>
@@ -234,6 +234,13 @@
 	  </xsl:otherwise>
 	</xsl:choose>
       </li>
+      <xsl:if test="string-length(md:bdtns_id)>0">
+	<li>
+	  <a href="http://bdtns.filol.csic.es/{md:bdtns_id/text()}" target="_blank">
+	    <xsl:value-of select="concat('BDTNS ', md:bdtns_id)"/>
+	  </a>
+	</li>
+      </xsl:if>
       <xsl:if test="string-length(md:museum_no)>0">
 	<li><xsl:value-of select="md:museum_no"/></li>
       </xsl:if>

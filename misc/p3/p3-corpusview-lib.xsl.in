@@ -368,9 +368,17 @@
       <xsl:choose>
 	<xsl:when test="$pager-fallback-cdli='yes' and starts-with($pqid,'P')">
 	  <xsl:variable name="cdli-url" select="concat('https://cdli.ucla.edu/',$pqid)"/>
-	  <h3>No transliteration available: displaying CDLI page
+	  <h3>No transliteration available: you can try the CDLI page
 	  <a href="{$cdli-url}"><xsl:value-of select="$cdli-url"/></a></h3>
-	  <iframe width="90%" height="100%" src="{$cdli-url}">&#xa0;</iframe>
+	  <!--<p>bdtns_id = <xsl:value-of select="$xmd/xmd:cat/xmd:bdtns_id"/></p>-->
+	  <xsl:if test="string-length($xmd/xmd:cat/xmd:bdtns_id)>0">
+	    <xsl:variable name="bdtns-url">
+	      <xsl:value-of select="concat('http://bdtns.filol.csic.es/',$xmd/xmd:cat/xmd:bdtns_id)"/>
+	    </xsl:variable>
+	    <!--<p><xsl:value-of select="$bdtns-url"/></p>-->
+	    <h3>The following BDTNS record is available at <a href="{$bdtns-url}"><xsl:value-of select="$bdtns-url"/></a></h3>
+	    <iframe width="90%" height="500" src="{$bdtns-url}">&#xa0;</iframe>
+	  </xsl:if>
 	</xsl:when>
 	<xsl:otherwise>
 	  <p>(No transliteration available)</p>

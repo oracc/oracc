@@ -812,7 +812,7 @@ run_item_maker {
 #		if $p{'itemctxt'} && $p{'itemctxt'} ne 'none';
 #	}
 
-	if ($eproject eq 'epsd2/catalogue' && $localhost) {
+	if ($eproject eq 'xepsd2/catalogue' && $localhost) { # temp disable scraper
 	    xsystem "$oraccbin/cdli-scraper.plx", '-o', "$p{'tmpdir'}/results.html", $eid;
 	    goto OUTLINE;
 	}
@@ -855,7 +855,7 @@ run_item_maker {
 		    }
 		} else {
 		    $html = '' unless -r $html;
-		}		    
+		}
 		unless ($html) {
 		    xsystem('cp',$no_html,"$p{'tmpdir'}/results.html");
 		    goto OUTLINE;
