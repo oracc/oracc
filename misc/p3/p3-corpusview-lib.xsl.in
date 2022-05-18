@@ -376,8 +376,8 @@
 	      <xsl:value-of select="concat('http://bdtns.filol.csic.es/',$xmd/xmd:cat/xmd:bdtns_id)"/>
 	    </xsl:variable>
 	    <!--<p><xsl:value-of select="$bdtns-url"/></p>-->
-	    <h3>The following BDTNS record is available at <a href="{$bdtns-url}"><xsl:value-of select="$bdtns-url"/></a></h3>
-	    <iframe width="90%" height="500" src="{$bdtns-url}">&#xa0;</iframe>
+	    <h3>There is also a BDTNS record available at <a href="{$bdtns-url}"><xsl:value-of select="$bdtns-url"/></a></h3>
+	    <!--<iframe width="90%" height="500" src="{$bdtns-url}">&#xa0;</iframe>-->
 	  </xsl:if>
 	</xsl:when>
 	<xsl:otherwise>
