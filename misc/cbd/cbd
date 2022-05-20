@@ -741,7 +741,7 @@ sub merge {
 	    die "$0: can't execute $bin. Stop.\n";
 	}
     } else {
-	die "$0: can't determine super projectl Stop.\n";
+	die "$0: can't determine super project Stop.\n";
     }
 }
 

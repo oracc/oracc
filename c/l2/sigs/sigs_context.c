@@ -23,6 +23,7 @@
 
 extern int lem_extended;
 extern int lem_autolem;
+int sigs_allow_project_lem = -1;
 int sigs_debug = 0;
 int sigsets_debug = 0;
 
@@ -130,6 +131,11 @@ sig_context_register(struct sig_context *scp,
     strcat((char*)fname,"/");
   sprintf((char*)fname+strlen((char*)fname),
 	  "pub/%s/lemm-%s.sig",sigsproj,sigslang);
+
+  if (strstr(fname,"royal") && strstr(fname,"sux"))
+    {
+      fprintf(stderr, "local-load: %s\n", fname);
+    }
 
   projlang = malloc(strlen(scp->xcp->project)+strlen(lang)+2);
   sprintf(projlang,"%s%%%s",proj_to_be_lemmed,lang_to_be_lemmed);
@@ -591,7 +597,7 @@ sig_lang_free(List *lp)
 void
 sig_context_langs(struct sig_context *scp, const char *langs)
 {
-  char **langp = NULL, *langtmp;
+  char **langp = NULL, *langtmp = NULL;
   List *langlist = NULL;
   int i;
 
@@ -626,11 +632,17 @@ sig_context_langs(struct sig_context *scp, const char *langs)
 	    }
 	  if (proj)
 	    {
-	      char **projp = NULL, *projtmp = NULL;
+	      char **projp = NULL, *projtmp = NULL, *dot;
 	      List *projlist = NULL;
+	      
 	      int j;
+	      if ((proj[0] == '.' && (proj[1] == ' ' || proj[1] == '\0'))
+		  || ((dot = strstr(proj, " .")) && (dot[1] == ' ' || dot[1] == '\0')))
+		;
+	      else
+		sigs_allow_project_lem = 0;		
 	      if (verbose)
-		fprintf(stderr,"sigs_context: lang=%s; projects=%s\n",langp[i],proj);
+		fprintf(stderr,"sigs_context: lang=%s; projects=%s\n",langp[i],proj); /*; sigs_allow_project_lem==%d,sigs_allow_project_lem */
 	      projtmp = malloc(strlen(proj)+1);
 	      strcpy(projtmp,proj);
 	      projlist = list_from_str(projtmp,NULL,LIST_SINGLE);
