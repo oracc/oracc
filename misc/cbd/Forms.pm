@@ -3,7 +3,7 @@ package ORACC::CBD::Forms;
 require Exporter;
 @ISA=qw/Exporter/;
 
-@EXPORT = qw/forms_align forms_init forms_term forms_by_cfgw
+@EXPORT = qw/forms_align forms_compare forms_init forms_term forms_by_cfgw
     forms_det_clean forms_dump forms_load forms_normify forms_print
     forms_reset forms_validate forms_merge forms_dot_forms/;
 
@@ -87,6 +87,53 @@ sub forms_align {
     open(FI,'>fi.dump'); print FI "fi=", Dumper \%f_index; close(FI);
 }
 
+sub forms_compare {
+    my($args,$base_cbd,$cbd,$xmap_fh) = @_;
+    my @cbd = @$cbd;
+    my $curr_entry = '';
+    $map_fh = $xmap_fh if $xmap_fh;
+    
+    my %forms = ();
+    if ($$args{'forms'}) {
+	my @forms = `cat $$args{'forms'}`; chomp @forms;
+	%forms = forms_collect(@forms);
+    } else {
+	my @base_cbd = @$base_cbd;
+	%forms = forms_collect(@base_cbd);
+    }
+
+#   dump_forms('base',\%forms);
+    
+    my %f_index = ();
+    foreach my $k (keys %forms) {
+	foreach my $f (keys %{$forms{$k}}) {
+	    next if $f eq '#';
+	    $f =~ /\s+(\S+)/;
+	    $f_index{$k,$1} = $f;
+	}
+    }
+
+#    dump_forms('f_index',\%f_index);
+
+    for (my $i = 0; $i <= $#cbd; ++$i) {
+	if ($cbd[$i] =~ /\@entry\S*\s*(.*?)\s*$/) {
+	    $curr_entry = $1;
+	} elsif ($cbd[$i] =~ /\@form\S*\s+(\S+)/) {
+	    my $curr_form = $1;
+	    my $core_form = $f_index{$curr_entry,$curr_form};
+	    if ($core_form) {
+		if ($core_form ne $cbd[$i]) {
+		    my $l = $i+1;
+		    warn pp_file().":$l: discrepant forms for $curr_form=$curr_entry:\nCORE:\t$core_form\nPERI:\t$cbd[$i]\n";
+		}		
+	    } else {
+		my $l = $i+1;
+		warn pp_file().":$l: missing form:\t$curr_entry\t$cbd[$i]\n";
+	    }
+	}
+    }
+}
+
 sub forms_find {
     my @f = ();
     foreach (@_) {
@@ -142,6 +189,11 @@ sub forms_collect {
 	    ++${$f{$curr_entry}}{'#'};
 	} elsif ($cbd[$i] =~ /^\@form/) {
 	    my $tmp = $cbd[$i];
+	    $tmp =~ s/\s+/ /g;
+	    ++${$f{$curr_entry}}{$tmp};
+	} elsif ($cbd[$i] =~ /^(.*?)\t(\@form.*)\s*$/) {
+	    my $tmp = '';
+	    ($curr_entry,$tmp) = ($1,$2);
 	    $tmp =~ s/\s+/ /g;
 	    ++${$f{$curr_entry}}{$tmp};
 	}
