@@ -68,9 +68,15 @@ sigs_l_new(struct xcl_context *xcp, struct xcl_l *l)
 	sigs_l_check(xcp, l);
       else
 	{
+#if 0
+	  /* The cache is currently disabled.  If it is re-enabled it needs to be handled slightly 
+	     differently because a side effect of sigs_early_sig is that it loads project lemmatization
+	     even when the lem for a lang is given in config.xml and that does not include '.'
+	  */
 	  struct sig const * const *early_sigs = sigs_early_sig(xcp, l->f);
 	  if (early_sigs)
 	    sigs_cache_add(l->f, early_sigs);
+#endif
 	}
     }
 }
