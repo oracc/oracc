@@ -46,6 +46,7 @@ sigs_l_check(struct xcl_context *xcp, struct xcl_l *l)
       if (l->cof_tails)
 	sigs_cof_finds(l);
 
+#if 0      
       if (BIT_ISSET(l->f->f2.flags, F2_FLAGS_LEM_NEW))
 	{
 	  /* 1) now we silently ignore missing .sig files we need to ignore that sp->file can be
@@ -60,6 +61,7 @@ sigs_l_check(struct xcl_context *xcp, struct xcl_l *l)
 		sigs_cache_add(l->f, early_sigs);
 	    }
 	}
+#endif
     }
 }
 
