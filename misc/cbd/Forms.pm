@@ -27,6 +27,7 @@ my %formcharkeys = (
     );
 
 my %bases = ();
+my %efl = ();
 my %forms = ();
 my $forms_inline = '';
 my $map_fh = undef;
@@ -102,14 +103,16 @@ sub forms_compare {
 	%forms = forms_collect(@base_cbd);
     }
 
-#   dump_forms('base',\%forms);
+    dump_forms('base',\%forms);
     
     my %f_index = ();
     foreach my $k (keys %forms) {
 	foreach my $f (keys %{$forms{$k}}) {
 	    next if $f eq '#';
 	    $f =~ /\s+(\S+)/;
-	    $f_index{$k,$1} = $f;
+	    my $fo = $1;
+	    $f_index{$k,$fo} = $f;
+	    $efl{$k,$fo} = ${$forms{$k}}{$f};
 	}
     }
 
@@ -121,10 +124,11 @@ sub forms_compare {
 	} elsif ($cbd[$i] =~ /\@form\S*\s+(\S+)/) {
 	    my $curr_form = $1;
 	    my $core_form = $f_index{$curr_entry,$curr_form};
+	    my $efl = $efl{$curr_entry,$curr_form};
 	    if ($core_form) {
 		if ($core_form ne $cbd[$i]) {
 		    my $l = $i+1;
-		    warn pp_file().":$l: discrepant forms for $curr_form=$curr_entry:\nCORE:\t$core_form\nPERI:\t$cbd[$i]\n";
+		    warn pp_file().":$l: discrepant forms for $curr_form=$curr_entry:\nCORE:$efl:\t$core_form\nPERI:$l:\t$cbd[$i]\n";
 		}		
 	    } else {
 		my $l = $i+1;
@@ -190,12 +194,12 @@ sub forms_collect {
 	} elsif ($cbd[$i] =~ /^\@form/) {
 	    my $tmp = $cbd[$i];
 	    $tmp =~ s/\s+/ /g;
-	    ++${$f{$curr_entry}}{$tmp};
+	    ${$f{$curr_entry}}{$tmp} = $i+1;
 	} elsif ($cbd[$i] =~ /^(.*?)\t(\@form.*)\s*$/) {
 	    my $tmp = '';
 	    ($curr_entry,$tmp) = ($1,$2);
 	    $tmp =~ s/\s+/ /g;
-	    ++${$f{$curr_entry}}{$tmp};
+	    ${$f{$curr_entry}}{$tmp} = $i+1;
 	}
     }
     %f;

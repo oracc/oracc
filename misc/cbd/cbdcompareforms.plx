@@ -14,17 +14,20 @@ my @base_cbd = ();
 
 if ($args{'base'}) {
     @base_cbd = setup_cbd(\%args,$args{'base'});
+    warn "FILE:CORE=$args{'base'}\n";
     if (pp_status()) {
 	pp_diagnostics();
 	die "$0: can't align forms unless base glossary is clean. Stop.\n";
     }
 } elsif ($args{'forms'}) {
+    warn "FILE:CORE=$args{'forms'}\n";
     # forms_compare will figure this out
 } else {
     die "$0: must give base glossary with -base GLOSSARY\n";
 }
 
 my @cbd = setup_cbd(\%args);
+warn "FILE:PERI=".pp_file()."\n";
 
 if (pp_status()) {
     pp_diagnostics();
