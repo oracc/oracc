@@ -132,11 +132,13 @@ sig_context_register(struct sig_context *scp,
   sprintf((char*)fname+strlen((char*)fname),
 	  "pub/%s/lemm-%s.sig",sigsproj,sigslang);
 
+#if 0
   if (strstr(fname,"royal") && strstr(fname,"sux"))
     {
       fprintf(stderr, "local-load: %s\n", fname);
     }
-
+#endif
+  
   projlang = malloc(strlen(scp->xcp->project)+strlen(lang)+2);
   sprintf(projlang,"%s%%%s",proj_to_be_lemmed,lang_to_be_lemmed);
   if (!(sigs_for_lang = hash_find(scp->langs, (Uchar*)projlang)))

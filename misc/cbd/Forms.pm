@@ -30,6 +30,7 @@ my %bases = ();
 my %efl = ();
 my %forms = ();
 my $forms_inline = '';
+my $alang = '';
 my $map_fh = undef;
 my %seen = ();
 my %fi_added = ();
@@ -92,7 +93,10 @@ sub forms_compare {
     my($args,$base_cbd,$cbd,$xmap_fh) = @_;
     my @cbd = @$cbd;
     my $curr_entry = '';
-    $map_fh = $xmap_fh if $xmap_fh;
+
+    $alang = $$args{'lang'} if $$args{'lang'};
+    $alang = 'sux' unless $alang && $alang ne 'qpn';
+    warn "$0: alang set to $alang\n";
     
     my %forms = ();
     if ($$args{'forms'}) {
@@ -123,6 +127,10 @@ sub forms_compare {
 	    $curr_entry = $1;
 	} elsif ($cbd[$i] =~ /\@form\S*\s+(\S+)/) {
 	    my $curr_form = $1;
+	    if ($alang && $cbd[$i] =~ /\s\%(\S+)\s/) {
+		my $flang = $1;
+		next unless $alang eq $flang;
+	    }
 	    my $core_form = $f_index{$curr_entry,$curr_form};
 	    my $efl = $efl{$curr_entry,$curr_form};
 	    if ($core_form) {
@@ -192,10 +200,20 @@ sub forms_collect {
 	    $curr_entry = $1;
 	    ++${$f{$curr_entry}}{'#'};
 	} elsif ($cbd[$i] =~ /^\@form/) {
+	    my $flang = '';
+	    if ($alang && $cbd[$i] =~ /\%(\S+)\s/) {
+		$flang = $1;
+		next unless $flang eq $alang;
+	    }
 	    my $tmp = $cbd[$i];
 	    $tmp =~ s/\s+/ /g;
 	    ${$f{$curr_entry}}{$tmp} = $i+1;
 	} elsif ($cbd[$i] =~ /^(.*?)\t(\@form.*)\s*$/) {
+	    my $flang = '';
+	    if ($alang && $cbd[$i] =~ /\%(\S+)\s/) {
+		$flang = $1;
+		next unless $flang eq $alang;
+	    }
 	    my $tmp = '';
 	    ($curr_entry,$tmp) = ($1,$2);
 	    $tmp =~ s/\s+/ /g;
