@@ -15,7 +15,8 @@ bin_SCRIPTS = atf2ascii.plx atfdroppq.plx atfid.plx atfsignnames.plx \
 	atffix-p.plx atf-cdli.sh ox4.plx ox4-emesal.plx atf-uni-lem.plx \
 	atfstrip.plx atf-igigal.plx lemstats.plx fix-x-times.plx \
 	atfinstall.plx atfbatch.plx atfnewlines.plx lst2atf.plx atfhalf.plx \
-	acc2num.plx un-X.plx atfandlines.plx atf-inline-linksets.plx
+	acc2num.plx un-X.plx atfandlines.plx atf-inline-linksets.plx \
+	atf-strip-sux-extra.plx
 
 #atfreplace.plx
 
