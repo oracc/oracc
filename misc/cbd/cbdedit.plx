@@ -59,6 +59,7 @@ if (pp_status()) {
     
 } else {
 
+    warn "$0: calling edit() on $args{'cbd'}\n";
     @cbd = edit(\%args, @cbd);
     if ($args{'cbd'} =~ /senses/) {
 	@cbd = senses_uniq(@cbd);

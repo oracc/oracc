@@ -13,6 +13,8 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
 use Data::Dumper;
 
+$ORACC::CBD::History::return_unspaced = 0;
+
 my %history = ();
 
 sub history {
@@ -67,7 +69,7 @@ sub history_guess {
 	    last;
 	}
     }
-    $g =~ s/\s*\[(.*?)\]\s*/ [$1] /;
+    $g =~ s/\s*\[(.*?)\]\s*/ [$1] / unless $ORACC::CBD::History::return_unspaced;
     $g;
 }
 

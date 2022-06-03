@@ -233,7 +233,11 @@ sub phase_save {
 		if (-s "$lang-culled-forms.glo" && -s "$lang-culled-bases.glo") {
 		    system 'cp', '-va', "$lang-culled-forms.glo", $d;
 		    system 'cp', '-va', "$lang-culled-bases.glo", $d;
-		    system 'cp', '-va', "$lang-culled-bases.glo", "00lib/$lang.glo";
+		    ## this breaks PSUs so it's been disabled
+		    ## the consequence is that the main glo can end up with unused forms
+		    ## or bases but that is not the end of the world.
+		    ##
+		    # system 'cp', '-va', "$lang-culled-bases.glo", "00lib/$lang.glo";
 		} else {
 		    die "$0: either of $lang-culled-forms.glo or $lang-culled-bases.glo is empty. Stop\n";
 		}

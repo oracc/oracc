@@ -15,6 +15,7 @@ my $lem_allow_x = `oraccopt . lem-allow-x`;
 $lem_allow_x = undef unless ($lem_allow_x && $lem_allow_x eq 'yes');
 
 my %f = ();
+my $force = 0;
 my $freq = 0;
 my $glossary = '';
 my %lemmdata = ();
@@ -24,6 +25,7 @@ my $update = 0;
 my $verbose = 1;
 
 GetOptions (
+    force=>\$force, 
     'glossary:s'=>\$glossary,
     'update'=>\$update
     );
@@ -106,20 +108,24 @@ if ($update) {
 
 # Harvest freqs from the project.sig or the last set of lemm-data
 foreach my $l (@freq_files) {
-    open(L,$l) || die "l2p1-lemm-data.plx: can't open `$l' for update\n";
-    warn "harvesting sig frequencies from $l ...\n";    
-    while (<L>) {
-	next if /^\s*$/ || m/^\@(?:project|name|lang)/;
-	chomp;
-	if (/^\@fields/) {
-	    set_f($_, qw/sig freq/);
-#	    warn Dumper \%f;
-	    next;
+    if (open(L,$l)) {
+	warn "harvesting sig frequencies from $l ...\n";    
+	while (<L>) {
+	    next if /^\s*$/ || m/^\@(?:project|name|lang)/;
+	    chomp;
+	    if (/^\@fields/) {
+		set_f($_, qw/sig freq/);
+		#	    warn Dumper \%f;
+		next;
+	    }
+	    my @fields = split(/\t/,$_);
+	    $freqs{$fields[0]} = $fields[$freq];
 	}
-	my @fields = split(/\t/,$_);
-	$freqs{$fields[0]} = $fields[$freq];
+	close(L);
+    } else {
+	die "l2p1-lemm-data.plx: can't open `$l' for update\n"
+	    unless $force;
     }
-    close(L);
 }
 
 # Add freqs to sigs/ranks and dump new lemm-data. If a project

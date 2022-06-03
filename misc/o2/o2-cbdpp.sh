@@ -21,7 +21,7 @@ for a in $srcglo ; do
 	/bin/echo -n $a | sed s/00src/01tmp/
 	exit 0
     else
-	cbdpp.plx $a
+	cbdpp.plx -sig $a
     fi
 done
 libglo=`ls -1 00lib/*.glo | grep -v '~' | grep glo`
@@ -31,7 +31,8 @@ else
     for a in $libglo ; do
 	log=01log/`basename $a .glo`.log
 	exec 3>&1 4>&2 1>$log 2>&1
-	cbdpp.plx -sigs -nopsus $a
+	echo running cbdpp.plx -sig -nopsus $a
+	cbdpp.plx -sig -nopsus $a
 	exec 1>&3 2>&4
 	if [ -s $log ]; then
 	    echo $log >>01log/glo.err

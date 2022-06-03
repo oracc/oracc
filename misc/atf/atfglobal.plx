@@ -81,7 +81,7 @@ foreach my $f (@f) {
 	    if ($lem =~ /^\#lem:/) {
 		chomp $line; chomp $lem;
 		$line =~ s/,!\S+//g; # remove field designators like ,!yn
-		$line =~ s/\s\&\s/ /g; # remove column seps
+		1 while $line =~ s/\s\&\d*\s/ /; # remove column seps
 		$line =~ tr/[]⸢⸣//d;
 		$line =~ s/\*\(AŠ\@c\)[#*!?]*\s+//;
 		$line =~ s/\(\#.*?\#\)//g;
@@ -105,7 +105,7 @@ foreach my $f (@f) {
 		my @line = grep(defined&&length&&!/^%/&&!/^\d+::\d+/ , split(/\s+/, $line));
 		my @lem = grep(defined&&length, split(/;\s+/, $lem));
 		if ($#line != $#lem) {
-		    warn("$.: $#line != $#lem\n");
+		    warn("$f:$.: $#line != $#lem\n");
 		    warn("$.:tlt: ", join('|',@line),"\n");
 		    warn("$.:lem: ", join('|',@lem),"\n");
 		    print O "#lem: ", join('; ', @lem), "\n"

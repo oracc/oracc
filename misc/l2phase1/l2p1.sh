@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 
 # Invoke with -u for oracc update; 20180916: -u is now deprecated
 
@@ -10,7 +10,7 @@
 
 projtype=`oraccopt . type`
 
-exec >01log/l2p1.log ; exec 2>&1
+#exec >01log/l2p1.log ; exec 2>&1
 
 if [ "$projtype" == "superglo" ]; then
     true;
@@ -31,9 +31,12 @@ if [ -r .nolemmdata ]; then
 else
     # if we have project.sig use it for lemm data, otherwise try
     # to reuse stats from previous lemm data with -u option
-    if [ -s 01bld/project.sig ]; then
-	l2p1-lemm-data.plx
-    else
-	l2p1-lemm-data.plx -u
-    fi
+    # 2022-05-25: this may not be right; we need to prioritize glossary
+    # basis of lem not extant lem in built files
+    #    if [ -s 01bld/project.sig ]; then
+    #	l2p1-lemm-data.plx
+    #    else
+    echo running l2p1-lemm-data.plx -u -f
+    l2p1-lemm-data.plx -u -f
+	#    fi
 fi

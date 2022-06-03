@@ -32,6 +32,7 @@ sub edit {
 	edit_make_script($args,@cbd); # saves in global %data
 	unless (pp_status()) {
 	    edit_save_script($args);
+	    warn "$0: calling edit_apply_script() on $$args{'cbd'}\n";
 	    @cbd = edit_apply_script($args,@cbd);
 	}
 #	cache_stash($args,@cbd);
@@ -309,7 +310,7 @@ sub edit_make_script {
 		    if ($double) {
 			$action = 'mrg';
 		    } else {
-			pp_line($i);
+			pp_line($i+1);
 			pp_warn("can't rename to existing entry; use >> if merging");
 		    }
 		} else {
@@ -317,7 +318,7 @@ sub edit_make_script {
 		    if ($double) {
 			# but we suppress the error message if it's >>!
 			unless ($bang) {
-			    pp_line($i);
+			    pp_line($i+1);
 			    pp_warn("merge target $renstr doesn't exist; use >>! to suppress this warning");
 			}
 		    } else {
@@ -359,7 +360,7 @@ sub edit_make_script {
 		    push @s, ":hst \@entry $target";
 		    ++$ed; # skip over the >
 		} else {
-		    pp_line($i);
+		    pp_line($i+1);
 		    pp_warn("must give single line #why: comment after entry-deleting code -\@entry");
 		}
 	    }
