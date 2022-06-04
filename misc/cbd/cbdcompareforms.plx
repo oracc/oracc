@@ -12,6 +12,8 @@ my %args = pp_args();
 $ORACC::CBD::nominusstripping = $ORACC::CBD::nondestructive = $ORACC::CBD::nonormify = 1;
 my @base_cbd = ();
 
+set_default_base(\%args) unless $args{'base'};
+
 if ($args{'base'}) {
     @base_cbd = setup_cbd(\%args,$args{'base'});
     warn "FILE:CORE=$args{'base'}\n";

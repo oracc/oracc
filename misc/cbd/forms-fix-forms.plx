@@ -9,7 +9,10 @@ use lib "$ENV{'ORACC_BUILDS'}/lib";
 use ORACC::CBD::Bases;
 use Getopt::Long;
 
+my $update = 0;
+
 GetOptions(
+    update=>\$update,
     );
 
 #
@@ -26,11 +29,27 @@ GetOptions(
 #
 # Edited outputs are placed in CORE.glo and PERI.glo
 #
+# Run with -update to save CORE.glo and PERI.glo to their respective places. You
+# can delete either of those files before runing forms-fix-forms.plx -update to
+# prevent the target file from being updated.
+#
 
 my $logfile = shift; die "$0: must give log file on command line\n" unless $logfile;
 open(L,$logfile) || die "$0: can't open log file $logfile\n";
 my @log = (<L>); chomp @log;
 close(L);
+
+if ($update) {
+    if (-r 'CORE.glo') {
+	my $target = $log[0]; $target =~ s/^.*?=//;
+	system 'mv', '-v', 'CORE.glo', $target;
+    }
+    if (-r 'PERI.glo') {
+	my $target = $log[1]; $target =~ s/^.*?=//;
+	system 'mv', '-v', 'PERI.glo', $target;
+    }
+    exit 0;
+}
 
 my %FILE = ();
 bases_init();

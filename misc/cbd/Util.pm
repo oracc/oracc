@@ -525,7 +525,8 @@ sub default_base_glo {
     if ($glo =~ /sux-x-emesal/) {
 	return "$ENV{'ORACC_BUILDS'}/epsd2/emesal/00lib/sux-x-emesal.glo";
     } elsif ($glo =~ /sux/) {
-	return "$ENV{'ORACC_BUILDS'}/epsd2/00src/sux.glo";
+	#return "$ENV{'ORACC_BUILDS'}/epsd2/00src/sux.glo";
+	return "$ENV{'ORACC_BUILDS'}/epsd2/00lib/sux.glo";
     } elsif ($glo =~ /qpn/) {
 	return "$ENV{'ORACC_BUILDS'}/epsd2/names/00lib/qpn.glo";
     } else {
