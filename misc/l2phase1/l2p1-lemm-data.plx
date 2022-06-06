@@ -26,7 +26,7 @@ my $verbose = 1;
 
 GetOptions (
     force=>\$force, 
-    'glossary:s'=>\$glossary,
+    'glossary'=>\$glossary,
     'update'=>\$update
     );
 
@@ -38,7 +38,11 @@ my @sigs = ();
 
 my @glosigs = ();
 if ($glossary) {
-    @glosigs = `cbdpp.plx -sig -std $glossary`;
+    my @glo = <00lib/*.glo>;
+    foreach my $g (@glo) {
+	warn "$0: loading $g in glossary-only mode\n";
+	push @glosigs, `cbdpp.plx -sig -std $g`;
+    }
 } else {
     my @glosig_files = ();
     if ($g2) {
