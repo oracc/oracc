@@ -757,7 +757,8 @@ sub qualcheck {
 #    $qn =~ tr/\000\001\002/()+/;
 #    $qn =~ s/^.*?_//;
 #    $qn =~ s/^.*?-//;
-#    $qn =~ s/\s*$//;
+    #    $qn =~ s/\s*$//;
+    $qn =~ tr/·°//d;
     # is this qualified sign known?
     my $q = ORACC::SL::BaseC::is_value($qn);
     if ($q) {

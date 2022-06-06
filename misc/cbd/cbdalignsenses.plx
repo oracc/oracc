@@ -43,6 +43,8 @@ open(M,'>senses-map.dump'); print M Dumper \%map; close(M);
 
 my $curr_entry = '';
 
+system 'rm', '-f', 'senses.log', 'align-senses.log';
+
 if ($args{'apply'}) {
     my $mapto = '';
     for (my $i = 0; $i <= $#cbd; ++$i) {
@@ -79,7 +81,15 @@ if ($args{'apply'}) {
     pp_diagnostics(\%args) if pp_status();
 } else {
     pp_diagnostics(\%args);
-    system "grep '\[[34]\]' senses.log >senses-34.log";
+    my $log = '';
+    if (-r 'align-senses.log') {
+	$log = 'align-senses.log';
+    } elsif (-r 'senses.log') {
+	$log = 'senses.log';
+    }
+    if ($log) {
+	system "grep '\[[34]\]' $log >senses-34.log";
+    }
 }
 
 1;
