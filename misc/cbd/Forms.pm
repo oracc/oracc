@@ -17,6 +17,7 @@ use ORACC::CBD::Util;
 my $acd_rx = $ORACC::CBD::acd_rx;
 use Data::Dumper;
 
+$ORACC::CBD::Forms::forms_check_form = '';
 
 my %formcharkeys = (
     '%'=>'lang',
@@ -89,6 +90,14 @@ sub forms_align {
     open(FI,'>fi.dump'); print FI "fi=", Dumper \%f_index; close(FI);
 }
 
+sub form_chars_ok {
+    if (/\@form\S*\s+(\S+)/) {
+	$ORACC::CBD::Forms::forms_check_form = $1;
+	return $ORACC::CBD::Forms::forms_check_form =~ /^[-_\\%*+:.&×‌\/|@(){}a-zA-ZšḫŋṣṭŠḪŊṢṬʿʾ₀-₉ₓ0-9⁻]+$/;
+    }
+    1;
+}
+
 sub forms_compare {
     my($args,$base_cbd,$cbd,$xmap_fh) = @_;
     my @cbd = @$cbd;
@@ -134,7 +143,9 @@ sub forms_compare {
 	    my $core_form = $f_index{$curr_entry,$curr_form};
 	    my $efl = $efl{$curr_entry,$curr_form};
 	    if ($core_form) {
-		if ($core_form ne $cbd[$i]) {
+		my $cbd_form = $cbd[$i];
+		$cbd_form =~ s/form\!/form/;
+		if ($core_form ne $cbd_form) {
 		    my $l = $i+1;
 		    warn pp_file().":$l: discrepant forms for $curr_form=$curr_entry:\nCORE:$efl:\t$core_form\nPERI:$l:\t$cbd[$i]\n";
 		}		

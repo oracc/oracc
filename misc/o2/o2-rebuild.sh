@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 
 mkdir -p 01log
 

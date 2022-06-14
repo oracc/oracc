@@ -1,5 +1,6 @@
 #!/bin/sh
 buildlex=`oraccopt . build-lex-data`
+echo o2-lex.sh build-lex-data=$buildlex
 if [ "$buildlex" = "yes" ]; then
     proj=`oraccopt`
     if [ "$proj" = "dcclt" ]; then

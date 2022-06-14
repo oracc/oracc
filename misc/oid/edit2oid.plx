@@ -18,6 +18,8 @@ my $edit_sense = '';
 my %new_ent = ();
 my %new_oid = ();
 
+my %seen = ();
+
 my @edit = (<>); chomp @edit;
 for (my $i = 0; $i <= $#edit; ++$i) {
     $_ = $edit[$i];
@@ -94,7 +96,11 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    my $ent = $_;
 	    my $o = oid_lookup('sux',$ent);
 	    if ($o) {
-		print "$D$o\t$ent\t+\n";
+		if ($seen{$ent}++) {
+		    # silently skip duplicates
+		} else {
+		    print "$D$o\t$ent\t+\n";
+		}
 	    } else {
 		warn "no OID for added entry $ent\n";
 	    }
@@ -104,7 +110,11 @@ for (my $i = 0; $i <= $#edit; ++$i) {
 	    $s =~ s#\](\S+)#//$mean]$1'$epos#;
 	    my $o = oid_lookup('sux',$s);
 	    if ($o) {
-		print "$D$o\t$s\t+\n";
+		if ($seen{$s}++) {
+		    # silently skip duplicates
+		} else {
+		    print "$D$o\t$s\t+\n";
+		}
 	    } else {
 		warn "$s\n";
 	    }

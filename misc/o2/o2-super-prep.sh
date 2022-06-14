@@ -13,7 +13,7 @@ grep -v ^@fields 01bld/from-prx-glo.sig | cut -f2 | tr ' ' '\n' \
 catmaster=`oraccopt . catalog-master-project`
 if [ "$catmaster" != "" ]; then
     echo "o2-super-prep.sh: using catalog-master-project $catmaster"
-    perl -p -i "s/$/\@$catmaster" 00lib/proxy.lst
+    perl -p -i "s/$/\@$catmaster/" 00lib/proxy.lst
 fi
 
 o2-lst.sh
