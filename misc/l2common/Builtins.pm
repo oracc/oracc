@@ -1408,7 +1408,7 @@ render_parts {
 	    my (@xlang) 
 		= `fgrep -m1 -l "\@entry $ccf \[$cgw\] $cpos" 00lib/*.glo`;
 	    
-	    @xlang = grep(!/qpn/,@xlang);
+#	    @xlang = grep(!/qpn/,@xlang);
 	    if ($#xlang >= 0) {
 #		    warn "xlang = $xlang\n";
 		my $xlang = $xlang[0]; # FIXME: what if word is in two GLO's?
