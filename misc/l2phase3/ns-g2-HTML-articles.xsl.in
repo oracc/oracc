@@ -99,19 +99,19 @@
 
 <xsl:variable name="lex-provides-base">
   <xsl:if test="starts-with(/*/@xml:lang,'sux') or string-length($cbd-word-base)>0">
-    <xsl:value-of select="'http://@@ORACC_HOST@@/dcclt/lex-provides-phra-base.xml'"/>
+    <xsl:value-of select="'https://@@ORACC_HOST@@/dcclt/lex-provides-phra-base.xml'"/>
   </xsl:if>
 </xsl:variable>
 
 <xsl:variable name="lex-provides-word">
   <xsl:if test="starts-with(/*/@xml:lang,'sux') or string-length($cbd-word-phra)>0">
-    <xsl:value-of select="'http://@@ORACC_HOST@@/dcclt/lex-provides-word-phra.xml'"/>
+    <xsl:value-of select="'https://@@ORACC_HOST@@/dcclt/lex-provides-word-phra.xml'"/>
   </xsl:if>
 </xsl:variable>
 
 <xsl:variable name="lex-provides-equi">
   <xsl:if test="starts-with(/*/@xml:lang,'sux') or string-length($cbd-word-phra)>0">
-    <xsl:value-of select="'http://@@ORACC_HOST@@/dcclt/lex-provides-word-equi.xml'"/>
+    <xsl:value-of select="'https://@@ORACC_HOST@@/dcclt/lex-provides-word-equi.xml'"/>
   </xsl:if>
 </xsl:variable>
 
