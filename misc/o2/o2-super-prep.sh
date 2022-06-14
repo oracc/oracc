@@ -10,7 +10,7 @@ echo "o2-super-prep.sh: constructing virtual corpus"
 grep -v ^@fields 01bld/from-prx-glo.sig | cut -f2 | tr ' ' '\n' \
     | cut -d. -f1 | sort -u | grep -v '^$' >00lib/proxy.lst
 
-catmaster=`oraccopt . catalog-master-project`
+catmaster=`xmdcatmaster.plx`
 if [ "$catmaster" != "" ]; then
     echo "o2-super-prep.sh: using catalog-master-project $catmaster"
     perl -p -i "s/$/\@$catmaster/" 00lib/proxy.lst

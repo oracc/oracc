@@ -977,12 +977,19 @@ render_parts {
 #		warn "langof.sh \@entry $ccf \[$cgw\] $cpos\n";
 	    my (@xlang) 
 		= `fgrep -m1 -l "\@entry $ccf \[$cgw\] $cpos" 00lib/*.glo`;
+
+	    # This is unnecessary; in epsd2/admin/names we keep ašag[field] etc
+	    # in the qpn glossary for convenience and this restriction means they
+	    # are considered unknown, which they aren't.
+	    # @xlang = grep(!/qpn/,@xlang);
 	    
-	    @xlang = grep(!/qpn/,@xlang);
 	    if ($#xlang >= 0) {
 #		    warn "xlang = $xlang\n";
 		my $xlang = $xlang[0]; # FIXME: what if word is in two GLO's?
 		$xlang =~ s#^00lib/(.*?).glo$#$1#;
+		if ($xlang eq 'qpn') {
+		    $xlang = 'sux'; # this is obviously a hack
+		}
 		$lattr = " xml:lang=\"$xlang\"";
 	    } else {
 		bad('compound', "unknown external compound part '$ccf\[$cgw\]$cpos'");
