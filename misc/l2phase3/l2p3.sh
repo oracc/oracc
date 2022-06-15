@@ -20,6 +20,7 @@ else
 fi
 
 inlinesenses=`oraccopt . cbd-inline-senses`
+lexdata=`oraccopt . cbd-lex-data`
 
 echo l2p3.sh: using configuration file $xcf
 
@@ -45,6 +46,9 @@ if [ "$g2c" != "" ]; then
 	    if [ "$inlinesenses" == "yes" ]; then
 		l2p3-inline-senses.sh $webdir $l
 	    fi
+	    if [ "$lex-data" == "yes" ]; then
+		lex-xincludes.plx $webdir $l
+	    fi	    
 	fi
     done
 fi
