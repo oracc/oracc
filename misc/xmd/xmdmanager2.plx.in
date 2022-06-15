@@ -28,6 +28,7 @@ my %merge_periods_all = (
     'Uruk IV'=>'Archaic',
     'Uruk III'=>'Archaic',
     'Archaic'=>'Archaic',
+    'Early Dynastic I-II'=>'Early Dynastic I-II',
     'ED I-II'=>'Early Dynastic I-II',
     'ED IIIa'=>'Early Dynastic IIIa',
     'Early Dynastic IIIa'=>'Early Dynastic IIIa',
