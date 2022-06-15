@@ -124,7 +124,8 @@
     -->
     
 <xsl:template match="cbd:articles">
-  
+
+  <!--
   <xsl:if test="string-length($lex-provides-base)">
     <xsl:message>Using word-base data from <xsl:value-of select="$lex-provides-base"/></xsl:message>
   </xsl:if>
@@ -136,6 +137,8 @@
   <xsl:if test="string-length($lex-provides-equi)">
     <xsl:message>Using word-equi data from <xsl:value-of select="$lex-provides-equi"/></xsl:message>
   </xsl:if>
+
+  -->
 
   <xsl:call-template name="make-html">
 <!--    <xsl:with-param name="webtype" select="'cbd'"/> -->
@@ -288,6 +291,8 @@
 
     <xsl:apply-templates select="cbd:equivs"/>
 
+    <xsl:text>__LEXDATA__</xsl:text>
+    
     <!--
     
     <xsl:if test="string-length($lex-provides-base)>0">
