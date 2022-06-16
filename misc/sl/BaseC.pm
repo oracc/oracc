@@ -1,6 +1,6 @@
 package ORACC::SL::BaseC;
 use warnings; use strict; use utf8; use open 'utf8';
-use lib "$ENV{'ORACC'}/lib";
+use lib "@@ORACC@@/lib";
 use ORACC::Legacy::Sexify;
 use IPC::Open2;
 
