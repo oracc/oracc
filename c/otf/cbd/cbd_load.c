@@ -1,3 +1,214 @@
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype128.h>
 
-int loaded = 1;
+#include "atf.h"
+#include "pool.h"
+#include "gx.h"
+
+static unsigned char *check_bom(unsigned char *s);
+extern int setenv(const char *,const char *, int);
+static unsigned char **setup_lines(unsigned char *ftext);
+static int process_string(unsigned char *ftext, ssize_t fsize);
+
+static unsigned char *
+check_bom(unsigned char *s)
+{
+  if (s[0] == 0xef && s[1] == 0xbb && s[2] == 0xbf)
+    return s+3;
+  else if ((s[0] == 0x00 && s[1] == 0x00 && s[2] == 0xfe && s[3] == 0xff)
+	   || (s[0] == 0xff && s[1] == 0xfe && s[2] == 0x00 && s[3] == 0x00)
+	   || (s[0] == 0xfe && s[1] == 0xff)
+	   || (s[0] == 0xff && s[1] == 0xfe))
+    {
+      fprintf(stderr,"unhandled UTF-format (I only understand UTF-8)\n");
+      return NULL;
+    }
+  else
+    return s;
+}
+
+int
+process_file(const char *fname)
+{
+  struct stat finfo;
+  ssize_t fsize;
+  int fdesc, ret;
+  static unsigned char *ftext = NULL;
+
+  if (-1 == stat(fname,&finfo))
+    {
+      fprintf(stderr,"gx: stat failed on %s\n",fname);
+      return -1;
+    }
+  if (!S_ISREG(finfo.st_mode))
+    {
+      fprintf(stderr,"gx: %s not a regular file\n",fname);
+      return -1;
+    }
+  fsize = finfo.st_size;
+  if (!fsize)
+    {
+      fprintf(stderr,"gx: %s: empty file\n",fname);
+      return -1;
+    }
+  if (NULL == (ftext = malloc(fsize+1)))
+    {
+      fprintf(stderr,"gx: %s: couldn't malloc %d bytes\n",
+	      fname,(int)fsize);
+      return -1;
+    }
+
+  fdesc = open(fname,O_RDONLY);
+  if (fdesc >= 0)
+    {
+      ssize_t ret = read(fdesc,ftext,fsize);
+      close(fdesc);
+      if (ret == fsize)
+	ftext[fsize] = '\0';
+      else
+	{
+	  fprintf(stderr,"gx: read %d bytes failed\n",(int)fsize);
+	  return -1;
+	}
+    }
+  else
+    {
+      fprintf(stderr, "gx: %s: open failed\n", fname);
+      return -1;
+    }
+
+  file = errmsg_fn ? errmsg_fn : fname;
+
+  ret = process_string(ftext, fsize);
+  free(ftext);
+  
+  return ret;
+}
+
+static int
+process_string(unsigned char *ftext, ssize_t fsize)
+{
+  unsigned char *ftext_post_bom, **lines, **rest;;
+  ftext_post_bom = check_bom(ftext);
+  if (!ftext_post_bom)
+    return 1;
+
+  (void)vchars(ftext_post_bom,fsize);
+  rest = lines = setup_lines(ftext_post_bom);
+
+  while (*rest)
+    {
+      if (rest[0][0] == '@')
+	break;
+      else if (!rest[0][0])
+	{
+	  ++lnum;
+	  ++rest;
+	}
+      else if (isspace(rest[0][0]))
+	{
+	  int i = 1;
+	  while (isspace(rest[0][i]))
+	    ++i;
+	  if (!rest[0][i])
+	    {
+	      ++lnum;
+	      ++rest;
+	    }
+	  else
+	    {
+	      warning("malformed line; spaces followed by non-spaces");
+	      ++lnum;
+	      ++rest;
+	    }
+	}
+      else if (**rest == '#')
+	{
+	  warning("comments not allowed before text");
+	  ++lnum;
+	  ++rest;
+	}
+      else
+	{
+	  warning("unexpected start-of-line");
+	  ++lnum;
+	  ++rest;
+	}
+    }
+  rest = header(rest);
+  while (*rest && '@' != rest[0][0])
+    {
+      ++lnum;
+      ++rest;
+    }
+  if (*rest)
+    {
+      rest = entry(rest);
+    }
+  free(lines);
+  return status;
+}
+
+static unsigned char **
+setup_lines(unsigned char *ftext)
+{
+  unsigned char **p,**ret;
+  register unsigned char*s = ftext;
+  int nlines = 0;
+  while (*s)
+    {
+      if (*s == '\r')
+	{
+	  ++nlines;
+	  if (s[1] != '\n')
+	    *s++ = '\n';     /* for MAC \r, map to \n */
+	  else
+	    s+=2; 	     /* for DOS \r\n, skip \n */
+	}
+      else if (*s == '\n') /* UNIX */
+	{
+	  ++nlines;
+	}
+      else
+	{
+	  ++s;
+	}
+    }
+  if (s[-1] != '\n' && s[-1] != '\r')
+    ++nlines;
+  ++nlines; /* NULL ptr to terminate */
+  ret = p = malloc(nlines*sizeof(unsigned char *));
+  s = ftext;
+#if 0 /* this screws with the line count, or with corruption detection */
+  while ('\n' == *s)
+    {
+      *s++ = '\0';
+      ++lnum;
+    }
+#endif
+  while (*s)
+    {
+      *p++ = s;
+      while (*s && '\n' != *s)
+	++s;
+      if (*s == '\n')
+	{
+	  if (s > ftext && s[-1] == '\r')
+	    {
+	      s[-1] = '\0';
+	      ++s;
+	    }
+	  else
+	    *s++ = '\0';
+	}
+    }
+  *p = NULL;
+  return ret;
+}
