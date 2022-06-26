@@ -16,7 +16,14 @@ struct header {
   unsigned const char *trans;
 };
 
+struct cbdtag {
+  const char *name;
+  int val;
+};
+
 extern const char *errmsg_fn;
+
+extern struct cbdtag *cbdtags (const char *str, size_t len);
 extern unsigned char **entry(unsigned char **ll);
 extern unsigned char **header(unsigned char **ll);
 extern int process_file(const char *fname);

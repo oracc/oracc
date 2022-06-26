@@ -35,6 +35,6 @@ xLDADD = \
 	./libcbd.la
 
 gx_SOURCES = \
-	gx.c globals.c common.c header.c entry.c
+	gx.c globals.c common.c header.c entry.c cbdtags.c
 
 gx_LDADD = $(xLDADD)

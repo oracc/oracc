@@ -43,7 +43,22 @@ entry(unsigned char **ll)
 		}
 	      else
 		{
-		  warning("unknown tag");
+		  unsigned char *tag = &ll[0][1], *e, save = '\0';
+		  for (e = tag+1; *e && !isspace(*e); ++e)
+		    ;
+		  if (*e)
+		    {
+		      save = *e;
+		      *e = '\0';
+		    }
+		  if (cbdtags((ccp)tag, strlen((ccp)tag)))
+		    {
+		      fprintf(stderr, "found %s\n", tag);
+		    }
+		  else
+		    {
+		      vwarning("unknown tag %s", tag);
+		    }
 		  ++ll;
 		  ++lnum;
 		  break;
