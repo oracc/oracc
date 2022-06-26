@@ -126,6 +126,7 @@ AC_CONFIG_FILES([Makefile
 	   c/lib/skl/Makefile
 	   c/otf/Makefile
 	   c/otf/atf/Makefile
+	   c/otf/cbd/Makefile
 	   c/otf/chr/Makefile
 	   c/otf/gdl/Makefile
 	   c/otf/lib/Makefile

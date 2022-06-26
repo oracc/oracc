@@ -1,48 +1,19 @@
 default namespace = "http://oracc.org/ns/cbd/1.0"
 namespace cbd = "http://oracc.org/ns/cbd/1.0"
+namespace gdl = "http://oracc.org/ns/gdl/1.0"
 start = cbd
 
-cbd = element cbd { cbd-attr , declaration? , entry* }
-cbd-attr    = (target-lang , target-rws , xml-lang)
-target-lang = attribute cbd:target-lang { text }
-target-rws  = attribute cbd:target-rws  { text }
-xml-lang    = attribute xml:lang        { text }
+cbd = element cbd { cbd-attr , entry* }
+cbd-attr    = (project , xml-lang , name , file , trans-lang)
+project     = attribute project  { text }
+xml-lang    = attribute xml:lang { text }
+name        = attribute name     { text }
+file	    = attribute gdl:file { text }
+trans-lang  = attribute trans-lang { text }
 
-declaration =   element declaration { prop-replace? , prop-def* }
-prop-replace =  attribute cbd:property-replace { xsd:boolean }
-prop-def =      element property {
-                  prop-scope , prop-name , prop-type ,  prop-sort , 
-		  prop-gaps , prop-val* }
-prop-scope =    attribute cbd:property-scope { "cbd" | "entry" }
-prop-name  =    attribute cbd:property-name  { xsd:NMTOKEN }
-prop-type =     attribute cbd:property-type  { "singleton" | "list" | "complex" }
-prop-sort =     attribute cbd:property-sort  { 
-                  "none" | "numeric" | "alpha" | "list" }
-prop-gaps =     attribute cbd:property-gaps-ok { xsd:boolean }
-prop-val =      element property-value { prop-val-type , text }
-prop-val-type = attribute cbd:prop-ok-type {
-                  "number" | "letter" | "token" | "pattern" }
-
-entry = element entry { cf , gw , pos , sense* , properties }
+entry = element entry { cf , dcf?, gw , pos  }
 
 cf = element cf { text }
-gw = element gw { text }
+dcf = element dcf { text }
+gw = element gw { xml-lang , text }
 pos = element pos { text}
-
-sense      = element sense { (gw? , pos? , 
-                              ((glosses , definition?) | definition)),
-			     sense*
-             }
-
-glosses    = element glosses { text }
-definition = element definition { text | anyElement }
-anyElement = element * { attribute * { text }* , (anyElement | text)* }
-
-properties = element prop { name , 
-                            ((value , key?) | ref),
-			    properties }*
-
-name  = attribute n { xsd:NMTOKEN }
-value = attribute v { text } | element v { text | anyElement }
-key   = attribute k { text }
-ref   = attribute r { text }

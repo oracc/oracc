@@ -12,8 +12,8 @@
   <dcterms:identifier 
       xsi:type="dcterms:URI">http://oracc.org/ns/cbd/1.0</dcterms:identifier>
   <dc:creator>Steve Tinney</dc:creator>
-  <dc:date>2009-03-31</dc:date>
-  <dc:publisher>Cuneiform Digital Library Group</dc:publisher>
+  <dc:date>2022-06-26</dc:date>
+  <dc:publisher>Oracc</dc:publisher>
   <dc:description>The CBD format is used for glossaries and lexicons.
   The architecture is designed to support the inclusion of arbitrary
   items of information tailored to the needs of different languages or
@@ -27,61 +27,48 @@
 <d:rnc>
 default namespace = "http://oracc.org/ns/cbd/1.0"
 namespace cbd = "http://oracc.org/ns/cbd/1.0"
+namespace gdl = "http://oracc.org/ns/gdl/1.0"
 start = cbd
 </d:rnc>
 
 <h2>Document</h2>
 
 <p>The document element is <code>cbd</code> and has attributes to
-specify various fundamental glossary parameters as follows:</p>
+specify various glossary parameters as follows:</p>
 
 <dl>
-<dt>target-lang</dt>
-<dd>The language of which the present CBD is a glossary.  This must be
-a three letter ISO 639 code, with private-use definitions as given in
-the <a href="../GDL/index.html#langs">GDL documentation</a>.</dd>
-<dt>target-rws</dt>
-<dd>The register/writing-system (or dialect) for which the CBD is a
-glossary.  For example, a Sumerian glossary might focus only on
-Emesal, in which case <code>target-rws</code> would be set to
-<code>ES</code>.</dd>
+
+<dt>project</dt>
+<dd>The project the glossary belongs to, given in the @project header element.</dd>
+
 <dt>xml:lang</dt>
-<dd>The default language for definitions.</dd>
+<dd>The language of which the present CBD is a glossary, given in the
+@lang header element.  This must be a legal ISO 639-2 code, with
+private-use definitions as given in the <a
+href="../GDL/index.html#langs">GDL documentation</a>.</dd>
+
+<dt>name</dt>
+<dd>The name of the glossary, given in the @name header element.</dd>
+
+<dt>trans</dt>
+<dd>The translation language of the glossary, optionally given with
+the @trans header element.  This is used for guidewords and senses.
+Muse be a legal ISO 639-1 or ISO 639-2 code; normally in Oracc ISO
+639-1 codes are used for translation languages. The default is
+<code>en</code>.</dd>
+
+<dt>gdl:file</dt>
+<dd>The filename of the glossary.</dd>
 </dl>
 
 <d:rnc>
-cbd = element cbd { cbd-attr , declaration? , entry* }
-cbd-attr    = (target-lang , target-rws , xml-lang)
-target-lang = attribute cbd:target-lang { text }
-target-rws  = attribute cbd:target-rws  { text }
-xml-lang    = attribute xml:lang        { text }
-</d:rnc>
-
-<h2>Declaration</h2>
-
-<p>The CBD declaration defines parameters for the glossary including
-its languages and properties.  A library of default parameters set by
-language is available in <code>cdl/lib/cbd/&lt;LANG>.xml</code>; if
-there is no <code>declaration</code>, or if the
-<code>declaration</code> has <code>replace=no</code>, the processor
-reads the system declaration for the <code>target-lang</code> before
-proceeding.</p>
-
-<d:rnc>
-declaration =   element declaration { prop-replace? , prop-def* }
-prop-replace =  attribute cbd:property-replace { xsd:boolean }
-prop-def =      element property {
-                  prop-scope , prop-name , prop-type ,  prop-sort , 
-		  prop-gaps , prop-val* }
-prop-scope =    attribute cbd:property-scope { "cbd" | "entry" }
-prop-name  =    attribute cbd:property-name  { xsd:NMTOKEN }
-prop-type =     attribute cbd:property-type  { "singleton" | "list" | "complex" }
-prop-sort =     attribute cbd:property-sort  { 
-                  "none" | "numeric" | "alpha" | "list" }
-prop-gaps =     attribute cbd:property-gaps-ok { xsd:boolean }
-prop-val =      element property-value { prop-val-type , text }
-prop-val-type = attribute cbd:prop-ok-type {
-                  "number" | "letter" | "token" | "pattern" }
+cbd = element cbd { cbd-attr , entry* }
+cbd-attr    = (project , xml-lang , name , file , trans-lang)
+project     = attribute project  { text }
+xml-lang    = attribute xml:lang { text }
+name        = attribute name     { text }
+file	    = attribute gdl:file { text }
+trans-lang  = attribute trans-lang { text }
 </d:rnc>
 
 <h2>Entries</h2>
@@ -92,8 +79,9 @@ to different kinds of glossaries and languages.  For example, a
 glossary of personal names can have properties giving genealogical
 information for the persons referenced in the entries.</p>
 
+<!-- , sense* , properties -->
 <d:rnc>
-entry = element entry { cf , gw , pos , sense* , properties }
+entry = element entry { cf , dcf?, gw , pos  }
 </d:rnc>
 
 <p>The core elements provide the essential structural data for the
@@ -120,115 +108,11 @@ and ordering of homonyms, and is particularly useful for the
 development phase of glossaries where the complete lexicon is unknown
 during the corpus-building process.</p>
 
-<p>The permitted values for GW can be specified in the declaration by
-giving a <code>prop-def</code> entry for the property
-<code>gw</code>.  Thus, to declare that GW is actually digits the
-following entry can be given:</p>
-<pre class="cookbook">&lt;property cbd:property-scope="cbd" cbd:property-name="gw">
-  cbd:property-type="singleton" cbd:property-sort="numeric"
-  cbd:property-gaps-ok="no">
-  &lt;property-value type="number"/>
-&lt;/property>
-</pre>
-
-<p>Similarly, the range of values of the <code>pos</code> element can
-be constrained by giving a specification for the property
-<code>pos</code> in the CBD declaration.</p>
-
-<p>The content model of the structural elements is very weak because
-there is an operating assumption that validation will be carried out
-on the content--at least for <code>gw</code> and
-<code>pos</code>--based on allowable values specified in the property
-declarations.</p>
-
 <d:rnc>
 cf = element cf { text }
-gw = element gw { text }
+dcf = element dcf { text }
+gw = element gw { xml-lang , text }
 pos = element pos { text}
-</d:rnc>
-
-<h3>Semantics</h3>
-
-<p>The CBD provides a built-in structure for dictionary definitions.
-The structure is recursive to arbitrary levels and provides support
-for multiple glossary-writing styles as well as tie-ins with the CDL
-lemmatizer.</p>
-
-<p>Note that the specification for <code>definition</code> permits
-arbitrary structured content to be included here and subsequently
-processed by glossary-specific plug-ins.</p>
-
-<d:rnc>
-sense      = element sense { (gw? , pos? , 
-                              ((glosses , definition?) | definition)),
-			     sense*
-             }
-
-glosses    = element glosses { text }
-definition = element definition { text | anyElement }
-anyElement = element * { attribute * { text }* , (anyElement | text)* }
-</d:rnc> 
-
-<h3>Properties</h3>
-
-<p>The property framework enables CBDs to be configured to the needs
-of various languages and target data types.  The framework is generic
-and recursive, meaning that complex properties are also supported.</p>
-
-<p>Properties consist of at most three components: a required name,
-given in the <code>n</code> attribute; a required value or reference,
-given either as a <code>v</code> attribute, a <code>v</code> element
-or, for references, an <code>r</code> attribute; and an optional key
-symbol, given with a <code>k</code> attribute.</p>
-
-<p>The key symbol may be used for sorting and cross-referencing. In
-the following example of the use of cross-referencing, the Sumerian
-verb ŋar[place] has several stems, each of which may be written in
-several ways.  We call the writing of a stem a <code>base</code>, so
-the relationship between stem and base can be defined as follows:</p>
-
-<pre class="example">    &lt;prop n="stem" v="B">
-      &lt;prop n="form" v="&#x14B;ar"/>
-      &lt;prop n="func" v="perf"/>
-    &lt;/prop>
-    &lt;prop n="stem" v="B">
-      &lt;prop n="form" v="mar"/>
-      &lt;prop n="func" v="perf"/>
-      &lt;prop n="rws" v="ES"/>
-    &lt;/prop>
-    &lt;prop n="base" v="&#x14B;ar">
-      &lt;prop n="stem" r="#form=ŋar"/>
-    &lt;/prop>
-    &lt;prop n="base" v="ma·ra">
-      &lt;prop n="stem" r="#form=mar"/>
-    &lt;/prop>
-</pre>
-
-<p>The (incomplete and simplified) example enumerates the stems of the
-verb--there is a B (base) stem with perfective function in the default
-register/writing-system with the form <code>ŋar</code>, and another
-form, <code>mar</code> of the B-perfective used in Emesal.  The
-orthographic bases on which forms are constructed are given in the
-<code>base</code> property.  The bases reference the stems via the
-<code>form</code> property of the <code>stem</code> properties.  This
-permits complex co-validation of the lemmatized instance-data: the
-lemmatizer uses the glossary to ensure, for example, that a lemmatized
-form uses a combination of base and stem which is valid according to
-the entry's properties.  If a base can be used to write several stems,
-the lemmatizer can issue a diagnostic if no stem is specified; if the
-base is used to write only one stem, the lemmatizer can supply the
-stem from the base if the user has not done so.</p>
-
-<d:rnc>
-properties = element prop { name , 
-                            ((value , key?) | ref),
-			    properties }*
-
-name  = attribute n { xsd:NMTOKEN }
-value = attribute v { text } | element v { text | anyElement }
-key   = attribute k { text }
-ref   = attribute r { text }
-
 </d:rnc>
 
 </d:schema>

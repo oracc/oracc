@@ -1,0 +1,18 @@
+include ../../../oracc-am-rules.txt
+
+#AM_CFLAGS=-ansi
+AM_CFLAGS=-pedantic -Wall -g
+SUBDIRS=
+noinst_LTLIBRARIES=libcbd.la
+
+libcbd_la_SOURCES = \
+	cbd_load.c
+
+AM_CPPFLAGS=\
+	-I@top_srcdir@/c/otf/{atf,cdf,chr,lib,lng,run,ox} \
+	-I@top_srcdir@/c/include \
+	-I@top_srcdir@/c/l2/include \
+	-I@top_srcdir@/c/lib/expat/xmlparse \
+	-I@top_srcdir@/c/lib/sas
+
+EXTRA_DIST=*.h xvalue.c

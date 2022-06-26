@@ -1,122 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<grammar ns="http://oracc.org/ns/cbd/1.0" xmlns:cbd="http://oracc.org/ns/cbd/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<grammar ns="http://oracc.org/ns/cbd/1.0" xmlns:gdl="http://oracc.org/ns/gdl/1.0" xmlns="http://relaxng.org/ns/structure/1.0">
   <start>
     <ref name="cbd"/>
   </start>
   <define name="cbd">
     <element name="cbd">
       <ref name="cbd-attr"/>
-      <optional>
-        <ref name="declaration"/>
-      </optional>
       <zeroOrMore>
         <ref name="entry"/>
       </zeroOrMore>
     </element>
   </define>
   <define name="cbd-attr">
-    <ref name="target-lang"/>
-    <ref name="target-rws"/>
+    <ref name="project"/>
     <ref name="xml-lang"/>
+    <ref name="name"/>
+    <ref name="file"/>
+    <ref name="trans-lang"/>
   </define>
-  <define name="target-lang">
-    <attribute name="cbd:target-lang"/>
-  </define>
-  <define name="target-rws">
-    <attribute name="cbd:target-rws"/>
+  <define name="project">
+    <attribute name="project"/>
   </define>
   <define name="xml-lang">
     <attribute name="xml:lang"/>
   </define>
-  <define name="declaration">
-    <element name="declaration">
-      <optional>
-        <ref name="prop-replace"/>
-      </optional>
-      <zeroOrMore>
-        <ref name="prop-def"/>
-      </zeroOrMore>
-    </element>
+  <define name="name">
+    <attribute name="name"/>
   </define>
-  <define name="prop-replace">
-    <attribute name="cbd:property-replace">
-      <data type="boolean"/>
-    </attribute>
+  <define name="file">
+    <attribute name="gdl:file"/>
   </define>
-  <define name="prop-def">
-    <element name="property">
-      <ref name="prop-scope"/>
-      <ref name="prop-name"/>
-      <ref name="prop-type"/>
-      <ref name="prop-sort"/>
-      <ref name="prop-gaps"/>
-      <zeroOrMore>
-        <ref name="prop-val"/>
-      </zeroOrMore>
-    </element>
-  </define>
-  <define name="prop-scope">
-    <attribute name="cbd:property-scope">
-      <choice>
-        <value>cbd</value>
-        <value>entry</value>
-      </choice>
-    </attribute>
-  </define>
-  <define name="prop-name">
-    <attribute name="cbd:property-name">
-      <data type="NMTOKEN"/>
-    </attribute>
-  </define>
-  <define name="prop-type">
-    <attribute name="cbd:property-type">
-      <choice>
-        <value>singleton</value>
-        <value>list</value>
-        <value>complex</value>
-      </choice>
-    </attribute>
-  </define>
-  <define name="prop-sort">
-    <attribute name="cbd:property-sort">
-      <choice>
-        <value>none</value>
-        <value>numeric</value>
-        <value>alpha</value>
-        <value>list</value>
-      </choice>
-    </attribute>
-  </define>
-  <define name="prop-gaps">
-    <attribute name="cbd:property-gaps-ok">
-      <data type="boolean"/>
-    </attribute>
-  </define>
-  <define name="prop-val">
-    <element name="property-value">
-      <ref name="prop-val-type"/>
-      <text/>
-    </element>
-  </define>
-  <define name="prop-val-type">
-    <attribute name="cbd:prop-ok-type">
-      <choice>
-        <value>number</value>
-        <value>letter</value>
-        <value>token</value>
-        <value>pattern</value>
-      </choice>
-    </attribute>
+  <define name="trans-lang">
+    <attribute name="trans-lang"/>
   </define>
   <define name="entry">
     <element name="entry">
       <ref name="cf"/>
+      <optional>
+        <ref name="dcf"/>
+      </optional>
       <ref name="gw"/>
       <ref name="pos"/>
-      <zeroOrMore>
-        <ref name="sense"/>
-      </zeroOrMore>
-      <ref name="properties"/>
     </element>
   </define>
   <define name="cf">
@@ -124,8 +48,14 @@
       <text/>
     </element>
   </define>
+  <define name="dcf">
+    <element name="dcf">
+      <text/>
+    </element>
+  </define>
   <define name="gw">
     <element name="gw">
+      <ref name="xml-lang"/>
       <text/>
     </element>
   </define>
@@ -133,97 +63,5 @@
     <element name="pos">
       <text/>
     </element>
-  </define>
-  <define name="sense">
-    <element name="sense">
-      <group>
-        <optional>
-          <ref name="gw"/>
-        </optional>
-        <optional>
-          <ref name="pos"/>
-        </optional>
-        <choice>
-          <group>
-            <ref name="glosses"/>
-            <optional>
-              <ref name="definition"/>
-            </optional>
-          </group>
-          <ref name="definition"/>
-        </choice>
-      </group>
-      <zeroOrMore>
-        <ref name="sense"/>
-      </zeroOrMore>
-    </element>
-  </define>
-  <define name="glosses">
-    <element name="glosses">
-      <text/>
-    </element>
-  </define>
-  <define name="definition">
-    <element name="definition">
-      <choice>
-        <text/>
-        <ref name="anyElement"/>
-      </choice>
-    </element>
-  </define>
-  <define name="anyElement">
-    <element>
-      <anyName/>
-      <zeroOrMore>
-        <attribute>
-          <anyName/>
-        </attribute>
-      </zeroOrMore>
-      <zeroOrMore>
-        <choice>
-          <ref name="anyElement"/>
-          <text/>
-        </choice>
-      </zeroOrMore>
-    </element>
-  </define>
-  <define name="properties">
-    <zeroOrMore>
-      <element name="prop">
-        <ref name="name"/>
-        <choice>
-          <group>
-            <ref name="value"/>
-            <optional>
-              <ref name="key"/>
-            </optional>
-          </group>
-          <ref name="ref"/>
-        </choice>
-        <ref name="properties"/>
-      </element>
-    </zeroOrMore>
-  </define>
-  <define name="name">
-    <attribute name="n">
-      <data type="NMTOKEN"/>
-    </attribute>
-  </define>
-  <define name="value">
-    <choice>
-      <attribute name="v"/>
-      <element name="v">
-        <choice>
-          <text/>
-          <ref name="anyElement"/>
-        </choice>
-      </element>
-    </choice>
-  </define>
-  <define name="key">
-    <attribute name="k"/>
-  </define>
-  <define name="ref">
-    <attribute name="r"/>
   </define>
 </grammar>
