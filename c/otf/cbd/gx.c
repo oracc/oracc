@@ -39,8 +39,9 @@ main(int argc, char **argv)
     f_xml = outfp = xfopen(outfile,"w");
   else
     f_xml = stdout;
-  f_log = stderr;
 #endif
+
+  f_log = stderr;
   
   gx_pool = npool_init();
   galloc_init();
@@ -50,6 +51,7 @@ main(int argc, char **argv)
   cuneify_init(xpd);
   curr_lang = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
 
+  with_textid = 0;
   process_file(file);
   
   /*current_state = set_state(s_global,s_text);*/
@@ -62,7 +64,6 @@ main(int argc, char **argv)
       curr_data->cset = curr_data->this->cset[current_state.mode];
     }
 
-  with_textid = 0;
   math_mode = no_pi = do_cuneify = use_unicode = 1;
   fputs("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n",f_xml);
   if (stdin_input)

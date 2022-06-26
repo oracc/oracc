@@ -175,6 +175,7 @@ setup_lines(unsigned char *ftext)
       else if (*s == '\n') /* UNIX */
 	{
 	  ++nlines;
+	  ++s;
 	}
       else
 	{

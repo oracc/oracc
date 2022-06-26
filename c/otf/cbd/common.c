@@ -8,9 +8,14 @@ tok(unsigned char *s, unsigned char *end)
     ++s;
   if (*s)
     {
-      while (!isspace(*s))
-	++s;
+      unsigned char *e = s;
+      while (!isspace(*e))
+	++e;
+      *end = *e;
+      if (*e)
+	*end = '\0';
     }
-  *end = *s;
+  else
+    *end = '\0';     
   return s;
 }
