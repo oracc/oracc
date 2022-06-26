@@ -6,15 +6,33 @@
 
 extern struct header *hdr;
 
+const unsigned char *cf, *gw, *pos;
+
+static void parse_entry(unsigned char *s);
+
 unsigned char **
 entry(unsigned char **ll)
 {
   unsigned char *s = NULL, end;
-  if (!strncmp((ccp)ll[0], "@entry", strlen("@entry")))
+  int plus = 0;
+  if (ll[0][0] == '+')
     {
-      fprintf(stderr, "%s\n", (ccp)ll[0]);
+      plus = 1;
+      s = &ll[0][1];
+    }
+  else
+    s = ll[0];
+  if (!strncmp((ccp)s, "@entry", strlen("@entry")))
+    {
+      parse_entry(s);
+      fprintf(stderr, "@entry %s[%s]%s\n", cf,gw,pos);
       ++ll;
       ++lnum;
+    }
+  else
+    {
+      vwarning("expected @entry but got %s",ll[0]);
+      return ll;
     }
   while (*ll)
     {
@@ -58,11 +76,13 @@ entry(unsigned char **ll)
 		  else
 		    {
 		      vwarning("unknown tag %s", tag);
+		      ++ll;
+		      ++lnum;
+		      break;
 		    }
 		  ++ll;
 		  ++lnum;
-		  break;
-		}
+ 		}
 	    }
 	  else
 	    {
@@ -79,4 +99,45 @@ entry(unsigned char **ll)
 	}
     }
   return ll;
+}
+
+static void
+parse_entry(unsigned char *s)
+{
+  unsigned char *t = NULL;
+  while (!isspace(*s))
+    ++s;
+  while (isspace(*s))
+    ++s;
+  cf = s;
+  t = s + strlen((ccp)s);
+  while (t > s && isspace(t[-1]))
+    --t;
+  *t = '\0';
+  while (t > s && !isspace(t[-1]))
+    --t;
+  pos = t;
+  while (t > s && isspace(t[-1]))
+    --t;
+  if (']' == t[-1])
+    {
+      --t;
+      *t = '\0';
+      while (t > s && '[' != *t)
+	--t;
+      if (t == s)
+	warning("syntax error in @entry: missing [ at start of GW");
+      else
+	{
+	  *t = '\0';
+	  gw = t+1;
+	  if (strchr((ccp)s,'[') || strchr((ccp)s,']'))
+	    warning("syntax error in @entry: too many [ or ]");
+	  while (isspace(t[-1]))
+	    --t;
+	  *t = '\0';
+	}
+    }
+  else
+    warning("syntax error in @entry: expected ']' to end GW");
 }

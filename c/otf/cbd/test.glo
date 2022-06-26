@@ -8,7 +8,7 @@
 @sense N water
 @end entry
 
-@entry a [arm] N
++@entry a [arm] N
 @bases a₂
 @form a₂ /a₂ #~
 @sense N arm

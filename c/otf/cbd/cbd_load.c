@@ -145,13 +145,27 @@ process_string(unsigned char *ftext, ssize_t fsize)
   rest = header(rest);
   while (*rest)
     {
-      while (*rest && '@' != rest[0][0])
+      while (*rest)
 	{
-	  ++lnum;
-	  ++rest;
+	  if ('@' == rest[0][0]
+	      || (rest[0][0] == '+' && rest[0][1] == '@'))
+	    break;
+	  else
+	    {
+	      ++lnum;
+	      ++rest;
+	    }
 	}
       if (*rest)
-	rest = entry(rest);
+	{
+	  int saved_lnum = lnum;
+	  rest = entry(rest);
+	  if (lnum == saved_lnum)
+	    {
+	      warning("entry never moved lnum");
+	      break;
+	    }
+	}
     }
   free(lines);
   return status;
