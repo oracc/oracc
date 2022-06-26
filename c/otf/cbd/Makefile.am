@@ -13,7 +13,14 @@ libcbd_la_SOURCES = \
 AM_CPPFLAGS=\
 	-I@top_srcdir@/c/otf/{atf,cdf,chr,gdl,lib,lng,run,ox} \
 	-I@top_srcdir@/c/include \
-	-I@top_srcdir@/c/l2/include \
+	-I@top_srcdir@/c/l2/form \
+	-I@top_srcdir@/c/l2/ilem \
+	-I@top_srcdir@/c/l2/link \
+	-I@top_srcdir@/c/l2/ngram \
+	-I@top_srcdir@/c/l2/psus \
+	-I@top_srcdir@/c/l2/sigs \
+	-I@top_srcdir@/c/l2/xcl2 \
+	-I@top_srcdir@/c/l2/word \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/lib/sas
 
@@ -35,6 +42,7 @@ xLDADD = \
 	./libcbd.la
 
 gx_SOURCES = \
-	gx.c globals.c common.c header.c entry.c cbdtags.c
+	gx.c globals.c common.c header.c entry.c form.c \
+	cbdtags.c cbdpos.c
 
 gx_LDADD = $(xLDADD)

@@ -4,6 +4,8 @@
 #undef warning
 #include "warning.h"
 #include "globals.h"
+#include "list.h"
+#include "hash.h"
 #undef ucc
 #define ccp const char *
 #define ucc unsigned const char *
@@ -14,6 +16,37 @@ struct header {
   unsigned const char *lang;
   unsigned const char *name;
   unsigned const char *trans;
+};
+
+struct entry {
+  unsigned const char *cf;
+  unsigned const char *gw;
+  unsigned const char *pos;
+  unsigned const char *dcf;
+  Hash_table *bases;
+  List *forms;
+  List *senses;
+  List *aliases;
+  List *bib;
+  List *isslp;
+  int plus;
+  int usage;
+  int compound;
+  unsigned char *id;
+};
+
+struct sense {
+  unsigned char *gw;
+  unsigned char *pos;
+  unsigned char *mng;
+  unsigned char *lng;
+  unsigned char *num;
+  unsigned char *id;
+};
+
+struct isslp {
+  unsigned char *year;
+  unsigned char *text;
 };
 
 struct cbdtag {
