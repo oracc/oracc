@@ -1,2 +1,9 @@
 @project epsd2
 @name epsd2/sux
+@lang sux
+
+@entry a [water] N
+@end entry
+
+@entry a [arm] N
+@end entry

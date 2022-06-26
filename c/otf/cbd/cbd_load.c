@@ -143,14 +143,15 @@ process_string(unsigned char *ftext, ssize_t fsize)
 	}
     }
   rest = header(rest);
-  while (*rest && '@' != rest[0][0])
+  while (*rest)
     {
-      ++lnum;
-      ++rest;
-    }
-  if (*rest)
-    {
-      rest = entry(rest);
+      while (*rest && '@' != rest[0][0])
+	{
+	  ++lnum;
+	  ++rest;
+	}
+      if (*rest)
+	rest = entry(rest);
     }
   free(lines);
   return status;
