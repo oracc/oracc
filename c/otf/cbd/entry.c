@@ -75,14 +75,14 @@ parse_entry(struct cbd *c, unsigned char **ll)
 		{
 		  unsigned char *tag = &ll[0][1], *es, save = '\0';
 		  struct cbdtag *p = NULL;
-		  for (es = tag+1; *es && !isspace(*es); ++es)
+		  for (es = tag; *es && !isspace(*es); ++es)
 		    ;
 		  if (*es)
 		    {
 		      save = *es;
 		      *es++ = '\0';
 		      while (isspace(*es))
-			++e;
+			++es;
 		    }
 		  if ((p = cbdtags((ccp)tag, strlen((ccp)tag))))
 		    {

@@ -8,6 +8,16 @@ parse_form(struct entry *e, unsigned char *lp)
   struct f2 *f2p = malloc(sizeof(struct f2));
 
   list_add(e->forms, f2p);
+
+  /* on entry lp is pointing to the orthographic form */
+  f2p->form = lp;
+  while (*lp && !isspace(*lp))
+    ++lp;
+  if (*lp)
+    *lp++ = '\0';
+  while (isspace(*lp))
+    ++lp;
+
   while (*lp)
     {
       switch (*lp)
