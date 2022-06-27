@@ -22,6 +22,8 @@ init_cbd(void)
   struct cbd *c = NULL;
   c = malloc(sizeof(struct cbd));
   c->pool = npool_init();
+  c->letters = list_create(LIST_SINGLE);
+  c->entries = list_create(LIST_SINGLE);
   return c;
 }
 

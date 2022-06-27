@@ -7,7 +7,10 @@
 static struct entry *
 init_entry(void)
 {
-  return calloc(1,sizeof(struct entry));
+  struct entry *e = calloc(1,sizeof(struct entry));
+  e->forms = list_create(LIST_SINGLE);
+  e->senses = list_create(LIST_SINGLE);
+  return e;
 }
 static void
 term_entry(struct entry *e)
@@ -32,7 +35,8 @@ parse_entry(struct cbd *c, unsigned char **ll)
       e = init_entry();
       list_add(c->entries, e);
       parse_cgp(e, s);
-      /* fprintf(stderr, "@entry %s[%s]%s\n", cf,gw,pos); */
+      if (verbose)
+	fprintf(stderr, "@entry %s[%s]%s\n", e->cf, e->gw, e->pos);
       ++ll;
       ++lnum;
     }

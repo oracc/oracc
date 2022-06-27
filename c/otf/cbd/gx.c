@@ -24,7 +24,7 @@ main(int argc, char **argv)
 {
   const char *fname[2];
 
-  options(argc,argv,"bcdgno:p:sux");
+  options(argc,argv,"bcdgno:p:suxv");
 
   if (!stdin_input)
     {
@@ -110,6 +110,9 @@ int opts(int och,char *oarg)
       break;
     case 's':
       stdin_input = 1;
+      break;
+    case 'v':
+      verbose = 1;
       break;
     default:
       return 1;
