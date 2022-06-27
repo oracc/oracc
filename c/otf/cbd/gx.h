@@ -87,6 +87,7 @@ extern const char *errmsg_fn;
 extern struct cbdtag *cbdtags(const char *str, size_t len);
 extern unsigned char *tok(unsigned char *s, unsigned char *end);
 extern unsigned char *form_sig(struct entry *e, struct f2 *f2p);
+extern void untab(unsigned char *s);
 
 extern int parse_dcf(struct entry *e, unsigned char *s);
 extern unsigned char **parse_header(struct cbd *c, unsigned char **ll);

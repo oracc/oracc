@@ -19,3 +19,13 @@ tok(unsigned char *s, unsigned char *end)
     *end = '\0';     
   return s;
 }
+
+void
+untab(unsigned char *s)
+{
+  while (*s)
+    if ('\t' == *s)
+      *s++ = ' ';
+    else
+      ++s;
+}

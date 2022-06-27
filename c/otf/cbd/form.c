@@ -81,6 +81,18 @@ parse_form(struct entry *e, unsigned char *lp)
 	}	  
     }
 
+  if (f2p->base)
+    {
+      if (!hash_find(e->b_pri, f2p->base))
+	{
+	  unsigned char *pri = hash_find(e->b_alt, f2p->base);
+	  if (pri)
+	    vwarning("alt base %s should be primary %s", f2p->base, pri);
+	  else
+	    vwarning("base %s not found in @bases", f2p->base);
+	}
+    }
+  
   f2p->project = e->owner->project;
   if (!f2p->lang)
     f2p->lang = e->lang;

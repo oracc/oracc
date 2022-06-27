@@ -3,8 +3,9 @@
 @lang sux
 
 @entry a [water] N
-@bases a
+@bases a (e₄)
 @form a /a #~
+@form a-a /e₄ #~,a
 @sense N water
 @end entry
 
