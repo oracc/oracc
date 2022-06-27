@@ -737,6 +737,9 @@ gparse(register unsigned char *g, enum t_type type)
 		  bad_grapheme = 1;
 		}
 	    }
+	  else
+	    fprintf("%s => %s\n", g_utf, psl_get_id(gcheck));
+
 	  if (noheth)
 	    {
 	      gp = singleton((unsigned char *)noheth,g_s);
@@ -803,6 +806,8 @@ gparse(register unsigned char *g, enum t_type type)
 	      vname = psl_is_sname(qual);
 	      if (!vname && qualifier_warnings)
 		vwarning("qualifier %s is not a sign-name in OGSL",qual);
+	      else
+		fprintf("%s => %s\n", qual, psl_get_id(qual);
 	    }
 #endif
 	}
@@ -859,14 +864,21 @@ gparse(register unsigned char *g, enum t_type type)
 		{
 		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
 		    {
+		      char *id = NULL;
 		      if (!psl_is_sname(buf) && compound_warnings) /* overload compound_warnings to cover sign names as well */
 			{
 			  const unsigned char *cattr = signify(buf);
 			  if (cattr)
-			    vwarning("%s: sign name should be %s", buf, cattr);
+			    {
+			      vwarning("%s: sign name should be %s", buf, cattr);
+			      id = psl_get_id(cattr);
+			    }
 			  else
 			    vwarning("%s: sign name not in OGSL",buf);
 			}
+		      else
+			id = psl_get_id(buf);
+		      fprintf(stderr, "%s => %s\n", buf, id);
 		    }
 		}
 
