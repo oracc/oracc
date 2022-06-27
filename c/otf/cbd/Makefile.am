@@ -43,6 +43,8 @@ xLDADD = \
 
 gx_SOURCES = \
 	gx.c globals.c common.c header.c entry.c form.c \
+	sense.c inote.c isslp.c allow.c alias.c bff.c \
+	parts.c bases.c	\
 	cbdtags.c cbdpos.c
 
 gx_LDADD = $(xLDADD)

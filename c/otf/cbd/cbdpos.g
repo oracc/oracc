@@ -1,7 +1,7 @@
 %{
 #include "gx.h"
 %}
-struct cbdtag;
+struct cbdpos;
 %%
 AJ
 AV

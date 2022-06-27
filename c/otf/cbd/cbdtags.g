@@ -4,8 +4,13 @@
 %}
 struct cbdtag;
 %%
-entry, 1
-bases, 1
-form, 1
-sense, 1
-isslp, 1
+entry, parse_entry
+bases, parse_bases
+form, parse_form
+sense, parse_sense
+isslp, parse_isslp
+inote, parse_inote
+parts, parse_parts
+bff, parse_bff
+alias, parse_alias
+allow, parse_allow

@@ -158,12 +158,21 @@ process_string(unsigned char *ftext, ssize_t fsize)
 	}
       if (*rest)
 	{
-	  int saved_lnum = lnum;
-	  rest = entry(rest);
-	  if (lnum == saved_lnum)
+	  if (!strncmp((ccp)rest[0], "@letter", strlen("@letter")))
 	    {
-	      warning("entry never moved lnum");
-	      break;
+	      /* letter() */
+	      ++lnum;
+	      ++rest;
+	    }
+	  else
+	    {
+	      int saved_lnum = lnum;
+	      rest = entry(rest);
+	      if (lnum == saved_lnum)
+		{
+		  warning("entry never moved lnum");
+		  break;
+		}
 	    }
 	}
     }

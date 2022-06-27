@@ -8,7 +8,7 @@ extern struct header *hdr;
 
 const unsigned char *cf, *gw, *pos;
 
-static void parse_entry(unsigned char *s);
+void parse_entry(unsigned char *s);
 
 unsigned char **
 entry(unsigned char **ll)
@@ -25,7 +25,7 @@ entry(unsigned char **ll)
   if (!strncmp((ccp)s, "@entry", strlen("@entry")))
     {
       parse_entry(s);
-      fprintf(stderr, "@entry %s[%s]%s\n", cf,gw,pos);
+      /* fprintf(stderr, "@entry %s[%s]%s\n", cf,gw,pos); */
       ++ll;
       ++lnum;
     }
@@ -47,6 +47,7 @@ entry(unsigned char **ll)
 		  if (s && !strcmp((ccp)s,"entry"))
 		    {
 		      /* finish entry code goes here */
+		      cf = gw = pos = NULL;
 		      ++ll;
 		      ++lnum;
 		      return ll;
@@ -62,16 +63,20 @@ entry(unsigned char **ll)
 	      else
 		{
 		  unsigned char *tag = &ll[0][1], *e, save = '\0';
+		  struct cbdtag *p = NULL;
 		  for (e = tag+1; *e && !isspace(*e); ++e)
 		    ;
 		  if (*e)
 		    {
 		      save = *e;
-		      *e = '\0';
+		      *e++ = '\0';
+		      while (isspace(*e))
+			++e;
 		    }
-		  if (cbdtags((ccp)tag, strlen((ccp)tag)))
+		  if ((p = cbdtags((ccp)tag, strlen((ccp)tag))))
 		    {
-		      fprintf(stderr, "found %s\n", tag);
+		      /* fprintf(stderr, "found %s with parser %p\n", tag, (void*)p->parser); */
+		      (p->parser)(e);
 		    }
 		  else
 		    {
@@ -83,6 +88,12 @@ entry(unsigned char **ll)
 		  ++ll;
 		  ++lnum;
  		}
+	    }
+	  else if (ll[0][0] == '>')
+	    {
+	      /* edit tag processing goes here */
+	      ++ll;
+	      ++lnum;
 	    }
 	  else
 	    {
@@ -101,7 +112,7 @@ entry(unsigned char **ll)
   return ll;
 }
 
-static void
+void
 parse_entry(unsigned char *s)
 {
   unsigned char *t = NULL;

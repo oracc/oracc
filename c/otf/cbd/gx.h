@@ -49,9 +49,14 @@ struct isslp {
   unsigned char *text;
 };
 
-struct cbdtag {
+struct cbdpos {
   const char *name;
   int val;
+};
+
+struct cbdtag {
+  const char *name;
+  void (*parser)(unsigned char *s);
 };
 
 extern const char *errmsg_fn;
@@ -62,4 +67,17 @@ extern unsigned char **header(unsigned char **ll);
 extern int process_file(const char *fname);
 extern unsigned char *tok(unsigned char *s, unsigned char *end);
 
+void parse_entry(unsigned char *s);
+void parse_bases(unsigned char *s);
+void parse_form(unsigned char *s);
+void parse_sense(unsigned char *s);
+void parse_alias(unsigned char *s);
+void parse_allow(unsigned char *s);
+void parse_inote(unsigned char *s);
+void parse_isslp(unsigned char *s);
+void parse_bff(unsigned char *s);
+void parse_parts(unsigned char *s);
+/*
+void parse_(unsigned char *s);
+*/
 #endif

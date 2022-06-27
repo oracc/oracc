@@ -3,8 +3,10 @@
 #include "f2.h"
 
 void
-parse_form(unsigned char *lp, struct f2 *f2p)
+parse_form(unsigned char *lp)
 {
+  struct f2 *f2p = NULL;
+  return;
   while (*lp)
     {
       switch (*lp)
