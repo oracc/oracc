@@ -4,6 +4,8 @@
 static unsigned char *generic_sig(struct npool *pool, struct f2 *fp);
 static unsigned char *sig_one(struct npool *pool, struct f2 *fp, int tail);
 
+int xnorms = 0; /* set to 1 to produce $X for empty norms */
+
 unsigned char *
 form_sig(struct entry *e, struct f2 *f2p)
 {
@@ -62,7 +64,7 @@ sig_one(struct npool *pool, struct f2 *fp, int tail)
 	fp->base = fp->cont = fp->morph = (Uchar*)"X";
     }
 
-  if (!fp->norm)
+  if (!fp->norm && xnorms)
     fp->norm = (Uchar*)"X";
 
   if (fp->norm)

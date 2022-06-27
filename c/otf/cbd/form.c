@@ -74,7 +74,7 @@ parse_form(struct entry *e, unsigned char *lp)
 	++lp;
       if (*lp)
 	{
-	  *lp = '\0';
+	  *lp++ = '\0';
 	  while (isspace(*lp))
 	    ++lp;
 	}	  
@@ -97,6 +97,6 @@ parse_form(struct entry *e, unsigned char *lp)
     f2p->lang = e->lang;
   f2p->core = langcore_of((ccp)f2p->lang);
   f2p->cf = e->cf;
-  f2p->gw = e->cf;
-  f2p->pos = e->cf;
+  f2p->gw = e->gw;
+  f2p->pos = e->pos;
 }
