@@ -15,11 +15,9 @@
 const char *errmsg_fn = NULL;
 
 int stdin_input = 0;
-const char *project = NULL;
-struct npool *gx_pool = NULL;
-struct xpd *xpd = NULL;
+Hash_table *cbds = NULL;
 
-struct header hdr;
+extern int cbd(const char *fname);
 
 int
 main(int argc, char **argv)
@@ -43,16 +41,14 @@ main(int argc, char **argv)
 
   f_log = stderr;
   
-  gx_pool = npool_init();
   galloc_init();
   pool_init();
   tree_init();
   gdl_init();
-  cuneify_init(xpd);
   curr_lang = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
-
+  cbds = hash_create(1);
   with_textid = 0;
-  process_file(file);
+  cbd(file);
   
   /*current_state = set_state(s_global,s_text);*/
 #if 0
@@ -81,17 +77,16 @@ main(int argc, char **argv)
   (void)cbd_strip_backslash(NULL);
 #endif
 
-  npool_term(gx_pool);
   lang_term();
   gdl_term();
   pool_term();
   tree_term(1);
-  cuneify_term();
   galloc_term();
   return 1;
 }
 
 int major_version = 1; int minor_version = 0;
+const char *project = NULL;
 const char *prog = "gx";
 const char *usage_string = "";
 void help() { ; }

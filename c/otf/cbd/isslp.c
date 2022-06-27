@@ -2,6 +2,6 @@
 #include "gx.h"
 
 void
-parse_isslp(unsigned char *s)
+parse_isslp(struct entry *e, unsigned char *s)
 {
 }

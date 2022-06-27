@@ -8,34 +8,44 @@
 #include <stdlib.h>
 #include <ctype128.h>
 
-#include "atf.h"
-#include "pool.h"
 #include "gx.h"
 
-static unsigned char *check_bom(unsigned char *s);
-extern int setenv(const char *,const char *, int);
-static unsigned char **setup_lines(unsigned char *ftext);
-static int process_string(unsigned char *ftext, ssize_t fsize);
+static int parse_cbd(unsigned char *ftext, ssize_t fsize);
 
-static unsigned char *
-check_bom(unsigned char *s)
+extern int setenv(const char *,const char *, int);
+static unsigned char *check_bom(unsigned char *s);
+static unsigned char **setup_lines(unsigned char *ftext);
+
+struct cbd *
+init_cbd(void)
 {
-  if (s[0] == 0xef && s[1] == 0xbb && s[2] == 0xbf)
-    return s+3;
-  else if ((s[0] == 0x00 && s[1] == 0x00 && s[2] == 0xfe && s[3] == 0xff)
-	   || (s[0] == 0xff && s[1] == 0xfe && s[2] == 0x00 && s[3] == 0x00)
-	   || (s[0] == 0xfe && s[1] == 0xff)
-	   || (s[0] == 0xff && s[1] == 0xfe))
-    {
-      fprintf(stderr,"unhandled UTF-format (I only understand UTF-8)\n");
-      return NULL;
-    }
-  else
-    return s;
+  struct cbd *c = NULL;
+  c = malloc(sizeof(struct cbd));
+  c->pool = npool_init();
+  return c;
+}
+
+void
+setup_cbd(struct cbd*c)
+{
+  c->iname = malloc(strlen((ccp)c->project) + strlen((ccp)c->lang) + 2);
+  sprintf((char*)c->iname, "%s:%s", c->project, c->lang);
+  hash_add(cbds, c->iname, c);
+  /* xpdinit */
+  /* cuneify_init(c->xpd); */
+}
+
+void
+term_cbd(struct cbd*c)
+{
+  npool_term(c->pool);
+  hash_add(cbds, c->iname, NULL);
+  cuneify_term();
+  free(c);
 }
 
 int
-process_file(const char *fname)
+cbd(const char *fname)
 {
   struct stat finfo;
   ssize_t fsize;
@@ -86,22 +96,26 @@ process_file(const char *fname)
 
   file = errmsg_fn ? errmsg_fn : fname;
 
-  ret = process_string(ftext, fsize);
+  ret = parse_cbd(ftext, fsize);
   free(ftext);
   
   return ret;
 }
 
 static int
-process_string(unsigned char *ftext, ssize_t fsize)
+parse_cbd(unsigned char *ftext, ssize_t fsize)
 {
-  unsigned char *ftext_post_bom, **lines, **rest;;
+  unsigned char *ftext_post_bom, **lines, **rest;
+  struct cbd *c;
+
   ftext_post_bom = check_bom(ftext);
   if (!ftext_post_bom)
     return 1;
 
   (void)vchars(ftext_post_bom,fsize);
   rest = lines = setup_lines(ftext_post_bom);
+
+  c = init_cbd();
 
   while (*rest)
     {
@@ -142,7 +156,8 @@ process_string(unsigned char *ftext, ssize_t fsize)
 	  ++rest;
 	}
     }
-  rest = header(rest);
+  rest = parse_header(c, rest);
+  setup_cbd(c);
   while (*rest)
     {
       while (*rest)
@@ -167,7 +182,7 @@ process_string(unsigned char *ftext, ssize_t fsize)
 	  else
 	    {
 	      int saved_lnum = lnum;
-	      rest = entry(rest);
+	      rest = parse_entry(c, rest);
 	      if (lnum == saved_lnum)
 		{
 		  warning("entry never moved lnum");
@@ -178,6 +193,23 @@ process_string(unsigned char *ftext, ssize_t fsize)
     }
   free(lines);
   return status;
+}
+
+static unsigned char *
+check_bom(unsigned char *s)
+{
+  if (s[0] == 0xef && s[1] == 0xbb && s[2] == 0xbf)
+    return s+3;
+  else if ((s[0] == 0x00 && s[1] == 0x00 && s[2] == 0xfe && s[3] == 0xff)
+	   || (s[0] == 0xff && s[1] == 0xfe && s[2] == 0x00 && s[3] == 0x00)
+	   || (s[0] == 0xfe && s[1] == 0xff)
+	   || (s[0] == 0xff && s[1] == 0xfe))
+    {
+      fprintf(stderr,"unhandled UTF-format (I only understand UTF-8)\n");
+      return NULL;
+    }
+  else
+    return s;
 }
 
 static unsigned char **

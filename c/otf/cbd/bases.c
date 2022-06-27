@@ -2,6 +2,6 @@
 #include "gx.h"
 
 void
-parse_bases(unsigned char *s)
+parse_bases(struct entry *e, unsigned char *s)
 {
 }

@@ -2,6 +2,6 @@
 #include "gx.h"
 
 void
-parse_sense(unsigned char *s)
+parse_sense(struct entry *e, unsigned char *s)
 {
 }

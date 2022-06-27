@@ -8,7 +8,10 @@ noinst_LTLIBRARIES=libcbd.la
 bin_PROGRAMS=gx
 
 libcbd_la_SOURCES = \
-	cbd_load.c
+	common.c cbd.c header.c entry.c form.c \
+	sense.c inote.c isslp.c allow.c alias.c bff.c \
+	parts.c bases.c	\
+	cbdtags.c cbdpos.c
 
 AM_CPPFLAGS=\
 	-I@top_srcdir@/c/otf/{atf,cdf,chr,gdl,lib,lng,run,ox} \
@@ -42,9 +45,6 @@ xLDADD = \
 	./libcbd.la
 
 gx_SOURCES = \
-	gx.c globals.c common.c header.c entry.c form.c \
-	sense.c inote.c isslp.c allow.c alias.c bff.c \
-	parts.c bases.c	\
-	cbdtags.c cbdpos.c
+	gx.c globals.c 
 
 gx_LDADD = $(xLDADD)

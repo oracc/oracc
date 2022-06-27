@@ -3,7 +3,7 @@
 #include "f2.h"
 
 void
-parse_form(unsigned char *lp)
+parse_form(struct entry *e, unsigned char *lp)
 {
   struct f2 *f2p = NULL;
   return;

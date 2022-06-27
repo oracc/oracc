@@ -4,16 +4,21 @@
 #include <ctype128.h>
 #include "gx.h"
 
-extern struct header *hdr;
-
-const unsigned char *cf, *gw, *pos;
-
-void parse_entry(unsigned char *s);
+static struct entry *
+init_entry(void)
+{
+  return calloc(1,sizeof(struct entry));
+}
+static void
+term_entry(struct entry *e)
+{
+}
 
 unsigned char **
-entry(unsigned char **ll)
+parse_entry(struct cbd *c, unsigned char **ll)
 {
   unsigned char *s = NULL, end;
+  struct entry *e = NULL;
   int plus = 0;
   if (ll[0][0] == '+')
     {
@@ -24,7 +29,9 @@ entry(unsigned char **ll)
     s = ll[0];
   if (!strncmp((ccp)s, "@entry", strlen("@entry")))
     {
-      parse_entry(s);
+      e = init_entry();
+      list_add(c->entries, e);
+      parse_cgp(e, s);
       /* fprintf(stderr, "@entry %s[%s]%s\n", cf,gw,pos); */
       ++ll;
       ++lnum;
@@ -47,7 +54,7 @@ entry(unsigned char **ll)
 		  if (s && !strcmp((ccp)s,"entry"))
 		    {
 		      /* finish entry code goes here */
-		      cf = gw = pos = NULL;
+		      term_entry(e);
 		      ++ll;
 		      ++lnum;
 		      return ll;
@@ -113,21 +120,21 @@ entry(unsigned char **ll)
 }
 
 void
-parse_entry(unsigned char *s)
+parse_cgp(struct entry *e, unsigned char *s)
 {
   unsigned char *t = NULL;
   while (!isspace(*s))
     ++s;
   while (isspace(*s))
     ++s;
-  cf = s;
+  e->cf = s;
   t = s + strlen((ccp)s);
   while (t > s && isspace(t[-1]))
     --t;
   *t = '\0';
   while (t > s && !isspace(t[-1]))
     --t;
-  pos = t;
+  e->pos = t;
   while (t > s && isspace(t[-1]))
     --t;
   if (']' == t[-1])
@@ -141,7 +148,7 @@ parse_entry(unsigned char *s)
       else
 	{
 	  *t = '\0';
-	  gw = t+1;
+	  e->gw = t+1;
 	  if (strchr((ccp)s,'[') || strchr((ccp)s,']'))
 	    warning("syntax error in @entry: too many [ or ]");
 	  while (isspace(t[-1]))

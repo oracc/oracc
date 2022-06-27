@@ -2,6 +2,6 @@
 #include "gx.h"
 
 void
-parse_allow(unsigned char *s)
+parse_allow(struct entry *e, unsigned char *s)
 {
 }

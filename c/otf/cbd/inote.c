@@ -2,6 +2,6 @@
 #include "gx.h"
 
 void
-parse_inote(unsigned char *s)
+parse_inote(struct entry *e, unsigned char *s)
 {
 }
