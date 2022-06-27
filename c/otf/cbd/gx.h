@@ -64,6 +64,7 @@ struct sense {
   unsigned const char *mng;
   unsigned const char *sid;
   struct entry *owner;
+  int bang;
 };
 
 struct isslp {
