@@ -738,7 +738,7 @@ gparse(register unsigned char *g, enum t_type type)
 		}
 	    }
 	  else
-	    fprintf("%s => %s\n", g_utf, psl_get_id(gcheck));
+	    fprintf(stderr, "%s => %s\n", g_utf, psl_get_id(gcheck));
 
 	  if (noheth)
 	    {
@@ -807,7 +807,7 @@ gparse(register unsigned char *g, enum t_type type)
 	      if (!vname && qualifier_warnings)
 		vwarning("qualifier %s is not a sign-name in OGSL",qual);
 	      else
-		fprintf("%s => %s\n", qual, psl_get_id(qual);
+		fprintf(stderr, "%s => %s\n", qual, psl_get_id(qual);
 	    }
 #endif
 	}
