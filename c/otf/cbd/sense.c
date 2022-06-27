@@ -1,6 +1,8 @@
 #include <ctype128.h>
 #include "gx.h"
 
+extern int sigs;
+
 struct sense *
 init_sense(void)
 {
@@ -78,4 +80,16 @@ parse_sense(struct entry *e, unsigned char *s)
     --s;
   if (*s)
     *s = '\0';
+  if (sigs)
+    {
+      struct f2 *f2p = NULL;
+      for (f2p = list_first(e->forms); f2p; f2p = list_next(e->forms))
+	{
+	  unsigned char *sig = NULL;
+	  f2p->epos = sp->pos;
+	  f2p->sense = sp->mng;
+	  sig = form_sig(e,f2p);  
+	  puts((ccp)sig);
+	}
+    }
 }

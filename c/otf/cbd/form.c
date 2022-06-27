@@ -6,7 +6,6 @@ void
 parse_form(struct entry *e, unsigned char *lp)
 {
   struct f2 *f2p = calloc(1, sizeof(struct f2));
-  unsigned char *sig = NULL;
 
   list_add(e->forms, f2p);
 
@@ -100,8 +99,4 @@ parse_form(struct entry *e, unsigned char *lp)
   f2p->cf = e->cf;
   f2p->gw = e->cf;
   f2p->pos = e->cf;
-  sig = form_sig(e,f2p);  
-  if (verbose)
-    fprintf(stderr, "%s\n", sig);
-
 }

@@ -17,6 +17,8 @@ const char *errmsg_fn = NULL;
 int stdin_input = 0;
 Hash_table *cbds = NULL;
 
+int sigs = 0;
+
 extern int cbd(const char *fname);
 
 int
@@ -26,6 +28,7 @@ main(int argc, char **argv)
 
   options(argc,argv,"bcdgno:p:suxv");
 
+  /* no way to set stdin_input atm */
   if (!stdin_input)
     {
       fname[0] = file = argv[optind];
@@ -109,7 +112,7 @@ int opts(int och,char *oarg)
     case 'p':
       break;
     case 's':
-      stdin_input = 1;
+      sigs = 1;
       break;
     case 'v':
       verbose = 1;
