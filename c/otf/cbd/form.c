@@ -5,8 +5,9 @@
 void
 parse_form(struct entry *e, unsigned char *lp)
 {
-  struct f2 *f2p = NULL;
-  return;
+  struct f2 *f2p = malloc(sizeof(struct f2));
+
+  list_add(e->forms, f2p);
   while (*lp)
     {
       switch (*lp)
