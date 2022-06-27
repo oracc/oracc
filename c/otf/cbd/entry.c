@@ -69,21 +69,21 @@ parse_entry(struct cbd *c, unsigned char **ll)
 		}
 	      else
 		{
-		  unsigned char *tag = &ll[0][1], *e, save = '\0';
+		  unsigned char *tag = &ll[0][1], *es, save = '\0';
 		  struct cbdtag *p = NULL;
-		  for (e = tag+1; *e && !isspace(*e); ++e)
+		  for (es = tag+1; *es && !isspace(*es); ++es)
 		    ;
-		  if (*e)
+		  if (*es)
 		    {
-		      save = *e;
-		      *e++ = '\0';
-		      while (isspace(*e))
+		      save = *es;
+		      *es++ = '\0';
+		      while (isspace(*es))
 			++e;
 		    }
 		  if ((p = cbdtags((ccp)tag, strlen((ccp)tag))))
 		    {
 		      /* fprintf(stderr, "found %s with parser %p\n", tag, (void*)p->parser); */
-		      (p->parser)(e);
+		      (p->parser)(e,es);
 		    }
 		  else
 		    {

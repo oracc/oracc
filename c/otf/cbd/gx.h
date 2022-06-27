@@ -73,7 +73,7 @@ struct cbdpos {
 
 struct cbdtag {
   const char *name;
-  void (*parser)(unsigned char *s);
+  void (*parser)(struct entry *e, unsigned char *s);
 };
 
 extern const char *errmsg_fn;

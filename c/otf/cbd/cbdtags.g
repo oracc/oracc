@@ -4,7 +4,6 @@
 %}
 struct cbdtag;
 %%
-entry, parse_entry
 bases, parse_bases
 form, parse_form
 sense, parse_sense
