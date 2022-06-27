@@ -10,6 +10,8 @@
 #include "list.h"
 #include "hash.h"
 #include "xpd2.h"
+#include "f2.h"
+
 #undef ucc
 #define ccp const char *
 #define ucc unsigned const char *
@@ -36,11 +38,12 @@ struct entry {
   unsigned const char *cf;
   unsigned const char *gw;
   unsigned const char *pos;
-  unsigned const char *dcf;
   unsigned const char *eid;
+  unsigned const char *lang;
   Hash_table *b_pri;
   Hash_table *b_alt;
   Hash_table *b_sig;
+  Hash_table *dcfs;
   List *forms;
   List *senses;
   List *aliases;
@@ -50,6 +53,7 @@ struct entry {
   int plus;
   int usage;
   int compound;
+  struct cbd *owner;
 };
 
 struct sense {
@@ -59,11 +63,13 @@ struct sense {
   unsigned const char *lng;
   unsigned const char *mng;
   unsigned const char *sid;
+  struct entry *owner;
 };
 
 struct isslp {
   unsigned char *year;
   unsigned char *text;
+  struct entry *owner;
 };
 
 struct cbdpos {
@@ -78,11 +84,11 @@ struct cbdtag {
 
 extern const char *errmsg_fn;
 
-extern struct cbdtag *cbdtags (const char *str, size_t len);
-extern unsigned char **entry(unsigned char **ll);
-extern int process_file(const char *fname);
+extern struct cbdtag *cbdtags(const char *str, size_t len);
 extern unsigned char *tok(unsigned char *s, unsigned char *end);
+extern unsigned char *form_sig(struct entry *e, struct f2 *f2p);
 
+extern int parse_dcf(struct entry *e, unsigned char *s);
 extern unsigned char **parse_header(struct cbd *c, unsigned char **ll);
 extern unsigned char **parse_entry(struct cbd *c, unsigned char **ll);
 void parse_cgp(struct entry *c, unsigned char *s);

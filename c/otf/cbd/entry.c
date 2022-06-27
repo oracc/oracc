@@ -33,6 +33,8 @@ parse_entry(struct cbd *c, unsigned char **ll)
   if (!strncmp((ccp)s, "@entry", strlen("@entry")))
     {
       e = init_entry();
+      e->owner = c;
+      e->lang = c->lang;
       list_add(c->entries, e);
       parse_cgp(e, s);
       if (verbose)
@@ -88,6 +90,11 @@ parse_entry(struct cbd *c, unsigned char **ll)
 		    {
 		      /* fprintf(stderr, "found %s with parser %p\n", tag, (void*)p->parser); */
 		      (p->parser)(e,es);
+		    }
+		  else if (parse_dcf(e, es))
+		    {
+		      ++ll;
+		      ++lnum;
 		    }
 		  else
 		    {

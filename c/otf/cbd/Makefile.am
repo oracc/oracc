@@ -8,9 +8,9 @@ noinst_LTLIBRARIES=libcbd.la
 bin_PROGRAMS=gx
 
 libcbd_la_SOURCES = \
-	common.c cbd.c header.c entry.c form.c \
+	common.c cbd.c header.c entry.c dcf.c form.c \
 	sense.c inote.c isslp.c allow.c alias.c bff.c \
-	parts.c bases.c	\
+	parts.c bases.c	sig.c \
 	cbdtags.c cbdpos.c
 
 AM_CPPFLAGS=\
