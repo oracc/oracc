@@ -109,7 +109,7 @@ gdl_signnames(unsigned char *atf, int frag_ok)
   for (i = 0; sigbits[i]; ++i)
     {
       if (i)
-	strcat((char*)buf, ".");
+	strcat((char*)buf, "-");
       strcat((char*)buf, (char*)sigbits[i]);
     }
   /*printf("%s => %s\n", atf, buf);*/
