@@ -11,6 +11,7 @@ static int lid_base = 0;
 static int lid = 0;
 
 int gdl_grapheme_sigs = 0;
+List *gdl_sig_deep;
 List *gdl_sig_list;
 
 extern void note_term(void);
@@ -81,31 +82,38 @@ gdl_sig(unsigned char *atf, int frag_ok)
   static char l_id_buf[32];
   struct node *res = elem(e_l,NULL,1,LINE);
   int saved_frag_ok = gdl_fragment_ok;
-  const unsigned **sigbits = NULL;
+  const unsigned char **sigbits = NULL, **sigdeep = NULL;
   unsigned char *buf;
   int i, len;
   
-  gdl_sig_list = list_create(LIST_SINGLE);
   gdl_grapheme_sigs = 1;
+  gdl_sig_list = list_create(LIST_SINGLE);
+  gdl_sig_deep = list_create(LIST_SINGLE);
+
   gdl_fragment_ok = frag_ok;
   sprintf(l_id_buf,"gdl.%08x.%04x",lid_base,lid++);
   /* fprintf(stderr,"gdl_string: %s\n",atf); */
   tlit_parse_inline(atf,atf+strlen((const char*)atf),res,0,0,
 		    (unsigned char*)l_id_buf);
-  sigbits = list2array(gdl_sig_list);
+
+  sigbits = (const unsigned char **)list2array(gdl_sig_list);
+  sigdeep = (const unsigned char **)list2array(gdl_sig_deep);
+
+  list_free(gdl_sig_deep, NULL);
   list_free(gdl_sig_list, NULL);
-  gdl_sig_list = NULL;
+  gdl_sig_deep = gdl_sig_list = NULL;
+
   for (len = i = 0; sigbits[i]; ++i)
     {
-      len += strlen(sigbits[i]);
+      len += strlen((char*)sigbits[i]);
       ++len;
     }
   buf = malloc(len);
   for (i = 0; sigbits[i]; ++i)
     {
       if (i)
-	strcat(buf, ".");
-      strcat(buf, sigbits[i]);
+	strcat((char*)buf, ".");
+      strcat((char*)buf, (char*)sigbits[i]);
     }
   /*printf("%s => %s\n", atf, buf);*/
   gdl_fragment_ok = saved_frag_ok;

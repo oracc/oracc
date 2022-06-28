@@ -31,6 +31,7 @@ struct node *pending_disamb = NULL;
 
 int gdl_strict_compound_warnings = 0;
 extern int gdl_grapheme_sigs;
+extern List *gdl_sig_deep;
 extern List *gdl_sig_list;
 
 const unsigned char *cued_gdelim = NULL;
@@ -513,7 +514,7 @@ gparse(register unsigned char *g, enum t_type type)
     case g_v:
       {
 	const unsigned char *gcheck = g;
-	const char *g_ok = g;
+	const unsigned char *g_ok = g;
 	
 	if (cbd_rules && strchr(cc(g),'*'))
 	  {
@@ -629,13 +630,14 @@ gparse(register unsigned char *g, enum t_type type)
 	  }
 	if (g_ok)
 	  {
-	    unsigned char *gid = psl_get_id(g_ok);
+	    const char *gid = psl_get_id(g_ok);
 	    if (gid)
 	      {
 		if (gdl_grapheme_sigs)
 		  {
 		    fprintf(stderr, "[3] %s => %s\n", g_ok, gid);
-		    list_add(gdl_sig_list, gid);
+		    list_add(gdl_sig_list, (void*)gid);
+		    list_add(gdl_sig_deep, (void*)gid);
 		  }
 	      }
 	    else
@@ -644,6 +646,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  {
 		    fprintf(stderr, "[4] %s => %s\n", g_ok, "q99");
 		    list_add(gdl_sig_list, "q99");
+		    list_add(gdl_sig_deep, (void*)gid);
 		  }
 	      }
 	  }
@@ -765,14 +768,13 @@ gparse(register unsigned char *g, enum t_type type)
 	    }
 	  else
 	    {
-	      if (!suppress_psl_id)
+	      if (gdl_grapheme_sigs)
 		{
-		  if (gdl_grapheme_sigs)
-		    {
-		      const unsigned char *gid = psl_get_id(gcheck);
-		      fprintf(stderr, "[1] %s => %s\n", g_utf, gid);
-		      list_add(gdl_sig_list, gid);
-		    }
+		  const char *gid = psl_get_id(gcheck);
+		  fprintf(stderr, "[1] %s => %s\n", g_utf, gid);
+		  if (!suppress_psl_id)
+		    list_add(gdl_sig_list, (void*)gid);
+		  list_add(gdl_sig_deep, (void*)gid);
 		}
 	    }
 
@@ -898,7 +900,7 @@ gparse(register unsigned char *g, enum t_type type)
 		{
 		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
 		    {
-		      char *id = NULL;
+		      const char *id = NULL;
 		      if (!psl_is_sname(buf) && compound_warnings) /* overload compound_warnings to cover sign names as well */
 			{
 			  const unsigned char *cattr = signify(buf);
@@ -912,13 +914,12 @@ gparse(register unsigned char *g, enum t_type type)
 			}
 		      else
 			id = psl_get_id(buf);
-		      if (!suppress_psl_id)
+		      if (gdl_grapheme_sigs)
 			{
-			  if (gdl_grapheme_sigs)
-			    {
-			      fprintf(stderr, "[2] %s => %s\n", buf, id);
-			      list_add(gdl_sig_list, id);
-			    }
+			  fprintf(stderr, "[2] %s => %s\n", buf, id);
+			  if (!suppress_psl_id)
+			    list_add(gdl_sig_list, id);
+			  list_add(gdl_sig_deep, id);
 			}
 		    }
 		}
@@ -1258,6 +1259,7 @@ compound(register unsigned char *g)
 	{
 	  fprintf(stderr, "[5] %s => %s\n", g, gid);
 	  list_add(gdl_sig_list, gid);
+	  /* don't add this to gdl_sig_deep */
 	}
     }
   else
@@ -1265,7 +1267,10 @@ compound(register unsigned char *g)
       if (gdl_strict_compound_warnings)
 	vwarning("unknown compound %s", g);
       if (gdl_grapheme_sigs)
-	list_add(gdl_sig_list, "q99");
+	{
+	  list_add(gdl_sig_list, "q99");
+	  /* don't add this to gdl_sig_deep */
+	}
     }
   suppress_psl_id = 1;
   status = cparse(gp->xml,g+1,'|',NULL);
@@ -1351,6 +1356,8 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  g += 2;
 	  if (*g == 0x97)
 	    ++g;
+	  if (gdl_grapheme_sigs)
+	    fprintf(stderr, "%s construct not handled by gdl_grapheme_sigs\n", g);
 	}
       else if (is_compound_base[*g])
 	{
@@ -1515,6 +1522,8 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		    ++g;
 		  }
 	      }
+	      if (gdl_grapheme_sigs)
+		list_add(gdl_sig_deep,"×");
 	      break;
 	    case '.':
 	    case ':':
@@ -1530,6 +1539,18 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		{
 		  vwarning("%c: compound grapheme must not end with boundary",
 			   g[0]);
+		}
+	      if (gdl_grapheme_sigs)
+		{
+		  if (')' == end && (*g == '.' || *g == ':' || *g == '+'))
+		    list_add(gdl_sig_deep, "+");
+		  if (*g == '&')
+		    list_add(gdl_sig_deep, "&");
+		  else if (*g == '@')
+		    list_add(gdl_sig_deep, "@");
+		  else if (*g == '%')
+		    list_add(gdl_sig_deep, "%");
+		    
 		}
 	      np = ops_by_char[*g];
 	      last_g = NULL;
