@@ -12,4 +12,5 @@ extern void gdl_init(void);
 extern void gdl_term(void);
 extern struct node *gdl(unsigned char *gdlin, int frag_ok);
 extern void gdl_string(unsigned char *gdlinput, int frag_ok);
+extern unsigned char *gdl_sig(unsigned char *atf, int frag_ok, int deep);
 #endif /*_GDL_H*/

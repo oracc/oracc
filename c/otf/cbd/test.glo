@@ -3,14 +3,14 @@
 @lang sux
 
 @entry a [water] N
-@bases a (e₄)
+@bases a (e₄); |A.A|; A-A
 @form a /a #~
 @form a-a /e₄ #~,a
 @sense N water
 @end entry
 
 +@entry a [arm] N
-@bases a₂
+@bases a₂ (e₄)
 @form a₂ /a₂ #~
 @sense N arm
 @end entry

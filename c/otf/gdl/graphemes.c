@@ -31,8 +31,10 @@ struct node *pending_disamb = NULL;
 
 int gdl_strict_compound_warnings = 0;
 extern int gdl_grapheme_sigs;
+extern int gdl_grapheme_sign_names;
 extern List *gdl_sig_deep;
 extern List *gdl_sig_list;
+extern List *gdl_sign_names;
 
 const unsigned char *cued_gdelim = NULL;
 
@@ -630,23 +632,30 @@ gparse(register unsigned char *g, enum t_type type)
 	  }
 	if (g_ok)
 	  {
-	    const char *gid = psl_get_id(g_ok);
-	    if (gid)
+	    if (gdl_grapheme_sign_names)
 	      {
-		if (gdl_grapheme_sigs)
-		  {
-		    fprintf(stderr, "[3] %s => %s\n", g_ok, gid);
-		    list_add(gdl_sig_list, (void*)gid);
-		    list_add(gdl_sig_deep, (void*)gid);
-		  }
+		list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(g_ok)));
 	      }
 	    else
 	      {
-		if (gdl_grapheme_sigs)
+		const char *gid = psl_get_id(g_ok);
+		if (gid)
 		  {
-		    fprintf(stderr, "[4] %s => %s\n", g_ok, "q99");
-		    list_add(gdl_sig_list, "q99");
-		    list_add(gdl_sig_deep, (void*)gid);
+		    if (gdl_grapheme_sigs)
+		      {
+			fprintf(stderr, "[3] %s => %s\n", g_ok, gid);
+			list_add(gdl_sig_list, (void*)gid);
+			list_add(gdl_sig_deep, (void*)gid);
+		      }
+		  }
+		else
+		  {
+		    if (gdl_grapheme_sigs)
+		      {
+			/*fprintf(stderr, "[4] %s => %s\n", g_ok, "q99");*/
+			list_add(gdl_sig_list, "q99");
+			list_add(gdl_sig_deep, (void*)gid);
+		      }
 		  }
 	      }
 	  }
@@ -768,10 +777,14 @@ gparse(register unsigned char *g, enum t_type type)
 	    }
 	  else
 	    {
-	      if (gdl_grapheme_sigs)
+	      if (gdl_grapheme_sign_names)
+		{
+		  list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(gcheck)));
+		}
+	      else if (gdl_grapheme_sigs)
 		{
 		  const char *gid = psl_get_id(gcheck);
-		  fprintf(stderr, "[1] %s => %s\n", g_utf, gid);
+		  /*fprintf(stderr, "[1] %s => %s\n", g_utf, gid);*/
 		  if (!suppress_psl_id)
 		    list_add(gdl_sig_list, (void*)gid);
 		  list_add(gdl_sig_deep, (void*)gid);
@@ -908,15 +921,21 @@ gparse(register unsigned char *g, enum t_type type)
 			    {
 			      vwarning("%s: sign name should be %s", buf, cattr);
 			      id = psl_get_id(cattr);
+			      if (gdl_grapheme_sign_names)
+				list_add(gdl_sign_names, pool_copy(cattr));
 			    }
 			  else
 			    vwarning("%s: sign name not in OGSL",buf);
 			}
 		      else
-			id = psl_get_id(buf);
+			{
+			  if (gdl_grapheme_sign_names)
+			    list_add(gdl_sign_names, pool_copy(buf));
+			  id = psl_get_id(buf);
+			}
 		      if (gdl_grapheme_sigs)
 			{
-			  fprintf(stderr, "[2] %s => %s\n", buf, id);
+			  /*fprintf(stderr, "[2] %s => %s\n", buf, id);*/
 			  if (!suppress_psl_id)
 			    list_add(gdl_sig_list, (void*)id);
 			  list_add(gdl_sig_deep, (void*)id);
@@ -1255,9 +1274,11 @@ compound(register unsigned char *g)
   gp->xml = gelem(gtags[g_c],NULL,lnum,GRAPHEME);
   if ((gid = (unsigned const char *)psl_get_id(g)))
     {
+      if (gdl_grapheme_sign_names)
+	list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(g)));
       if (gdl_grapheme_sigs)
 	{
-	  fprintf(stderr, "[5] %s => %s\n", g, gid);
+	  /*fprintf(stderr, "[5] %s => %s\n", g, gid);*/
 	  list_add(gdl_sig_list, (void*)gid);
 	  /* don't add this to gdl_sig_deep */
 	}
@@ -1309,7 +1330,7 @@ presence_attr_of(const char *endpat)
 }
 
 static int
-is_sub_x(unsigned char *p)
+is_times_x(unsigned char *p)
 {
   wchar_t wbuf[2];
   (void)mbtowc(wbuf,(const char *)p,6);
@@ -1356,21 +1377,29 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  g += 2;
 	  if (*g == 0x97)
 	    ++g;
+	  if (gdl_grapheme_sign_names)
+	    list_add(gdl_sign_names, pool_copy(g));
 	  if (gdl_grapheme_sigs)
-	    fprintf(stderr, "%s construct not handled by gdl_grapheme_sigs\n", g);
+	    {
+	      unsigned char *p = pool_copy(g);
+	      list_add(gdl_sig_list, p);
+	      list_add(gdl_sig_deep, p);
+	    }
 	}
       else if (is_compound_base[*g])
 	{
 	  unsigned char *endp = g;
 	  unsigned char save;
 	  struct grapheme *gp;
-	  if (*g > 127 && is_sub_x(g))
+	  if (*g > 127 && is_times_x(g))
 	    {
 	      np = ops_by_char['x'];
 	      last_g = NULL;
 	      mbincr(endp);
 	      g = endp;
 	      appendChild(parent,np);
+	      if (gdl_grapheme_sigs)
+		list_add(gdl_sig_deep, "×");
 	      continue;
 	    }
 	  else if (isdigit(*endp) || ('N' == *endp && '(' == endp[1]))
@@ -1407,7 +1436,7 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	    }
 	  else
 	    {
-	      while (is_compound_base[*endp] && (*endp < 128 || !is_sub_x(endp)))
+	      while (is_compound_base[*endp] && (*endp < 128 || !is_times_x(endp)))
 		mbincr(endp);
 	      if (*endp != 'x' && u_islower(endp))
 		mbincr(endp);

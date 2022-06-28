@@ -4,6 +4,7 @@
 #undef warning
 #include "warning.h"
 #include "atf.h"
+#include "gdl.h"
 #include "cuneify.h"
 #include "npool.h"
 #include "globals.h"

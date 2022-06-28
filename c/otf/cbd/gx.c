@@ -43,6 +43,7 @@ main(int argc, char **argv)
 #endif
 
   f_log = stderr;
+  no_pi = do_cuneify = use_unicode = 1;
   
   galloc_init();
   pool_init();
@@ -63,7 +64,6 @@ main(int argc, char **argv)
       curr_data->cset = curr_data->this->cset[current_state.mode];
     }
 
-  math_mode = no_pi = do_cuneify = use_unicode = 1;
   fputs("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n",f_xml);
   if (stdin_input)
     {
