@@ -19,6 +19,7 @@
 #include "gdl.h"
 #include "gsl.h"
 
+static int suppress_psl_id = 0;
 static int rg_verbose = 0;
 extern int math_mode, saa_mode;
 extern int cuneify_fuzzy_allographs;
@@ -27,6 +28,10 @@ int do_signnames = 0;
 int backslash_is_formvar = 1;
 static struct npool *graphemes_pool;
 struct node *pending_disamb = NULL;
+
+int gdl_strict_compound_warnings = 0;
+extern int gdl_grapheme_sigs;
+extern List *gdl_sig_list;
 
 const unsigned char *cued_gdelim = NULL;
 
@@ -508,6 +513,7 @@ gparse(register unsigned char *g, enum t_type type)
     case g_v:
       {
 	const unsigned char *gcheck = g;
+	const char *g_ok = g;
 	
 	if (cbd_rules && strchr(cc(g),'*'))
 	  {
@@ -535,7 +541,7 @@ gparse(register unsigned char *g, enum t_type type)
 	    gp = singleton(g,type);
 	  }
 	else if (curr_lang->signlist 
-		 && '#' == *curr_lang->signlist && !psl_is_value(gcheck))
+		 && '#' == *curr_lang->signlist && !psl_is_value((g_ok = gcheck)))
 	  {
 	    if (!xstrcmp(g,"vacat"))
 	      {
@@ -549,7 +555,7 @@ gparse(register unsigned char *g, enum t_type type)
 		if (use_legacy)
 		  {
 		    noheth = unheth(g);
-		    if (noheth && psl_is_value(noheth))
+		    if (noheth && psl_is_value((g_ok = noheth)))
 		      ok = 1;
 		  }
 		if (!ok)
@@ -561,7 +567,7 @@ gparse(register unsigned char *g, enum t_type type)
 		      {
 			if (strcmp((char*)(noheth ? noheth : g),(char*)nodots))
 			  {
-			    if (psl_is_value(nodots))
+			    if (psl_is_value((g_ok = nodots)))
 			      ok = 1;
 			    else
 			      nodots = NULL;
@@ -620,6 +626,26 @@ gparse(register unsigned char *g, enum t_type type)
 	else
 	  {
 	    gp = singleton(g,type);
+	  }
+	if (g_ok)
+	  {
+	    unsigned char *gid = psl_get_id(g_ok);
+	    if (gid)
+	      {
+		if (gdl_grapheme_sigs)
+		  {
+		    fprintf(stderr, "[3] %s => %s\n", g_ok, gid);
+		    list_add(gdl_sig_list, gid);
+		  }
+	      }
+	    else
+	      {
+		if (gdl_grapheme_sigs)
+		  {
+		    fprintf(stderr, "[4] %s => %s\n", g_ok, "q99");
+		    list_add(gdl_sig_list, "q99");
+		  }
+	      }
 	  }
       }
       break;
@@ -738,7 +764,17 @@ gparse(register unsigned char *g, enum t_type type)
 		}
 	    }
 	  else
-	    fprintf(stderr, "%s => %s\n", g_utf, psl_get_id(gcheck));
+	    {
+	      if (!suppress_psl_id)
+		{
+		  if (gdl_grapheme_sigs)
+		    {
+		      const unsigned char *gid = psl_get_id(gcheck);
+		      fprintf(stderr, "[1] %s => %s\n", g_utf, gid);
+		      list_add(gdl_sig_list, gid);
+		    }
+		}
+	    }
 
 	  if (noheth)
 	    {
@@ -806,8 +842,6 @@ gparse(register unsigned char *g, enum t_type type)
 	      vname = psl_is_sname(qual);
 	      if (!vname && qualifier_warnings)
 		vwarning("qualifier %s is not a sign-name in OGSL",qual);
-	      else
-		fprintf(stderr, "%s => %s\n", qual, psl_get_id(qual);
 	    }
 #endif
 	}
@@ -878,7 +912,14 @@ gparse(register unsigned char *g, enum t_type type)
 			}
 		      else
 			id = psl_get_id(buf);
-		      fprintf(stderr, "%s => %s\n", buf, id);
+		      if (!suppress_psl_id)
+			{
+			  if (gdl_grapheme_sigs)
+			    {
+			      fprintf(stderr, "[2] %s => %s\n", buf, id);
+			      list_add(gdl_sig_list, id);
+			    }
+			}
 		    }
 		}
 
@@ -1207,10 +1248,28 @@ static struct grapheme *
 compound(register unsigned char *g)
 {
   struct grapheme *gp = galloc();
+  unsigned const char *gid = NULL;
   int status = 0;
   gp->type = g_c;
   gp->xml = gelem(gtags[g_c],NULL,lnum,GRAPHEME);
+  if ((gid = psl_get_id(g)))
+    {
+      if (gdl_grapheme_sigs)
+	{
+	  fprintf(stderr, "[5] %s => %s\n", g, gid);
+	  list_add(gdl_sig_list, gid);
+	}
+    }
+  else
+    {
+      if (gdl_strict_compound_warnings)
+	vwarning("unknown compound %s", g);
+      if (gdl_grapheme_sigs)
+	list_add(gdl_sig_list, "q99");
+    }
+  suppress_psl_id = 1;
   status = cparse(gp->xml,g+1,'|',NULL);
+  suppress_psl_id = 0;
   if (!status)
     {
       if (gp->xml->children.lastused == 1)

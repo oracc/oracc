@@ -10,6 +10,9 @@ int gdl_fragment_ok = 0;
 static int lid_base = 0;
 static int lid = 0;
 
+int gdl_grapheme_sigs = 0;
+List *gdl_sig_list;
+
 extern void note_term(void);
 
 void
@@ -69,5 +72,33 @@ gdl_string(unsigned char *atf, int frag_ok)
   tlit_parse_inline(atf,atf+strlen((const char*)atf),res,0,0,
 		    (unsigned char*)l_id_buf);
   serialize(firstChild(res),0);
+  gdl_fragment_ok = saved_frag_ok;
+}
+
+void
+gdl_sig(unsigned char *atf, int frag_ok)
+{
+  static char l_id_buf[32];
+  struct node *res = elem(e_l,NULL,1,LINE);
+  int saved_frag_ok = gdl_fragment_ok;
+  const unsigned **sigbits = NULL;
+  int i;
+  
+  gdl_sig_list = list_create(LIST_SINGLE);
+  gdl_grapheme_sigs = 1;
+  gdl_fragment_ok = frag_ok;
+  sprintf(l_id_buf,"gdl.%08x.%04x",lid_base,lid++);
+  /* fprintf(stderr,"gdl_string: %s\n",atf); */
+  tlit_parse_inline(atf,atf+strlen((const char*)atf),res,0,0,
+		    (unsigned char*)l_id_buf);
+  sigbits = list2array(gdl_sig_list);
+  list_free(gdl_sig_list, NULL);
+  gdl_sig_list = NULL;
+  for (i = 0; sigbits[i]; ++i)
+    {
+      if (i)
+	printf(".");
+      printf("%s", sigbits[i]);
+    }
   gdl_fragment_ok = saved_frag_ok;
 }
