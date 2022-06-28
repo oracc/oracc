@@ -96,8 +96,8 @@ gdl_sig(unsigned char *atf, int frag_ok)
   tlit_parse_inline(atf,atf+strlen((const char*)atf),res,0,0,
 		    (unsigned char*)l_id_buf);
 
-  sigbits = (const unsigned char **)list2array(gdl_sig_list);
-  sigdeep = (const unsigned char **)list2array(gdl_sig_deep);
+  /* sigbits = (const unsigned char **)list2array(gdl_sig_list); */
+  sigbits = (const unsigned char **)list2array(gdl_sig_deep);
 
   list_free(gdl_sig_deep, NULL);
   list_free(gdl_sig_list, NULL);

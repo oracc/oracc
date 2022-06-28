@@ -918,8 +918,8 @@ gparse(register unsigned char *g, enum t_type type)
 			{
 			  fprintf(stderr, "[2] %s => %s\n", buf, id);
 			  if (!suppress_psl_id)
-			    list_add(gdl_sig_list, id);
-			  list_add(gdl_sig_deep, id);
+			    list_add(gdl_sig_list, (void*)id);
+			  list_add(gdl_sig_deep, (void*)id);
 			}
 		    }
 		}
@@ -1253,12 +1253,12 @@ compound(register unsigned char *g)
   int status = 0;
   gp->type = g_c;
   gp->xml = gelem(gtags[g_c],NULL,lnum,GRAPHEME);
-  if ((gid = psl_get_id(g)))
+  if ((gid = (unsigned const char *)psl_get_id(g)))
     {
       if (gdl_grapheme_sigs)
 	{
 	  fprintf(stderr, "[5] %s => %s\n", g, gid);
-	  list_add(gdl_sig_list, gid);
+	  list_add(gdl_sig_list, (void*)gid);
 	  /* don't add this to gdl_sig_deep */
 	}
     }
