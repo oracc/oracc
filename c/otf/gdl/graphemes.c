@@ -779,7 +779,8 @@ gparse(register unsigned char *g, enum t_type type)
 	    {
 	      if (gdl_grapheme_sign_names)
 		{
-		  list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(gcheck)));
+		  if (!suppress_psl_id)
+		    list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(gcheck)));
 		}
 	      else if (gdl_grapheme_sigs)
 		{
@@ -930,7 +931,10 @@ gparse(register unsigned char *g, enum t_type type)
 		      else
 			{
 			  if (gdl_grapheme_sign_names)
-			    list_add(gdl_sign_names, pool_copy(buf));
+			    {
+			      if (!suppress_psl_id)
+				list_add(gdl_sign_names, pool_copy(buf));
+			    }
 			  id = psl_get_id(buf);
 			}
 		      if (gdl_grapheme_sigs)
@@ -1275,7 +1279,7 @@ compound(register unsigned char *g)
   if ((gid = (unsigned const char *)psl_get_id(g)))
     {
       if (gdl_grapheme_sign_names)
-	list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(g)));
+	list_add(gdl_sign_names, (void*)pool_copy(g));
       if (gdl_grapheme_sigs)
 	{
 	  /*fprintf(stderr, "[5] %s => %s\n", g, gid);*/

@@ -105,6 +105,7 @@ gdl_signnames(unsigned char *atf, int frag_ok)
       ++len;
     }
   buf = malloc(len);
+  *buf = '\0';
   for (i = 0; sigbits[i]; ++i)
     {
       if (i)
@@ -162,6 +163,7 @@ gdl_sig(unsigned char *atf, int frag_ok, int deep)
       ++len;
     }
   buf = malloc(len);
+  *buf = '\0';
   for (i = 0; sigbits[i]; ++i)
     {
       if (i)
