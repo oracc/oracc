@@ -25,7 +25,7 @@ extern int use_unicode;
 const char *project;
 static int stdin_input = 0;
 
-extern void gdl_sig(unsigned const char *, int);
+extern unsigned char *gdl_sig(unsigned const char *, int);
 
 char *gdl_file = NULL;
 int gdl_file_len = 0;
@@ -161,6 +161,7 @@ int
 main(int argc, char **argv)
 {
   const char *fname[2];
+  unsigned char *sig;
 
   options(argc,argv,"bcdgno:p:sux");
 
@@ -198,7 +199,8 @@ main(int argc, char **argv)
   with_textid = 0;
   math_mode = no_pi = do_cuneify = use_unicode = 1;
 
-  gdl_sig(argv[optind],1);
+  sig = gdl_sig(argv[optind],1);
+  printf("%s => %s\n", argv[optind], sig);
   
   (void)cbd_strip_backslash(NULL);
   npool_term(gdl_pool);

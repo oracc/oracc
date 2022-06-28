@@ -75,14 +75,15 @@ gdl_string(unsigned char *atf, int frag_ok)
   gdl_fragment_ok = saved_frag_ok;
 }
 
-void
+unsigned char *
 gdl_sig(unsigned char *atf, int frag_ok)
 {
   static char l_id_buf[32];
   struct node *res = elem(e_l,NULL,1,LINE);
   int saved_frag_ok = gdl_fragment_ok;
   const unsigned **sigbits = NULL;
-  int i;
+  unsigned char *buf;
+  int i, len;
   
   gdl_sig_list = list_create(LIST_SINGLE);
   gdl_grapheme_sigs = 1;
@@ -94,11 +95,19 @@ gdl_sig(unsigned char *atf, int frag_ok)
   sigbits = list2array(gdl_sig_list);
   list_free(gdl_sig_list, NULL);
   gdl_sig_list = NULL;
+  for (len = i = 0; sigbits[i]; ++i)
+    {
+      len += strlen(sigbits[i]);
+      ++len;
+    }
+  buf = malloc(len);
   for (i = 0; sigbits[i]; ++i)
     {
       if (i)
-	printf(".");
-      printf("%s", sigbits[i]);
+	strcat(buf, ".");
+      strcat(buf, sigbits[i]);
     }
+  /*printf("%s => %s\n", atf, buf);*/
   gdl_fragment_ok = saved_frag_ok;
+  return buf;
 }
