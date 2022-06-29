@@ -1424,7 +1424,8 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  /* stash these before punching holes in g and moving it */
 	  if (gdl_grapheme_sigs)
 	    {
-	      unsigned char *p = psl_get_id(g);
+	      /* g is moved past the opening '|' so g-1 adjusts for that */
+	      unsigned char *p = psl_get_id(g-1);
 	      /*list_add(gdl_sig_list, p);*/ /* set in compound() */
 	      list_add(gdl_sig_deep, p);
 	    }
