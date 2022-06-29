@@ -632,7 +632,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  }
 	if (g_ok)
 	  {
-	    if (gdl_grapheme_sign_names)
+	    if (gdl_grapheme_sign_names && !inner_qual)
 	      {
 		list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(g_ok)));
 	      }
@@ -641,7 +641,7 @@ gparse(register unsigned char *g, enum t_type type)
 		const char *gid = psl_get_id(g_ok);
 		if (gid)
 		  {
-		    if (gdl_grapheme_sigs)
+		    if (gdl_grapheme_sigs && !inner_qual)
 		      {
 			/*fprintf(stderr, "[3] %s => %s\n", g_ok, gid);*/
 			list_add(gdl_sig_list, (void*)gid);
@@ -650,7 +650,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  }
 		else
 		  {
-		    if (gdl_grapheme_sigs)
+		    if (gdl_grapheme_sigs && !inner_qual)
 		      {
 			/*fprintf(stderr, "[4] %s => %s\n", g_ok, "q99");*/
 			list_add(gdl_sig_list, "q99");
@@ -667,8 +667,25 @@ gparse(register unsigned char *g, enum t_type type)
     case g_s:
       if (is_signlist(g))
 	{
+	  const char *gid = NULL;
 	  gp = singleton(g,type); /* FIXME?: should we preserve the info that
 				     this is a signlist sign name */
+	  if ((gid = psl_get_id(g)))
+	    {
+	      if (gdl_grapheme_sign_names && !inner_qual)
+		list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(g)));
+
+	      if (gdl_grapheme_sigs && !inner_qual)
+		{
+		  /*fprintf(stderr, "[3] %s => %s\n", g_ok, gid);*/
+		  list_add(gdl_sig_list, (void*)gid);
+		  list_add(gdl_sig_deep, (void*)gid);
+		}
+	    }
+	  else
+	    {
+	      vwarning("sign list name %s not in OGSL", g);
+	    }
 	}
       else if (curr_lang->snames)
 	{
@@ -778,7 +795,7 @@ gparse(register unsigned char *g, enum t_type type)
 		}
 	      else
 		{
-		  if (gdl_grapheme_sign_names)
+		  if (gdl_grapheme_sign_names && !inner_qual)
 		    {
 		      if (!suppress_psl_id)
 			{
@@ -794,7 +811,7 @@ gparse(register unsigned char *g, enum t_type type)
 			    }
 			}
 		    }
-		  else if (gdl_grapheme_sigs)
+		  else if (gdl_grapheme_sigs && !inner_qual)
 		    {
 		      const char *gid = psl_get_id(g_utf);
 		      /*fprintf(stderr, "[1] %s => %s\n", g_utf, gid);*/
@@ -806,7 +823,7 @@ gparse(register unsigned char *g, enum t_type type)
 	    }
 	  else
 	    {
-	      if (gdl_grapheme_sign_names)
+	      if (gdl_grapheme_sign_names && !inner_qual)
 		{
 		  if (!suppress_psl_id)
 		    {
@@ -822,7 +839,7 @@ gparse(register unsigned char *g, enum t_type type)
 			}
 		    }
 		}
-	      else if (gdl_grapheme_sigs)
+	      else if (gdl_grapheme_sigs && !inner_qual)
 		{
 		  const char *gid = psl_get_id(g_utf);
 		  /*fprintf(stderr, "[1] %s => %s\n", g_utf, gid);*/
@@ -961,35 +978,10 @@ gparse(register unsigned char *g, enum t_type type)
 			  if (cattr)
 			    {
 			      vwarning("%s: sign name should be %s", buf, cattr);
-#if 0
-			      id = psl_get_id(cattr);
-			      if (gdl_grapheme_sign_names)
-				list_add(gdl_sign_names, pool_copy(cattr));
-#endif
 			    }
 			  else
 			    vwarning("%s: sign name not in OGSL",buf);
 			}
-		      else
-			{
-#if 0
-		          if (gdl_grapheme_sign_names)
-			    {
-			      if (!suppress_psl_id)
-				list_add(gdl_sign_names, pool_copy(buf));
-			    }
-			  id = psl_get_id(buf);
-#endif
-			}
-#if 0
-		      if (gdl_grapheme_sigs)
-			{
-			  /*fprintf(stderr, "[2] %s => %s\n", buf, id);*/
-			  if (!suppress_psl_id)
-			    list_add(gdl_sig_list, (void*)id);
-			  list_add(gdl_sig_deep, (void*)id);
-			}
-#endif
 		    }
 		  }
 
@@ -1324,9 +1316,9 @@ compound(register unsigned char *g)
   gp->xml = gelem(gtags[g_c],NULL,lnum,GRAPHEME);
   if ((gid = (unsigned const char *)psl_get_id(g)))
     {
-      if (gdl_grapheme_sign_names)
+      if (gdl_grapheme_sign_names && !inner_qual)
 	list_add(gdl_sign_names, (void*)pool_copy(g));
-      if (gdl_grapheme_sigs)
+      if (gdl_grapheme_sigs && !inner_qual)
 	{
 	  /*fprintf(stderr, "[5] %s => %s\n", g, gid);*/
 	  list_add(gdl_sig_list, (void*)gid);
@@ -1337,7 +1329,7 @@ compound(register unsigned char *g)
     {
       if (gdl_strict_compound_warnings)
 	vwarning("unknown compound %s", g);
-      if (gdl_grapheme_sigs)
+      if (gdl_grapheme_sigs && !inner_qual)
 	{
 	  list_add(gdl_sig_list, "q99");
 	  /* don't add this to gdl_sig_deep */
@@ -1418,13 +1410,8 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  /* 4xLU2 and the like is a rare construct; there is no need
 	     to worry about conserving nodes or efficiency here */
 	  unsigned char buf[2];
-#if 0
-	  /* This gets set in compound() which is cparse() parent */
-	  if (gdl_grapheme_sign_names)
-	    list_add(gdl_sign_names, pool_copy(g));
-#endif
 	  /* stash these before punching holes in g and moving it */
-	  if (gdl_grapheme_sigs)
+	  if (gdl_grapheme_sigs && !inner_qual)
 	    {
 	      /* g is moved past the opening '|' so g-1 adjusts for that */
 	      const char *p = psl_get_id(g-1);
