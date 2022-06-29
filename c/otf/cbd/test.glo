@@ -22,3 +22,11 @@
 @form amar-{d}ezina₃ %sux /amar-{d}ezina₃ #~
 @sense PN 00
 @end entry
+
+@entry Nun.NI.RU.DA [00] PN
+@bases nun-|NI.RU.DA| (nun-NI-RU-DA)
+@form nun-NI-RU-DA %sux /nun-|NI.RU.DA| #~
+@form nun-|NI.RU.DA| %sux /nun-|NI.RU.DA| #~
+@sense PN 00
+@end entry
+

@@ -11,6 +11,7 @@ int gdl_fragment_ok = 0;
 static int lid_base = 0;
 static int lid = 0;
 
+extern int gdl_strict_compound_warnings;
 int gdl_grapheme_sigs = 0;
 int gdl_grapheme_sign_names;
 List *gdl_sig_deep;
@@ -140,6 +141,8 @@ gdl_sig(unsigned char *atf, int frag_ok, int deep)
   const unsigned char **sigbits = NULL;
   unsigned char *buf, *snbuf = NULL, *parseme;
   int i, len;
+
+  gdl_strict_compound_warnings = 1;
 
   if (deep)
     {

@@ -665,16 +665,15 @@ gparse(register unsigned char *g, enum t_type type)
       gp = numerical(g);
       break;
     case g_s:
-      if (is_signlist(g))
+      if (is_signlist(g) && !psl_is_sname(g))
 	{
 	  const char *gid = NULL;
 	  gp = singleton(g,type); /* FIXME?: should we preserve the info that
 				     this is a signlist sign name */
+	  if (gdl_grapheme_sign_names && !inner_qual)
+	    list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(g)));
 	  if ((gid = psl_get_id(g)))
 	    {
-	      if (gdl_grapheme_sign_names && !inner_qual)
-		list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(g)));
-
 	      if (gdl_grapheme_sigs && !inner_qual)
 		{
 		  /*fprintf(stderr, "[3] %s => %s\n", g_ok, gid);*/
