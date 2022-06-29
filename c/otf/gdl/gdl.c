@@ -4,6 +4,7 @@
 #include "note.h"
 #include "gdl.h"
 #include "cuneify.h"
+#include "warning.h"
 
 int gdl_fragment_ok = 0;
 

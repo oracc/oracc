@@ -82,7 +82,7 @@ sH(void *userData, const char *name, const char **atts)
       curr_unitary_sn = curr_form = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
       hash_add(psl,curr_form,&n);
       hash_add(psl_id,curr_form,curr_xid);
-      curr_sn = npool_copy(sname_append(curr_sn,
+      curr_sn = npool_copy(sname_append(sign_sn,
 					psl_bounded_sname((unsigned const char *)findAttr(atts,"n"))),
 			   psl_pool);
       hash_add(psl,curr_sn,&n);
