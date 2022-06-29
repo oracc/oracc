@@ -643,7 +643,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  {
 		    if (gdl_grapheme_sigs)
 		      {
-			fprintf(stderr, "[3] %s => %s\n", g_ok, gid);
+			/*fprintf(stderr, "[3] %s => %s\n", g_ok, gid);*/
 			list_add(gdl_sig_list, (void*)gid);
 			list_add(gdl_sig_deep, (void*)gid);
 		      }
@@ -776,7 +776,6 @@ gparse(register unsigned char *g, enum t_type type)
 		  --status;
 		  bad_grapheme = 1;
 		}
-#if 0
 	      else
 		{
 		  if (gdl_grapheme_sign_names)
@@ -804,11 +803,9 @@ gparse(register unsigned char *g, enum t_type type)
 		      list_add(gdl_sig_deep, (void*)gid);
 		    }
 		}
-#endif
 	    }
 	  else
 	    {
-#if 0
 	      if (gdl_grapheme_sign_names)
 		{
 		  if (!suppress_psl_id)
@@ -833,7 +830,6 @@ gparse(register unsigned char *g, enum t_type type)
 		    list_add(gdl_sig_list, (void*)gid);
 		  list_add(gdl_sig_deep, (void*)gid);
 		}
-#endif
 	    }
 
 	  if (noheth)
@@ -913,10 +909,10 @@ gparse(register unsigned char *g, enum t_type type)
 	{
 	  static unsigned char buf[1024];
 	  unsigned char *insertp = buf;
-	  unsigned char *cleang = orig, *tmpcg = NULL;
+	  unsigned char *cleang = orig; /*, *tmpcg = NULL;*/
 	  
 	  if (strpbrk((const char *)orig,bad_cg_chars))
-	    tmpcg = cleang = gclean(cleang);
+	    /*tmpcg = */cleang = gclean(cleang);
 	  
 	  if (curr_lang->values && !hash_find(curr_lang->values,cleang))
 	    {
@@ -958,29 +954,34 @@ gparse(register unsigned char *g, enum t_type type)
 		{
 		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
 		    {
-		      const char *id = NULL;
+		      /*const char *id = NULL;*/
 		      if (!psl_is_sname(buf) && compound_warnings) /* overload compound_warnings to cover sign names as well */
 			{
 			  const unsigned char *cattr = signify(buf);
 			  if (cattr)
 			    {
 			      vwarning("%s: sign name should be %s", buf, cattr);
+#if 0
 			      id = psl_get_id(cattr);
 			      if (gdl_grapheme_sign_names)
 				list_add(gdl_sign_names, pool_copy(cattr));
+#endif
 			    }
 			  else
 			    vwarning("%s: sign name not in OGSL",buf);
 			}
 		      else
 			{
-			  if (gdl_grapheme_sign_names)
+#if 0
+		          if (gdl_grapheme_sign_names)
 			    {
 			      if (!suppress_psl_id)
 				list_add(gdl_sign_names, pool_copy(buf));
 			    }
 			  id = psl_get_id(buf);
+#endif
 			}
+#if 0
 		      if (gdl_grapheme_sigs)
 			{
 			  /*fprintf(stderr, "[2] %s => %s\n", buf, id);*/
@@ -988,8 +989,9 @@ gparse(register unsigned char *g, enum t_type type)
 			    list_add(gdl_sig_list, (void*)id);
 			  list_add(gdl_sig_deep, (void*)id);
 			}
+#endif
 		    }
-		}
+		  }
 
 	      appendAttr(gp->xml,gattr(a_form,buf));
 
@@ -1425,9 +1427,9 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  if (gdl_grapheme_sigs)
 	    {
 	      /* g is moved past the opening '|' so g-1 adjusts for that */
-	      unsigned char *p = psl_get_id(g-1);
+	      const char *p = psl_get_id(g-1);
 	      /*list_add(gdl_sig_list, p);*/ /* set in compound() */
-	      list_add(gdl_sig_deep, p);
+	      list_add(gdl_sig_deep, (void*)p);
 	    }
 	  buf[0] = *g;
 	  buf[1] = '\0';

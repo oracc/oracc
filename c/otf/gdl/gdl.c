@@ -99,18 +99,31 @@ gdl_signnames(unsigned char *atf, int frag_ok)
   gdl_sign_names = NULL;
   gdl_grapheme_sign_names = 0;
 
-  for (len = i = 0; sigbits[i]; ++i)
+
+  if (sigbits && sigbits[0])
     {
-      len += strlen((char*)sigbits[i]);
-      ++len;
+      for (len = i = 0; sigbits[i]; ++i)
+	{
+	  len += strlen((char*)sigbits[i]);
+	  ++len;
+	}
+    }
+  else
+    {
+      len = 1;
+      if (atf && *atf)
+	vwarning("gdl sign names failed on %s", atf);
     }
   buf = malloc(len);
   *buf = '\0';
-  for (i = 0; sigbits[i]; ++i)
+  if (sigbits && sigbits[0])
     {
-      if (i)
-	strcat((char*)buf, "-");
-      strcat((char*)buf, (char*)sigbits[i]);
+      for (i = 0; sigbits[i]; ++i)
+	{
+	  if (i)
+	    strcat((char*)buf, "-");
+	  strcat((char*)buf, (char*)sigbits[i]);
+	}
     }
   /*printf("%s => %s\n", atf, buf);*/
   gdl_fragment_ok = saved_frag_ok;
@@ -157,20 +170,32 @@ gdl_sig(unsigned char *atf, int frag_ok, int deep)
   if (snbuf)
     free(snbuf);
 
-  for (len = i = 0; sigbits[i]; ++i)
+  if (sigbits && sigbits[0])
     {
-      len += strlen((char*)sigbits[i]);
-      ++len;
+      for (len = i = 0; sigbits[i]; ++i)
+	{
+	  len += strlen((char*)sigbits[i]);
+	  ++len;
+	}
+    }
+  else
+    {
+      len = 1;
+      if (parseme && *parseme)
+	vwarning("gdl sig failed on %s processed as %s", atf, parseme);
     }
   buf = malloc(len);
   *buf = '\0';
-  for (i = 0; sigbits[i]; ++i)
+  if (sigbits && sigbits[0])
     {
-      if (i)
-	strcat((char*)buf, ".");
-      strcat((char*)buf, (char*)sigbits[i]);
+      for (i = 0; sigbits[i]; ++i)
+	{
+	  if (i)
+	    strcat((char*)buf, ".");
+	  strcat((char*)buf, (char*)sigbits[i]);
+	}
+      /*printf("%s => %s\n", atf, buf);*/
     }
-  /*printf("%s => %s\n", atf, buf);*/
   gdl_fragment_ok = saved_frag_ok;
   return buf;
 }
