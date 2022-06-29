@@ -1416,13 +1416,16 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  /* 4xLU2 and the like is a rare construct; there is no need
 	     to worry about conserving nodes or efficiency here */
 	  unsigned char buf[2];
-	  /* stash these before punching holes in g and moving it */
+#if 0
+	  /* This gets set in compound() which is cparse() parent */
 	  if (gdl_grapheme_sign_names)
 	    list_add(gdl_sign_names, pool_copy(g));
+#endif
+	  /* stash these before punching holes in g and moving it */
 	  if (gdl_grapheme_sigs)
 	    {
 	      unsigned char *p = psl_get_id(g);
-	      list_add(gdl_sig_list, p);
+	      /*list_add(gdl_sig_list, p);*/ /* set in compound() */
 	      list_add(gdl_sig_deep, p);
 	    }
 	  buf[0] = *g;
