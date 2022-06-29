@@ -85,10 +85,13 @@ parse_one_base(struct entry *e, unsigned char *s)
 	    }
 	  if (*s)
 	    {
-	      for (t = s; *t; ++t)
-		if (')' == *t)
-		  break;
-	      if (*t)
+	      for (t = s+strlen((ccp)s); t > s; --t)
+		if (')' == t[-1])
+		  {
+		    --t;
+		    break;
+		  }
+	      if (t > s)
 		*t = '\0';
 	      else
 		vwarning("missing ')' from end of alts belonging to pri %s", pri);
