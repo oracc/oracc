@@ -763,6 +763,8 @@ gparse(register unsigned char *g, enum t_type type)
 			  noheth = pool_copy(noheth);
 			  lc = utf_lcase(noheth);
 			  ok = (lc && psl_is_value(lc));
+			  if (ok)
+			    noheth = lc;
 			}
 		    }
 		}
@@ -774,17 +776,57 @@ gparse(register unsigned char *g, enum t_type type)
 		  --status;
 		  bad_grapheme = 1;
 		}
+#if 0
+	      else
+		{
+		  if (gdl_grapheme_sign_names)
+		    {
+		      if (!suppress_psl_id)
+			{
+			  if (psl_is_sname(noheth))
+			    list_add(gdl_sign_names, (void*)pool_copy(g_utf));
+			  else
+			    {
+			      const unsigned char *sn = psl_get_sname(noheth);
+			      if (sn)
+				list_add(gdl_sign_names, (void*)pool_copy(sn));
+			      else
+				vwarning("no sign name found for %s", noheth);
+			    }
+			}
+		    }
+		  else if (gdl_grapheme_sigs)
+		    {
+		      const char *gid = psl_get_id(g_utf);
+		      /*fprintf(stderr, "[1] %s => %s\n", g_utf, gid);*/
+		      if (!suppress_psl_id)
+			list_add(gdl_sig_list, (void*)gid);
+		      list_add(gdl_sig_deep, (void*)gid);
+		    }
+		}
+#endif
 	    }
 	  else
 	    {
 	      if (gdl_grapheme_sign_names)
 		{
 		  if (!suppress_psl_id)
-		    list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(gcheck)));
+		    {
+		      if (psl_is_sname(g_utf))
+			list_add(gdl_sign_names, (void*)pool_copy(g_utf));
+		      else
+			{
+			  const unsigned char *sn = psl_get_sname(gcheck);
+			  if (sn)
+			    list_add(gdl_sign_names, (void*)pool_copy(sn));
+			  else
+			    vwarning("no sign name found for %s", g_utf);
+			}
+		    }
 		}
 	      else if (gdl_grapheme_sigs)
 		{
-		  const char *gid = psl_get_id(gcheck);
+		  const char *gid = psl_get_id(g_utf);
 		  /*fprintf(stderr, "[1] %s => %s\n", g_utf, gid);*/
 		  if (!suppress_psl_id)
 		    list_add(gdl_sig_list, (void*)gid);
