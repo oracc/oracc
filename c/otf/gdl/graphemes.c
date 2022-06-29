@@ -808,6 +808,7 @@ gparse(register unsigned char *g, enum t_type type)
 	    }
 	  else
 	    {
+#if 0
 	      if (gdl_grapheme_sign_names)
 		{
 		  if (!suppress_psl_id)
@@ -832,6 +833,7 @@ gparse(register unsigned char *g, enum t_type type)
 		    list_add(gdl_sig_list, (void*)gid);
 		  list_add(gdl_sig_deep, (void*)gid);
 		}
+#endif
 	    }
 
 	  if (noheth)
@@ -1414,6 +1416,15 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  /* 4xLU2 and the like is a rare construct; there is no need
 	     to worry about conserving nodes or efficiency here */
 	  unsigned char buf[2];
+	  /* stash these before punching holes in g and moving it */
+	  if (gdl_grapheme_sign_names)
+	    list_add(gdl_sign_names, pool_copy(g));
+	  if (gdl_grapheme_sigs)
+	    {
+	      unsigned char *p = psl_get_id(g);
+	      list_add(gdl_sig_list, p);
+	      list_add(gdl_sig_deep, p);
+	    }
 	  buf[0] = *g;
 	  buf[1] = '\0';
 	  last_g = np = gtextElem(e_g_o,NULL,lnum,GRAPHEME,buf);
@@ -1423,14 +1434,6 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  g += 2;
 	  if (*g == 0x97)
 	    ++g;
-	  if (gdl_grapheme_sign_names)
-	    list_add(gdl_sign_names, pool_copy(g));
-	  if (gdl_grapheme_sigs)
-	    {
-	      unsigned char *p = pool_copy(g);
-	      list_add(gdl_sig_list, p);
-	      list_add(gdl_sig_deep, p);
-	    }
 	}
       else if (is_compound_base[*g])
 	{
