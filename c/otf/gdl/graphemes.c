@@ -841,10 +841,20 @@ gparse(register unsigned char *g, enum t_type type)
 	      else if (gdl_grapheme_sigs && !inner_qual)
 		{
 		  const char *gid = psl_get_id(g_utf);
-		  /*fprintf(stderr, "[1] %s => %s\n", g_utf, gid);*/
-		  if (!suppress_psl_id)
-		    list_add(gdl_sig_list, (void*)gid);
-		  list_add(gdl_sig_deep, (void*)gid);
+		  if (gid)
+		    {
+		      /*fprintf(stderr, "[1] %s => %s\n", g_utf, gid);*/
+		      if (!suppress_psl_id)
+			list_add(gdl_sig_list, (void*)gid);
+		      list_add(gdl_sig_deep, (void*)gid);
+		    }
+		  else
+		    {
+		      vwarning("%s not found in OGSL", g_utf);
+		      if (!suppress_psl_id)
+			list_add(gdl_sig_list, "q99");
+		      list_add(gdl_sig_deep, "q99");
+		    }
 		}
 	    }
 
@@ -1945,7 +1955,9 @@ static struct grapheme *
 numerical(register unsigned char *g)
 {
   struct grapheme*gp;
-  unsigned char *n, *q, *end = g+xxstrlen(g),*orig_g = g;
+  unsigned char *n, *q, *end = g+xxstrlen(g),*orig_g = g, *gdl_sig_str = NULL;
+
+  gdl_sig_str = pool_copy(g);
   while (*g && '(' != *g && '@' != *g && '~' != *g)
     ++g;
   
@@ -1976,8 +1988,10 @@ numerical(register unsigned char *g)
 	  else
 	    q = NULL;
 	  ++inner_parse;
+	  ++inner_qual;
 	  gp->g.n.n = gparse(n,type_top);
 	  --inner_parse;
+	  --inner_qual;
 	  *gsavec = ')';
 	  if (gp->g.n.n)
 	    {
@@ -2076,6 +2090,8 @@ numerical(register unsigned char *g)
 	      else
 		strcpy((char*)qnum, (char*)sx);
 	    }
+	  if (gdl_grapheme_sigs || gdl_sign_names)
+	    gdl_sig_str = pool_copy(qnum);
 	  r = gtextElem(e_g_r,NULL,lnum,GRAPHEME,gp->g.n.r);
 	  gp->g.n.n = NULL;
 	  gp->xml = build_singleton((unsigned char*)"",g_n,nmods,modsbuf);
@@ -2098,6 +2114,34 @@ numerical(register unsigned char *g)
 	  gp = NULL;
 	}
     }
+
+  if (gdl_sign_names)
+    {
+      const unsigned char *sn = NULL;
+      if (!gdl_sig_str)
+	gdl_sig_str = orig_g;
+      sn = psl_get_sname(gdl_sig_str);
+      if (sn)
+	list_add(gdl_sign_names, (void*)pool_copy(sn));
+      else
+	vwarning("no sign name found for %s", gdl_sig_str);
+    }
+  else if (gdl_grapheme_sigs && !inner_qual)
+    {
+      const char *id = NULL;
+      if (!gdl_sig_str)
+	gdl_sig_str = orig_g;
+      id = psl_get_id(gdl_sig_str);
+      if (id)
+	{
+	  if (!suppress_psl_id)
+	    list_add(gdl_sig_list, (void*)id);
+	  list_add(gdl_sig_deep, (void*)id);
+	}
+      else
+	vwarning("no sign name found for %s", gdl_sig_str);
+    }
+  
   return gp;
 }
 

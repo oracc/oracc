@@ -86,13 +86,13 @@ parse_one_base(struct entry *e, unsigned char *s)
 	  if (*s)
 	    {
 	      for (t = s+strlen((ccp)s); t > s; --t)
-		if (')' == t[-1])
-		  {
-		    --t;
-		    break;
-		  }
-	      if (t > s)
-		*t = '\0';
+		if (!isspace(t[-1]))
+		  break;
+	      if (')' == t[-1])
+		{
+		  --t;
+		  *t = '\0';
+		}
 	      else
 		vwarning("missing ')' from end of alts belonging to pri %s", pri);
 	      process_alt(e, pri, pri_sig, s);

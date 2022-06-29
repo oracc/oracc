@@ -4,5 +4,5 @@
 void
 parse_alias(struct entry *e, unsigned char *s)
 {
-  fprintf(stderr, "alias %s\n", s);
+  /* fprintf(stderr, "alias %s\n", s); */
 }

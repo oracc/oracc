@@ -19,6 +19,7 @@ Hash_table *cbds = NULL;
 
 int sigs = 0;
 
+extern int math_mode;
 extern int cbd(const char *fname);
 
 int
@@ -43,7 +44,7 @@ main(int argc, char **argv)
 #endif
 
   f_log = stderr;
-  no_pi = do_cuneify = use_unicode = 1;
+  math_mode = no_pi = do_cuneify = use_unicode = 1;
   
   galloc_init();
   pool_init();
