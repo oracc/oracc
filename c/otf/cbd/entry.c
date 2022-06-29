@@ -15,6 +15,18 @@ init_entry(void)
 static void
 term_entry(struct entry *e)
 {
+  if (e->b_pri)
+    {
+      hash_free(e->b_pri, NULL);
+      hash_free(e->b_alt, NULL);
+      hash_free(e->b_sig, NULL);
+      e->b_pri = e->b_alt = e->b_sig = e->b_allow = NULL;
+    }
+  if (e->b_allow)
+    {
+      hash_free(e->b_allow, NULL);
+      e->b_allow = NULL;
+    }
 }
 
 unsigned char **

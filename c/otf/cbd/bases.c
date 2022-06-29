@@ -34,6 +34,18 @@ parse_bases(struct entry *e, unsigned char *s)
     parse_one_base(e,s);  
 }
 
+static int
+allowed(struct entry *e, unsigned char *a, unsigned char *b)
+{
+  if (e && e->b_allow)
+    {
+      Hash_table *allowed = hash_find(e->b_allow, a);
+      if (allowed && hash_find(allowed, b))
+	return 1;
+    }
+  return 0;
+}
+
 static void
 parse_one_base(struct entry *e, unsigned char *s)
 {
@@ -49,7 +61,7 @@ parse_one_base(struct entry *e, unsigned char *s)
   if ((sig = gdl_sig(pri,1,1)))
     {
       unsigned char *known_sig = NULL;
-      if ((known_sig = hash_find(e->b_sig, sig)))
+      if ((known_sig = hash_find(e->b_sig, sig)) && !allowed(e, pri, known_sig))
 	{
 	  vwarning("duplicate or equivalent primary base %s ~~ %s", pri, known_sig);
 	}

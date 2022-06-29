@@ -30,3 +30,12 @@
 @sense PN 00
 @end entry
 
+@entry Larsam [1] SN
+@allow ararma = larsam
+@allow ararma{ki} = larsam{ki}
+@bases a-ra-ar-ma{ki}; ararma; ararma{ki}; larsam{ki}
+@form larsa{ki} %sux /larsam{ki} #~
+@form larsa{ki}-me %sux /larsam{ki} #~,meš
+@form larsa{ki}-še₃ %sux /larsam{ki} #~,eše
+@sense SN 1
+@end entry

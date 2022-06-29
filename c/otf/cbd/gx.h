@@ -44,6 +44,7 @@ struct entry {
   Hash_table *b_pri;
   Hash_table *b_alt;
   Hash_table *b_sig;
+  Hash_table *b_allow;
   Hash_table *dcfs;
   List *forms;
   List *senses;
