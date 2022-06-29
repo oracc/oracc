@@ -14,3 +14,11 @@
 @form a₂ /a₂ #~
 @sense N arm
 @end entry
+
+@entry Amar.ezina₃ [00] PN
+@bases amar-isin₂; amar-{d}ezina₃ (amar-{d}ašnanₓ(|ŠE.NUN&NUN|))
+@form amar-isin₂ %sux /amar-isin₂ #~
+@form amar-{d}ašnanₓ(|ŠE.NUN&NUN|) %sux /amar-{d}ezina₃ #~
+@form amar-{d}ezina₃ %sux /amar-{d}ezina₃ #~
+@sense PN 00
+@end entry
