@@ -19,7 +19,7 @@ snsdir=$webdir/cbd/$l/sns
 rm -fr $snsdir
 mkdir -p $snsdir
 xislist=01tmp/$l-xis.lst
-xl 01bld/sux/articles.xml | grep -F '<sense ' | perl -p -e 's/^.*?xis=\"(.*?)\".*$/$1/' >$xislist
+xl 01bld/$l/articles.xml | grep -F '<sense ' | perl -p -e 's/^.*?xis=\"(.*?)\".*$/$1/' >$xislist
 while IFS= read -r xis
 do
     out=$snsdir/$xis.html
