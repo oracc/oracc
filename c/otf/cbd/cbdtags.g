@@ -13,3 +13,5 @@ parts, parse_parts
 bff, parse_bff
 alias, parse_alias
 allow, parse_allow
+note, parse_note
+bib, parse_bib
