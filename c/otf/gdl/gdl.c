@@ -147,7 +147,8 @@ gdl_sig(unsigned char *atf, int frag_ok, int deep)
   if (deep)
     {
       parseme = snbuf = gdl_signnames(atf, frag_ok);
-      /*fprintf(stderr, "%s => %s\n", atf, buf);*/
+      if (verbose)
+	fprintf(stderr, "gdl_signnames: %s => %s\n", atf, parseme);
     }
   else
     parseme = atf;

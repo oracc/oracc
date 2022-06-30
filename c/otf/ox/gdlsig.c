@@ -37,7 +37,7 @@ main(int argc, char **argv)
   const char *fname[2];
   unsigned char *sig;
 
-  options(argc,argv,"bcdgno:p:sux");
+  options(argc,argv,"bcdgno:p:suvx");
 
   if (!stdin_input)
     {
@@ -104,7 +104,7 @@ main(int argc, char **argv)
 }
 
 int major_version = 1; int minor_version = 0;
-const char *prog = "gdlme2";
+const char *prog = "gdlsig";
 const char *usage_string = "";
 void help() { ; }
 int opts(int och,char *oarg)
@@ -138,6 +138,9 @@ int opts(int och,char *oarg)
       break;
     case 'u':
       use_unicode = 1;
+      break;
+    case 'v':
+      verbose = 1;
       break;
     case 'x':
       no_gdl_xids = 0;

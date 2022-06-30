@@ -80,22 +80,25 @@ sH(void *userData, const char *name, const char **atts)
       static int n = 1;
       const char *utf8 = findAttr(atts,"utf8"), *form_xid;
       curr_unitary_sn = curr_form = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
-      form_xid = (char*)npool_copy((const unsigned char *)get_xml_id(atts), psl_pool);
+      curr_xid = form_xid = (char*)npool_copy((const unsigned char *)get_xml_id(atts), psl_pool);
       if (!hash_find(psl,curr_form))
 	{
 	  hash_add(psl,curr_form,&n);
 	  if (form_xid)
 	    hash_add(psl_id,curr_form,form_xid);
 	}
-      curr_sn = npool_copy(sname_append(sign_sn,
-					psl_bounded_sname((unsigned const char *)findAttr(atts,"n"))),
+#if 0
+      curr_sn = npool_copy(curr_form,psl_pool);
+#else
+      curr_sn = npool_copy(sname_append(curr_form,sign_sn),
 			   psl_pool);
+#endif
       hash_add(psl,curr_sn,&n);
       if (*utf8)
 	hash_add(cuneify_tab,
 		 npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool),
 		 npool_copy((unsigned char *)utf8,psl_pool));
-		 
+
     }
   else if (!strcmp(name,"list"))
     {
@@ -128,7 +131,7 @@ sH(void *userData, const char *name, const char **atts)
 			     npool_copy((unsigned char *)utf8,psl_pool));
 		}
 	    }
-	  if (!(sn = hash_find(psl,curr_val)))
+	  if (!(sn = hash_find(psl_v,curr_val)))
 	    {
 	      hash_add(psl_v, curr_val,
 		       npool_copy(psl_bounded_sname(curr_sn),psl_pool));
@@ -141,11 +144,17 @@ sH(void *userData, const char *name, const char **atts)
 		    }
 		}
 	    }
+#if 0
+	  /* If curr_val already has a sign name don't overwrite that;
+	     the form qualification has to be used to access values
+	     that are duplicated in sign and form */
 	  else
 	    {
 	      hash_add(psl_v,curr_val,
-		       npool_copy(sname_append(sn,psl_bounded_sname(curr_sn)),psl_pool));
+		       npool_copy(psl_bounded_sname(sname_append(curr_sn,sn)),
+				  psl_pool));
 	    }
+#endif
 	}
     }
   else if (!strcmp(name,"utf8"))
@@ -301,13 +310,17 @@ psl_get_sname(const unsigned char *value)
       sname = hash_find(psl_v,value);
       if (sname)
 	{
+	  char *plus = NULL;
 	  while (strlen((char*)sname) >= sbuf_alloced)
 	    {
 	      sbuf_alloced += 256;
 	      sbuf = realloc(sbuf,sbuf_alloced*sizeof(char));
 	    }
 	  strcpy((char *)sbuf,(char*)sname+1);
-	  *(strchr((char*)sbuf,'#')) = '\0';
+	  if ((plus = strstr(sbuf,"++")))
+	    *(strchr((char*)sbuf,'+')) = '\0';
+	  else
+	    *(strchr((char*)sbuf,'#')) = '\0';
 	  return sbuf;
 	}
     }
@@ -366,12 +379,12 @@ psl_hex_to_sign(const char *hex)
 static unsigned char *
 sname_append(const unsigned char *sn,const unsigned char *app)
 {
-  while (strlen((const char*)sn)+strlen((const char *)app)+1 >= sname_buf_alloced)
+  while (strlen((const char*)sn)+strlen((const char *)app)+3 >= sname_buf_alloced)
     {
       sname_buf_alloced += 1024;
       sname_buf = realloc(sname_buf,sname_buf_alloced);
     }
-  sprintf((char*)sname_buf,"%s%s",sn,app);
+  sprintf((char*)sname_buf,"%s++%s",sn,app);
   return sname_buf;
 }
 
