@@ -107,6 +107,7 @@ extern int sigs;
 
 extern const char *errmsg_fn;
 
+extern struct cbdpos *cbdpos(const char *str, size_t len);
 extern struct cbdtag *cbdtags(const char *str, size_t len);
 extern unsigned char *tok(unsigned char *s, unsigned char *end);
 extern unsigned char *form_sig(struct entry *e, struct f2 *f2p);

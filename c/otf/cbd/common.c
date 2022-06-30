@@ -60,6 +60,9 @@ cgp_parse(struct cgp *c, unsigned char *s)
     }
   else
     warning("syntax error in CGP: expected ']' to end GW");
+  if (c->pos && !cbdpos((ccp)c->pos, strlen((ccp)c->pos)))
+    vwarning("bad POS %s", c->pos);
+    
 }
 
 unsigned char *
