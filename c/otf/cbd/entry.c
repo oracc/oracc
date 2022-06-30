@@ -8,6 +8,7 @@ static struct entry *
 init_entry(void)
 {
   struct entry *e = calloc(1,sizeof(struct entry));
+  e->aliases = list_create(LIST_SINGLE);
   e->forms = list_create(LIST_SINGLE);
   e->senses = list_create(LIST_SINGLE);
   return e;
@@ -34,23 +35,62 @@ parse_entry(struct cbd *c, unsigned char **ll)
 {
   unsigned char *s = NULL, end;
   struct entry *e = NULL;
-  int plus = 0;
+  static struct cgp cgp;
+
   if (ll[0][0] == '+')
-    {
-      plus = 1;
-      s = &ll[0][1];
-    }
+    s = &ll[0][1];
   else
     s = ll[0];
+
   if (!strncmp((ccp)s, "@entry", strlen("@entry")))
     {
+      unsigned char *cgpstr = NULL;
       e = init_entry();
       e->owner = c;
       e->lang = c->lang;
       list_add(c->entries, e);
-      parse_cgp(e, s);
+
+      s = ll[0];
+      while (!isspace(*s))
+	{
+	  switch (*s)
+	    {
+	    case '+':
+	      e->plus = 1;
+	      ++s;
+	      break;
+	    case '!':
+	      e->bang = 1;
+	      ++s;
+	      break;
+	    case '*':
+	      e->usage = 1;
+	      ++s;
+	      break;
+	    default:
+	      if (!strncmp((ccp)s,"@entry",strlen("@entry")))
+		s += strlen("@entry");
+	      else
+		warning("junk detected in @entry line");
+	      break;
+	    }
+	}
+
+      memset(&cgp,'\0',sizeof(struct cgp));
+      cgp_parse(&cgp, s);
+      cgpstr = cgp_cgp_str(&cgp,0);
+      hash_add(c->hentries, npool_copy(cgpstr, e->owner->pool), e);
+      free(cgpstr);
+      cgpstr = NULL;
+
+      cgp_entry(&cgp, e);
+      if (strchr((ccp)e->cf, ' '))
+	e->compound = 1;
+
       if (verbose)
 	fprintf(stderr, "@entry %s[%s]%s\n", e->cf, e->gw, e->pos);
+      if (entries)
+	printf("%s [%s] %s\n", e->cf, e->gw, e->pos);
       ++ll;
       ++lnum;
     }
@@ -87,13 +127,13 @@ parse_entry(struct cbd *c, unsigned char **ll)
 		}
 	      else
 		{
-		  unsigned char *tag = &ll[0][1], *es, save = '\0';
+		  unsigned char *tag = &ll[0][1], *es /*, save = '\0'*/;
 		  struct cbdtag *p = NULL;
 		  for (es = tag; *es && !isspace(*es); ++es)
 		    ;
 		  if (*es)
 		    {
-		      save = *es;
+		      /*save = *es;*/
 		      *es++ = '\0';
 		      while (isspace(*es))
 			++es;
@@ -140,45 +180,4 @@ parse_entry(struct cbd *c, unsigned char **ll)
 	}
     }
   return ll;
-}
-
-void
-parse_cgp(struct entry *e, unsigned char *s)
-{
-  unsigned char *t = NULL;
-  while (!isspace(*s))
-    ++s;
-  while (isspace(*s))
-    ++s;
-  e->cf = s;
-  t = s + strlen((ccp)s);
-  while (t > s && isspace(t[-1]))
-    --t;
-  *t = '\0';
-  while (t > s && !isspace(t[-1]))
-    --t;
-  e->pos = t;
-  while (t > s && isspace(t[-1]))
-    --t;
-  if (']' == t[-1])
-    {
-      --t;
-      *t = '\0';
-      while (t > s && '[' != *t)
-	--t;
-      if (t == s)
-	warning("syntax error in @entry: missing [ at start of GW");
-      else
-	{
-	  *t = '\0';
-	  e->gw = t+1;
-	  if (strchr((ccp)s,'[') || strchr((ccp)s,']'))
-	    warning("syntax error in @entry: too many [ or ]");
-	  while (isspace(t[-1]))
-	    --t;
-	  *t = '\0';
-	}
-    }
-  else
-    warning("syntax error in @entry: expected ']' to end GW");
 }

@@ -31,6 +31,7 @@
 @end entry
 
 @entry Larsam [1] SN
+@alias Ararma[1]SN
 @allow ararma = larsam
 @allow ararma{ki} = larsam{ki}
 @bases a-ra-ar-ma{ki}; ararma; ararma{ki}; larsam{ki}

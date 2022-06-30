@@ -17,6 +17,7 @@ const char *errmsg_fn = NULL;
 int stdin_input = 0;
 Hash_table *cbds = NULL;
 
+int entries = 0;
 int sigs = 0;
 
 extern int math_mode;
@@ -27,7 +28,7 @@ main(int argc, char **argv)
 {
   const char *fname[2];
 
-  options(argc,argv,"bcdgno:p:suxv");
+  options(argc,argv,"esv");
 
   /* no way to set stdin_input atm */
   if (!stdin_input)
@@ -53,34 +54,9 @@ main(int argc, char **argv)
   curr_lang = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
   cbds = hash_create(1);
   with_textid = 0;
+
   cbd(file);
   
-  /*current_state = set_state(s_global,s_text);*/
-#if 0
-  if (!project)
-    {
-      project = "cdli";
-      load_lang_in_project(current_state.lang);
-      charset_init_lang(curr_data->this);
-      curr_data->cset = curr_data->this->cset[current_state.mode];
-    }
-
-  fputs("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n",f_xml);
-  if (stdin_input)
-    {
-      runexpat(i_stdin,NULL,gdlme_sH,gdlme_eH);
-    }
-  else
-    {
-      if (!access(fname[0],R_OK))
-	runexpat(i_list,fname,gdlme_sH,gdlme_eH);
-      else
-	fprintf(f_log,"gdlme: can't open %s for input\n",fname[0]);
-    }
-
-  (void)cbd_strip_backslash(NULL);
-#endif
-
   lang_term();
   gdl_term();
   pool_term();
@@ -103,6 +79,9 @@ int opts(int och,char *oarg)
     case 'c':
       break;
     case 'd':
+      break;
+    case 'e':
+      entries = 1;
       break;
     case 'g':
       break;

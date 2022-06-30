@@ -30,9 +30,17 @@ struct cbd {
   struct xpd *xpd;
   List *letters;
   List *entries;
+  Hash_table *hentries;
+  Hash_table *haliases;
   Hash_table *simple;
   Hash_table *cofs;
   Hash_table *psus;
+};
+
+struct cgp {
+  unsigned const char *cf;
+  unsigned const char *gw;
+  unsigned const char *pos;
 };
 
 struct entry {
@@ -41,6 +49,8 @@ struct entry {
   unsigned const char *pos;
   unsigned const char *eid;
   unsigned const char *lang;
+  unsigned const char *spread;
+  unsigned const char *closed;
   Hash_table *b_pri;
   Hash_table *b_alt;
   Hash_table *b_sig;
@@ -51,11 +61,18 @@ struct entry {
   List *aliases;
   List *bffs;
   List *bib;
-  List *isslp;
+  List *isslp;  
+  int bang;
   int plus;
   int usage;
   int compound;
   struct cbd *owner;
+};
+
+struct alias {
+  struct cgp *c;
+  unsigned const char *spread;
+  unsigned const char *closed;
 };
 
 struct sense {
@@ -85,6 +102,9 @@ struct cbdtag {
   void (*parser)(struct entry *e, unsigned char *s);
 };
 
+extern int entries;
+extern int sigs;
+
 extern const char *errmsg_fn;
 
 extern struct cbdtag *cbdtags(const char *str, size_t len);
@@ -92,20 +112,27 @@ extern unsigned char *tok(unsigned char *s, unsigned char *end);
 extern unsigned char *form_sig(struct entry *e, struct f2 *f2p);
 extern void untab(unsigned char *s);
 
+extern unsigned char *cgp_cgp_str(struct cgp *c, int spread);
+extern unsigned char *cgp_entry_str(struct entry *e, int spread);
+extern unsigned char *cgp_str(unsigned const char *cf,
+			      unsigned const char *gw,
+			      unsigned const char *pos, int spread);
+extern void cgp_entry(struct cgp *c, struct entry *e);
+extern void cgp_parse(struct cgp *c, unsigned char *s);
+
 extern int parse_dcf(struct entry *e, unsigned char *s);
 extern unsigned char **parse_header(struct cbd *c, unsigned char **ll);
 extern unsigned char **parse_entry(struct cbd *c, unsigned char **ll);
-void parse_cgp(struct entry *c, unsigned char *s);
-void parse_bases(struct entry *e, unsigned char *s);
-void parse_form(struct entry *e, unsigned char *s);
-void parse_sense(struct entry *e, unsigned char *s);
-void parse_alias(struct entry *e, unsigned char *s);
-void parse_allow(struct entry *e, unsigned char *s);
-void parse_inote(struct entry *e, unsigned char *s);
-void parse_isslp(struct entry *e, unsigned char *s);
-void parse_bff(struct entry *e, unsigned char *s);
-void parse_parts(struct entry *e, unsigned char *s);
+extern void parse_bases(struct entry *e, unsigned char *s);
+extern void parse_form(struct entry *e, unsigned char *s);
+extern void parse_sense(struct entry *e, unsigned char *s);
+extern void parse_alias(struct entry *e, unsigned char *s);
+extern void parse_allow(struct entry *e, unsigned char *s);
+extern void parse_inote(struct entry *e, unsigned char *s);
+extern void parse_isslp(struct entry *e, unsigned char *s);
+extern void parse_bff(struct entry *e, unsigned char *s);
+extern void parse_parts(struct entry *e, unsigned char *s);
 /*
-void parse_(unsigned char *s);
+extern void parse_(unsigned char *s);
 */
 #endif
