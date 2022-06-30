@@ -516,7 +516,7 @@ gparse(register unsigned char *g, enum t_type type)
     case g_v:
       {
 	const unsigned char *gcheck = g;
-	const unsigned char *g_ok = g;
+	const unsigned char *g_ok = orig;
 	
 	if (cbd_rules && strchr(cc(g),'*'))
 	  {
@@ -596,6 +596,8 @@ gparse(register unsigned char *g, enum t_type type)
 		  }
 		else
 		  {
+		    if (g_ok)
+		      g_ok = pool_copy(g_ok);
 		    if (noheth || nodots)
 		      {
 			gp = singleton((unsigned char *)strdup((char*)(noheth ? noheth : nodots)),
@@ -624,10 +626,14 @@ gparse(register unsigned char *g, enum t_type type)
 		exit_status = 1;
 		--status;
 	      }
+	    if (g_ok)
+	      g_ok = pool_copy(g_ok);
 	    gp = singleton(g,g_v);
 	  }
 	else
 	  {
+	    if (g_ok)
+	      g_ok = pool_copy(g_ok);
 	    gp = singleton(g,type);
 	  }
 	if (g_ok)
@@ -683,7 +689,8 @@ gparse(register unsigned char *g, enum t_type type)
 	    }
 	  else
 	    {
-	      vwarning("sign list name %s not in OGSL", g);
+	      if (!inner_qual)
+		vwarning("sign list name %s not in OGSL", g);
 	    }
 	}
       else if (curr_lang->snames)
@@ -2120,7 +2127,10 @@ numerical(register unsigned char *g)
       const unsigned char *sn = NULL;
       if (!gdl_sig_str)
 	gdl_sig_str = orig_g;
-      sn = psl_get_sname(gdl_sig_str);
+      if (!psl_is_sname(gdl_sig_str))
+	sn = psl_get_sname(gdl_sig_str);
+      else
+	sn = gdl_sig_str;
       if (sn)
 	list_add(gdl_sign_names, (void*)pool_copy(sn));
       else

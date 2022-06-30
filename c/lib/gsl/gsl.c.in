@@ -81,12 +81,16 @@ sH(void *userData, const char *name, const char **atts)
       const char *utf8 = findAttr(atts,"utf8"), *form_xid;
       curr_unitary_sn = curr_form = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
       curr_xid = form_xid = (char*)npool_copy((const unsigned char *)get_xml_id(atts), psl_pool);
+      if (!form_xid || !*form_xid)
+	curr_xid = form_xid = (char*)npool_copy((unsigned char *)findAttr(atts,"ref"),psl_pool);
+
       if (!hash_find(psl,curr_form))
 	{
 	  hash_add(psl,curr_form,&n);
 	  if (form_xid)
 	    hash_add(psl_id,curr_form,form_xid);
 	}
+
 #if 0
       curr_sn = npool_copy(curr_form,psl_pool);
 #else
@@ -105,7 +109,8 @@ sH(void *userData, const char *name, const char **atts)
       if (curr_sn)
 	{
 	  const unsigned char *n = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
-	  hash_add(psl, n, curr_sn);		   
+	  hash_add(psl, n, curr_sn);
+	  hash_add(psl_id, n, curr_xid);
 	}
     }
   else if (!strcmp(name,"v"))
