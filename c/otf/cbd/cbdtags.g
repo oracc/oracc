@@ -15,3 +15,5 @@ alias, parse_alias
 allow, parse_allow
 note, parse_note
 bib, parse_bib
+file, parse_file
+disc, parse_disc

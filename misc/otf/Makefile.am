@@ -15,6 +15,7 @@ scriptdata_DATA = bib-ODT.xsl cat-ODT.xsl doc-split.xsl gdl-ODT.xsl \
 	xtf-ODT-serial.xsl \
 	otf-ODT-plain.xsl \
 	otf-ODT-plain-lib.xsl \
+	otf-HTML.xsl \
 	cat-ODT-plain.xsl \
 	xtf-ODT-plain.xsl \
 	xtr-ODT-plain.xsl \
