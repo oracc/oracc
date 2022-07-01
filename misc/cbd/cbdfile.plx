@@ -66,8 +66,11 @@ foreach my $fnode (@filenodes) {
     my $wid = xid($fnode->parentNode());
     my $outname = "$outbase/$wid-00.xhtml";
     my $fname = $fnode->getAttribute('name');
-    my $xiname = "$ENV{'ORACC_BUILDS'}/$project/02www/cbd/$lang/fls/$wid-00.html";
-    $fnode->setAttribute('href',$xiname);
+    my $xiname = "$ENV{'ORACC_BUILDS'}/$project/02www/cbd/$lang/fls/$wid-00.xhtml";
+    my $xi = $x->createElement('include');
+    $xi->setNamespace('http://www.w3.org/2001/XInclude','xi',1);
+    $xi->setAttribute('href',$xiname);
+    $fnode->parentNode()->replaceChild($xi,$fnode);
     my $type = type_of($fname);
     if (!$type) {
 	warn "$0: type-detection failed on file $fname\n";
@@ -90,7 +93,20 @@ foreach my $fnode (@filenodes) {
     }
 }
 
+# duplicate the built fls data in the webdir so it gets recopied at
+# install time--this means that further processing of articles.xml
+# works with the 02www version but then when that is hosed a
+# replacement set of files is installed again.
 
+system 'mkdir', '-p', "01bld/www/cbd/$lang";
+system 'cp', '-a', "02www/cbd/$lang/fls", "01bld/www/cbd/$lang";
+
+open(X,">$glo");
+binmode STDOUT, ':raw';
+my $xs = $x->toString();
+Encode::_utf8_on($xs);
+print X $xs;
+close(X);
 
 ################################################################################
 

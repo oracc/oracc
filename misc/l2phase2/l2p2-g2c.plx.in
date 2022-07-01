@@ -127,6 +127,15 @@ augment {
 		    $dcf->firstChild()->setData($cf_text);
 		}
 	    }
+
+	    my @f = tags($anode,$CBD,'file');
+	    if ($#f >= 0) {
+		warn "$0: merging file nodes from .cbd into .g2x\n";
+		foreach my $f (reverse @f) {
+		    addnode('after',$enode,'pos',$f);
+		}
+	    }
+	    
 #	    my $oid = $enode->getAttribute('oid');
 #	    if ($oid) {
 #		$anode->setAttribute('oid',$oid);

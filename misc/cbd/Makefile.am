@@ -34,10 +34,12 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	cbd-drop-qpn.plx cbd-nn-alias-tab.plx sigoid.plx \
 	forms-fix-bases.plx cbdcompareforms.plx forms-fix-forms.plx \
 	cbd-why-because.plx cbd-parts-history.plx cbd-ripforms.plx \
-	forms-chars-check.plx cbdfile.plx
+	forms-chars-check.plx cbdfile.plx art2div.sh cbdids.plx
 
 # cbd-glo-fix.plx cbd-lem-fix.plx # now in old/
 
-scriptdata_DATA = entry-counts.xsl
+scriptdata_DATA = entry-counts.xsl art-HTML-div.xsl
+
 data_DATA = 
+
 schema_DATA = 
