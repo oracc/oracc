@@ -9,7 +9,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 my @tags = qw/letter entry oid parts bff bases stems phon root form length norms
     sense equiv inote prop end isslp bib defn note alias
     pl_coord pl_id pl_uid was moved project lang name collo proplist prop ok
-    allow/;
+    allow file/;
 
 my %tags = (); @tags{@tags} = ();
 
@@ -48,6 +48,7 @@ my %validators = (
     pl_uid=>\&v_pl_uid,
     pl_coord=>\&v_pl_coord,
     length=>\&v_length,
+    file=>\&v_file,
     ok=>\&v_ok,
     );
 
@@ -1320,6 +1321,15 @@ sub v_isslp {
 
 sub v_equiv {
     my($tag,$arg) = @_;
+}
+
+sub v_file {
+    my($tag,$arg) = @_;
+    if (-r $arg) {
+	pp_notice("FILE $arg is present and readable");
+    } else {
+	pp_warn("FILE $arg not found");
+    }
 }
 
 sub v_inote {
