@@ -26,6 +26,10 @@ if [ -d 01tmp/lex/cbd ]; then
     cp 01tmp/lex/*provides*.xml 02www
 fi
 
+if [ -r 01bld/word-pages.esp ]; then
+    esp2-word-pages.plx
+fi
+
 # if we are using OIDs we need to index the files
 oid=`oraccopt . cbd-oid`
 if [ "$oid" == "yes" ] ; then

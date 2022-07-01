@@ -5,7 +5,7 @@
     xmlns:cbd="http://oracc.org/ns/cbd/1.0"
     xmlns:xh="http://www.w3.org/1999/xhtml"
     xmlns="http://www.w3.org/1999/xhtml"
-    exclude-result-prefixes="esp"
+    exclude-result-prefixes="cbd"
     >
 
 <xsl:include href="xpd.xsl"/>
