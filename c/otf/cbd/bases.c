@@ -49,7 +49,7 @@ allowed(struct entry *e, unsigned char *a, unsigned char *b)
 static void
 parse_one_base(struct entry *e, unsigned char *s)
 {
-  unsigned char *pri, *alts, *t, *sig, *pri_sig;
+  unsigned char *pri, *t, *sig, *pri_sig;
   pri = s;
   while (*s && !isspace(*s))
     ++s;
@@ -86,7 +86,6 @@ parse_one_base(struct entry *e, unsigned char *s)
 	  ++s;
 	  while (isspace(*s))
 	    ++s;
-	  alts = s;
 	  while ((t = (ucp)strstr((ccp)s, ", ")))
 	    {
 	      *t = '\0';

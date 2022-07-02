@@ -11,14 +11,16 @@
 #include "pool.h"
 #include "npool.h"
 #include "gx.h"
+#include "sx.h"
 
 const char *errmsg_fn = NULL;
 
-int stdin_input = 0;
-Hash_table *cbds = NULL;
+const char *outfile = NULL;
+FILE *f_out = NULL;
 
-int entries = 0;
-int sigs = 0;
+int filter = 0;
+int sigsort = 1;
+int siginst = 0;
 
 extern int math_mode;
 extern int cbd(const char *fname);
@@ -26,25 +28,13 @@ extern int cbd(const char *fname);
 int
 main(int argc, char **argv)
 {
-  options(argc,argv,"esv");
-
-#if 1
-  file = argv[optind];
-#else
-  const char *fname[2];
-
-  /* no way to set stdin_input atm */
-  if (!stdin_input)
-    {
-      fname[0] = file = argv[optind];
-      fname[1] = NULL;
-    }
+  struct sigfile *sigfile = NULL;
+  options(argc,argv,"io:sv");
 
   if (outfile)
-    f_xml = outfp = xfopen(outfile,"w");
+    f_out = xfopen(outfile,"w");
   else
-    f_xml = stdout;
-#endif
+    f_out = stdout;
 
   f_log = stderr;
   math_mode = no_pi = do_cuneify = use_unicode = 1;
@@ -54,16 +44,24 @@ main(int argc, char **argv)
   tree_init();
   gdl_init();
   curr_lang = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
-  cbds = hash_create(1);
+  /*cbds = hash_create(1);*/
   with_textid = 0;
 
-  cbd(file);
-  
+  sigfile = sigload(file);
+
+#if 0
+  if (sigsort)
+    sigdump(sigfile);
+  else if (siginst)
+    sig_tis(sigfile);
+#endif
+
   lang_term();
   gdl_term();
   pool_term();
   tree_term(1);
   galloc_term();
+
   return 1;
 }
 
@@ -82,19 +80,21 @@ int opts(int och,char *oarg)
       break;
     case 'd':
       break;
-    case 'e':
-      entries = 1;
+    case 'f':
+      filter = 1;
       break;
     case 'g':
       break;
-    case 'n':
+    case 'i':
+      siginst = 1;
       break;
     case 'o':
+      outfile = optarg;
       break;
     case 'p':
       break;
     case 's':
-      sigs = 1;
+      sigsort = 1;
       break;
     case 'v':
       verbose = 1;

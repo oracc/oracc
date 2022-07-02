@@ -9,5 +9,5 @@ parse_alias(struct entry *e, unsigned char *s)
   cgp_parse(a->c, s);
   printf("alias => %s [ %s ] %s\n", a->c->cf, a->c->gw, a->c->pos);
   list_add(e->aliases, a);
-  hash_add(e->owner->haliases, a, e);
+  hash_add(e->owner->haliases, s, e);
 }

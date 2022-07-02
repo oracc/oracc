@@ -5,13 +5,13 @@ AM_CFLAGS=-pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=libcbd.la
 
-bin_PROGRAMS=gx
+bin_PROGRAMS=gx sx
 
 libcbd_la_SOURCES = \
 	common.c cbd.c header.c entry.c dcf.c form.c \
 	sense.c inote.c isslp.c allow.c alias.c bff.c \
-	parts.c bases.c	sig.c \
-	cbdtags.c cbdpos.c
+	parts.c bases.c	sig.c file.c note.c bib.c disc.c \
+	cbdtags.c cbdpos.c sigops.c
 
 AM_CPPFLAGS=\
 	-I@top_srcdir@/c/otf/{atf,cdf,chr,gdl,lib,lng,run,ox} \
@@ -48,3 +48,8 @@ gx_SOURCES = \
 	gx.c globals.c 
 
 gx_LDADD = $(xLDADD)
+
+sx_SOURCES = \
+	sx.c globals.c 
+
+sx_LDADD = $(xLDADD)

@@ -119,20 +119,27 @@ extern unsigned char *cgp_str(unsigned const char *cf,
 			      unsigned const char *gw,
 			      unsigned const char *pos, int spread);
 extern void cgp_entry(struct cgp *c, struct entry *e);
+extern unsigned char *slurp(const char *caller, const char *fname, ssize_t *fsize);
 extern void cgp_parse(struct cgp *c, unsigned char *s);
+extern unsigned char *check_bom(unsigned char *s);
+extern unsigned char **setup_lines(unsigned char *ftext);
 
 extern int parse_dcf(struct entry *e, unsigned char *s);
 extern unsigned char **parse_header(struct cbd *c, unsigned char **ll);
 extern unsigned char **parse_entry(struct cbd *c, unsigned char **ll);
-extern void parse_bases(struct entry *e, unsigned char *s);
-extern void parse_form(struct entry *e, unsigned char *s);
-extern void parse_sense(struct entry *e, unsigned char *s);
 extern void parse_alias(struct entry *e, unsigned char *s);
 extern void parse_allow(struct entry *e, unsigned char *s);
+extern void parse_bases(struct entry *e, unsigned char *s);
+extern void parse_bff(struct entry *e, unsigned char *s);
+extern void parse_bib(struct entry *e, unsigned char *s);
+extern void parse_disc(struct entry *e, unsigned char *s);
+extern void parse_file(struct entry *e, unsigned char *s);
+extern void parse_form(struct entry *e, unsigned char *s);
 extern void parse_inote(struct entry *e, unsigned char *s);
 extern void parse_isslp(struct entry *e, unsigned char *s);
-extern void parse_bff(struct entry *e, unsigned char *s);
+extern void parse_note(struct entry *e, unsigned char *s);
 extern void parse_parts(struct entry *e, unsigned char *s);
+extern void parse_sense(struct entry *e, unsigned char *s);
 /*
 extern void parse_(unsigned char *s);
 */
