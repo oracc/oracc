@@ -126,7 +126,7 @@ my %stems = (); @stems{@stems} = ();
 
 my @tags = qw/entry oid alias parts allow bases bff collo conts morphs morph2s moved phon prefs root 
 	      form length norms sense stems equiv inote prop end isslp bib was
-	      defn note pl_coord pl_id pl_uid proplist/;
+	      defn note pl_coord pl_id pl_uid proplist file/;
 my %tags = (); @tags{@tags} = ();
 
 my %fseq = ();
@@ -757,6 +757,11 @@ acdentry {
 	}
     } else {
 	bad('#init',"no 'entry' field");
+    }
+
+    if ($e{'file'}) {
+	my @n = @{$e{'file'}};
+	push @ret, "<file name=\"$n[0]\"/>";
     }
 
     if ($e{'root'}) {

@@ -21,6 +21,7 @@ fi
 
 inlinesenses=`oraccopt . cbd-inline-senses`
 lexdata=`oraccopt . cbd-lex-data`
+cbdfiles=`oraccopt . cbd-use-files`
 
 echo l2p3.sh: using configuration file $xcf
 
@@ -33,11 +34,17 @@ if [ "$g2c" != "" ]; then
 	if [ -r $g2c ]; then
 	    ldir=`dirname $g2c`
 	    l=`basename $ldir`
+	    # needs to happen before l2-glomanager 
+	    if [ "$cbdfiles" == "yes" ]; then
+		echo editing file tags into xincludes
+		cbdfile.plx -w 02www -l $l
+	    fi	    
 	    echo producing web version of $l
 #	    echo "l2-glomanager -webdir=$webdir -conf $xcf -cbdlang $l $*"
 	    l2-glomanager.plx -webdir=$webdir -conf $xcf -cbdlang $l $*
 #	    echo g2c-sig-map
 	    xsltproc $ORACC/lib/scripts/g2c-sig-map.xsl 01bld/$l/articles.xml >$webdir/cbd/$l/$l.map
+	    
 #	    echo xff
 	    xfftab=`oraccopt . cbd-forms-table`
 	    if [ "$xfftab" = 'yes' ]; then
@@ -47,7 +54,7 @@ if [ "$g2c" != "" ]; then
 		l2p3-inline-senses.sh $webdir $l
 	    fi
 	    if [ "$lexdata" == "yes" ]; then
-		lex-xincludes.plx $webdir $l 2>lex-includes.log
+		lex-xincludes.plx 02www/cbd $l 2>lex-includes.log
 	    fi	    
 	fi
     done

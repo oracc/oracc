@@ -480,6 +480,12 @@ p.cbdtoc-entry { margin: 0px; padding: 0px; padding-bottom: 4px; text-align: cen
 .iheader { font-size: 90%; font-weight: bold; padding-right: 1em; 
 	 }
 
+div.otf { width: 90%; margin-left: 1em; }
+.otf p  { padding-top: 0px; margin-top: .5em; 
+          padding-bottom: 0px; margin-bottom: 0px;
+	  margin-left: 1em;
+}
+
 p.periods { padding-top: 0px; margin-top: .5em; 
 	    padding-bottom: 0px; margin-bottom: 0px;
 	    margin-left: 3em; text-indent: -3em;

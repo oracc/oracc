@@ -41,7 +41,7 @@
 <xsl:include href="xpd.xsl"/>
 
 <xsl:template match="office:body">
-  <div>
+  <div class="otf">
     <xsl:apply-templates mode="go"/>
   </div>
 </xsl:template>

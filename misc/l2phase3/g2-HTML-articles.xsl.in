@@ -224,6 +224,8 @@
     
   </div>
 
+  <xsl:apply-templates select="xh:div|xi:include"/>
+  
   <xsl:if test="cbd:pl_id">
     <xsl:call-template name="geo"/>
   </xsl:if>
@@ -1157,7 +1159,7 @@
   </xsl:choose>
   <xsl:if test="$cbd-inline-senses='yes'">
     <xsl:choose>
-      <xsl:when test="@icount &lt; 101">
+      <xsl:when test="@icount &lt; 201">
 	<xsl:variable name="src"
 		      select="concat('@@ORACC_BUILDS@@/www/',$project,'/cbd/',/*/@xml:lang,'/sns/',@xis,'.html')"/>
 	<!--<xsl:message>inlining senses from <xsl:value-of select="$src"/></xsl:message>-->
@@ -1401,6 +1403,16 @@
       </xsl:otherwise>
     </xsl:choose>
   </a>
+</xsl:template>
+
+<xsl:template match="xh:div">
+  <xsl:message>g2-HTML-articles triggered xh:div</xsl:message>
+  <xsl:copy-of select="."/>
+</xsl:template>
+
+<xsl:template match="xi:include">
+  <xsl:message>g2-HTML-articles triggered xi:include</xsl:message>
+  <xsl:copy-of select="."/>
 </xsl:template>
 
 <xsl:template name="geo">
