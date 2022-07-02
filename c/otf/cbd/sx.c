@@ -13,6 +13,8 @@
 #include "gx.h"
 #include "sx.h"
 
+struct sig_context *global_scp = NULL;
+
 const char *errmsg_fn = NULL;
 
 const char *outfile = NULL;
@@ -47,15 +49,25 @@ main(int argc, char **argv)
   /*cbds = hash_create(1);*/
   with_textid = 0;
 
+  file = argv[optind];
+  
   sigfile = sigload(file);
 
+  if (sigfile)
+    {
+
+      if (sigsort)
+	{
+	  sigindex(sigfile);
+	  sigdump(sigfile);
+	}
+
 #if 0
-  if (sigsort)
-    sigdump(sigfile);
   else if (siginst)
     sig_tis(sigfile);
 #endif
-
+  
+    }
   lang_term();
   gdl_term();
   pool_term();
@@ -67,7 +79,7 @@ main(int argc, char **argv)
 
 int major_version = 1; int minor_version = 0;
 const char *project = NULL;
-const char *prog = "gx";
+const char *prog = "sx";
 const char *usage_string = "";
 void help() { ; }
 int opts(int och,char *oarg)
