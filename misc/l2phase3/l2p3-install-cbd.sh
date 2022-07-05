@@ -26,7 +26,7 @@ if [ -d 01tmp/lex/cbd ]; then
     cp 01tmp/lex/*provides*.xml 02www
 fi
 
-if [ -r 01bld/word-pages.esp ]; then
+if [ -r 00etc/word-pages.lst ]; then
     esp2-word-pages.plx
 fi
 
