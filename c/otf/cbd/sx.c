@@ -13,7 +13,7 @@
 #include "gx.h"
 #include "sx.h"
 
-struct sig_context *global_scp = NULL;
+extern struct sig_context *global_scp;
 
 const char *errmsg_fn = NULL;
 

@@ -12,6 +12,8 @@
 #include "npool.h"
 #include "globals.h"
 
+extern unsigned char *gdl_signnames(unsigned char *atf, int frag_ok);
+
 const char *outfile = NULL;
 FILE *outfp = NULL;
 extern int backslash_is_formvar;

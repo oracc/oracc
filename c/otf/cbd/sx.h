@@ -1,5 +1,5 @@
 #ifndef _SIGOPS_H
-#define _SIGOPT_H
+#define _SIGOPS_H
 
 #include <f2.h>
 #include <sigs.h>

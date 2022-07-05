@@ -78,7 +78,7 @@ is_signlist(register const unsigned char *s)
   switch (*s)
     {
     case 'A':
-      return !xstrncmp(s,"ABZ",3);
+      return !xstrncmp(s,"ABZ",3) && isdigit(s[3]);
     case 'B':
       return !xstrncmp(s,"BAU",3);
     case 'E':
@@ -88,7 +88,7 @@ is_signlist(register const unsigned char *s)
     case 'K':
       return !xstrncmp(s,"KWU",3);
     case 'L':
-      return !xstrncmp(s,"LAK",3);
+      return !xstrncmp(s,"LAK",3) && isdigit(s[3]);
     case 'M':
       return !s[1] || isdigit(s[1]) || !xstrncmp(s,"MEA",3) || !xstrncmp(s,"MZL",3);
     case 'N': /* cheat and use signlist mechanism to suppress
