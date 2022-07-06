@@ -49,7 +49,7 @@ allowed(struct entry *e, unsigned char *a, unsigned char *b)
 static void
 parse_one_base(struct entry *e, unsigned char *s)
 {
-  unsigned char *pri, *t, *sig, *pri_sig;
+  unsigned char *pri, *t, *sig, *pri_sig = NULL;
   pri = s;
   while (*s && !isspace(*s))
     ++s;

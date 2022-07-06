@@ -69,7 +69,12 @@ cgp_parse(struct cgp *c, unsigned char *s)
 unsigned char *
 cgp_str(unsigned const char *cf, unsigned const char *gw, unsigned const char *pos, int spread)
 {
-  char *tmp = malloc(3+(spread*2)+strlen((ccp)cf)+strlen((ccp)gw)+strlen((ccp)pos));
+  char *tmp = NULL;
+
+  if (!cf || !gw || !pos)
+    return NULL;
+
+  tmp =  malloc(3+(spread*2)+strlen((ccp)cf)+strlen((ccp)gw)+strlen((ccp)pos));
   if (spread)
     sprintf(tmp, "%s [%s] %s", cf, gw, pos);
   else

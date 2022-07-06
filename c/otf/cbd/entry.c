@@ -56,7 +56,7 @@ parse_entry(struct cbd *c, unsigned char **ll)
 	  switch (*s)
 	    {
 	    case '+':
-	      e->plus = 1;
+	      edit_add(ll, e);
 	      ++s;
 	      break;
 	    case '!':
@@ -103,6 +103,22 @@ parse_entry(struct cbd *c, unsigned char **ll)
     {
       if (ll[0][0])
 	{
+	  int plus = 0;
+	  unsigned char *plus_orig = NULL;
+	  if ('+' == ll[0][0])
+	    {
+	      unsigned char *dst, *src;
+	      plus = 1;
+	      plus_orig = (ucp)strdup((ccp)ll[0]);
+	      for (dst = ll[0], src = &ll[0][1]; *src;)
+		*dst++ = *src++;
+	      *dst = '\0';
+	      if (strncmp((ccp)ll[0],"@sense", strlen("@sense")))
+		{
+		  warning("misplaced + will be ignored (only valid on +@entry or +@sense");
+		  plus = 0;
+		}
+	    }
 	  if (ll[0][0] == '@')
 	    {
 	      if (!strncmp((ccp)ll[0], "@end", strlen("@end")))
@@ -142,6 +158,14 @@ parse_entry(struct cbd *c, unsigned char **ll)
 		    {
 		      /* fprintf(stderr, "found %s with parser %p\n", tag, (void*)p->parser); */
 		      (p->parser)(e,es);
+		      if (plus)
+			{
+			  /* This only happens with +@sense which
+			     means edit_add's context can never look
+			     at the previous pointer barring a later
+			     coding error */
+			  edit_add(&plus_orig, e);
+			}
 		    }
 		  else if (parse_dcf(e, es))
 		    {
@@ -161,7 +185,7 @@ parse_entry(struct cbd *c, unsigned char **ll)
 	    }
 	  else if (ll[0][0] == '>')
 	    {
-	      /* edit tag processing goes here */
+	      edit_add(ll, e);
 	      ++ll;
 	      ++lnum;
 	    }

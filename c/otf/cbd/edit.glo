@@ -1,0 +1,40 @@
+@project epsd2
+@name epsd2/sux
+@lang sux
+
+@entry a [water] N
+@bases a (e₄)
+@form a /a #~
+@form a-a /a #~,a
+@sense N water
+@end entry
+
+@entry e [water] N
+>a[water]N
+@bases a (e₄)
+@form a /a #~
+@sense N water
+@end entry
+
+@entry illu [water] N
+>>a[water]N
+@bases a (e₄)
+@form a /a #~
+@sense N water
+@end entry
+
+@entry illu [water] N
+>>! a[water]N
+@bases a (e₄)
+@form a /a #~
+@sense N water
++@sense N sperm
+@end entry
+
++@entry a [arm] N
+@bases a₂
+@form a₂ /a₂ #~
+@sense N arm
+@end entry
+
+

@@ -22,6 +22,7 @@ init_cbd(void)
   c->pool = npool_init();
   c->letters = list_create(LIST_SINGLE);
   c->entries = list_create(LIST_SINGLE);
+  c->edits = list_create(LIST_SINGLE);
   c->haliases = hash_create(16);
   c->hentries = hash_create(1024);
   return c;

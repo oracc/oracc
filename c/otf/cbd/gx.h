@@ -30,6 +30,7 @@ struct cbd {
   struct xpd *xpd;
   List *letters;
   List *entries;
+  List *edits;
   Hash_table *hentries;
   Hash_table *haliases;
   Hash_table *simple;
@@ -41,6 +42,15 @@ struct cgp {
   unsigned const char *cf;
   unsigned const char *gw;
   unsigned const char *pos;
+};
+
+enum edit_t { ADD_E, ADD_S, DEL_E, DEL_S, REN_E, REN_S, MRG_E, MRG_S, TOP };
+
+struct edit {
+  enum edit_t type;
+  struct cgp target;
+  int force;
+  void *owner;
 };
 
 struct entry {
@@ -63,10 +73,10 @@ struct entry {
   List *bib;
   List *isslp;  
   int bang;
-  int plus;
   int usage;
   int compound;
   struct cbd *owner;
+  struct edit *ed;
 };
 
 struct alias {
@@ -82,8 +92,9 @@ struct sense {
   unsigned const char *lng;
   unsigned const char *mng;
   unsigned const char *sid;
-  struct entry *owner;
   int bang;
+  struct entry *owner;
+  struct edit *ed;
 };
 
 struct isslp {
@@ -124,6 +135,8 @@ extern void cgp_parse(struct cgp *c, unsigned char *s);
 extern unsigned char *check_bom(unsigned char *s);
 extern unsigned char **setup_lines(unsigned char *ftext);
 
+extern int edit_add(unsigned char **ll, struct entry *e);
+
 extern int parse_dcf(struct entry *e, unsigned char *s);
 extern unsigned char **parse_header(struct cbd *c, unsigned char **ll);
 extern unsigned char **parse_entry(struct cbd *c, unsigned char **ll);
@@ -140,6 +153,18 @@ extern void parse_isslp(struct entry *e, unsigned char *s);
 extern void parse_note(struct entry *e, unsigned char *s);
 extern void parse_parts(struct entry *e, unsigned char *s);
 extern void parse_sense(struct entry *e, unsigned char *s);
+extern void parse_collo(struct entry *e, unsigned char *s);
+extern void parse_root(struct entry *e, unsigned char *s);
+extern void parse_pl_id(struct entry *e, unsigned char *s);
+extern void parse_pl_uid(struct entry *e, unsigned char *s);
+extern void parse_pl_coord(struct entry *e, unsigned char *s);
+extern void parse_prop(struct entry *e, unsigned char *s);
+extern void parse_proplist(struct entry *e, unsigned char *s);
+extern void parse_oid(struct entry *e, unsigned char *s);
+extern void parse_phon(struct entry *e, unsigned char *s);
+extern void parse_equiv(struct entry *e, unsigned char *s);
+extern void parse_stems(struct entry *e, unsigned char *s);
+
 /*
 extern void parse_(unsigned char *s);
 */

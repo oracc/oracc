@@ -17,3 +17,14 @@ note, parse_note
 bib, parse_bib
 file, parse_file
 disc, parse_disc
+equiv, parse_equiv
+oid, parse_oid
+collo, parse_collo
+phon, parse_phon
+root, parse_root
+stems, parse_stems
+prop, parse_prop
+proplist, parse_proplist
+pl_coord, parse_pl_coord
+pl_id, parse_pl_id
+pl_uid, parse_pl_uid

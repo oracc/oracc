@@ -73,7 +73,7 @@ sigindex(struct sigfile *ssp)
   ssp->index = hash_create(1024);
   for (i = 0; i < ssp->nsigs; ++i)
     {
-      if (ssp->sigs[i].sig)
+      if (ssp->sigs[i].sig && ssp->sigs[i].cgp_closed)
 	{
 	  List *lp = hash_find(ssp->index,ssp->sigs[i].cgp_closed);
 	  if (!lp)
@@ -170,6 +170,6 @@ parse_sig(struct sigfile *ssp, unsigned char *s)
       if (*c)
 	sdp->insts = (char*)c;
     }
-  f2_parse((ucp)ssp->file,ssp->lnum,sdp->copy,&sdp->f2,NULL,ssp->scp);
-  sdp->cgp_closed = cgp_str(sdp->f2.cf, sdp->f2.gw, sdp->f2.pos, 0);
+  if (f2_parse((ucp)ssp->file,ssp->lnum,sdp->copy,&sdp->f2,NULL,ssp->scp) > 0)
+    sdp->cgp_closed = cgp_str(sdp->f2.cf, sdp->f2.gw, sdp->f2.pos, 0);
 }

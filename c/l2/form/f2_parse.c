@@ -234,7 +234,7 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
   if (*lp == '$' || *lp == '\\' || *lp == '#' || *lp == '\'')
     {
       vwarning2((char*)file,line,"%s: lemmatization cannot begin with '%c'",err_lp, *lp);
-      return 1;
+      return -1;
     }
   
   if ((ampamp = (unsigned char*)strstr((char*)lp, "&&")))
@@ -266,6 +266,16 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 	      lp = (Uchar*)strchr((char*)lp,'=');
 	      *lp++ = '\0';
 	    }
+	  else
+	    {
+	      vwarning2((char*)file,line,"no FORM found after project");
+	      return -1;
+	    }
+	}
+      else
+	{
+	  vwarning2((char*)file,line,"no LANG found after project");
+	  return -1;
 	}
     }
   else if (':' == *lp)
