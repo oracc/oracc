@@ -150,6 +150,7 @@ extern unsigned char **setup_lines(unsigned char *ftext);
 
 extern int edit_add(unsigned char **ll, struct entry *e);
 extern int edit_check(struct cbd *c);
+extern int edit_script(struct cbd *c);
 
 extern struct sense *parse_sense_sub(unsigned char *s, locator*lp);
 extern int parse_dcf(struct entry *e, unsigned char *s);

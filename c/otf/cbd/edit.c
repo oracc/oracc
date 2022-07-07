@@ -2,6 +2,7 @@
 #include "gx.h"
 
 static int edit_status;
+FILE *f_edit = NULL;
 
 int
 edit_add(unsigned char **ll, struct entry *e)
@@ -169,8 +170,69 @@ edit_check(struct cbd *c)
   return edit_status;
 }
 
-int
-edit_make_script()
+static void
+edit_script_entry(struct entry *e)
 {
-  return 0;
+  struct sense *sp = NULL;
+  if (NULL != e->ed)
+    {
+      if (e->ed->target.cf)
+	{
+	  unsigned char *closed_t = cgp_cgp_str(&e->ed->target,0);
+	  if (hash_find(e->owner->hentries, closed_t))
+	    {
+	      fprintf(stderr, "target %s OK\n", closed_t);
+	      /* if we are renaming this is an error */
+	      if (e->ed->type == REN_E)
+		++edit_status;
+	      else
+		fprintf(f_edit, ":ren %s\n", closed_t);
+	    }
+	  else
+	    {
+	      fprintf(stderr, "target %s NOT\n", closed_t);
+	      /* if we are merging this is an error */
+	      if (e->ed->type == MRG_E && !e->ed->force)
+		++edit_status;
+	      else
+		fprintf(f_edit, ":mrg %s\n", closed_t);
+	    }
+	}
+      else if (e->ed->type == ADD_E)	
+	{
+	  fprintf(f_edit, ":add\n");
+	}
+      else if (e->ed->type == DEL_E)
+	{
+	  fprintf(f_edit, ":del\n");
+	  fprintf(f_edit, ":why\n");
+	}
+      else
+	{
+	  fprintf(stderr, "edit_script_entry unknown ed->type %d\n", e->ed->type);
+	  ++edit_status;
+	}
+    }
+  for (sp = list_first(e->senses); sp; sp = list_next(e->senses))
+    if (sp->ed)
+      fprintf(stderr, "found sp->ed\n");
+}
+
+int
+edit_script(struct cbd *c)
+{
+  edit_status = 0;
+
+  f_edit = xfopen("edit.edit", "w");
+  
+  /* header */
+  fprintf(f_edit, "file: %s\n", c->l.file);
+
+  /* edit instructions */
+  list_exec(c->entries, (void (*)(void*))edit_script_entry);
+
+  xfclose("edit.edit", f_edit);
+  f_edit = NULL;
+  
+  return edit_status;
 }

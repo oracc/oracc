@@ -157,7 +157,10 @@ parse_cbd(unsigned char *ftext, ssize_t fsize)
 	}
     }
   if (check)
-    (void)edit_check(c);
+    {
+      (void)edit_check(c);
+      edit_script(c);
+    }
   free(lines);
   return status;
 }
