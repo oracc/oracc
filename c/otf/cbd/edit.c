@@ -187,6 +187,7 @@ edit_script_entry(struct entry *e)
 	      else
 		{
 		  fprintf(f_edit, "@%d\n", e->ed->lp->line);
+		  fprintf(f_edit, ":ent %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
 		  fprintf(f_edit, ":ren %s\n", closed_t);
 		}
 	    }
@@ -198,16 +199,19 @@ edit_script_entry(struct entry *e)
 	      else
 		{
 		  fprintf(f_edit, "@%d\n", e->ed->lp->line);
+		  fprintf(f_edit, ":ent %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
 		  fprintf(f_edit, ":mrg %s\n", closed_t);
 		}
 	    }
 	}
       else if (e->ed->type == ADD_E)	
 	{
+	  fprintf(f_edit, "@%d\n", e->ed->lp->line);
 	  fprintf(f_edit, ":add %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
 	}
       else if (e->ed->type == DEL_E)
 	{
+	  fprintf(f_edit, "@%d\n", e->ed->lp->line);
 	  fprintf(f_edit, ":del\n");
 	  fprintf(f_edit, ":why\n");
 	}

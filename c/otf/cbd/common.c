@@ -2,12 +2,6 @@
 #include <unistd.h>
 #include "gx.h"
 
-void
-cgp_entry(struct cgp *c, struct entry *e)
-{
-  e->cgp = *c;
-}
-
 const unsigned char *
 cgp_entry_str(struct entry *e, int spread)
 {

@@ -35,7 +35,6 @@ parse_entry(struct cbd *c, unsigned char **ll)
 {
   unsigned char *s = NULL, end;
   struct entry *e = NULL;
-  static struct cgp cgp;
 
   if (ll[0][0] == '+')
     s = &ll[0][1];
@@ -78,14 +77,13 @@ parse_entry(struct cbd *c, unsigned char **ll)
 	    }
 	}
 
-      memset(&cgp,'\0',sizeof(struct cgp));
-      cgp_parse(&cgp, s, &e->l);
-      cgpstr = cgp_str(&cgp,0);
-      hash_add(c->hentries, npool_copy(cgpstr, e->owner->pool), e);
+      /*memset(&cgp,'\0',sizeof(struct cgp));*/
+      cgp_parse(&e->cgp, s, &e->l);
+      cgpstr = cgp_str(&e->cgp,0);
+      hash_add(c->hentries,(e->cgp.closed = npool_copy(cgpstr, e->owner->pool)), e);
       free((void*)cgpstr);
       cgpstr = NULL;
 
-      cgp_entry(&cgp, e);
       if (strchr((ccp)e->cgp.cf, ' '))
 	e->compound = 1;
 
