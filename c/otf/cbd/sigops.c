@@ -171,5 +171,11 @@ parse_sig(struct sigfile *ssp, unsigned char *s)
 	sdp->insts = (char*)c;
     }
   if (f2_parse((ucp)ssp->file,ssp->lnum,sdp->copy,&sdp->f2,NULL,ssp->scp) > 0)
-    sdp->cgp_closed = cgp_str(sdp->f2.cf, sdp->f2.gw, sdp->f2.pos, 0);
+    {
+      static struct cgp cgp;
+      cgp.cf = sdp->f2.cf;
+      cgp.gw = sdp->f2.gw;
+      cgp.pos = sdp->f2.pos;
+      sdp->cgp_closed = cgp_str(&cgp,0);
+    }
 }

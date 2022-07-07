@@ -44,7 +44,7 @@ parse_entry(struct cbd *c, unsigned char **ll)
 
   if (!strncmp((ccp)s, "@entry", strlen("@entry")))
     {
-      unsigned char *cgpstr = NULL;
+      unsigned const char *cgpstr = NULL;
       e = init_entry();
       e->l.file = file;
       e->l.line = lnum;
@@ -80,19 +80,19 @@ parse_entry(struct cbd *c, unsigned char **ll)
 
       memset(&cgp,'\0',sizeof(struct cgp));
       cgp_parse(&cgp, s, &e->l);
-      cgpstr = cgp_cgp_str(&cgp,0);
+      cgpstr = cgp_str(&cgp,0);
       hash_add(c->hentries, npool_copy(cgpstr, e->owner->pool), e);
-      free(cgpstr);
+      free((void*)cgpstr);
       cgpstr = NULL;
 
       cgp_entry(&cgp, e);
-      if (strchr((ccp)e->cf, ' '))
+      if (strchr((ccp)e->cgp.cf, ' '))
 	e->compound = 1;
 
       if (verbose)
-	fprintf(stderr, "@entry %s[%s]%s\n", e->cf, e->gw, e->pos);
+	fprintf(stderr, "@entry %s[%s]%s\n", e->cgp.cf, e->cgp.gw, e->cgp.pos);
       if (entries)
-	printf("%s [%s] %s\n", e->cf, e->gw, e->pos);
+	printf("%s [%s] %s\n", e->cgp.cf, e->cgp.gw, e->cgp.pos);
       ++ll;
       ++lnum;
     }

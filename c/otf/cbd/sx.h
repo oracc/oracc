@@ -23,7 +23,7 @@ struct sigdata {
   struct f2 f2;
   unsigned char *sig;
   unsigned char *copy;
-  unsigned char *cgp_closed; /* should be freed after sigdata is done with */
+  unsigned const char *cgp_closed; /* should be freed after sigdata is done with */
   unsigned char *oid;
   int rank;
   int count;

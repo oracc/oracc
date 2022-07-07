@@ -2,24 +2,16 @@
 #include <unistd.h>
 #include "gx.h"
 
-unsigned char *
-cgp_cgp_str(struct cgp *c, int spread)
-{
-  return cgp_str(c->cf, c->gw, c->pos, spread);
-}
-
 void
 cgp_entry(struct cgp *c, struct entry *e)
 {
-  e->cf = c->cf;
-  e->gw = c->gw;
-  e->pos = c->pos;
+  e->cgp = *c;
 }
 
-unsigned char *
+const unsigned char *
 cgp_entry_str(struct entry *e, int spread)
 {
-  return cgp_str(e->cf, e->gw, e->pos, spread);
+  return cgp_str(&e->cgp, spread);
 }
 
 /* Caller should zero the struct cgp * if desired */
@@ -66,19 +58,27 @@ cgp_parse(struct cgp *c, unsigned char *s, locator *lp)
     vwarning2(lp->file,lp->line,"bad POS %s", c->pos);
 }
 
-unsigned char *
-cgp_str(unsigned const char *cf, unsigned const char *gw, unsigned const char *pos, int spread)
+const unsigned char *
+cgp_str(struct cgp *cp, int spread)
 {
   char *tmp = NULL;
 
-  if (!cf || !gw || !pos)
+  if (!cp)
     return NULL;
 
-  tmp =  malloc(3+(spread*2)+strlen((ccp)cf)+strlen((ccp)gw)+strlen((ccp)pos));
+  if (!cp->cf || !cp->gw || !cp->pos)
+    return NULL;
+
+  if (spread && cp->spread)
+    return cp->spread;
+  if (!spread && cp->closed)
+    return cp->closed;
+  
+  tmp =  malloc(3+(spread*2)+strlen((ccp)cp->cf)+strlen((ccp)cp->gw)+strlen((ccp)cp->pos));
   if (spread)
-    sprintf(tmp, "%s [%s] %s", cf, gw, pos);
+    sprintf(tmp, "%s [%s] %s", cp->cf, cp->gw, cp->pos);
   else
-    sprintf(tmp, "%s[%s]%s", cf, gw, pos);
+    sprintf(tmp, "%s[%s]%s", cp->cf, cp->gw, cp->pos);
   return (ucp)tmp;
 }
 

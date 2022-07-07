@@ -48,6 +48,8 @@ struct cgp {
   unsigned const char *cf;
   unsigned const char *gw;
   unsigned const char *pos;
+  unsigned const char *closed;
+  unsigned const char *spread;
 };
 
 enum edit_t { ADD_E, ADD_S, DEL_E, DEL_S, REN_E, REN_S, MRG_E, MRG_S, TOP };
@@ -63,13 +65,9 @@ struct edit {
 
 struct entry {
   locator l;
-  unsigned const char *cf;
-  unsigned const char *gw;
-  unsigned const char *pos;
+  struct cgp cgp;
   unsigned const char *eid;
   unsigned const char *lang;
-  unsigned const char *spread;
-  unsigned const char *closed;
   Hash_table *b_pri;
   Hash_table *b_alt;
   Hash_table *b_sig;
@@ -137,11 +135,8 @@ extern unsigned char *tok(unsigned char *s, unsigned char *end);
 extern unsigned char *form_sig(struct entry *e, struct f2 *f2p);
 extern void untab(unsigned char *s);
 
-extern unsigned char *cgp_cgp_str(struct cgp *c, int spread);
-extern unsigned char *cgp_entry_str(struct entry *e, int spread);
-extern unsigned char *cgp_str(unsigned const char *cf,
-			      unsigned const char *gw,
-			      unsigned const char *pos, int spread);
+extern unsigned const char *cgp_entry_str(struct entry *e, int spread);
+extern const unsigned char *cgp_str(struct cgp *cp, int spread);
 extern void cgp_entry(struct cgp *c, struct entry *e);
 extern unsigned char *slurp(const char *caller, const char *fname, ssize_t *fsize);
 extern void cgp_parse(struct cgp *c, unsigned char *s, locator *lp);

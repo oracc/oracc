@@ -138,7 +138,7 @@ edit_check_entry(struct entry *e)
     {
       if (e->ed->target.cf)
 	{
-	  unsigned char *closed_t = cgp_cgp_str(&e->ed->target,0);
+	  unsigned const char *closed_t = cgp_str(&e->ed->target,0);
 	  fprintf(stderr, "found e->ed; target=%s\n",closed_t);
 	  if (hash_find(e->owner->hentries, closed_t))
 	    {
@@ -178,29 +178,33 @@ edit_script_entry(struct entry *e)
     {
       if (e->ed->target.cf)
 	{
-	  unsigned char *closed_t = cgp_cgp_str(&e->ed->target,0);
+	  unsigned const char *closed_t = cgp_str(&e->ed->target,0);
 	  if (hash_find(e->owner->hentries, closed_t))
 	    {
-	      fprintf(stderr, "target %s OK\n", closed_t);
 	      /* if we are renaming this is an error */
 	      if (e->ed->type == REN_E)
 		++edit_status;
 	      else
-		fprintf(f_edit, ":ren %s\n", closed_t);
+		{
+		  fprintf(f_edit, "@%d\n", e->ed->lp->line);
+		  fprintf(f_edit, ":ren %s\n", closed_t);
+		}
 	    }
 	  else
 	    {
-	      fprintf(stderr, "target %s NOT\n", closed_t);
 	      /* if we are merging this is an error */
 	      if (e->ed->type == MRG_E && !e->ed->force)
 		++edit_status;
 	      else
-		fprintf(f_edit, ":mrg %s\n", closed_t);
+		{
+		  fprintf(f_edit, "@%d\n", e->ed->lp->line);
+		  fprintf(f_edit, ":mrg %s\n", closed_t);
+		}
 	    }
 	}
       else if (e->ed->type == ADD_E)	
 	{
-	  fprintf(f_edit, ":add\n");
+	  fprintf(f_edit, ":add %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
 	}
       else if (e->ed->type == DEL_E)
 	{
@@ -226,7 +230,7 @@ edit_script(struct cbd *c)
   f_edit = xfopen("edit.edit", "w");
   
   /* header */
-  fprintf(f_edit, "file: %s\n", c->l.file);
+  fprintf(f_edit, ":cbd %s\n", c->l.file);
 
   /* edit instructions */
   list_exec(c->entries, (void (*)(void*))edit_script_entry);
