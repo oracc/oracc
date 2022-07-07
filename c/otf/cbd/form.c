@@ -3,7 +3,7 @@
 #include "f2.h"
 
 void
-parse_form(struct entry *e, unsigned char *lp)
+parse_form(struct entry *e, unsigned char *lp, locator *locp)
 {
   struct f2 *f2p = calloc(1, sizeof(struct f2));
 

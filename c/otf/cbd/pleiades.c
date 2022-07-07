@@ -2,16 +2,16 @@
 #include "gx.h"
 
 void
-parse_pl_coord(struct entry *e, unsigned char *s)
+parse_pl_coord(struct entry *e, unsigned char *s, locator *lp)
 {
 }
 
 void
-parse_pl_id(struct entry *e, unsigned char *s)
+parse_pl_id(struct entry *e, unsigned char *s, locator *lp)
 {
 }
 
 void
-parse_pl_uid(struct entry *e, unsigned char *s)
+parse_pl_uid(struct entry *e, unsigned char *s, locator *lp)
 {
 }

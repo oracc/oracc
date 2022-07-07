@@ -25,6 +25,8 @@ init_cbd(void)
   c->edits = list_create(LIST_SINGLE);
   c->haliases = hash_create(16);
   c->hentries = hash_create(1024);
+  c->l.file = file;
+  c->l.line = 0;
   return c;
 }
 
@@ -86,7 +88,7 @@ parse_cbd(unsigned char *ftext, ssize_t fsize)
 	break;
       else if (!rest[0][0])
 	{
-	  ++lnum;
+	  ++c->l.line;
 	  ++rest;
 	}
       else if (isspace(rest[0][0]))
@@ -96,26 +98,26 @@ parse_cbd(unsigned char *ftext, ssize_t fsize)
 	    ++i;
 	  if (!rest[0][i])
 	    {
-	      ++lnum;
+	      ++c->l.line;
 	      ++rest;
 	    }
 	  else
 	    {
 	      warning("malformed line; spaces followed by non-spaces");
-	      ++lnum;
+	      ++c->l.line;
 	      ++rest;
 	    }
 	}
       else if (**rest == '#')
 	{
 	  warning("comments not allowed before text");
-	  ++lnum;
+	  ++c->l.line;
 	  ++rest;
 	}
       else
 	{
 	  warning("unexpected start-of-line");
-	  ++lnum;
+	  ++c->l.line;
 	  ++rest;
 	}
     }
@@ -130,7 +132,7 @@ parse_cbd(unsigned char *ftext, ssize_t fsize)
 	    break;
 	  else
 	    {
-	      ++lnum;
+	      ++c->l.line;
 	      ++rest;
 	    }
 	}
@@ -139,7 +141,7 @@ parse_cbd(unsigned char *ftext, ssize_t fsize)
 	  if (!strncmp((ccp)rest[0], "@letter", strlen("@letter")))
 	    {
 	      /* letter() */
-	      ++lnum;
+	      ++c->l.line;
 	      ++rest;
 	    }
 	  else
@@ -154,6 +156,8 @@ parse_cbd(unsigned char *ftext, ssize_t fsize)
 	    }
 	}
     }
+  if (check)
+    (void)edit_check(c);
   free(lines);
   return status;
 }

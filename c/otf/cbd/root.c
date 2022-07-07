@@ -2,6 +2,6 @@
 #include "gx.h"
 
 void
-parse_root(struct entry *e, unsigned char *s)
+parse_root(struct entry *e, unsigned char *s, locator *lp)
 {
 }

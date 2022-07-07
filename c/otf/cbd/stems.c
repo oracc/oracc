@@ -2,6 +2,6 @@
 #include "gx.h"
 
 void
-parse_stems(struct entry *e, unsigned char *s)
+parse_stems(struct entry *e, unsigned char *s, locator *lp)
 {
 }

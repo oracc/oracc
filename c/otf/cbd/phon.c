@@ -2,6 +2,6 @@
 #include "gx.h"
 
 void
-parse_phon(struct entry *e, unsigned char *s)
+parse_phon(struct entry *e, unsigned char *s, locator *lp)
 {
 }

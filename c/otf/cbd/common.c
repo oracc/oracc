@@ -24,9 +24,10 @@ cgp_entry_str(struct entry *e, int spread)
 
 /* Caller should zero the struct cgp * if desired */
 void
-cgp_parse(struct cgp *c, unsigned char *s)
+cgp_parse(struct cgp *c, unsigned char *s, locator *lp)
 {
   unsigned char *t = NULL;
+  
   while (isspace(*s))
     ++s;
   c->cf = s;
@@ -47,23 +48,22 @@ cgp_parse(struct cgp *c, unsigned char *s)
       while (t > s && '[' != *t)
         --t;
       if (t == s)
-        warning("syntax error in CGP: missing [ at start of GW");
+        vwarning2(lp->file,lp->line,"syntax error in CGP: missing [ at start of GW");
       else
         {
           *t = '\0';
           c->gw = t+1;
           if (strchr((ccp)s,'[') || strchr((ccp)s,']'))
-            warning("syntax error in @entry: too many [ or ]");
+            vwarning2(lp->file,lp->line,"syntax error in @entry: too many [ or ]");
           while (isspace(t[-1]))
             --t;
           *t = '\0';
         }
     }
   else
-    warning("syntax error in CGP: expected ']' to end GW");
+    vwarning(lp->file,lp->line,"syntax error in CGP: expected ']' to end GW");
   if (c->pos && !cbdpos((ccp)c->pos, strlen((ccp)c->pos)))
-    vwarning("bad POS %s", c->pos);
-    
+    vwarning2(lp->file,lp->line,"bad POS %s", c->pos);
 }
 
 unsigned char *

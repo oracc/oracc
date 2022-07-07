@@ -2,11 +2,11 @@
 #include "gx.h"
 
 void
-parse_prop(struct entry *e, unsigned char *s)
+parse_prop(struct entry *e, unsigned char *s, locator *lp)
 {
 }
 
 void
-parse_proplist(struct entry *e, unsigned char *s)
+parse_proplist(struct entry *e, unsigned char *s, locator *lp)
 {
 }

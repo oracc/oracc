@@ -2,6 +2,6 @@
 #include "gx.h"
 
 void
-parse_equiv(struct entry *e, unsigned char *s)
+parse_equiv(struct entry *e, unsigned char *s, locator *lp)
 {
 }

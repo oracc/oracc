@@ -5,7 +5,7 @@ static void parse_one_base(struct entry *e, unsigned char *s);
 static void process_alt(struct entry *e, unsigned char *pri, unsigned char *pri_sig, unsigned char *alt);
 
 void
-parse_bases(struct entry *e, unsigned char *s)
+parse_bases(struct entry *e, unsigned char *s, locator *lp)
 {
   unsigned char *t = NULL;
   e->b_pri = hash_create(1);

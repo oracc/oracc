@@ -18,9 +18,15 @@
 #define ucc unsigned const char *
 #define ucp unsigned char *
 
+typedef struct {
+  const char *file;
+  int line;
+} locator;
+
 extern Hash_table *cbds;
 
 struct cbd {
+  locator l;
   unsigned const char *project;
   unsigned const char *lang;
   unsigned const char *name;  /* this is the name as given in @name */
@@ -47,13 +53,16 @@ struct cgp {
 enum edit_t { ADD_E, ADD_S, DEL_E, DEL_S, REN_E, REN_S, MRG_E, MRG_S, TOP };
 
 struct edit {
+  locator *lp;
   enum edit_t type;
   struct cgp target;
+  struct sense *sp;
   int force;
   void *owner;
 };
 
 struct entry {
+  locator l;
   unsigned const char *cf;
   unsigned const char *gw;
   unsigned const char *pos;
@@ -80,12 +89,14 @@ struct entry {
 };
 
 struct alias {
+  locator l;
   struct cgp *c;
   unsigned const char *spread;
   unsigned const char *closed;
 };
 
 struct sense {
+  locator l;
   unsigned const char *num;
   unsigned const char *sgw;
   unsigned const char *pos;
@@ -98,6 +109,7 @@ struct sense {
 };
 
 struct isslp {
+  locator l;
   unsigned char *year;
   unsigned char *text;
   struct entry *owner;
@@ -110,9 +122,10 @@ struct cbdpos {
 
 struct cbdtag {
   const char *name;
-  void (*parser)(struct entry *e, unsigned char *s);
+  void (*parser)(struct entry *e, unsigned char *s, locator *lp);
 };
 
+extern int check;
 extern int entries;
 extern int sigs;
 
@@ -131,41 +144,44 @@ extern unsigned char *cgp_str(unsigned const char *cf,
 			      unsigned const char *pos, int spread);
 extern void cgp_entry(struct cgp *c, struct entry *e);
 extern unsigned char *slurp(const char *caller, const char *fname, ssize_t *fsize);
-extern void cgp_parse(struct cgp *c, unsigned char *s);
+extern void cgp_parse(struct cgp *c, unsigned char *s, locator *lp);
 extern unsigned char *check_bom(unsigned char *s);
 extern unsigned char **setup_lines(unsigned char *ftext);
 
 extern int edit_add(unsigned char **ll, struct entry *e);
+extern int edit_check(struct cbd *c);
 
+extern struct sense *parse_sense_sub(unsigned char *s, locator*lp);
 extern int parse_dcf(struct entry *e, unsigned char *s);
 extern unsigned char **parse_header(struct cbd *c, unsigned char **ll);
 extern unsigned char **parse_entry(struct cbd *c, unsigned char **ll);
-extern void parse_alias(struct entry *e, unsigned char *s);
-extern void parse_allow(struct entry *e, unsigned char *s);
-extern void parse_bases(struct entry *e, unsigned char *s);
-extern void parse_bff(struct entry *e, unsigned char *s);
-extern void parse_bib(struct entry *e, unsigned char *s);
-extern void parse_disc(struct entry *e, unsigned char *s);
-extern void parse_file(struct entry *e, unsigned char *s);
-extern void parse_form(struct entry *e, unsigned char *s);
-extern void parse_inote(struct entry *e, unsigned char *s);
-extern void parse_isslp(struct entry *e, unsigned char *s);
-extern void parse_note(struct entry *e, unsigned char *s);
-extern void parse_parts(struct entry *e, unsigned char *s);
-extern void parse_sense(struct entry *e, unsigned char *s);
-extern void parse_collo(struct entry *e, unsigned char *s);
-extern void parse_root(struct entry *e, unsigned char *s);
-extern void parse_pl_id(struct entry *e, unsigned char *s);
-extern void parse_pl_uid(struct entry *e, unsigned char *s);
-extern void parse_pl_coord(struct entry *e, unsigned char *s);
-extern void parse_prop(struct entry *e, unsigned char *s);
-extern void parse_proplist(struct entry *e, unsigned char *s);
-extern void parse_oid(struct entry *e, unsigned char *s);
-extern void parse_phon(struct entry *e, unsigned char *s);
-extern void parse_equiv(struct entry *e, unsigned char *s);
-extern void parse_stems(struct entry *e, unsigned char *s);
+
+extern void parse_alias(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_allow(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_bases(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_bff(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_bib(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_disc(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_file(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_form(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_inote(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_isslp(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_note(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_parts(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_sense(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_collo(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_root(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_pl_id(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_pl_uid(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_pl_coord(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_prop(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_proplist(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_oid(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_phon(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_equiv(struct entry *e, unsigned char *s, locator *lp);
+extern void parse_stems(struct entry *e, unsigned char *s, locator *lp);
 
 /*
-extern void parse_(unsigned char *s);
+extern void parse_(unsigned char *s, locator *lp);
 */
 #endif

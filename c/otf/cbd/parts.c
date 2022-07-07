@@ -2,6 +2,6 @@
 #include "gx.h"
 
 void
-parse_parts(struct entry *e, unsigned char *s)
+parse_parts(struct entry *e, unsigned char *s, locator *lp)
 {
 }

@@ -46,6 +46,8 @@ parse_entry(struct cbd *c, unsigned char **ll)
     {
       unsigned char *cgpstr = NULL;
       e = init_entry();
+      e->l.file = file;
+      e->l.line = lnum;
       e->owner = c;
       e->lang = c->lang;
       list_add(c->entries, e);
@@ -77,7 +79,7 @@ parse_entry(struct cbd *c, unsigned char **ll)
 	}
 
       memset(&cgp,'\0',sizeof(struct cgp));
-      cgp_parse(&cgp, s);
+      cgp_parse(&cgp, s, &e->l);
       cgpstr = cgp_cgp_str(&cgp,0);
       hash_add(c->hentries, npool_copy(cgpstr, e->owner->pool), e);
       free(cgpstr);
@@ -157,7 +159,7 @@ parse_entry(struct cbd *c, unsigned char **ll)
 		  if ((p = cbdtags((ccp)tag, strlen((ccp)tag))))
 		    {
 		      /* fprintf(stderr, "found %s with parser %p\n", tag, (void*)p->parser); */
-		      (p->parser)(e,es);
+		      (p->parser)(e,es,&e->l);
 		      if (plus)
 			{
 			  /* This only happens with +@sense which

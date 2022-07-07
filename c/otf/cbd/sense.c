@@ -11,12 +11,38 @@ init_sense(void)
 
 /* On entry s is pointing after the @sense and any spaces; for @sense! this will need adjusting */
 void
-parse_sense(struct entry *e, unsigned char *s)
+parse_sense(struct entry *e, unsigned char *s, locator *lp)
+{
+  struct sense *sp = parse_sense_sub(s,lp);
+
+  if (sp && e)
+    {
+      if (!e->senses)
+	e->senses = list_create(LIST_SINGLE);
+      list_add(e->senses, sp);
+      if (sigs)
+	{
+	  struct f2 *f2p = NULL;
+	  for (f2p = list_first(e->forms); f2p; f2p = list_next(e->forms))
+	    {
+	      unsigned char *sig = NULL;
+	      f2p->epos = sp->pos;
+	      f2p->sense = sp->mng;
+	      sig = form_sig(e,f2p);  
+	      puts((ccp)sig);
+	    }
+	}
+    }
+
+}
+
+struct sense *
+parse_sense_sub(unsigned char *s, locator*lp)
 {
   struct sense *sp = init_sense();
-  if (!e->senses)
-    e->senses = list_create(LIST_SINGLE);
-  list_add(e->senses, sp);
+  sp->l.file = lp->file;
+  sp->l.line = lp->line;
+  
   if ('!' == *s)
     {
       sp->bang = 1;
@@ -50,14 +76,14 @@ parse_sense(struct entry *e, unsigned char *s)
 	    }
 	  else
 	    {
-	      warning("malformed @sense: SENSE GW missing ']'");
-	      return;
+	      vwarning2(lp->file,lp->line,"malformed @sense: SENSE GW missing ']'");
+	      return NULL;
 	    }
 	}
       else
 	{
-	  warning("malformed @sense: SENSE GW ends with '['");
-	  return;
+	  vwarning2(lp->file,lp->line,"malformed @sense: SENSE GW ends with '['");
+	  return NULL;
 	}
     }
   sp->pos = s;
@@ -71,8 +97,8 @@ parse_sense(struct entry *e, unsigned char *s)
     }
   else
     {
-      warning("malformed @sense: ends with POS and has no meaning");
-      return;
+      vwarning2(lp->file,lp->line,"malformed @sense: ends with POS and has no meaning");
+      return NULL;
     }
   sp->mng = s;
   s += strlen((ccp)s);
@@ -80,16 +106,5 @@ parse_sense(struct entry *e, unsigned char *s)
     --s;
   if (*s)
     *s = '\0';
-  if (sigs)
-    {
-      struct f2 *f2p = NULL;
-      for (f2p = list_first(e->forms); f2p; f2p = list_next(e->forms))
-	{
-	  unsigned char *sig = NULL;
-	  f2p->epos = sp->pos;
-	  f2p->sense = sp->mng;
-	  sig = form_sig(e,f2p);  
-	  puts((ccp)sig);
-	}
-    }
+  return sp;
 }

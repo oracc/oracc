@@ -2,7 +2,7 @@
 #include "gx.h"
 
 void
-parse_allow(struct entry *e, unsigned char *s)
+parse_allow(struct entry *e, unsigned char *s, locator *lp)
 {
   unsigned char *equals = NULL;
   static int one = 1;

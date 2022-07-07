@@ -17,6 +17,7 @@ const char *errmsg_fn = NULL;
 int stdin_input = 0;
 Hash_table *cbds = NULL;
 
+int check = 0;
 int entries = 0;
 int sigs = 0;
 
@@ -26,7 +27,7 @@ extern int cbd(const char *fname);
 int
 main(int argc, char **argv)
 {
-  options(argc,argv,"esv");
+  options(argc,argv,"cesv");
 
 #if 1
   file = argv[optind];
@@ -79,6 +80,7 @@ int opts(int och,char *oarg)
     case 'b':
       break;
     case 'c':
+      check = 1;
       break;
     case 'd':
       break;

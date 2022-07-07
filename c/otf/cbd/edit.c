@@ -1,4 +1,7 @@
+#include "ctype128.h"
 #include "gx.h"
+
+static int edit_status;
 
 int
 edit_add(unsigned char **ll, struct entry *e)
@@ -6,6 +9,7 @@ edit_add(unsigned char **ll, struct entry *e)
   unsigned char *ea = ll[0];
   char ctxt = '\0';
   struct edit *ed = NULL;
+  struct sense *snode = NULL;
 
   /* set the ctxt */
   if (!strncmp((ccp)&ll[0][1], "@entry", strlen("@entry")))
@@ -22,6 +26,9 @@ edit_add(unsigned char **ll, struct entry *e)
       return -1;
     }
 
+  if (ctxt == 's')
+    snode = list_last(e->senses);
+  
   ed = calloc(1, sizeof(struct edit));
   
   /* set the type */
@@ -31,11 +38,13 @@ edit_add(unsigned char **ll, struct entry *e)
 	{
 	  ed->type = ADD_E;
 	  ed->owner = e;
+	  ed->lp = &e->l;
 	}
       else if (ctxt == 's')
 	{
 	  ed->type = ADD_S;
-	  ed->owner = list_last(e->senses);
+	  ed->owner = snode;
+	  ed->lp = &snode->l;
 	}
       else
 	{
@@ -44,18 +53,27 @@ edit_add(unsigned char **ll, struct entry *e)
 	}
     }
   else if (*ea == '>')
-    {      
-      if (ea[1] == '>')
+    {
+      unsigned char *t = ea;
+      if (t[1] == '>')
 	{
+	  ++t;
 	  if (ctxt == 'e')
 	    {
 	      ed->type = MRG_E;
 	      ed->owner = e;
+	      ed->lp = &e->l;
 	    }
 	  else
 	    {
 	      ed->type = MRG_S;
-	      ed->owner = list_last(e->senses);
+	      ed->owner = snode;
+	      ed->lp = &snode->l;
+	    }
+	  if (t[1] == '!')
+	    {
+	      ed->force = 1;
+	      ++t;
 	    }
 	}
       else
@@ -64,14 +82,22 @@ edit_add(unsigned char **ll, struct entry *e)
 	    {
 	      ed->type = REN_E;
 	      ed->owner = e;
+	      ed->lp = &e->l;
 	    }
 	  else
 	    {
 	      ed->type = REN_S;
-	      ed->owner = list_last(e->senses);
+	      ed->owner = snode;
+	      ed->lp = &snode->l;
 	    }
 	}
-	
+      ++t;
+      while (isspace(*t))
+	++t;
+      if (ctxt == 'e')
+	cgp_parse(&ed->target,t,ed->lp);
+      else
+	ed->sp = parse_sense_sub(t,ed->lp);
     }
   else if (*ea == '-')
     {
@@ -79,11 +105,13 @@ edit_add(unsigned char **ll, struct entry *e)
 	{
 	  ed->type = DEL_E;
 	  ed->owner = e;
+	  ed->lp = &e->l;
 	}
       else
 	{
 	  ed->type = DEL_S;
-	  ed->owner = list_last(e->senses);
+	  ed->owner = snode;
+	  ed->lp = &snode->l;
 	}
     }
   else
@@ -91,9 +119,54 @@ edit_add(unsigned char **ll, struct entry *e)
       fprintf(stderr, "edit_add passed unparseable data %s\n", (ccp)ea);
       return -1;
     }
-	  
+
   /* warn or set */
+  if (ctxt == 'e')
+    e->ed = ed;
+  else if (ctxt == 's')
+    snode->ed = ed;
+
   return 0;
+}
+
+static void
+edit_check_entry(struct entry *e)
+{
+  struct sense *sp = NULL;
+  if (NULL != e->ed)
+    {
+      if (e->ed->target.cf)
+	{
+	  unsigned char *closed_t = cgp_cgp_str(&e->ed->target,0);
+	  fprintf(stderr, "found e->ed; target=%s\n",closed_t);
+	  if (hash_find(e->owner->hentries, closed_t))
+	    {
+	      fprintf(stderr, "target %s OK\n", closed_t);
+	      /* if we are renaming this is an error */
+	      if (e->ed->type == REN_E)
+		vwarning2(e->ed->lp->file, e->ed->lp->line, "(edit) can't rename to existing entry %s", closed_t);
+	    }
+	  else
+	    {
+	      fprintf(stderr, "target %s NOT\n", closed_t);
+	      /* if we are merging this is an error */
+	      if (e->ed->type == MRG_E && !e->ed->force)
+		vwarning2(e->ed->lp->file, e->ed->lp->line,
+			  "(edit) can't merge to non-existent entry %s (use >>! to override)", closed_t);
+	    }
+	}
+    }
+  for (sp = list_first(e->senses); sp; sp = list_next(e->senses))
+    if (sp->ed)
+      fprintf(stderr, "found sp->ed\n");
+}
+
+int
+edit_check(struct cbd *c)
+{
+  edit_status = 0;
+  list_exec(c->entries, (void (*)(void*))edit_check_entry);
+  return edit_status;
 }
 
 int
