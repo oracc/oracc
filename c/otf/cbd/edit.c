@@ -107,6 +107,17 @@ edit_add(unsigned char **ll, struct entry *e)
 	  ed->type = DEL_E;
 	  ed->owner = e;
 	  ed->lp = &e->l;
+	  if (ll[1] && !strncmp((ccp)ll[1],"#why:",5))
+	    {
+	      unsigned char *why = ll[1] + 5;
+	      while (isspace(*why))
+		++why;
+	      ed->why = npool_copy(why, e->owner->pool);
+	    }
+	  else
+	    {
+	      vwarning("deleted entry needs #why: comment immediately following");
+	    }
 	}
       else
 	{
@@ -139,7 +150,7 @@ edit_check_entry(struct entry *e)
       if (e->ed->target.cf)
 	{
 	  unsigned const char *closed_t = cgp_str(&e->ed->target,0);
-	  fprintf(stderr, "found e->ed; target=%s\n",closed_t);
+	  /* fprintf(stderr, "found e->ed; target=%s\n",closed_t); */
 	  if (hash_find(e->owner->hentries, closed_t))
 	    {
 	      fprintf(stderr, "target %s OK\n", closed_t);
@@ -159,7 +170,7 @@ edit_check_entry(struct entry *e)
     }
   for (sp = list_first(e->senses); sp; sp = list_next(e->senses))
     if (sp->ed)
-      fprintf(stderr, "found sp->ed\n");
+      /* fprintf(stderr, "found sp->ed\n") */;
 }
 
 int
@@ -187,8 +198,8 @@ edit_script_entry(struct entry *e)
 	      else
 		{
 		  fprintf(f_edit, "@%d\n", e->ed->lp->line);
-		  fprintf(f_edit, ":ent %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
-		  fprintf(f_edit, ":ren %s\n", closed_t);
+		  fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
+		  fprintf(f_edit, ":rnm >@entry %s\n", closed_t);
 		}
 	    }
 	  else
@@ -199,21 +210,25 @@ edit_script_entry(struct entry *e)
 	      else
 		{
 		  fprintf(f_edit, "@%d\n", e->ed->lp->line);
-		  fprintf(f_edit, ":ent %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
-		  fprintf(f_edit, ":mrg %s\n", closed_t);
+		  fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
+		  fprintf(f_edit, ":mrg =@entry %s\n", closed_t);
 		}
 	    }
 	}
       else if (e->ed->type == ADD_E)	
 	{
 	  fprintf(f_edit, "@%d\n", e->ed->lp->line);
-	  fprintf(f_edit, ":add %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
+	  fprintf(f_edit, ":add +@entry %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
 	}
       else if (e->ed->type == DEL_E)
 	{
 	  fprintf(f_edit, "@%d\n", e->ed->lp->line);
-	  fprintf(f_edit, ":del\n");
-	  fprintf(f_edit, ":why\n");
+#if 0
+	  /* This is emitted by cbdedit.plx but it's redundant and not aligned with :add +@entry */
+	  fprintf(f_edit, ":ent -@entry %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
+#endif
+	  fprintf(f_edit, ":del -@entry %s\n", e->cgp.closed);
+	  fprintf(f_edit, ":why %s\n", e->ed->why);
 	}
       else
 	{
@@ -223,7 +238,16 @@ edit_script_entry(struct entry *e)
     }
   for (sp = list_first(e->senses); sp; sp = list_next(e->senses))
     if (sp->ed)
-      fprintf(stderr, "found sp->ed\n");
+      {
+	fprintf(f_edit, "@%d\n", sp->ed->lp->line);
+	fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
+	if (sp->ed->type == ADD_S)
+	  fprintf(f_edit, ":add +@sense %s %s\n", sp->pos, sp->mng);
+	else if (sp->ed->type == DEL_S)
+	  fprintf(f_edit, ":del -@sense %s %s\n", sp->pos, sp->mng);
+	else
+	  fprintf(stderr, "edit_script_entry unprocessed edit type %d\n", sp->ed->type);
+      }
 }
 
 int
@@ -231,7 +255,7 @@ edit_script(struct cbd *c)
 {
   edit_status = 0;
 
-  f_edit = xfopen("edit.edit", "w");
+  f_edit = xfopen("gx.edit", "w");
   
   /* header */
   fprintf(f_edit, ":cbd %s\n", c->l.file);

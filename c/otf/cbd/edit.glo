@@ -37,4 +37,10 @@
 @sense N arm
 @end entry
 
+-@entry a [arm] N
+@bases a₂
+@form a₂ /a₂ #~
+@sense N arm
+@end entry
+
 

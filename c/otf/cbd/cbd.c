@@ -26,7 +26,7 @@ init_cbd(void)
   c->haliases = hash_create(16);
   c->hentries = hash_create(1024);
   c->l.file = file;
-  c->l.line = 0;
+  c->l.line = 1;
   return c;
 }
 
@@ -128,7 +128,7 @@ parse_cbd(unsigned char *ftext, ssize_t fsize)
       while (*rest)
 	{
 	  if ('@' == rest[0][0]
-	      || (rest[0][0] == '+' && rest[0][1] == '@'))
+	      || ((rest[0][0] == '+' || rest[0][0] == '-') && rest[0][1] == '@'))
 	    break;
 	  else
 	    {
@@ -144,11 +144,17 @@ parse_cbd(unsigned char *ftext, ssize_t fsize)
 	      ++c->l.line;
 	      ++rest;
 	    }
+	  else if (rest[0][0] == '#')
+	    {
+	      warning("comments not allowed between @entry blocks");
+	      ++c->l.line;
+	      ++rest;
+	    }
 	  else
 	    {
-	      int saved_lnum = lnum;
+	      int saved_lnum = c->l.line;
 	      rest = parse_entry(c, rest);
-	      if (lnum == saved_lnum)
+	      if (c->l.line == saved_lnum)
 		{
 		  warning("entry never moved lnum");
 		  break;

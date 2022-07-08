@@ -36,7 +36,7 @@ parse_entry(struct cbd *c, unsigned char **ll)
   unsigned char *s = NULL, end;
   struct entry *e = NULL;
 
-  if (ll[0][0] == '+')
+  if (ll[0][0] == '+' || ll[0][0] == '-')
     s = &ll[0][1];
   else
     s = ll[0];
@@ -45,8 +45,7 @@ parse_entry(struct cbd *c, unsigned char **ll)
     {
       unsigned const char *cgpstr = NULL;
       e = init_entry();
-      e->l.file = file;
-      e->l.line = lnum;
+      e->l = c->l;
       e->owner = c;
       e->lang = c->lang;
       list_add(c->entries, e);
@@ -57,6 +56,7 @@ parse_entry(struct cbd *c, unsigned char **ll)
 	  switch (*s)
 	    {
 	    case '+':
+	    case '-':
 	      edit_add(ll, e);
 	      ++s;
 	      break;
@@ -92,7 +92,7 @@ parse_entry(struct cbd *c, unsigned char **ll)
       if (entries)
 	printf("%s [%s] %s\n", e->cgp.cf, e->cgp.gw, e->cgp.pos);
       ++ll;
-      ++lnum;
+      ++c->l.line;
     }
   else
     {
@@ -105,17 +105,22 @@ parse_entry(struct cbd *c, unsigned char **ll)
 	{
 	  int plus = 0;
 	  unsigned char *plus_orig = NULL;
-	  if ('+' == ll[0][0])
+	  if ('#' == ll[0][0])
+	    {
+	      ++ll;
+	      ++c->l.line;
+	    }
+	  else if ('+' == ll[0][0] || '-' == ll[0][0])
 	    {
 	      unsigned char *dst, *src;
-	      plus = 1;
+	      plus = (ll[0][0] == '+' ? 1 : -1);
 	      plus_orig = (ucp)strdup((ccp)ll[0]);
 	      for (dst = ll[0], src = &ll[0][1]; *src;)
 		*dst++ = *src++;
 	      *dst = '\0';
 	      if (strncmp((ccp)ll[0],"@sense", strlen("@sense")))
 		{
-		  warning("misplaced + will be ignored (only valid on +@entry or +@sense");
+		  warning("misplaced +/- will be ignored (only valid on +@entry or +@sense");
 		  plus = 0;
 		}
 	    }
@@ -130,14 +135,14 @@ parse_entry(struct cbd *c, unsigned char **ll)
 		      /* finish entry code goes here */
 		      term_entry(e);
 		      ++ll;
-		      ++lnum;
+		      ++c->l.line;
 		      return ll;
 		    }
 		  else
 		    {
 		      warning("bad @end entry line");
 		      ++ll;
-		      ++lnum;
+		      ++c->l.line;
 		      break;
 		    }
 		}
@@ -158,9 +163,11 @@ parse_entry(struct cbd *c, unsigned char **ll)
 		    {
 		      /* fprintf(stderr, "found %s with parser %p\n", tag, (void*)p->parser); */
 		      (p->parser)(e,es,&e->l);
+		      ++ll;
+		      ++c->l.line;
 		      if (plus)
 			{
-			  /* This only happens with +@sense which
+			  /* This only happens with +@sense or -@sense which
 			     means edit_add's context can never look
 			     at the previous pointer barring a later
 			     coding error */
@@ -170,30 +177,28 @@ parse_entry(struct cbd *c, unsigned char **ll)
 		  else if (parse_dcf(e, es))
 		    {
 		      ++ll;
-		      ++lnum;
+		      ++c->l.line;
 		    }
 		  else
 		    {
 		      vwarning("unknown tag %s", tag);
 		      ++ll;
-		      ++lnum;
+		      ++c->l.line;
 		      break;
 		    }
-		  ++ll;
-		  ++lnum;
  		}
 	    }
 	  else if (ll[0][0] == '>')
 	    {
 	      edit_add(ll, e);
 	      ++ll;
-	      ++lnum;
+	      ++c->l.line;
 	    }
 	  else
 	    {
 	      warning("bad character at start of line in entry");
 	      ++ll;
-	      ++lnum;
+	      ++c->l.line;
 	      break;
 	    }
 	}

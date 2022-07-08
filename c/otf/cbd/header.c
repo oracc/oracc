@@ -20,28 +20,28 @@ parse_header(struct cbd *c, unsigned char **ll)
 	  if (!project)
 	    project = (ccp)c->project;
 	  ++ll;
-	  ++lnum;
+	  ++c->l.line;
 	}
       else if (!strncmp((ccp)ll[0], "@lang", strlen("@lang")))
 	{
 	  s = ll[0] + strlen("@lang");
 	  c->lang = tok(s,&end);
 	  ++ll;
-	  ++lnum;
+	  ++c->l.line;
 	}
       else if (!strncmp((ccp)ll[0], "@name", strlen("@name")))
 	{
 	  s = ll[0] + strlen("@name");
 	  c->name = tok(s,&end);
 	  ++ll;
-	  ++lnum;
+	  ++c->l.line;
 	}
       else if (!strncmp((ccp)ll[0], "@trans", strlen("@trans")))
 	{
 	  s = ll[0] + strlen("@trans");
 	  c->trans = tok(s,&end);
 	  ++ll;
-	  ++lnum;
+	  ++c->l.line;
 	}
       else
 	{

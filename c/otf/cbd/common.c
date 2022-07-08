@@ -124,13 +124,6 @@ setup_lines(unsigned char *ftext)
   ++nlines; /* NULL ptr to terminate */
   ret = p = malloc(nlines*sizeof(unsigned char *));
   s = ftext;
-#if 0 /* this screws with the line count, or with corruption detection */
-  while ('\n' == *s)
-    {
-      *s++ = '\0';
-      ++lnum;
-    }
-#endif
   while (*s)
     {
       *p++ = s;

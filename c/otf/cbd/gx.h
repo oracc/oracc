@@ -58,6 +58,7 @@ struct edit {
   locator *lp;
   enum edit_t type;
   struct cgp target;
+  unsigned char *why;
   struct sense *sp;
   int force;
   void *owner;
