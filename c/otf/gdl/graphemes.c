@@ -734,7 +734,7 @@ gparse(register unsigned char *g, enum t_type type)
       else
 	{
 	  unsigned char *gcheck = g, *g_end,*g_utf;
-	  const unsigned char *noheth = NULL;
+	  const unsigned char *noheth = NULL, *lc_noheth = NULL;
 	  int len = 0;
 
 	  if (is_xvalue(g) && !inner_qual && !gdl_bootstrap)
@@ -787,7 +787,7 @@ gparse(register unsigned char *g, enum t_type type)
 			  lc = utf_lcase(noheth);
 			  ok = (lc && psl_is_value(lc));
 			  if (ok)
-			    noheth = lc;
+			    lc_noheth = pool_copy(lc);
 			}
 		    }
 		}
@@ -809,7 +809,7 @@ gparse(register unsigned char *g, enum t_type type)
 			    list_add(gdl_sign_names, (void*)pool_copy(g_utf));
 			  else
 			    {
-			      const unsigned char *sn = psl_get_sname(noheth);
+			      const unsigned char *sn = psl_get_sname(lc_noheth ? lc_noheth : noheth);
 			      if (sn)
 				list_add(gdl_sign_names, (void*)pool_copy(sn));
 			      else
