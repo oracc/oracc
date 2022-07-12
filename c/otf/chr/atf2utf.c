@@ -74,7 +74,15 @@ is_signlist(register const unsigned char *s)
   /* fprintf(stderr,"is_signlist: %s\n",s); */
   if (*s && s[1] && ((s[1] == 'S' && s[2] == 'L')
 		     || (s[2] && s[2] == 'S' && s[3] == 'L')))
-    return 1;
+    {
+      while (*s && 'L' != *s)
+	++s;
+      /* need digit after 'SL' to be a sign list */
+      if (isdigit(s[1]))
+	return 1;
+      else
+	return 0;
+    }
   switch (*s)
     {
     case 'A':
