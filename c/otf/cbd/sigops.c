@@ -209,7 +209,7 @@ sigmerge(const char *f)
 		{
 		  sigmerge_sig_line(last_sig, insts, sigs, pool);
 		  if (insts)
-		    hash_free(insts,NULL);
+		    hash_free(insts,NULL);		  
 		  insts = hash_create(1024);
 		}
 	      sigmerge_print(curr_cgp, sigs);
@@ -261,6 +261,8 @@ sigmerge(const char *f)
 			ls_alloc *= 2;
 		      last_sig = realloc(last_sig, ls_alloc);
 		      strcpy((char*)last_sig, (ccp)sig);
+		      if (insts)
+			hash_free(insts, NULL);
 		      insts = hash_create(1024);
 		      hash_add(insts, npool_copy(inst, pool), &one);
 		    }
