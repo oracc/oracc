@@ -167,14 +167,13 @@ sigmerge_sig_line(unsigned char *sig, Hash_table *insts, List *sigs, struct npoo
   qsort(pi, ni, sizeof(const char *), (__compar_fn_t)strcmp);
   for (i = 0; i < ni; ++i)
     len += strlen(pi[i]);
-  tmp = malloc(strlen((ccp)sig) + len + ni + 2);
-  strcpy(tmp, (ccp)sig);
-  strcat(tmp, "\t");
+  tmp = malloc(strlen((ccp)sig) + 10 + len + ni + 3); /* +10 for the frequency count */
+  sprintf(tmp, "%s\t%d\t", sig, ni);
   for (i = 0; i < ni; ++i)
     {
-      strcat(tmp, pi[i]);
-      if (i)
+      if (i && i < ni)
 	strcat(tmp, " ");
+      strcat(tmp, pi[i]);
     }
   list_add(sigs, npool_copy((ucc)tmp, pool));
   free(tmp);
@@ -205,6 +204,13 @@ sigmerge(const char *f)
 
 	  if (curr_cgp)
 	    {
+	      if (last_sig && *last_sig)
+		{
+		  sigmerge_sig_line(last_sig, insts, sigs, pool);
+		  if (insts)
+		    hash_free(insts,NULL);
+		  insts = hash_create(1024);
+		}
 	      sigmerge_print(curr_cgp, sigs);
 	      npool_term(pool);
 	      list_free(sigs,NULL);
@@ -216,6 +222,8 @@ sigmerge(const char *f)
 	  pool = npool_init();
 	  sigs = list_create(LIST_SINGLE);
 	  curr_cgp = npool_copy((ucp)lp, pool);
+	  if (last_sig)
+	    *last_sig = '\0';
 	}
       else
 	{
@@ -231,26 +239,29 @@ sigmerge(const char *f)
 		}
 	      else
 		{
-		  if (last_sig)
+		  if (last_sig && *last_sig)
 		    {
 		      if (strcmp((ccp)sig, (ccp)last_sig))
 			{
 			  sigmerge_sig_line(last_sig, insts, sigs, pool);
-			  hash_free(insts,NULL);
+			  if (insts)
+			    hash_free(insts,NULL);
 			  insts = hash_create(1024);
-			  if (strlen((ccp)sig) >= ls_alloc)
-			    last_sig = realloc(last_sig, (ls_alloc *= 2));
+			  while (strlen((ccp)sig) >= ls_alloc)
+			    ls_alloc *= 2;
+			  last_sig = realloc(last_sig, ls_alloc);
 			  strcpy((char*)last_sig, (ccp)sig);
 			}
-		      else
-			{
-			  hash_add(insts, npool_copy(inst, pool), &one);
-			}
+		      hash_add(insts, npool_copy(inst, pool), &one);
 		    }
 		  else
 		    {
-		      last_sig = malloc((ls_alloc));
-		      insts = hash_create(LIST_SINGLE);
+		      while (strlen((ccp)sig) >= ls_alloc)
+			ls_alloc *= 2;
+		      last_sig = realloc(last_sig, ls_alloc);
+		      strcpy((char*)last_sig, (ccp)sig);
+		      insts = hash_create(1024);
+		      hash_add(insts, npool_copy(inst, pool), &one);
 		    }
 		}
 	    }
@@ -263,11 +274,17 @@ sigmerge(const char *f)
     }
   if (curr_cgp)
     {
+      if (last_sig && *last_sig)
+	{
+	  sigmerge_sig_line(last_sig, insts, sigs, pool);
+	  if (insts)
+	    hash_free(insts,NULL);
+	  insts = NULL;
+	}
       sigmerge_print(curr_cgp, sigs);
       npool_term(pool);
       list_free(sigs, NULL);
     }
-  hash_free(insts, NULL);
   free(last_sig);
   xgetline(NULL);
 }
