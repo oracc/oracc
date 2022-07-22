@@ -290,6 +290,7 @@ sigmerge(const char *f)
     }
   free(last_sig);
   xgetline(NULL);
+  xfclose(f_in,f);
 }
 
 static void
