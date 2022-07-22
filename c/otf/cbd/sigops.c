@@ -177,6 +177,7 @@ sigmerge_sig_line(unsigned char *sig, Hash_table *insts, List *sigs, struct npoo
     }
   list_add(sigs, npool_copy((ucc)tmp, pool));
   free(tmp);
+  free(pi);
 }
 
 void
