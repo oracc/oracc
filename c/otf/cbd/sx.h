@@ -40,5 +40,7 @@ extern struct sig_context *global_scp;
 extern void sigdump(struct sigfile *ssp);
 extern void sigindex(struct sigfile *ssp);
 extern struct sigfile * sigload(const char *file);
+extern void sigmerge(const char *file);
+extern void sigstats(const char *file);
 
 #endif

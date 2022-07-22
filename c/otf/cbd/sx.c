@@ -50,6 +50,10 @@ main(int argc, char **argv)
     {
       sigmerge(file);
     }
+  else if (sig_stats)
+    {
+      sigstats(file);
+    }
   else
     {
       math_mode = no_pi = do_cuneify = use_unicode = 1;
