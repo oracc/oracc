@@ -21,8 +21,8 @@ struct sigfile {
 
 struct sigdata {
   struct f2 f2;
-  unsigned char *sig;
-  unsigned char *copy;
+  unsigned char *sig; /* this points into the loaded file; use this to print original sig (without rank/count/insts) */
+  unsigned char *sig_copy; /* and this is pool copied for f2_parse */
   unsigned const char *cgp_closed; /* should be freed after sigdata is done with */
   unsigned char *oid;
   int rank;
@@ -32,6 +32,9 @@ struct sigdata {
   int cof;
   struct sigfile *owner;
 };
+
+extern int sig_cgp;
+extern int sig_group;
 
 extern struct sig_context *global_scp;
 extern void sigdump(struct sigfile *ssp);

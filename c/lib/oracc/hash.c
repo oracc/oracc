@@ -459,6 +459,12 @@ hash_exec_user_key_data (Hash_table *htab, void (*fnc)(const unsigned char *, vo
 const char **
 hash_keys (Hash_table *htab)
 {
+  return hash_keys2(htab, NULL);
+}
+
+const char **
+hash_keys2 (Hash_table *htab, int *nkeys)
+{
   Unsigned32 i, j;
   Hash_element **s, *p;
  
@@ -482,6 +488,8 @@ hash_keys (Hash_table *htab)
 	    }
 	}
       keys[keyindex] = NULL;
+      if (nkeys)
+	*nkeys = keyindex;
       return keys;
     }
   else

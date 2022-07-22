@@ -1,6 +1,7 @@
 #include "gx.h"
 #include "sx.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <ctype128.h>
 
 static void parse_sig(struct sigfile *ssp, unsigned char *s);
@@ -51,9 +52,21 @@ sigdump(struct sigfile *ssp)
 	    {
 	      int i;
 	      List_node *lrover;
-	      for (i = 0, lrover = lp->first; i < lp->count; ++i, lrover = lrover->next)
+	      if (sig_group)
 		{
-		  printf("%s\n", ((struct sigdata*)(lrover->data))->sig);
+		  if (sig_cgp)
+		    printf("@@%s\t%ld\n", ((struct sigdata*)(lp->first->data))->cgp_closed, lp->count);
+		  for (i = 0, lrover = lp->first; i < lp->count; ++i, lrover = lrover->next)
+		    {
+		      printf("%s\t%s\n", ((struct sigdata*)(lrover->data))->sig,((struct sigdata*)(lrover->data))->insts);
+		    }
+		}
+	      else
+		{
+		  for (i = 0, lrover = lp->first; i < lp->count; ++i, lrover = lrover->next)
+		    {
+		      printf("%s\n", ((struct sigdata*)(lrover->data))->sig);
+		    }
 		}
 	    }
 	}
@@ -132,12 +145,140 @@ sigload(const char *file)
 }
 
 static void
+sigmerge_print(unsigned char *curr_cgp, List *sigs)
+{
+  int i;
+  List_node *lrover = NULL;
+  printf("%s\t%ld\n", curr_cgp, sigs->count);
+  for (i = 0, lrover = sigs->first; i < sigs->count; ++i, lrover = lrover->next)
+    {
+      printf("%s\n", (const char *)(lrover->data));
+    }
+}
+
+static void
+sigmerge_sig_line(unsigned char *sig, Hash_table *insts, List *sigs, struct npool *pool)
+{
+  const char ** pi = NULL;
+  char *tmp;
+  int i, ni, len = 0;
+  
+  pi = hash_keys2(insts, &ni);
+  qsort(pi, ni, sizeof(const char *), (__compar_fn_t)strcmp);
+  for (i = 0; i < ni; ++i)
+    len += strlen(pi[i]);
+  tmp = malloc(strlen((ccp)sig) + len + ni + 2);
+  strcpy(tmp, (ccp)sig);
+  strcat(tmp, "\t");
+  for (i = 0; i < ni; ++i)
+    {
+      strcat(tmp, pi[i]);
+      if (i)
+	strcat(tmp, " ");
+    }
+  list_add(sigs, npool_copy((ucc)tmp, pool));
+  free(tmp);
+}
+
+void
+sigmerge(const char *f)
+{
+  FILE *f_in = NULL;
+  unsigned char *lp = NULL, *curr_cgp = NULL;
+  unsigned char *last_sig = NULL;
+  Hash_table *insts = NULL;
+  List *sigs = NULL;
+  struct npool *pool = NULL;
+  int ls_alloc = 4096;
+  static int one;
+  
+  if (strcmp(f, "-"))
+    f_in = xfopen(f, "r");
+  else
+    f_in = stdin;
+
+  while ((lp = xgetline(f_in)))
+    {
+      if ('@' == lp[0] && '@' == lp[1])
+	{
+	  unsigned char *tmp = NULL;
+
+	  if (curr_cgp)
+	    {
+	      sigmerge_print(curr_cgp, sigs);
+	      npool_term(pool);
+	      list_free(sigs,NULL);
+	    }
+
+	  tmp = (ucp)strchr((ccp)lp, '\t');
+	  if (tmp)
+	    *tmp = '\0';
+	  pool = npool_init();
+	  sigs = list_create(LIST_SINGLE);
+	  curr_cgp = npool_copy((ucp)lp, pool);
+	}
+      else
+	{
+	  unsigned char *sig = lp, *inst = NULL;
+	  inst = (ucp)strchr((const char *)sig,'\t');
+	  if (inst)
+	    {
+	      *inst++ = '\0';
+	      if (strchr((ccp)inst, '\t'))
+		{
+		  fprintf(stderr, "sx -m : input lines only allowed <SIG><TAB><INSTS>\n");
+		  exit(1);
+		}
+	      else
+		{
+		  if (last_sig)
+		    {
+		      if (strcmp((ccp)sig, (ccp)last_sig))
+			{
+			  sigmerge_sig_line(last_sig, insts, sigs, pool);
+			  hash_free(insts,NULL);
+			  insts = hash_create(1024);
+			  if (strlen((ccp)sig) >= ls_alloc)
+			    last_sig = realloc(last_sig, (ls_alloc *= 2));
+			  strcpy((char*)last_sig, (ccp)sig);
+			}
+		      else
+			{
+			  hash_add(insts, npool_copy(inst, pool), &one);
+			}
+		    }
+		  else
+		    {
+		      last_sig = malloc((ls_alloc));
+		      insts = hash_create(LIST_SINGLE);
+		    }
+		}
+	    }
+	  else
+	    {
+	      fprintf(stderr, "sx -m : input line has no INSTS\n");
+	      exit(1);
+	    }
+	}
+    }
+  if (curr_cgp)
+    {
+      sigmerge_print(curr_cgp, sigs);
+      npool_term(pool);
+      list_free(sigs, NULL);
+    }
+  hash_free(insts, NULL);
+  free(last_sig);
+  xgetline(NULL);
+}
+
+static void
 parse_sig(struct sigfile *ssp, unsigned char *s)
 {
   unsigned char *c = NULL;
   struct sigdata *sdp = ssp_add_sdp(ssp);
-  sdp->sig = s;
-  c = sdp->copy = npool_copy(s,ssp->pool);
+
+  c = sdp->sig = s;
   while (*c && '\t' != *c)
     ++c;
   if (*c)
@@ -170,7 +311,8 @@ parse_sig(struct sigfile *ssp, unsigned char *s)
       if (*c)
 	sdp->insts = (char*)c;
     }
-  if (f2_parse((ucp)ssp->file,ssp->lnum,sdp->copy,&sdp->f2,NULL,ssp->scp) > 0)
+  sdp->sig_copy = npool_copy(s,ssp->pool);
+  if (f2_parse((ucp)ssp->file,ssp->lnum,sdp->sig_copy,&sdp->f2,NULL,ssp->scp) > 0)
     {
       static struct cgp cgp;
       cgp.cf = sdp->f2.cf;

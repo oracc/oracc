@@ -11,6 +11,8 @@
 extern char *strdup(const char *);
 extern FILE *f_log;
 
+static int long_output = 0;
+
 static Hash_table *errh;
 static struct npool *errp;
 static const char *current_PQ = NULL;
@@ -29,10 +31,10 @@ sH(void *userData, const char *name, const char **atts)
 	    {
 	      char errstr[512], *p, *id;
 	      sprintf(errstr, "%s:%d", pi_file, pi_line);
-	      id = npool_copy((unsigned char *)atts[i+1], errp);
-	      p = npool_copy((unsigned char *)errstr, errp);
+	      id = (char *)npool_copy((unsigned char *)atts[i+1], errp);
+	      p = (char*)npool_copy((unsigned char *)errstr, errp);
 	      /*fprintf(stderr, "add %s => %s to errh\n", id, p);*/
-	      hash_add(errh, id, p);
+	      hash_add(errh, (const unsigned char *)id, p);
 	      /*fprintf(tab,"%s\t%s\t%d\n",atts[i+1],pi_file,pi_line);*/
 	    }
 	}
@@ -59,7 +61,10 @@ sH(void *userData, const char *name, const char **atts)
 	    {
 	      char *err = hash_find(errh,(const unsigned char *)atts[ref]);
 	      /*fprintf(stderr,"find %s => %s in errh\n",atts[ref],err);*/
-	      fprintf(tab, "%s\t%s\t%s\t%s\n", err, atts[ref], atts[inst], (sig > 0) ? atts[sig] : "");
+	      if (long_output)
+		fprintf(tab, "%s\t%s\t%s\t%s\n", err, atts[ref], atts[inst], (sig > 0) ? atts[sig] : "");
+	      else if (atts[sig])
+		fprintf(tab, "%s\t%s\n", atts[sig], atts[ref]);
 	    }
 	  else if (ref > 0 && inst > 0)
 	    {
@@ -139,8 +144,8 @@ main(int argc, char **argv)
   return 0;
 }
 
-const char *prog = "wid2err";
+const char *prog = "xtfsigs";
 int major_version = 1, minor_version = 0, verbose = 0;
-const char *usage_string = "wid2lem <XTF >TAB";
+const char *usage_string = "xtfsigs <XTF >TAB";
 void help () { }
 int opts(int arg,char*str){ return 1; }

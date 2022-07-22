@@ -82,6 +82,7 @@ extern  void hash_free2 (Hash_table *htab, void (*keyfnc)(void *), void (*datfnc
 extern  Hash_address_t _hash_hash (Hash_table *htab, const unsigned char *key);
 extern  void _hash_expand(Hash_table *htab);
 extern  const char **hash_keys (Hash_table *htab);
+extern  const char **hash_keys2 (Hash_table *htab, int *nkeys);
 extern  Hash_element *_hash_lookup (Hash_table *htab, const unsigned char *key, Hash_element ***p_p);
 extern  void hash_xfree (void *vp);
 extern  void hash_freeable_data(Hash_table *h,int i);

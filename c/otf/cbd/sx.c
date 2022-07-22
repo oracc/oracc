@@ -21,8 +21,12 @@ const char *outfile = NULL;
 FILE *f_out = NULL;
 
 int filter = 0;
-int sigsort = 1;
-int siginst = 0;
+
+/* sig action ops have sig_ prefixes; functions don't have the _ */
+int sig_cgp = 0;
+int sig_group = 0;
+int sig_merge = 0;
+int sig_sort = 0;
 
 extern int math_mode;
 extern int cbd(const char *fname);
@@ -31,7 +35,7 @@ int
 main(int argc, char **argv)
 {
   struct sigfile *sigfile = NULL;
-  options(argc,argv,"io:sv");
+  options(argc,argv,"cgmo:sv");
 
   if (outfile)
     f_out = xfopen(outfile,"w");
@@ -39,40 +43,39 @@ main(int argc, char **argv)
     f_out = stdout;
 
   f_log = stderr;
-  math_mode = no_pi = do_cuneify = use_unicode = 1;
-  
-  galloc_init();
-  pool_init();
-  tree_init();
-  gdl_init();
-  curr_lang = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
-  /*cbds = hash_create(1);*/
-  with_textid = 0;
-
   file = argv[optind];
-  
-  sigfile = sigload(file);
 
-  if (sigfile)
+  if (sig_merge)
     {
-
-      if (sigsort)
-	{
-	  sigindex(sigfile);
-	  sigdump(sigfile);
-	}
-
-#if 0
-  else if (siginst)
-    sig_tis(sigfile);
-#endif
-  
+      sigmerge(file);
     }
-  lang_term();
-  gdl_term();
-  pool_term();
-  tree_term(1);
-  galloc_term();
+  else
+    {
+      math_mode = no_pi = do_cuneify = use_unicode = 1;
+      galloc_init();
+      pool_init();
+      tree_init();
+      gdl_init();
+      curr_lang = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
+      /*cbds = hash_create(1);*/
+      with_textid = 0;
+      
+      sigfile = sigload(file);
+      
+      if (sigfile)
+	{
+	  if (sig_sort)
+	    {
+	      sigindex(sigfile);
+	      sigdump(sigfile);
+	    }
+	}  
+      lang_term();
+      gdl_term();
+      pool_term();
+      tree_term(1);
+      galloc_term();
+    }
 
   return 1;
 }
@@ -89,6 +92,7 @@ int opts(int och,char *oarg)
     case 'b':
       break;
     case 'c':
+      sig_cgp = 1;
       break;
     case 'd':
       break;
@@ -96,9 +100,12 @@ int opts(int och,char *oarg)
       filter = 1;
       break;
     case 'g':
+      sig_group = 1;
       break;
     case 'i':
-      siginst = 1;
+      break;
+    case 'm':
+      sig_merge = 1;
       break;
     case 'o':
       outfile = optarg;
@@ -106,7 +113,7 @@ int opts(int och,char *oarg)
     case 'p':
       break;
     case 's':
-      sigsort = 1;
+      sig_sort = 1;
       break;
     case 'v':
       verbose = 1;

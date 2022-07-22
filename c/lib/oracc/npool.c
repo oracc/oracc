@@ -81,7 +81,6 @@ new_block2(struct npool *p, size_t len)
   return new;
 }
 
-/* FIXME: this routine will break if strlen(s)+1 > POOL_BLOCK_SIZE */
 unsigned char *
 npool_copy(register const unsigned char *s, struct npool *p)
 {
