@@ -145,11 +145,11 @@ sigload(const char *file)
 }
 
 static void
-sigmerge_print(unsigned char *curr_cgp, List *sigs)
+sigmerge_print(unsigned char *curr_cgp, int ninsts, List *sigs)
 {
   int i;
   List_node *lrover = NULL;
-  printf("%s\t%ld\n", curr_cgp, sigs->count);
+  printf("%s\t%ld\t%d\n", curr_cgp, sigs->count, ninsts);
   for (i = 0, lrover = sigs->first; i < sigs->count; ++i, lrover = lrover->next)
     {
       printf("%s\n", (const char *)(lrover->data));
@@ -157,13 +157,14 @@ sigmerge_print(unsigned char *curr_cgp, List *sigs)
 }
 
 static void
-sigmerge_sig_line(unsigned char *sig, Hash_table *insts, List *sigs, struct npool *pool)
+sigmerge_sig_line(unsigned char *sig, Hash_table *insts, List *sigs, struct npool *pool, int *ninsts)
 {
   const char ** pi = NULL;
   char *tmp;
   int i, ni, len = 0;
   
   pi = hash_keys2(insts, &ni);
+  *ninsts += ni;
   qsort(pi, ni, sizeof(const char *), (__compar_fn_t)strcmp);
   for (i = 0; i < ni; ++i)
     len += strlen(pi[i]);
@@ -191,6 +192,7 @@ sigmerge(const char *f)
   struct npool *pool = NULL;
   int ls_alloc = 4096;
   static int one;
+  static int ninsts = 0;
   
   if (strcmp(f, "-"))
     f_in = xfopen(f, "r");
@@ -207,12 +209,12 @@ sigmerge(const char *f)
 	    {
 	      if (last_sig && *last_sig)
 		{
-		  sigmerge_sig_line(last_sig, insts, sigs, pool);
+		  sigmerge_sig_line(last_sig, insts, sigs, pool, &ninsts);
 		  if (insts)
 		    hash_free(insts,NULL);		  
 		  insts = hash_create(1024);
 		}
-	      sigmerge_print(curr_cgp, sigs);
+	      sigmerge_print(curr_cgp, ninsts, sigs);
 	      npool_term(pool);
 	      list_free(sigs,NULL);
 	    }
@@ -225,6 +227,7 @@ sigmerge(const char *f)
 	  curr_cgp = npool_copy((ucp)lp, pool);
 	  if (last_sig)
 	    *last_sig = '\0';
+	  ninsts = 0;
 	}
       else
 	{
@@ -244,7 +247,7 @@ sigmerge(const char *f)
 		    {
 		      if (strcmp((ccp)sig, (ccp)last_sig))
 			{
-			  sigmerge_sig_line(last_sig, insts, sigs, pool);
+			  sigmerge_sig_line(last_sig, insts, sigs, pool, &ninsts);
 			  if (insts)
 			    hash_free(insts,NULL);
 			  insts = hash_create(1024);
@@ -279,12 +282,12 @@ sigmerge(const char *f)
     {
       if (last_sig && *last_sig)
 	{
-	  sigmerge_sig_line(last_sig, insts, sigs, pool);
+	  sigmerge_sig_line(last_sig, insts, sigs, pool, &ninsts);
 	  if (insts)
 	    hash_free(insts,NULL);
 	  insts = NULL;
 	}
-      sigmerge_print(curr_cgp, sigs);
+      sigmerge_print(curr_cgp, ninsts, sigs);
       npool_term(pool);
       list_free(sigs, NULL);
     }

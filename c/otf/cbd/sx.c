@@ -27,6 +27,7 @@ int sig_cgp = 0;
 int sig_group = 0;
 int sig_merge = 0;
 int sig_sort = 0;
+int sig_stats = 0;
 
 extern int math_mode;
 extern int cbd(const char *fname);
@@ -35,7 +36,7 @@ int
 main(int argc, char **argv)
 {
   struct sigfile *sigfile = NULL;
-  options(argc,argv,"cgmo:sv");
+  options(argc,argv,"cgmno:sv");
 
   if (outfile)
     f_out = xfopen(outfile,"w");
@@ -106,6 +107,9 @@ int opts(int och,char *oarg)
       break;
     case 'm':
       sig_merge = 1;
+      break;
+    case 'n':
+      sig_stats = 1;
       break;
     case 'o':
       outfile = optarg;
