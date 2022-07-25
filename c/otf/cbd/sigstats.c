@@ -9,17 +9,25 @@
 static int one = 1;
 static unsigned char *curr_cgp = NULL;
 
-static void keyfnc_eb(struct f2 *f2p, struct stats_info *sip);
+struct stats;
+static char *stats_key_maker(struct npool *pool, const char *cgp, ...);
+static char *keyfnc_eb(struct stats *sip, struct f2*f2p);
 
-struct stats_info {
+struct stats {
   const char *name;
   struct npool *pool;
   Hash_table *hash;
-  (char *)(keyfnc(struct stats_info *sip, struct f2 *f2p));
-} stats = {
-  { "eb" , NULL, NULL, keyfnc_eb }, 
+  char * (*keyfnc)(struct stats *sip, struct f2 *f2p);
+} stats[] = {
+  { "eb" , NULL, NULL, &keyfnc_eb }, 
   { NULL , NULL, NULL, NULL }
 };
+
+static char *
+keyfnc_eb(struct stats *sip, struct f2 *f2p)
+{
+  return stats_key_maker(sip->pool, (ccp)curr_cgp, f2p->base, NULL);
+}
 
 static void
 stats_entry_init_one(struct stats *sip, struct npool *pool)
@@ -32,11 +40,11 @@ static void
 stats_entry_init(unsigned char *cgp)
 {
   int i;
-  stats[0]->pool = npool_init();
-  stats[0]->hash = hash_create(1024);
-  curr_cgp = npool_copy(cgp, stats[0]->pool);
-  for (i = 1; stats[i]; ++i)
-    stats_entry_init_one(stats[i], stats[0]->pool);
+  stats[0].pool = npool_init();
+  stats[0].hash = hash_create(1024);
+  curr_cgp = npool_copy(cgp, stats[0].pool);
+  for (i = 1; stats[i].name; ++i)
+    stats_entry_init_one(&stats[i], stats[0].pool);
 }
 
 static void
@@ -50,15 +58,9 @@ stats_entry_term(void)
 {
   int i;
   curr_cgp = NULL;
-  npool_term(stats[0]->pool);
-  for (i = 0; stats[i]; ++i)
-    stats_entry_term_one(stats[i]);
-}
-
-static void
-keyfnc_eb(struct stats_info *sip, struct f2 *f2p)
-{
-  return stats_key_maker(sip->pool, curr_cgp, f2p->base, NULL);
+  npool_term(stats[0].pool);
+  for (i = 0; stats[i].name; ++i)
+    stats_entry_term_one(&stats[i]);
 }
 
 static char *
@@ -86,15 +88,15 @@ stats_key_maker(struct npool *pool, const char *cgp, ...)
 	}
       va_end(va);
       buf[len-1] = '\0';
-      tmp = npool_copy(buf, sip->pool);
-      free buf;
+      tmp = npool_copy((ucp)buf, pool);
+      free(buf);
       return tmp;
     }
   return NULL;
 }
 
 static void
-stats_add_key_insts(stats_info *sip, const char *key, const char **ip)
+stats_add_key_insts(stats *sip, const char *key, const char **ip)
 {
   Hash_table *hp = NULL;
 
@@ -108,7 +110,7 @@ stats_add_key_insts(stats_info *sip, const char *key, const char **ip)
 }
 
 void
-stats_collect(unsigned char *cgp, struct f2 *f2p, const char **insts, struct stats_info *sip)
+stats_collect(unsigned char *cgp, struct f2 *f2p, const char **insts, struct stats *sip)
 {
   char *buf = NULL;
   int i;
