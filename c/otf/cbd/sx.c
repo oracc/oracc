@@ -52,7 +52,9 @@ main(int argc, char **argv)
     }
   else if (sig_stats)
     {
+      atf_init();
       sigstats(file);
+      atf_term();
     }
   else
     {
