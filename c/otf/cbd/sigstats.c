@@ -88,15 +88,15 @@ stats_key_maker(struct npool *pool, const char *cgp, ...)
 	}
       va_end(va);
       buf[len-1] = '\0';
-      tmp = npool_copy((ucp)buf, pool);
+      tmp = (ccp)npool_copy((ucp)buf, pool);
       free(buf);
-      return tmp;
+      return (char*)tmp;
     }
   return NULL;
 }
 
 static void
-stats_add_key_insts(stats *sip, const char *key, const char **ip)
+stats_add_key_insts(struct stats *sip, const char *key, const char **ip)
 {
   Hash_table *hp = NULL;
 
@@ -110,14 +110,14 @@ stats_add_key_insts(stats *sip, const char *key, const char **ip)
 }
 
 void
-stats_collect(unsigned char *cgp, struct f2 *f2p, const char **insts, struct stats *sip)
+stats_collect(struct f2 *f2p, const char **insts)
 {
   char *buf = NULL;
   int i;
-  for (i = 0; stats[i]; ++i)
+  for (i = 0; stats[i].name; ++i)
     {
-      if ((buf = sip->keyfnc(cgp,f2p,stats[i])))
-	stats_add_key_insts(stats[i], buf, insts);
+      if ((buf = stats[i].keyfnc(&stats[i], f2p)))
+	stats_add_key_insts(&stats[i], buf, insts);
       else
 	fprintf(stderr, "sigstats: NULL return from stats_key_maker\n");
     }
@@ -165,8 +165,8 @@ stats_print(int ninsts)
 {
   int i;
   printf("@@%s\t%d\n", curr_cgp, ninsts);
-  for (i = 0; stats[i]; ++i)
-    stats_print_one(stats[i]);
+  for (i = 0; stats[i].name; ++i)
+    stats_print_one(&stats[i]);
 }
 
 void
@@ -176,7 +176,6 @@ sigstats(const char *f)
   unsigned char *lp = NULL;
   char *iid_copy;
   struct npool *pool = NULL;
-  Hash_table *iid_hash = NULL;
   int ninsts = 0, lnum = 0;
   struct sig_context *scp;
   struct f2 f2;
@@ -197,7 +196,7 @@ sigstats(const char *f)
 
           if (curr_cgp)
             {
-              sigstat_print(ninsts);
+              stats_print(ninsts);
 	      stats_entry_term();
 #if 0
               npool_term(pool);
@@ -220,7 +219,7 @@ sigstats(const char *f)
 
 #if 1
 	  /* per entry initialization here */
-	  curr_cgp = stats_entry_init(lp+2);
+	  stats_entry_init(lp+2);
 #else
           pool = npool_init();
           h_eb = hash_create(1024);
@@ -291,8 +290,8 @@ sigstats(const char *f)
     }
   if (curr_cgp)
     {
-      sigstat_print(ninsts);
-      stat_entry_term();
+      stats_print(ninsts);
+      stats_entry_term();
 #if 0
       npool_term(pool);
       hash_free(h_eb, NULL);
