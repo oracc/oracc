@@ -76,6 +76,7 @@ struct entry {
   Hash_table *dcfs;
   List *forms;
   List *senses;
+  Hash_table *hsenses; /* needed for building cbd from sigs */
   List *aliases;
   List *bffs;
   List *bib;

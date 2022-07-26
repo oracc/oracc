@@ -3,30 +3,50 @@
 #include <stdlib.h>
 #include <ctype128.h>
 
+enum kf { KF_ENTRY , KF_SENSE , KF_NONE };
+
+#define KF_CGP_OR_SENSE (ccp)(kftype==KF_ENTRY ? curr_cgp : f2p->sense)
+
 #define JOINER ''
 #define JOINER_s ""
 
 static int one = 1;
 static unsigned char *curr_cgp = NULL;
+static int inst_cmp(const void *a, const void *b);
 
 struct stats;
 static char *stats_key_maker(struct npool *pool, const char *cgp, ...);
-static char *keyfnc_eb(struct stats *sip, struct f2*f2p);
+
+static char *keyfnc_eb(struct stats *sip, struct f2*f2p, enum kf kftype);
+static char *keyfnc_em(struct stats *sip, struct f2*f2p, enum kf kftype);
 
 struct stats {
   const char *name;
   struct npool *pool;
   Hash_table *hash;
-  char * (*keyfnc)(struct stats *sip, struct f2 *f2p);
+  char * (*keyfnc)(struct stats *sip, struct f2 *f2p, enum kf kftype);
 } stats[] = {
   { "eb" , NULL, NULL, &keyfnc_eb }, 
+  { "em" , NULL, NULL, &keyfnc_em }, 
   { NULL , NULL, NULL, NULL }
 };
 
 static char *
-keyfnc_eb(struct stats *sip, struct f2 *f2p)
+keyfnc_eb(struct stats *sip, struct f2 *f2p, enum kf kftype)
 {
-  return stats_key_maker(sip->pool, (ccp)curr_cgp, f2p->base, NULL);
+  if (f2p->base)
+    return stats_key_maker(sip->pool, KF_CGP_OR_SENSE, f2p->base, NULL);
+  else
+    return NULL;
+}
+
+static char *
+keyfnc_em(struct stats *sip, struct f2 *f2p, enum kf kftype)
+{
+  if (f2p->morph)
+    return stats_key_maker(sip->pool, KF_CGP_OR_SENSE, f2p->morph, NULL);
+  else
+    return NULL;
 }
 
 static void
@@ -116,10 +136,13 @@ stats_collect(struct f2 *f2p, const char **insts)
   int i;
   for (i = 0; stats[i].name; ++i)
     {
-      if ((buf = stats[i].keyfnc(&stats[i], f2p)))
-	stats_add_key_insts(&stats[i], buf, insts);
-      else
-	fprintf(stderr, "sigstats: NULL return from stats_key_maker\n");
+      if ((buf = stats[i].keyfnc(&stats[i], f2p, KF_ENTRY)))
+	{
+	  stats_add_key_insts(&stats[i], buf, insts);
+	  buf = stats[i].keyfnc(&stats[i], f2p, KF_SENSE);
+	  stats_add_key_insts(&stats[i], buf, insts);
+	}
+      /* OK to get NULL return; happens when there is no BASE and fnc is for eb, for example */
     }
 }
 
@@ -136,6 +159,11 @@ stats_print_one(struct stats *sip)
   const char **k = NULL;
   int nk = 0, i;
   k = hash_keys2(sip->hash, &nk);
+
+  /* either iterate over JOINER-less keys (entries) first or sort 
+     with JOINER-less at front, and by sense for those with JOINER
+   */
+  
   for (i = 0; i < nk; ++i)
     {
       int ni = 0, j;
@@ -145,9 +173,12 @@ stats_print_one(struct stats *sip)
       hp = hash_find(sip->hash, (ucp)k[i]);
       ip = (char **)hash_keys2(hp, &ni);
 
-      /* Possibly qsort ip here; cmp fnc needs to skip projects and sort by PQX */
+      qsort(ip, ni, sizeof(const char *), (__compar_fn_t)inst_cmp);
 
-      printf("eb\t%s\t", last_component(k[i]));
+      if (strchr(k[i], '['))
+	printf("%s\t%s\t", sip->name, last_component(k[i]));
+      else
+	printf("%s\t%s\t", sip->name, k[i]);
       for (j = 0; j < ni; ++j)
 	{
 	  if (j && j < ni)
@@ -175,7 +206,6 @@ sigstats(const char *f)
   FILE *f_in = NULL;
   unsigned char *lp = NULL;
   char *iid_copy;
-  struct npool *pool = NULL;
   int ninsts = 0, lnum = 0;
   struct sig_context *scp;
   struct f2 f2;
@@ -245,7 +275,7 @@ sigstats(const char *f)
 	    }
 	  if (inst)
 	    {
-	      iid_copy = (char*)npool_copy(inst, pool);
+	      iid_copy = (char*)npool_copy(inst, stats[0].pool);
 	      memset(&f2, '\0', sizeof(struct f2));
 	      if (f2_parse((ucp)f,lnum,lp,&f2,NULL,scp) > 0)
 		{
@@ -301,4 +331,67 @@ sigstats(const char *f)
   xgetline(NULL);
   xfclose(f,f_in);
   sig_context_term();
+}
+
+static int
+inst_cmp(const void *va,const void *vb)
+{
+  int ret = 0;
+  int ai, bi;
+  const char *a = *(char*const*)va;
+  const char *b = *(char*const*)vb;
+  const char *ap, *bp;
+
+  ap = strchr(a, ':');
+  if (ap)
+    a = ap;
+  bp = strchr(b, ':');
+  if (bp)
+    b = bp;
+  
+  ret = strcmp(a,b);
+  if (!ret)
+    return 0;
+  
+  ai = atoi(a+1);
+  bi = atoi(b+1);
+  if (ai != bi)
+    return ai - bi;
+
+  a = strchr(a,'.');
+  b = strchr(b,'.');
+  if (a && b)
+    {
+      ai = atoi(a+1);
+      bi = atoi(b+1);
+      if (ai != bi)
+	return ai - bi;
+
+      a = strchr(a+1,'.');
+      b = strchr(b+1,'.');
+      if (a && b)
+	{
+	  ai = atoi(a+1);
+	  bi = atoi(b+1);
+	  if (ai != bi)
+	    return ai - bi;
+	  else
+	    return 0;
+	}
+      else
+	{
+	  if (a)
+	    return 1;
+	  else
+	    return -1;
+	}
+    }
+  else
+    {
+      if (a)
+	return 1;
+      else
+	return -1;
+    }
+  return 0;
 }
