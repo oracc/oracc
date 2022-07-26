@@ -11,6 +11,7 @@ enum kf { KF_ENTRY , KF_SENSE , KF_NONE };
 #define JOINER_s ""
 
 static int one = 1;
+static Hash_table *hsenses = NULL;
 static unsigned char *curr_cgp = NULL;
 static int inst_cmp(const void *a, const void *b);
 static int key_cmp(const void *a, const void *b);
@@ -61,6 +62,7 @@ static void
 stats_entry_init(unsigned char *cgp)
 {
   int i;
+  hsenses = hash_create(1024);
   stats[0].pool = npool_init();
   stats[0].hash = hash_create(1024);
   curr_cgp = npool_copy(cgp, stats[0].pool);
@@ -79,6 +81,7 @@ stats_entry_term(void)
 {
   int i;
   curr_cgp = NULL;
+  hash_free(hsenses, NULL);
   npool_term(stats[0].pool);
   for (i = 0; stats[i].name; ++i)
     stats_entry_term_one(&stats[i]);
@@ -145,6 +148,8 @@ stats_collect(struct f2 *f2p, const char **insts)
     {
       if ((buf = stats[i].keyfnc(&stats[i], f2p, KF_ENTRY)))
 	{
+	  if (!hash_find(hsenses, f2p->sense))
+	    hash_add(hsenses, npool_copy(f2p->sense, stats[0].pool), &one);
 	  stats_add_key_insts(&stats[i], buf, insts);
 	  buf = stats[i].keyfnc(&stats[i], f2p, KF_SENSE);
 	  stats_add_key_insts(&stats[i], buf, insts);
@@ -224,10 +229,32 @@ stats_print_one(struct stats *sip)
  *
  */
 
+static void
+stats_marshall()
+{
+  int i, n = 0, ns;
+  char *kp = NULL, *sp;
+  sp = hash_keys2(hsenses, &ns);
+  n = ns * 2;
+  for (i = 0; stats[i].name; ++i)
+    n += stats[i].hash->count;
+  ++n;
+  p = malloc(n * sizeof(char*));
+  for (i = 0; stats[i].name; ++i)
+    {
+      int nsk;
+      char *skp = hash_keys2(stats[i].hash, &nsk);
+      qsort(skp, nsk, sizeof(char*),key_cmp);
+      /* compute dest and store pointers */
+    }
+  
+}
+
 void
 stats_print(int ninsts)
 {
   int i;
+  stats_marshall();
   printf("@@%s\t%d\n", curr_cgp, ninsts);
   for (i = 0; stats[i].name; ++i)
     stats_print_one(&stats[i]);
