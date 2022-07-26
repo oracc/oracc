@@ -33,6 +33,8 @@ struct stats {
   { NULL , NULL, NULL, NULL }
 };
 
+int nstats = sizeof(stats) / sizeof(struct stats);
+
 static char *
 keyfnc_eb(struct stats *sip, struct f2 *f2p, enum kf kftype)
 {
@@ -56,6 +58,21 @@ stats_entry_init_one(struct stats *sip, struct npool *pool)
 {
   sip->pool = pool;
   sip->hash = hash_create(1024);
+}
+
+static struct stats *
+stats_sense_init(struct stats *esp)
+{
+  struct stats *ssp = calloc(1, sizeof(stats));
+  hsenses = hash_create(1024);
+  while (esp->name)
+    {
+      ssp->pool = esp->pool;
+      ssp->hash = hash_create(1024);
+      ++ssp;
+      ++esp;
+    }
+  return ssp;
 }
 
 static void
@@ -148,11 +165,15 @@ stats_collect(struct f2 *f2p, const char **insts)
     {
       if ((buf = stats[i].keyfnc(&stats[i], f2p, KF_ENTRY)))
 	{
-	  if (!hash_find(hsenses, f2p->sense))
-	    hash_add(hsenses, npool_copy(f2p->sense, stats[0].pool), &one);
+	  struct stats *sstats = NULL;
 	  stats_add_key_insts(&stats[i], buf, insts);
+	  if (!(sstats = hash_find(hsenses, f2p->sense)))
+	    {
+	      sstats = stats_sense_init((struct stats *)&stats);
+	      hash_add(hsenses, npool_copy(f2p->sense, stats[0].pool), sstats);
+	    }
 	  buf = stats[i].keyfnc(&stats[i], f2p, KF_SENSE);
-	  stats_add_key_insts(&stats[i], buf, insts);
+	  stats_add_key_insts(&sstats[i], buf, insts);
 	}
       /* OK to get NULL return; happens when there is no BASE and fnc is for eb, for example */
     }
@@ -233,19 +254,21 @@ static void
 stats_marshall()
 {
   int i, n = 0, ns;
-  char *kp = NULL, *sp;
+  char *kp = NULL;
+  const char**sp;
   sp = hash_keys2(hsenses, &ns);
   n = ns * 2;
   for (i = 0; stats[i].name; ++i)
-    n += stats[i].hash->count;
+    n += stats[i].hash->key_count;
   ++n;
-  p = malloc(n * sizeof(char*));
+  kp = malloc(n * sizeof(char*));
   for (i = 0; stats[i].name; ++i)
     {
       int nsk;
-      char *skp = hash_keys2(stats[i].hash, &nsk);
+      const char **skp = hash_keys2(stats[i].hash, &nsk);
       qsort(skp, nsk, sizeof(char*),key_cmp);
       /* compute dest and store pointers */
+      
     }
   
 }
