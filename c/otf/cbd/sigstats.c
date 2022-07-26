@@ -13,6 +13,7 @@ enum kf { KF_ENTRY , KF_SENSE , KF_NONE };
 static int one = 1;
 static unsigned char *curr_cgp = NULL;
 static int inst_cmp(const void *a, const void *b);
+static int key_cmp(const void *a, const void *b);
 
 struct stats;
 static char *stats_key_maker(struct npool *pool, const char *cgp, ...);
@@ -23,7 +24,7 @@ static char *keyfnc_em(struct stats *sip, struct f2*f2p, enum kf kftype);
 struct stats {
   const char *name;
   struct npool *pool;
-  Hash_table *hash;
+  Hash_table *hash; /* a key entry for each value of name keys * (entry + nsenses) */
   char * (*keyfnc)(struct stats *sip, struct f2 *f2p, enum kf kftype);
 } stats[] = {
   { "eb" , NULL, NULL, &keyfnc_eb }, 
@@ -92,14 +93,20 @@ stats_key_maker(struct npool *pool, const char *cgp, ...)
       int len = 0;
       va_list va;
       const char *more, *tmp;
-      len = strlen(cgp) + 1;
+      if (!strchr(cgp,'['))
+	len = strlen(cgp) + 1;
       va_start(va, cgp);
       while ((more = va_arg(va, const char *)))
 	len += strlen(more) + 1;
       va_end(va);
       buf = malloc(len+1);
-      strcpy(buf, cgp);
-      strcat(buf, JOINER_s);
+      if (!strchr(cgp,'['))
+	{
+	  strcpy(buf, cgp);
+	  strcat(buf, JOINER_s);
+	}
+      else
+	*buf = '\0';
       va_start(va, cgp);
       while ((more = va_arg(va, const char *)))
 	{
@@ -158,11 +165,14 @@ stats_print_one(struct stats *sip)
 {
   const char **k = NULL;
   int nk = 0, i;
+  char last_sense[1024];
+
   k = hash_keys2(sip->hash, &nk);
 
-  /* either iterate over JOINER-less keys (entries) first or sort 
-     with JOINER-less at front, and by sense for those with JOINER
+  /* either iterate over keys with '[' (entries) first or sort 
+     with '[' at front, and by sense for those with JOINER
    */
+  qsort(k, nk, sizeof(const char *), (__compar_fn_t)key_cmp);
   
   for (i = 0; i < nk; ++i)
     {
@@ -175,10 +185,22 @@ stats_print_one(struct stats *sip)
 
       qsort(ip, ni, sizeof(const char *), (__compar_fn_t)inst_cmp);
 
-      if (strchr(k[i], '['))
-	printf("%s\t%s\t", sip->name, last_component(k[i]));
+      if (!strchr(k[i], JOINER))
+	printf("%s\t%s\t", sip->name, k[i]); /*last_component(k[i]));*/
       else
-	printf("%s\t%s\t", sip->name, k[i]);
+	{
+	  /* These casts to char* are safe because k[i] is pool copied
+	     and won't be referenced again */
+	  char *sense = (char*)k[i], *key = (char*)strchr(k[i], JOINER);
+
+	  *key++ = '\0';
+	  if (strcmp(sense, last_sense))
+	    {
+	      printf("@@@%s\n", sense);
+	      strcpy(last_sense, sense);
+	    }
+	  printf("%s\t%s\t", sip->name, key);
+	}
       for (j = 0; j < ni; ++j)
 	{
 	  if (j && j < ni)
@@ -190,6 +212,17 @@ stats_print_one(struct stats *sip)
       hash_free(hp, NULL);
     }
 }
+
+/* Marshall before printing:
+ * 
+ * Take number of senses + 1
+ * Take number of keys in sip.hash 
+ * Multiply together gives number of pointers to keys
+ * Sort/group the key pointers so they are in print order
+ * iterate over pointer array printing each key in turn
+ * could put #sense entries in pointer array to simplify printing
+ *
+ */
 
 void
 stats_print(int ninsts)
@@ -394,4 +427,23 @@ inst_cmp(const void *va,const void *vb)
 	return -1;
     }
   return 0;
+}
+
+static int
+key_cmp(const void *va,const void *vb)
+{
+  const char *a = *(char*const*)va;
+  const char *b = *(char*const*)vb;
+
+  if (!strchr(a, JOINER))
+    {
+      if (!strchr(b, JOINER))
+	return 0;
+      else
+	return -1;
+    }
+  else if (!strchr(b, JOINER))
+    return 1;
+
+  return strcmp(a, b);
 }
