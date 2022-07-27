@@ -185,7 +185,7 @@ stats_collect(struct f2 *f2p, const char **insts)
 	  if (!(sstats = hash_find(entry.senses, f2p->sense)))
 	    {
 	      unsigned char *sense = npool_copy(f2p->sense, entry.pool);
-	      sstats = stats_sense_init((unsigned char *)f2p->sense);
+	      sstats = stats_sense_init(sense);
 	      hash_add(entry.senses, sense, sstats);
 	    }
 	  buf = keyfncs[i].keyfnc(sstats, f2p, KF_SENSE);
@@ -227,12 +227,12 @@ stats_print_stats(struct stats *sip)
 	  Hash_table *hp = NULL;
 	  char **ip = NULL;
 	  
-	  hp = hash_find(sip->hashes[i], (ucp)kp[i]);
+	  hp = hash_find(sip->hashes[i], (ucp)kp[j]);
 	  ip = (char **)hash_keys2(hp, &ni);
 
 	  qsort(ip, ni, sizeof(const char *), (__compar_fn_t)inst_cmp);
 
-	  printf("%s\t%s\t", keyfncs[i].name, kp[i]);
+	  printf("%s\t%s\t", keyfncs[i].name, kp[j]);
 	  for (k = 0; k < ni; ++k)
 	    {
 	      if (k && k < ni)
