@@ -240,8 +240,11 @@ stats_print_stats(struct stats *sip)
 	      printf("%s", ip[k]);
 	    }
 	  printf("\n");
+
+	  free(ip);
 	  hash_free(hp, NULL);
 	}
+      free(kp);
     }
 }
 
@@ -265,6 +268,7 @@ stats_print(int ninsts)
   stats_print_stats(&entry);
   for (i = 0; i < nsk; ++i)
     stats_print_stats(hash_find(entry.senses, (ucp)sensekeys[i]));
+  free(sensekeys);
 }
 
 void
