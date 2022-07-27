@@ -74,6 +74,7 @@ stats_hashes_term(Hash_table **hp)
   int i = 0;
   for (i = 0; i < nfunc; ++i)
     hash_free(hp[i], NULL);
+  free(hp);
 }
 
 static struct stats *
