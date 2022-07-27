@@ -11,10 +11,9 @@ enum kf { KF_ENTRY , KF_SENSE , KF_NONE };
 #define JOINER_s ""
 
 static int one = 1;
-static Hash_table *hsenses = NULL;
 static unsigned char *curr_cgp = NULL;
 static int inst_cmp(const void *a, const void *b);
-static int key_cmp(const void *a, const void *b);
+/*static int key_cmp(const void *a, const void *b);*/
 static int str_cmp(const void *a, const void *b);
 
 struct stats;
@@ -23,21 +22,16 @@ static char *stats_key_maker(struct npool *pool, const char *cgp, ...);
 static char *keyfnc_b(struct stats *sip, struct f2*f2p, enum kf kftype);
 static char *keyfnc_m(struct stats *sip, struct f2*f2p, enum kf kftype);
 
-struct s
-
-  struct npool *pool;
-  Hash_table *hash; /* a key entry for each value of name keys * (entry + nsenses) */
-
 struct funcs {
   const char *name;
   char * (*keyfnc)(struct stats *sip, struct f2 *f2p, enum kf kftype);
 } keyfncs[] = {
-  { "b" , &keyfnc_eb }, 
-  { "m" , &keyfnc_em }, 
+  { "b" , &keyfnc_b }, 
+  { "m" , &keyfnc_m }, 
   { NULL , NULL }
 };
 
-int nfuncs = sizeof(stats) / sizeof(struct funcs);
+int nfunc = sizeof(keyfncs) / sizeof(struct funcs);
 
 struct stats {
   const unsigned char *label;
@@ -67,6 +61,7 @@ keyfnc_m(struct stats *sip, struct f2 *f2p, enum kf kftype)
 Hash_table **
 stats_hashes_init(void)
 {
+  int i;
   Hash_table **hashes = malloc(nfunc * sizeof(Hash_table *));
   for (i = 0; i < nfunc; ++i)
     hashes[i] = hash_create(1024);
@@ -78,13 +73,13 @@ stats_hashes_term(Hash_table **hp)
 {
   int i = 0;
   for (i = 0; i < nfunc; ++i)
-    hash_free(entry.hashes[i]);
+    hash_free(hp[i], NULL);
 }
 
 static struct stats *
 stats_sense_init(unsigned char *s)
 {
-  struct stats *ssp = calloc(1, sizeof(stats));
+  struct stats *ssp = calloc(1, sizeof(struct stats));
   ssp->label = s;
   ssp->hashes = stats_hashes_init();
   ssp->pool = entry.pool;
@@ -100,7 +95,6 @@ stats_sense_term(struct stats *ssp)
 static void
 stats_entry_init(unsigned char *cgp)
 {
-  int nfunc;
   entry.pool = npool_init();
   entry.senses = hash_create(1024);
   entry.label = curr_cgp = npool_copy(cgp, entry.pool);
@@ -110,11 +104,10 @@ stats_entry_init(unsigned char *cgp)
 static void
 stats_entry_term(void)
 {
-  int i;
   curr_cgp = NULL;
-  hash_free(entry.senses, NULL);
-  npool_term(stats[0].pool);
-  stats_hashes_term();
+  hash_free(entry.senses, (void (*)(void*))stats_sense_term);
+  npool_term(entry.pool);
+  stats_hashes_term(entry.hashes);
 }
 
 static char *
@@ -165,14 +158,14 @@ stats_key_maker(struct npool *pool, const char *cgp, ...)
 }
 
 static void
-stats_add_key_insts(struct stats *sip, const char *key, const char **ip)
+stats_add_key_insts(Hash_table *keys, const char *key, const char **ip)
 {
   Hash_table *hp = NULL;
 
-  if (!(hp = hash_find(sip->hash, (ucp)key)))
+  if (!(hp = hash_find(keys, (ucp)key)))
     {
       hp = hash_create(1024);
-      hash_add(sip->hash, npool_copy((ucp)key, sip->pool), hp);
+      hash_add(keys, npool_copy((ucp)key, entry.pool), hp);
     }
   while (*ip)
     hash_add(hp, (ucp)*ip++, &one);
@@ -185,29 +178,31 @@ stats_collect(struct f2 *f2p, const char **insts)
   int i;
   for (i = 0; keyfncs[i].name; ++i)
     {
-      if ((buf = keyfncs[i].keyfnc(&stats[i], f2p, KF_ENTRY)))
+      if ((buf = keyfncs[i].keyfnc(&entry, f2p, KF_ENTRY)))
 	{
 	  struct stats *sstats = NULL;
 	  stats_add_key_insts(entry.hashes[i], buf, insts);
 	  if (!(sstats = hash_find(entry.senses, f2p->sense)))
 	    {
 	      unsigned char *sense = npool_copy(f2p->sense, entry.pool);
-	      sstats = stats_sense_init(f2p->sense);
+	      sstats = stats_sense_init((unsigned char *)f2p->sense);
 	      hash_add(entry.senses, sense, sstats);
 	    }
-	  buf = keyfncs[i].keyfnc(&stats[i], f2p, KF_SENSE);
+	  buf = keyfncs[i].keyfnc(sstats, f2p, KF_SENSE);
 	  stats_add_key_insts(sstats->hashes[i], buf, insts);
 	}
-      /* OK to get NULL return; happens when there is no BASE and fnc is for eb, for example */
+      /* OK to get NULL return; happens when there is no BASE and fnc is for b, for example */
     }
 }
 
+#if 0
 static const char *
 last_component(const char *key)
 {
   const char *j = strrchr(key, JOINER);
   return j+1;
 }
+#endif
 
 static void
 stats_print_stats(struct stats *sip)
@@ -232,12 +227,12 @@ stats_print_stats(struct stats *sip)
 	  Hash_table *hp = NULL;
 	  char **ip = NULL;
 	  
-	  hp = hash_find(sip->hash, (ucp)kp[i]);
+	  hp = hash_find(sip->hashes[i], (ucp)kp[i]);
 	  ip = (char **)hash_keys2(hp, &ni);
 
 	  qsort(ip, ni, sizeof(const char *), (__compar_fn_t)inst_cmp);
 
-	  printf("%s\t%s\t", funcs[i].name, kp[i]);
+	  printf("%s\t%s\t", keyfncs[i].name, kp[i]);
 	  for (k = 0; k < ni; ++k)
 	    {
 	      if (k && k < ni)
@@ -253,7 +248,7 @@ void
 stats_print(int ninsts)
 {
   int i, nsk;
-  const char *sensekeys = NULL;
+  const char **sensekeys = NULL;
 #if 0
   struct stats **senses = NULL;
 #endif
@@ -268,7 +263,7 @@ stats_print(int ninsts)
 
   stats_print_stats(&entry);
   for (i = 0; i < nsk; ++i)
-    stats_print_stats(hash_find(entry.senses, senses[i]));
+    stats_print_stats(hash_find(entry.senses, (ucp)sensekeys[i]));
 }
 
 void
@@ -346,7 +341,7 @@ sigstats(const char *f)
 	    }
 	  if (inst)
 	    {
-	      iid_copy = (char*)npool_copy(inst, stats[0].pool);
+	      iid_copy = (char*)npool_copy(inst, entry.pool);
 	      memset(&f2, '\0', sizeof(struct f2));
 	      if (f2_parse((ucp)f,lnum,lp,&f2,NULL,scp) > 0)
 		{
@@ -467,6 +462,8 @@ inst_cmp(const void *va,const void *vb)
   return 0;
 }
 
+
+#if 0
 static int
 key_cmp(const void *va,const void *vb)
 {
@@ -485,7 +482,7 @@ key_cmp(const void *va,const void *vb)
 
   return strcmp(a, b);
 }
-
+#endif
 
 static int
 str_cmp(const void *a, const void *b)
