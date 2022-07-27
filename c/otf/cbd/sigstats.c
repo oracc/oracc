@@ -91,6 +91,7 @@ static void
 stats_sense_term(struct stats *ssp)
 {
   stats_hashes_term(ssp->hashes);
+  free(ssp);
 }
 
 static void
@@ -360,9 +361,8 @@ sigstats(const char *f)
 		      while (isspace(*s))
 			++s;
 		    }
-		  
-		  instp = malloc(++i * sizeof(char*));
-		  
+
+		  instp = malloc(++i * sizeof(char*));		  
 		  for (i = 0, s = iid_copy; *s; )
 		    {
 		      if (!isspace(*s))
@@ -380,7 +380,8 @@ sigstats(const char *f)
 		    }
 		  instp[i] = NULL;
 		  stats_collect(&f2, (const char **)instp);
-		  /* stats_eb(curr_cgp, &f2, (const char **)instp, pool); */
+		  /* The instances are added to hashes so this array of pointers is done with */
+		  free(instp);
 		}
 	    }
 	}
