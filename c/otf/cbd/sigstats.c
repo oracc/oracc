@@ -15,28 +15,39 @@ static Hash_table *hsenses = NULL;
 static unsigned char *curr_cgp = NULL;
 static int inst_cmp(const void *a, const void *b);
 static int key_cmp(const void *a, const void *b);
+static int str_cmp(const void *a, const void *b);
 
 struct stats;
 static char *stats_key_maker(struct npool *pool, const char *cgp, ...);
 
-static char *keyfnc_eb(struct stats *sip, struct f2*f2p, enum kf kftype);
-static char *keyfnc_em(struct stats *sip, struct f2*f2p, enum kf kftype);
+static char *keyfnc_b(struct stats *sip, struct f2*f2p, enum kf kftype);
+static char *keyfnc_m(struct stats *sip, struct f2*f2p, enum kf kftype);
 
-struct stats {
-  const char *name;
+struct s
+
   struct npool *pool;
   Hash_table *hash; /* a key entry for each value of name keys * (entry + nsenses) */
+
+struct funcs {
+  const char *name;
   char * (*keyfnc)(struct stats *sip, struct f2 *f2p, enum kf kftype);
-} stats[] = {
-  { "eb" , NULL, NULL, &keyfnc_eb }, 
-  { "em" , NULL, NULL, &keyfnc_em }, 
-  { NULL , NULL, NULL, NULL }
+} keyfncs[] = {
+  { "b" , &keyfnc_eb }, 
+  { "m" , &keyfnc_em }, 
+  { NULL , NULL }
 };
 
-int nstats = sizeof(stats) / sizeof(struct stats);
+int nfuncs = sizeof(stats) / sizeof(struct funcs);
+
+struct stats {
+  const unsigned char *label;
+  struct npool *pool;
+  Hash_table *senses;
+  Hash_table **hashes;
+} entry;
 
 static char *
-keyfnc_eb(struct stats *sip, struct f2 *f2p, enum kf kftype)
+keyfnc_b(struct stats *sip, struct f2 *f2p, enum kf kftype)
 {
   if (f2p->base)
     return stats_key_maker(sip->pool, KF_CGP_OR_SENSE, f2p->base, NULL);
@@ -45,7 +56,7 @@ keyfnc_eb(struct stats *sip, struct f2 *f2p, enum kf kftype)
 }
 
 static char *
-keyfnc_em(struct stats *sip, struct f2 *f2p, enum kf kftype)
+keyfnc_m(struct stats *sip, struct f2 *f2p, enum kf kftype)
 {
   if (f2p->morph)
     return stats_key_maker(sip->pool, KF_CGP_OR_SENSE, f2p->morph, NULL);
@@ -53,44 +64,47 @@ keyfnc_em(struct stats *sip, struct f2 *f2p, enum kf kftype)
     return NULL;
 }
 
-static void
-stats_entry_init_one(struct stats *sip, struct npool *pool)
+Hash_table **
+stats_hashes_init(void)
 {
-  sip->pool = pool;
-  sip->hash = hash_create(1024);
+  Hash_table **hashes = malloc(nfunc * sizeof(Hash_table *));
+  for (i = 0; i < nfunc; ++i)
+    hashes[i] = hash_create(1024);
+  return hashes;
+}
+
+void
+stats_hashes_term(Hash_table **hp)
+{
+  int i = 0;
+  for (i = 0; i < nfunc; ++i)
+    hash_free(entry.hashes[i]);
 }
 
 static struct stats *
-stats_sense_init(struct stats *esp)
+stats_sense_init(unsigned char *s)
 {
   struct stats *ssp = calloc(1, sizeof(stats));
-  hsenses = hash_create(1024);
-  while (esp->name)
-    {
-      ssp->pool = esp->pool;
-      ssp->hash = hash_create(1024);
-      ++ssp;
-      ++esp;
-    }
+  ssp->label = s;
+  ssp->hashes = stats_hashes_init();
+  ssp->pool = entry.pool;
   return ssp;
+}
+
+static void
+stats_sense_term(struct stats *ssp)
+{
+  stats_hashes_term(ssp->hashes);
 }
 
 static void
 stats_entry_init(unsigned char *cgp)
 {
-  int i;
-  hsenses = hash_create(1024);
-  stats[0].pool = npool_init();
-  stats[0].hash = hash_create(1024);
-  curr_cgp = npool_copy(cgp, stats[0].pool);
-  for (i = 1; stats[i].name; ++i)
-    stats_entry_init_one(&stats[i], stats[0].pool);
-}
-
-static void
-stats_entry_term_one(struct stats *sip)
-{
-  hash_free(sip->hash, NULL);
+  int nfunc;
+  entry.pool = npool_init();
+  entry.senses = hash_create(1024);
+  entry.label = curr_cgp = npool_copy(cgp, entry.pool);
+  entry.hashes = stats_hashes_init();
 }
 
 static void
@@ -98,10 +112,9 @@ stats_entry_term(void)
 {
   int i;
   curr_cgp = NULL;
-  hash_free(hsenses, NULL);
+  hash_free(entry.senses, NULL);
   npool_term(stats[0].pool);
-  for (i = 0; stats[i].name; ++i)
-    stats_entry_term_one(&stats[i]);
+  stats_hashes_term();
 }
 
 static char *
@@ -113,13 +126,20 @@ stats_key_maker(struct npool *pool, const char *cgp, ...)
       int len = 0;
       va_list va;
       const char *more, *tmp;
+#if 0
       if (!strchr(cgp,'['))
 	len = strlen(cgp) + 1;
+#endif
+
       va_start(va, cgp);
       while ((more = va_arg(va, const char *)))
 	len += strlen(more) + 1;
       va_end(va);
       buf = malloc(len+1);
+
+#if 1
+      *buf = '\0';
+#else
       if (!strchr(cgp,'['))
 	{
 	  strcpy(buf, cgp);
@@ -127,6 +147,8 @@ stats_key_maker(struct npool *pool, const char *cgp, ...)
 	}
       else
 	*buf = '\0';
+#endif
+      
       va_start(va, cgp);
       while ((more = va_arg(va, const char *)))
 	{
@@ -161,19 +183,20 @@ stats_collect(struct f2 *f2p, const char **insts)
 {
   char *buf = NULL;
   int i;
-  for (i = 0; stats[i].name; ++i)
+  for (i = 0; keyfncs[i].name; ++i)
     {
-      if ((buf = stats[i].keyfnc(&stats[i], f2p, KF_ENTRY)))
+      if ((buf = keyfncs[i].keyfnc(&stats[i], f2p, KF_ENTRY)))
 	{
 	  struct stats *sstats = NULL;
-	  stats_add_key_insts(&stats[i], buf, insts);
-	  if (!(sstats = hash_find(hsenses, f2p->sense)))
+	  stats_add_key_insts(entry.hashes[i], buf, insts);
+	  if (!(sstats = hash_find(entry.senses, f2p->sense)))
 	    {
-	      sstats = stats_sense_init((struct stats *)&stats);
-	      hash_add(hsenses, npool_copy(f2p->sense, stats[0].pool), sstats);
+	      unsigned char *sense = npool_copy(f2p->sense, entry.pool);
+	      sstats = stats_sense_init(f2p->sense);
+	      hash_add(entry.senses, sense, sstats);
 	    }
-	  buf = stats[i].keyfnc(&stats[i], f2p, KF_SENSE);
-	  stats_add_key_insts(&sstats[i], buf, insts);
+	  buf = keyfncs[i].keyfnc(&stats[i], f2p, KF_SENSE);
+	  stats_add_key_insts(sstats->hashes[i], buf, insts);
 	}
       /* OK to get NULL return; happens when there is no BASE and fnc is for eb, for example */
     }
@@ -187,100 +210,65 @@ last_component(const char *key)
 }
 
 static void
-stats_print_one(struct stats *sip)
+stats_print_stats(struct stats *sip)
 {
-  const char **k = NULL;
-  int nk = 0, i;
-  char last_sense[1024];
+  const char **kp = NULL;
+  int nk = 0, i, j;
 
-  k = hash_keys2(sip->hash, &nk);
-
-  /* either iterate over keys with '[' (entries) first or sort 
-     with '[' at front, and by sense for those with JOINER
-   */
-  qsort(k, nk, sizeof(const char *), (__compar_fn_t)key_cmp);
+  if (sip->senses)
+    printf("@@%s\n", sip->label);
+  else
+    printf("@@@%s\n", sip->label);
   
-  for (i = 0; i < nk; ++i)
+  for (i = 0; i < nfunc; ++i)
     {
-      int ni = 0, j;
-      Hash_table *hp = NULL;
-      char **ip = NULL;
+      kp = hash_keys2(sip->hashes[i], &nk);
+      /* sort the keys, e.g., bases or morphs */
+      qsort(kp, nk, sizeof(const char *), (__compar_fn_t)str_cmp);
 
-      hp = hash_find(sip->hash, (ucp)k[i]);
-      ip = (char **)hash_keys2(hp, &ni);
-
-      qsort(ip, ni, sizeof(const char *), (__compar_fn_t)inst_cmp);
-
-      if (!strchr(k[i], JOINER))
-	printf("%s\t%s\t", sip->name, k[i]); /*last_component(k[i]));*/
-      else
+      for (j = 0; j < nk; ++j)
 	{
-	  /* These casts to char* are safe because k[i] is pool copied
-	     and won't be referenced again */
-	  char *sense = (char*)k[i], *key = (char*)strchr(k[i], JOINER);
+	  int ni = 0, k;
+	  Hash_table *hp = NULL;
+	  char **ip = NULL;
+	  
+	  hp = hash_find(sip->hash, (ucp)kp[i]);
+	  ip = (char **)hash_keys2(hp, &ni);
 
-	  *key++ = '\0';
-	  if (strcmp(sense, last_sense))
+	  qsort(ip, ni, sizeof(const char *), (__compar_fn_t)inst_cmp);
+
+	  printf("%s\t%s\t", funcs[i].name, kp[i]);
+	  for (k = 0; k < ni; ++k)
 	    {
-	      printf("@@@%s\n", sense);
-	      strcpy(last_sense, sense);
+	      if (k && k < ni)
+		printf(" ");
+	      printf("%s", ip[k]);
 	    }
-	  printf("%s\t%s\t", sip->name, key);
+	  printf("\n");
 	}
-      for (j = 0; j < ni; ++j)
-	{
-	  if (j && j < ni)
-	    printf(" ");
-	  printf("%s", ip[j]);
-	}
-      printf("\n");
-
-      hash_free(hp, NULL);
     }
-}
-
-/* Marshall before printing:
- * 
- * Take number of senses + 1
- * Take number of keys in sip.hash 
- * Multiply together gives number of pointers to keys
- * Sort/group the key pointers so they are in print order
- * iterate over pointer array printing each key in turn
- * could put #sense entries in pointer array to simplify printing
- *
- */
-
-static void
-stats_marshall()
-{
-  int i, n = 0, ns;
-  char *kp = NULL;
-  const char**sp;
-  sp = hash_keys2(hsenses, &ns);
-  n = ns * 2;
-  for (i = 0; stats[i].name; ++i)
-    n += stats[i].hash->key_count;
-  ++n;
-  kp = malloc(n * sizeof(char*));
-  for (i = 0; stats[i].name; ++i)
-    {
-      int nsk;
-      const char **skp = hash_keys2(stats[i].hash, &nsk);
-      qsort(skp, nsk, sizeof(char*),key_cmp);
-      /* compute dest and store pointers */
-      
-    }
-  
 }
 
 void
 stats_print(int ninsts)
 {
-  int i;
-  stats_marshall();
-  printf("@@%s\t%d\n", curr_cgp, ninsts);
-  for (i = 0; stats[i].name; ++i)
-    stats_print_one(&stats[i]);
+  int i, nsk;
+  const char *sensekeys = NULL;
+#if 0
+  struct stats **senses = NULL;
+#endif
+
+  sensekeys = hash_keys2(entry.senses, &nsk);
+  qsort(sensekeys, nsk, sizeof(const char *), str_cmp);
+#if 0
+  senses = malloc(nsk * sizeof(struct stat *));
+  for (i = 0; i < nsk; ++i)
+    senses[i] = hash_find(entry.senses, sensekeys[i]);
+#endif
+
+  stats_print_stats(&entry);
+  for (i = 0; i < nsk; ++i)
+    stats_print_stats(hash_find(entry.senses, senses[i]));
 }
 
 void
@@ -497,3 +485,11 @@ key_cmp(const void *va,const void *vb)
 
   return strcmp(a, b);
 }
+
+
+static int
+str_cmp(const void *a, const void *b)
+{
+  return strcmp(*(char* const*) a, *(char* const*) b);
+}
+
