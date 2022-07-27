@@ -240,6 +240,7 @@ stats_print_stats(struct stats *sip)
 	      printf("%s", ip[k]);
 	    }
 	  printf("\n");
+	  hash_free(hp, NULL);
 	}
     }
 }
@@ -294,11 +295,6 @@ sigstats(const char *f)
             {
               stats_print(ninsts);
 	      stats_entry_term();
-#if 0
-              npool_term(pool);
-	      hash_free(h_eb, NULL);
-              hash_free(iid_hash, NULL);
-#endif
             }
 
           tmp = (ucp)strchr((ccp)lp, '\t');
@@ -388,11 +384,6 @@ sigstats(const char *f)
     {
       stats_print(ninsts);
       stats_entry_term();
-#if 0
-      npool_term(pool);
-      hash_free(h_eb, NULL);
-      hash_free(iid_hash, NULL);
-#endif
     }
   xgetline(NULL);
   xfclose(f,f_in);
