@@ -5,7 +5,7 @@ AM_CFLAGS=-pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=libcbd.la
 
-bin_PROGRAMS=gx sx
+bin_PROGRAMS=gx sx statis
 
 libcbd_la_SOURCES = \
 	common.c cbd.c header.c entry.c dcf.c form.c \
@@ -59,3 +59,11 @@ sx_SOURCES = \
 sx_LDADD = $(xLDADD)
 
 sx_DEPENDENCIES = $(xLDADD)
+
+statis_SOURCES = \
+	statis.c
+
+statis_LDADD = $(xLDADD)
+
+statis_DEPENDENCIES = $(xLDADD)
+
