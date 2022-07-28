@@ -14,6 +14,7 @@
 
 const char *errmsg_fn = NULL;
 
+int flex_scanner = 0;
 int stdin_input = 0;
 Hash_table *cbds = NULL;
 
@@ -23,11 +24,12 @@ int sigs = 0;
 
 extern int math_mode;
 extern int cbd(const char *fname);
+extern int flex(const char *fname);
 
 int
 main(int argc, char **argv)
 {
-  options(argc,argv,"cesv");
+  options(argc,argv,"cefsv");
 
 #if 1
   file = argv[optind];
@@ -58,7 +60,10 @@ main(int argc, char **argv)
   cbds = hash_create(1);
   with_textid = 0;
 
-  cbd(file);
+  if (flex_scanner)
+    flex(file);
+  else
+    cbd(file);
   
   lang_term();
   gdl_term();
@@ -86,6 +91,9 @@ int opts(int och,char *oarg)
       break;
     case 'e':
       entries = 1;
+      break;
+    case 'f':
+      flex_scanner = 1;
       break;
     case 'g':
       break;

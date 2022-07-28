@@ -13,7 +13,7 @@ libcbd_la_SOURCES = \
 	parts.c bases.c	sig.c file.c note.c bib.c disc.c \
 	cbdtags.c cbdpos.c sigops.c pleiades.c prop.c \
 	stems.c root.c phon.c collo.c oid.c equiv.c \
-	edit.c xgetline.c sigstats.c
+	edit.c xgetline.c sigstats.c flex.c cbd_scanner.c
 
 AM_CPPFLAGS=\
 	-I@top_srcdir@/c/otf/{atf,cdf,chr,gdl,lib,lng,run,ox} \
@@ -46,10 +46,13 @@ xLDADD = \
 	@top_srcdir@/c/lib/liboracc.la \
 	./libcbd.la
 
+cbd_scanner.c: cbd_scanner.l
+	flex -DYY_NO_INPUT -o cbd_scanner.c cbd_scanner.l
+
 gx_SOURCES = \
 	gx.c globals.c 
 
-gx_LDADD = $(xLDADD)
+gx_LDADD = $(xLDADD) -lfl
 
 gx_DEPENDENCIES = $(xLDADD)
 

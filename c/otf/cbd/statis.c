@@ -21,11 +21,10 @@ static const char *base = NULL;
 static void
 is_id_map(unsigned char *l)
 {
-  char *insts = strchr((ccp)l, '\t');
+  char *insts = strrchr((ccp)l, '\t');
   static int id = 0;
   char id_buf[16], *idp;
   
-  insts = strchr(insts+1, '\t');
   if (insts)
     {
       *insts++ = '\0';
