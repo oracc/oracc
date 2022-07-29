@@ -15,7 +15,7 @@ void yyerror(char *s);
 %token <text> POS
 %token <text> PROJSPEC
 
-%token ENTRY_B ENTRY_E LANG PROJECT NAME
+%token ENTRY_B ENTRY_E LANG PROJECT NAME ALIAS BASES FORM
 
 %start cbd
 
@@ -34,13 +34,27 @@ atname:    NAME    TEXTSPEC { curr_cbd->name = yylval.text; } ;
 entrylist: entry
 	| entrylist entry
 
-entry:	entry_b cgp entry_e
+entry:	entry_b cgp econtent entry_e
 
 entry_b: ENTRY_B { curr_entry = entry_init(curr_cbd); } ;
 
 entry_e: ENTRY_E { printf("end entry %s\n", curr_entry->cgp.closed); curr_entry = NULL; } ;
 
 cgp:    CF '[' GW ']' POS { cgp_init(&curr_entry->cgp, $1, $3, $5); } ;
+
+econtent: aliases | bases | forms
+
+aliases: alias
+	| aliases alias
+
+alias: ALIAS
+
+bases: BASES
+
+forms: form
+	| forms form
+
+form: FORM
 
 %%
 
