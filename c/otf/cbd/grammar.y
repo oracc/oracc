@@ -38,9 +38,9 @@ entry:	entry_b cgp entry_e
 
 entry_b: ENTRY_B { curr_entry = entry_init(curr_cbd); } ;
 
-entry_e: ENTRY_E { curr_entry = NULL; } ;
+entry_e: ENTRY_E { printf("end entry %s\n", curr_entry->cgp.closed); curr_entry = NULL; } ;
 
-cgp:    CF '[' GW ']' POS { printf("%s[%s]%s\n", $1, $3, $5); } ;
+cgp:    CF '[' GW ']' POS { cgp_init(&curr_entry->cgp, $1, $3, $5); } ;
 
 %%
 

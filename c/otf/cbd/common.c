@@ -2,6 +2,16 @@
 #include <unistd.h>
 #include "gx.h"
 
+void
+cgp_init(struct cgp *c, unsigned char *cf, unsigned char *gw, unsigned char *pos)
+{
+  c->cf = cf;
+  c->gw = gw;
+  c->pos = pos;
+  c->closed = cgp_str(c, 0);
+  c->spread = NULL;
+}
+
 const unsigned char *
 cgp_entry_str(struct entry *e, int spread)
 {

@@ -90,9 +90,7 @@ struct entry {
 
 struct alias {
   locator l;
-  struct cgp *c;
-  unsigned const char *spread;
-  unsigned const char *closed;
+  struct cgp cgp;
 };
 
 struct sense {
@@ -144,6 +142,7 @@ extern unsigned char *tok(unsigned char *s, unsigned char *end);
 extern unsigned char *form_sig(struct entry *e, struct f2 *f2p);
 extern void untab(unsigned char *s);
 
+extern void cgp_init(struct cgp *c, unsigned char *cf, unsigned char *gw, unsigned char *pos);
 extern unsigned const char *cgp_entry_str(struct entry *e, int spread);
 extern const unsigned char *cgp_str(struct cgp *cp, int spread);
 extern void cgp_entry(struct cgp *c, struct entry *e);
