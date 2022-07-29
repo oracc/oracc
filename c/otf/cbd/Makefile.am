@@ -13,7 +13,8 @@ libcbd_la_SOURCES = \
 	parts.c bases.c	sig.c file.c note.c bib.c disc.c \
 	cbdtags.c cbdpos.c sigops.c pleiades.c prop.c \
 	stems.c root.c phon.c collo.c oid.c equiv.c \
-	edit.c xgetline.c sigstats.c flex.c cbd_scanner.c
+	edit.c xgetline.c sigstats.c flex.c \
+	scanner.c grammar.tab.c
 
 AM_CPPFLAGS=\
 	-I@top_srcdir@/c/otf/{atf,cdf,chr,gdl,lib,lng,run,ox} \
@@ -46,8 +47,13 @@ xLDADD = \
 	@top_srcdir@/c/lib/liboracc.la \
 	./libcbd.la
 
-cbd_scanner.c: cbd_scanner.l
-	flex -DYY_NO_INPUT -o cbd_scanner.c cbd_scanner.l
+grammar.tab.c grammar.tab.h: grammar.y
+	${YACC} -b grammar -vd grammar.y
+
+scanner.c: scanner.l
+	flex -B -DYY_NO_INPUT -DYY_NO_UNPUT -o scanner.c scanner.l
+
+scanner.o: scanner.c grammar.tab.h
 
 gx_SOURCES = \
 	gx.c globals.c 

@@ -22,6 +22,7 @@ int check = 0;
 int entries = 0;
 int sigs = 0;
 
+extern int yydebug;
 extern int math_mode;
 extern int cbd(const char *fname);
 extern int flex(const char *fname);
@@ -29,7 +30,7 @@ extern int flex(const char *fname);
 int
 main(int argc, char **argv)
 {
-  options(argc,argv,"cefsv");
+  options(argc,argv,"cdefsv");
 
 #if 1
   file = argv[optind];
@@ -88,6 +89,7 @@ int opts(int och,char *oarg)
       check = 1;
       break;
     case 'd':
+      yydebug = 1;
       break;
     case 'e':
       entries = 1;

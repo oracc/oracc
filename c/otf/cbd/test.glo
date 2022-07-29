@@ -1,6 +1,6 @@
 @project epsd2
-@name epsd2/sux
 @lang sux
+@name epsd2/sux
 
 @entry a [water] N
 @bases a (e₄, ea); |A.A|; A-A

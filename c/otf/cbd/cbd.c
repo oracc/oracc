@@ -30,6 +30,13 @@ init_cbd(void)
   return c;
 }
 
+struct cbd *
+cbd_init(void)
+{
+  struct cbd *c = init_cbd();
+  return c;
+}
+
 void
 setup_cbd(struct cbd*c)
 {
@@ -38,6 +45,12 @@ setup_cbd(struct cbd*c)
   hash_add(cbds, c->iname, c);
   /* xpdinit */
   /* cuneify_init(c->xpd); */
+}
+
+void
+cbd_setup(struct cbd*c)
+{
+  setup_cbd(c);
 }
 
 void

@@ -129,7 +129,14 @@ extern int check;
 extern int entries;
 extern int sigs;
 
+extern struct cbd *curr_cbd;
+extern struct entry *curr_entry;
+
 extern const char *errmsg_fn;
+
+struct cbd * cbd_init(void);
+void cbd_setup(struct cbd*c);
+struct entry * entry_init(struct cbd* c);
 
 extern struct cbdpos *cbdpos(const char *str, size_t len);
 extern struct cbdtag *cbdtags(const char *str, size_t len);

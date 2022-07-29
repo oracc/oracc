@@ -13,6 +13,18 @@ init_entry(void)
   e->senses = list_create(LIST_SINGLE);
   return e;
 }
+
+struct entry *
+entry_init(struct cbd* c)
+{
+  struct entry *e = init_entry();
+  e->l = c->l;
+  e->owner = c;
+  e->lang = c->lang;
+  list_add(c->entries, e);
+  return e;
+}
+
 static void
 term_entry(struct entry *e)
 {

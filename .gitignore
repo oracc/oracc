@@ -1,4 +1,10 @@
-cbd_scanner.c
+scanner.c
+grammar.tab.c
+grammar.tab.h
+grammar.output
+y.tab.c
+y.tab.h
+y.output
 edit.edit
 gdlsname
 gdlsig
