@@ -32,7 +32,6 @@ lang_block: bases_block forms
 	    | bases_block stems forms
 	    | bases_block forms equiv
 	    | bases_block stems forms equivs
-	    | word_block
 	    | forms
 	    | forms equivs
 
@@ -59,7 +58,7 @@ baselist:    base
 base: 	     base_pri
 	     | base_pri base_alt
 
-senses_block: senses
+senses_block: senses senses_e
 
 senses:	      sense
 	      | senses sense
@@ -69,6 +68,8 @@ sense:	      atsense
 	      | atsense modsense
 	      | atsense modsense equivs
 	      | atsense equivs notes
+
+senses_e: SENSES_END_BLOCK
 
 notes: bib
        | inote
