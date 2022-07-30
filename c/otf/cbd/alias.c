@@ -9,7 +9,7 @@ alias_init(struct entry *e)
   struct alias *a = mb_new(e->owner->aliasmem);
   list_add(e->aliases, a);
   a->cgp = cgp_get_one();
-  hash_add(e->owner->haliases, a->cgp->closed, e);
+  hash_add(e->owner->haliases, a->cgp->tight, e);
   return a;
 }
 

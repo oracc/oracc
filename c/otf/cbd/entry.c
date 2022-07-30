@@ -92,7 +92,7 @@ parse_entry(struct cbd *c, unsigned char **ll)
       /*memset(&cgp,'\0',sizeof(struct cgp));*/
       cgp_parse(e->cgp, s, &e->l);
       cgpstr = cgp_str(e->cgp,0);
-      hash_add(c->hentries,(e->cgp->closed = npool_copy(cgpstr, e->owner->pool)), e);
+      hash_add(c->hentries,(e->cgp->tight = npool_copy(cgpstr, e->owner->pool)), e);
       free((void*)cgpstr);
       cgpstr = NULL;
 

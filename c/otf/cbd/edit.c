@@ -248,7 +248,7 @@ edit_script_entry(struct entry *e)
 	      else
 		{
 		  fprintf(f_edit, "@%d\n", e->ed->lp->line);
-		  fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp->closed);
+		  fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp->tight);
 		  fprintf(f_edit, ":rnm >@entry %s\n", closed_t);
 		}
 	    }
@@ -260,7 +260,7 @@ edit_script_entry(struct entry *e)
 	      else
 		{
 		  fprintf(f_edit, "@%d\n", e->ed->lp->line);
-		  fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp->closed);
+		  fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp->tight);
 		  fprintf(f_edit, ":mrg =@entry %s\n", closed_t);
 		}
 	    }
@@ -268,16 +268,16 @@ edit_script_entry(struct entry *e)
       else if (e->ed->type == ADD_E)	
 	{
 	  fprintf(f_edit, "@%d\n", e->ed->lp->line);
-	  fprintf(f_edit, ":add +@entry %s\n", ((struct entry *)(e->ed->owner))->cgp->closed);
+	  fprintf(f_edit, ":add +@entry %s\n", ((struct entry *)(e->ed->owner))->cgp->tight);
 	}
       else if (e->ed->type == DEL_E)
 	{
 	  fprintf(f_edit, "@%d\n", e->ed->lp->line);
 #if 0
 	  /* This is emitted by cbdedit.plx but it's redundant and not aligned with :add +@entry */
-	  fprintf(f_edit, ":ent -@entry %s\n", ((struct entry *)(e->ed->owner))->cgp->closed);
+	  fprintf(f_edit, ":ent -@entry %s\n", ((struct entry *)(e->ed->owner))->cgp->tight);
 #endif
-	  fprintf(f_edit, ":del -@entry %s\n", e->cgp->closed);
+	  fprintf(f_edit, ":del -@entry %s\n", e->cgp->tight);
 	  fprintf(f_edit, ":why %s\n", e->ed->why);
 	}
       else
@@ -290,7 +290,7 @@ edit_script_entry(struct entry *e)
     if (sp->ed)
       {
 	fprintf(f_edit, "@%d\n", sp->ed->lp->line);
-	fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp->closed);
+	fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp->tight);
 	if (sp->ed->type == ADD_S)
 	  fprintf(f_edit, ":add +@sense %s %s\n", sp->pos, sp->mng);
 	else if (sp->ed->type == DEL_S)

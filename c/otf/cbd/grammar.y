@@ -87,8 +87,7 @@ parts:  	atparts cgplist { curr_parts->cgps = cgp_get_all(); }
 
 atparts: 	PARTS { curr_parts = parts_init(curr_entry); }
 
-end_entry:	END_ENTRY { printf("end entry %s\n", curr_entry->cgp->closed);
-		    	    curr_entry = NULL; } ;
+end_entry:	END_ENTRY { curr_entry = NULL; } ;
 		
 		/*
 

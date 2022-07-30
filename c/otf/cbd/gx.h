@@ -19,6 +19,8 @@
 #define ucc unsigned const char *
 #define ucp unsigned char *
 
+typedef void (*iterator_fnc)(void*);
+
 typedef struct {
   const char *file;
   int line;
@@ -54,8 +56,8 @@ struct cgp {
   unsigned const char *cf;
   unsigned const char *gw;
   unsigned const char *pos;
-  unsigned const char *closed;
-  unsigned const char *spread;
+  unsigned const char *tight;
+  unsigned const char *loose;
 };
 
 enum edit_t { ADD_E, ADD_S, DEL_E, DEL_S, REN_E, REN_S, MRG_E, MRG_S, TOP };
@@ -150,6 +152,9 @@ struct cbd * cbd_init(void);
 void cbd_setup(struct cbd*c);
 struct entry * entry_init(struct cbd* c);
 
+void common_init(void);
+void common_term(void);
+
 extern struct cbdpos *cbdpos(const char *str, size_t len);
 extern struct cbdtag *cbdtags(const char *str, size_t len);
 extern unsigned char *tok(unsigned char *s, unsigned char *end);
@@ -209,6 +214,7 @@ extern void edit_why(struct entry *e, char *why);
 extern struct alias *alias_init(struct entry *e);
 extern struct parts *parts_init(struct entry *e);
 
+extern void identity(struct cbd*c);
 /*
 extern void parse_(unsigned char *s, locator *lp);
 */

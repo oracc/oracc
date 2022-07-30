@@ -1,8 +1,24 @@
 #include <ctype128.h>
+#include <npool.h>
 #include <unistd.h>
 #include "gx.h"
 
 static List *cgplist = NULL;
+
+static struct npool *common_pool = NULL;
+
+void
+common_init(void)
+{
+  common_pool = npool_init();
+}
+
+void
+common_term(void)
+{
+  npool_term(common_pool);
+  common_pool = NULL;
+}
 
 List *
 cgp_get_all(void)
@@ -45,8 +61,8 @@ cgp_init(struct cgp *c, unsigned char *cf, unsigned char *gw, unsigned char *pos
   c->cf = cf;
   c->gw = gw;
   c->pos = pos;
-  c->closed = cgp_str(c, 0);
-  c->spread = NULL;
+  c->tight = cgp_str(c, 0);
+  c->loose = cgp_str(c, 1);
 }
 
 const unsigned char *
@@ -100,9 +116,10 @@ cgp_parse(struct cgp *c, unsigned char *s, locator *lp)
 }
 
 const unsigned char *
-cgp_str(struct cgp *cp, int spread)
+cgp_str(struct cgp *cp, int loose)
 {
   char *tmp = NULL;
+  unsigned char*tmp2;
 
   if (!cp)
     return NULL;
@@ -110,17 +127,19 @@ cgp_str(struct cgp *cp, int spread)
   if (!cp->cf || !cp->gw || !cp->pos)
     return NULL;
 
-  if (spread && cp->spread)
-    return cp->spread;
-  if (!spread && cp->closed)
-    return cp->closed;
+  if (loose && cp->loose)
+    return cp->loose;
+  if (!loose && cp->tight)
+    return cp->tight;
   
-  tmp =  malloc(3+(spread*2)+strlen((ccp)cp->cf)+strlen((ccp)cp->gw)+strlen((ccp)cp->pos));
-  if (spread)
+  tmp =  malloc(3+(loose*2)+strlen((ccp)cp->cf)+strlen((ccp)cp->gw)+strlen((ccp)cp->pos));
+  if (loose)
     sprintf(tmp, "%s [%s] %s", cp->cf, cp->gw, cp->pos);
   else
     sprintf(tmp, "%s[%s]%s", cp->cf, cp->gw, cp->pos);
-  return (ucp)tmp;
+  tmp2 = npool_copy((ucp)tmp, common_pool);
+  free(tmp);
+  return tmp2;
 }
 
 unsigned char *

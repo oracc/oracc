@@ -15,6 +15,7 @@
 const char *errmsg_fn = NULL;
 
 int flex_scanner = 0;
+int identity_output = 0;
 int stdin_input = 0;
 
 extern int yydebug;
@@ -25,7 +26,7 @@ extern int flex(const char *fname);
 int
 main(int argc, char **argv)
 {
-  options(argc,argv,"cdefsv");
+  options(argc,argv,"cdefisv");
 
 #if 1
   file = argv[optind];
@@ -48,6 +49,7 @@ main(int argc, char **argv)
   f_log = stderr;
   math_mode = no_pi = do_cuneify = use_unicode = 1;
   
+  common_init();
   galloc_init();
   pool_init();
   tree_init();
@@ -60,12 +62,16 @@ main(int argc, char **argv)
     flex(file);
   else
     cbd(file);
+
+  if (identity_output)
+    identity(curr_cbd);
   
   lang_term();
   gdl_term();
   pool_term();
   tree_term(1);
   galloc_term();
+  common_term();
   return 1;
 }
 
@@ -93,6 +99,9 @@ int opts(int och,char *oarg)
       flex_scanner = 1;
       break;
     case 'g':
+      break;
+    case 'i':
+      identity_output = 1;
       break;
     case 'n':
       break;
