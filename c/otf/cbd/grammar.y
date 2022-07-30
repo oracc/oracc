@@ -23,7 +23,7 @@ void yyerror(char *s);
 %token	<text>		BASE_PRI
 %token	<text>		BASE_ALT
 
-%token ENTRY END_ENTRY END_SENSES LANG PROJECT NAME ALIAS BASES FORM
+%token ENTRY END_ENTRY SENSES END_SENSES LANG PROJECT NAME ALIAS BASES FORM
        PROPLIST MERGE PARTS RENAME SENSE WHY ALLOW
        PHON ROOT STEM EQUIV ATBIB ATINOTE ATNOTE ATISSLP
        ATOID ATCOLLO ATPROP PL_COORD PL_ID PL_UID ATDISC
@@ -166,14 +166,24 @@ form:		atform
 
 atform: 	FORM
 		
-senses_block: senses end_senses
+senses_block: senses
+	      | begin_senses sensesmeta end_senses
 
+begin_senses: SENSES
 end_senses:   END_SENSES
 		
 senses:	      sense
 	      | senses sense
 
 sense:	      senseinfo
+	      | senseinfo disc
+	      | senseinfo modsense
+	      | senseinfo modsense disc
+
+sensesmeta:   sensemeta
+	      | sensesmeta sensemeta
+
+sensemeta:    senseinfo
 	      | senseinfo disc
 	      | senseinfo meta_block
 	      | senseinfo modsense
