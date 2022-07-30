@@ -2,6 +2,7 @@ include ../../../oracc-am-rules.txt
 
 #AM_CFLAGS=-ansi
 AM_CFLAGS=-pedantic -Wall -g -O0
+CFLAGS=
 SUBDIRS=
 noinst_LTLIBRARIES=libcbd.la
 

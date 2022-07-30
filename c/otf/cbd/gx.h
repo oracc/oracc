@@ -40,6 +40,7 @@ struct cbd {
   List *letters;
   List *entries;
   List *edits;
+  List *proplists;
   Hash_table *hentries;
   Hash_table *haliases;
   Hash_table *simple;
@@ -90,6 +91,7 @@ struct entry {
   List *bffs;
   List *bib;
   List *isslp;  
+  List *props;
   int bang;
   int usage;
   int compound;
@@ -213,8 +215,9 @@ extern void edit_save(struct entry *e, char ctxt, char type);
 extern void edit_why(struct entry *e, char *why);
 extern struct alias *alias_init(struct entry *e);
 extern struct parts *parts_init(struct entry *e);
-
 extern void identity(struct cbd*c);
+extern void proplist_add(struct cbd *c, char *text);
+
 /*
 extern void parse_(unsigned char *s, locator *lp);
 */

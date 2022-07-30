@@ -12,12 +12,11 @@ void yyerror(char *s);
 %token  <text> 		GW
 %token  <text> 		LANGSPEC
 %token  <text> 		POS
-%token  <text> 		PROPLISTSPEC
-%token  <text> 		PROJSPEC
 %token  <text> 		TEXTSPEC
-%token	<text>		WHY
+%token  <text> 		PROJSPEC
+%token	<text>		WHYSPEC
 
-%token ENTRY END_ENTRY LANG PROJECT NAME ALIAS BASES FORM PROPLIST MERGE PARTS RENAME
+%token ENTRY END_ENTRY LANG PROJECT NAME ALIAS BASES FORM PROPLIST MERGE PARTS RENAME SENSE WHY
 
 %start cbd
 
@@ -37,7 +36,7 @@ atname:    NAME    TEXTSPEC { curr_cbd->name = (ucp)yylval.text; } ;
 proplist: 	atproplist
 	|	proplist atproplist
 
-atproplist:	PROPLIST PROPLISTSPEC { ; }
+atproplist:	PROPLIST TEXTSPEC { proplist_add(curr_cbd, yylval.text); }
 
 cgplist: cgp
 	 | cgplist cgp
@@ -71,7 +70,7 @@ atentry: 	begin_entry cgp     { curr_entry->cgp = cgp_get_one(); } ;
 
 begin_entry:  	ENTRY { curr_entry = entry_init(curr_cbd); } ;
 
-why:		WHY
+why:		WHY WHYSPEC
 
 modentry: 	RENAME cgp { entry_edit(curr_entry, '>'); } ;
 	| 	MERGE  cgp { entry_edit(curr_entry, '|'); } ;
@@ -79,9 +78,9 @@ modentry: 	RENAME cgp { entry_edit(curr_entry, '>'); } ;
 aliases: 	alias
 	| 	aliases alias
 
-alias:  	atalias cgp { curr_alias->cgp = cgp_get_one(); } ;
+alias:  	atalias cgp { alias_init(curr_entry); } ;
 
-atalias:	ALIAS { curr_alias = alias_init(curr_entry); } ;
+atalias:	ALIAS ;
 
 parts:  	atparts cgplist { curr_parts->cgps = cgp_get_all(); }
 

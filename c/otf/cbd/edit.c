@@ -44,6 +44,7 @@ edit_save(struct entry *e, char ctxt, char type)
     default:
       break;
     }
+  e->ed = ed;
 }
 
 void

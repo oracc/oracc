@@ -6,7 +6,7 @@ struct parts *curr_parts;
 struct parts *
 parts_init(struct entry *e)
 {
-  return  mb_new(e->owner->partsmem);
+  return (e->parts =  mb_new(e->owner->partsmem));
 }
 
 void
