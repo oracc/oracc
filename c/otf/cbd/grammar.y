@@ -8,14 +8,16 @@ void yyerror(char *s);
 %}
 %union { char *text; int i; }
 
-%token <text> CF
-%token <text> GW
-%token <text> LANGSPEC
-%token <text> TEXTSPEC
-%token <text> POS
-%token <text> PROJSPEC
+%token  <text> 		CF
+%token  <text> 		GW
+%token  <text> 		LANGSPEC
+%token  <text> 		POS
+%token  <text> 		PROPLISTSPEC
+%token  <text> 		PROJSPEC
+%token  <text> 		TEXTSPEC
+%token	<text>		WHY
 
-%token ENTRY_B ENTRY_E LANG PROJECT NAME ALIAS BASES FORM
+%token ENTRY END_ENTRY LANG PROJECT NAME ALIAS BASES FORM PROPLIST MERGE PARTS RENAME
 
 %start cbd
 
@@ -23,38 +25,140 @@ void yyerror(char *s);
 
 cbd: header entrylist
 
-header: atproject atlang atname { cbd_setup(curr_cbd); } ;
+header: 	atproject atlang atname
+	| 	atproject atlang atname proplist
 
-atproject: PROJECT PROJSPEC { curr_cbd->project = yylval.text; } ;
+atproject: PROJECT PROJSPEC { curr_cbd->project = (ucp)yylval.text; } ;
 
-atlang:    LANG    LANGSPEC { curr_cbd->lang = yylval.text; } ;
+atlang:    LANG    LANGSPEC { curr_cbd->lang = (ucp)yylval.text; } ;
 
-atname:    NAME    TEXTSPEC { curr_cbd->name = yylval.text; } ;
+atname:    NAME    TEXTSPEC { curr_cbd->name = (ucp)yylval.text; } ;
 
-entrylist: entry
-	| entrylist entry
+proplist: 	atproplist
+	|	proplist atproplist
 
-entry:	entry_b cgp econtent entry_e
+atproplist:	PROPLIST PROPLISTSPEC { ; }
 
-entry_b: ENTRY_B { curr_entry = entry_init(curr_cbd); } ;
+cgplist: cgp
+	 | cgplist cgp
 
-entry_e: ENTRY_E { printf("end entry %s\n", curr_entry->cgp.closed); curr_entry = NULL; } ;
+cgp:    CF '[' GW ']' POS { cgp_save((ucp)$1, (ucp)$3, (ucp)$5); } ;
 
-cgp:    CF '[' GW ']' POS { cgp_init(&curr_entry->cgp, $1, $3, $5); } ;
+entrylist:	entry
+	|	entrylist entry
 
-econtent: aliases | bases | forms
 
-aliases: alias
-	| aliases alias
+entry: 		entry_block
+		/* lang_block senses_block meta_block */
+		end_entry
 
-alias: ALIAS
 
-bases: BASES
+entry_block: 	atentry
+	|	atentry parts
+	|	atentry aliases
+	| 	atentry aliases parts
+	| 	atentry modentry
+	| 	atentry modentry aliases
+	| 	atentry modentry aliases parts
 
-forms: form
-	| forms form
+atentry: 	begin_entry cgp     { curr_entry->cgp = cgp_get_one(); } ;
+        |	'+' begin_entry cgp { curr_entry->cgp = cgp_get_one();
+    				      entry_edit(curr_entry, '+'); } ;
+	|	'-' begin_entry cgp why {
+	    			      curr_entry->cgp = cgp_get_one();
+    				      entry_edit(curr_entry, '-');
+				      edit_why(curr_entry, yylval.text); } ;
 
-form: FORM
+begin_entry:  	ENTRY { curr_entry = entry_init(curr_cbd); } ;
+
+why:		WHY
+
+modentry: 	RENAME cgp { entry_edit(curr_entry, '>'); } ;
+	| 	MERGE  cgp { entry_edit(curr_entry, '|'); } ;
+
+aliases: 	alias
+	| 	aliases alias
+
+alias:  	atalias cgp { curr_alias->cgp = cgp_get_one(); } ;
+
+atalias:	ALIAS { curr_alias = alias_init(curr_entry); } ;
+
+parts:  	atparts cgplist { curr_parts->cgps = cgp_get_all(); }
+
+atparts: 	PARTS { curr_parts = parts_init(curr_entry); }
+
+end_entry:	END_ENTRY { printf("end entry %s\n", curr_entry->cgp->closed);
+		    	    curr_entry = NULL; } ;
+		
+		/*
+
+lang_block: bases_block forms
+	    | bases_block stems forms
+	    | bases_block forms equiv
+	    | bases_block stems forms equivs
+	    | forms
+	    | forms equivs
+
+bases_block: bases_fields
+	     | allows bases_fields
+
+bases_fields: bases
+	      | bases phon
+	      | bases phon stems
+	      | bases phon stems root
+	      | bases stems
+	      | bases stems root
+
+allows:	     allow
+	     | allows bases_fields
+
+allow: 	     atallow base_pri '=' base_pri
+
+bases:	     atbases baselist
+
+baselist:    base
+	     | baselist base
+
+base: 	     base_pri
+	     | base_pri base_alt
+
+senses_block: senses senses_e
+
+senses:	      sense
+	      | senses sense
+
+sense:	      atsense
+	      | atsense notes
+	      | atsense modsense
+	      | atsense modsense equivs
+	      | atsense equivs notes
+
+senses_e: SENSES_END_BLOCK
+
+notes: bib
+       | inote
+       | isslp
+       | xnote
+       | notes bib
+       | notes inote
+       | notes isslp
+       | notes xnote
+       ;
+
+meta_block: pleiades_block
+	    | props
+	    | oid
+	    | collos
+	    | pleiades_block props
+	    | pleiades_block props oid
+	    | pleiades_block props oid collos
+	    | pleiades_block oid
+	    | pleiades_block oid collos
+	    | props oid
+	    | props oid collos
+	    ;
+
+	*/
 
 %%
 

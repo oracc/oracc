@@ -4,6 +4,56 @@
 static int edit_status;
 FILE *f_edit = NULL;
 
+void
+entry_edit(struct entry *e, char type)
+{
+  edit_save(e, 'e', type);
+}
+
+void
+sense_edit(struct entry *e, char type)
+{
+  edit_save(e, 's', type);
+}
+
+void
+edit_save(struct entry *e, char ctxt, char type)
+{
+  struct edit *ed = mb_new(e->owner->editmem);
+  /*struct sense *snode = NULL;*/
+  if (ctxt == 's')
+    ed->owner = list_last(e->senses);
+  else
+    ed->owner = e;
+  switch (type)
+    {
+    case '+':
+      ed->type = (ctxt == 'e' ? ADD_E : ADD_S);
+      break;
+    case '-':
+      ed->type = (ctxt == 'e' ? DEL_E : DEL_S);
+      break;
+    case '>':
+      ed->type = (ctxt == 'e' ? REN_E : REN_S);
+      ed->target = cgp_get_one();
+      break;
+    case '|':
+      ed->type = (ctxt == 'e' ? MRG_E : MRG_S);
+      ed->target = cgp_get_one();
+      break;
+    default:
+      break;
+    }
+}
+
+void
+edit_why(struct entry *e, char *why)
+{
+  if (e->ed)
+    e->ed->why = (ucp)why;
+  /* should error if #why: doesn't follow an edit and valid it's only after -@entry */
+}
+  
 int
 edit_add(unsigned char **ll, struct entry *e)
 {
@@ -96,7 +146,7 @@ edit_add(unsigned char **ll, struct entry *e)
       while (isspace(*t))
 	++t;
       if (ctxt == 'e')
-	cgp_parse(&ed->target,t,ed->lp);
+	cgp_parse(ed->target,t,ed->lp);
       else
 	ed->sp = parse_sense_sub(t,ed->lp);
     }
@@ -147,9 +197,9 @@ edit_check_entry(struct entry *e)
   struct sense *sp = NULL;
   if (NULL != e->ed)
     {
-      if (e->ed->target.cf)
+      if (e->ed->target->cf)
 	{
-	  unsigned const char *closed_t = cgp_str(&e->ed->target,0);
+	  unsigned const char *closed_t = cgp_str(e->ed->target,0);
 	  /* fprintf(stderr, "found e->ed; target=%s\n",closed_t); */
 	  if (hash_find(e->owner->hentries, closed_t))
 	    {
@@ -187,9 +237,9 @@ edit_script_entry(struct entry *e)
   struct sense *sp = NULL;
   if (NULL != e->ed)
     {
-      if (e->ed->target.cf)
+      if (e->ed->target->cf)
 	{
-	  unsigned const char *closed_t = cgp_str(&e->ed->target,0);
+	  unsigned const char *closed_t = cgp_str(e->ed->target,0);
 	  if (hash_find(e->owner->hentries, closed_t))
 	    {
 	      /* if we are renaming this is an error */
@@ -198,7 +248,7 @@ edit_script_entry(struct entry *e)
 	      else
 		{
 		  fprintf(f_edit, "@%d\n", e->ed->lp->line);
-		  fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
+		  fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp->closed);
 		  fprintf(f_edit, ":rnm >@entry %s\n", closed_t);
 		}
 	    }
@@ -210,7 +260,7 @@ edit_script_entry(struct entry *e)
 	      else
 		{
 		  fprintf(f_edit, "@%d\n", e->ed->lp->line);
-		  fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
+		  fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp->closed);
 		  fprintf(f_edit, ":mrg =@entry %s\n", closed_t);
 		}
 	    }
@@ -218,16 +268,16 @@ edit_script_entry(struct entry *e)
       else if (e->ed->type == ADD_E)	
 	{
 	  fprintf(f_edit, "@%d\n", e->ed->lp->line);
-	  fprintf(f_edit, ":add +@entry %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
+	  fprintf(f_edit, ":add +@entry %s\n", ((struct entry *)(e->ed->owner))->cgp->closed);
 	}
       else if (e->ed->type == DEL_E)
 	{
 	  fprintf(f_edit, "@%d\n", e->ed->lp->line);
 #if 0
 	  /* This is emitted by cbdedit.plx but it's redundant and not aligned with :add +@entry */
-	  fprintf(f_edit, ":ent -@entry %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
+	  fprintf(f_edit, ":ent -@entry %s\n", ((struct entry *)(e->ed->owner))->cgp->closed);
 #endif
-	  fprintf(f_edit, ":del -@entry %s\n", e->cgp.closed);
+	  fprintf(f_edit, ":del -@entry %s\n", e->cgp->closed);
 	  fprintf(f_edit, ":why %s\n", e->ed->why);
 	}
       else
@@ -240,7 +290,7 @@ edit_script_entry(struct entry *e)
     if (sp->ed)
       {
 	fprintf(f_edit, "@%d\n", sp->ed->lp->line);
-	fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp.closed);
+	fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp->closed);
 	if (sp->ed->type == ADD_S)
 	  fprintf(f_edit, ":add +@sense %s %s\n", sp->pos, sp->mng);
 	else if (sp->ed->type == DEL_S)

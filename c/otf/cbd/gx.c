@@ -16,11 +16,6 @@ const char *errmsg_fn = NULL;
 
 int flex_scanner = 0;
 int stdin_input = 0;
-Hash_table *cbds = NULL;
-
-int check = 0;
-int entries = 0;
-int sigs = 0;
 
 extern int yydebug;
 extern int math_mode;

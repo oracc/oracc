@@ -27,6 +27,11 @@ init_cbd(void)
   c->hentries = hash_create(1024);
   c->l.file = file;
   c->l.line = 1;
+  c->aliasmem = mb_init(sizeof(struct alias), 1024);
+  c->cgpmem = mb_init(sizeof(struct cgp), 1024);
+  c->editmem = mb_init(sizeof(struct edit), 1024);
+  c->partsmem = mb_init(sizeof(struct parts), 1024);
+  c->sensemem = mb_init(sizeof(struct sense), 1024);
   return c;
 }
 

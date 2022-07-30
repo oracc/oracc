@@ -12,6 +12,7 @@
 #include "hash.h"
 #include "xpd2.h"
 #include "f2.h"
+#include "memblock.h"
 
 #undef ucc
 #define ccp const char *
@@ -42,6 +43,11 @@ struct cbd {
   Hash_table *simple;
   Hash_table *cofs;
   Hash_table *psus;
+  struct mb *cgpmem;
+  struct mb *aliasmem;
+  struct mb *editmem;
+  struct mb *partsmem;
+  struct mb *sensemem;
 };
 
 struct cgp {
@@ -57,7 +63,7 @@ enum edit_t { ADD_E, ADD_S, DEL_E, DEL_S, REN_E, REN_S, MRG_E, MRG_S, TOP };
 struct edit {
   locator *lp;
   enum edit_t type;
-  struct cgp target;
+  struct cgp *target;
   unsigned char *why;
   struct sense *sp;
   int force;
@@ -66,7 +72,7 @@ struct edit {
 
 struct entry {
   locator l;
-  struct cgp cgp;
+  struct cgp *cgp;
   unsigned const char *eid;
   unsigned const char *lang;
   Hash_table *b_pri;
@@ -78,6 +84,7 @@ struct entry {
   List *senses;
   Hash_table *hsenses; /* needed for building cbd from sigs */
   List *aliases;
+  struct parts *parts;
   List *bffs;
   List *bib;
   List *isslp;  
@@ -90,7 +97,12 @@ struct entry {
 
 struct alias {
   locator l;
-  struct cgp cgp;
+  struct cgp *cgp;
+};
+
+struct parts {
+  locator l;
+  List *cgps; /* list_free(cgps,NULL) when freeing cbd */
 };
 
 struct sense {
@@ -129,6 +141,8 @@ extern int sigs;
 
 extern struct cbd *curr_cbd;
 extern struct entry *curr_entry;
+extern struct alias *curr_alias;
+extern struct parts *curr_parts;
 
 extern const char *errmsg_fn;
 
@@ -185,7 +199,18 @@ extern void parse_phon(struct entry *e, unsigned char *s, locator *lp);
 extern void parse_equiv(struct entry *e, unsigned char *s, locator *lp);
 extern void parse_stems(struct entry *e, unsigned char *s, locator *lp);
 
+extern List *cgp_get_all(void);
+extern struct cgp*cgp_get_one(void);
+extern void cgp_save(unsigned char *cf, unsigned char *gw, unsigned char *pos);
+extern void entry_edit(struct entry *e, char type);
+extern void sense_edit(struct entry *e, char type);
+extern void edit_save(struct entry *e, char ctxt, char type);
+extern void edit_why(struct entry *e, char *why);
+extern struct alias *alias_init(struct entry *e);
+extern struct parts *parts_init(struct entry *e);
+
 /*
 extern void parse_(unsigned char *s, locator *lp);
 */
+
 #endif

@@ -1,4 +1,4 @@
-%option never-interactive
+%option never-interactive noyywrap
 %{
 #include <ctype128.h>
 #include "gx.h"
@@ -18,10 +18,10 @@ static char *unspace(char*s);
 ^@name[\t ]+		 { BEGIN xTEXT; return NAME; }
 <xTEXT>.+\n 		 { BEGIN 0; yylval.text = dup(unspace(yytext)); return TEXTSPEC; }
 
-^\+?@entry[\t ]+	 { BEGIN xCF; return(ENTRY_B); }
-^@end[ \t]+entry[\t ]*\n { BEGIN 0;   return(ENTRY_E); }
+^\+?@entry[\t ]+	 { BEGIN xCF; return(ENTRY); }
+^@end[ \t]+entry[\t ]*\n { BEGIN 0;   return(END_ENTRY); }
 
-<xCF>[^ ]+		{ yylval.text = dup(unspace(yytext)); return(CF); }
+<xCF>[^\[\n]+		{ yylval.text = dup(unspace(yytext)); return(CF); }
 <xCF>[ \t]*"["      	{ BEGIN xGW; return(yytext[yyleng-1]); }
 <xGW>([^\]]+)		{ yylval.text = strdup(yytext); return(GW); }
 <xGW>"]"[ \t]*	       	{ BEGIN xPOS; return(yytext[0]); }

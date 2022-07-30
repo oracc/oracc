@@ -90,19 +90,19 @@ parse_entry(struct cbd *c, unsigned char **ll)
 	}
 
       /*memset(&cgp,'\0',sizeof(struct cgp));*/
-      cgp_parse(&e->cgp, s, &e->l);
-      cgpstr = cgp_str(&e->cgp,0);
-      hash_add(c->hentries,(e->cgp.closed = npool_copy(cgpstr, e->owner->pool)), e);
+      cgp_parse(e->cgp, s, &e->l);
+      cgpstr = cgp_str(e->cgp,0);
+      hash_add(c->hentries,(e->cgp->closed = npool_copy(cgpstr, e->owner->pool)), e);
       free((void*)cgpstr);
       cgpstr = NULL;
 
-      if (strchr((ccp)e->cgp.cf, ' '))
+      if (strchr((ccp)e->cgp->cf, ' '))
 	e->compound = 1;
 
       if (verbose)
-	fprintf(stderr, "@entry %s[%s]%s\n", e->cgp.cf, e->cgp.gw, e->cgp.pos);
+	fprintf(stderr, "@entry %s[%s]%s\n", e->cgp->cf, e->cgp->gw, e->cgp->pos);
       if (entries)
-	printf("%s [%s] %s\n", e->cgp.cf, e->cgp.gw, e->cgp.pos);
+	printf("%s [%s] %s\n", e->cgp->cf, e->cgp->gw, e->cgp->pos);
       ++ll;
       ++c->l.line;
     }

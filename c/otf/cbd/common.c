@@ -2,6 +2,43 @@
 #include <unistd.h>
 #include "gx.h"
 
+static List *cgplist = NULL;
+
+List *
+cgp_get_all(void)
+{
+  if (cgplist)
+    {
+      List *tmp = cgplist;
+      cgplist = NULL;
+      return tmp;
+    }
+  return NULL;
+}
+
+struct cgp*
+cgp_get_one(void)
+{
+  if (cgplist)
+    {
+      struct cgp*ret = list_first(cgplist);
+      list_free(cgplist, NULL);
+      cgplist = NULL;
+      return ret;
+    }
+  return NULL;
+}
+
+void
+cgp_save(unsigned char *cf, unsigned char *gw, unsigned char *pos)
+{
+  struct cgp *c = mb_new(curr_cbd->cgpmem);
+  cgp_init(c, cf, gw, pos);
+  if (!cgplist)
+    cgplist = list_create(LIST_SINGLE);
+  list_add(cgplist, c);
+}
+
 void
 cgp_init(struct cgp *c, unsigned char *cf, unsigned char *gw, unsigned char *pos)
 {
@@ -15,7 +52,7 @@ cgp_init(struct cgp *c, unsigned char *cf, unsigned char *gw, unsigned char *pos
 const unsigned char *
 cgp_entry_str(struct entry *e, int spread)
 {
-  return cgp_str(&e->cgp, spread);
+  return cgp_str(e->cgp, spread);
 }
 
 /* Caller should zero the struct cgp * if desired */

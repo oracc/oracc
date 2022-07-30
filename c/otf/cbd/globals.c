@@ -1,5 +1,12 @@
 #include <stdlib.h>
+#include "hash.h"
 #include "globals.h"
+
+/* for gx */
+int check = 0;
+int entries = 0;
+int sigs = 0;
+Hash_table *cbds = NULL;
 
 char line_id_buf[MAX_LINE_ID_BUF+1];
 unsigned char *text_n = NULL;

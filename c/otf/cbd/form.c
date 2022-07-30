@@ -96,7 +96,7 @@ parse_form(struct entry *e, unsigned char *lp, locator *locp)
   if (!f2p->lang)
     f2p->lang = e->lang;
   f2p->core = langcore_of((ccp)f2p->lang);
-  f2p->cf = e->cgp.cf;
-  f2p->gw = e->cgp.gw;
-  f2p->pos = e->cgp.pos;
+  f2p->cf = e->cgp->cf;
+  f2p->gw = e->cgp->gw;
+  f2p->pos = e->cgp->pos;
 }
