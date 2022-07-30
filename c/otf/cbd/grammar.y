@@ -8,8 +8,6 @@ void yyerror(char *s);
 %}
 %union { char *text; int i; }
 
-/*		       ADD DISC */
-			
 %token  <text> 		CF
 %token  <text> 		GW
 %token  <text> 		LANGSPEC
@@ -28,7 +26,7 @@ void yyerror(char *s);
 %token ENTRY END_ENTRY END_SENSES LANG PROJECT NAME ALIAS BASES FORM
        PROPLIST MERGE PARTS RENAME SENSE WHY ALLOW
        PHON ROOT STEM EQUIV ATBIB ATINOTE ATNOTE ATISSLP
-       ATOID ATCOLLO ATPROP PL_COORD PL_ID PL_UID
+       ATOID ATCOLLO ATPROP PL_COORD PL_ID PL_UID ATDISC
 
 %start cbd
 
@@ -70,11 +68,15 @@ entry: 		entry_block end_entry
 entry_block: 	atentry
 	|	atentry parts
 	|	atentry aliases
+	|	atentry disc
 	| 	atentry aliases parts
-	| 	atentry modentry
-	| 	atentry modentry aliases
-	| 	atentry modentry aliases parts
+	| 	atentry aliases parts disc
+	| 	atentry modentry disc
+	| 	atentry modentry aliases disc
+	| 	atentry modentry aliases parts disc
 
+disc: ATDISC TEXTSPEC
+		
 atentry: 	begin_entry cgp     { curr_entry->cgp = cgp_get_one(); } ;
         |	'+' begin_entry cgp { curr_entry->cgp = cgp_get_one();
     				      entry_edit(curr_entry, '+'); } ;
@@ -172,9 +174,12 @@ senses:	      sense
 	      | senses sense
 
 sense:	      senseinfo
+	      | senseinfo disc
 	      | senseinfo meta_block
 	      | senseinfo modsense
-	      | senseinfo modsense meta_block
+	      | senseinfo modsense disc
+	      | senseinfo modsense disc meta_block
+	      | senseinfo disc meta_block
 
 senseinfo:	atsense pos mng
 	|	atsense sid pos mng
