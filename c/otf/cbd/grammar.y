@@ -75,7 +75,7 @@ entry_block: 	atentry
 	| 	atentry modentry aliases disc
 	| 	atentry modentry aliases parts disc
 
-disc: ATDISC TEXTSPEC
+disc: ATDISC TEXTSPEC /* | FILESPEC | URLSPEC */
 		
 atentry: 	begin_entry cgp     { curr_entry->cgp = cgp_get_one(); } ;
         |	'+' begin_entry cgp { curr_entry->cgp = cgp_get_one();
