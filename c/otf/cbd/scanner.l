@@ -6,24 +6,26 @@
 #include "grammar.tab.h"
 #define YY_NO_UNISTD_H
 
-#define dup(s) (char*)npool_copy((unsigned char *)(s),curr_cbd->pool)
+#define dup(s) yylval.text = (char*)npool_copy((unsigned char *)(s),curr_cbd->pool)
 #define ytdup() yylval.text = strdup(unspace(yytext))
 
 static char *b_alt_tok = NULL;
+static void alt_wrapup(int clean);
 static void clean_alt_paren(void);
 static char *unspace(char*s);
 %}
 %x xALLOW
 %x xB xBP xBA
 %x xCF xGW xPOS
+%x xF
 %x xPROJ xLANG xTEXT xWORD xENTSNS xWHY xCOMMENT
 %%
 ^@project[\t ]+		 { BEGIN xPROJ; return PROJECT; }
-<xPROJ>[^ \t\n]+[ \t]*\n { BEGIN 0; yylval.text = dup(unspace(yytext)); return PROJSPEC; }
+<xPROJ>[^ \t\n]+[ \t]*\n { BEGIN 0; dup(unspace(yytext)); return PROJSPEC; }
 ^@lang[ \t]+		 { BEGIN xLANG; return LANG; }
-<xLANG>[^ \t\n]+[ \t]*\n { BEGIN 0; yylval.text = dup(unspace(yytext)); return LANGSPEC; }
+<xLANG>[^ \t\n]+[ \t]*\n { BEGIN 0; dup(unspace(yytext)); return LANGSPEC; }
 ^@name[\t ]+		 { BEGIN xTEXT; return NAME; }
-<xTEXT>.+\n 		 { BEGIN 0; yylval.text = dup(unspace(yytext)); return TEXTSPEC; }
+<xTEXT>.+\n 		 { BEGIN 0; dup(unspace(yytext)); return TEXTSPEC; }
 ^@proplist[\t ]+	 { BEGIN xTEXT; return PROPLIST; }
 
 ^[+-]			 { BEGIN xENTSNS; return yytext[0]; }
@@ -41,7 +43,7 @@ static char *unspace(char*s);
 ^>[\t ]*		 { BEGIN xCF; return(RENAME); }
 ^>>[\t ]*		 { BEGIN xCF; return(MERGE); }
 
-<xCF>[^\[\n]+		 { yylval.text = dup(unspace(yytext)); return(CF); }
+<xCF>[^\[\n]+		 { dup(unspace(yytext)); return(CF); }
 <xCF>[ \t]*"["      	 { BEGIN xGW; return(yytext[yyleng-1]); }
 <xGW>([^\]]+)		 { yylval.text = strdup(yytext); return(GW); }
 <xGW>"]"[ \t]*	       	 { BEGIN xPOS; return(yytext[0]); }
@@ -58,16 +60,16 @@ static char *unspace(char*s);
 <xALLOW>=[ \t]+		 { return(yytext[0]); }
 <xALLOW>[^= \t\n]+[ \t]* { ytdup(); return(BASE_PRI); }
 <xALLOW>\n		 { BEGIN 0; }
-^@bases[ \t]+ 		 { BEGIN xBP; }
+^@bases[ \t]+ 		 { BEGIN xBP; return(BASES); }
 <xBP>\;[ \t]+    	 { BEGIN xBP; }
 <xBP>\n			 { BEGIN 0; }
-<xBP>[^; \t\n]+ 	 { BEGIN xBA; ytdup(); return(BASE_PRI); }
+<xBP>[^; \t\n]+ 	 { ytdup(); return(BASE_PRI); }
 <xBP>[ \t]+\(		 { BEGIN xBA; }
-<xBA>,[ \t]+		 { yylval.text = dup(b_alt_tok); free(b_alt_tok); return(BASE_ALT); }
+<xBA>,[ \t]+		 { if (b_alt_tok) { alt_wrapup(0); return(BASE_ALT); } }
 <xBA>[^;, \t\n]+ 	 { b_alt_tok = strdup(yytext); }
-<xBA>\;[ \t]+    	 { BEGIN xBP; clean_alt_paren(); free(b_alt_tok); }
+<xBA>\;[ \t]+    	 { BEGIN xBP; if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
 <xBP>\;			 { BEGIN xBP; unput(';'); }
-<xBA>\n			 { BEGIN 0; clean_alt_paren(); yylval.text = dup(b_alt_tok); free(b_alt_tok); return(BASE_ALT); }
+<xBA>\n			 { BEGIN 0; if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
 
 ^@phon[\t ]+		 { BEGIN xTEXT; return(PHON); }
 ^@root[\t ]+		 { BEGIN xTEXT; return(ROOT); }
@@ -75,9 +77,29 @@ static char *unspace(char*s);
 <xWORD>[^ \t\n]+[\t ]*   { ytdup(); return(WORDSPEC); }
 <xWORD>\n		 { BEGIN 0; }
 
+^@form[ \t]+		  { BEGIN xF; return(FORM); }
+<xF>\/[^ \t]+[ \t]*	  { ytdup(); return(FBASE); }
+<xF>\+[^ \t]+[ \t]*	  { ytdup(); return(FCONT); }
+<xF>\$[^ \t]+[ \t]*	  { ytdup(); return(FNORM); }
+<xF>##[^ \t]+[ \t]*	  { ytdup(); return(FMORPH2); }
+<xF>#[^ \t]+[ \t]*	  { ytdup(); return(FMORPH); }
+<xF>\*[^ \t]+[ \t]*	  { ytdup(); return(FSTEM); }
+<xF>[^+$#*/][^ \t]+[ \t]* { ytdup(); return(FFORM); }
+<xF>\n			  { BEGIN 0; return(END_FORM); }
+
 .|\n
 
 %%
+
+void
+alt_wrapup(int clean)
+{
+  if (clean)
+    clean_alt_paren(); 
+  dup(b_alt_tok); 
+  free(b_alt_tok); 
+  b_alt_tok = NULL;
+}
 
 static void
 clean_alt_paren(void)

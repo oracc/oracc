@@ -228,6 +228,8 @@ extern void stem_init(struct entry *e, unsigned char *stem);
 extern void bases_pri_save(struct entry *e, unsigned char *p);
 extern void bases_alt_save(struct entry *e, unsigned char *p);
 
+extern struct f2 *form_init(struct entry *e);
+
 /*
 extern void parse_(unsigned char *s, locator *lp);
 */

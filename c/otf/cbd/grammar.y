@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "gx.h"
 #define YYDEBUG 1
+static struct f2 *curr_form;
 extern int yylex(void);
 void yyerror(char *s);
 #define dup(s) npool_copy((unsigned char *)(s),curr_cbd->pool)
@@ -23,8 +24,15 @@ void yyerror(char *s);
 %token	<text>		WHYSPEC
 %token	<text>		BASE_PRI
 %token	<text>		BASE_ALT
+%token  <text> 		FFORM
+%token  <text> 		FBASE
+%token  <text> 		FSTEM
+%token  <text> 		FCONT
+%token  <text> 		FMORPH
+%token  <text> 		FMORPH2
+%token  <text> 		FNORM
 
-%token ENTRY END_ENTRY SENSES END_SENSES LANG PROJECT NAME ALIAS BASES FORM
+%token ENTRY END_ENTRY SENSES END_SENSES LANG PROJECT NAME ALIAS BASES FORM END_FORM
        PROPLIST MERGE PARTS RENAME SENSE WHY ALLOW
        PHON ROOT STEM EQUIV ATBIB ATINOTE ATNOTE ATISSLP
        ATOID ATCOLLO ATPROP PL_COORD PL_ID PL_UID ATDISC ATBFF
@@ -153,13 +161,9 @@ base_pri:	BASE_PRI          { bases_pri_save(curr_entry, (ucp)$1); }
 base_alt: 	BASE_ALT          { bases_alt_save(curr_entry, (ucp)$1); }
 	     |	base_alt BASE_ALT { bases_alt_save(curr_entry, (ucp)$2); }
 
-phon:		atphon TEXTSPEC { curr_entry->phon = (ucp)$2; }
+phon:		PHON TEXTSPEC { curr_entry->phon = (ucp)$2; }
 
-atphon:		PHON
-
-root:		atroot TEXTSPEC { curr_entry->root = (ucp)$2; }
-
-atroot:		ROOT
+root:		ROOT TEXTSPEC { curr_entry->root = (ucp)$2; }
 
 stems:	atstem stemlist
 
@@ -173,9 +177,35 @@ atstem: 	STEM
 forms:		form
 	|	forms form
 
-form:		atform TEXTSPEC
+form:		atform fform form_args end_form
 
-atform: 	FORM
+atform:		FORM		{ curr_form = form_init(curr_entry); }
+end_form:	END_FORM	{ curr_form = NULL; }		
+fform: 		FFORM 		{ curr_form->form = (ucp)$1; }
+
+form_args: 	fbase form_morph form_norm
+	|  	fbase fstem form_morph form_norm
+	|  	fbase fstem fcont form_morph form_norm
+	|  	fbase fcont form_morph form_norm
+	|	fstem form_morph form_norm
+	|	fstem form_norm
+	|	form_morph form_norm
+	|	form_norm
+
+fbase: 		FBASE 		{ curr_form->base = (ucp)$1; }
+fstem: 		FSTEM 		{ curr_form->stem = (ucp)$1; }
+fcont: 		FCONT 		{ curr_form->cont = (ucp)$1; }
+
+form_morph: fmorph
+	|	fmorph fmorph2
+
+fmorph:        	FMORPH  	{ curr_form->morph = (ucp)$1; }
+fmorph2: 	FMORPH2 	{ curr_form->morph2 = (ucp)$1; }	       
+
+form_norm: fnorm
+	|      /* empty */
+
+fnorm: 		FNORM 		{ curr_form->norm = (ucp)$1; }
 
 senses_block: senses
 	      | begin_senses sensesmeta end_senses

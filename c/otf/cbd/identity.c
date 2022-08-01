@@ -58,6 +58,7 @@ f_bases(struct entry *e)
 		printf(", ");
 	      printf("%s", (const char *)inner->data);
 	    }
+	  printf(")");
 	}
     }
   printf("\n");

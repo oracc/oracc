@@ -2,6 +2,13 @@
 #include "gx.h"
 #include "f2.h"
 
+struct f2 *
+form_init(struct entry *e)
+{
+  static struct f2 ret;
+  return &ret;
+}
+
 void
 parse_form(struct entry *e, unsigned char *lp, locator *locp)
 {
