@@ -22,6 +22,48 @@ f_alias(struct alias *a)
 }
 
 static void
+f_allow(struct entry *e)
+{
+  List_node *lp;
+  for (lp = e->allows->first; lp; lp = lp->next)
+    {
+      unsigned char *lhs = ((ucp)(lp->data));
+      unsigned char *rhs = hash_find(e->b_allow, lhs);
+      printf("@allow %s = %s\n", lhs, rhs);
+    }
+}
+
+static void
+f_bases(struct entry *e)
+{
+  List_node *outer;
+  int i;
+  printf("@bases");
+  for (i = 0, outer = e->bases->first; outer; outer = outer->next)
+    {
+      List *bp = ((List *)(outer->data));
+      List_node *inner = bp->first;
+      if (i++)
+	printf("; ");
+      else
+	printf(" ");
+      printf("%s", (const char *)inner->data);
+      if (list_len(bp) > 1)
+	{
+	  int j;
+	  printf(" (");
+	  for (j = 0, inner = inner->next; inner; inner = inner->next)
+	    {
+	      if (j++)
+		printf(", ");
+	      printf("%s", (const char *)inner->data);
+	    }
+	}
+    }
+  printf("\n");
+}
+
+static void
 f_cbd(struct cbd *c)
 {
   printf("@project %s\n@lang %s\n@name %s\n", c->project, c->lang, c->name);
@@ -93,7 +135,32 @@ f_parts(struct entry *e)
 }
 
 static void
+f_phon(struct entry *e)
+{
+  printf("@phon %s\n", (ccp)e->phon);
+}
+
+static void
 f_proplist(const char *p)
 {
   printf("@proplist %s\n", p);
+}
+
+static void
+f_root(struct entry *e)
+{
+  printf("@root %s\n", (ccp)e->root);
+}
+
+static void
+f_stems(struct entry *e)
+{
+  List_node *lp;
+  printf("@stems");
+  for (lp = e->stems->first; lp; lp = lp->next)
+    {
+      unsigned char *stem = ((ucp)(lp->data));
+      printf(" %s", stem);
+    }
+  printf("\n");
 }

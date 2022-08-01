@@ -13,6 +13,7 @@ void yyerror(char *s);
 %token  <text> 		LANGSPEC
 %token  <text> 		POS
 %token  <text> 		TEXTSPEC
+%token  <text> 		WORDSPEC
 %token  <text> 		PROJSPEC
 %token	<text>		MNGSPEC
 %token	<text>		OIDSPEC
@@ -26,7 +27,7 @@ void yyerror(char *s);
 %token ENTRY END_ENTRY SENSES END_SENSES LANG PROJECT NAME ALIAS BASES FORM
        PROPLIST MERGE PARTS RENAME SENSE WHY ALLOW
        PHON ROOT STEM EQUIV ATBIB ATINOTE ATNOTE ATISSLP
-       ATOID ATCOLLO ATPROP PL_COORD PL_ID PL_UID ATDISC
+       ATOID ATCOLLO ATPROP PL_COORD PL_ID PL_UID ATDISC ATBFF
 
 %start cbd
 
@@ -66,15 +67,23 @@ entry: 		entry_block end_entry
 
 
 entry_block: 	atentry
-	|	atentry parts
 	|	atentry aliases
-	|	atentry disc
 	| 	atentry aliases parts
-	| 	atentry aliases parts disc
-	| 	atentry modentry disc
-	| 	atentry modentry aliases disc
-	| 	atentry modentry aliases parts disc
+	| 	atentry aliases parts bffs
+	| 	atentry aliases parts bffs disc
+	|	atentry modentry aliases
+	| 	atentry modentry aliases parts
+	| 	atentry modentry aliases parts bffs
+	| 	atentry modentry aliases parts bffs disc
+	| 	atentry parts
+	| 	atentry parts bffs
+	| 	atentry parts bffs disc
+	| 	atentry bffs
+	| 	atentry bffs disc
+	| 	atentry disc
 
+bffs: ATBFF
+		
 disc: ATDISC TEXTSPEC /* | FILESPEC | URLSPEC */
 		
 atentry: 	begin_entry cgp     { curr_entry->cgp = cgp_get_one(); } ;
@@ -109,24 +118,26 @@ lang_block: bases_block
 	    | bases_block forms
 	    | forms
 
-bases_block: bases_fields
-	     | allows bases_fields
+bases_block: allows
+	     |	 allows bases_fields
+	     |	 bases_fields
 
-bases_fields: bases
-              | bases phon
-	      | bases phon stems
-	      | bases phon stems root
-	      | bases stems
-	      | bases stems root
-	      |	bases root
+bases_fields: 	phon
+	|	phon root
+	|	phon root stems
+	|	phon root stems bases
+	|	root
+	|	root stems
+	|	root stems bases
+	|	stems
+	|	stems bases
+	|	bases
 
 allows:	     allow
 	     | allows allow
 
-allow: 	     atallow base_pri '=' base_pri
+allow: 	     ALLOW BASE_PRI '=' BASE_PRI { allow_init(curr_entry,(ucp)$2,(ucp)$4); } 
 
-atallow:     ALLOW
-		
 bases:	     atbases baselist
 
 atbases:     BASES
@@ -137,16 +148,16 @@ baselist:    base
 base: 	     base_pri
 	     | base_pri base_alt
 
-base_pri:	BASE_PRI
+base_pri:	BASE_PRI          { bases_pri_save(curr_entry, (ucp)$1); }
 
-base_alt: 	BASE_ALT
-	     |	base_alt BASE_ALT
+base_alt: 	BASE_ALT          { bases_alt_save(curr_entry, (ucp)$1); }
+	     |	base_alt BASE_ALT { bases_alt_save(curr_entry, (ucp)$2); }
 
-phon:		atphon TEXTSPEC
+phon:		atphon TEXTSPEC { curr_entry->phon = (ucp)$2; }
 
 atphon:		PHON
 
-root:		atroot TEXTSPEC
+root:		atroot TEXTSPEC { curr_entry->root = (ucp)$2; }
 
 atroot:		ROOT
 
@@ -155,17 +166,17 @@ stems:	atstem stemlist
 stemlist: stem
 	|	stemlist stem
 
-stem:		TEXTSPEC
+stem:		WORDSPEC { stem_init(curr_entry, (ucp)$1); }
 
 atstem: 	STEM
 								
 forms:		form
 	|	forms form
 
-form:		atform
+form:		atform TEXTSPEC
 
 atform: 	FORM
-		
+
 senses_block: senses
 	      | begin_senses sensesmeta end_senses
 

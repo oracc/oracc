@@ -51,14 +51,14 @@ grammar.tab.c grammar.tab.h: grammar.y
 	${YACC} -b grammar -vd grammar.y
 
 scanner.c: scanner.l
-	flex -B -DYY_NO_INPUT -DYY_NO_UNPUT -o scanner.c scanner.l
+	flex -B -DYY_NO_INPUT -o scanner.c scanner.l
 
 scanner.o: scanner.c grammar.tab.h
 
 gx_SOURCES = \
 	gx.c globals.c flex.c scanner.c grammar.tab.c iterator.c identity.c
 
-gx_LDADD = $(xLDADD) -lfl
+gx_LDADD = -lfl $(xLDADD)
 
 gx_DEPENDENCIES = $(xLDADD)
 

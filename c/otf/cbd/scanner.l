@@ -5,11 +5,18 @@
 #include "npool.h"
 #include "grammar.tab.h"
 #define YY_NO_UNISTD_H
+
 #define dup(s) (char*)npool_copy((unsigned char *)(s),curr_cbd->pool)
+#define ytdup() yylval.text = strdup(unspace(yytext))
+
+static char *b_alt_tok = NULL;
+static void clean_alt_paren(void);
 static char *unspace(char*s);
 %}
+%x xALLOW
+%x xB xBP xBA
 %x xCF xGW xPOS
-%x xPROJ xLANG xTEXT xENTSNS xWHY xCOMMENT
+%x xPROJ xLANG xTEXT xWORD xENTSNS xWHY xCOMMENT
 %%
 ^@project[\t ]+		 { BEGIN xPROJ; return PROJECT; }
 <xPROJ>[^ \t\n]+[ \t]*\n { BEGIN 0; yylval.text = dup(unspace(yytext)); return PROJSPEC; }
@@ -46,8 +53,38 @@ static char *unspace(char*s);
 ^#			 { BEGIN xCOMMENT; }
 <xCOMMENT>.*\n		 { BEGIN 0; }
 
+^@allow[ \t]+	      	 { BEGIN xALLOW; return(ALLOW); }
+<xALLOW>[^ \t\n]		 { ytdup(); return(BASE_PRI); }
+<xALLOW>=[ \t]+		 { return(yytext[0]); }
+<xALLOW>[^= \t\n]+[ \t]* { ytdup(); return(BASE_PRI); }
+<xALLOW>\n		 { BEGIN 0; }
+^@bases[ \t]+ 		 { BEGIN xBP; }
+<xBP>\;[ \t]+    	 { BEGIN xBP; }
+<xBP>\n			 { BEGIN 0; }
+<xBP>[^; \t\n]+ 	 { BEGIN xBA; ytdup(); return(BASE_PRI); }
+<xBP>[ \t]+\(		 { BEGIN xBA; }
+<xBA>,[ \t]+		 { yylval.text = dup(b_alt_tok); free(b_alt_tok); return(BASE_ALT); }
+<xBA>[^;, \t\n]+ 	 { b_alt_tok = strdup(yytext); }
+<xBA>\;[ \t]+    	 { BEGIN xBP; clean_alt_paren(); free(b_alt_tok); }
+<xBP>\;			 { BEGIN xBP; unput(';'); }
+<xBA>\n			 { BEGIN 0; clean_alt_paren(); yylval.text = dup(b_alt_tok); free(b_alt_tok); return(BASE_ALT); }
+
+^@phon[\t ]+		 { BEGIN xTEXT; return(PHON); }
+^@root[\t ]+		 { BEGIN xTEXT; return(ROOT); }
+^@stems[\t ]+		 { BEGIN xWORD; return(STEM); }
+<xWORD>[^ \t\n]+[\t ]*   { ytdup(); return(WORDSPEC); }
+<xWORD>\n		 { BEGIN 0; }
+
 .|\n
+
 %%
+
+static void
+clean_alt_paren(void)
+{
+  b_alt_tok[strlen(b_alt_tok)-1] = '\0';
+}
+
 static char *
 unspace(char*s)
 {

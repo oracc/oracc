@@ -1,6 +1,25 @@
 #include <ctype128.h>
 #include "gx.h"
 
+static List *curr_base_list = NULL;
+
+/* At parse time we just save the bases in a list of lists */
+void
+bases_pri_save(struct entry *e, unsigned char *p)
+{
+  if (!e->bases)
+    e->bases = list_create(LIST_SINGLE);
+  list_add(e->bases, (curr_base_list = list_create(LIST_SINGLE)));
+  list_add(curr_base_list, p);  
+}
+
+void
+bases_alt_save(struct entry *e, unsigned char *a)
+{
+  if (curr_base_list)
+    list_add(curr_base_list, a);
+}
+
 static void parse_one_base(struct entry *e, unsigned char *s);
 static void process_alt(struct entry *e, unsigned char *pri, unsigned char *pri_sig, unsigned char *alt);
 

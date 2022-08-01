@@ -2,6 +2,17 @@
 #include "gx.h"
 
 void
+allow_init(struct entry *e, unsigned char *lhs, unsigned char *rhs)
+{
+  if (!e->b_allow)
+    e->b_allow = hash_create(1024);
+  if (!e->allows)
+    e->allows = list_create(LIST_SINGLE);
+  list_add(e->allows, lhs);
+  hash_add(e->b_allow, lhs, rhs);
+}
+
+void
 parse_allow(struct entry *e, unsigned char *s, locator *lp)
 {
   unsigned char *equals = NULL;

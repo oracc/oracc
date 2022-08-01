@@ -1,0 +1,13 @@
+@project epsd2
+@lang sux
+@name epsd2/sux
+@proplist props.lst
+
+@entry a [water] N
+@allow a = e₄
+@phon /e/
+@root a
+@stems R rr
+@end entry
+
+

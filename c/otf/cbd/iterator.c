@@ -11,6 +11,14 @@ iterate_entries(struct entry *e)
     list_exec(e->aliases, (list_exec_func*)curr_fncs[if_alias]);
   if (e->parts)
     curr_fncs[if_parts](e);
+  if (e->allows && list_len(e->allows))
+    curr_fncs[if_allow](e);
+  if (e->phon)
+    curr_fncs[if_phon](e);
+  if (e->root)
+    curr_fncs[if_root](e);
+  if (e->stems)
+    curr_fncs[if_stems](e);
   curr_fncs[if_end_entry](e);
 }
 

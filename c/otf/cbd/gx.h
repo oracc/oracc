@@ -83,15 +83,20 @@ struct entry {
   Hash_table *b_sig;
   Hash_table *b_allow;
   Hash_table *dcfs;
+  List *aliases;
+  struct parts *parts;
+  List *allows; /* just the LHS so we can retrieve from b_allow in glossary order for identity output */
+  List *bases; /* list of base components in @bases; list data is another list, first element is pri, rest are alt */
   List *forms;
   List *senses;
   Hash_table *hsenses; /* needed for building cbd from sigs */
-  List *aliases;
-  struct parts *parts;
   List *bffs;
   List *bib;
   List *isslp;  
   List *props;
+  unsigned char *phon;
+  unsigned char *root;
+  List *stems;
   int bang;
   int usage;
   int compound;
@@ -217,6 +222,11 @@ extern struct alias *alias_init(struct entry *e);
 extern struct parts *parts_init(struct entry *e);
 extern void identity(struct cbd*c);
 extern void proplist_add(struct cbd *c, char *text);
+extern void allow_init(struct entry *e, unsigned char *lhs, unsigned char *rhs);
+extern void stem_init(struct entry *e, unsigned char *stem);
+
+extern void bases_pri_save(struct entry *e, unsigned char *p);
+extern void bases_alt_save(struct entry *e, unsigned char *p);
 
 /*
 extern void parse_(unsigned char *s, locator *lp);
