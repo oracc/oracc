@@ -183,6 +183,39 @@ f_root(struct entry *e)
 }
 
 static void
+f_senses(struct entry *e)
+{
+  if (e->beginsenses)
+    printf("@begin senses\n");
+
+  List_node *lp;
+  for (lp = e->forms->first; lp; lp = lp->next)
+    {
+      struct sense *sp = (struct sense*)(lp->data);
+
+      /* ADD PROCESSING FOR sp->ed */
+      
+      printf("@sense");
+      if (sp->lng)
+	printf(" %%%s", sp->lng);
+      if (sp->sid)
+	printf(" #%s", sp->sid);
+      if (sp->num)
+	printf(" .%s", sp->num);
+      if (sp->sgw)
+	printf(" [%s]", sp->sgw);
+      if (sp->pos)
+	printf(" .%s", sp->sid);
+      if (sp->mng)
+	printf(" .%s", sp->mng);
+      printf("\n");
+    }  
+  
+  if (e->beginsenses)
+    printf("@end senses\n");
+}
+
+static void
 f_stems(struct entry *e)
 {
   List_node *lp;

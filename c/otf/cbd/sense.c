@@ -4,6 +4,14 @@
 extern int sigs;
 
 struct sense *
+sense_init(struct entry *e)
+{
+  struct sense *sp = mb_new(e->owner->sensesmem);
+  list_add(e->senses, sp);
+  return sp;
+}
+
+struct sense *
 init_sense(void)
 {
   return calloc(1, sizeof(struct sense));

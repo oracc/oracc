@@ -23,6 +23,8 @@ iterate_entries(struct entry *e)
     curr_fncs[if_bases](e);
   if (e->forms)
     curr_fncs[if_forms](e);
+  if (e->senses)
+    curr_fncs[if_senses](e);
   curr_fncs[if_end_entry](e);
 }
 

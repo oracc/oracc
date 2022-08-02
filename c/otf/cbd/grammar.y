@@ -3,6 +3,7 @@
 #include "gx.h"
 #define YYDEBUG 1
 static struct f2 *curr_form;
+static struct sense *curr_sense;
 extern int yylex(void);
 void yyerror(char *s);
 #define dup(s) npool_copy((unsigned char *)(s),curr_cbd->pool)
@@ -18,6 +19,8 @@ void yyerror(char *s);
 %token  <text> 		PROJSPEC
 %token	<text>		MNGSPEC
 %token	<text>		OIDSPEC
+%token	<text>		SENSE
+%token	<text>		LANG
 %token	<text>		SGWSPEC
 %token	<text>		SIDSPEC
 %token	<text>		SOLSPEC
@@ -33,8 +36,8 @@ void yyerror(char *s);
 %token  <text> 		FMORPH2
 %token  <text> 		FNORM
 
-%token ENTRY END_ENTRY SENSES END_SENSES LANG PROJECT NAME ALIAS BASES FORM END_FORM
-       PROPLIST MERGE PARTS RENAME SENSE WHY ALLOW
+%token ENTRY END_ENTRY SENSES END_SENSES PROJECT NAME ALIAS BASES FORM END_FORM
+       PROPLIST MERGE PARTS RENAME WHY ALLOW
        PHON ROOT STEM EQUIV ATBIB ATINOTE ATNOTE ATISSLP
        ATOID ATCOLLO ATPROP PL_COORD PL_ID PL_UID ATDISC ATBFF
 
@@ -223,7 +226,7 @@ fnorm: 		FNORM 		{ curr_form->norm = (ucp)$1; }
 senses_block: senses
 	      | begin_senses sensesmeta end_senses
 
-begin_senses: SENSES
+begin_senses: SENSES		{ curr_entry->beginsenses = 1; }
 end_senses:   END_SENSES
 		
 senses:	      sense
@@ -255,18 +258,24 @@ senseinfo:	atsense pos mng
 	|	atsense sgw pos mng
 	;
 
-atsense:      	SENSE
-	|	'+' SENSE
-	|	'-' SENSE
+atsense:      	senselang
+        |	'+' senselang	{ sense_edit(curr_entry, '+'); }
+	|	'-' senselang	{ sense_edit(curr_entry, '-'); }
 
-sid:		SIDSPEC
-sol:		SOLSPEC
-sgw:		SGWSPEC
-pos:		TEXTSPEC /* should be restricted to legal POS */
-mng:		MNGSPEC /* should be restricted to disallow [ and ] */
+senselang:	ssense
+	|	ssense slang
+
+ssense:		SENSE 		{ curr_sense = sense_init(curr_entry); }
+slang:		LANG		{ curr_sense->lng = (ucp)$1; }
+
+sid:		'#' WORDSPEC	{ curr_sense->sid = (ucp)$2; }
+sol:		'.' WORDSPEC	{ curr_sense->num = (ucp)$2; }
+sgw:		'[' GW ']'	{ curr_sense->sgw = (ucp)$2; }
+pos:		POS /* should be restricted to legal POS */	  { curr_sense->pos = (ucp)$1; }
+mng:		TEXTSPEC /* shouldrestrict to disallow [ and ] */ { curr_sense->mng = (ucp)$1; }
 		
-modsense: 	RENAME cgp { sense_edit(curr_entry, '>'); } ;
-	| 	MERGE  cgp { sense_edit(curr_entry, '|'); } ;
+modsense: 	RENAME pos mng { sense_edit(curr_entry, '>'); } ;
+	| 	MERGE  pos mng { sense_edit(curr_entry, '|'); } ;
 
 meta_block: pleiades_block
 	    | props

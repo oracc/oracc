@@ -51,7 +51,7 @@ struct cbd {
   struct mb *editmem;
   struct mb *partsmem;
   struct mb *formsmem;
-  struct mb *sensemem;
+  struct mb *sensesmem;
 };
 
 struct cgp {
@@ -99,6 +99,7 @@ struct entry {
   unsigned char *root;
   List *stems;
   int bang;
+  int beginsenses;
   int usage;
   int compound;
   struct cbd *owner;
@@ -225,6 +226,7 @@ extern void identity(struct cbd*c);
 extern void proplist_add(struct cbd *c, char *text);
 extern void allow_init(struct entry *e, unsigned char *lhs, unsigned char *rhs);
 extern void stem_init(struct entry *e, unsigned char *stem);
+extern struct sense *sense_init(struct entry *e);
 
 extern void bases_pri_save(struct entry *e, unsigned char *p);
 extern void bases_alt_save(struct entry *e, unsigned char *p);

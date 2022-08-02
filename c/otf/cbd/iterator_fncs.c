@@ -11,6 +11,7 @@ static void f_forms(struct entry *e);
 static void f_parts(struct entry *e);
 static void f_phon(struct entry *e);
 static void f_root(struct entry *e);
+static void f_senses(struct entry *e);
 static void f_stems(struct entry *e);
 
 struct ifnc_map {
@@ -28,6 +29,7 @@ struct ifnc_map {
   { if_parts , (iterator_fnc)f_parts },
   { if_phon , (iterator_fnc)f_phon },
   { if_root , (iterator_fnc)f_root },
+  { if_senses , (iterator_fnc)f_senses },
   { if_stems , (iterator_fnc)f_stems },
   { if_top , NULL },
 };

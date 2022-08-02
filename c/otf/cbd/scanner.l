@@ -10,6 +10,9 @@
 #define ytdup() yylval.text = strdup(unspace(yytext))
 #define ytdupn(n) yylval.text = strdup(unspace(yytext+(n)))
 
+static int after_xENTSNS = 0;
+static int after_xGW = 0;
+
 static char *b_alt_tok = NULL;
 static void alt_wrapup(int clean);
 static void clean_alt_paren(void);
@@ -17,24 +20,30 @@ static char *unspace(char*s);
 %}
 %x xALLOW
 %x xB xBP xBA
-%x xCF xGW xPOS
+%x xCF xGW xPOS xSPOS
 %x xF
+%x xS xSW
 %x xPROJ xLANG xTEXT xWORD xENTSNS xWHY xCOMMENT
 %%
+
+<xWORD>[^ \t\n]+[\t ]*   { ytdup(); return(WORDSPEC); }
+<xWORD>\n		 { BEGIN 0; }
+<xTEXT>.+		 { ytdup(); return(TEXTSPEC); }
+<xTEXT>\n      		 { BEGIN 0; }
+
 ^@project[\t ]+		 { BEGIN xPROJ; return PROJECT; }
 <xPROJ>[^ \t\n]+[ \t]*\n { BEGIN 0; dup(unspace(yytext)); return PROJSPEC; }
 ^@lang[ \t]+		 { BEGIN xLANG; return LANG; }
 <xLANG>[^ \t\n]+[ \t]*\n { BEGIN 0; dup(unspace(yytext)); return LANGSPEC; }
 ^@name[\t ]+		 { BEGIN xTEXT; return NAME; }
-<xTEXT>.+\n 		 { BEGIN 0; dup(unspace(yytext)); return TEXTSPEC; }
 ^@proplist[\t ]+	 { BEGIN xTEXT; return PROPLIST; }
 
 ^[+-]			 { BEGIN xENTSNS; return yytext[0]; }
-<xENTSNS>@entry[\t ]+	 { BEGIN xCF; return(ENTRY); }
-<xENTSNS>@sense[\t ]+	 { BEGIN xCF; return(SENSE); }
+<xENTSNS>@entry[\t ]+	 { BEGIN after_xENTSNS; return(ENTRY); }
+<xENTSNS>@sense[\t ]+	 { BEGIN after_xENTSNS; return(SENSE); }
 <xENTSNS>.		 { BEGIN 0; yyless(0); /* should error */ }
 
-^@entry[\t ]+	 	 { BEGIN xCF; return(ENTRY); }
+^@entry[\t ]+	 	 { BEGIN xCF; after_xENTSNS = xCF;after_xGW = xPOS; return(ENTRY); }
 ^@end[ \t]+entry[\t ]*\n { BEGIN 0;   return(END_ENTRY); }
 
 ^@alias[\t ]+		 { BEGIN xCF; return(ALIAS); }
@@ -47,7 +56,7 @@ static char *unspace(char*s);
 <xCF>[^\[\n]+		 { dup(unspace(yytext)); return(CF); }
 <xCF>[ \t]*"["      	 { BEGIN xGW; return(yytext[yyleng-1]); }
 <xGW>([^\]]+)		 { yylval.text = strdup(yytext); return(GW); }
-<xGW>"]"[ \t]*	       	 { BEGIN xPOS; return(yytext[0]); }
+<xGW>"]"[ \t]*	       	 { BEGIN after_xGW; return(yytext[0]); }
 <xPOS>[^ \t\n]+[ \t]*\n	 { BEGIN 0; yylval.text = strdup(unspace(yytext)); return(POS); }
 <xPOS>[^ \t\n]+[ \t]*  	 { BEGIN xCF; yylval.text = strdup(unspace(yytext)); return(POS); }
 
@@ -75,8 +84,6 @@ static char *unspace(char*s);
 ^@phon[\t ]+		 { BEGIN xTEXT; return(PHON); }
 ^@root[\t ]+		 { BEGIN xTEXT; return(ROOT); }
 ^@stems[\t ]+		 { BEGIN xWORD; return(STEM); }
-<xWORD>[^ \t\n]+[\t ]*   { ytdup(); return(WORDSPEC); }
-<xWORD>\n		 { BEGIN 0; }
 
 ^@form[ \t]+		  { BEGIN xF; return(FORM); }
 <xF>%[^ \t\n]+[ \t]*	  { ytdupn(1); return(FLANG); }
@@ -88,6 +95,13 @@ static char *unspace(char*s);
 <xF>\*[^ \t\n]+[ \t]*	  { ytdupn(1); return(FSTEM); }
 <xF>[^+$#*/\n][^ \t\n]*[ \t]* { ytdup(); return(FFORM); }
 <xF>\n			  { BEGIN 0; return(END_FORM); }
+
+^@sense[ \t]+		  { BEGIN xS; after_xENTSNS = after_xGW = xSPOS; return(SENSE); }
+<xS>\.			  { BEGIN xSW; return(yytext[0]); }
+<xS>\#			  { BEGIN xSW; return(yytext[0]); }
+<xS>\[			  { BEGIN xGW; return(yytext[0]); }
+<xSPOS>[^ \t]+[ \t]*	  { BEGIN xTEXT; ytdup(); return(POS); }
+<xSW>[^ \t]+[ \t]*	  { BEGIN xS; ytdup(); return(WORDSPEC); }
 
 .|\n
 

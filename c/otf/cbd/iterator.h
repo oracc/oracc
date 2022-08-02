@@ -6,6 +6,6 @@ enum ifnc {
   if_forms ,
   if_parts , if_phon ,
   if_root ,
-  if_stems , 
+  if_senses , if_stems , 
   if_top
 };
