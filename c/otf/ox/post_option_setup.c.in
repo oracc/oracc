@@ -55,10 +55,10 @@ post_option_setup(struct run_context *run)
       if (formsfile)
 	{
 	  if (!strcmp(formsfile,"-"))
-	    f_forms = stdout;
+	    fp_forms = stdout;
 	  else
-	    f_forms = fopen(formsfile,"w");
-	  if (!f_forms)
+	    fp_forms = fopen(formsfile,"w");
+	  if (!fp_forms)
 	    {
 	      fprintf(stderr,"ox: unable to write to forms file %s\n", formsfile);
 	      exit(2);

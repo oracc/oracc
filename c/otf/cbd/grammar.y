@@ -25,6 +25,7 @@ void yyerror(char *s);
 %token	<text>		BASE_PRI
 %token	<text>		BASE_ALT
 %token  <text> 		FFORM
+%token  <text> 		FLANG
 %token  <text> 		FBASE
 %token  <text> 		FSTEM
 %token  <text> 		FCONT
@@ -177,18 +178,30 @@ atstem: 	STEM
 forms:		form
 	|	forms form
 
-form:		atform fform form_args end_form
+form:		atform formlang form_args end_form
 
 atform:		FORM		{ curr_form = form_init(curr_entry); }
-end_form:	END_FORM	{ curr_form = NULL; }		
-fform: 		FFORM 		{ curr_form->form = (ucp)$1; }
+end_form:	END_FORM	{ curr_form = NULL; }
+formlang:	fform
+	|	fform flang
+	;
+fform:	     	FFORM 		{ curr_form->form = (ucp)$1; } 
+flang: 		FLANG 		{ curr_form->lang = (ucp)$1; }
 
-form_args: 	fbase form_morph form_norm
-	|  	fbase fstem form_morph form_norm
-	|  	fbase fstem fcont form_morph form_norm
+form_args:	fbase form_norm
+	|      	fbase form_morph form_norm
 	|  	fbase fcont form_morph form_norm
-	|	fstem form_morph form_norm
+	|  	fbase fcont form_norm
+	|  	fbase fstem fcont form_morph form_norm
+	|  	fbase fstem fcont form_norm
+	|  	fbase fstem form_morph form_norm
+	|  	fbase fstem form_norm
 	|	fstem form_norm
+	|	fstem form_morph form_norm
+	|	fstem fcont form_norm
+	|	fstem fcont form_morph form_norm
+	|	fcont form_norm
+	|	fcont form_morph form_norm
 	|	form_morph form_norm
 	|	form_norm
 

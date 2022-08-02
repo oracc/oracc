@@ -9,5 +9,25 @@
 @root a
 @stems R rr
 @bases a (e₄, illu); a₂ (aₓ(DA), eₓ(DA))
-@form a /a $a #~
+@form a %sux
+@form a /a
+@form a *b
+@form a +0
+@form a #~
+@form a $a
+@form a /a *b
+@form a /a *b +0
+@form a /a *b +0 #~
+@form a %sux /a *b +0 #~ $a
+@form a *b +0
+@form a *b +0 #~
+@form a *b +0 $a
+@form a *b +0 #~ $a
+@form a *b #~
+@form a *b $a
+@form a *b #~ $a
+@form a +0 #~
+@form a +0 $a
+@form a +0 #~ $a
+@form a #~ $a
 @end entry

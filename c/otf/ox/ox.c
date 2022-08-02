@@ -76,7 +76,6 @@ FILE*f_atf = NULL;
 const char *badfile = NULL;
 FILE*f_bad = NULL;
 const char *formsfile = NULL;
-/*FILE*f_forms = NULL;*/
 const char *goodfile = NULL;
 FILE*f_good = NULL;
 const char *graphemesfile = NULL;
@@ -190,10 +189,10 @@ main(int argc, char **argv)
 static void
 finish_outputs(void)
 {
-  if (f_forms)
+  if (fp_forms)
     {
-      fputc('\n',f_forms);
-      fclose(f_forms);
+      fputc('\n',fp_forms);
+      fclose(fp_forms);
     }
   if (f_graphemes)
     {

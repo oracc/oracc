@@ -39,7 +39,7 @@ static int np_already_set = 0;
 
 struct node *surro_wp = NULL, *surro_atpt = NULL;
 
-extern FILE*f_forms;
+extern FILE*fp_forms;
 extern int check_only;
 extern int need_lemm, do_show_insts;
 extern int verbose;
@@ -513,20 +513,20 @@ tlit_parse_inline(unsigned char *line, unsigned char *end, struct node*lnode,
     return;
   */
 
-  if (f_forms)
+  if (fp_forms)
     {
       static int did_first_line = 0;
       if (!did_first_line)
 	{
 	  ++did_first_line;
-	  list_locator(f_forms);
+	  list_locator(fp_forms);
 	}
       else if (!in_split_word)
 	{
-	  fputc('\n',f_forms);
-	  list_locator(f_forms);
+	  fputc('\n',fp_forms);
+	  list_locator(fp_forms);
 	}
-      /* fprintf(f_forms,"%d ", lnum); */
+      /* fprintf(fp_forms,"%d ", lnum); */
     }
 
   curr_cell = 0;
@@ -694,8 +694,8 @@ process_agroup(struct node *parent, int start, int end)
 	vwarning("alignment group form too long: %s",formbuf);
     }
   appendAttr(cp,attr(a_form,formbuf));
-  if (f_forms)
-    fprintf(f_forms,"%%%s:%s ",getAttr(cp->children.nodes[0],"xml:lang"),formbuf);
+  if (fp_forms)
+    fprintf(fp_forms,"%%%s:%s ",getAttr(cp->children.nodes[0],"xml:lang"),formbuf);
   return agroup_end+1;
 }
 
@@ -2489,8 +2489,8 @@ finish_word(struct node *wp)
       if (wp->etype != e_g_gg)
 	appendAttr(wp,attr(a_form,form));
 
-      if (f_forms && !in_split_word && strcmp(wp->parent->names->pname,"ag"))
-	fprintf(f_forms,"%%%s:%s ",getAttr(wp,"xml:lang"),form);
+      if (fp_forms && !in_split_word && strcmp(wp->parent->names->pname,"ag"))
+	fprintf(fp_forms,"%%%s:%s ",getAttr(wp,"xml:lang"),form);
       
       /* need to do this unconditionally? */
       if ((need_lemm || do_show_insts) && !suppress_lem)
@@ -2557,10 +2557,10 @@ wrapup_word(struct node *wp, enum t_type trigger)
 	      struct node *head = sw_get_head();
 	      appendAttr(head,attr(a_headform,getAttr(head,"form")));
 	      setAttr(head,a_form,(unsigned char *)fullform);
-	      if (f_forms)
+	      if (fp_forms)
 		{
-		  fprintf(f_forms,"%%%s:%s\n",getAttr(head,"xml:lang"),fullform);
-		  list_locator(f_forms);
+		  fprintf(fp_forms,"%%%s:%s\n",getAttr(head,"xml:lang"),fullform);
+		  list_locator(fp_forms);
 		}
 	      setAttr(head,a_contrefs,(unsigned char *)refs);
 	      if (lemm_reset_form_p)

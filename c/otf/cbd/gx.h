@@ -50,6 +50,7 @@ struct cbd {
   struct mb *aliasmem;
   struct mb *editmem;
   struct mb *partsmem;
+  struct mb *formsmem;
   struct mb *sensemem;
 };
 

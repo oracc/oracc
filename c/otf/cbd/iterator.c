@@ -21,6 +21,8 @@ iterate_entries(struct entry *e)
     curr_fncs[if_stems](e);
   if (e->bases)
     curr_fncs[if_bases](e);
+  if (e->forms)
+    curr_fncs[if_forms](e);
   curr_fncs[if_end_entry](e);
 }
 

@@ -31,6 +31,7 @@ init_cbd(void)
   c->aliasmem = mb_init(sizeof(struct alias), 1024);
   c->cgpmem = mb_init(sizeof(struct cgp), 1024);
   c->editmem = mb_init(sizeof(struct edit), 1024);
+  c->formsmem = mb_init(sizeof(struct f2), 1024);
   c->partsmem = mb_init(sizeof(struct parts), 1024);
   c->sensemem = mb_init(sizeof(struct sense), 1024);
   return c;

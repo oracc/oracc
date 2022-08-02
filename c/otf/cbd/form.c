@@ -5,8 +5,10 @@
 struct f2 *
 form_init(struct entry *e)
 {
-  static struct f2 ret;
-  return &ret;
+  static struct f2 *f2p;
+  f2p = mb_new(e->owner->formsmem);
+  list_add(e->forms, f2p);
+  return f2p;
 }
 
 void

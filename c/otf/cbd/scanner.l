@@ -8,6 +8,7 @@
 
 #define dup(s) yylval.text = (char*)npool_copy((unsigned char *)(s),curr_cbd->pool)
 #define ytdup() yylval.text = strdup(unspace(yytext))
+#define ytdupn(n) yylval.text = strdup(unspace(yytext+(n)))
 
 static char *b_alt_tok = NULL;
 static void alt_wrapup(int clean);
@@ -78,13 +79,14 @@ static char *unspace(char*s);
 <xWORD>\n		 { BEGIN 0; }
 
 ^@form[ \t]+		  { BEGIN xF; return(FORM); }
-<xF>\/[^ \t]+[ \t]*	  { ytdup(); return(FBASE); }
-<xF>\+[^ \t]+[ \t]*	  { ytdup(); return(FCONT); }
-<xF>\$[^ \t]+[ \t]*	  { ytdup(); return(FNORM); }
-<xF>##[^ \t]+[ \t]*	  { ytdup(); return(FMORPH2); }
-<xF>#[^ \t]+[ \t]*	  { ytdup(); return(FMORPH); }
-<xF>\*[^ \t]+[ \t]*	  { ytdup(); return(FSTEM); }
-<xF>[^+$#*/][^ \t]+[ \t]* { ytdup(); return(FFORM); }
+<xF>%[^ \t\n]+[ \t]*	  { ytdupn(1); return(FLANG); }
+<xF>\/[^ \t\n]+[ \t]*	  { ytdupn(1); return(FBASE); }
+<xF>\+[^ \t\n]+[ \t]*	  { ytdupn(1); return(FCONT); }
+<xF>\$[^ \t\n]+[ \t]*	  { ytdupn(1); return(FNORM); }
+<xF>##[^ \t\n]+[ \t]*	  { ytdupn(2); return(FMORPH2); }
+<xF>#[^ \t\n]+[ \t]*	  { ytdupn(1); return(FMORPH); }
+<xF>\*[^ \t\n]+[ \t]*	  { ytdupn(1); return(FSTEM); }
+<xF>[^+$#*/\n][^ \t\n]*[ \t]* { ytdup(); return(FFORM); }
 <xF>\n			  { BEGIN 0; return(END_FORM); }
 
 .|\n

@@ -3,6 +3,7 @@ enum ifnc {
   if_bases ,
   if_cbd ,
   if_entry , if_end_cbd , if_end_entry ,
+  if_forms ,
   if_parts , if_phon ,
   if_root ,
   if_stems , 

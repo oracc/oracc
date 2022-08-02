@@ -17,7 +17,7 @@ extern struct xcl_context *text_xc;
 
 extern FILE *f_log;
 extern FILE *f_xml;
-extern FILE *f_forms;
+extern FILE *fp_forms;
 extern FILE *f_insts;
 extern FILE *f_graphemes;
 

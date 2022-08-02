@@ -17,7 +17,7 @@ unsigned const char *curr_line_label;
 struct xcl_context *text_xc = NULL;
 
 FILE *f_autolem = NULL;
-FILE *f_forms = NULL;
+FILE *fp_forms = NULL;
 FILE *f_graphemes = NULL;
 FILE *f_insts = NULL;
 FILE *f_xml = NULL;

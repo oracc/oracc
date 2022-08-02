@@ -123,6 +123,35 @@ f_end_entry(struct entry *e)
 }
 
 static void
+f_forms(struct entry *e)
+{
+  if (e->forms && list_len(e->forms))
+    {
+      List_node *lp;
+      for (lp = e->forms->first; lp; lp = lp->next)
+	{
+	  struct f2 *f2p = (struct f2*)(lp->data);
+	  printf("@form %s", f2p->form);
+	  if (f2p->lang) /* careful: we only should only emit this if lang is explicit in form */
+	    printf(" %%%s", f2p->lang);
+	  if (f2p->base)
+	    printf(" /%s", f2p->base);
+	  if (f2p->stem)
+	    printf(" *%s", f2p->stem);
+	  if (f2p->cont)
+	    printf(" +%s", f2p->cont);
+	  if (f2p->morph)
+	    printf(" #%s", f2p->morph);
+	  if (f2p->morph2)
+	    printf(" ##%s", f2p->morph2);
+	  if (f2p->norm)
+	    printf(" $%s", f2p->norm);
+	  printf("\n");
+	}
+    }
+}
+
+static void
 f_parts(struct entry *e)
 {
   if (e->parts->cgps && list_len(e->parts->cgps))
