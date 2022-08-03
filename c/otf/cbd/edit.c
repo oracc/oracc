@@ -10,10 +10,11 @@ entry_edit(struct entry *e, char type)
   edit_save(e, 'e', type);
 }
 
-void
+struct sense *
 sense_edit(struct entry *e, char type)
 {
   edit_save(e, 's', type);
+  return ((struct sense *)(list_last(e->senses)))->ed->sp = mb_new(e->owner->sensesmem);
 }
 
 void
@@ -22,9 +23,15 @@ edit_save(struct entry *e, char ctxt, char type)
   struct edit *ed = mb_new(e->owner->editmem);
   /*struct sense *snode = NULL;*/
   if (ctxt == 's')
-    ed->owner = list_last(e->senses);
+    {
+      ed->owner = list_last(e->senses);
+      ((struct sense *)(ed->owner))->ed = ed;
+    }
   else
-    ed->owner = e;
+    {
+      ed->owner = e;
+      e->ed = ed;
+    }
   switch (type)
     {
     case '+':
@@ -44,7 +51,6 @@ edit_save(struct entry *e, char ctxt, char type)
     default:
       break;
     }
-  e->ed = ed;
 }
 
 void

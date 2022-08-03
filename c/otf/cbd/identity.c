@@ -189,15 +189,28 @@ f_senses(struct entry *e)
     printf("@begin senses\n");
 
   List_node *lp;
-  for (lp = e->forms->first; lp; lp = lp->next)
+  for (lp = e->senses->first; lp; lp = lp->next)
     {
       struct sense *sp = (struct sense*)(lp->data);
 
-      /* ADD PROCESSING FOR sp->ed */
+      if (sp->ed)
+	{
+	  switch (sp->ed->type)
+	    {
+	    case ADD_S:
+	      putchar('+');
+	      break;
+	    case DEL_S:
+	      putchar('-');
+	      break;
+	    default:
+	      break;
+	    }
+	}
       
       printf("@sense");
       if (sp->lng)
-	printf(" %%%s", sp->lng);
+	{ printf(" %%%s", sp->lng); }
       if (sp->sid)
 	printf(" #%s", sp->sid);
       if (sp->num)
@@ -205,11 +218,25 @@ f_senses(struct entry *e)
       if (sp->sgw)
 	printf(" [%s]", sp->sgw);
       if (sp->pos)
-	printf(" .%s", sp->sid);
+	printf(" %s", sp->pos);
       if (sp->mng)
-	printf(" .%s", sp->mng);
+	printf(" %s", sp->mng);
       printf("\n");
-    }  
+      if (sp->ed)
+	{
+	  switch (sp->ed->type)
+	    {
+	    case REN_S:
+	      printf("> %s %s\n", sp->ed->sp->pos, sp->ed->sp->mng);
+	      break;
+	    case MRG_S:
+	      printf(">> %s %s\n", sp->ed->sp->pos, sp->ed->sp->mng);
+	      break;
+	    default:
+	      break;
+	    }
+	}
+    }
   
   if (e->beginsenses)
     printf("@end senses\n");

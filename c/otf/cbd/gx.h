@@ -217,7 +217,7 @@ extern List *cgp_get_all(void);
 extern struct cgp*cgp_get_one(void);
 extern void cgp_save(unsigned char *cf, unsigned char *gw, unsigned char *pos);
 extern void entry_edit(struct entry *e, char type);
-extern void sense_edit(struct entry *e, char type);
+extern struct sense *sense_edit(struct entry *e, char type);
 extern void edit_save(struct entry *e, char ctxt, char type);
 extern void edit_why(struct entry *e, char *why);
 extern struct alias *alias_init(struct entry *e);

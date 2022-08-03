@@ -12,6 +12,7 @@
 
 static int after_xENTSNS = 0;
 static int after_xGW = 0;
+static int after_xRENMRG = 0;
 
 static char *b_alt_tok = NULL;
 static void alt_wrapup(int clean);
@@ -43,15 +44,15 @@ static char *unspace(char*s);
 <xENTSNS>@sense[\t ]+	 { BEGIN after_xENTSNS; return(SENSE); }
 <xENTSNS>.		 { BEGIN 0; yyless(0); /* should error */ }
 
-^@entry[\t ]+	 	 { BEGIN xCF; after_xENTSNS = xCF;after_xGW = xPOS; return(ENTRY); }
+^@entry[\t ]+	 	 { BEGIN xCF; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; return(ENTRY); }
 ^@end[ \t]+entry[\t ]*\n { BEGIN 0;   return(END_ENTRY); }
 
 ^@alias[\t ]+		 { BEGIN xCF; return(ALIAS); }
 
 ^@parts[\t ]+		 { BEGIN xCF; return(PARTS); }
 
-^>[\t ]*		 { BEGIN xCF; return(RENAME); }
-^>>[\t ]*		 { BEGIN xCF; return(MERGE); }
+^>[\t ]*		 { BEGIN after_xRENMRG; return(RENAME); }
+^>>[\t ]*		 { BEGIN after_xRENMRG; return(MERGE); }
 
 <xCF>[^\[\n]+		 { dup(unspace(yytext)); return(CF); }
 <xCF>[ \t]*"["      	 { BEGIN xGW; return(yytext[yyleng-1]); }
@@ -96,10 +97,12 @@ static char *unspace(char*s);
 <xF>[^+$#*/\n][^ \t\n]*[ \t]* { ytdup(); return(FFORM); }
 <xF>\n			  { BEGIN 0; return(END_FORM); }
 
-^@sense[ \t]+		  { BEGIN xS; after_xENTSNS = after_xGW = xSPOS; return(SENSE); }
+^@sense[ \t]+		  { BEGIN xS; after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; return(SENSE); }
+<xS>\%			  { BEGIN xSW; return(yytext[0]); }
 <xS>\.			  { BEGIN xSW; return(yytext[0]); }
 <xS>\#			  { BEGIN xSW; return(yytext[0]); }
 <xS>\[			  { BEGIN xGW; return(yytext[0]); }
+<xS>[^.#[\%][^ \t]*[ \t]* { BEGIN xTEXT; ytdup(); return(POS); }
 <xSPOS>[^ \t]+[ \t]*	  { BEGIN xTEXT; ytdup(); return(POS); }
 <xSW>[^ \t]+[ \t]*	  { BEGIN xS; ytdup(); return(WORDSPEC); }
 

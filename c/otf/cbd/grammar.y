@@ -39,7 +39,7 @@ void yyerror(char *s);
 %token ENTRY END_ENTRY SENSES END_SENSES PROJECT NAME ALIAS BASES FORM END_FORM
        PROPLIST MERGE PARTS RENAME WHY ALLOW
        PHON ROOT STEM EQUIV ATBIB ATINOTE ATNOTE ATISSLP
-       ATOID ATCOLLO ATPROP PL_COORD PL_ID PL_UID ATDISC ATBFF
+       ATOID ATCOLLO ATPROP PL_COORD PL_ID PL_UID ATDISC
 
 %start cbd
 
@@ -81,21 +81,15 @@ entry: 		entry_block end_entry
 entry_block: 	atentry
 	|	atentry aliases
 	| 	atentry aliases parts
-	| 	atentry aliases parts bffs
-	| 	atentry aliases parts bffs disc
+	| 	atentry aliases parts disc
+	|	atentry modentry
 	|	atentry modentry aliases
 	| 	atentry modentry aliases parts
-	| 	atentry modentry aliases parts bffs
-	| 	atentry modentry aliases parts bffs disc
+	| 	atentry modentry aliases parts disc
 	| 	atentry parts
-	| 	atentry parts bffs
-	| 	atentry parts bffs disc
-	| 	atentry bffs
-	| 	atentry bffs disc
+	| 	atentry parts disc
 	| 	atentry disc
 
-bffs: ATBFF
-		
 disc: ATDISC TEXTSPEC /* | FILESPEC | URLSPEC */
 		
 atentry: 	begin_entry cgp     { curr_entry->cgp = cgp_get_one(); } ;
@@ -231,6 +225,7 @@ end_senses:   END_SENSES
 		
 senses:	      sense
 	      | senses sense
+	      ;
 
 sense:	      senseinfo
 	      | senseinfo disc
@@ -266,7 +261,7 @@ senselang:	ssense
 	|	ssense slang
 
 ssense:		SENSE 		{ curr_sense = sense_init(curr_entry); }
-slang:		LANG		{ curr_sense->lng = (ucp)$1; }
+slang:		'%' WORDSPEC   	{ curr_sense->lng = (ucp)$2; }
 
 sid:		'#' WORDSPEC	{ curr_sense->sid = (ucp)$2; }
 sol:		'.' WORDSPEC	{ curr_sense->num = (ucp)$2; }
@@ -274,8 +269,12 @@ sgw:		'[' GW ']'	{ curr_sense->sgw = (ucp)$2; }
 pos:		POS /* should be restricted to legal POS */	  { curr_sense->pos = (ucp)$1; }
 mng:		TEXTSPEC /* shouldrestrict to disallow [ and ] */ { curr_sense->mng = (ucp)$1; }
 		
-modsense: 	RENAME pos mng { sense_edit(curr_entry, '>'); } ;
-	| 	MERGE  pos mng { sense_edit(curr_entry, '|'); } ;
+modsense: 	RENAME POS TEXTSPEC { curr_sense = sense_edit(curr_entry, '>');
+    				      curr_sense->pos = (ucp)$2;
+			              curr_sense->mng = (ucp)$3; }
+           | 	MERGE  POS TEXTSPEC { curr_sense = sense_edit(curr_entry, '|'); 
+    				      curr_sense->pos = (ucp)$2;
+			              curr_sense->mng = (ucp)$3; }
 
 meta_block: pleiades_block
 	    | props
