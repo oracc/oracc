@@ -3,6 +3,7 @@
 #include "gx.h"
 #define YYDEBUG 1
 static struct f2 *curr_form;
+static struct meta *curr_meta;
 static struct sense *curr_sense;
 extern int yylex(void);
 void yyerror(char *s);
@@ -35,11 +36,21 @@ void yyerror(char *s);
 %token  <text> 		FMORPH
 %token  <text> 		FMORPH2
 %token  <text> 		FNORM
+%token	<text>		PL_COORD
+%token	<text> 		PL_ID
+%token	<text>		PL_UID
+%token	<i>		BIB
+%token	<i>		OID
+%token	<i>		COLLO
+%token	<i>		PROP
+%token	<i>		NOTE
+%token	<i>		INOTE
+%token	<i>		ISSLP
+%token	<i>		EQUIV
+%token	<i>		PLEIADES
 
 %token ENTRY END_ENTRY SENSES END_SENSES PROJECT NAME ALIAS BASES FORM END_FORM
-       PROPLIST MERGE PARTS RENAME WHY ALLOW
-       PHON ROOT STEM EQUIV ATBIB ATINOTE ATNOTE ATISSLP
-       ATOID ATCOLLO ATPROP PL_COORD PL_ID PL_UID ATDISC
+       PROPLIST MERGE PARTS RENAME WHY ALLOW PHON ROOT STEM EDISC SDISC
 
 %start cbd
 
@@ -72,10 +83,10 @@ entrylist:	entry
 entry: 		entry_block end_entry
 	|	entry_block lang_block end_entry 
 	|	entry_block lang_block senses_block end_entry 
-	|	entry_block lang_block senses_block meta_block end_entry 
+	|	entry_block lang_block senses_block meta end_entry 
 	|	entry_block senses_block end_entry
-	|	entry_block senses_block meta_block end_entry
-	|	entry_block meta_block end_entry
+	|	entry_block senses_block meta end_entry
+	|	entry_block meta end_entry
 
 
 entry_block: 	atentry
@@ -90,8 +101,9 @@ entry_block: 	atentry
 	| 	atentry parts disc
 	| 	atentry disc
 
-disc: ATDISC TEXTSPEC /* | FILESPEC | URLSPEC */
-		
+disc: 		EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = (ucp)$2; }
+	    |	SDISC TEXTSPEC { curr_sense->disc = (ucp)$2; }
+
 atentry: 	begin_entry cgp     { curr_entry->cgp = cgp_get_one(); } ;
         |	'+' begin_entry cgp { curr_entry->cgp = cgp_get_one();
     				      entry_edit(curr_entry, '+'); } ;
@@ -100,7 +112,7 @@ atentry: 	begin_entry cgp     { curr_entry->cgp = cgp_get_one(); } ;
     				      entry_edit(curr_entry, '-');
 				      edit_why(curr_entry, yylval.text); } ;
 
-begin_entry:  	ENTRY { curr_entry = entry_init(curr_cbd); } ;
+begin_entry:  	ENTRY { curr_entry = entry_init(curr_cbd); curr_meta = curr_entry->meta = meta_init(curr_entry); } ;
 
 why:		WHY WHYSPEC
 
@@ -220,8 +232,8 @@ fnorm: 		FNORM 		{ curr_form->norm = (ucp)$1; }
 senses_block: senses
 	      | begin_senses sensesmeta end_senses
 
-begin_senses: SENSES		{ curr_entry->beginsenses = 1; }
-end_senses:   END_SENSES
+begin_senses: SENSES		{ curr_entry->beginsenses = 1; curr_meta = NULL; }
+end_senses:   END_SENSES	{ curr_meta = curr_entry->meta; }
 		
 senses:	      sense
 	      | senses sense
@@ -237,11 +249,11 @@ sensesmeta:   sensemeta
 
 sensemeta:    senseinfo
 	      | senseinfo disc
-	      | senseinfo meta_block
+	      | senseinfo meta
 	      | senseinfo modsense
 	      | senseinfo modsense disc
-	      | senseinfo modsense disc meta_block
-	      | senseinfo disc meta_block
+	      | senseinfo modsense disc meta
+	      | senseinfo disc meta
 
 senseinfo:	atsense pos mng
 	|	atsense sid pos mng
@@ -260,7 +272,8 @@ atsense:      	senselang
 senselang:	ssense
 	|	ssense slang
 
-ssense:		SENSE 		{ curr_sense = sense_init(curr_entry); }
+ssense:		SENSE 		{ curr_sense = sense_init(curr_entry); 
+		    		  if (curr_entry->beginsenses) { curr_meta = curr_sense->meta = meta_init(curr_entry); } }
 slang:		'%' WORDSPEC   	{ curr_sense->lng = (ucp)$2; }
 
 sid:		'#' WORDSPEC	{ curr_sense->sid = (ucp)$2; }
@@ -276,58 +289,32 @@ modsense: 	RENAME POS TEXTSPEC { curr_sense = sense_edit(curr_entry, '>');
     				      curr_sense->pos = (ucp)$2;
 			              curr_sense->mng = (ucp)$3; }
 
-meta_block: pleiades_block
-	    | props
-	    | oid
-	    | collos
-	    | equivs
-	    | notes
-	    | pleiades_block props
-	    | pleiades_block props oid
-	    | pleiades_block props oid collos
-	    | pleiades_block oid
-	    | pleiades_block oid collos
-	    | props oid
-	    | props oid collos
-	    ;
+meta:	anymeta
+	|	meta anymeta
 
-notes: bib
-       | inote
-       | isslp
-       | note
-       | notes bib
-       | notes inote
-       | notes isslp
-       | notes note
-       ;
+anymeta: 	pleiades
+	| 	prop
+	| 	oid
+	| 	collo
+	| 	equiv
+	| 	bib
+        | 	inote
+        | 	isslp
+        | 	note
+		/*  REL GOES HERE */
 
-equivs:		equiv
-	|	equivs equiv
+equiv: 		EQUIV LANG TEXTSPEC		{ meta_add(curr_entry, curr_meta, $1, 
+		    					   equiv_init(curr_entry,(ucp)$2,(ucp)$3)); }
+isslp:		ISSLP TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
+bib:		BIB TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
+note:		NOTE TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
+inote:		INOTE TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
+pleiades: 	PL_COORD PL_ID PL_UID		{ meta_add(curr_entry, curr_meta, PLEIADES, 
+		    				  	   pleiades_init(curr_entry,(ucp)$1,(ucp)$2,(ucp)$3)); }
+prop:		PROP TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
+oid:		OID OIDSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
+collo:		COLLO TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
 
-equiv: 		atequiv lang text
-atequiv:	EQUIV
-lang:		LANGSPEC
-text:		TEXTSPEC
-
-bib:	ATBIB TEXTSPEC
-isslp:	ATISSLP TEXTSPEC
-note:	ATNOTE TEXTSPEC
-inote:	ATINOTE TEXTSPEC
-
-pleiades_block: PL_COORD PL_ID PL_UID
-
-props: 		prop
-	|	props prop
-
-prop:		ATPROP TEXTSPEC
-
-oid:		ATOID OIDSPEC
-
-collos:		collo
-	|	collos collo
-
-collo:		ATCOLLO TEXTSPEC
-	;
 %%
 
 void

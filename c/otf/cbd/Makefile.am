@@ -14,7 +14,7 @@ libcbd_la_SOURCES = \
 	parts.c bases.c	sig.c file.c note.c bib.c disc.c \
 	cbdtags.c cbdpos.c sigops.c pleiades.c prop.c \
 	stems.c root.c phon.c collo.c oid.c equiv.c \
-	edit.c xgetline.c sigstats.c
+	edit.c xgetline.c sigstats.c meta.c
 
 AM_CPPFLAGS=\
 	-I@top_srcdir@/c/otf/{atf,cdf,chr,gdl,lib,lng,run,ox} \

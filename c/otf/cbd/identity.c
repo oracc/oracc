@@ -108,6 +108,8 @@ f_entry(struct entry *e)
 	  break;
 	}
     }
+  if (e->disc)
+    printf("@disc %s\n", e->disc);
 }
 
 static void
@@ -186,7 +188,7 @@ static void
 f_senses(struct entry *e)
 {
   if (e->beginsenses)
-    printf("@begin senses\n");
+    printf("@senses\n");
 
   List_node *lp;
   for (lp = e->senses->first; lp; lp = lp->next)
@@ -236,6 +238,8 @@ f_senses(struct entry *e)
 	      break;
 	    }
 	}
+      if (sp->disc)
+	printf("@disc %s\n", sp->disc);
     }
   
   if (e->beginsenses)

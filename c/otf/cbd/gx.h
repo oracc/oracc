@@ -46,11 +46,15 @@ struct cbd {
   Hash_table *simple;
   Hash_table *cofs;
   Hash_table *psus;
-  struct mb *cgpmem;
   struct mb *aliasmem;
+  struct mb *cgpmem;
   struct mb *editmem;
-  struct mb *partsmem;
+  struct mb *equivmem;
   struct mb *formsmem;
+  struct mb *metamem;
+  struct mb *metaordermem;
+  struct mb *partsmem;
+  struct mb *pleiadesmem;
   struct mb *sensesmem;
 };
 
@@ -91,19 +95,34 @@ struct entry {
   List *forms;
   List *senses;
   Hash_table *hsenses; /* needed for building cbd from sigs */
-  List *bffs;
-  List *bib;
-  List *isslp;  
-  List *props;
   unsigned char *phon;
   unsigned char *root;
   List *stems;
+  unsigned char *disc;
   int bang;
   int beginsenses;
   int usage;
   int compound;
   struct cbd *owner;
   struct edit *ed;
+  struct meta *meta;
+};
+
+struct meta {
+  List *order;
+  List *bib;
+  List *equiv;
+  List *inote;
+  List *isslp;  
+  List *note;
+  List *prop;
+  List *pleiades;
+  List *rel;
+};
+
+struct metaorder {
+  int tok;
+  void *val;
 };
 
 struct alias {
@@ -124,9 +143,16 @@ struct sense {
   unsigned const char *lng;
   unsigned const char *mng;
   unsigned const char *sid;
+  unsigned char *disc;
   int bang;
   struct entry *owner;
   struct edit *ed;
+  struct meta *meta;
+};
+
+struct equiv {
+  unsigned char *lang;
+  unsigned char *text;
 };
 
 struct isslp {
@@ -134,6 +160,12 @@ struct isslp {
   unsigned char *year;
   unsigned char *text;
   struct entry *owner;
+};
+
+struct pleiades {
+  unsigned char *coord;
+  unsigned char *id;
+  unsigned char *uid;
 };
 
 struct cbdpos {
@@ -233,8 +265,11 @@ extern void bases_alt_save(struct entry *e, unsigned char *p);
 
 extern struct f2 *form_init(struct entry *e);
 
-/*
-extern void parse_(unsigned char *s, locator *lp);
-*/
+extern struct meta *meta_init(struct entry *e);
+extern void meta_add(struct entry *e, struct meta *mp, int tok, void *val);
+
+extern struct equiv *equiv_init(struct entry *e, unsigned char *lang, unsigned char *text);
+extern struct pleiades *pleiades_init(struct entry *e,
+				      unsigned char *coord, unsigned char *id, unsigned char *uid);
 
 #endif

@@ -9,10 +9,11 @@
 #define dup(s) yylval.text = (char*)npool_copy((unsigned char *)(s),curr_cbd->pool)
 #define ytdup() yylval.text = strdup(unspace(yytext))
 #define ytdupn(n) yylval.text = strdup(unspace(yytext+(n)))
-
+#define yi(tok) yylval.i = tok;
 static int after_xENTSNS = 0;
 static int after_xGW = 0;
 static int after_xRENMRG = 0;
+static int xdisc = 0;
 
 static char *b_alt_tok = NULL;
 static void alt_wrapup(int clean);
@@ -44,7 +45,7 @@ static char *unspace(char*s);
 <xENTSNS>@sense[\t ]+	 { BEGIN after_xENTSNS; return(SENSE); }
 <xENTSNS>.		 { BEGIN 0; yyless(0); /* should error */ }
 
-^@entry[\t ]+	 	 { BEGIN xCF; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; return(ENTRY); }
+^@entry[\t ]+	 	 { BEGIN xCF; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; xdisc = EDISC; return(ENTRY); }
 ^@end[ \t]+entry[\t ]*\n { BEGIN 0;   return(END_ENTRY); }
 
 ^@alias[\t ]+		 { BEGIN xCF; return(ALIAS); }
@@ -97,7 +98,9 @@ static char *unspace(char*s);
 <xF>[^+$#*/\n][^ \t\n]*[ \t]* { ytdup(); return(FFORM); }
 <xF>\n			  { BEGIN 0; return(END_FORM); }
 
-^@sense[ \t]+		  { BEGIN xS; after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; return(SENSE); }
+^@senses		  { return(SENSES); }
+^@end[ \t]+senses	  { return(END_SENSES); }
+^@sense[ \t]+		  { BEGIN xS; after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; xdisc = SDISC; return(SENSE); }
 <xS>\%			  { BEGIN xSW; return(yytext[0]); }
 <xS>\.			  { BEGIN xSW; return(yytext[0]); }
 <xS>\#			  { BEGIN xSW; return(yytext[0]); }
@@ -105,6 +108,16 @@ static char *unspace(char*s);
 <xS>[^.#[\%][^ \t]*[ \t]* { BEGIN xTEXT; ytdup(); return(POS); }
 <xSPOS>[^ \t]+[ \t]*	  { BEGIN xTEXT; ytdup(); return(POS); }
 <xSW>[^ \t]+[ \t]*	  { BEGIN xS; ytdup(); return(WORDSPEC); }
+
+^@disc[ \t]+		  { BEGIN xTEXT; return(xdisc); }
+^@bib[ \t]+		  { BEGIN xTEXT; yi(BIB); return(BIB); }
+^@inote[ \t]+		  { BEGIN xTEXT; yi(INOTE); return(INOTE); }
+^@isslp[ \t]+		  { BEGIN xTEXT; yi(ISSLP); return(ISSLP); }
+^@note[ \t]+		  { BEGIN xTEXT; yi(NOTE); return(NOTE); }
+^@oid[ \t]+		  { BEGIN xTEXT; yi(OID); return(OID); }
+^@pl_coord[ \t]+	  { BEGIN xTEXT; return(PL_COORD); }
+^@pl_id[ \t]+     	  { BEGIN xTEXT; return(PL_ID); }
+^@pl_uid[ \t]+	  	  { BEGIN xTEXT; return(PL_UID); }
 
 .|\n
 
