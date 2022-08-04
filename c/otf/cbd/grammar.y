@@ -7,6 +7,7 @@ static struct f2 *curr_form;
 static struct meta *curr_meta;
 static struct sense *curr_sense;
 extern int yylex(void);
+void vyyerror(char *s, ...);
 void yyerror(char *s);
 #define dup(s) npool_copy((unsigned char *)(s),curr_cbd->pool)
 %}
@@ -51,7 +52,7 @@ void yyerror(char *s);
 %token	<i>		PLEIADES
 
 %token ENTRY END_ENTRY SENSES END_SENSES PROJECT NAME ALIAS BASES FORM END_FORM
-       PROPLIST MERGE PARTS RENAME WHY ALLOW PHON ROOT STEM EDISC SDISC
+       PROPLIST MERGE PARTS RENAME WHY ALLOW PHON ROOT STEM EDISC SDISC EOL ENDOF
 
 %start cbd
 
@@ -77,6 +78,7 @@ cgplist: cgp
 	 | cgplist cgp
 
 cgp:    CF '[' GW ']' POS { cgp_save((ucp)$1, (ucp)$3, (ucp)$5); } ;
+	    |	CF '[' GW ']' EOL { yyerror("expected POS but found end of line"); }
 
 entrylist:	entry
 	|	entrylist entry
@@ -88,7 +90,9 @@ entry: 		entry_block end_entry
 	|	entry_block senses_block end_entry
 	|	entry_block senses_block meta end_entry
 	|	entry_block meta end_entry
-
+	|	entry_block entry_block { yyerror("duplicate @entry or missing @end entry"); }
+	|	entry_block senses_block lang_block end_entry { yyerror("lang block fields must come before senses block"); }
+	|	entry_block ENDOF 	{ yyerror("input ended without @end entry"); }
 
 entry_block: 	atentry
 	|	atentry aliases
@@ -322,5 +326,27 @@ collo:		COLLO TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
 void
 yyerror(char *s)
 {
-  printf("error: %s\n", s);
+  extern int yylineno;
+  extern const char *efile;
+  if (s)
+    {
+      fprintf(stderr, "%s:%d: error: %s\n", efile, yylineno, s);
+    }
+  
+}
+
+void
+vyyerror(char *s, ...)
+{
+  extern int yylineno;
+  extern const char *efile;
+  va_list ap;
+  if (s)
+    {
+       va_start(ap, s);
+       fprintf(stderr, "%s:%d: error: \n", efile, yylineno);
+       vfprintf(stderr, s, ap);
+       fprintf(stderr, "\n");
+    }
+  
 }

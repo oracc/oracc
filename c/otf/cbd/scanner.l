@@ -61,6 +61,7 @@ static char *unspace(char*s);
 <xCF>[ \t]*"["      	 { BEGIN xGW; return(yytext[yyleng-1]); }
 <xGW>([^\]]+)		 { yylval.text = strdup(yytext); return(GW); }
 <xGW>"]"[ \t]*	       	 { BEGIN after_xGW; return(yytext[0]); }
+<xPOS>[ \t]*\n		 { BEGIN 0; return(EOL); }
 <xPOS>[^ \t\n]+[ \t]*\n	 { BEGIN 0; yylval.text = strdup(unspace(yytext)); return(POS); }
 <xPOS>[^ \t\n]+[ \t]*  	 { BEGIN xCF; yylval.text = strdup(unspace(yytext)); return(POS); }
 
@@ -127,6 +128,8 @@ static char *unspace(char*s);
 ^@prop[ \t]+		  { BEGIN xTEXT; yi(PROP); return(PROP); }
 
 .|\n
+
+<<EOF>>			  { return(ENDOF); }
 
 %%
 
