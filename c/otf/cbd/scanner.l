@@ -1,5 +1,6 @@
 %option never-interactive noyywrap
 %{
+
 #include <ctype128.h>
 #include "gx.h"
 #include "npool.h"
@@ -26,6 +27,7 @@ static char *unspace(char*s);
 %x xF
 %x xS xSW
 %x xPROJ xLANG xTEXT xWORD xENTSNS xWHY xCOMMENT xELANG xOID
+
 %%
 
 <xWORD>[^ \t\n]+[\t ]*   { ytdup(); return(WORDSPEC); }
