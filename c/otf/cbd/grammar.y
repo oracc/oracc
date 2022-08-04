@@ -309,8 +309,9 @@ isslp:		ISSLP TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
 bib:		BIB TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
 note:		NOTE TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
 inote:		INOTE TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
-pleiades: 	PL_COORD PL_ID PL_UID		{ meta_add(curr_entry, curr_meta, PLEIADES, 
-		    				  	   pleiades_init(curr_entry,(ucp)$1,(ucp)$2,(ucp)$3)); }
+pleiades: 	PL_COORD TEXTSPEC PL_ID TEXTSPEC PL_UID TEXTSPEC
+						{ meta_add(curr_entry, curr_meta, PLEIADES, 
+		    				  	   pleiades_init(curr_entry,(ucp)$2,(ucp)$4,(ucp)$6)); }
 prop:		PROP TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
 oid:		OID OIDSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
 collo:		COLLO TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }

@@ -19,6 +19,16 @@ init_cbd(void)
 {
   struct cbd *c = NULL;
   c = malloc(sizeof(struct cbd));
+  c->aliasmem = mb_init(sizeof(struct alias), 1024);
+  c->cgpmem = mb_init(sizeof(struct cgp), 1024);
+  c->editmem = mb_init(sizeof(struct edit), 1024);
+  c->equivmem = mb_init(sizeof(struct equiv), 1024);
+  c->formsmem = mb_init(sizeof(struct f2), 1024);
+  c->metamem = mb_init(sizeof(struct meta), 1024);
+  c->metaordermem = mb_init(sizeof(struct metaorder), 1024);
+  c->partsmem = mb_init(sizeof(struct parts), 1024);
+  c->pleiadesmem = mb_init(sizeof(struct pleiades), 1024);
+  c->sensesmem = mb_init(sizeof(struct sense), 1024);
   c->pool = npool_init();
   c->letters = list_create(LIST_SINGLE);
   c->entries = list_create(LIST_SINGLE);
@@ -28,13 +38,6 @@ init_cbd(void)
   c->hentries = hash_create(1024);
   c->l.file = file;
   c->l.line = 1;
-  c->aliasmem = mb_init(sizeof(struct alias), 1024);
-  c->cgpmem = mb_init(sizeof(struct cgp), 1024);
-  c->editmem = mb_init(sizeof(struct edit), 1024);
-  c->formsmem = mb_init(sizeof(struct f2), 1024);
-  c->metamem = mb_init(sizeof(struct meta), 1024);
-  c->partsmem = mb_init(sizeof(struct parts), 1024);
-  c->sensesmem = mb_init(sizeof(struct sense), 1024);
   return c;
 }
 

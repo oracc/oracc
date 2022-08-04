@@ -22,6 +22,7 @@ entry_init(struct cbd* c)
   e->owner = c;
   e->lang = c->lang;
   list_add(c->entries, e);
+  e->meta = mb_new(c->metamem);
   return e;
 }
 

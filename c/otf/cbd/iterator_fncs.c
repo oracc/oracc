@@ -8,6 +8,7 @@ static void f_end_cbd(struct cbd *c);
 static void f_end_entry(struct entry *e);
 static void f_entry(struct entry *e);
 static void f_forms(struct entry *e);
+static void f_meta(struct entry *e);
 static void f_parts(struct entry *e);
 static void f_phon(struct entry *e);
 static void f_root(struct entry *e);
@@ -26,6 +27,7 @@ struct ifnc_map {
   { if_end_entry , (iterator_fnc)f_end_entry },
   { if_entry , (iterator_fnc)f_entry },
   { if_forms , (iterator_fnc)f_forms },
+  { if_meta , (iterator_fnc)f_meta },
   { if_parts , (iterator_fnc)f_parts },
   { if_phon , (iterator_fnc)f_phon },
   { if_root , (iterator_fnc)f_root },

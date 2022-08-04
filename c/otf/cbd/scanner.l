@@ -25,7 +25,7 @@ static char *unspace(char*s);
 %x xCF xGW xPOS xSPOS
 %x xF
 %x xS xSW
-%x xPROJ xLANG xTEXT xWORD xENTSNS xWHY xCOMMENT
+%x xPROJ xLANG xTEXT xWORD xENTSNS xWHY xCOMMENT xELANG xOID
 %%
 
 <xWORD>[^ \t\n]+[\t ]*   { ytdup(); return(WORDSPEC); }
@@ -111,13 +111,18 @@ static char *unspace(char*s);
 
 ^@disc[ \t]+		  { BEGIN xTEXT; return(xdisc); }
 ^@bib[ \t]+		  { BEGIN xTEXT; yi(BIB); return(BIB); }
+^@collo[ \t]+		  { BEGIN xTEXT; yi(COLLO); return(COLLO); }
+^@equiv[ \t]+		  { BEGIN xELANG; yi(EQUIV); return(EQUIV); }
+<xELANG>%[^ \t]+[ \t]+	  { BEGIN xTEXT; ytdupn(1); return LANG; }
 ^@inote[ \t]+		  { BEGIN xTEXT; yi(INOTE); return(INOTE); }
 ^@isslp[ \t]+		  { BEGIN xTEXT; yi(ISSLP); return(ISSLP); }
 ^@note[ \t]+		  { BEGIN xTEXT; yi(NOTE); return(NOTE); }
-^@oid[ \t]+		  { BEGIN xTEXT; yi(OID); return(OID); }
+^@oid[ \t]+ 	          { BEGIN xOID; yi(OID); return(OID); }
+<xOID>o[^ \t\n]+[ \t]*	  { BEGIN 0; ytdup(); return(OIDSPEC); }
 ^@pl_coord[ \t]+	  { BEGIN xTEXT; return(PL_COORD); }
 ^@pl_id[ \t]+     	  { BEGIN xTEXT; return(PL_ID); }
 ^@pl_uid[ \t]+	  	  { BEGIN xTEXT; return(PL_UID); }
+^@prop[ \t]+		  { BEGIN xTEXT; yi(PROP); return(PROP); }
 
 .|\n
 

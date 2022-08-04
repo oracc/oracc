@@ -25,6 +25,8 @@ iterate_entries(struct entry *e)
     curr_fncs[if_forms](e);
   if (e->senses)
     curr_fncs[if_senses](e);
+  if (e->meta)
+    curr_fncs[if_meta](e);
   curr_fncs[if_end_entry](e);
 }
 

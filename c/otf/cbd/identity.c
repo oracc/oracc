@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "gx.h"
+#include "grammar.tab.h"
 
 #include "iterator_fncs.c"
 
@@ -151,6 +152,67 @@ f_forms(struct entry *e)
 	  printf("\n");
 	}
     }
+}
+
+static void
+f_meta(struct entry *e)
+{
+  if (e->meta)
+    {
+      List_node *lp;
+      for (lp = e->meta->order->first; lp; lp = lp->next)
+	{
+	  struct metaorder *mo = ((struct metaorder*)(lp->data));
+	  const char *at = NULL;
+	  
+	  switch (mo->tok)
+	    {
+	    case BIB:
+	      at = "bib";
+	      break;
+	    case COLLO:
+	      at = "collo";
+	      break;
+	    case INOTE:
+	      at = "inote";
+	      break;
+	    case ISSLP:
+	      at = "isslp";
+	      break;
+	    case NOTE:
+	      at = "note";
+	      break;
+	    case OID:
+	      at = "oid";
+	      break;
+	    case PROP:
+	      at = "prop";	      
+	      break;
+	    case EQUIV:
+	      {
+		struct equiv *val = (struct equiv *)(mo->val);
+		printf("@equiv %%%s %s\n", val->lang, val->text);
+	      }
+	      break;
+	    case PLEIADES:
+	      {
+		struct pleiades *val = (struct pleiades*)(mo->val);
+		printf("@pl_coord %s\n@pl_id %s\n@pl_uid %s\n", val->coord, val->id, val->uid);
+	      }
+	      break;
+#if 0
+	    case REL:
+	      lp = mp->rel;
+	      break;
+#endif
+	    default:
+	      fprintf(stderr, "unhandled tok %d\n", mo->tok);
+	      break;
+	    }
+	  if (at)
+	    printf("@%s %s\n", at, (const char*)mo->val);
+	}
+    }  
 }
 
 static void

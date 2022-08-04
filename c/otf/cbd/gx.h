@@ -111,10 +111,12 @@ struct entry {
 struct meta {
   List *order;
   List *bib;
+  List *collo;
   List *equiv;
   List *inote;
   List *isslp;  
   List *note;
+  List *oid;
   List *prop;
   List *pleiades;
   List *rel;
