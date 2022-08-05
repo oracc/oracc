@@ -157,7 +157,7 @@ f_forms(struct entry *e)
 static void
 f_meta(struct entry *e)
 {
-  if (e->meta)
+  if (e->meta && e->meta->order)
     {
       List_node *lp;
       for (lp = e->meta->order->first; lp; lp = lp->next)

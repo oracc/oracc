@@ -8,6 +8,7 @@ extern void yyrestart(FILE*);
 void
 flex(const char *file)
 {
+  extern int parser_status;
   if (file)
     {
       FILE *fp;
@@ -16,7 +17,7 @@ flex(const char *file)
 	yyrestart(fp);
     }
   curr_cbd = cbd_init();
-  if (yyparse())
+  if (yyparse() || parser_status)
     {
       fprintf(stderr, "gx: exiting after parse errors\n");
       exit(1);

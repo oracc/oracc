@@ -2,14 +2,13 @@
 %{
 #include <stdio.h>
 #include "gx.h"
+#include "grammar.h"
 #define YYDEBUG 1
 static struct f2 *curr_form;
 static struct meta *curr_meta;
 static struct sense *curr_sense;
-int errline = -1;
+int parser_status = 0;
 extern int yylex(void);
-void vyyerror(char *s, ...);
-void yyerror(char *s);
 #define dup(s) npool_copy((unsigned char *)(s),curr_cbd->pool)
 %}
 %union { char *text; int i; }
@@ -60,6 +59,7 @@ void yyerror(char *s);
 %%
 
 cbd: header entrylist ENDOF { return(0); }
+	 |	header ENDOF  { return(1); }
 
 header: 	atproject atlang atname
 	| 	atproject atlang atname proplist
@@ -79,7 +79,7 @@ cgplist: cgp
 	 | cgplist cgp
 
 cgp:    CF '[' GW ']' POS { cgp_save((ucp)$1, (ucp)$3, (ucp)$5); } ;
-	    |	CF '[' GW ']' EOL { yyerror("expected POS but found end of line"); }
+	|	CF '[' GW ']' EOL { lyyerror(@$, "expected POS but found end of line"); }
 
 entrylist:	entry
 	|	entrylist entry
@@ -91,12 +91,11 @@ entry: 		entry_block end_entry
 	|	entry_block senses_block end_entry
 	|	entry_block senses_block meta end_entry
 	|	entry_block meta end_entry
-	|	entry_block entry_block { yyerror("duplicate @entry or missing @end entry"); }
-	|	entry_block senses_block lang_block end_entry  { errline = @3.first_line;
-    							 	 yyerror("lang block fields must come before senses block"); }
-	|	entry_block ENDOF 	{ yyerror("input ended without @end entry"); return(1); }
+	|	entry_block entry_block end_entry { lyyerror(@2,"duplicate @entry or missing @end entry"); }
+	|	entry_block senses_block lang_block end_entry  { lyyerror(@3, "lang block fields must come before senses block"); }
+	|	entry_block ENDOF 	{ lyyerror(@2,"input ended without @end entry"); return(1); }
 
-entry_block: 	atentry
+entry_block:    atentry
 	|	atentry aliases
 	| 	atentry aliases parts
 	| 	atentry aliases parts disc
@@ -138,7 +137,6 @@ parts:  	atparts cgplist { curr_parts->cgps = cgp_get_all(); }
 atparts: 	PARTS { curr_parts = parts_init(curr_entry); }
 
 end_entry:	END_ENTRY { curr_entry = NULL; }
-	|	error END_ENTRY { curr_entry = NULL; }
 		
 lang_block: bases_block
 	    | bases_block forms
@@ -329,28 +327,32 @@ collo:		COLLO TEXTSPEC			{ meta_add(curr_entry, curr_meta, $1, (ucp)$2); }
 void
 yyerror(char *s)
 {
-  extern int yylineno;
+  fprintf(stderr, "%s\n", s);
+}
+
+void
+lyyerror(YYLTYPE loc, char *s)
+{
   extern const char *efile;
   if (s)
     {
-      fprintf(stderr, "%s:%d: error: %s\n", efile, errline> 0? errline : yylineno, s);
-      errline = -1;
+      fprintf(stderr, "%s:%d: error: %s\n", efile, loc.first_line, s);
+       ++parser_status;
     }
   
 }
 
 void
-vyyerror(char *s, ...)
+vyyerror(YYLTYPE loc, char *s, ...)
 {
-  extern int yylineno;
   extern const char *efile;
   va_list ap;
   if (s)
     {
        va_start(ap, s);
-       fprintf(stderr, "%s:%d: error: \n", efile, yylineno);
+       fprintf(stderr, "%s:%d: error: ", efile, loc.first_line);
        vfprintf(stderr, s, ap);
        fprintf(stderr, "\n");
+       ++parser_status;
     }
-  
 }

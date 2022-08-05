@@ -14,6 +14,7 @@
 
 const char *errmsg_fn = NULL;
 
+int flextrace = 0;
 int flex_scanner = 0;
 int identity_output = 0;
 int stdin_input = 0;
@@ -26,7 +27,7 @@ extern int flex(const char *fname);
 int
 main(int argc, char **argv)
 {
-  options(argc,argv,"cdefisv");
+  options(argc,argv,"cdefistv");
 
 #if 1
   file = argv[optind];
@@ -111,6 +112,9 @@ int opts(int och,char *oarg)
       break;
     case 's':
       sigs = 1;
+      break;
+    case 't':
+      flextrace = 1;
       break;
     case 'v':
       verbose = 1;
