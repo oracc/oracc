@@ -333,26 +333,17 @@ yyerror(char *s)
 void
 lyyerror(YYLTYPE loc, char *s)
 {
-  extern const char *efile;
-  if (s)
-    {
-      fprintf(stderr, "%s:%d: error: %s\n", efile, loc.first_line, s);
-       ++parser_status;
-    }
-  
+  msglist_err(&loc, s);
 }
 
 void
 vyyerror(YYLTYPE loc, char *s, ...)
 {
-  extern const char *efile;
-  va_list ap;
   if (s)
     {
-       va_start(ap, s);
-       fprintf(stderr, "%s:%d: error: ", efile, loc.first_line);
-       vfprintf(stderr, s, ap);
-       fprintf(stderr, "\n");
-       ++parser_status;
+      va_list ap;
+      va_start(s, ap);
+      msglist_verr(&loc, s, ap);
+      va_end(ap);
     }
 }
