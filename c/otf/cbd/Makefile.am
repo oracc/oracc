@@ -47,7 +47,7 @@ xLDADD = \
 	@top_srcdir@/c/lib/liboracc.la \
 	./libcbd.la
 
-grammar.tab.c grammar.tab.h: grammar.y
+grammar.tab.c grammar.tab.h: grammar.y scanner.l
 	${YACC} -b grammar -vd grammar.y
 
 scanner.c: scanner.l

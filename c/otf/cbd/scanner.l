@@ -128,7 +128,7 @@ extern int flextrace;
 ^@pl_uid[ \t]+	  	  { BEGIN xTEXT; return(PL_UID); }
 ^@prop[ \t]+		  { BEGIN xTEXT; yi(PROP); return(PROP); }
 
-^@[^ \t\n]+[ \t]*     	  { BEGIN xFLUSH; yylloc.file=efile; yylloc.first_line=yylineno; vyyerror(yylloc,"unknown at-command %s",yytext, NULL); }
+^@[^ \t\n]+[ \t]*     	  { BEGIN xFLUSH; yylloc.file=efile; yylloc.first_line=yylineno; vyyerror(yylloc,"unknown at-command %s\n",yytext, NULL); }
 <xFLUSH>.*		  { BEGIN 0; }
 
 .
@@ -174,6 +174,7 @@ gx_user_action(void)
     {
       fprintf(stderr, "%s:%d: flextrace: ::%s::\n", efile, yylineno, yytext);
     }
+  yylloc.file = efile;
   yylloc.first_line = yylloc.last_line;
   yylloc.first_column = yylloc.last_column;
   for(int i = 0; yytext[i] != '\0'; i++)

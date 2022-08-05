@@ -282,6 +282,7 @@ extern void msglist_term(void);
 extern char *msglist_loc(YYLTYPE *locp);
 extern void msglist_err(YYLTYPE *locp, char *s);
 extern void msglist_verr(YYLTYPE *locp, char *s, ...);
+extern void msglist_averr(YYLTYPE *locp, char *s, va_list ap);
 extern void msglist_print(FILE *fp);
 
 #endif

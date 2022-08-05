@@ -2,6 +2,7 @@
 #include "gx.h"
 
 static List *msglist;
+static int msg_cmp(const char **a, const char **b);
 
 void
 msglist_init(void)
@@ -28,7 +29,7 @@ msglist_loc(YYLTYPE *locp)
   char *e = NULL;
   need = snprintf(NULL, 0, "%s:%d", locp->file, locp->first_line);
   e = malloc(need+1);
-  sprintf(e, "%s:%d\n", locp->file, locp->first_line);
+  sprintf(e, "%s:%d", locp->file, locp->first_line);
   return e;
 }
 
@@ -67,7 +68,6 @@ msglist_averr(YYLTYPE *locp, char *s, va_list ap)
   va_end(ap2);
   msglist_add((char*)npool_copy((ucp)e, curr_cbd->pool));
   free(e);
-    
 }
   
 void
@@ -87,17 +87,34 @@ msglist_print(FILE *fp)
 {
   if (msglist && list_len(msglist))
     {
-      if (1) /* unsorted messages */
+      if (0) /* unsorted messages */
 	{
 	  List_node *lp;
-	  for (lp = list_first(msglist); lp; lp = lp->next)
+	  for (lp = msglist->first; lp; lp = lp->next)
 	    {
 	      fputs((char*)lp->data, fp);
 	    }
 	}
       else
 	{
-	  /*char **mp = NULL;*/
+	  char **mp = NULL;
+	  int i;
+	  mp = (char**)list2array(msglist);
+	  qsort(mp, list_len(msglist), sizeof(char*), (__compar_fn_t)msg_cmp);
+	  for (i = 0; mp[i]; ++i)
+	    fputs(mp[i], fp);
 	}
     }
+}
+
+static int
+msg_cmp(const char **a, const char **b)
+{
+  const char *af = *a, *bf = *b;
+  const char *al = strchr(af,':')+1;
+  const char *bl = strchr(bf,':')+1;
+  int ret = strncmp(af,bf,al-af);
+  if (!ret)
+    ret = atoi(al) - atoi(bl);
+  return ret;
 }
