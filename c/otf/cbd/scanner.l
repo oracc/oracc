@@ -1,4 +1,4 @@
-%option never-interactive noyywrap
+%option never-interactive noyywrap yylineno
 %{
 
 #include <ctype128.h>
@@ -11,6 +11,7 @@
 #define ytdup() yylval.text = strdup(unspace(yytext))
 #define ytdupn(n) yylval.text = strdup(unspace(yytext+(n)))
 #define yi(tok) yylval.i = tok;
+#define yln(s) fprintf(stderr, "%s: %d\n",(s),yylineno)
 static int after_xENTSNS = 0;
 static int after_xGW = 0;
 static int after_xRENMRG = 0;
@@ -35,7 +36,7 @@ static char *unspace(char*s);
 <xTEXT>.+		 { ytdup(); return(TEXTSPEC); }
 <xTEXT>\n      		 { BEGIN 0; }
 
-^@project[\t ]+		 { BEGIN xPROJ; return PROJECT; }
+^@project[\t ]+		 { yln("@project"); BEGIN xPROJ; return PROJECT; }
 <xPROJ>[^ \t\n]+[ \t]*\n { BEGIN 0; dup(unspace(yytext)); return PROJSPEC; }
 ^@lang[ \t]+		 { BEGIN xLANG; return LANG; }
 <xLANG>[^ \t\n]+[ \t]*\n { BEGIN 0; dup(unspace(yytext)); return LANGSPEC; }
@@ -47,8 +48,8 @@ static char *unspace(char*s);
 <xENTSNS>@sense[\t ]+	 { BEGIN after_xENTSNS; return(SENSE); }
 <xENTSNS>.		 { BEGIN 0; yyless(0); /* should error */ }
 
-^@entry[\t ]+	 	 { BEGIN xCF; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; xdisc = EDISC; return(ENTRY); }
-^@end[ \t]+entry[\t ]*\n { BEGIN 0;   return(END_ENTRY); }
+^@entry[\t ]+	 	 { yln("@entry"); BEGIN xCF; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; xdisc = EDISC; return(ENTRY); }
+^@end[ \t]+entry[\t ]*\n { yln("@endentry"); BEGIN 0;   return(END_ENTRY); }
 
 ^@alias[\t ]+		 { BEGIN xCF; return(ALIAS); }
 
@@ -127,7 +128,8 @@ static char *unspace(char*s);
 ^@pl_uid[ \t]+	  	  { BEGIN xTEXT; return(PL_UID); }
 ^@prop[ \t]+		  { BEGIN xTEXT; yi(PROP); return(PROP); }
 
-.|\n
+.
+\n
 
 <<EOF>>			  { return(ENDOF); }
 

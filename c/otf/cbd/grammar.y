@@ -6,6 +6,7 @@
 static struct f2 *curr_form;
 static struct meta *curr_meta;
 static struct sense *curr_sense;
+int errline = -1;
 extern int yylex(void);
 void vyyerror(char *s, ...);
 void yyerror(char *s);
@@ -58,7 +59,7 @@ void yyerror(char *s);
 
 %%
 
-cbd: header entrylist
+cbd: header entrylist ENDOF { return(0); }
 
 header: 	atproject atlang atname
 	| 	atproject atlang atname proplist
@@ -91,8 +92,9 @@ entry: 		entry_block end_entry
 	|	entry_block senses_block meta end_entry
 	|	entry_block meta end_entry
 	|	entry_block entry_block { yyerror("duplicate @entry or missing @end entry"); }
-	|	entry_block senses_block lang_block end_entry { yyerror("lang block fields must come before senses block"); }
-	|	entry_block ENDOF 	{ yyerror("input ended without @end entry"); }
+	|	entry_block senses_block lang_block end_entry  { errline = @3.first_line;
+    							 	 yyerror("lang block fields must come before senses block"); }
+	|	entry_block ENDOF 	{ yyerror("input ended without @end entry"); return(1); }
 
 entry_block: 	atentry
 	|	atentry aliases
@@ -135,7 +137,8 @@ parts:  	atparts cgplist { curr_parts->cgps = cgp_get_all(); }
 
 atparts: 	PARTS { curr_parts = parts_init(curr_entry); }
 
-end_entry:	END_ENTRY { curr_entry = NULL; } ;
+end_entry:	END_ENTRY { curr_entry = NULL; }
+	|	error END_ENTRY { curr_entry = NULL; }
 		
 lang_block: bases_block
 	    | bases_block forms
@@ -330,7 +333,8 @@ yyerror(char *s)
   extern const char *efile;
   if (s)
     {
-      fprintf(stderr, "%s:%d: error: %s\n", efile, yylineno, s);
+      fprintf(stderr, "%s:%d: error: %s\n", efile, errline> 0? errline : yylineno, s);
+      errline = -1;
     }
   
 }

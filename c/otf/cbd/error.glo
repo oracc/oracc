@@ -6,6 +6,7 @@
 @entry a [water] N
 @sense N water
 @bases a
+@boo
 @end entry
 
 @entry a [water] N

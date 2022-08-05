@@ -16,5 +16,9 @@ flex(const char *file)
 	yyrestart(fp);
     }
   curr_cbd = cbd_init();
-  (void)yyparse();
+  if (yyparse())
+    {
+      fprintf(stderr, "gx: exiting after parse errors\n");
+      exit(1);
+    }
 }
