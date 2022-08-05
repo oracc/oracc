@@ -55,6 +55,7 @@ main(int argc, char **argv)
   pool_init();
   tree_init();
   gdl_init();
+  msglist_init();
   curr_lang = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
   cbds = hash_create(1);
   with_textid = 0;
@@ -69,6 +70,7 @@ main(int argc, char **argv)
   
   lang_term();
   gdl_term();
+  msglist_term();
   pool_term();
   tree_term(1);
   galloc_term();

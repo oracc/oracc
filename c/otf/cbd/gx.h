@@ -13,6 +13,8 @@
 #include "xpd2.h"
 #include "f2.h"
 #include "memblock.h"
+#include "grammar.h"
+#include "grammar.tab.h"
 
 #undef ucc
 #define ccp const char *
@@ -273,5 +275,13 @@ extern void meta_add(struct entry *e, struct meta *mp, int tok, void *val);
 extern struct equiv *equiv_init(struct entry *e, unsigned char *lang, unsigned char *text);
 extern struct pleiades *pleiades_init(struct entry *e,
 				      unsigned char *coord, unsigned char *id, unsigned char *uid);
+
+extern void msglist_init(void);
+extern void msglist_print(FILE *fp);
+extern void msglist_term(void);
+extern char *msglist_loc(YYLTYPE *locp);
+extern void msglist_err(YYLTYPE *locp, char *s);
+extern void msglist_verr(YYLTYPE *locp, char *s, ...);
+extern void msglist_print(FILE *fp);
 
 #endif

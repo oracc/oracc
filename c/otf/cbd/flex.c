@@ -19,6 +19,7 @@ flex(const char *file)
   curr_cbd = cbd_init();
   if (yyparse() || parser_status)
     {
+      msglist_print(stderr);
       fprintf(stderr, "gx: exiting after parse errors\n");
       exit(1);
     }

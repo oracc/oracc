@@ -22,13 +22,13 @@ msglist_add(char *e)
 }
 
 char *
-msglist_loc(YLLTYPE *locp)
+msglist_loc(YYLTYPE *locp)
 {
   int need = 0;
-  char *e = NULL, *ret;
-  need = snprintf(NULL, 0, "%s:%d", loc.file, loc.first_line);
+  char *e = NULL;
+  need = snprintf(NULL, 0, "%s:%d", locp->file, locp->first_line);
   e = malloc(need+1);
-  sprintf(e, "%s:%d: error: %s\n", efile, loc.first_line, s);
+  sprintf(e, "%s:%d\n", locp->file, locp->first_line);
   return e;
 }
 
@@ -40,36 +40,64 @@ msglist_err(YYLTYPE *locp, char *s)
       int need = 0;
       char *e = NULL, *loc;
       loc = msglist_loc(locp);
-      need = snprintf(NULL, len, "%s: %s\n", loc, s);
+      need = snprintf(NULL, 0, "%s: %s\n", loc, s);
       e = malloc(need + 1);
       sprintf(e, "%s: %s\n", loc, s);
-      msglist_add(npool_copy((ucp)e, curr_cbd->pool));
+      msglist_add((char*)npool_copy((ucp)e, curr_cbd->pool));
       free(e);
       free(loc);
-      ++parser_status;
     }
 }
 
+void
+msglist_averr(YYLTYPE *locp, char *s, va_list ap)
+{
+  char *loc, *e;
+  int need;
+  va_list ap2;
+  va_copy(ap2, ap);
+  
+  loc = msglist_loc(locp);
+  need = vsnprintf(NULL, 0, s, ap);
+  need += strlen(loc) + 3;
+  e = malloc(need);
+  sprintf(e, "%s: ", loc);
+  free(loc);
+  vsprintf(e+strlen(e), s, ap2);
+  va_end(ap2);
+  msglist_add((char*)npool_copy((ucp)e, curr_cbd->pool));
+  free(e);
+    
+}
+  
 void
 msglist_verr(YYLTYPE *locp, char *s, ...)
 {
   if (s)
     {
-      int need = 0;
-      char *e = NULL, *loc;
-      loc = msglist_loc(locp);
+      va_list ap;
       va_start(ap, s);
-      need = vsnprintf(NULL, len, s, ap);
+      msglist_averr(locp, s, ap);
       va_end(ap);
-      need += strlen(loc) + 3;
-      e = malloc(need);
-      sprintf(e, "%s: ", loc);
-      free(loc);
-      va_start(ap, s);
-      vsprintf(e+strlen(e), s, ap);
-      va_end(ap);
-      msglist_add(npool_copy((ucp)e, curr_cbd->pool));
-      free(e);
-      ++parser_status;
+    }
+}
+
+void
+msglist_print(FILE *fp)
+{
+  if (msglist && list_len(msglist))
+    {
+      if (1) /* unsorted messages */
+	{
+	  List_node *lp;
+	  for (lp = list_first(msglist); lp; lp = lp->next)
+	    {
+	      fputs((char*)lp->data, fp);
+	    }
+	}
+      else
+	{
+	  /*char **mp = NULL;*/
+	}
     }
 }

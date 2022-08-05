@@ -2,12 +2,11 @@
 %{
 #include <stdio.h>
 #include "gx.h"
-#include "grammar.h"
-#define YYDEBUG 1
 static struct f2 *curr_form;
 static struct meta *curr_meta;
 static struct sense *curr_sense;
 int parser_status = 0;
+int yydebug = 0;
 extern int yylex(void);
 #define dup(s) npool_copy((unsigned char *)(s),curr_cbd->pool)
 %}
@@ -334,6 +333,7 @@ void
 lyyerror(YYLTYPE loc, char *s)
 {
   msglist_err(&loc, s);
+  ++parser_status;
 }
 
 void
@@ -342,8 +342,9 @@ vyyerror(YYLTYPE loc, char *s, ...)
   if (s)
     {
       va_list ap;
-      va_start(s, ap);
-      msglist_verr(&loc, s, ap);
+      va_start(ap, s);
+      msglist_averr(&loc, s, ap);
       va_end(ap);
+      ++parser_status;
     }
 }

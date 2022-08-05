@@ -4,8 +4,6 @@
 #include <ctype128.h>
 #include "gx.h"
 #include "npool.h"
-#include "grammar.h"
-#include "grammar.tab.h"
 #define YY_NO_UNISTD_H
 
 #define dup(s) yylval.text = (char*)npool_copy((unsigned char *)(s),curr_cbd->pool)
