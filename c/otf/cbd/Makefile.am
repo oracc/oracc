@@ -50,10 +50,10 @@ xLDADD = \
 grammar.tab.c grammar.tab.h: grammar.y scanner.l
 	${YACC} -b grammar -vd grammar.y
 
-scanner.c: scanner.l
+scanner.c: scanner.l grammar.tab.h
 	flex -B -DYY_NO_INPUT -o scanner.c scanner.l
 
-scanner.o: scanner.c grammar.tab.h
+scanner.o: scanner.c
 
 gx_SOURCES = \
 	gx.c globals.c flex.c scanner.c grammar.tab.c iterator.c identity.c

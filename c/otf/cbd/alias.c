@@ -14,6 +14,17 @@ alias_init(struct entry *e)
 }
 
 void
+dcf_init(struct entry *e, unsigned char *dcf, unsigned char *dcfarg)
+{
+  if (!e->dcfs)
+    e->dcfs = list_create(LIST_SINGLE);
+  if (!e->hdcfs)
+    e->hdcfs = hash_create(1024);
+  list_add(e->dcfs, dcf);  
+  hash_add(e->hdcfs, dcf, dcfarg);
+}
+
+void
 parse_alias(struct entry *e, unsigned char *s, locator *lp)
 {
   struct alias *a = malloc(sizeof(struct alias));

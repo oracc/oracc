@@ -4,6 +4,7 @@ static void f_alias(struct alias *a);
 static void f_allow(struct entry *e);
 static void f_bases(struct entry *e);
 static void f_cbd(struct cbd *c);
+static void f_dcfs(struct entry *c);
 static void f_end_cbd(struct cbd *c);
 static void f_end_entry(struct entry *e);
 static void f_entry(struct entry *e);
@@ -23,6 +24,7 @@ struct ifnc_map {
   { if_allow , (iterator_fnc)f_allow },
   { if_bases , (iterator_fnc)f_bases },
   { if_cbd , (iterator_fnc)f_cbd },
+  { if_dcfs , (iterator_fnc)f_dcfs },
   { if_end_cbd , (iterator_fnc)f_end_cbd },
   { if_end_entry , (iterator_fnc)f_end_entry },
   { if_entry , (iterator_fnc)f_entry },

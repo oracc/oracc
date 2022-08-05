@@ -21,6 +21,7 @@ extern int yylex(void);
 %token  <text> 		PROJSPEC
 %token	<text>		MNGSPEC
 %token	<text>		OIDSPEC
+%token	<text>		DCF
 %token	<text>		SENSE
 %token	<text>		LANG
 %token	<text>		SGWSPEC
@@ -127,7 +128,8 @@ modentry: 	RENAME cgp { entry_edit(curr_entry, '>'); } ;
 aliases: 	alias
 	| 	aliases alias
 
-alias:  	atalias cgp { alias_init(curr_entry); } ;
+alias:  	atalias cgp 	{ alias_init(curr_entry); }
+	|	DCF TEXTSPEC 	{ dcf_init(curr_entry, $1, $2); }
 
 atalias:	ALIAS ;
 

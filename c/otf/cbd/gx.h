@@ -89,8 +89,9 @@ struct entry {
   Hash_table *b_alt;
   Hash_table *b_sig;
   Hash_table *b_allow;
-  Hash_table *dcfs;
   List *aliases;
+  List *dcfs;
+  Hash_table *hdcfs;
   struct parts *parts;
   List *allows; /* just the LHS so we can retrieve from b_allow in glossary order for identity output */
   List *bases; /* list of base components in @bases; list data is another list, first element is pri, rest are alt */
@@ -257,6 +258,7 @@ extern struct sense *sense_edit(struct entry *e, char type);
 extern void edit_save(struct entry *e, char ctxt, char type);
 extern void edit_why(struct entry *e, char *why);
 extern struct alias *alias_init(struct entry *e);
+extern void dcf_init(struct entry *e, unsigned char *dcf, unsigned char *dcfarg);
 extern struct parts *parts_init(struct entry *e);
 extern void identity(struct cbd*c);
 extern void proplist_add(struct cbd *c, char *text);

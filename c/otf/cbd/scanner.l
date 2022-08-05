@@ -74,6 +74,7 @@ extern int flextrace;
 <xWHY>.+		 { BEGIN 0; yylval.text = strdup(unspace(yytext)); return WHYSPEC; }
 ^#			 { BEGIN xCOMMENT; }
 <xCOMMENT>.*		 { BEGIN 0; }
+^@[A-Z]+[ \t]*		 { BEGIN xTEXT; ytdupn(1); return(DCF); }
 
 ^@allow[ \t]+	      	 { BEGIN xALLOW; return(ALLOW); }
 <xALLOW>[^ \t\n]		 { ytdup(); return(BASE_PRI); }
