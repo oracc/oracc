@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "gx.h"
 #include "grammar.tab.h"
-#include "iterator_fncs.c"
+#include "validate_fncs.c"
 extern void iterator(struct cbd *c, iterator_fnc fncs[]);
-static void f_proplist(const char *p);
+static void v_proplist(const char *p);
 
 #define f0()
 #define f1(a)
@@ -19,13 +19,13 @@ ITERATOR(struct cbd*cbd)
 }
 
 static void
-f_alias(struct alias *a)
+v_alias(struct alias *a)
 {
   f1(a->cgp->tight);
 }
 
 static void
-f_allow(struct entry *e)
+v_allow(struct entry *e)
 {
   List_node *lp;
   for (lp = e->allows->first; lp; lp = lp->next)
@@ -37,7 +37,7 @@ f_allow(struct entry *e)
 }
 
 static void
-f_bases(struct entry *e)
+v_bases(struct entry *e)
 {
   List_node *outer;
   int i;
@@ -67,15 +67,15 @@ f_bases(struct entry *e)
 }
 
 static void
-f_cbd(struct cbd *c)
+v_cbd(struct cbd *c)
 {
   c->project, c->lang, c->name;
   if (list_len(c->proplists))
-    list_exec(c->proplists, (list_exec_func*)f_proplist);
+    list_exec(c->proplists, (list_exec_func*)v_proplist);
 }
 
 static void
-f_dcfs(struct entry *e)
+v_dcfs(struct entry *e)
 {
   List_node *lp;
   for (lp = e->dcfs->first; lp; lp = lp->next)
@@ -87,7 +87,7 @@ f_dcfs(struct entry *e)
 }
 
 static void
-f_entry(struct entry *e)
+v_entry(struct entry *e)
 {
   if (e->ed)
     {
@@ -126,19 +126,19 @@ f_entry(struct entry *e)
 }
 
 static void
-f_end_cbd(struct cbd *c)
+v_end_cbd(struct cbd *c)
 {
   ;
 }
 
 static void
-f_end_entry(struct entry *e)
+v_end_entry(struct entry *e)
 {
   /* @end entry */
 }
 
 static void
-f_forms(struct entry *e)
+v_forms(struct entry *e)
 {
   if (e->forms && list_len(e->forms))
     {
@@ -166,7 +166,7 @@ f_forms(struct entry *e)
 }
 
 static void
-f_meta(struct entry *e)
+v_meta(struct entry *e)
 {
   if (e->meta && e->meta->order)
     {
@@ -227,7 +227,7 @@ f_meta(struct entry *e)
 }
 
 static void
-f_parts(struct entry *e)
+v_parts(struct entry *e)
 {
   if (e->parts->cgps && list_len(e->parts->cgps))
     {
@@ -239,25 +239,25 @@ f_parts(struct entry *e)
 }
 
 static void
-f_phon(struct entry *e)
+v_phon(struct entry *e)
 {
   f1(/* @phon */ (ccp)e->phon);
 }
 
 static void
-f_proplist(const char *p)
+v_proplist(const char *p)
 {
   f1(/* @proplist */ p);
 }
 
 static void
-f_root(struct entry *e)
+v_root(struct entry *e)
 {
   f1(/* @root */ (ccp)e->root);
 }
 
 static void
-f_senses(struct entry *e)
+v_senses(struct entry *e)
 {
   if (e->beginsenses)
     f1(/* @senses */ );
@@ -319,7 +319,7 @@ f_senses(struct entry *e)
 }
 
 static void
-f_stems(struct entry *e)
+v_stems(struct entry *e)
 {
   List_node *lp;
   f0(/* @stems */ );

@@ -1,3 +1,5 @@
+#ifndef _ITERATOR_H
+#define _ITERATOR_H
 enum ifnc {
   if_alias , if_allow ,
   if_bases ,
@@ -11,3 +13,10 @@ enum ifnc {
   if_senses , if_stems , 
   if_top
 };
+
+struct ifnc_map
+{
+  enum ifnc ix;
+  iterator_fnc fnc;
+};
+#endif/*_ITERATOR_H*/

@@ -1,4 +1,5 @@
 #ifndef _GRAMMAR_H
+#define _GRAMMAR_H
 #define YYLTYPE_IS_DECLARED 1
 typedef struct YYLTYPE YYLTYPE;
 struct YYLTYPE

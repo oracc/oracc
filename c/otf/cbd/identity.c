@@ -2,11 +2,11 @@
 #include "gx.h"
 #include "grammar.tab.h"
 
-#include "iterator_fncs.c"
+#include "identity_fncs.c"
 
 extern void iterator(struct cbd *c, iterator_fnc fncs[]);
 
-static void f_proplist(const char *p);
+static void i_proplist(const char *p);
 
 void
 identity(struct cbd*cbd)
@@ -17,13 +17,13 @@ identity(struct cbd*cbd)
 }
 
 static void
-f_alias(struct alias *a)
+i_alias(struct alias *a)
 {
   printf("@alias %s\n", a->cgp->tight);
 }
 
 static void
-f_allow(struct entry *e)
+i_allow(struct entry *e)
 {
   List_node *lp;
   for (lp = e->allows->first; lp; lp = lp->next)
@@ -35,7 +35,7 @@ f_allow(struct entry *e)
 }
 
 static void
-f_bases(struct entry *e)
+i_bases(struct entry *e)
 {
   List_node *outer;
   int i;
@@ -66,16 +66,16 @@ f_bases(struct entry *e)
 }
 
 static void
-f_cbd(struct cbd *c)
+i_cbd(struct cbd *c)
 {
   printf("@project %s\n@lang %s\n@name %s\n", c->project, c->lang, c->name);
   if (list_len(c->proplists))
-    list_exec(c->proplists, (list_exec_func*)f_proplist);
+    list_exec(c->proplists, (list_exec_func*)i_proplist);
   printf("\n");
 }
 
 static void
-f_dcfs(struct entry *e)
+i_dcfs(struct entry *e)
 {
   List_node *lp;
   for (lp = e->dcfs->first; lp; lp = lp->next)
@@ -87,7 +87,7 @@ f_dcfs(struct entry *e)
 }
 
 static void
-f_entry(struct entry *e)
+i_entry(struct entry *e)
 {
   if (e->ed)
     {
@@ -126,19 +126,19 @@ f_entry(struct entry *e)
 }
 
 static void
-f_end_cbd(struct cbd *c)
+i_end_cbd(struct cbd *c)
 {
   /* nothing to do in identity mode */
 }
 
 static void
-f_end_entry(struct entry *e)
+i_end_entry(struct entry *e)
 {
   printf("@end entry\n\n");
 }
 
 static void
-f_forms(struct entry *e)
+i_forms(struct entry *e)
 {
   if (e->forms && list_len(e->forms))
     {
@@ -167,7 +167,7 @@ f_forms(struct entry *e)
 }
 
 static void
-f_meta(struct entry *e)
+i_meta(struct entry *e)
 {
   if (e->meta && e->meta->order)
     {
@@ -228,7 +228,7 @@ f_meta(struct entry *e)
 }
 
 static void
-f_parts(struct entry *e)
+i_parts(struct entry *e)
 {
   if (e->parts->cgps && list_len(e->parts->cgps))
     {
@@ -241,25 +241,25 @@ f_parts(struct entry *e)
 }
 
 static void
-f_phon(struct entry *e)
+i_phon(struct entry *e)
 {
   printf("@phon %s\n", (ccp)e->phon);
 }
 
 static void
-f_proplist(const char *p)
+i_proplist(const char *p)
 {
   printf("@proplist %s\n", p);
 }
 
 static void
-f_root(struct entry *e)
+i_root(struct entry *e)
 {
   printf("@root %s\n", (ccp)e->root);
 }
 
 static void
-f_senses(struct entry *e)
+i_senses(struct entry *e)
 {
   if (e->beginsenses)
     printf("@senses\n");
@@ -321,7 +321,7 @@ f_senses(struct entry *e)
 }
 
 static void
-f_stems(struct entry *e)
+i_stems(struct entry *e)
 {
   List_node *lp;
   printf("@stems");

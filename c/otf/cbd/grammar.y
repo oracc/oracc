@@ -129,7 +129,7 @@ aliases: 	alias
 	| 	aliases alias
 
 alias:  	atalias cgp 	{ alias_init(curr_entry); }
-	|	DCF TEXTSPEC 	{ dcf_init(curr_entry, $1, $2); }
+	|	DCF TEXTSPEC 	{ dcf_init(curr_entry, (ucp)$1, (ucp)$2); }
 
 atalias:	ALIAS ;
 
