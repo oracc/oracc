@@ -52,7 +52,7 @@ scanner.c: scanner.l grammar.tab.h
 scanner.o: scanner.c
 
 gx_SOURCES = \
-	gx.c globals.c flex.c scanner.c grammar.tab.c \
+	gx.c globals.c scanner.c grammar.tab.c \
 	builder.c iterator.c identity.c validate.c
 
 gx_LDADD = -lfl $(xLDADD)

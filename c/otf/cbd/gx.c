@@ -22,6 +22,13 @@ int output = 0;
 int stdin_input = 0;
 int xml_output = 0;
 
+extern int yyparse(void);
+struct cbd* curr_cbd;
+struct entry*curr_entry;
+const char *efile = NULL;
+extern void yyrestart(FILE*);
+extern int parser_status;
+
 extern int yydebug;
 extern int math_mode;
 extern int cbd(const char *fname);
@@ -63,14 +70,24 @@ main(int argc, char **argv)
   cbds = hash_create(1);
   with_textid = 0;
 
-#if 1
-  flex(file);
-#else
-  if (flex_scanner)
-    flex(file);
-  else
-    cbd(file);
-#endif
+  if (file)
+    {
+      FILE *fp;
+      efile = file;
+      if ((fp = xfopen(efile, "r")))
+	yyrestart(fp);
+    }
+  curr_cbd = bld_cbd();
+  phase = "syn";
+  if (yyparse() || parser_status)
+    {
+      if (!keepgoing)
+	{
+	  msglist_print(stderr);
+	  fprintf(stderr, "gx: exiting after syntax errors\n");
+	  exit(1);
+	}
+    }
 
   if (check || output)
     validator(curr_cbd);
