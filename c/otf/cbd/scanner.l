@@ -68,7 +68,7 @@ int mystate = 0;
 
 <xCF>[^\[\n]+		 { dup(unspace(yytext)); return(CF); }
 <xCF>[ \t]*"["      	 { BEGIN ss(xGW); return(yytext[yyleng-1]); }
-<xGW>([^\]]+)		 { yylval.text = strdup(yytext); return(GW); }
+<xGW>([^\]\n]+)		 { yylval.text = strdup(yytext); return(GW); }
 <xGW>"]"[ \t]*	       	 { BEGIN ss(after_xGW); return(yytext[0]); }
 <xPOS>[^ \t\n]+[ \t]*	 { BEGIN ss(after_xPOS); yylval.text = strdup(unspace(yytext)); return(POS); }
 <xPOS>[ \t]*		 { BEGIN ss(0); return(EOL); }
@@ -137,7 +137,8 @@ int mystate = 0;
 
 .
 \n			  { yycolumn = 1; }
-<xBP,xCF,xALLOW,xFLUSH,xWORD,xTEXT>\n	  { BEGIN ss(0); yycolumn = 1; }
+<xCF,xGW,xPOS>\n	  { BEGIN ss(0); yycolumn = 1; return EOL; }
+<xBP,xALLOW,xFLUSH,xWORD,xTEXT>\n  { BEGIN ss(0); yycolumn = 1; }
 <xBA>\n			  { BEGIN ss(0); yycolumn = 1; if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
 <xF>\n			  { BEGIN ss(0); yycolumn = 1; return(END_FORM); }
 <xS,xSPOS,xSW>\n          { BEGIN ss(0); yycolumn = 1; }

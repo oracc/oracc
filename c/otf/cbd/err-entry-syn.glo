@@ -3,5 +3,11 @@
 @name epsd2/sux
 @proplist props.lst
 
-@sense N out of place sense
+#@sense N out of place sense
+
+#@entry a [water]
+#@end entry
+
+@entry a [water N
+@end entry
 

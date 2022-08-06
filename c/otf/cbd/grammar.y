@@ -81,7 +81,9 @@ cgplist: cgp
 	 | cgplist cgp
 
 cgp:    CF '[' GW ']' POS { cgp_save((ucp)$1, (ucp)$3, (ucp)$5); } ;
-	|	CF '[' GW ']' EOL { lyyerror(@$, "expected POS but found end of line"); }
+	|	CF '[' GW ']' EOL { lyyerror(@1, "expected POS but found end of line"); }
+	|	CF '[' GW EOL { lyyerror(@1, "missing ']' (and maybe POS) after GW"); }
+	|	CF GW ']' POS { lyyerror(@1, "missing '[' before GW"); }
 
 entrylist:	entry
 	|	entrylist entry
@@ -97,8 +99,7 @@ entry: 		entry_block end_entry
 	|	entry_block senses_block lang_block end_entry  { lyyerror(@3, "lang block fields must come before senses block"); }
 	|	entry_block ENDOF 	{ lyyerror(@2,"input ended without @end entry"); return(1); }
 
-entry_block:    error atentry
-	|	atentry
+entry_block:    atentry
 	|	atentry aliases
 	| 	atentry aliases parts
 	| 	atentry aliases parts disc
@@ -121,8 +122,13 @@ atentry: 	begin_entry cgp     { curr_entry->cgp = cgp_get_one(); } ;
     				      entry_edit(curr_entry, '-');
 				      edit_why(curr_entry, yylval.text); } ;
 
-begin_entry:  	ENTRY { curr_entry = entry_init(@1,curr_cbd); 
-		        curr_meta = curr_entry->meta = meta_init(curr_entry); } ;
+begin_entry:  	entry_wrapper { curr_entry = entry_init(@1,curr_cbd); 
+	                        curr_meta = curr_entry->meta = meta_init(curr_entry); } ;
+
+entry_wrapper:	 ENTRY
+	|	 error ENTRY  { yyerrok; }
+	;
+
 
 why:		WHY WHYSPEC
 
