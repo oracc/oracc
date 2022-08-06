@@ -28,9 +28,23 @@ msglist_loc(YYLTYPE *locp)
 {
   int need = 0;
   char *e = NULL;
-  need = snprintf(NULL, 0, "%s:%d", locp->file, locp->first_line);
-  e = malloc(need+1);
-  sprintf(e, "%s:%d", locp->file, locp->first_line);
+
+  /* re-implement with_texid here as well? */
+  
+  if (phase)
+    {
+      const char *fmt = "%s:%d: (%s)";
+      need = snprintf(NULL, 0, fmt, locp->file, locp->first_line, phase);
+      e = malloc(need+1);
+      sprintf(e, fmt, locp->file, locp->first_line, phase);
+    }
+  else
+    {
+      const char *fmt = "%s:%d";
+      need = snprintf(NULL, 0, fmt, locp->file, locp->first_line);
+      e = malloc(need+1);
+      sprintf(e, fmt, locp->file, locp->first_line);
+    }
   return e;
 }
 
@@ -58,7 +72,7 @@ msglist_averr(YYLTYPE *locp, char *s, va_list ap)
   int need;
   va_list ap2;
   va_copy(ap2, ap);
-  
+
   loc = msglist_loc(locp);
   need = vsnprintf(NULL, 0, s, ap);
   need += strlen(loc) + 3;

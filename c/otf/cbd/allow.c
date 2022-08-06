@@ -15,8 +15,7 @@ allow_init(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs)
   ap = mb_new(e->owner->allowmem);
   ap->lhs = lhs;
   ap->rhs = rhs;
-  ap->l.file = l.file;
-  ap->l.line = l.first_line;
+  ap->l = l;
   list_add(e->allows, ap);
 
   h_a = hash_find(e->b_allow, lhs);
@@ -35,7 +34,7 @@ allow_init(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs)
     }
 }
 
-
+#if 0
 
 void
 parse_allow(struct entry *e, unsigned char *s, locator *lp)
@@ -76,3 +75,4 @@ parse_allow(struct entry *e, unsigned char *s, locator *lp)
   else
     warning("syntax error in @allow: must be VALUE₁ = VALUE₂");
 }
+#endif

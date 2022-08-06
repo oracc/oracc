@@ -23,12 +23,16 @@
 
 typedef void (*iterator_fnc)(void*);
 
+#if 1
+typedef struct YYLTYPE locator;
+#else
 typedef struct {
   const char *file;
   int line;
   int col_beg;
   int col_end;
 } locator;
+#endif
 
 extern Hash_table *cbds;
 
@@ -215,6 +219,7 @@ struct cbdtag {
 
 extern int check;
 extern int entries;
+extern int keepgoing;
 extern int sigs;
 
 extern struct cbd *curr_cbd;
@@ -292,7 +297,10 @@ extern struct alias *alias_init(YYLTYPE l, struct entry *e);
 extern void dcf_init(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg);
 extern struct parts *parts_init(YYLTYPE l, struct entry *e);
 extern struct tag *tag_init(YYLTYPE l, struct entry *e, const char *name, unsigned char *val);
+
 extern void identity(struct cbd*c);
+extern void validator(struct cbd*c);
+
 extern void proplist_add(struct cbd *c, char *text);
 extern void allow_init(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs);
 extern void stem_init(YYLTYPE l, struct entry *e, unsigned char *stem);

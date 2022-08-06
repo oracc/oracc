@@ -29,6 +29,9 @@ static void gx_user_action(void);
 
 int ylntrace = 0;
 extern int flextrace;
+int mystate = 0;
+#define ss(arg) (mystate=arg)
+
 %}
 %x xALLOW
 %x xB xBP xBA
@@ -42,58 +45,58 @@ extern int flextrace;
 <xWORD>[^ \t\n]+[\t ]*   { ytdup(); return(WORDSPEC); }
 <xTEXT>.+		 { ytdup(); return(TEXTSPEC); }
 ^@project[\t ]+		 { yln("@project"); BEGIN xPROJ; return PROJECT; }
-<xPROJ>[^ \t\n]+[ \t]*   { BEGIN 0; dup(unspace(yytext)); return PROJSPEC; }
-^@lang[ \t]+		 { BEGIN xLANG; return LANG; }
-<xLANG>[^ \t\n]+[ \t]*   { BEGIN 0; dup(unspace(yytext)); return LANGSPEC; }
-^@name[\t ]+		 { BEGIN xTEXT; return NAME; }
-^@proplist[\t ]+	 { BEGIN xTEXT; return PROPLIST; }
+<xPROJ>[^ \t\n]+[ \t]*   { BEGIN ss(0); dup(unspace(yytext)); return PROJSPEC; }
+^@lang[ \t]+		 { BEGIN ss(xLANG); return LANG; }
+<xLANG>[^ \t\n]+[ \t]*   { BEGIN ss(0); dup(unspace(yytext)); return LANGSPEC; }
+^@name[\t ]+		 { BEGIN ss(xTEXT); return NAME; }
+^@proplist[\t ]+	 { BEGIN ss(xTEXT); return PROPLIST; }
 
-^[+-]			 { BEGIN xENTSNS; return yytext[0]; }
-<xENTSNS>@entry[\t ]+	 { BEGIN after_xENTSNS; return(ENTRY); }
-<xENTSNS>@sense[\t ]+	 { BEGIN after_xENTSNS; return(SENSE); }
-<xENTSNS>.		 { BEGIN 0; yyless(0); /* should error */ }
+^[+-]			 { BEGIN ss(xENTSNS); return yytext[0]; }
+<xENTSNS>@entry[\t ]+	 { BEGIN ss(after_xENTSNS); return(ENTRY); }
+<xENTSNS>@sense[\t ]+	 { BEGIN ss(after_xENTSNS); return(SENSE); }
+<xENTSNS>.		 { BEGIN ss(0); yyless(0); /* should error */ }
 
-^@entry[\t ]+	 	 { yln("@entry"); BEGIN xCF; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; return(ENTRY); }
-^@end[ \t]+entry[\t ]*   { yln("@endentry"); BEGIN 0; return(END_ENTRY); }
+^@entry[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; return(ENTRY); }
+^@end[ \t]+entry[\t ]*   { yln("@endentry"); BEGIN ss(0); return(END_ENTRY); }
 
-^@alias[\t ]+		 { BEGIN xCF; after_xPOS = 0; return(ALIAS); }
+^@alias[\t ]+		 { BEGIN ss(xCF); after_xPOS = 0; return(ALIAS); }
 
-^@parts[\t ]+		 { BEGIN xCF; after_xPOS = xCF; return(PARTS); }
+^@parts[\t ]+		 { BEGIN ss(xCF); after_xPOS = xCF; return(PARTS); }
 
-^>[\t ]*		 { BEGIN after_xRENMRG; return(RENAME); }
-^>>[\t ]*		 { BEGIN after_xRENMRG; return(MERGE); }
+^>[\t ]*		 { BEGIN ss(after_xRENMRG); return(RENAME); }
+^>>[\t ]*		 { BEGIN ss(after_xRENMRG); return(MERGE); }
 
 <xCF>[^\[\n]+		 { dup(unspace(yytext)); return(CF); }
-<xCF>[ \t]*"["      	 { BEGIN xGW; return(yytext[yyleng-1]); }
+<xCF>[ \t]*"["      	 { BEGIN ss(xGW); return(yytext[yyleng-1]); }
 <xGW>([^\]]+)		 { yylval.text = strdup(yytext); return(GW); }
-<xGW>"]"[ \t]*	       	 { BEGIN after_xGW; return(yytext[0]); }
-<xPOS>[^ \t\n]+[ \t]*	 { BEGIN after_xPOS; yylval.text = strdup(unspace(yytext)); return(POS); }
-<xPOS>[ \t]*		 { BEGIN 0; return(EOL); }
+<xGW>"]"[ \t]*	       	 { BEGIN ss(after_xGW); return(yytext[0]); }
+<xPOS>[^ \t\n]+[ \t]*	 { BEGIN ss(after_xPOS); yylval.text = strdup(unspace(yytext)); return(POS); }
+<xPOS>[ \t]*		 { BEGIN ss(0); return(EOL); }
 
-^#why:[\t ]+		 { BEGIN xWHY; return(WHY); }
-<xWHY>.+		 { BEGIN 0; yylval.text = strdup(unspace(yytext)); return WHYSPEC; }
-^#			 { BEGIN xCOMMENT; }
-<xCOMMENT>.*		 { BEGIN 0; }
-^@[A-Z]+[ \t]*		 { BEGIN xTEXT; ytdupn(1); return(DCF); }
+^#why:[\t ]+		 { BEGIN ss(xWHY); return(WHY); }
+<xWHY>.+		 { BEGIN ss(0); yylval.text = strdup(unspace(yytext)); return WHYSPEC; }
+^#			 { BEGIN ss(xCOMMENT); }
+<xCOMMENT>.*		 { BEGIN ss(0); }
+^@[A-Z]+[ \t]*		 { BEGIN ss(xTEXT); ytdupn(1); return(DCF); }
 
-^@allow[ \t]+	      	 { BEGIN xALLOW; return(ALLOW); }
+^@allow[ \t]+	      	 { BEGIN ss(xALLOW); return(ALLOW); }
 <xALLOW>[^ \t\n]		 { ytdup(); return(BASE_PRI); }
 <xALLOW>=[ \t]+		 { return(yytext[0]); }
 <xALLOW>[^= \t\n]+[ \t]* { ytdup(); return(BASE_PRI); }
-^@bases[ \t]+ 		 { BEGIN xBP; return(BASES); }
-<xBP>\;[ \t]+    	 { BEGIN xBP; }
+^@bases[ \t]+ 		 { BEGIN ss(xBP); return(BASES); }
+<xBP>\;[ \t]+    	 { BEGIN ss(xBP); }
 <xBP>[^; \t\n]+ 	 { ytdup(); return(BASE_PRI); }
-<xBP>[ \t]+\(		 { BEGIN xBA; }
+<xBP>[ \t]+\(		 { BEGIN ss(xBA); }
 <xBA>,[ \t]+		 { if (b_alt_tok) { alt_wrapup(0); return(BASE_ALT); } }
 <xBA>[^;, \t\n]+ 	 { b_alt_tok = strdup(yytext); }
-<xBA>\;[ \t]+    	 { BEGIN xBP; if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
-<xBP>\;			 { BEGIN xBP; unput(';'); }
+<xBA>\;[ \t]+    	 { BEGIN ss(xBP); if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
+<xBP>\;			 { BEGIN ss(xBP); unput(';'); }
 
-^@phon[\t ]+		 { BEGIN xTEXT; return(PHON); }
-^@root[\t ]+		 { BEGIN xTEXT; return(ROOT); }
-^@stems[\t ]+		 { BEGIN xWORD; return(STEM); }
+^@phon[\t ]+		 { BEGIN ss(xTEXT); return(PHON); }
+^@root[\t ]+		 { BEGIN ss(xTEXT); return(ROOT); }
+^@stems[\t ]+		 { BEGIN ss(xWORD); return(STEM); }
 
-^@form[ \t]+		  { BEGIN xF; return(FORM); }
+^@form[ \t]+		  { BEGIN ss(xF); return(FORM); }
 <xF>%[^ \t\n]+[ \t]*	  { ytdupn(1); return(FLANG); }
 <xF>\/[^ \t\n]+[ \t]*	  { ytdupn(1); return(FBASE); }
 <xF>\+[^ \t\n]+[ \t]*	  { ytdupn(1); return(FCONT); }
@@ -105,39 +108,41 @@ extern int flextrace;
 
 ^@senses		  { return(SENSES); }
 ^@end[ \t]+senses	  { return(END_SENSES); }
-^@sense[ \t]+		  { BEGIN xS; after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; xdisc = SDISC; return(SENSE); }
-<xS>\%			  { BEGIN xSW; return(yytext[0]); }
-<xS>\.			  { BEGIN xSW; return(yytext[0]); }
-<xS>\#			  { BEGIN xSW; return(yytext[0]); }
-<xS>\[			  { BEGIN xGW; return(yytext[0]); }
-<xS>[^.#[\%][^ \t]*[ \t]* { BEGIN xTEXT; ytdup(); return(POS); }
-<xSPOS>[^ \t]+[ \t]*	  { BEGIN xTEXT; ytdup(); return(POS); }
-<xSW>[^ \t]+[ \t]*	  { BEGIN xS; ytdup(); return(WORDSPEC); }
+^@sense[ \t]+		  { BEGIN ss(xS); after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; xdisc = SDISC; return(SENSE); }
+<xS>\%			  { BEGIN ss(xSW); return(yytext[0]); }
+<xS>\.			  { BEGIN ss(xSW); return(yytext[0]); }
+<xS>\#			  { BEGIN ss(xSW); return(yytext[0]); }
+<xS>\[			  { BEGIN ss(xGW); return(yytext[0]); }
+<xS>[^.#[\%][^ \t]*[ \t]* { BEGIN ss(xTEXT); ytdup(); return(POS); }
+<xSPOS>[^ \t\n]+[ \t]*	  { BEGIN ss(xTEXT); ytdup(); return(POS); }
+<xSW>[^ \t\n]+[ \t]*	  { BEGIN ss(xS); ytdup(); return(WORDSPEC); }
 
-^@disc[ \t]+		  { BEGIN xTEXT; return(xdisc); }
-^@bib[ \t]+		  { BEGIN xTEXT; yi(BIB); return(BIB); }
-^@collo[ \t]+		  { BEGIN xTEXT; yi(COLLO); return(COLLO); }
-^@equiv[ \t]+		  { BEGIN xELANG; yi(EQUIV); return(EQUIV); }
-<xELANG>%[^ \t]+[ \t]+	  { BEGIN xTEXT; ytdupn(1); return LANG; }
-^@inote[ \t]+		  { BEGIN xTEXT; yi(INOTE); return(INOTE); }
-^@isslp[ \t]+		  { BEGIN xTEXT; yi(ISSLP); return(ISSLP); }
-^@note[ \t]+		  { BEGIN xTEXT; yi(NOTE); return(NOTE); }
-^@oid[ \t]+ 	          { BEGIN xOID; yi(OID); return(OID); }
-<xOID>o[^ \t\n]+[ \t]*	  { BEGIN 0; ytdup(); return(OIDSPEC); }
-^@pl_coord[ \t]+	  { BEGIN xTEXT; return(PL_COORD); }
-^@pl_id[ \t]+     	  { BEGIN xTEXT; return(PL_ID); }
-^@pl_uid[ \t]+	  	  { BEGIN xTEXT; return(PL_UID); }
-^@prop[ \t]+		  { BEGIN xTEXT; yi(PROP); return(PROP); }
+^@disc[ \t]+		  { BEGIN ss(xTEXT); return(xdisc); }
+^@bib[ \t]+		  { BEGIN ss(xTEXT); yi(BIB); return(BIB); }
+^@collo[ \t]+		  { BEGIN ss(xTEXT); yi(COLLO); return(COLLO); }
+^@equiv[ \t]+		  { BEGIN ss(xELANG); yi(EQUIV); return(EQUIV); }
+<xELANG>%[^ \t]+[ \t]+	  { BEGIN ss(xTEXT); ytdupn(1); return LANG; }
+^@inote[ \t]+		  { BEGIN ss(xTEXT); yi(INOTE); return(INOTE); }
+^@isslp[ \t]+		  { BEGIN ss(xTEXT); yi(ISSLP); return(ISSLP); }
+^@note[ \t]+		  { BEGIN ss(xTEXT); yi(NOTE); return(NOTE); }
+^@oid[ \t]+ 	          { BEGIN ss(xOID); yi(OID); return(OID); }
+<xOID>o[^ \t\n]+[ \t]*	  { BEGIN ss(0); ytdup(); return(OIDSPEC); }
+^@pl_coord[ \t]+	  { BEGIN ss(xTEXT); return(PL_COORD); }
+^@pl_id[ \t]+     	  { BEGIN ss(xTEXT); return(PL_ID); }
+^@pl_uid[ \t]+	  	  { BEGIN ss(xTEXT); return(PL_UID); }
+^@prop[ \t]+		  { BEGIN ss(xTEXT); yi(PROP); return(PROP); }
 
-^@[^ \t\n]+[ \t]*     	  { BEGIN xFLUSH; yylloc.file=efile; yylloc.first_line=yylineno; vyyerror(yylloc,"unknown at-command %s\n",yytext, NULL); }
-<xFLUSH>.*		  { BEGIN 0; }
+^@[^ \t\n]+[ \t]*     	  { BEGIN ss(xFLUSH); yylloc.file=efile; yylloc.first_line=yylineno; vyyerror(yylloc,"unknown at-command %s\n",yytext, NULL); }
+<xFLUSH>.*		  { BEGIN ss(0); }
 
 .
-<INITIAL,xBP,xCF,xALLOW,xFLUSH,xWORD,xTEXT>\n	  { BEGIN 0; yycolumn = 1; }
-<xBA>\n			  { BEGIN 0; yycolumn = 1; if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
-<xF>\n			  { BEGIN 0; yycolumn = 1; return(END_FORM); }
+\n			  { yycolumn = 1; }
+<xBP,xCF,xALLOW,xFLUSH,xWORD,xTEXT>\n	  { BEGIN ss(0); yycolumn = 1; }
+<xBA>\n			  { BEGIN ss(0); yycolumn = 1; if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
+<xF>\n			  { BEGIN ss(0); yycolumn = 1; return(END_FORM); }
+<xS,xSPOS,xSW>\n          { BEGIN ss(0); yycolumn = 1; }
 
-<<EOF>>			  { return(ENDOF); }
+<<EOF>>			  { if (flextrace) { fprintf(stderr, "<<EOF>>\n"); } return(0); }
 
 %%
 
@@ -173,7 +178,7 @@ gx_user_action(void)
 {
   if (flextrace)
     {
-      fprintf(stderr, "%s:%d: flextrace: ::%s::\n", efile, yylineno, yytext);
+      fprintf(stderr, "%s:%d: flextrace: state=%d tok=::%s::\n", efile, yylineno, mystate, yytext);
     }
   yylloc.file = efile;
   yylloc.first_line = yylloc.last_line;

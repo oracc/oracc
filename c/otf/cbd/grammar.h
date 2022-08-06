@@ -32,7 +32,7 @@ struct YYLTYPE
     }  								        \
     while (0)
 
-extern void yyerror(char *s);
+extern void yyerror(const char *s);
 extern void lyyerror(YYLTYPE loc, char *s);
 extern void vyyerror(YYLTYPE loc, char *s, ...);
 

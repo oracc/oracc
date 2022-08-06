@@ -17,10 +17,14 @@ flex(const char *file)
 	yyrestart(fp);
     }
   curr_cbd = cbd_init();
+  phase = "syn";
   if (yyparse() || parser_status)
     {
       msglist_print(stderr);
-      fprintf(stderr, "gx: exiting after parse errors\n");
-      exit(1);
+      if (!keepgoing)
+	{
+	  fprintf(stderr, "gx: exiting after syntax errors\n");
+	  exit(1);
+	}
     }
 }

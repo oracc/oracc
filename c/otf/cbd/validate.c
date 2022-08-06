@@ -46,16 +46,16 @@ v_allow(struct entry *e)
       struct allow *ap = lp->data;
       unsigned char *sig = NULL;
 
-      lnum = ap->l.line; file = ap->l.file;
+      lnum = ap->l.first_line; file = ap->l.file;
       /* warning("validating @allow\n"); */
       
       /* check that lhs and rhs both resolve to gdl sigs */
-      if ((sig = gdl_sig(lhs,1,1)))
+      if ((sig = gdl_sig(ap->lhs,1,1)))
 	{
 	  ap->lsig = npool_copy(sig, e->owner->pool);
 	  hash_add(e->b_allow, ap->lsig, ap);
 	}
-      if ((sig = gdl_sig(rhs,1,1)))
+      if ((sig = gdl_sig(ap->rhs,1,1)))
 	{
 	  ap->rsig = npool_copy(sig, e->owner->pool);
 	  hash_add(e->b_allow, ap->rsig, ap);
@@ -71,13 +71,13 @@ v_allow_2(struct entry *e)
     {
       struct allow *ap = lp->data;
       unsigned char *sig = NULL;
-      loc.line = ap->l.line; loc.file = ap->l.file;
-      sig = hash_find(e->b_hash, ap->lsig);
+      loc.first_line = ap->l.first_line; loc.file = (char*)ap->l.file;
+      sig = hash_find(e->b_sig, ap->lsig);
       if (!sig)
-	msglist_averr(loc,"@allow left side %s is not a base", ap->lhs);
-      sig = hash_find(e->b_hash, ap->rsig);
+	msglist_verr(&loc,"@allow left side %s is not a base", ap->lhs);
+      sig = hash_find(e->b_sig, ap->rsig);
       if (!sig)
-	msglist_averr(loc,"@allow right side %s is not a base", ap->rhs);
+	msglist_verr(&loc,"@allow right side %s is not a base", ap->rhs);
     }
 }
 
@@ -106,21 +106,21 @@ v_bases(struct entry *e)
       List *bp = ((List *)(outer->data));
       List_node *inner = bp->first;
       struct loctok *ltp = (struct loctok *)inner->data;
-      unsigned char *sig = NULL, *pri = NULL;
+      unsigned char *sig = NULL, *pri = NULL, *pri_sig;
       
       file = ltp->l.file; /* only need to do this once */
-      lnum = ltp->l.line;
+      lnum = ltp->l.first_line;
       pri = ltp->tok;
 
       if (verbose)
-	fprintf(stderr, "%s:%d: registering pri %s\n", file, line, pri);
+	fprintf(stderr, "%s:%d: registering pri %s\n", file, lnum, pri);
 
       if ((sig = gdl_sig(pri,1,1)))
 	{
 	  unsigned char *known_sig = NULL;
 	  if ((known_sig = hash_find(e->b_sig, sig)) && !allowed(e, pri, known_sig))
 	    {
-	      msglist_verr(ltp, "duplicate or equivalent primary base %s ~~ %s", pri, known_sig);
+	      msglist_verr(&ltp->l, "duplicate or equivalent primary base %s ~~ %s", pri, known_sig);
 	    }
 	  else
 	    {
@@ -131,7 +131,7 @@ v_bases(struct entry *e)
 	  free(sig);
 	}
       else
-	msglist_verr("gdl_sig failed on %s", pri);
+	msglist_verr(&ltp->l,"gdl_sig failed on %s", pri);
   
       /* Additional list members are alt bases */
       if (list_len(bp) > 1)
@@ -145,13 +145,14 @@ v_bases(struct entry *e)
 		fprintf(stderr, "%s:%d: adding alt %s to pri %s\n", file, lnum, alt, pri);
 	      alt_sig = gdl_sig(alt,1,1);
 	      if (strcmp((ccp)pri_sig,(ccp)alt_sig))
-		msglist_verr(ltp, "alt %s is not equivalent to primary %s (%s != %s)", alt, pri, alt_sig, pri_sig);
+		msglist_verr(&ltp->l, "alt %s is not equivalent to primary %s (%s != %s)", alt, pri, alt_sig, pri_sig);
 	      else
 		hash_add(e->b_alt, alt, pri);	      
 	      f1((const char *)inner->data);
 	    }
 	}
     }
+  v_allow_2(e);
 }
 
 static void
@@ -168,9 +169,11 @@ v_dcfs(struct entry *e)
   List_node *lp;
   for (lp = e->dcfs->first; lp; lp = lp->next)
     {
+#if 0
       unsigned char *lhs = ((ucp)(lp->data));
       unsigned char *rhs = hash_find(e->hdcfs, lhs);
       f2(lhs, rhs);
+#endif
     }
 }
 
@@ -193,7 +196,7 @@ v_entry(struct entry *e)
 	  break;
 	}
     }
-  ( /* @entry */ e->cgp->loose);
+  f1( /* @entry */ e->cgp->loose);
   if (e->ed)
     {
       switch (e->ed->type)
@@ -291,14 +294,18 @@ v_meta(struct entry *e)
 	      break;
 	    case EQUIV:
 	      {
+#if 0
 		struct equiv *val = (struct equiv *)(mo->val);
 		f2(/* @equiv % */ val->lang, val->text);
+#endif
 	      }
 	      break;
 	    case PLEIADES:
 	      {
+#if 0
 		struct pleiades *val = (struct pleiades*)(mo->val);
 		f3(/* @pl_coord @pl_id @pl_uid */ val->coord, val->id, val->uid);
+#endif
 	      }
 	      break;
 #if 0
@@ -415,7 +422,9 @@ v_stems(struct entry *e)
   f0(/* @stems */ );
   for (lp = e->stems->first; lp; lp = lp->next)
     {
+#if 0
       unsigned char *stem = /* (ucp)(lp->data) */"";
       f1(stem);
+#endif
     }
 }

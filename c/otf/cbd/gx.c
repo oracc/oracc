@@ -17,6 +17,7 @@ const char *errmsg_fn = NULL;
 int flextrace = 0;
 int flex_scanner = 0;
 int identity_output = 0;
+int keepgoing = 0;
 int stdin_input = 0;
 
 extern int yydebug;
@@ -27,7 +28,7 @@ extern int flex(const char *fname);
 int
 main(int argc, char **argv)
 {
-  options(argc,argv,"cdefistv");
+  options(argc,argv,"cdefikstv");
 
 #if 1
   file = argv[optind];
@@ -60,10 +61,14 @@ main(int argc, char **argv)
   cbds = hash_create(1);
   with_textid = 0;
 
+#if 1
+  flex(file);
+#else
   if (flex_scanner)
     flex(file);
   else
     cbd(file);
+#endif
 
   validator(curr_cbd);
   
@@ -107,6 +112,9 @@ int opts(int och,char *oarg)
       break;
     case 'i':
       identity_output = 1;
+      break;
+    case 'k':
+      keepgoing = 1;
       break;
     case 'n':
       break;

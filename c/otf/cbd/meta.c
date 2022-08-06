@@ -72,8 +72,7 @@ meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *name,
     {
       list_add(lp, val);
       orderp = mb_new(e->owner->metaordermem);
-      orderp->l.file = l.file;
-      orderp->l.line = l.first_line;
+      orderp->l = l;
       orderp->name = name;
       orderp->tok = tok;
       orderp->val = val;

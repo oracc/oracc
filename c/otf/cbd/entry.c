@@ -23,8 +23,7 @@ entry_init(YYLTYPE l, struct cbd* c)
   e->lang = c->lang;
   list_add(c->entries, e);
   e->meta = mb_new(c->metamem);
-  e->l.file = l.file;
-  e->l.line = l.first_line;
+  e->l = l;
   return e;
 }
 
@@ -44,6 +43,15 @@ term_entry(struct entry *e)
       e->b_allow = NULL;
     }
 }
+
+void
+entry_term(struct entry *e)
+{
+  term_entry(e);
+  free(e);
+}
+
+#if 0
 
 unsigned char **
 parse_entry(struct cbd *c, unsigned char **ll)
@@ -225,3 +233,4 @@ parse_entry(struct cbd *c, unsigned char **ll)
     }
   return ll;
 }
+#endif

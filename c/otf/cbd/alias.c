@@ -7,8 +7,7 @@ struct alias *
 alias_init(YYLTYPE l, struct entry *e)
 {
   struct alias *a = mb_new(e->owner->aliasmem);
-  a->l.file = l.file;
-  a->l.line = l.first_line;
+  a->l = l;
   list_add(e->aliases, a);
   a->cgp = cgp_get_one();
   hash_add(e->owner->haliases, a->cgp->tight, e);
@@ -24,13 +23,14 @@ dcf_init(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg)
   if (!e->hdcfs)
     e->hdcfs = hash_create(1024);
   tp = mb_new(e->owner->tagmem);
-  tp->l.file = l.file;
-  tp->l.line = l.first_line;
+  tp->l = l;
   tp->name = (ccp)dcf;
   tp->val = dcfarg;
   list_add(e->dcfs, dcf);
   hash_add(e->hdcfs, dcf, dcfarg);
 }
+
+#if 0
 
 void
 parse_alias(struct entry *e, unsigned char *s, locator *lp)
@@ -42,3 +42,5 @@ parse_alias(struct entry *e, unsigned char *s, locator *lp)
   list_add(e->aliases, a);
   hash_add(e->owner->haliases, s, e);
 }
+
+#endif

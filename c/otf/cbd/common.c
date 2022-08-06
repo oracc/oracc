@@ -11,8 +11,7 @@ struct loctok *
 loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok)
 {
   struct loctok *ltp = mb_new(e->owner->loctokmem);
-  ltp->l.file = lp->file;
-  ltp->l.line = lp->first_line;
+  ltp->l = *lp;
   ltp->tok = tok;
   return ltp;
 }
@@ -22,8 +21,7 @@ tag_init(YYLTYPE l, struct entry *e, const char *name, unsigned char *val)
 {
   struct tag *tp;
   tp = mb_new(e->owner->tagmem);
-  tp->l.file = l.file;
-  tp->l.line = l.first_line;
+  tp->l = l;
   tp->name = name;
   tp->val = val;
   return tp;
@@ -87,6 +85,7 @@ cgp_init(struct cgp *c, unsigned char *cf, unsigned char *gw, unsigned char *pos
   c->loose = cgp_str(c, 1);
 }
 
+#if 0
 const unsigned char *
 cgp_entry_str(struct entry *e, int spread)
 {
@@ -136,6 +135,7 @@ cgp_parse(struct cgp *c, unsigned char *s, locator *lp)
   if (c->pos && !cbdpos((ccp)c->pos, strlen((ccp)c->pos)))
     vwarning2(lp->file,lp->line,"bad POS %s", c->pos);
 }
+#endif
 
 const unsigned char *
 cgp_str(struct cgp *cp, int loose)
@@ -317,3 +317,4 @@ untab(unsigned char *s)
     else
       ++s;
 }
+

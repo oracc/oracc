@@ -7,11 +7,12 @@ struct sense *
 sense_init(YYLTYPE l, struct entry *e)
 {
   struct sense *sp = mb_new(e->owner->sensesmem);
-  sp->l.file = l.file;
-  sp->l.line = l.first_line;
+  sp->l = l;
   list_add(e->senses, sp);
   return sp;
 }
+
+#if 0
 
 struct sense *
 init_sense(void)
@@ -118,3 +119,4 @@ parse_sense_sub(unsigned char *s, locator*lp)
     *s = '\0';
   return sp;
 }
+#endif

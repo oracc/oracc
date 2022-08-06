@@ -1,4 +1,5 @@
 %locations
+%define parse.error verbose
 %{
 #include <stdio.h>
 #include "gx.h"
@@ -58,8 +59,9 @@ extern int yylex(void);
 
 %%
 
-cbd: header entrylist ENDOF { return(0); }
-	 |	header ENDOF  { return(1); }
+cbd: 		header entrylist { return(parser_status); }
+	|      	header  { return(parser_status); }
+	|	/* empty */ { return(parser_status); }
 
 header: 	atproject atlang atname
 	| 	atproject atlang atname proplist
@@ -95,7 +97,8 @@ entry: 		entry_block end_entry
 	|	entry_block senses_block lang_block end_entry  { lyyerror(@3, "lang block fields must come before senses block"); }
 	|	entry_block ENDOF 	{ lyyerror(@2,"input ended without @end entry"); return(1); }
 
-entry_block:    atentry
+entry_block:    error atentry
+	|	atentry
 	|	atentry aliases
 	| 	atentry aliases parts
 	| 	atentry aliases parts disc
@@ -328,9 +331,16 @@ collo:		COLLO TEXTSPEC			{ meta_add(@1,curr_entry, curr_meta, $1, "collo", (ucp)
 %%
 
 void
-yyerror(char *s)
+yyerror(const char *s)
 {
-  fprintf(stderr, "%s\n", s);
+  YYLTYPE loc;
+  extern int yylineno;
+  loc.file = (char *)file;
+  loc.first_line = yylineno;
+  if (!strncmp(s, "syntax error, ", strlen("syntax error, ")))
+    s += strlen("syntax error, ");
+  msglist_verr(&loc, "%s\n", s);
+  /*fprintf(stderr, "%s\n", s);*/
 }
 
 void

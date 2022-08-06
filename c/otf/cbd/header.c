@@ -3,6 +3,8 @@
 #include <ctype128.h>
 #include "gx.h"
 
+#if 0
+
 extern const char *project;
 
 unsigned char **
@@ -63,3 +65,5 @@ parse_header(struct cbd *c, unsigned char **ll)
   
   return ll;
 }
+
+#endif

@@ -61,6 +61,7 @@ edit_why(struct entry *e, char *why)
   /* should error if #why: doesn't follow an edit and valid it's only after -@entry */
 }
   
+#if 0
 int
 edit_add(unsigned char **ll, struct entry *e)
 {
@@ -237,6 +238,7 @@ edit_check(struct cbd *c)
   list_exec(c->entries, (void (*)(void*))edit_check_entry);
   return edit_status;
 }
+#endif
 
 static void
 edit_script_entry(struct entry *e)
@@ -254,7 +256,7 @@ edit_script_entry(struct entry *e)
 		++edit_status;
 	      else
 		{
-		  fprintf(f_edit, "@%d\n", e->ed->lp->line);
+		  fprintf(f_edit, "@%d\n", e->ed->lp->first_line);
 		  fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp->tight);
 		  fprintf(f_edit, ":rnm >@entry %s\n", closed_t);
 		}
@@ -266,7 +268,7 @@ edit_script_entry(struct entry *e)
 		++edit_status;
 	      else
 		{
-		  fprintf(f_edit, "@%d\n", e->ed->lp->line);
+		  fprintf(f_edit, "@%d\n", e->ed->lp->first_line);
 		  fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp->tight);
 		  fprintf(f_edit, ":mrg =@entry %s\n", closed_t);
 		}
@@ -274,12 +276,12 @@ edit_script_entry(struct entry *e)
 	}
       else if (e->ed->type == ADD_E)	
 	{
-	  fprintf(f_edit, "@%d\n", e->ed->lp->line);
+	  fprintf(f_edit, "@%d\n", e->ed->lp->first_line);
 	  fprintf(f_edit, ":add +@entry %s\n", ((struct entry *)(e->ed->owner))->cgp->tight);
 	}
       else if (e->ed->type == DEL_E)
 	{
-	  fprintf(f_edit, "@%d\n", e->ed->lp->line);
+	  fprintf(f_edit, "@%d\n", e->ed->lp->first_line);
 #if 0
 	  /* This is emitted by cbdedit.plx but it's redundant and not aligned with :add +@entry */
 	  fprintf(f_edit, ":ent -@entry %s\n", ((struct entry *)(e->ed->owner))->cgp->tight);
@@ -296,7 +298,7 @@ edit_script_entry(struct entry *e)
   for (sp = list_first(e->senses); sp; sp = list_next(e->senses))
     if (sp->ed)
       {
-	fprintf(f_edit, "@%d\n", sp->ed->lp->line);
+	fprintf(f_edit, "@%d\n", sp->ed->lp->first_line);
 	fprintf(f_edit, ":ent @entry %s\n", ((struct entry *)(e->ed->owner))->cgp->tight);
 	if (sp->ed->type == ADD_S)
 	  fprintf(f_edit, ":add +@sense %s %s\n", sp->pos, sp->mng);

@@ -10,7 +10,9 @@
 
 #include "gx.h"
 
+#if 0
 static int parse_cbd(unsigned char *ftext, ssize_t fsize);
+#endif
 
 extern int setenv(const char *,const char *, int);
 
@@ -39,8 +41,8 @@ init_cbd(void)
   c->proplists = list_create(LIST_SINGLE);
   c->haliases = hash_create(16);
   c->hentries = hash_create(1024);
-  c->l.file = file;
-  c->l.line = 1;
+  c->l.file = (char *)file;
+  c->l.first_line = 1;
   return c;
 }
 
@@ -75,6 +77,8 @@ term_cbd(struct cbd*c)
   cuneify_term();
   free(c);
 }
+
+#if 0
 
 int
 cbd(const char *fname)
@@ -197,3 +201,4 @@ parse_cbd(unsigned char *ftext, ssize_t fsize)
   free(lines);
   return status;
 }
+#endif
