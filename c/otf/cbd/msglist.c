@@ -17,6 +17,14 @@ msglist_term(void)
   list_free(msglist, NULL);
 }
 
+static char *
+nl(char *e)
+{
+  if ('\n' != e[strlen(e)-1])
+    strcat(e, "\n");
+  return e;
+}
+
 void
 msglist_add(char *e)
 {
@@ -57,9 +65,9 @@ msglist_err(YYLTYPE *locp, char *s)
       char *e = NULL, *loc;
       loc = msglist_loc(locp);
       need = snprintf(NULL, 0, "%s: %s\n", loc, s);
-      e = malloc(need + 1);
+      e = malloc(need + 1 + 1); /* always allocate space for an extra \n */
       sprintf(e, "%s: %s\n", loc, s);
-      msglist_add((char*)npool_copy((ucp)e, curr_cbd->pool));
+      msglist_add((char*)npool_copy((ucp)nl(e), curr_cbd->pool));
       free(e);
       free(loc);
     }
@@ -75,13 +83,13 @@ msglist_averr(YYLTYPE *locp, char *s, va_list ap)
 
   loc = msglist_loc(locp);
   need = vsnprintf(NULL, 0, s, ap);
-  need += strlen(loc) + 3;
+  need += strlen(loc) + 3 + 1; /* always allocate space for an extra \n */
   e = malloc(need);
   sprintf(e, "%s: ", loc);
   free(loc);
   vsprintf(e+strlen(e), s, ap2);
   va_end(ap2);
-  msglist_add((char*)npool_copy((ucp)e, curr_cbd->pool));
+  msglist_add((char*)npool_copy((ucp)nl(e), curr_cbd->pool));
   free(e);
 }
   
@@ -137,6 +145,8 @@ msglist_print(FILE *fp)
 	  for (i = 0; mp[i]; ++i)
 	    fputs(mp[i], fp);
 	}
+      list_free(msglist, NULL);
+      msglist = NULL;
     }
 }
 

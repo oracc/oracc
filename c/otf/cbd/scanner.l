@@ -19,11 +19,15 @@ static int xdisc = 0;
 static int yycolumn = 0;
 extern char *efile;
 
+static void baseco(const char *type);
+static void basesc(const char *type);
+
 static char *b_alt_tok = NULL;
 static void alt_wrapup(int clean);
 static void clean_alt_paren(void);
 static char *unspace(char*s);
 static void gx_user_action(void);
+#define mtch(x) fprintf(stderr,"matched %s",(x))
 
 #define YY_USER_ACTION gx_user_action();
 
@@ -41,6 +45,12 @@ int mystate = 0;
 %x xPROJ xLANG xTEXT xWORD xENTSNS xWHY xCOMMENT xELANG xOID xFLUSH
 
 %%
+
+<xCF,xGW,xPOS>\n	  { BEGIN ss(0); yycolumn = 1; return EOL; }
+<xBP,xALLOW,xFLUSH,xWORD,xTEXT>\n  { BEGIN ss(0); yycolumn = 1; }
+<xBA>\n			  { BEGIN ss(0); yycolumn = 1; if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
+<xF>\n			  { BEGIN ss(0); yycolumn = 1; return(END_FORM); }
+<xS,xSPOS,xSW>\n          { BEGIN ss(0); yycolumn = 1; }
 
 <xWORD>[^ \t\n]+[\t ]*   { ytdup(); return(WORDSPEC); }
 <xTEXT>.+		 { ytdup(); return(TEXTSPEC); }
@@ -68,29 +78,37 @@ int mystate = 0;
 
 <xCF>[^\[\]\n]+		 { dup(unspace(yytext)); return(CF); }
 <xCF>[ \t]*"["      	 { BEGIN ss(xGW); return(yytext[yyleng-1]); }
-<xGW>([^\]\n]+)	 	 { yylval.text = strdup(yytext); return(GW); }
+<xGW>([^\]\n]+)	 	 { ytdup(); return(GW); }
 <xCF,xGW>"]"[ \t]*     	 { BEGIN ss(after_xGW); return(yytext[0]); }
-<xPOS>[^ \t\n]+[ \t]*	 { BEGIN ss(after_xPOS); yylval.text = strdup(unspace(yytext)); return(POS); }
+<xPOS>[^ \t\n]+[ \t]*	 { BEGIN ss(after_xPOS); ytdup(); return(POS); }
 <xPOS>[ \t]*		 { BEGIN ss(0); return(EOL); }
 
 ^#why:[\t ]+		 { BEGIN ss(xWHY); return(WHY); }
-<xWHY>.+		 { BEGIN ss(0); yylval.text = strdup(unspace(yytext)); return WHYSPEC; }
+<xWHY>.+		 { BEGIN ss(0); ytdup(); return WHYSPEC; }
 ^#			 { BEGIN ss(xCOMMENT); }
 <xCOMMENT>.*		 { BEGIN ss(0); }
 ^@[A-Z]+[ \t]*		 { BEGIN ss(xTEXT); ytdupn(1); return(DCF); }
 
 ^@allow[ \t]+	      	 { BEGIN ss(xALLOW); return(ALLOW); }
-<xALLOW>[^ \t\n]		 { ytdup(); return(BASE_PRI); }
+<xALLOW>[^ \t\n]       	 { ytdup(); return(BASE_PRI); }
 <xALLOW>=[ \t]+		 { return(yytext[0]); }
 <xALLOW>[^= \t\n]+[ \t]* { ytdup(); return(BASE_PRI); }
-^@bases[ \t]+ 		 { BEGIN ss(xBP); return(BASES); }
-<xBP>\;[ \t]+    	 { BEGIN ss(xBP); }
-<xBP>[^; \t\n]+ 	 { ytdup(); return(BASE_PRI); }
-<xBP>[ \t]+\(		 { BEGIN ss(xBA); }
-<xBA>,[ \t]+		 { if (b_alt_tok) { alt_wrapup(0); return(BASE_ALT); } }
-<xBA>[^;, \t\n]+ 	 { b_alt_tok = strdup(yytext); }
-<xBA>\;[ \t]+    	 { BEGIN ss(xBP); if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
-<xBP>\;			 { BEGIN ss(xBP); unput(';'); }
+
+^@bases[ \t]*";"[ \t]*	 { BEGIN ss(xBP); basesc("initial"); return(BASES); }
+^@bases[ \t]*	 	 { BEGIN ss(xBP); return(BASES); }
+<xBP>[ \t]*";"[ \t]*/\n	  { BEGIN ss(0); yycolumn = 1; basesc("final"); }
+<xBP>\;[ \t]*\;[ \t]*     { BEGIN ss(xBP); basesc("double"); }
+<xBP>\;[ \t]+    	  { BEGIN ss(xBP); }
+<xBP>[^; \t\n]+[ \t]*/"(" { BEGIN ss(xBA); ytdup(); return(BASE_PRI); }
+<xBP>[^; \t\n]+[ \t]* 	  { ytdup(); return(BASE_PRI); }
+<xBA>[ \t]*";"[ \t]*/\n	  { BEGIN ss(0); yycolumn = 1; basesc("final"); if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
+<xBA>,[ \t]*,		  { baseco("double"); unput(','); }
+<xBA>,[ \t]*		  { if (b_alt_tok) { alt_wrapup(0); return(BASE_ALT); } }
+<xBA>"("[ \t]*,		  { baseco("initial"); unput('('); }
+<xBA>"("[^;, \t\n]+[ \t]* { b_alt_tok = strdup(yytext+1); }
+<xBA>[^;, \t\n]+[ \t]* 	  { b_alt_tok = strdup(yytext); }
+<xBA>\;[ \t]*\;[ \t]*     { BEGIN ss(xBP); basesc("double"); if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
+<xBA>\;[ \t]*    	  { BEGIN ss(xBP); if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
 
 ^@phon[\t ]+		 { BEGIN ss(xTEXT); return(PHON); }
 ^@root[\t ]+		 { BEGIN ss(xTEXT); return(ROOT); }
@@ -137,11 +155,6 @@ int mystate = 0;
 
 .
 \n			  { yycolumn = 1; }
-<xCF,xGW,xPOS>\n	  { BEGIN ss(0); yycolumn = 1; return EOL; }
-<xBP,xALLOW,xFLUSH,xWORD,xTEXT>\n  { BEGIN ss(0); yycolumn = 1; }
-<xBA>\n			  { BEGIN ss(0); yycolumn = 1; if (b_alt_tok) { alt_wrapup(1); return(BASE_ALT); } }
-<xF>\n			  { BEGIN ss(0); yycolumn = 1; return(END_FORM); }
-<xS,xSPOS,xSW>\n          { BEGIN ss(0); yycolumn = 1; }
 
 <<EOF>>			  { if (flextrace) { fprintf(stderr, "<<EOF>>\n"); } return(0); }
 
@@ -155,6 +168,22 @@ alt_wrapup(int clean)
   dup(b_alt_tok); 
   free(b_alt_tok); 
   b_alt_tok = NULL;
+}
+
+static void
+basesc(const char *type)
+{
+  yylloc.file=efile;
+  yylloc.first_line=yylineno; 
+  vyyerror(yylloc,"misplaced %s semi-colon\n", type, NULL);
+}
+
+static void
+baseco(const char *type)
+{
+  yylloc.file=efile;
+  yylloc.first_line=yylineno; 
+  vyyerror(yylloc,"misplaced %s comma\n", type, NULL);
 }
 
 static void
@@ -186,7 +215,7 @@ gx_user_action(void)
   yylloc.first_column = yylloc.last_column;
   for(int i = 0; yytext[i] != '\0'; i++)
     {
-      if(yytext[i] == '\n')
+      if (yytext[i] == '\n')
         {
           yylloc.last_line++;
           yylloc.last_column = 0;

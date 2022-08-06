@@ -7,17 +7,31 @@ static List *curr_base_list = NULL;
 void
 bases_pri_save(YYLTYPE l, struct entry *e, unsigned char *p)
 {
-  if (!e->bases)
-    e->bases = list_create(LIST_SINGLE);
-  list_add(e->bases, (curr_base_list = list_create(LIST_SINGLE)));
-  list_add(curr_base_list, loctok(&l,e,p));
+  if (p && strlen((ccp)p))
+    {
+      if (!e->bases)
+	e->bases = list_create(LIST_SINGLE);
+      list_add(e->bases, (curr_base_list = list_create(LIST_SINGLE)));
+      list_add(curr_base_list, loctok(&l,e,p));
+    }
+  else
+    {
+      msglist_err(&l, "zero-length primary base (misplaced ';'?)");
+    }
 }
 
 void
 bases_alt_save(YYLTYPE l, struct entry *e, unsigned char *a)
 {
-  if (curr_base_list)
-    list_add(curr_base_list, loctok(&l,e,a));
+  if (a && strlen((ccp)a))
+    {
+      if (curr_base_list)
+	list_add(curr_base_list, loctok(&l,e,a));
+    }
+  else
+    {
+      msglist_err(&l, "zero-length alternate base (misplaced ','?)");
+    }
 }
 
 static void parse_one_base(struct entry *e, unsigned char *s);

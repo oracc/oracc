@@ -11,6 +11,29 @@
 #@entry a [water N
 #@end entry
 
-@entry a water] N
+#@entry a water] N
+#@end entry
+
+@entry a [water] N
+@bases; a
 @end entry
 
+@entry a [water] N
+@bases ; a
+@end entry
+
+@entry a [water] N
+@bases a ;; a
+@end entry
+
+@entry a [water] N
+@bases a; e₄;
+@end entry
+
+@entry a [water] N
+@bases a (e₄);
+@end entry
+
+#@entry a [water] N
+#@bases a
+#@end entry

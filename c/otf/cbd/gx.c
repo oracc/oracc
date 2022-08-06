@@ -15,7 +15,6 @@
 const char *errmsg_fn = NULL;
 
 int flextrace = 0;
-int flex_scanner = 0;
 int identity_output = 0;
 int keepgoing = 0;
 int stdin_input = 0;
@@ -74,6 +73,8 @@ main(int argc, char **argv)
   
   if (identity_output)
     identity(curr_cbd);
+
+  msglist_print(stderr);
   
   lang_term();
   gdl_term();
@@ -106,7 +107,7 @@ int opts(int och,char *oarg)
       entries = 1;
       break;
     case 'f':
-      flex_scanner = 1;
+      force = 1;
       break;
     case 'g':
       break;

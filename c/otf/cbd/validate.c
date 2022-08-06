@@ -18,6 +18,7 @@ void
 validator(struct cbd*cbd)
 {
   iterator_fnc *fncs = ifnc_init();
+  phase = "val";
   iterator(cbd,fncs);
   msglist_print(stderr);
   free(fncs);
@@ -66,18 +67,21 @@ v_allow(struct entry *e)
 static void
 v_allow_2(struct entry *e)
 {
-  List_node *lp;
-  for (lp = e->allows->first; lp; lp = lp->next)
+  if (e->allows)
     {
-      struct allow *ap = lp->data;
-      unsigned char *sig = NULL;
-      loc.first_line = ap->l.first_line; loc.file = (char*)ap->l.file;
-      sig = hash_find(e->b_sig, ap->lsig);
-      if (!sig)
-	msglist_verr(&loc,"@allow left side %s is not a base", ap->lhs);
-      sig = hash_find(e->b_sig, ap->rsig);
-      if (!sig)
-	msglist_verr(&loc,"@allow right side %s is not a base", ap->rhs);
+      List_node *lp;
+      for (lp = e->allows->first; lp; lp = lp->next)
+	{
+	  struct allow *ap = lp->data;
+	  unsigned char *sig = NULL;
+	  loc.first_line = ap->l.first_line; loc.file = (char*)ap->l.file;
+	  sig = hash_find(e->b_sig, ap->lsig);
+	  if (!sig)
+	    msglist_verr(&loc,"@allow left side %s is not a base", ap->lhs);
+	  sig = hash_find(e->b_sig, ap->rsig);
+	  if (!sig)
+	    msglist_verr(&loc,"@allow right side %s is not a base", ap->rhs);
+	}
     }
 }
 
@@ -97,6 +101,10 @@ static void
 v_bases(struct entry *e)
 {
   List_node *outer;
+
+  const char *entry_phase = phase;
+  phase = "bases";
+  
   e->b_pri = hash_create(1);
   e->b_alt = hash_create(1);
   e->b_sig = hash_create(1);
@@ -152,6 +160,9 @@ v_bases(struct entry *e)
 	    }
 	}
     }
+
+  phase = entry_phase;
+  
   v_allow_2(e);
 }
 

@@ -141,7 +141,7 @@ gdl_sig(unsigned char *atf, int frag_ok, int deep)
   const unsigned char **sigbits = NULL;
   unsigned char *buf, *snbuf = NULL, *parseme;
   int i, len;
-
+  
   gdl_strict_compound_warnings = 1;
 
   if (deep)

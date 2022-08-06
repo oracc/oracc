@@ -20,9 +20,9 @@ flex(const char *file)
   phase = "syn";
   if (yyparse() || parser_status)
     {
-      msglist_print(stderr);
       if (!keepgoing)
 	{
+	  msglist_print(stderr);
 	  fprintf(stderr, "gx: exiting after syntax errors\n");
 	  exit(1);
 	}
