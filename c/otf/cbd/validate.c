@@ -10,6 +10,10 @@ static void v_proplist(const char *p);
 #define f2(a,b)
 #define f3(a,b,c)
 
+static int bases_done = 0;
+
+static YYLTYPE loc;
+
 void
 validator(struct cbd*cbd)
 {
@@ -22,6 +26,7 @@ validator(struct cbd*cbd)
 static void
 v_aliases(struct entry *e)
 {
+#if 0
   List_node *lp;
   for (lp = e->aliases->first; lp; lp = lp->next)
     {
@@ -29,6 +34,7 @@ v_aliases(struct entry *e)
       lnum = ap->l.line; file = ap->l.file;
       vwarning("vwarning test on alias %s", ap->cgp->tight);
     }
+#endif
 }
 
 static void
@@ -38,40 +44,112 @@ v_allow(struct entry *e)
   for (lp = e->allows->first; lp; lp = lp->next)
     {
       struct allow *ap = lp->data;
-      f2(ap->lhs, ap->rhs);
+      unsigned char *sig = NULL;
+
       lnum = ap->l.line; file = ap->l.file;
-      warning("validating @allow\n");
+      /* warning("validating @allow\n"); */
+      
       /* check that lhs and rhs both resolve to gdl sigs */
-      /* for strict: check that lhs and rhs both occur as primary bases */
+      if ((sig = gdl_sig(lhs,1,1)))
+	{
+	  ap->lsig = npool_copy(sig, e->owner->pool);
+	  hash_add(e->b_allow, ap->lsig, ap);
+	}
+      if ((sig = gdl_sig(rhs,1,1)))
+	{
+	  ap->rsig = npool_copy(sig, e->owner->pool);
+	  hash_add(e->b_allow, ap->rsig, ap);
+	}
     }
+}
+
+static void
+v_allow_2(struct entry *e)
+{
+  List_node *lp;
+  for (lp = e->allows->first; lp; lp = lp->next)
+    {
+      struct allow *ap = lp->data;
+      unsigned char *sig = NULL;
+      loc.line = ap->l.line; loc.file = ap->l.file;
+      sig = hash_find(e->b_hash, ap->lsig);
+      if (!sig)
+	msglist_averr(loc,"@allow left side %s is not a base", ap->lhs);
+      sig = hash_find(e->b_hash, ap->rsig);
+      if (!sig)
+	msglist_averr(loc,"@allow right side %s is not a base", ap->rhs);
+    }
+}
+
+static int
+allowed(struct entry *e, unsigned char *a, unsigned char *b)
+{
+  if (e && e->b_allow)
+    {
+      Hash_table *allowed = hash_find(e->b_allow, a);
+      if (allowed && hash_find(allowed, b))
+        return 1;
+    }
+  return 0;
 }
 
 static void
 v_bases(struct entry *e)
 {
   List_node *outer;
-  int i;
+  e->b_pri = hash_create(1);
+  e->b_alt = hash_create(1);
+  e->b_sig = hash_create(1);
 
-  for (i = 0, outer = e->bases->first; outer; outer = outer->next)
+  for (outer = e->bases->first; outer; outer = outer->next)
     {
       List *bp = ((List *)(outer->data));
       List_node *inner = bp->first;
-      if (i++)
-	/* ; */;
+      struct loctok *ltp = (struct loctok *)inner->data;
+      unsigned char *sig = NULL, *pri = NULL;
+      
+      file = ltp->l.file; /* only need to do this once */
+      lnum = ltp->l.line;
+      pri = ltp->tok;
+
+      if (verbose)
+	fprintf(stderr, "%s:%d: registering pri %s\n", file, line, pri);
+
+      if ((sig = gdl_sig(pri,1,1)))
+	{
+	  unsigned char *known_sig = NULL;
+	  if ((known_sig = hash_find(e->b_sig, sig)) && !allowed(e, pri, known_sig))
+	    {
+	      msglist_verr(ltp, "duplicate or equivalent primary base %s ~~ %s", pri, known_sig);
+	    }
+	  else
+	    {
+	      pri_sig = npool_copy(sig, e->owner->pool);
+	      hash_add(e->b_pri, pri, pri_sig);
+	      hash_add(e->b_sig, pri_sig, pri);
+	    }
+	  free(sig);
+	}
       else
-	/* */;
-      f1((const char *)inner->data);
+	msglist_verr("gdl_sig failed on %s", pri);
+  
+      /* Additional list members are alt bases */
       if (list_len(bp) > 1)
 	{
-	  int j;
-	  /* ( */;
-	  for (j = 0, inner = inner->next; inner; inner = inner->next)
+	  for (inner = inner->next; inner; inner = inner->next)
 	    {
-	      if (j++)
-		/* , */;
+	      struct loctok *ltp = (struct loctok *)inner->data;
+	      unsigned char *alt_sig = NULL, *alt = NULL;
+	      alt = ltp->tok;
+	      if (verbose)
+		fprintf(stderr, "%s:%d: adding alt %s to pri %s\n", file, lnum, alt, pri);
+	      alt_sig = gdl_sig(alt,1,1);
+	      if (strcmp((ccp)pri_sig,(ccp)alt_sig))
+		msglist_verr(ltp, "alt %s is not equivalent to primary %s (%s != %s)", alt, pri, alt_sig, pri_sig);
+	      else
+		hash_add(e->b_alt, alt, pri);	      
 	      f1((const char *)inner->data);
 	    }
-	  /* ) */;
 	}
     }
 }
@@ -99,6 +177,8 @@ v_dcfs(struct entry *e)
 static void
 v_entry(struct entry *e)
 {
+  bases_done = 0;
+  
   if (e->ed)
     {
       switch (e->ed->type)

@@ -125,6 +125,8 @@ struct allow {
   locator l;
   unsigned char *lhs;
   unsigned char *rhs;
+  unsigned char *lsig;
+  unsigned char *rsig;
 };
 
 struct meta {
