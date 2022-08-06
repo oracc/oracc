@@ -66,10 +66,10 @@ int mystate = 0;
 ^>[\t ]*		 { BEGIN ss(after_xRENMRG); return(RENAME); }
 ^>>[\t ]*		 { BEGIN ss(after_xRENMRG); return(MERGE); }
 
-<xCF>[^\[\n]+		 { dup(unspace(yytext)); return(CF); }
+<xCF>[^\[\]\n]+		 { dup(unspace(yytext)); return(CF); }
 <xCF>[ \t]*"["      	 { BEGIN ss(xGW); return(yytext[yyleng-1]); }
-<xGW>([^\]\n]+)		 { yylval.text = strdup(yytext); return(GW); }
-<xGW>"]"[ \t]*	       	 { BEGIN ss(after_xGW); return(yytext[0]); }
+<xGW>([^\]\n]+)	 	 { yylval.text = strdup(yytext); return(GW); }
+<xCF,xGW>"]"[ \t]*     	 { BEGIN ss(after_xGW); return(yytext[0]); }
 <xPOS>[^ \t\n]+[ \t]*	 { BEGIN ss(after_xPOS); yylval.text = strdup(unspace(yytext)); return(POS); }
 <xPOS>[ \t]*		 { BEGIN ss(0); return(EOL); }
 
@@ -113,7 +113,7 @@ int mystate = 0;
 <xS>\.			  { BEGIN ss(xSW); return(yytext[0]); }
 <xS>\#			  { BEGIN ss(xSW); return(yytext[0]); }
 <xS>\[			  { BEGIN ss(xGW); return(yytext[0]); }
-<xS>[^.#[\%][^ \t]*[ \t]* { BEGIN ss(xTEXT); ytdup(); return(POS); }
+<xS>[^.#[\%][^ \t\n]*[ \t]* { BEGIN ss(xTEXT); ytdup(); return(POS); }
 <xSPOS>[^ \t\n]+[ \t]*	  { BEGIN ss(xTEXT); ytdup(); return(POS); }
 <xSW>[^ \t\n]+[ \t]*	  { BEGIN ss(xS); ytdup(); return(WORDSPEC); }
 
@@ -121,7 +121,7 @@ int mystate = 0;
 ^@bib[ \t]+		  { BEGIN ss(xTEXT); yi(BIB); return(BIB); }
 ^@collo[ \t]+		  { BEGIN ss(xTEXT); yi(COLLO); return(COLLO); }
 ^@equiv[ \t]+		  { BEGIN ss(xELANG); yi(EQUIV); return(EQUIV); }
-<xELANG>%[^ \t]+[ \t]+	  { BEGIN ss(xTEXT); ytdupn(1); return LANG; }
+<xELANG>%[^ \t\n]+[ \t]+	  { BEGIN ss(xTEXT); ytdupn(1); return LANG; }
 ^@inote[ \t]+		  { BEGIN ss(xTEXT); yi(INOTE); return(INOTE); }
 ^@isslp[ \t]+		  { BEGIN ss(xTEXT); yi(ISSLP); return(ISSLP); }
 ^@note[ \t]+		  { BEGIN ss(xTEXT); yi(NOTE); return(NOTE); }
@@ -182,7 +182,7 @@ gx_user_action(void)
       fprintf(stderr, "%s:%d: flextrace: state=%d tok=::%s::\n", efile, yylineno, mystate, yytext);
     }
   yylloc.file = efile;
-  yylloc.first_line = yylloc.last_line;
+  yylloc.first_line = yylloc.last_line = yylineno;
   yylloc.first_column = yylloc.last_column;
   for(int i = 0; yytext[i] != '\0'; i++)
     {

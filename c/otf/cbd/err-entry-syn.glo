@@ -8,6 +8,9 @@
 #@entry a [water]
 #@end entry
 
-@entry a [water N
+#@entry a [water N
+#@end entry
+
+@entry a water] N
 @end entry
 

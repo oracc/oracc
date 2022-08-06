@@ -83,7 +83,7 @@ cgplist: cgp
 cgp:    CF '[' GW ']' POS { cgp_save((ucp)$1, (ucp)$3, (ucp)$5); } ;
 	|	CF '[' GW ']' EOL { lyyerror(@1, "expected POS but found end of line"); }
 	|	CF '[' GW EOL { lyyerror(@1, "missing ']' (and maybe POS) after GW"); }
-	|	CF GW ']' POS { lyyerror(@1, "missing '[' before GW"); }
+	|	CF ']' POS { lyyerror(@1, "missing '[' before GW"); }
 
 entrylist:	entry
 	|	entrylist entry
