@@ -9,12 +9,8 @@ noinst_LTLIBRARIES=libcbd.la
 bin_PROGRAMS=gx sx statis
 
 libcbd_la_SOURCES = \
-	common.c cbd.c header.c entry.c dcf.c form.c \
-	sense.c inote.c isslp.c allow.c alias.c bff.c \
-	parts.c bases.c	sig.c file.c note.c bib.c disc.c \
-	cbdtags.c cbdpos.c sigops.c pleiades.c prop.c \
-	stems.c root.c phon.c collo.c oid.c equiv.c \
-	edit.c xgetline.c sigstats.c meta.c msglist.c
+	common.c sig.c cbdpos.c sigops.c \
+	editscript.c xgetline.c sigstats.c msglist.c
 
 AM_CPPFLAGS=\
 	-I@top_srcdir@/c/otf/{atf,cdf,chr,gdl,lib,lng,run,ox} \
@@ -57,7 +53,7 @@ scanner.o: scanner.c
 
 gx_SOURCES = \
 	gx.c globals.c flex.c scanner.c grammar.tab.c \
-	iterator.c identity.c validate.c
+	builder.c iterator.c identity.c validate.c
 
 gx_LDADD = -lfl $(xLDADD)
 

@@ -36,7 +36,16 @@ extern int flextrace;
 int mystate = 0;
 #define ss(arg) (mystate=arg)
 
+char *ssnames[] = {
+"0", "xALLOW", "xB", "xBP", "xB",
+"xCF", "xGW", "xPOS", "xSPOS",
+"xF", "xS", "xSW",
+"xPROJ", "xLANG", "xTEXT", "xWORD", "xENTSNS", "xWHY",
+"xCOMMENT", "xELANG", "xOID", "xFLUSH",
+};
+
 %}
+
 %x xALLOW
 %x xB xBP xBA
 %x xCF xGW xPOS xSPOS
@@ -80,8 +89,9 @@ int mystate = 0;
 <xCF>[ \t]*"["      	 { BEGIN ss(xGW); return(yytext[yyleng-1]); }
 <xGW>([^\]\n]+)	 	 { ytdup(); return(GW); }
 <xCF,xGW>"]"[ \t]*     	 { BEGIN ss(after_xGW); return(yytext[0]); }
+<xPOS>[^ \t\n]+[ \t]*/\n { BEGIN ss(0); ytdup(); return(POS); }
 <xPOS>[^ \t\n]+[ \t]*	 { BEGIN ss(after_xPOS); ytdup(); return(POS); }
-<xPOS>[ \t]*		 { BEGIN ss(0); return(EOL); }
+<xPOS>[ \t]*/\n		 { BEGIN ss(0); }
 
 ^#why:[\t ]+		 { BEGIN ss(xWHY); return(WHY); }
 <xWHY>.+		 { BEGIN ss(0); ytdup(); return WHYSPEC; }
@@ -209,7 +219,7 @@ gx_user_action(void)
 {
   if (flextrace)
     {
-      fprintf(stderr, "%s:%d: flextrace: state=%d tok=::%s::\n", efile, yylineno, mystate, yytext);
+      fprintf(stderr, "%s:%d: flextrace: state=%s tok=::%s::\n", efile, yylineno, ssnames[mystate], yytext);
     }
   yylloc.file = efile;
   yylloc.first_line = yylloc.last_line = yylineno;

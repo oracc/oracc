@@ -7,26 +7,6 @@ static List *cgplist = NULL;
 
 static struct npool *common_pool = NULL;
 
-struct loctok *
-loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok)
-{
-  struct loctok *ltp = mb_new(e->owner->loctokmem);
-  ltp->l = *lp;
-  ltp->tok = tok;
-  return ltp;
-}
-
-struct tag *
-tag_init(YYLTYPE l, struct entry *e, const char *name, unsigned char *val)
-{
-  struct tag *tp;
-  tp = mb_new(e->owner->tagmem);
-  tp->l = l;
-  tp->name = name;
-  tp->val = val;
-  return tp;
-}
-
 void
 common_init(void)
 {

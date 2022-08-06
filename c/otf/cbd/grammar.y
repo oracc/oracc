@@ -75,7 +75,7 @@ atname:    NAME    TEXTSPEC { curr_cbd->name = (ucp)yylval.text; } ;
 proplist: 	atproplist
 	|	proplist atproplist
 
-atproplist:	PROPLIST TEXTSPEC { proplist_add(curr_cbd, yylval.text); }
+atproplist:	PROPLIST TEXTSPEC { bld_proplist(curr_cbd, yylval.text); }
 
 cgplist: cgp
 	 | cgplist cgp
@@ -111,19 +111,19 @@ entry_block:    atentry
 	| 	atentry parts disc
 	| 	atentry disc
 
-disc: 		EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = tag_init(@1, curr_entry, "disc", (ucp)$2); }
-	    |	SDISC TEXTSPEC { curr_sense->disc = tag_init(@1, curr_entry, "disc",(ucp)$2); }
+disc: 		EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
+	    |	SDISC TEXTSPEC { curr_sense->disc = bld_tag(@1, curr_entry, "disc",(ucp)$2); }
 
 atentry: 	begin_entry cgp     { curr_entry->cgp = cgp_get_one(); } ;
         |	'+' begin_entry cgp { curr_entry->cgp = cgp_get_one();
-    				      entry_edit(curr_entry, '+'); } ;
+    				      bld_edit_entry(curr_entry, '+'); } ;
 	|	'-' begin_entry cgp why {
 	    			      curr_entry->cgp = cgp_get_one();
-    				      entry_edit(curr_entry, '-');
-				      edit_why(curr_entry, yylval.text); } ;
+    				      bld_edit_entry(curr_entry, '-');
+				      bld_edit_why(curr_entry, yylval.text); } ;
 
-begin_entry:  	entry_wrapper { curr_entry = entry_init(@1,curr_cbd); 
-	                        curr_meta = curr_entry->meta = meta_init(curr_entry); } ;
+begin_entry:  	entry_wrapper { curr_entry = bld_entry(@1,curr_cbd); 
+	                        curr_meta = curr_entry->meta = bld_meta_create(curr_entry); } ;
 
 entry_wrapper:	 ENTRY
 	|	 error ENTRY  { yyerrok; }
@@ -132,20 +132,20 @@ entry_wrapper:	 ENTRY
 
 why:		WHY WHYSPEC
 
-modentry: 	RENAME cgp { entry_edit(curr_entry, '>'); } ;
-	| 	MERGE  cgp { entry_edit(curr_entry, '|'); } ;
+modentry: 	RENAME cgp { bld_edit_entry(curr_entry, '>'); } ;
+	| 	MERGE  cgp { bld_edit_entry(curr_entry, '|'); } ;
 
 aliases: 	alias
 	| 	aliases alias
 
-alias:  	atalias cgp 	{ alias_init(@1,curr_entry); }
-	|	DCF TEXTSPEC 	{ dcf_init(@1,curr_entry, (ucp)$1, (ucp)$2); }
+alias:  	atalias cgp 	{ bld_alias(@1,curr_entry); }
+	|	DCF TEXTSPEC 	{ bld_dcf(@1,curr_entry, (ucp)$1, (ucp)$2); }
 
 atalias:	ALIAS ;
 
 parts:  	atparts cgplist { curr_parts->cgps = cgp_get_all(); }
 
-atparts: 	PARTS { curr_parts = parts_init(@1,curr_entry); }
+atparts: 	PARTS { curr_parts = bld_parts(@1,curr_entry); }
 
 end_entry:	END_ENTRY { curr_entry = NULL; }
 		
@@ -171,7 +171,7 @@ bases_fields: 	phon
 allows:	     allow
 	     | allows allow
 
-allow: 	     ALLOW BASE_PRI '=' BASE_PRI { allow_init(@1,curr_entry,(ucp)$2,(ucp)$4); } 
+allow: 	     ALLOW BASE_PRI '=' BASE_PRI { bld_allow(@1,curr_entry,(ucp)$2,(ucp)$4); } 
 
 bases:	     atbases baselist
 
@@ -183,22 +183,22 @@ baselist:    base
 base: 	     base_pri
 	     | base_pri base_alt
 
-base_pri:	BASE_PRI          { bases_pri_save(@1, curr_entry, NULL, (ucp)$1); }
-	|	LANGSPEC BASE_PRI { bases_pri_save(@1, curr_entry, (ucp)$1, (ucp)$2); }
+base_pri:	BASE_PRI          { bld_bases_pri(@1, curr_entry, NULL, (ucp)$1); }
+	|	LANGSPEC BASE_PRI { bld_bases_pri(@1, curr_entry, (ucp)$1, (ucp)$2); }
 
-base_alt: 	BASE_ALT          { bases_alt_save(@1, curr_entry, (ucp)$1); }
-	     |	base_alt BASE_ALT { bases_alt_save(@1, curr_entry, (ucp)$2); }
+base_alt: 	BASE_ALT          { bld_bases_alt(@1, curr_entry, (ucp)$1); }
+	     |	base_alt BASE_ALT { bld_bases_alt(@1, curr_entry, (ucp)$2); }
 
-phon:		PHON TEXTSPEC { curr_entry->phon = tag_init(@1, curr_entry, "phon", (ucp)$2); }
+phon:		PHON TEXTSPEC { curr_entry->phon = bld_tag(@1, curr_entry, "phon", (ucp)$2); }
 
-root:		ROOT TEXTSPEC { curr_entry->root = tag_init(@1, curr_entry, "root", (ucp)$2); }
+root:		ROOT TEXTSPEC { curr_entry->root = bld_tag(@1, curr_entry, "root", (ucp)$2); }
 
 stems:	atstem stemlist
 
 stemlist: stem
 	|	stemlist stem
 
-stem:		WORDSPEC { stem_init(@1, curr_entry, (ucp)$1); }
+stem:		WORDSPEC { bld_stem(@1, curr_entry, (ucp)$1); }
 
 atstem: 	STEM
 								
@@ -207,8 +207,8 @@ forms:		form
 
 form:		atform formlang form_args end_form
 
-atform:		FORM		{ curr_form = form_init(@1, curr_entry); }
-end_form:	END_FORM	{ curr_form = NULL; }
+atform:		FORM		{ curr_form = bld_form(@1, curr_entry); }
+end_form:	END_FORM	{ bld_form_setup(curr_entry, curr_form); curr_form = NULL; }
 formlang:	fform
 	|	fform flang
 	;
@@ -285,14 +285,14 @@ senseinfo:	atsense pos mng
 	;
 
 atsense:      	senselang
-        |	'+' senselang	{ sense_edit(curr_entry, '+'); }
-	|	'-' senselang	{ sense_edit(curr_entry, '-'); }
+        |	'+' senselang	{ bld_edit_sense(curr_entry, '+'); }
+	|	'-' senselang	{ bld_edit_sense(curr_entry, '-'); }
 
 senselang:	ssense
 	|	ssense slang
 
-ssense:		SENSE 		{ curr_sense = sense_init(@1, curr_entry); 
-		    		  if (curr_entry->beginsenses) { curr_meta = curr_sense->meta = meta_init(curr_entry); } }
+ssense:		SENSE 		{ curr_sense = bld_sense(@1, curr_entry); 
+		    		  if (curr_entry->beginsenses) { curr_meta = curr_sense->meta = bld_meta_create(curr_entry); } }
 slang:		'%' WORDSPEC   	{ curr_sense->lng = (ucp)$2; }
 
 sid:		'#' WORDSPEC	{ curr_sense->sid = (ucp)$2; }
@@ -301,10 +301,10 @@ sgw:		'[' GW ']'	{ curr_sense->sgw = (ucp)$2; }
 pos:		POS /* should be restricted to legal POS */	  { curr_sense->pos = (ucp)$1; }
 mng:		TEXTSPEC /* shouldrestrict to disallow [ and ] */ { curr_sense->mng = (ucp)$1; }
 		
-modsense: 	RENAME POS TEXTSPEC { curr_sense = sense_edit(curr_entry, '>');
+modsense: 	RENAME POS TEXTSPEC { curr_sense = bld_edit_sense(curr_entry, '>');
     				      curr_sense->pos = (ucp)$2;
 			              curr_sense->mng = (ucp)$3; }
-           | 	MERGE  POS TEXTSPEC { curr_sense = sense_edit(curr_entry, '|'); 
+           | 	MERGE  POS TEXTSPEC { curr_sense = bld_edit_sense(curr_entry, '|'); 
     				      curr_sense->pos = (ucp)$2;
 			              curr_sense->mng = (ucp)$3; }
 
@@ -322,18 +322,18 @@ anymeta: 	pleiades
         | 	note
 		/*  REL GOES HERE */
 
-equiv: 		EQUIV LANG TEXTSPEC		{ meta_add(@1,curr_entry, curr_meta, $1, "equiv",
-		    					   equiv_init(curr_entry,(ucp)$2,(ucp)$3)); }
-isslp:		ISSLP TEXTSPEC			{ meta_add(@1,curr_entry, curr_meta, $1, "isslp", (ucp)$2); }
-bib:		BIB TEXTSPEC			{ meta_add(@1,curr_entry, curr_meta, $1, "bib", (ucp)$2); }
-note:		NOTE TEXTSPEC			{ meta_add(@1,curr_entry, curr_meta, $1, "note", (ucp)$2); }
-inote:		INOTE TEXTSPEC			{ meta_add(@1,curr_entry, curr_meta, $1, "inote", (ucp)$2); }
+equiv: 		EQUIV LANG TEXTSPEC		{ bld_meta_add(@1,curr_entry, curr_meta, $1, "equiv",
+		    					   bld_equiv(curr_entry,(ucp)$2,(ucp)$3)); }
+isslp:		ISSLP TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "isslp", (ucp)$2); }
+bib:		BIB TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "bib", (ucp)$2); }
+note:		NOTE TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "note", (ucp)$2); }
+inote:		INOTE TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "inote", (ucp)$2); }
 pleiades: 	PL_COORD TEXTSPEC PL_ID TEXTSPEC PL_UID TEXTSPEC
-						{ meta_add(@1,curr_entry, curr_meta, PLEIADES, "pleiades",
-		    				  	   pleiades_init(curr_entry,(ucp)$2,(ucp)$4,(ucp)$6)); }
-prop:		PROP TEXTSPEC			{ meta_add(@1,curr_entry, curr_meta, $1, "prop", (ucp)$2); }
-oid:		OID OIDSPEC			{ meta_add(@1,curr_entry, curr_meta, $1, "oid", (ucp)$2); }
-collo:		COLLO TEXTSPEC			{ meta_add(@1,curr_entry, curr_meta, $1, "collo", (ucp)$2); }
+						{ bld_meta_add(@1,curr_entry, curr_meta, PLEIADES, "pleiades",
+		    				  	   bld_pleiades(curr_entry,(ucp)$2,(ucp)$4,(ucp)$6)); }
+prop:		PROP TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "prop", (ucp)$2); }
+oid:		OID OIDSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "oid", (ucp)$2); }
+collo:		COLLO TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "collo", (ucp)$2); }
 
 %%
 

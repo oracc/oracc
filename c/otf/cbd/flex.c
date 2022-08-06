@@ -16,7 +16,7 @@ flex(const char *file)
       if ((fp = xfopen(efile, "r")))
 	yyrestart(fp);
     }
-  curr_cbd = cbd_init();
+  curr_cbd = bld_cbd();
   phase = "syn";
   if (yyparse() || parser_status)
     {

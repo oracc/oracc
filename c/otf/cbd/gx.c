@@ -16,8 +16,11 @@ const char *errmsg_fn = NULL;
 
 int flextrace = 0;
 int identity_output = 0;
+int json_output = 0;
 int keepgoing = 0;
+int output = 0;
 int stdin_input = 0;
+int xml_output = 0;
 
 extern int yydebug;
 extern int math_mode;
@@ -69,7 +72,8 @@ main(int argc, char **argv)
     cbd(file);
 #endif
 
-  validator(curr_cbd);
+  if (check || output)
+    validator(curr_cbd);
   
   if (identity_output)
     identity(curr_cbd);
@@ -106,13 +110,15 @@ int opts(int och,char *oarg)
     case 'e':
       entries = 1;
       break;
-    case 'f':
-      force = 1;
+    case 'f':     
       break;
     case 'g':
       break;
     case 'i':
-      identity_output = 1;
+      output = identity_output = 1;
+      break;
+    case 'j':
+      output = json_output = 1;
       break;
     case 'k':
       keepgoing = 1;
@@ -131,6 +137,9 @@ int opts(int och,char *oarg)
       break;
     case 'v':
       verbose = 1;
+      break;
+    case 'x':
+      output = xml_output = 1;
       break;
     default:
       return 1;

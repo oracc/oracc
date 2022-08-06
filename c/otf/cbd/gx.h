@@ -58,6 +58,7 @@ struct cbd {
   struct mb *allowmem;
   struct mb *cgpmem;
   struct mb *editmem;
+  struct mb *entrymem;
   struct mb *equivmem;
   struct mb *formsmem;
   struct mb *loctokmem;
@@ -230,20 +231,15 @@ extern struct parts *curr_parts;
 
 extern const char *errmsg_fn;
 
-struct cbd * cbd_init(void);
-void cbd_setup(struct cbd*c);
+extern void common_init(void);
+extern void common_term(void);
 
-struct entry * entry_init(YYLTYPE l, struct cbd* c);
-
-void common_init(void);
-void common_term(void);
+extern void identity(struct cbd*c);
+extern void validator(struct cbd*c);
 
 extern struct cbdpos *cbdpos(const char *str, size_t len);
-extern struct cbdtag *cbdtags(const char *str, size_t len);
-extern unsigned char *tok(unsigned char *s, unsigned char *end);
-extern unsigned char *form_sig(struct entry *e, struct f2 *f2p);
 extern void untab(unsigned char *s);
-
+extern int edit_script(struct cbd *c);
 extern void cgp_init(struct cgp *c, unsigned char *cf, unsigned char *gw, unsigned char *pos);
 extern unsigned const char *cgp_entry_str(struct entry *e, int spread);
 extern const unsigned char *cgp_str(struct cgp *cp, int spread);
@@ -252,73 +248,14 @@ extern unsigned char *slurp(const char *caller, const char *fname, ssize_t *fsiz
 extern void cgp_parse(struct cgp *c, unsigned char *s, locator *lp);
 extern unsigned char *check_bom(unsigned char *s);
 extern unsigned char **setup_lines(unsigned char *ftext);
+extern unsigned char *tok(unsigned char *s, unsigned char *end);
+extern unsigned char *form_sig(struct entry *e, struct f2 *f2p);
 
-extern int edit_add(unsigned char **ll, struct entry *e);
-extern int edit_check(struct cbd *c);
-extern int edit_script(struct cbd *c);
-
-extern struct sense *parse_sense_sub(unsigned char *s, locator*lp);
-extern int parse_dcf(struct entry *e, unsigned char *s);
-extern unsigned char **parse_header(struct cbd *c, unsigned char **ll);
-extern unsigned char **parse_entry(struct cbd *c, unsigned char **ll);
-
-extern void parse_alias(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_allow(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_bases(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_bff(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_bib(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_disc(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_file(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_form(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_inote(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_isslp(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_note(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_parts(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_sense(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_collo(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_root(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_pl_id(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_pl_uid(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_pl_coord(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_prop(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_proplist(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_oid(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_phon(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_equiv(struct entry *e, unsigned char *s, locator *lp);
-extern void parse_stems(struct entry *e, unsigned char *s, locator *lp);
-
+extern struct cbdtag *cbdtags(const char *str, size_t len);
 extern List *cgp_get_all(void);
 extern struct cgp*cgp_get_one(void);
 extern void cgp_save(unsigned char *cf, unsigned char *gw, unsigned char *pos);
-extern void entry_edit(struct entry *e, char type);
-extern struct sense *sense_edit(struct entry *e, char type);
-extern void edit_save(struct entry *e, char ctxt, char type);
-extern void edit_why(struct entry *e, char *why);
-extern struct alias *alias_init(YYLTYPE l, struct entry *e);
-extern void dcf_init(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg);
-extern struct parts *parts_init(YYLTYPE l, struct entry *e);
-extern struct tag *tag_init(YYLTYPE l, struct entry *e, const char *name, unsigned char *val);
-
-extern void identity(struct cbd*c);
-extern void validator(struct cbd*c);
-
-extern void proplist_add(struct cbd *c, char *text);
-extern void allow_init(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs);
-extern void stem_init(YYLTYPE l, struct entry *e, unsigned char *stem);
-extern struct sense *sense_init(YYLTYPE l, struct entry *e);
-
-extern void bases_pri_save(YYLTYPE l, struct entry *e, unsigned char *lang, unsigned char *p);
-extern void bases_alt_save(YYLTYPE l, struct entry *e, unsigned char *p);
 extern struct loctok *loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok);
-
-extern struct f2 *form_init(YYLTYPE l, struct entry *e);
-
-extern struct meta *meta_init(struct entry *e);
-extern void meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *name, void *val);
-
-extern struct equiv *equiv_init(struct entry *e, unsigned char *lang, unsigned char *text);
-extern struct pleiades *pleiades_init(struct entry *e,
-				      unsigned char *coord, unsigned char *id, unsigned char *uid);
 
 extern void msglist_init(void);
 extern void msglist_print(FILE *fp);
@@ -328,5 +265,31 @@ extern void msglist_err(YYLTYPE *locp, char *s);
 extern void msglist_verr(YYLTYPE *locp, char *s, ...);
 extern void msglist_averr(YYLTYPE *locp, char *s, va_list ap);
 extern void msglist_print(FILE *fp);
+
+extern struct alias *bld_alias(YYLTYPE l, struct entry *e);
+extern void bld_allow(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs);
+extern void bld_bases_pri(YYLTYPE l, struct entry *e, unsigned char *lang, unsigned char *p);
+extern void bld_bases_alt(YYLTYPE l, struct entry *e, unsigned char *a);
+extern struct cbd *bld_cbd(void);
+extern void bld_cbd_setup(struct cbd *c);
+extern void bld_cbd_term(struct cbd *c);
+extern void bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg);
+extern void bld_edit(struct entry *e, char ctxt, char type);
+extern void bld_edit_entry(struct entry *e, char type);
+extern struct sense *bld_edit_sense(struct entry *e, char type);
+extern void bld_edit_why(struct entry *e, char *why);
+extern struct entry *bld_entry(YYLTYPE l, struct cbd *c);
+extern struct equiv *bld_equiv(struct entry *e, unsigned char *lang, unsigned char *text);
+extern struct f2 *bld_form(YYLTYPE l, struct entry *e);
+extern void bld_form_setup(struct entry *e, struct f2 *fp);
+extern struct loctok *bld_loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok);
+extern struct meta *bld_meta_create(struct entry *e);
+extern void bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *name, void *val);
+extern struct parts *bld_parts(YYLTYPE l, struct entry *e);
+extern struct pleiades *bld_pleiades(struct entry *e, unsigned char *coord, unsigned char *id, unsigned char *uid);
+extern void bld_proplist(struct cbd *c, char *text);
+extern struct sense *bld_sense(YYLTYPE l, struct entry *e);
+extern void bld_stem(YYLTYPE l, struct entry *e, unsigned char *stem);
+extern struct tag *bld_tag(YYLTYPE l, struct entry *e, const char *name, unsigned char *val);
 
 #endif
