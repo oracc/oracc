@@ -19,9 +19,11 @@ ITERATOR(struct cbd*cbd)
 }
 
 static void
-f_alias(struct alias *a)
+i_aliases(struct entry *e)
 {
-  f1(a->cgp->tight);
+  List_node *lp;
+  for (lp = e->alias->first; lp; lp = lp->next)
+    f1(((struct alias *)(lp->data))->cgp->tight);
 }
 
 static void
@@ -30,9 +32,8 @@ f_allow(struct entry *e)
   List_node *lp;
   for (lp = e->allows->first; lp; lp = lp->next)
     {
-      unsigned char *lhs = ((ucp)(lp->data));
-      unsigned char *rhs = hash_find(e->b_allow, lhs);
-      f2(lhs, rhs);
+      struct allow *ap = lp->data;
+      f2(ap->lhs, ap->rhs);
     }
 }
 

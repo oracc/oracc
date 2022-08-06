@@ -3,10 +3,12 @@
 #include "f2.h"
 
 struct f2 *
-form_init(struct entry *e)
+form_init(YYLTYPE l, struct entry *e)
 {
   static struct f2 *f2p;
   f2p = mb_new(e->owner->formsmem);
+  f2p->file = (ucp)l.file;
+  f2p->lnum = l.first_line;
   list_add(e->forms, f2p);
   return f2p;
 }

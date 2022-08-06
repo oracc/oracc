@@ -8,12 +8,12 @@ iterate_entries(struct entry *e)
 {
   curr_fncs[if_entry](e);
   if (list_len(e->aliases))
-    list_exec(e->aliases, (list_exec_func*)curr_fncs[if_alias]);
+    curr_fncs[if_alias](e);
   if (list_len(e->dcfs))
     curr_fncs[if_dcfs](e);
   if (e->parts)
     curr_fncs[if_parts](e);
-  if (e->allows && list_len(e->allows))
+  if (list_len(e->allows))
     curr_fncs[if_allow](e);
   if (e->phon)
     curr_fncs[if_phon](e);

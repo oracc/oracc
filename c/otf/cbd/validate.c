@@ -11,7 +11,7 @@ static void v_proplist(const char *p);
 #define f3(a,b,c)
 
 void
-ITERATOR(struct cbd*cbd)
+validator(struct cbd*cbd)
 {
   iterator_fnc *fncs = ifnc_init();
   iterator(cbd,fncs);
@@ -19,9 +19,11 @@ ITERATOR(struct cbd*cbd)
 }
 
 static void
-v_alias(struct alias *a)
+v_aliases(struct entry *e)
 {
-  f1(a->cgp->tight);
+  List_node *lp;
+  for (lp = e->aliases->first; lp; lp = lp->next)
+    f1(((struct alias *)(lp->data))->cgp->tight);
 }
 
 static void
@@ -30,9 +32,10 @@ v_allow(struct entry *e)
   List_node *lp;
   for (lp = e->allows->first; lp; lp = lp->next)
     {
-      unsigned char *lhs = ((ucp)(lp->data));
-      unsigned char *rhs = hash_find(e->b_allow, lhs);
-      f2(lhs, rhs);
+      struct allow *ap = lp->data;
+      f2(ap->lhs, ap->rhs);
+      /* check that lhs and rhs both resolve to gdl sigs */
+      /* for strict: check that lhs and rhs both occur as primary bases */
     }
 }
 

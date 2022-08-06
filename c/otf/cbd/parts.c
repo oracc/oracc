@@ -4,9 +4,12 @@
 struct parts *curr_parts;
 
 struct parts *
-parts_init(struct entry *e)
+parts_init(YYLTYPE l, struct entry *e)
 {
-  return (e->parts =  mb_new(e->owner->partsmem));
+  struct parts *pp = mb_new(e->owner->partsmem);
+  pp->l.file = l.file;
+  pp->l.line = l.first_line;
+  return (e->parts = pp);
 }
 
 void

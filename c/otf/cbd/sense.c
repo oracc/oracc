@@ -4,9 +4,11 @@
 extern int sigs;
 
 struct sense *
-sense_init(struct entry *e)
+sense_init(YYLTYPE l, struct entry *e)
 {
   struct sense *sp = mb_new(e->owner->sensesmem);
+  sp->l.file = l.file;
+  sp->l.line = l.first_line;
   list_add(e->senses, sp);
   return sp;
 }

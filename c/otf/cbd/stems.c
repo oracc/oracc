@@ -2,7 +2,7 @@
 #include "gx.h"
 
 void
-stem_init(struct entry *e, unsigned char *stem)
+stem_init(YYLTYPE l, struct entry *e, unsigned char *stem)
 {
 
 #if 0
@@ -12,6 +12,7 @@ stem_init(struct entry *e, unsigned char *stem)
 
   if (!e->stems)
     e->stems = list_create(LIST_SINGLE);
+  
   list_add(e->stems, stem);
 
 #if 0

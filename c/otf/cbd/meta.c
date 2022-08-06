@@ -8,7 +8,7 @@ meta_init(struct entry *e)
 }
 
 void
-meta_add(struct entry *e, struct meta *mp, int tok, void *val)
+meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *name, void *val)
 {
   List *lp = NULL;
   struct metaorder *orderp;
@@ -72,6 +72,9 @@ meta_add(struct entry *e, struct meta *mp, int tok, void *val)
     {
       list_add(lp, val);
       orderp = mb_new(e->owner->metaordermem);
+      orderp->l.file = l.file;
+      orderp->l.line = l.first_line;
+      orderp->name = name;
       orderp->tok = tok;
       orderp->val = val;
       if (!mp->order)

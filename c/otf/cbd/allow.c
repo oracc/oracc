@@ -2,13 +2,20 @@
 #include "gx.h"
 
 void
-allow_init(struct entry *e, unsigned char *lhs, unsigned char *rhs)
+allow_init(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs)
 {
+  struct allow *ap = NULL;
+  
   if (!e->b_allow)
     e->b_allow = hash_create(1024);
   if (!e->allows)
     e->allows = list_create(LIST_SINGLE);
-  list_add(e->allows, lhs);
+  ap = mb_new(e->owner->allowmem);
+  ap->lhs = lhs;
+  ap->rhs = rhs;
+  ap->l.file = l.file;
+  ap->l.line = l.first_line;
+  list_add(e->allows, ap);
   hash_add(e->b_allow, lhs, rhs);
 }
 

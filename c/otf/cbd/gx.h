@@ -26,6 +26,8 @@ typedef void (*iterator_fnc)(void*);
 typedef struct {
   const char *file;
   int line;
+  int col_beg;
+  int col_end;
 } locator;
 
 extern Hash_table *cbds;
@@ -49,15 +51,23 @@ struct cbd {
   Hash_table *cofs;
   Hash_table *psus;
   struct mb *aliasmem;
+  struct mb *allowmem;
   struct mb *cgpmem;
   struct mb *editmem;
   struct mb *equivmem;
   struct mb *formsmem;
+  struct mb *loctokmem;
   struct mb *metamem;
   struct mb *metaordermem;
   struct mb *partsmem;
   struct mb *pleiadesmem;
   struct mb *sensesmem;
+  struct mb *tagmem;
+};
+
+struct loctok {
+  locator l;
+  unsigned char *tok;
 };
 
 struct cgp {
@@ -89,19 +99,19 @@ struct entry {
   Hash_table *b_alt;
   Hash_table *b_sig;
   Hash_table *b_allow;
+  List *allows; /* struct allow * */
   List *aliases;
   List *dcfs;
   Hash_table *hdcfs;
   struct parts *parts;
-  List *allows; /* just the LHS so we can retrieve from b_allow in glossary order for identity output */
   List *bases; /* list of base components in @bases; list data is another list, first element is pri, rest are alt */
   List *forms;
   List *senses;
   Hash_table *hsenses; /* needed for building cbd from sigs */
-  unsigned char *phon;
-  unsigned char *root;
+  struct tag *phon;
+  struct tag *root;
   List *stems;
-  unsigned char *disc;
+  struct tag *disc;
   int bang;
   int beginsenses;
   int usage;
@@ -109,6 +119,12 @@ struct entry {
   struct cbd *owner;
   struct edit *ed;
   struct meta *meta;
+};
+
+struct allow {
+  locator l;
+  unsigned char *lhs;
+  unsigned char *rhs;
 };
 
 struct meta {
@@ -126,7 +142,9 @@ struct meta {
 };
 
 struct metaorder {
+  locator l;
   int tok;
+  const char *name;
   void *val;
 };
 
@@ -148,7 +166,7 @@ struct sense {
   unsigned const char *lng;
   unsigned const char *mng;
   unsigned const char *sid;
-  unsigned char *disc;
+  struct tag *disc;
   int bang;
   struct entry *owner;
   struct edit *ed;
@@ -156,6 +174,7 @@ struct sense {
 };
 
 struct equiv {
+  locator l;
   unsigned char *lang;
   unsigned char *text;
 };
@@ -168,6 +187,9 @@ struct isslp {
 };
 
 struct pleiades {
+  locator l_coord;
+  locator l_id;
+  locator l_uid;
   unsigned char *coord;
   unsigned char *id;
   unsigned char *uid;
@@ -176,6 +198,12 @@ struct pleiades {
 struct cbdpos {
   const char *name;
   int val;
+};
+
+struct tag {
+  locator l;
+  const char *name;
+  unsigned char *val;
 };
 
 struct cbdtag {
@@ -196,7 +224,8 @@ extern const char *errmsg_fn;
 
 struct cbd * cbd_init(void);
 void cbd_setup(struct cbd*c);
-struct entry * entry_init(struct cbd* c);
+
+struct entry * entry_init(YYLTYPE l, struct cbd* c);
 
 void common_init(void);
 void common_term(void);
@@ -257,22 +286,24 @@ extern void entry_edit(struct entry *e, char type);
 extern struct sense *sense_edit(struct entry *e, char type);
 extern void edit_save(struct entry *e, char ctxt, char type);
 extern void edit_why(struct entry *e, char *why);
-extern struct alias *alias_init(struct entry *e);
-extern void dcf_init(struct entry *e, unsigned char *dcf, unsigned char *dcfarg);
-extern struct parts *parts_init(struct entry *e);
+extern struct alias *alias_init(YYLTYPE l, struct entry *e);
+extern void dcf_init(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg);
+extern struct parts *parts_init(YYLTYPE l, struct entry *e);
+extern struct tag *tag_init(YYLTYPE l, struct entry *e, const char *name, unsigned char *val);
 extern void identity(struct cbd*c);
 extern void proplist_add(struct cbd *c, char *text);
-extern void allow_init(struct entry *e, unsigned char *lhs, unsigned char *rhs);
-extern void stem_init(struct entry *e, unsigned char *stem);
-extern struct sense *sense_init(struct entry *e);
+extern void allow_init(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs);
+extern void stem_init(YYLTYPE l, struct entry *e, unsigned char *stem);
+extern struct sense *sense_init(YYLTYPE l, struct entry *e);
 
-extern void bases_pri_save(struct entry *e, unsigned char *p);
-extern void bases_alt_save(struct entry *e, unsigned char *p);
+extern void bases_pri_save(YYLTYPE l, struct entry *e, unsigned char *p);
+extern void bases_alt_save(YYLTYPE l, struct entry *e, unsigned char *p);
+extern struct loctok *loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok);
 
-extern struct f2 *form_init(struct entry *e);
+extern struct f2 *form_init(YYLTYPE l, struct entry *e);
 
 extern struct meta *meta_init(struct entry *e);
-extern void meta_add(struct entry *e, struct meta *mp, int tok, void *val);
+extern void meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *name, void *val);
 
 extern struct equiv *equiv_init(struct entry *e, unsigned char *lang, unsigned char *text);
 extern struct pleiades *pleiades_init(struct entry *e,

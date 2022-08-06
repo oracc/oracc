@@ -1,6 +1,6 @@
 #include "iterator.h"
 
-static void v_alias(struct alias *a);
+static void v_aliases(struct entry *e);
 static void v_allow(struct entry *e);
 static void v_bases(struct entry *e);
 static void v_cbd(struct cbd *c);
@@ -17,7 +17,7 @@ static void v_senses(struct entry *e);
 static void v_stems(struct entry *e);
 
 static struct ifnc_map imap[] = {
-  { if_alias , (iterator_fnc)v_alias },
+  { if_alias , (iterator_fnc)v_aliases },
   { if_allow , (iterator_fnc)v_allow },
   { if_bases , (iterator_fnc)v_bases },
   { if_cbd , (iterator_fnc)v_cbd },

@@ -15,7 +15,7 @@ init_entry(void)
 }
 
 struct entry *
-entry_init(struct cbd* c)
+entry_init(YYLTYPE l, struct cbd* c)
 {
   struct entry *e = init_entry();
   e->l = c->l;
@@ -23,6 +23,8 @@ entry_init(struct cbd* c)
   e->lang = c->lang;
   list_add(c->entries, e);
   e->meta = mb_new(c->metamem);
+  e->l.file = l.file;
+  e->l.line = l.first_line;
   return e;
 }
 

@@ -17,9 +17,11 @@ identity(struct cbd*cbd)
 }
 
 static void
-i_alias(struct alias *a)
+i_aliases(struct entry *e)
 {
-  printf("@alias %s\n", a->cgp->tight);
+  List_node *lp;
+  for (lp = e->aliases->first; lp; lp = lp->next)
+    printf("@alias %s\n", ((struct alias *)(lp->data))->cgp->tight);
 }
 
 static void
@@ -28,9 +30,8 @@ i_allow(struct entry *e)
   List_node *lp;
   for (lp = e->allows->first; lp; lp = lp->next)
     {
-      unsigned char *lhs = ((ucp)(lp->data));
-      unsigned char *rhs = hash_find(e->b_allow, lhs);
-      printf("@allow %s = %s\n", lhs, rhs);
+      struct allow *ap = lp->data;
+      printf("@allow %s = %s\n", ap->lhs, ap->rhs);
     }
 }
 
@@ -48,7 +49,7 @@ i_bases(struct entry *e)
 	printf("; ");
       else
 	printf(" ");
-      printf("%s", (const char *)inner->data);
+      printf("%s", ((struct loctok *)(inner->data))->tok);
       if (list_len(bp) > 1)
 	{
 	  int j;
@@ -57,7 +58,7 @@ i_bases(struct entry *e)
 	    {
 	      if (j++)
 		printf(", ");
-	      printf("%s", (const char *)inner->data);
+	      printf("%s", ((struct loctok *)(inner->data))->tok);
 	    }
 	  printf(")");
 	}
@@ -122,7 +123,7 @@ i_entry(struct entry *e)
 	}
     }
   if (e->disc)
-    printf("@disc %s\n", e->disc);
+    printf("@disc %s\n", e->disc->val);
 }
 
 static void
@@ -243,7 +244,7 @@ i_parts(struct entry *e)
 static void
 i_phon(struct entry *e)
 {
-  printf("@phon %s\n", (ccp)e->phon);
+  printf("@phon %s\n", (ccp)e->phon->val);
 }
 
 static void
@@ -255,7 +256,7 @@ i_proplist(const char *p)
 static void
 i_root(struct entry *e)
 {
-  printf("@root %s\n", (ccp)e->root);
+  printf("@root %s\n", (ccp)e->root->val);
 }
 
 static void
@@ -313,7 +314,7 @@ i_senses(struct entry *e)
 	    }
 	}
       if (sp->disc)
-	printf("@disc %s\n", sp->disc);
+	printf("@disc %s\n", sp->disc->val);
     }
   
   if (e->beginsenses)
