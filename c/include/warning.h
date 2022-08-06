@@ -21,4 +21,8 @@ extern void vnotice2(const char *myfile, int mylnum, const char *fmt,...);
 extern void warning(const char *str);
 extern void print_error_count(FILE *fp, int force);
 extern void warning_init(void);
+extern void warning_msglist(void);
+extern void msglist_warning(const char *file, int ln, const char *str);
+extern void msglist_vwarning(const char *file, int ln, const char *str, va_list ap);
+
 #endif/*WARNING_H_*/

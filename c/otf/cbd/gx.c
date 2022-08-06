@@ -65,6 +65,8 @@ main(int argc, char **argv)
   else
     cbd(file);
 
+  validator(curr_cbd);
+  
   if (identity_output)
     identity(curr_cbd);
   

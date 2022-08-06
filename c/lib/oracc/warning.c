@@ -16,6 +16,8 @@ FILE*f_log;
 int nwarning = 0;
 int nnotice = 0;
 
+int use_msglist = 0;
+
 const char *phase = NULL;
 const char *textid = NULL;
 
@@ -26,6 +28,12 @@ warning_init(void)
 }
 
 void
+warning_msglist(void)
+{
+  use_msglist = 1;
+}
+
+void
 vwarning(const char *fmt,...)
 {
   va_list args;
@@ -33,18 +41,27 @@ vwarning(const char *fmt,...)
   if (!lstatus++)
     {
 #endif
-      va_start(args,fmt);
-      if (atf_cbd_err)
-	fprintf(f_log,"%d: ",cbd_err_line);
-      else if (with_textid)
-	fprintf(f_log,"%s:%d:%s: ",file ? file : "",lnum,textid ? textid : textid);
+      if (use_msglist)
+	{
+	  va_start(args, fmt);
+	  msglist_vwarning(file, atf_cbd_err ? cbd_err_line : lnum, fmt, args);
+	  va_end(args);
+	}
       else
-	fprintf(f_log,"%s:%d: ",file,lnum);
-      if (phase)
-	fprintf(f_log,"(%s) ", phase);
-      (void)vfprintf(f_log,fmt,args);
-      va_end(args);
-      (void)fputc('\n',f_log);
+	{
+	  va_start(args,fmt);
+	  if (atf_cbd_err)
+	    fprintf(f_log,"%d: ",cbd_err_line);
+	  else if (with_textid)
+	    fprintf(f_log,"%s:%d:%s: ",file ? file : "",lnum,textid ? textid : textid);
+	  else
+	    fprintf(f_log,"%s:%d: ",file,lnum);
+	  if (phase)
+	    fprintf(f_log,"(%s) ", phase);
+	  (void)vfprintf(f_log,fmt,args);
+	  va_end(args);
+	  (void)fputc('\n',f_log);
+	}
       ++nwarning;
 #ifndef NEW_ERROR_RECOVERY
     }
@@ -88,17 +105,24 @@ warning(const char *str)
   if (!lstatus++)
     {
 #endif
-      if (atf_cbd_err)
-	fprintf(f_log,"%d: ",cbd_err_line);
-      else if (with_textid)
-	fprintf(f_log,"%s:%d:%s: ",file,lnum,textid);
+      if (use_msglist)
+	{
+	  msglist_warning(file, atf_cbd_err ? cbd_err_line : lnum, str);
+	}
       else
-	fprintf(f_log,"%s:%d: ",file,lnum);
-
-      if (phase)
-	fprintf(f_log,"(%s) ", phase);
-
-      fprintf(f_log, "%s\n", str);
+	{
+	  if (atf_cbd_err)
+	    fprintf(f_log,"%d: ",cbd_err_line);
+	  else if (with_textid)
+	    fprintf(f_log,"%s:%d:%s: ",file,lnum,textid);
+	  else
+	    fprintf(f_log,"%s:%d: ",file,lnum);
+	  
+	  if (phase)
+	    fprintf(f_log,"(%s) ", phase);
+	  
+	  fprintf(f_log, "%s\n", str);
+	}
       ++nwarning;
 
 #ifndef NEW_ERROR_RECOVERY

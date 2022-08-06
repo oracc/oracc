@@ -8,6 +8,7 @@ void
 msglist_init(void)
 {
   msglist = list_create(LIST_SINGLE);
+  warning_msglist();
 }
 
 void
@@ -80,6 +81,24 @@ msglist_verr(YYLTYPE *locp, char *s, ...)
       msglist_averr(locp, s, ap);
       va_end(ap);
     }
+}
+
+void
+msglist_warning(const char *file, int ln, const char *str)
+{
+  static YYLTYPE l;
+  l.file = (char*)file;
+  l.first_line = ln;
+  msglist_err(&l,(char*)str);
+}
+
+void
+msglist_vwarning(const char *file, int ln, const char *str, va_list ap)
+{
+  static YYLTYPE l;
+  l.file = (char*)file;
+  l.first_line = ln;
+  msglist_averr(&l,(char*)str,ap);
 }
 
 void

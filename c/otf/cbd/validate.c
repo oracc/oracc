@@ -15,6 +15,7 @@ validator(struct cbd*cbd)
 {
   iterator_fnc *fncs = ifnc_init();
   iterator(cbd,fncs);
+  msglist_print(stderr);
   free(fncs);
 }
 
@@ -23,7 +24,11 @@ v_aliases(struct entry *e)
 {
   List_node *lp;
   for (lp = e->aliases->first; lp; lp = lp->next)
-    f1(((struct alias *)(lp->data))->cgp->tight);
+    {
+      struct alias *ap = lp->data;
+      lnum = ap->l.line; file = ap->l.file;
+      vwarning("vwarning test on alias %s", ap->cgp->tight);
+    }
 }
 
 static void
@@ -34,6 +39,8 @@ v_allow(struct entry *e)
     {
       struct allow *ap = lp->data;
       f2(ap->lhs, ap->rhs);
+      lnum = ap->l.line; file = ap->l.file;
+      warning("validating @allow\n");
       /* check that lhs and rhs both resolve to gdl sigs */
       /* for strict: check that lhs and rhs both occur as primary bases */
     }
@@ -72,7 +79,7 @@ v_bases(struct entry *e)
 static void
 v_cbd(struct cbd *c)
 {
-  c->project, c->lang, c->name;
+  f3(c->project, c->lang, c->name);
   if (list_len(c->proplists))
     list_exec(c->proplists, (list_exec_func*)v_proplist);
 }
