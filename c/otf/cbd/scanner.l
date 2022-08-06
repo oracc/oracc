@@ -96,6 +96,7 @@ int mystate = 0;
 
 ^@bases[ \t]*";"[ \t]*	 { BEGIN ss(xBP); basesc("initial"); return(BASES); }
 ^@bases[ \t]*	 	 { BEGIN ss(xBP); return(BASES); }
+<xBP>%[^ \t\n]+[ \t]*	  { ytdupn(1); return(LANGSPEC); }
 <xBP>[ \t]*";"[ \t]*/\n	  { BEGIN ss(0); yycolumn = 1; basesc("final"); }
 <xBP>\;[ \t]*\;[ \t]*     { BEGIN ss(xBP); basesc("double"); }
 <xBP>\;[ \t]+    	  { BEGIN ss(xBP); }

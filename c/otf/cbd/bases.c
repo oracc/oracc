@@ -5,14 +5,16 @@ static List *curr_base_list = NULL;
 
 /* At parse time we just save the bases in a list of lists */
 void
-bases_pri_save(YYLTYPE l, struct entry *e, unsigned char *p)
+bases_pri_save(YYLTYPE l, struct entry *e, unsigned char *lang, unsigned char *p)
 {
   if (p && strlen((ccp)p))
     {
+      struct loctok *ltp = loctok(&l,e,p);
+      ltp->lang = lang;
       if (!e->bases)
 	e->bases = list_create(LIST_SINGLE);
       list_add(e->bases, (curr_base_list = list_create(LIST_SINGLE)));
-      list_add(curr_base_list, loctok(&l,e,p));
+      list_add(curr_base_list, ltp);
     }
   else
     {

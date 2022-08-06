@@ -8,7 +8,7 @@
 @phon /e/
 @root a
 @stems R rr
-@bases a (e₄, illu); a₂ (aₓ(DA), eₓ(DA))
+@bases a (e₄, illu); a₂ (aₓ(DA), eₓ(DA)); %e e
 @form a %sux
 @form a /a
 @form a *b

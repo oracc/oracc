@@ -45,11 +45,15 @@ i_bases(struct entry *e)
     {
       List *bp = ((List *)(outer->data));
       List_node *inner = bp->first;
+      struct loctok *ltp = inner->data;
       if (i++)
 	printf("; ");
       else
 	printf(" ");
-      printf("%s", ((struct loctok *)(inner->data))->tok);
+
+      if (ltp->lang)
+	printf("%%%s ", ltp->lang);
+      printf("%s", ltp->tok); 
       if (list_len(bp) > 1)
 	{
 	  int j;

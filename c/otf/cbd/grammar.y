@@ -183,7 +183,8 @@ baselist:    base
 base: 	     base_pri
 	     | base_pri base_alt
 
-base_pri:	BASE_PRI          { bases_pri_save(@1, curr_entry, (ucp)$1); }
+base_pri:	BASE_PRI          { bases_pri_save(@1, curr_entry, NULL, (ucp)$1); }
+	|	LANGSPEC BASE_PRI { bases_pri_save(@1, curr_entry, (ucp)$1, (ucp)$2); }
 
 base_alt: 	BASE_ALT          { bases_alt_save(@1, curr_entry, (ucp)$1); }
 	     |	base_alt BASE_ALT { bases_alt_save(@1, curr_entry, (ucp)$2); }

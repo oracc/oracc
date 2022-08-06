@@ -72,6 +72,7 @@ struct cbd {
 struct loctok {
   locator l;
   unsigned char *tok;
+  unsigned char *lang;
 };
 
 struct cgp {
@@ -306,7 +307,7 @@ extern void allow_init(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned 
 extern void stem_init(YYLTYPE l, struct entry *e, unsigned char *stem);
 extern struct sense *sense_init(YYLTYPE l, struct entry *e);
 
-extern void bases_pri_save(YYLTYPE l, struct entry *e, unsigned char *p);
+extern void bases_pri_save(YYLTYPE l, struct entry *e, unsigned char *lang, unsigned char *p);
 extern void bases_alt_save(YYLTYPE l, struct entry *e, unsigned char *p);
 extern struct loctok *loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok);
 
