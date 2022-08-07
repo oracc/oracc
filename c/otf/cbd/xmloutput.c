@@ -11,9 +11,7 @@ static void xo_proplist(const char *p);
 #define f2(a,b)
 #define f3(a,b,c)
 
-static const char *xmlns =
-  "xmlns:c=\"http://oracc.org/ns/cbd/2.0\""
-  " xmlns=\"http://oracc.org/ns/cbd/2.0\"";
+static const char *cbd2ns = "http://oracc.org/ns/cbd/2.0";
 
 /* XMLIFY */
 
@@ -119,7 +117,17 @@ xo_bases(struct entry *e)
 static void
 xo_cbd(struct cbd *c)
 {
+#if 1
+  rnvxml_ea("cbd",
+	    "xmlns:c", cbd2ns,
+	    "xmlns", cbd2ns,
+	    "project", c->project,
+	    "xml:lang", c->lang,
+	    "name", c->name,
+	    NULL);
+#else
   fprintf(f_xml, "<cbd %s project=\"%s\" lang=\"%s\" name=\"%s\">", xmlns, c->project, c->lang, c->name);
+#endif
 }
 
 static void
@@ -176,7 +184,11 @@ xo_entry(struct entry *e)
 static void
 xo_end_cbd(struct cbd *c)
 {
+#if 1
+  rnvxml_ee("cbd");
+#else
   fprintf(f_xml, "</cbd>");
+#endif
 }
 
 static void
