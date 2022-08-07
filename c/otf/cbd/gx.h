@@ -236,6 +236,7 @@ extern void common_term(void);
 
 extern void identity(struct cbd*c);
 extern void validator(struct cbd*c);
+extern void xmloutput(struct cbd*c);
 
 extern struct cbdpos *cbdpos(const char *str, size_t len);
 extern void untab(unsigned char *s);

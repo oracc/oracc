@@ -1,0 +1,14 @@
+default namespace = "http://oracc.org/ns/cbd/2.0"
+namespace c = "http://oracc.org/ns/cbd/2.0"
+
+start = cbd
+
+cbd	 = element c:cbd { cbd.attr , entries } 
+
+cbd.attr = attribute project { text } ,
+	   attribute lang { text } ,
+	   attribute name { text }
+
+entries  = entry*
+
+entry    = element c:entry { text }

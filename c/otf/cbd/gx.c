@@ -5,12 +5,13 @@
 #include "runexpat.h"
 #include "xmlutil.h"
 #include "atf.h"
-#include "cdf.h"
 #include "gdl.h"
 #include "lang.h"
 #include "pool.h"
 #include "npool.h"
 #include "gx.h"
+#include "rnvif.h"
+#include "../lib/rnv/rnl.h"
 
 const char *errmsg_fn = NULL;
 
@@ -34,10 +35,12 @@ extern int math_mode;
 extern int cbd(const char *fname);
 extern int flex(const char *fname);
 
+static void cbd_rnc_init(void);
+
 int
 main(int argc, char **argv)
 {
-  options(argc,argv,"cdefikstv");
+  options(argc,argv,"cdefikstvx");
 
 #if 1
   file = argv[optind];
@@ -95,6 +98,12 @@ main(int argc, char **argv)
   if (identity_output)
     identity(curr_cbd);
 
+  if (xml_output)
+    {
+      cbd_rnc_init();
+      xmloutput(curr_cbd);
+    }
+  
   msglist_print(stderr);
   
   lang_term();
@@ -162,4 +171,17 @@ int opts(int och,char *oarg)
       return 1;
     }
   return 0;
+}
+
+void
+cbd_rnc_init(void)
+{
+  extern int cbdrnc_len;
+  extern char *cbdrnc(void);
+  if (validate)
+    {
+      char *cbd = cbdrnc();
+      rnc_start = rnl_s("ORACC_SCHEMA/cbd.rnc",cbd,cbdrnc_len);
+      status = !rnc_start;
+    }
 }

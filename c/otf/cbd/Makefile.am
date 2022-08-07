@@ -51,9 +51,13 @@ scanner.c: scanner.l grammar.tab.h
 
 scanner.o: scanner.c
 
+cbd_rnc.c: cbd.rnc
+	./mk_cbdrnc_c.plx >cbd_rnc.c
+
 gx_SOURCES = \
 	gx.c globals.c scanner.c grammar.tab.c \
-	builder.c iterator.c identity.c validate.c
+	builder.c iterator.c identity.c validate.c \
+	xmloutput.c cbd_rnc.c
 
 gx_LDADD = -lfl $(xLDADD)
 

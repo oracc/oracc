@@ -26,7 +26,7 @@ int _internal_argc;
 const char *V_opt = "";
 char *const*_internal_argv;
 Boolean doing_debug;
-const char *copyright_string = "Copyright(c) 1997-2009 Steve Tinney";
+const char *copyright_string = "Copyright(c) 1997-2022 Steve Tinney";
 extern Unsigned16 _msg_invoke_flag;
 static Boolean banner_done = FALSE;
 static Boolean show_command_line;
