@@ -1,5 +1,14 @@
 parts must be allowed more than once; need to go to list form and mod grammar.y as reqd
 
+need @gwl (GW-lang) vel sim to support @sense %LANG; also a @sensel to tie a sense to its preceding as a trans
+
+maybe @sense should not allow %lang--require that in the header @translang
+
+     @entry ur [dog] N
+     @gwl %fr chien
+     @sense N dog
+     @sensel %fr chien
+
 entry!
 entry*
 

@@ -25,6 +25,7 @@ extern int yylex(void);
 %token	<text>		OIDSPEC
 %token	<text>		DCF
 %token	<text>		SENSE
+%token	<text>		SENSEL
 %token	<text>		LANG
 %token	<text>		SGWSPEC
 %token	<text>		SIDSPEC
@@ -55,7 +56,7 @@ extern int yylex(void);
 
 %token ENTRY END_ENTRY SENSES END_SENSES PROJECT NAME ALIAS BASES FORM
        END_FORM PROPLIST RELATIONS MERGE PARTS RENAME WHY ALLOW PHON ROOT
-       STEM EDISC SDISC EOL CBD TRANSLANG
+       STEM EDISC SDISC EDISCL SDISCL EOL CBD TRANSLANG
 
 %start cbd
 
@@ -136,8 +137,18 @@ entry_block:    atentry
 	| 	atentry parts disc
 	| 	atentry disc
 
-disc: 		EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
-	    |	SDISC TEXTSPEC { curr_sense->disc = bld_tag(@1, curr_entry, "disc",(ucp)$2); }
+disc:	disc_en
+	|	disc_en disc_trs
+
+disc_en:	EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
+	|     	SDISC TEXTSPEC { curr_sense->disc = bld_tag(@1, curr_entry, "disc",(ucp)$2); }
+
+disc_trs:	disc_tr
+	|	disc_trs disc_tr
+		
+		
+disc_tr:	EDISCL LANGSPEC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
+	|     	SDISCL LANGSPEC TEXTSPEC 	{ curr_sense->disc = bld_tag(@1, curr_entry, "disc",(ucp)$2); }
 
 atentry: 	begin_entry cgp     { bld_entry_cgp(curr_entry); }
         |	'+' begin_entry cgp { bld_entry_cgp(curr_entry); 
@@ -283,23 +294,26 @@ senses:	      sense
 	      | senses sense
 	      ;
 
-sense:	      senseinfo
-	      | senseinfo disc
-	      | senseinfo modsense
-	      | senseinfo modsense disc
+sense:	      senseline
+	      | senseline disc
+	      | senseline modsense
+	      | senseline modsense disc
 
 sensesmeta:   sensemeta
 	      | sensesmeta sensemeta
 
-sensemeta:    senseinfo
-	      | senseinfo disc
-	      | senseinfo meta
-	      | senseinfo modsense
-	      | senseinfo modsense disc
-	      | senseinfo modsense disc meta
-	      | senseinfo disc meta
+sensemeta:    senseline
+	      | senseline disc
+	      | senseline meta
+	      | senseline modsense
+	      | senseline modsense disc
+	      | senseline modsense disc meta
+	      | senseline disc meta
 
-senseinfo:	atsense pos mng
+senseline:	senseline_en
+	|	senseline_en senseline_trs
+		
+senseline_en:	atsense pos mng
 	|	atsense sid pos mng
 	|	atsense sid sol pos mng
 	|	atsense sid sol sgw pos mng
@@ -309,12 +323,26 @@ senseinfo:	atsense pos mng
 	|	atsense sgw pos mng
 	;
 
-atsense:      	senselang
-        |	'+' senselang	{ bld_edit_sense(curr_entry, '+'); }
-	|	'-' senselang	{ bld_edit_sense(curr_entry, '-'); }
+senseline_trs:	senseline_tr
+	|     	senseline_trs senseline_tr
+	;
 
-senselang:	ssense
-	|	ssense slang
+senseline_tr:	atsensel slang pos mng
+	|	atsensel slang sid pos mng
+	|	atsensel slang sid sol pos mng
+	|	atsensel slang sid sol sgw pos mng
+	|	atsensel slang sid sgw pos mng
+	|	atsensel slang sol pos mng
+	|	atsensel slang sol sgw pos mng
+	|	atsensel slang sgw pos mng
+	;
+
+atsense:      	ssense
+        |	'+' ssense	{ bld_edit_sense(curr_entry, '+'); }
+	|	'-' ssense	{ bld_edit_sense(curr_entry, '-'); }
+
+atsensel:      	SENSEL 		{ curr_sense = bld_sense(@1, curr_entry); 
+		    		  if (curr_entry->beginsenses) { curr_meta = curr_sense->meta = bld_meta_create(curr_entry); } }
 
 ssense:		SENSE 		{ curr_sense = bld_sense(@1, curr_entry); 
 		    		  if (curr_entry->beginsenses) { curr_meta = curr_sense->meta = bld_meta_create(curr_entry); } }
