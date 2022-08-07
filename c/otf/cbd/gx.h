@@ -42,6 +42,7 @@ struct cbd {
   unsigned const char *lang;
   unsigned const char *name;  /* this is the name as given in @name */
   unsigned const char *trans;
+  unsigned const char *version;
   unsigned const char *iname; /* this is the internal name used as the hash key in cbds */
   struct npool *pool;
   struct xpd *xpd;
@@ -49,6 +50,7 @@ struct cbd {
   List *entries;
   List *edits;
   List *proplists;
+  List *relations;
   Hash_table *hentries;
   Hash_table *haliases;
   Hash_table *simple;
@@ -290,6 +292,7 @@ extern void bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, c
 extern struct parts *bld_parts(YYLTYPE l, struct entry *e);
 extern struct pleiades *bld_pleiades(struct entry *e, unsigned char *coord, unsigned char *id, unsigned char *uid);
 extern void bld_proplist(struct cbd *c, char *text);
+extern void bld_relations(struct cbd *c, char *text);
 extern struct sense *bld_sense(YYLTYPE l, struct entry *e);
 extern void bld_stem(YYLTYPE l, struct entry *e, unsigned char *stem);
 extern struct tag *bld_tag(YYLTYPE l, struct entry *e, const char *name, unsigned char *val);

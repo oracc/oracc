@@ -13,6 +13,7 @@ extern int yylex(void);
 %}
 %union { char *text; int i; }
 
+%token	ENDOF  0
 %token  <text> 		CF
 %token  <text> 		GW
 %token  <text> 		LANGSPEC
@@ -52,30 +53,54 @@ extern int yylex(void);
 %token	<i>		EQUIV
 %token	<i>		PLEIADES
 
-%token ENTRY END_ENTRY SENSES END_SENSES PROJECT NAME ALIAS BASES FORM END_FORM
-       PROPLIST MERGE PARTS RENAME WHY ALLOW PHON ROOT STEM EDISC SDISC EOL ENDOF
+%token ENTRY END_ENTRY SENSES END_SENSES PROJECT NAME ALIAS BASES FORM
+       END_FORM PROPLIST RELATIONS MERGE PARTS RENAME WHY ALLOW PHON ROOT
+       STEM EDISC SDISC EOL CBD TRANSLANG
 
 %start cbd
 
 %%
 
 cbd: 		header entrylist { return(parser_status); }
-	|      	header  { return(parser_status); }
-	|	/* empty */ { return(parser_status); }
+	|      	header  	 { return(parser_status); }
+	|	/* empty */ 	 { return(parser_status); }
 
-header: 	atproject atlang atname
-	| 	atproject atlang atname proplist
+header:		reqheader
+	|	reqheader optheader
 
-atproject: PROJECT PROJSPEC { curr_cbd->project = (ucp)yylval.text; } ;
+reqheader: 	atproject atlang atname
 
-atlang:    LANG    LANGSPEC { curr_cbd->lang = (ucp)yylval.text; } ;
+optheader:	optheader_one
+	|	optheader_multi
+	|	optheader_one optheader_multi
+	|	optheader_multi optheader_one
+			
 
-atname:    NAME    TEXTSPEC { curr_cbd->name = (ucp)yylval.text; } ;
+optheader_one: 	atcbd
+	|	attranslang
+	|	atcbd attranslang
+	|	attranslang atcbd
 
-proplist: 	atproplist
-	|	proplist atproplist
+optheader_multi:
+		atproplist
+	|	atrelations
+	|	optheader_multi atproplist
+	|	optheader_multi atrelations
+	;
+
+atproject: PROJECT PROJSPEC { curr_cbd->project = (ucp)yylval.text; }
+
+atlang:    LANG    LANGSPEC { curr_cbd->lang = (ucp)yylval.text; }
+
+atname:    NAME    TEXTSPEC { curr_cbd->name = (ucp)yylval.text; }
+
+atcbd:	   CBD     WORDSPEC { curr_cbd->version = (ucp)yylval.text; }
 
 atproplist:	PROPLIST TEXTSPEC { bld_proplist(curr_cbd, yylval.text); }
+
+atrelations:	RELATIONS TEXTSPEC { bld_relations(curr_cbd, yylval.text); }
+
+attranslang:	TRANSLANG LANGSPEC { curr_cbd->trans = (ucp)yylval.text; }
 
 cgplist: cgp
 	 | cgplist cgp
@@ -97,7 +122,7 @@ entry: 		entry_block end_entry
 	|	entry_block meta end_entry
 	|	entry_block entry_block end_entry { lyyerror(@2,"duplicate @entry or missing @end entry"); }
 	|	entry_block senses_block lang_block end_entry  { lyyerror(@3, "lang block fields must come before senses block"); }
-	|	entry_block ENDOF 	{ lyyerror(@2,"input ended without @end entry"); return(1); }
+	|	entry_block ENDOF 		  { lyyerror(@2,"input ended without @end entry"); return(1); }
 
 entry_block:    atentry
 	|	atentry aliases

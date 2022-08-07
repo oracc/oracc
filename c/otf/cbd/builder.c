@@ -402,6 +402,14 @@ bld_proplist(struct cbd *c, char *text)
   list_add(c->proplists, text);
 }
 
+void
+bld_relations(struct cbd *c, char *text)
+{
+  if (!c->relations)
+    c->relations = list_create(LIST_SINGLE);
+  list_add(c->relations, text);
+}
+
 struct sense *
 bld_sense(YYLTYPE l, struct entry *e)
 {

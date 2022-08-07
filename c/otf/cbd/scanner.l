@@ -68,7 +68,10 @@ char *ssnames[] = {
 ^@lang[ \t]+		 { BEGIN ss(xLANG); return LANG; }
 <xLANG>[^ \t\n]+[ \t]*   { BEGIN ss(0); dup(unspace(yytext)); return LANGSPEC; }
 ^@name[\t ]+		 { BEGIN ss(xTEXT); return NAME; }
+^@cbd[\t ]+	 	 { BEGIN ss(xWORD); return CBD; }
 ^@proplist[\t ]+	 { BEGIN ss(xTEXT); return PROPLIST; }
+^@relations[\t ]+	 { BEGIN ss(xTEXT); return RELATIONS; }
+^@translang[\t ]+	 { BEGIN ss(xLANG); return TRANSLANG; }
 
 ^[+-]			 { BEGIN ss(xENTSNS); return yytext[0]; }
 <xENTSNS>@entry[\t ]+	 { BEGIN ss(after_xENTSNS); return(ENTRY); }

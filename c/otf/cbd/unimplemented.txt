@@ -1,7 +1,10 @@
+parts must be allowed more than once; need to go to list form and mod grammar.y as reqd
+
 entry!
 entry*
+
 sense!
 form!
+
 >!
 >>! -- do we need to allow force now that cbd is read before validating edits?
-
