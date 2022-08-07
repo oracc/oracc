@@ -53,7 +53,7 @@
   <!-- copy recognised tags unchanged -->
   <xsl:template match="esp:* | h:html | h:head | h:body | h:meta | h:p | h:pre
 		       | h:ol | h:ul | h:li | h:em | h:b | h:i | h:q | h:blockquote 
-		       | h:abbr | h:acronym | h:br | h:h2 | h:h3 | h:code | h:kbd 
+		       | h:abbr | h:acronym | h:br | h:h2 | h:h3 | h:h4 | h:h5 | h:h6 | h:code | h:kbd 
 		       | h:table | h:th | h:tr | h:td | h:thead | h:tbody | h:caption | h:tfoot
 		       | h:dl | h:dd | h:dt | h:strong | h:style | h:sup | h:sub | h:address 
 		       | h:object | h:param | h:embed | h:div | h:script | h:small | h:iframe
