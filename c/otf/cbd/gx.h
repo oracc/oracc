@@ -56,6 +56,8 @@ struct cbd {
   Hash_table *simple;
   Hash_table *cofs;
   Hash_table *psus;
+  char *i18nstr; 	/* content of the @i18n header tag */
+  List *i18n;		/* list of i18n langs from @i18n tag in header */
   struct mb *aliasmem;
   struct mb *allowmem;
   struct mb *cgpmem;
@@ -63,6 +65,7 @@ struct cbd {
   struct mb *entrymem;
   struct mb *equivmem;
   struct mb *formsmem;
+  struct mb *i18nmem;
   struct mb *loctokmem;
   struct mb *metamem;
   struct mb *metaordermem;
@@ -70,6 +73,13 @@ struct cbd {
   struct mb *pleiadesmem;
   struct mb *sensesmem;
   struct mb *tagmem;
+};
+
+/* Store translated data */
+struct i18n {
+  locator l;
+  const char *lang;
+  void *data;
 };
 
 struct loctok {
@@ -127,6 +137,8 @@ struct entry {
   struct cbd *owner;
   struct edit *ed;
   struct meta *meta;
+  List *gwls; /* list of struct i18n with (char*) data */
+  List *discls; /* list of struct i18n with (char*) data; one day this will be OTF inline tree */
 };
 
 struct allow {
@@ -181,6 +193,7 @@ struct sense {
   struct entry *owner;
   struct edit *ed;
   struct meta *meta;
+  List *sensels; /* list of translated senses with (struct sense *) data--struct has l and lng so i18n not needed */
 };
 
 struct equiv {
@@ -277,6 +290,7 @@ extern struct cbd *bld_cbd(void);
 extern void bld_cbd_setup(struct cbd *c);
 extern void bld_cbd_term(struct cbd *c);
 extern void bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg);
+extern void bld_discl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text, int e_or_s);
 extern void bld_edit(struct entry *e, char ctxt, char type);
 extern void bld_edit_entry(struct entry *e, char type);
 extern struct sense *bld_edit_sense(struct entry *e, char type);
@@ -286,6 +300,7 @@ extern void bld_entry_cgp(struct entry *e);
 extern struct equiv *bld_equiv(struct entry *e, unsigned char *lang, unsigned char *text);
 extern struct f2 *bld_form(YYLTYPE l, struct entry *e);
 extern void bld_form_setup(struct entry *e, struct f2 *fp);
+extern void bld_gwl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text);
 extern struct loctok *bld_loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok);
 extern struct meta *bld_meta_create(struct entry *e);
 extern void bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *name, void *val);
@@ -294,6 +309,7 @@ extern struct pleiades *bld_pleiades(struct entry *e, unsigned char *coord, unsi
 extern void bld_proplist(struct cbd *c, char *text);
 extern void bld_relations(struct cbd *c, char *text);
 extern struct sense *bld_sense(YYLTYPE l, struct entry *e);
+extern struct sense *bld_sensel(YYLTYPE l, struct entry *e);
 extern void bld_stem(YYLTYPE l, struct entry *e, unsigned char *stem);
 extern struct tag *bld_tag(YYLTYPE l, struct entry *e, const char *name, unsigned char *val);
 

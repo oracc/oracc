@@ -56,7 +56,7 @@ extern int yylex(void);
 
 %token ENTRY END_ENTRY SENSES END_SENSES PROJECT NAME ALIAS BASES FORM
        END_FORM PROPLIST RELATIONS MERGE PARTS RENAME WHY ALLOW PHON ROOT
-       STEM EDISC SDISC EDISCL SDISCL EOL CBD TRANSLANG GWL
+       STEM EDISC SDISC EDISCL SDISCL EOL CBD TRANSLANG GWL I18N
 
 %start cbd
 
@@ -79,9 +79,20 @@ optheader:	optheader_one
 
 optheader_one: 	atcbd
 	|	attranslang
+	|	ati18n
 	|	atcbd attranslang
+	|	atcbd ati18n
 	|	attranslang atcbd
-
+	|	attranslang ati18n
+	|	ati18n atcbd
+	|	ati18n attranslang
+	|	atcbd attranslang ati18n
+	|	atcbd ati18n attranslang
+	|	attranslang atcbd ati18n
+	|	attranslang ati18n atcbd
+	|	ati18n atcbd attranslang
+	|	ati18n attranslang atcbd
+		
 optheader_multi:
 		atproplist
 	|	atrelations
@@ -103,6 +114,8 @@ atrelations:	RELATIONS TEXTSPEC { bld_relations(curr_cbd, yylval.text); }
 
 attranslang:	TRANSLANG LANGSPEC { curr_cbd->trans = (ucp)yylval.text; }
 
+ati18n:		I18N TEXTSPEC	  { curr_cbd->i18nstr = yylval.text; }
+		
 cgplist: cgp
 	 | cgplist cgp
 
@@ -120,8 +133,8 @@ disc_en:	EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(
 disc_trs:	disc_tr
 	|	disc_trs disc_tr
 		
-disc_tr:	EDISCL LANGSPEC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
-	|     	SDISCL LANGSPEC TEXTSPEC 	{ curr_sense->disc = bld_tag(@1, curr_entry, "disc",(ucp)$2); }
+disc_tr:	EDISCL LANGSPEC TEXTSPEC /* | FILESPEC | URLSPEC */ { bld_discl(@1, curr_entry, (ccp)$2, (ucp)$3, 0); }
+        |     	SDISCL LANGSPEC TEXTSPEC 			    { bld_discl(@1, curr_entry, (ccp)$2, (ucp)$3, 1); }
 
 entrylist:	entry
 	|	entrylist entry
@@ -164,7 +177,7 @@ gwls:		gwl
 	|	gwls gwl
 	;
 
-gwl:		GWL LANGSPEC { }
+gwl:		GWL LANGSPEC TEXTSPEC { bld_gwl(@1,curr_entry,(ccp)$2,(ucp)$3); }
 	;
 
 begin_entry:  	entry_wrapper { curr_entry = bld_entry(@1,curr_cbd); 
@@ -350,8 +363,7 @@ atsense:      	ssense
         |	'+' ssense	{ bld_edit_sense(curr_entry, '+'); }
 	|	'-' ssense	{ bld_edit_sense(curr_entry, '-'); }
 
-atsensel:      	SENSEL 		{ curr_sense = bld_sense(@1, curr_entry); 
-		    		  if (curr_entry->beginsenses) { curr_meta = curr_sense->meta = bld_meta_create(curr_entry); } }
+atsensel:      	SENSEL 		{ curr_sense = bld_sensel(@1, curr_entry); }
 
 ssense:		SENSE 		{ curr_sense = bld_sense(@1, curr_entry); 
 		    		  if (curr_entry->beginsenses) { curr_meta = curr_sense->meta = bld_meta_create(curr_entry); } }

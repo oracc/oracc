@@ -98,6 +98,7 @@ bld_cbd(void)
   c->equivmem = mb_init(sizeof(struct equiv), 1024);
   c->entrymem = mb_init(sizeof(struct entry), 1024);
   c->formsmem = mb_init(sizeof(struct f2), 1024);
+  c->i18nmem = mb_init(sizeof(struct i18n), 1024);
   c->metamem = mb_init(sizeof(struct meta), 1024);
   c->loctokmem = mb_init(sizeof(struct loctok), 1024);
   c->metaordermem = mb_init(sizeof(struct metaorder), 1024);
@@ -150,6 +151,39 @@ bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg)
   tp->val = dcfarg;
   list_add(e->dcfs, dcf);
   hash_add(e->hdcfs, dcf, dcfarg);
+}
+
+void
+bld_discl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text, int e_or_s)
+{
+  if (e_or_s) /* apply to sense */
+    {
+      struct sense *sp = list_last(e->senses);
+      struct sense *senselp = NULL;
+      List_node *tmp;
+      for (tmp = sp->sensels->first; tmp; tmp = tmp->next)
+	{
+	  if (!strcmp(lang, (const char*)((struct sense *)(tmp->data))->lng))
+	    {
+	      senselp = tmp->data;
+	      break;
+	    }
+	}
+      if (senselp)
+	senselp->disc = bld_tag(l, e, "discl", text);
+      else
+	fprintf(stderr, "lang %s not found in sensels\n", lang);
+    }
+  else
+    {
+      struct i18n *i18 = mb_new(e->owner->i18nmem);
+      i18->l = l;
+      i18->lang = lang;
+      i18->data = text;
+      if (!e->discls)
+	e->discls = list_create(LIST_SINGLE);
+      list_add(e->discls, i18);
+    }
 }
 
 void
@@ -286,6 +320,18 @@ bld_form_setup(struct entry *e, struct f2* f2p)
   f2p->pos = e->cgp->pos;
 }
 
+void
+bld_gwl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text)
+{
+  struct i18n *i18 = mb_new(e->owner->i18nmem);
+  i18->l = l;
+  i18->lang = lang;
+  i18->data = text;
+  if (!e->gwls)
+    e->gwls = list_create(LIST_SINGLE);
+  list_add(e->gwls, i18);
+}
+
 struct loctok *
 bld_loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok)
 {
@@ -416,6 +462,16 @@ bld_sense(YYLTYPE l, struct entry *e)
   struct sense *sp = mb_new(e->owner->sensesmem);
   sp->l = l;
   list_add(e->senses, sp);
+  return sp;
+}
+
+struct sense *
+bld_sensel(YYLTYPE l, struct entry *e)
+{
+  struct sense *sp = mb_new(e->owner->sensesmem);
+  struct sense *curr_sense = list_last(e->senses);
+  sp->l = l;
+  list_add(curr_sense->sensels, sp);
   return sp;
 }
 

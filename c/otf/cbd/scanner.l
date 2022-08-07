@@ -73,6 +73,7 @@ char *ssnames[] = {
 ^@proplist[\t ]+	 { BEGIN ss(xTEXT); return PROPLIST; }
 ^@relations[\t ]+	 { BEGIN ss(xTEXT); return RELATIONS; }
 ^@translang[\t ]+	 { BEGIN ss(xLANG); after_xLANG = 0; return TRANSLANG; }
+^@i18n[\t ]+		 { BEGIN ss(xTEXT); return I18N; }
 
 ^[+-]			 { BEGIN ss(xENTSNS); return yytext[0]; }
 <xENTSNS>@entry[\t ]+	 { BEGIN ss(after_xENTSNS); return(ENTRY); }
