@@ -14,8 +14,9 @@
 static int after_xENTSNS = 0;
 static int after_xGW = 0;
 static int after_xPOS = 0;
+static int after_xLANG = 0;
 static int after_xRENMRG = 0;
-static int xdisc = 0;
+static int xdisc = 0, xdiscl = 0;
 static int yycolumn = 0;
 extern char *efile;
 
@@ -65,20 +66,20 @@ char *ssnames[] = {
 <xTEXT>.+		 { ytdup(); return(TEXTSPEC); }
 ^@project[\t ]+		 { yln("@project"); BEGIN xPROJ; return PROJECT; }
 <xPROJ>[^ \t\n]+[ \t]*   { BEGIN ss(0); dup(unspace(yytext)); return PROJSPEC; }
-^@lang[ \t]+		 { BEGIN ss(xLANG); return LANG; }
-<xLANG>[^ \t\n]+[ \t]*   { BEGIN ss(0); dup(unspace(yytext)); return LANGSPEC; }
+^@lang[ \t]+		 { BEGIN ss(xLANG); after_xLANG = 0; return LANG; }
+<xLANG>[^ \t\n]+[ \t]*   { BEGIN ss(after_xLANG); dup(unspace(yytext)); return LANGSPEC; }
 ^@name[\t ]+		 { BEGIN ss(xTEXT); return NAME; }
 ^@cbd[\t ]+	 	 { BEGIN ss(xWORD); return CBD; }
 ^@proplist[\t ]+	 { BEGIN ss(xTEXT); return PROPLIST; }
 ^@relations[\t ]+	 { BEGIN ss(xTEXT); return RELATIONS; }
-^@translang[\t ]+	 { BEGIN ss(xLANG); return TRANSLANG; }
+^@translang[\t ]+	 { BEGIN ss(xLANG); after_xLANG = 0; return TRANSLANG; }
 
 ^[+-]			 { BEGIN ss(xENTSNS); return yytext[0]; }
 <xENTSNS>@entry[\t ]+	 { BEGIN ss(after_xENTSNS); return(ENTRY); }
 <xENTSNS>@sense[\t ]+	 { BEGIN ss(after_xENTSNS); return(SENSE); }
 <xENTSNS>.		 { BEGIN ss(0); yyless(0); /* should error */ }
 
-^@entry[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; return(ENTRY); }
+^@entry[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; xdiscl = EDISCL; return(ENTRY); }
 ^@end[ \t]+entry[\t ]*   { yln("@endentry"); BEGIN ss(0); return(END_ENTRY); }
 
 ^@alias[\t ]+		 { BEGIN ss(xCF); after_xPOS = 0; return(ALIAS); }
@@ -95,6 +96,8 @@ char *ssnames[] = {
 <xPOS>[^ \t\n]+[ \t]*/\n { BEGIN ss(0); ytdup(); return(POS); }
 <xPOS>[^ \t\n]+[ \t]*	 { BEGIN ss(after_xPOS); ytdup(); return(POS); }
 <xPOS>[ \t]*/\n		 { BEGIN ss(0); }
+
+^@gwl[ \t]*	       	 { BEGIN ss(xLANG); after_xLANG = xTEXT; return GWL; }
 
 ^#why:[\t ]+		 { BEGIN ss(xWHY); return(WHY); }
 <xWHY>.+		 { BEGIN ss(0); ytdup(); return WHYSPEC; }
@@ -141,6 +144,7 @@ char *ssnames[] = {
 ^@senses		  { return(SENSES); }
 ^@end[ \t]+senses	  { return(END_SENSES); }
 ^@sense[ \t]+		  { BEGIN ss(xS); after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; xdisc = SDISC; return(SENSE); }
+^@sensel[ \t]+		  { BEGIN ss(xS); after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; xdisc = xdiscl = SDISCL; return(SENSE); }
 <xS>\%			  { BEGIN ss(xSW); return(yytext[0]); }
 <xS>\.			  { BEGIN ss(xSW); return(yytext[0]); }
 <xS>\#			  { BEGIN ss(xSW); return(yytext[0]); }
@@ -150,6 +154,7 @@ char *ssnames[] = {
 <xSW>[^ \t\n]+[ \t]*	  { BEGIN ss(xS); ytdup(); return(WORDSPEC); }
 
 ^@disc[ \t]+		  { BEGIN ss(xTEXT); return(xdisc); }
+^@discl[ \t]+		  { BEGIN ss(xLANG); after_xLANG = xTEXT; return(xdiscl); }
 ^@bib[ \t]+		  { BEGIN ss(xTEXT); yi(BIB); return(BIB); }
 ^@collo[ \t]+		  { BEGIN ss(xTEXT); yi(COLLO); return(COLLO); }
 ^@equiv[ \t]+		  { BEGIN ss(xELANG); yi(EQUIV); return(EQUIV); }

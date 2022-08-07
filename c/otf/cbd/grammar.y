@@ -56,7 +56,7 @@ extern int yylex(void);
 
 %token ENTRY END_ENTRY SENSES END_SENSES PROJECT NAME ALIAS BASES FORM
        END_FORM PROPLIST RELATIONS MERGE PARTS RENAME WHY ALLOW PHON ROOT
-       STEM EDISC SDISC EDISCL SDISCL EOL CBD TRANSLANG
+       STEM EDISC SDISC EDISCL SDISCL EOL CBD TRANSLANG GWL
 
 %start cbd
 
@@ -111,6 +111,18 @@ cgp:    CF '[' GW ']' POS { cgp_save((ucp)$1, (ucp)$3, (ucp)$5); } ;
 	|	CF '[' GW EOL { lyyerror(@1, "missing ']' (and maybe POS) after GW"); }
 	|	CF ']' POS { lyyerror(@1, "missing '[' before GW"); }
 
+disc:	disc_en
+	|	disc_en disc_trs
+
+disc_en:	EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
+	|     	SDISC TEXTSPEC { curr_sense->disc = bld_tag(@1, curr_entry, "disc",(ucp)$2); }
+
+disc_trs:	disc_tr
+	|	disc_trs disc_tr
+		
+disc_tr:	EDISCL LANGSPEC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
+	|     	SDISCL LANGSPEC TEXTSPEC 	{ curr_sense->disc = bld_tag(@1, curr_entry, "disc",(ucp)$2); }
+
 entrylist:	entry
 	|	entrylist entry
 
@@ -137,26 +149,23 @@ entry_block:    atentry
 	| 	atentry parts disc
 	| 	atentry disc
 
-disc:	disc_en
-	|	disc_en disc_trs
-
-disc_en:	EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
-	|     	SDISC TEXTSPEC { curr_sense->disc = bld_tag(@1, curr_entry, "disc",(ucp)$2); }
-
-disc_trs:	disc_tr
-	|	disc_trs disc_tr
-		
-		
-disc_tr:	EDISCL LANGSPEC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
-	|     	SDISCL LANGSPEC TEXTSPEC 	{ curr_sense->disc = bld_tag(@1, curr_entry, "disc",(ucp)$2); }
-
-atentry: 	begin_entry cgp     { bld_entry_cgp(curr_entry); }
-        |	'+' begin_entry cgp { bld_entry_cgp(curr_entry); 
-    				      bld_edit_entry(curr_entry, '+'); } ;
-	|	'-' begin_entry cgp why {
+atentry: 	ent_cgp		     { bld_entry_cgp(curr_entry); }
+        |	'+' ent_cgp 	     { bld_entry_cgp(curr_entry); 
+    				       bld_edit_entry(curr_entry, '+'); } ;
+	|	'-' ent_cgp  why     {
 	    			      bld_entry_cgp(curr_entry);
     				      bld_edit_entry(curr_entry, '-');
 				      bld_edit_why(curr_entry, yylval.text); } ;
+
+ent_cgp: 	begin_entry cgp
+	|	begin_entry cgp gwls
+
+gwls:		gwl
+	|	gwls gwl
+	;
+
+gwl:		GWL LANGSPEC { }
+	;
 
 begin_entry:  	entry_wrapper { curr_entry = bld_entry(@1,curr_cbd); 
 	                        curr_meta = curr_entry->meta = bld_meta_create(curr_entry); } ;
