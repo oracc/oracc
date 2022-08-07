@@ -30,6 +30,14 @@
 >> dug[speak]V/t
 @end entry
 
+@entry dug [spea] V/t
+> dug[spea]V/t
+@end entry
+
 @entry e [spea] V/t
 > e[speak]V/t
+@end entry
+
+@entry e [spea] V/t
+>> e[speak]V/t
 @end entry

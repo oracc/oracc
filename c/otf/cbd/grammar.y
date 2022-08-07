@@ -114,11 +114,11 @@ entry_block:    atentry
 disc: 		EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
 	    |	SDISC TEXTSPEC { curr_sense->disc = bld_tag(@1, curr_entry, "disc",(ucp)$2); }
 
-atentry: 	begin_entry cgp     { curr_entry->cgp = cgp_get_one(); } ;
-        |	'+' begin_entry cgp { curr_entry->cgp = cgp_get_one();
+atentry: 	begin_entry cgp     { bld_entry_cgp(curr_entry); }
+        |	'+' begin_entry cgp { bld_entry_cgp(curr_entry); 
     				      bld_edit_entry(curr_entry, '+'); } ;
 	|	'-' begin_entry cgp why {
-	    			      curr_entry->cgp = cgp_get_one();
+	    			      bld_entry_cgp(curr_entry);
     				      bld_edit_entry(curr_entry, '-');
 				      bld_edit_why(curr_entry, yylval.text); } ;
 

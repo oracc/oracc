@@ -279,6 +279,7 @@ extern void bld_edit_entry(struct entry *e, char type);
 extern struct sense *bld_edit_sense(struct entry *e, char type);
 extern void bld_edit_why(struct entry *e, char *why);
 extern struct entry *bld_entry(YYLTYPE l, struct cbd *c);
+extern void bld_entry_cgp(struct entry *e);
 extern struct equiv *bld_equiv(struct entry *e, unsigned char *lang, unsigned char *text);
 extern struct f2 *bld_form(YYLTYPE l, struct entry *e);
 extern void bld_form_setup(struct entry *e, struct f2 *fp);

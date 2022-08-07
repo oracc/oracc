@@ -188,46 +188,57 @@ v_dcfs(struct entry *e)
     }
 }
 
+static void v_entry_edit(struct entry *e);
+
 static void
 v_entry(struct entry *e)
 {
   bases_done = 0;
   
+  if (!cbdpos((ccp)e->cgp->pos, strlen((ccp)e->cgp->pos)))
+    msglist_verr(&e->l, "unknown POS %s", e->cgp->pos);
+
   if (e->ed)
-    {
-      switch (e->ed->type)
-	{
-	case ADD_E:
-	  /* + */;
-	  break;
-	case DEL_E:
-	  /* - */;
-	  break;
-	default:
-	  break;
-	}
-    }
-  f1( /* @entry */ e->cgp->loose);
-  if (e->ed)
-    {
-      switch (e->ed->type)
-	{
-	case DEL_E:
-	  f1(/* #why */ e->ed->why);
-	  break;
-	case REN_E:
-	  f1(/* > */ e->ed->target->tight);
-	  break;
-	case MRG_E:
-	  f1(/* >> */ e->ed->target->tight);
-	  break;
-	default:
-	  break;
-	}
-    }
+    v_entry_edit(e);
+  
   if (e->disc)
-    f1(/* @disc */ e->disc);
+    /* One day this will be in OTF inline */;
 }
+
+static void
+v_entry_edit(struct entry *e)
+{
+  /* struct sense *sp = NULL; */
+  if (NULL != e->ed)
+    {
+      if (e->ed->target)
+	{
+	  if (hash_find(e->owner->hentries, e->ed->target->tight))
+	    {
+	      if (verbose)
+		fprintf(stderr, "target %s OK\n", e->ed->target->tight);
+	      /* if we are renaming this is an error */
+	      if (e->ed->type == REN_E)
+		msglist_verr(e->ed->lp, "can't rename to existing entry %s", e->ed->target->tight);
+	    }
+	  else
+	    {
+	      if (verbose)
+		fprintf(stderr, "target %s NOT\n", e->ed->target->tight);
+	      /* if we are merging this is an error */
+	      if (e->ed->type == MRG_E)
+		msglist_verr(e->ed->lp,
+			     "can't merge to non-existent entry %s", e->ed->target->tight);
+	    }
+	}
+    }
+#if 0
+  for (sp = list_first(e->senses); sp; sp = list_next(e->senses))
+    if (sp->ed)
+      /* should validate sense merges as well? Is this used? Is it useful? */
+#endif
+}
+
 
 static void
 v_end_cbd(struct cbd *c)
@@ -254,6 +265,34 @@ v_forms(struct entry *e)
 	  if (f2p->lang) /* careful: we only should only emit this if lang is explicit in form */
 	    f1(/* %% */ f2p->lang);
 	  if (f2p->base)
+	    {
+	      if (!hash_find(e->b_pri, f2p->base))
+		{
+		  static YYLTYPE l;
+		  unsigned char *pri = hash_find(e->b_alt, f2p->base);
+		  l.file = (char*)f2p->file;
+		  l.first_line = f2p->lnum;
+		  if (pri)
+		    msglist_verr(&l, "alt base %s should be primary %s", f2p->base, pri);
+		  else
+		    {
+		      unsigned char *sig;
+		      sig = gdl_sig((ucp)f2p->base,1,1);
+		      if (sig)
+			{
+			  unsigned char *sig_pri = hash_find(e->b_sig, sig);
+			  if (sig_pri)
+			    msglist_verr(&l, "form base %s should be %s", f2p->base, sig_pri);
+			  else
+			    msglist_verr(&l, "base %s not found in bases", f2p->base);
+			}
+		      else
+			{
+			  msglist_verr(&l,"gdl_sig failed on %s", pri);
+			}
+		    }
+		}
+	    }
 	    f1(/* /%s */ f2p->base);
 	  if (f2p->stem)
 	    f1(/* * */ f2p->stem);
@@ -400,6 +439,10 @@ v_senses(struct entry *e)
       if (sp->sgw)
 	f1(/* [%s] */ sp->sgw);
       if (sp->pos)
+	{
+	  if (!cbdpos((ccp)sp->pos, strlen((ccp)sp->pos)))
+	    msglist_verr(&sp->l, "unknown POS %s", sp->pos);
+	}
 	f1(/*  */ sp->pos);
       if (sp->mng)
 	f1(/*  */ sp->mng);

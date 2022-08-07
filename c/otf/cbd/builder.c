@@ -5,6 +5,7 @@
 #include "f2.h"
 #include "gx.h"
 
+static int one = 1;
 static List *curr_base_list = NULL;
 struct parts *curr_parts;
 
@@ -91,18 +92,19 @@ bld_cbd(void)
   struct cbd *c = NULL;
   c = malloc(sizeof(struct cbd));
   c->aliasmem = mb_init(sizeof(struct alias), 1024);
-  c->allowmem = mb_init(sizeof(struct alias), 1024);
+  c->allowmem = mb_init(sizeof(struct allow), 1024);
   c->cgpmem = mb_init(sizeof(struct cgp), 1024);
   c->editmem = mb_init(sizeof(struct edit), 1024);
   c->equivmem = mb_init(sizeof(struct equiv), 1024);
+  c->entrymem = mb_init(sizeof(struct entry), 1024);
   c->formsmem = mb_init(sizeof(struct f2), 1024);
   c->metamem = mb_init(sizeof(struct meta), 1024);
-  c->loctokmem = mb_init(sizeof(struct meta), 1024);
+  c->loctokmem = mb_init(sizeof(struct loctok), 1024);
   c->metaordermem = mb_init(sizeof(struct metaorder), 1024);
   c->partsmem = mb_init(sizeof(struct parts), 1024);
   c->pleiadesmem = mb_init(sizeof(struct pleiades), 1024);
   c->sensesmem = mb_init(sizeof(struct sense), 1024);
-  c->tagmem = mb_init(sizeof(struct sense), 1024);
+  c->tagmem = mb_init(sizeof(struct tag), 1024);
   c->pool = npool_init();
   c->letters = list_create(LIST_SINGLE);
   c->entries = list_create(LIST_SINGLE);
@@ -157,13 +159,16 @@ bld_edit(struct entry *e, char ctxt, char type)
   /*struct sense *snode = NULL;*/
   if (ctxt == 's')
     {
-      ed->owner = list_last(e->senses);
-      ((struct sense *)(ed->owner))->ed = ed;
+      struct sense *sp = list_last(e->senses);
+      ed->owner = sp;
+      sp->ed = ed;
+      ed->lp = &sp->l;
     }
   else
     {
       ed->owner = e;
       e->ed = ed;
+      ed->lp = &e->l;
     }
   switch (type)
     {
@@ -221,6 +226,13 @@ bld_entry(YYLTYPE l, struct cbd* c)
   e->meta = mb_new(c->metamem);
   e->l = l;
   return e;
+}
+
+void
+bld_entry_cgp(struct entry *e)
+{
+  e->cgp = cgp_get_one();
+  hash_add(e->owner->hentries, e->cgp->tight, &one);
 }
 
 #if 0
