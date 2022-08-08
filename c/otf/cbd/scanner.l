@@ -167,7 +167,6 @@ char *ssnames[] = {
 <xOID>o[^ \t\n]+[ \t]*	  { BEGIN ss(0); ytdup(); return(OIDSPEC); }
 ^@pl_coord[ \t]+	  { BEGIN ss(xTEXT); return(PL_COORD); }
 ^@pl_id[ \t]+     	  { BEGIN ss(xTEXT); return(PL_ID); }
-^@pl_uid[ \t]+	  	  { BEGIN ss(xTEXT); return(PL_UID); }
 ^@prop[ \t]+		  { BEGIN ss(xTEXT); yi(PROP); return(PROP); }
 
 ^@[^ \t\n]+[ \t]*     	  { BEGIN ss(xFLUSH); yylloc.file=efile; yylloc.first_line=yylineno; vyyerror(yylloc,"unknown at-command %s\n",yytext, NULL); }

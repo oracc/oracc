@@ -376,12 +376,17 @@ v_meta(struct entry *e)
 static void
 v_parts(struct entry *e)
 {
-  if (e->parts->cgps && list_len(e->parts->cgps))
+  List_node *lp;
+  for (lp = e->parts->first; lp; lp = lp->next)
     {
-      /* @parts */;
-      List_node *lp;
-      for (lp = e->parts->cgps->first; lp; lp = lp->next)
-	f1(((struct cgp*)(lp->data))->tight);
+      struct parts *p = (struct parts*)lp->data;
+      if (p->cgps && list_len(p->cgps))
+	{
+	  /* @parts */;
+	  List_node *cp;
+	  for (cp = p->cgps->first; cp; cp = cp->next)
+	    f1(((struct cgp*)(cp->data))->tight);
+	}
     }
 }
 

@@ -3,9 +3,12 @@
 %{
 #include <stdio.h>
 #include "gx.h"
+
 static struct f2 *curr_form;
 static struct meta *curr_meta;
 static struct sense *curr_sense;
+static struct pleiades *curr_pleiades;
+
 int parser_status = 0;
 int yydebug = 0;
 extern int yylex(void);
@@ -41,9 +44,9 @@ extern int yylex(void);
 %token  <text> 		FMORPH
 %token  <text> 		FMORPH2
 %token  <text> 		FNORM
-%token	<text>		PL_COORD
 %token	<text> 		PL_ID
-%token	<text>		PL_UID
+%token	<text>		PL_COORD
+%token	<text>		PL_ALIAS
 %token	<i>		BIB
 %token	<i>		OID
 %token	<i>		COLLO
@@ -56,7 +59,7 @@ extern int yylex(void);
 
 %token ENTRY END_ENTRY SENSES END_SENSES PROJECT NAME ALIAS BASES FORM
        END_FORM PROPLIST RELATIONS MERGE PARTS RENAME WHY ALLOW PHON ROOT
-       STEM EDISC SDISC EDISCL SDISCL EOL CBD TRANSLANG GWL I18N
+       STEM EDISC SDISC EDISCL SDISCL EOL CBD TRANSLANG GWL I18N NOTEL
 
 %start cbd
 
@@ -393,27 +396,33 @@ anymeta: 	pleiades
 	| 	bib
         | 	inote
         | 	isslp
-        | 	note
+        | 	notex
 		/*  REL GOES HERE */
 
 equiv: 		EQUIV LANG TEXTSPEC		{ bld_meta_add(@1,curr_entry, curr_meta, $1, "equiv",
 		    					   bld_equiv(curr_entry,(ucp)$2,(ucp)$3)); }
 isslp:		ISSLP TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "isslp", (ucp)$2); }
 bib:		BIB TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "bib", (ucp)$2); }
-note:		NOTE TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "note", (ucp)$2); }
+
 inote:		INOTE TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "inote", (ucp)$2); }
+
+notex:		note
+	|	notels
+
+notels: 	notel
+	|	notels notel
+
+note:		NOTE TEXTSPEC			{ bld_note(@1, curr_entry, curr_meta, (ucp)$2); }
+notel:		NOTE LANGSPEC TEXTSPEC	       	{ bld_notel(@1, curr_entry, curr_meta, (ccp)$2, (ucp)$3); }
 
 pleiades:	pl_id pl_coord
 	|	pl_id pl_coord pl_aliases
-
+pl_id:		PL_ID TEXTSPEC			{ curr_pleiades = bld_pl_id(@1,curr_entry,(ucp)$2); }
+pl_coord:	PL_COORD TEXTSPEC		{ bld_pl_coord(@1,curr_pleiades,(ucp)$2); }
 pl_aliases: 	pl_alias
 	|	pl_aliases pl_alias
-
-pl_alias:	PL_ALIAS TEXTSPEC		{ bld_pl_alias(@1,curr_pleiades,(ucp)$2); }
-
-pl_id:		PL_ID TEXTSPEC			{ curr_pleiades = bld_pl_id(@1,curr_entry,curr_meta,(ucp)$2); }
-
-pl_coord:	PL_COORD TEXTSPEC		{ bld_pl_coord(@1,curr_pleiades,(ucp)$2); }
+pl_alias:	PL_ALIAS TEXTSPEC		{ bld_pl_alias(@1,curr_pleiades,NULL,(ucp)$2); }
+	|	PL_ALIAS LANGSPEC TEXTSPEC     	{ bld_pl_alias(@1,curr_pleiades,(ccp)$2,(ucp)$3); } /* not in scanner.l yet */
 
 prop:		PROP TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "prop", (ucp)$2); }
 oid:		OID OIDSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "oid", (ucp)$2); }

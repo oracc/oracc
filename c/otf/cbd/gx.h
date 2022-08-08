@@ -73,6 +73,7 @@ struct cbd {
   struct mb *pleiadesmem;
   struct mb *sensesmem;
   struct mb *tagmem;
+  struct mb *taglmem;
 };
 
 /* Store translated data */
@@ -121,7 +122,7 @@ struct entry {
   List *aliases;
   List *dcfs;
   Hash_table *hdcfs;
-  struct parts *parts;
+  List *parts; /* list of struct parts * */
   List *bases; /* list of base components in @bases; list data is another list, first element is pri, rest are alt */
   List *forms;
   List *senses;
@@ -210,12 +211,11 @@ struct isslp {
 };
 
 struct pleiades {
-  locator l_coord;
   locator l_id;
-  locator l_uid;
-  unsigned char *coord;
+  locator l_coord;
   unsigned char *id;
-  unsigned char *uid;
+  unsigned char *coord;
+  List *pl_aliases; /* list of struct loctok * so pl_aliases could use %lang */
 };
 
 struct cbdpos {
@@ -227,6 +227,12 @@ struct tag {
   locator l;
   const char *name;
   unsigned char *val;
+};
+
+struct tagl {
+  locator l;
+  unsigned char *data;
+  List *i18n; /* List of i18ns translating this tag; i18n->data is char* */
 };
 
 struct cbdtag {
@@ -304,8 +310,12 @@ extern void bld_gwl(YYLTYPE l, struct entry *e, const char *lang, unsigned char 
 extern struct loctok *bld_loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok);
 extern struct meta *bld_meta_create(struct entry *e);
 extern void bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *name, void *val);
+extern void bld_note(YYLTYPE l, struct entry *e, struct meta *curr_meta, unsigned char *text);
+extern void bld_notel(YYLTYPE l, struct entry *e, struct meta *curr_meta, const char *lang, unsigned char *text);
 extern struct parts *bld_parts(YYLTYPE l, struct entry *e);
-extern struct pleiades *bld_pleiades(struct entry *e, unsigned char *coord, unsigned char *id, unsigned char *uid);
+extern struct pleiades *bld_pl_id(YYLTYPE l, struct entry *e, unsigned char *id);
+extern void bld_pl_coord(YYLTYPE l, struct pleiades *p, unsigned char *coord);
+extern void bld_pl_alias(YYLTYPE l, struct pleiades *p, const char *lang, unsigned char *alias);
 extern void bld_proplist(struct cbd *c, char *text);
 extern void bld_relations(struct cbd *c, char *text);
 extern struct sense *bld_sense(YYLTYPE l, struct entry *e);

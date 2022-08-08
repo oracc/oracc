@@ -214,7 +214,8 @@ i_meta(struct entry *e)
 	    case PLEIADES:
 	      {
 		struct pleiades *val = (struct pleiades*)(mo->val);
-		printf("@pl_coord %s\n@pl_id %s\n@pl_uid %s\n", val->coord, val->id, val->uid);
+		printf("@pl_coord %s\n@pl_id %s\n\n", val->coord, val->id);
+		/* still need to emit val->pl_aliases */
 	      }
 	      break;
 #if 0
@@ -235,13 +236,18 @@ i_meta(struct entry *e)
 static void
 i_parts(struct entry *e)
 {
-  if (e->parts->cgps && list_len(e->parts->cgps))
+  List_node *lp;
+  for (lp = e->parts->first; lp; lp = lp->next)
     {
-      printf("@parts");
-      List_node *lp;
-      for (lp = e->parts->cgps->first; lp; lp = lp->next)
-	printf(" %s", ((struct cgp*)(lp->data))->tight);
-      printf("\n");
+      struct parts *p = (struct parts*)lp->data;
+      if (p->cgps && list_len(p->cgps))
+	{
+	  printf("@parts");
+	  List_node *cp;
+	  for (cp = p->cgps->first; cp; cp = cp->next)
+	    printf(" %s", ((struct cgp*)(cp->data))->tight);
+	  printf("\n");
+	}
     }
 }
 

@@ -106,6 +106,7 @@ bld_cbd(void)
   c->pleiadesmem = mb_init(sizeof(struct pleiades), 1024);
   c->sensesmem = mb_init(sizeof(struct sense), 1024);
   c->tagmem = mb_init(sizeof(struct tag), 1024);
+  c->taglmem = mb_init(sizeof(struct tagl), 1024);
   c->pool = npool_init();
   c->letters = list_create(LIST_SINGLE);
   c->entries = list_create(LIST_SINGLE);
@@ -422,22 +423,64 @@ bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *n
     }
 }
 
+void
+bld_note(YYLTYPE l, struct entry *e, struct meta *curr_meta, unsigned char *text)
+{
+  struct tagl *tlp = mb_new(e->owner->taglmem);
+  tlp->l = l;
+  tlp->data = text;
+  if (!curr_meta->note)
+    curr_meta->note = list_create(LIST_SINGLE);
+  list_add(curr_meta->note, tlp);
+}
+
+void
+bld_notel(YYLTYPE l, struct entry *e, struct meta *curr_meta, const char *lang, unsigned char *text)
+{
+  struct i18n *i18p = mb_new(e->owner->i18nmem);
+  struct tagl *tp = list_last(curr_meta->note);
+  i18p->l = l;
+  i18p->data = text;
+  list_add(tp->i18n, i18p);
+}
+
 struct parts *
 bld_parts(YYLTYPE l, struct entry *e)
 {
   struct parts *pp = mb_new(e->owner->partsmem);
+  if (!e->parts)
+    e->parts = list_create(LIST_SINGLE);
+  list_add(e->parts, pp);
   pp->l = l;
-  return (e->parts = pp);
+  return pp;
 }
 
 struct pleiades *
-bld_pleiades(struct entry *e, unsigned char *coord, unsigned char *id, unsigned char *uid)
+bld_pl_id(YYLTYPE l, struct entry *e, unsigned char *id)
 {
   struct pleiades *p = mb_new(e->owner->pleiadesmem);
-  p->coord = coord;
+  p->l_id = l;
   p->id = id;
-  p->uid = uid;
   return p;
+}
+
+void
+bld_pl_coord(YYLTYPE l, struct pleiades *p, unsigned char *coord)
+{
+  p->l_coord = l;
+  p->coord = coord;
+}
+
+void
+bld_pl_alias(YYLTYPE l, struct pleiades *p, const char *lang, unsigned char *alias)
+{
+  struct loctok *ltp = mb_new(curr_cbd->loctokmem);
+  if (!p->pl_aliases)
+    p->pl_aliases = list_create(LIST_SINGLE);
+  list_add(p->pl_aliases, ltp);
+  ltp->l = l;
+  ltp->lang = (ucp)lang;
+  ltp->tok = alias;
 }
 
 void
