@@ -337,11 +337,11 @@ senseline:	senseline_en
 		
 senseline_en:	atsense pos mng
 	|	atsense sid pos mng
-	|	atsense sid sol pos mng
-	|	atsense sid sol sgw pos mng
+	|	atsense sid sok pos mng
+	|	atsense sid sok sgw pos mng
 	|	atsense sid sgw pos mng
-	|	atsense sol pos mng
-	|	atsense sol sgw pos mng
+	|	atsense sok pos mng
+	|	atsense sok sgw pos mng
 	|	atsense sgw pos mng
 	;
 
@@ -351,11 +351,11 @@ senseline_trs:	senseline_tr
 
 senseline_tr:	atsensel slang pos mng
 	|	atsensel slang sid pos mng
-	|	atsensel slang sid sol pos mng
-	|	atsensel slang sid sol sgw pos mng
+	|	atsensel slang sid sok pos mng
+	|	atsensel slang sid sok sgw pos mng
 	|	atsensel slang sid sgw pos mng
-	|	atsensel slang sol pos mng
-	|	atsensel slang sol sgw pos mng
+	|	atsensel slang sok pos mng
+	|	atsensel slang sok sgw pos mng
 	|	atsensel slang sgw pos mng
 	;
 
@@ -370,7 +370,7 @@ ssense:		SENSE 		{ curr_sense = bld_sense(@1, curr_entry);
 slang:		'%' WORDSPEC   	{ curr_sense->lng = (ucp)$2; }
 
 sid:		'#' WORDSPEC	{ curr_sense->sid = (ucp)$2; }
-sol:		'.' WORDSPEC	{ curr_sense->num = (ucp)$2; }
+sok:		'.' WORDSPEC	{ curr_sense->num = (ucp)$2; }
 sgw:		'[' GW ']'	{ curr_sense->sgw = (ucp)$2; }
 pos:		POS /* should be restricted to legal POS */	  { curr_sense->pos = (ucp)$1; }
 mng:		TEXTSPEC /* shouldrestrict to disallow [ and ] */ { curr_sense->mng = (ucp)$1; }
@@ -402,9 +402,19 @@ isslp:		ISSLP TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "isslp", (
 bib:		BIB TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "bib", (ucp)$2); }
 note:		NOTE TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "note", (ucp)$2); }
 inote:		INOTE TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "inote", (ucp)$2); }
-pleiades: 	PL_COORD TEXTSPEC PL_ID TEXTSPEC PL_UID TEXTSPEC
-						{ bld_meta_add(@1,curr_entry, curr_meta, PLEIADES, "pleiades",
-		    				  	   bld_pleiades(curr_entry,(ucp)$2,(ucp)$4,(ucp)$6)); }
+
+pleiades:	pl_id pl_coord
+	|	pl_id pl_coord pl_aliases
+
+pl_aliases: 	pl_alias
+	|	pl_aliases pl_alias
+
+pl_alias:	PL_ALIAS TEXTSPEC		{ bld_pl_alias(@1,curr_pleiades,(ucp)$2); }
+
+pl_id:		PL_ID TEXTSPEC			{ curr_pleiades = bld_pl_id(@1,curr_entry,curr_meta,(ucp)$2); }
+
+pl_coord:	PL_COORD TEXTSPEC		{ bld_pl_coord(@1,curr_pleiades,(ucp)$2); }
+
 prop:		PROP TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "prop", (ucp)$2); }
 oid:		OID OIDSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "oid", (ucp)$2); }
 collo:		COLLO TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "collo", (ucp)$2); }
