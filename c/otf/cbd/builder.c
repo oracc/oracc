@@ -5,6 +5,7 @@
 #include "f2.h"
 #include "gx.h"
 
+extern int bang, star;
 static int one = 1;
 static List *curr_base_list = NULL;
 struct parts *curr_parts;
@@ -260,6 +261,16 @@ bld_entry(YYLTYPE l, struct cbd* c)
   list_add(c->entries, e);
   e->meta = mb_new(c->metamem);
   e->l = l;
+  if (bang)
+    {
+      bang = 0;
+      e->bang = 1;
+    }
+  if (star)
+    {
+      star = 0;
+      e->usage = 1;
+    }
   return e;
 }
 
@@ -306,6 +317,11 @@ bld_form(YYLTYPE l, struct entry *e)
   f2p->file = (ucp)l.file;
   f2p->lnum = l.first_line;
   list_add(e->forms, f2p);
+  if (bang)
+    {
+      bang = 0;
+      f2p->rank = 1; /* check this is the right value for form! rank */
+    }
   return f2p;
 }
 
@@ -505,6 +521,11 @@ bld_sense(YYLTYPE l, struct entry *e)
   struct sense *sp = mb_new(e->owner->sensesmem);
   sp->l = l;
   list_add(e->senses, sp);
+  if (bang)
+    {
+      bang = 0;
+      sp->bang = 1;
+    }
   return sp;
 }
 

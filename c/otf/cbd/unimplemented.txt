@@ -1,10 +1,4 @@
-@RWS in @form
 
-entry!
-entry*
-
-sense!
-form!
-
+# Don't implement this until need is proven
 >!
 >>! -- do we need to allow force now that cbd is read before validating edits?

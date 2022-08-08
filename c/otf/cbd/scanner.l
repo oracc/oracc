@@ -20,6 +20,8 @@ static int xdisc = 0, xdiscl = 0;
 static int yycolumn = 0;
 extern char *efile;
 
+extern int bang, star;
+
 static void baseco(const char *type);
 static void basesc(const char *type);
 
@@ -81,6 +83,9 @@ char *ssnames[] = {
 <xENTSNS>.		 { BEGIN ss(0); yyless(0); /* should error */ }
 
 ^@entry[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; xdiscl = EDISCL; return(ENTRY); }
+^@entry![\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); bang = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; xdiscl = EDISCL; return(ENTRY); }
+^@entry"*"[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); star = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; xdiscl = EDISCL; return(ENTRY); }
+^@entry"*!"[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); bang = star = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; xdiscl = EDISCL; return(ENTRY); }
 ^@end[ \t]+entry[\t ]*   { yln("@endentry"); BEGIN ss(0); return(END_ENTRY); }
 
 ^@alias[\t ]+		 { BEGIN ss(xCF); after_xPOS = 0; return(ALIAS); }
@@ -132,8 +137,10 @@ char *ssnames[] = {
 ^@root[\t ]+		 { BEGIN ss(xTEXT); return(ROOT); }
 ^@stems[\t ]+		 { BEGIN ss(xWORD); return(STEM); }
 
-^@form[ \t]+		  { BEGIN ss(xF); return(FORM); }
+^@form[ \t]+	  	  { BEGIN ss(xF); return(FORM); }
+^@form![ \t]+	  	  { BEGIN ss(xF); bang = 1; return(FORM); }
 <xF>%[^ \t\n]+[ \t]*	  { ytdupn(1); return(FLANG); }
+<xF>@[^ \t\n]+[ \t]*	  { ytdupn(1); return(FRWS); }
 <xF>\/[^ \t\n]+[ \t]*	  { ytdupn(1); return(FBASE); }
 <xF>\+[^ \t\n]+[ \t]*	  { ytdupn(1); return(FCONT); }
 <xF>\$[^ \t\n]+[ \t]*	  { ytdupn(1); return(FNORM); }
@@ -145,6 +152,7 @@ char *ssnames[] = {
 ^@senses		  { return(SENSES); }
 ^@end[ \t]+senses	  { return(END_SENSES); }
 ^@sense[ \t]+		  { BEGIN ss(xS); after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; xdisc = SDISC; return(SENSE); }
+^@sense![ \t]+		  { BEGIN ss(xS); bang = 1; after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; xdisc = SDISC; return(SENSE); }
 ^@sensel[ \t]+		  { BEGIN ss(xS); after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; xdisc = xdiscl = SDISCL; return(SENSE); }
 <xS>\%			  { BEGIN ss(xSW); return(yytext[0]); }
 <xS>\.			  { BEGIN ss(xSW); return(yytext[0]); }
@@ -163,6 +171,7 @@ char *ssnames[] = {
 ^@inote[ \t]+		  { BEGIN ss(xTEXT); yi(INOTE); return(INOTE); }
 ^@isslp[ \t]+		  { BEGIN ss(xTEXT); yi(ISSLP); return(ISSLP); }
 ^@note[ \t]+		  { BEGIN ss(xTEXT); yi(NOTE); return(NOTE); }
+^@notel[ \t]+		  { BEGIN ss(xLANG); after_xLANG = xTEXT; return(NOTEL); }
 ^@oid[ \t]+ 	          { BEGIN ss(xOID); yi(OID); return(OID); }
 <xOID>o[^ \t\n]+[ \t]*	  { BEGIN ss(0); ytdup(); return(OIDSPEC); }
 ^@pl_coord[ \t]+	  { BEGIN ss(xTEXT); return(PL_COORD); }

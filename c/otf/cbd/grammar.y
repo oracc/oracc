@@ -11,6 +11,8 @@ static struct pleiades *curr_pleiades;
 
 int parser_status = 0;
 int yydebug = 0;
+
+int bang = 0, star = 0;
 extern int yylex(void);
 #define dup(s) npool_copy((unsigned char *)(s),curr_cbd->pool)
 %}
@@ -38,6 +40,7 @@ extern int yylex(void);
 %token	<text>		BASE_ALT
 %token  <text> 		FFORM
 %token  <text> 		FLANG
+%token  <text> 		FRWS
 %token  <text> 		FBASE
 %token  <text> 		FSTEM
 %token  <text> 		FCONT
@@ -272,10 +275,13 @@ atform:		FORM		{ curr_form = bld_form(@1, curr_entry); }
 end_form:	END_FORM	{ bld_form_setup(curr_entry, curr_form); curr_form = NULL; }
 formlang:	fform
 	|	fform flang
+	|	fform flang frws
+	|	fform frws
 	;
 
 fform:	     	FFORM 		{ curr_form->form = (ucp)$1; }
 flang: 		FLANG 		{ curr_form->lang = (ucp)$1; }
+frws: 		FRWS 		{ curr_form->rws  = (ucp)$1; }
 
 form_args:	fbase form_norm
 	|      	fbase form_morph form_norm
@@ -396,7 +402,7 @@ anymeta: 	pleiades
 	| 	bib
         | 	inote
         | 	isslp
-        | 	notex
+        | 	notes
 		/*  REL GOES HERE */
 
 equiv: 		EQUIV LANG TEXTSPEC		{ bld_meta_add(@1,curr_entry, curr_meta, $1, "equiv",
@@ -406,14 +412,14 @@ bib:		BIB TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "bib", (ucp)$2
 
 inote:		INOTE TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "inote", (ucp)$2); }
 
-notex:		note
-	|	notels
+notes:		note
+	|	note notels
 
 notels: 	notel
 	|	notels notel
 
 note:		NOTE TEXTSPEC			{ bld_note(@1, curr_entry, curr_meta, (ucp)$2); }
-notel:		NOTE LANGSPEC TEXTSPEC	       	{ bld_notel(@1, curr_entry, curr_meta, (ccp)$2, (ucp)$3); }
+notel:		NOTEL LANGSPEC TEXTSPEC	       	{ bld_notel(@1, curr_entry, curr_meta, (ccp)$2, (ucp)$3); }
 
 pleiades:	pl_id pl_coord
 	|	pl_id pl_coord pl_aliases
