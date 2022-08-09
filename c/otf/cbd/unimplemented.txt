@@ -1,3 +1,5 @@
+@senses and @end entry need a struct tag to carry loc to carry cmts
+
 Add i_cmt() to all subrs that print @cmds in identity.c
 
 # Don't implement this until need is proven
