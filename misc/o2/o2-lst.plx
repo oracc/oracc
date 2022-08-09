@@ -410,8 +410,10 @@ update_lists {
 	if (-r '00lib/outlined.lst') {
 	    # 2022-03-13 00lib/outlined.lst had fallen out of use;
 	    # this reintroduction may break some projects if they have
-	    # a stale 00lib/outlined.lst
-	    xsystem "cp -av 00lib/outlined.lst 01bld/lists";
+	    # a stale 00lib/outlined.lst; we ignore zero-length 00lib/outlined.lst
+	    if (-s '00lib/outlined.lst') {
+		xsystem "cp -av 00lib/outlined.lst 01bld/lists";
+	    }
 	} else {
 	    xsystem 
 		"grep :Q $out_approved | atflists.plx -p$project -o$out_outlined stdin -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
@@ -420,7 +422,11 @@ update_lists {
 	xsystem 
 	    "atflists.plx -p$project -o$out_outlined $have_atf -? 00lib/not-outlined.lst +? 00lib/add-outlined.lst";
     } elsif ($opt eq 'static') {
-	xsystem 'cp', '00lib/outlined.lst', $out_outlined;
+	if (-s '00lib/outlined.lst') {
+	    xsystem 'cp', '00lib/outlined.lst', $out_outlined;
+	} else {
+	    warning ("o2-lst.plx: build-outlined-policy=static but 00lib/outlined.lst is zero-length or non-existent\n");
+	}
     } elsif ($opt =~ /\.ol/) {
 	## ol('outlined.lst', $opt);
 	warn "o2-lst.plx: .ol lists not yet implemented\n";
