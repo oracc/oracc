@@ -210,7 +210,7 @@ parts:  	atparts cgplist { curr_parts->cgps = cgp_get_all(); }
 
 atparts: 	PARTS { curr_parts = bld_parts(@1,curr_entry); }
 
-end_entry:	END_ENTRY { curr_entry = NULL; }
+end_entry:	END_ENTRY { curr_entry->end_entry = bld_locator(@1); curr_entry = NULL; }
 		
 lang_block: bases_block
 	    | bases_block forms
@@ -317,8 +317,8 @@ fnorm: 		FNORM 		{ curr_form->norm = (ucp)$1; }
 senses_block: senses
 	      | begin_senses sensesmeta end_senses
 
-begin_senses: SENSES		{ curr_entry->beginsenses = 1; curr_meta = NULL; }
-end_senses:   END_SENSES	{ curr_meta = curr_entry->meta; }
+begin_senses: SENSES		{ curr_entry->senses = bld_locator(@1); curr_meta = NULL; }
+end_senses:   END_SENSES	{ curr_meta = curr_entry->meta; curr_entry->end_senses = bld_locator(@1); }
 		
 senses:	      sense
 	      | senses sense

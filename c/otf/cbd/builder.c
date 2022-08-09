@@ -106,6 +106,7 @@ bld_cbd(void)
   c->formsmem = mb_init(sizeof(struct f2), 1024);
   c->i18nmem = mb_init(sizeof(struct i18n), 1024);
   c->metamem = mb_init(sizeof(struct meta), 1024);
+  c->locatormem = mb_init(sizeof(locator), 1024);
   c->loctokmem = mb_init(sizeof(struct loctok), 1024);
   c->metaordermem = mb_init(sizeof(struct metaorder), 1024);
   c->partsmem = mb_init(sizeof(struct parts), 1024);
@@ -353,6 +354,7 @@ bld_form(YYLTYPE l, struct entry *e)
   f2p = mb_new(e->owner->formsmem);
   f2p->file = (ucp)l.file;
   f2p->lnum = l.first_line;
+  f2p->user = l.cmt;
   list_add(e->forms, f2p);
   if (bang)
     {
@@ -385,6 +387,13 @@ bld_gwl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text)
   if (!e->gwls)
     e->gwls = list_create(LIST_SINGLE);
   list_add(e->gwls, i18);
+}
+
+locator *
+bld_locator(YYLTYPE l)
+{
+  locator *lp = mb_new(curr_cbd->locatormem);
+  return (*lp = l);
 }
 
 struct loctok *

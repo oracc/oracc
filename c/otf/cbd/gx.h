@@ -67,6 +67,7 @@ struct cbd {
   struct mb *formsmem;
   struct mb *i18nmem;
   struct mb *loctokmem;
+  struct mb *locatormem;
   struct mb *metamem;
   struct mb *metaordermem;
   struct mb *partsmem;
@@ -126,13 +127,15 @@ struct entry {
   List *bases; /* list of base components in @bases; list data is another list, first element is pri, rest are alt */
   List *forms;
   List *senses;
+  locator *senses;
+  locator *end_entry;
+  locator *end_senses;
   Hash_table *hsenses; /* needed for building cbd from sigs */
   struct tag *phon;
   struct tag *root;
   List *stems;
   struct tag *disc;
   int bang;
-  int beginsenses;
   int usage;
   int compound;
   struct cbd *owner;

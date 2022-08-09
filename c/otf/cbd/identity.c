@@ -162,7 +162,7 @@ i_end_cbd(struct cbd *c)
 static void
 i_end_entry(struct entry *e)
 {
-  i_cmt(ap->l.cmt);
+  i_cmt(e->end_entry->cmt);
   printf("@end entry\n\n");
 }
 
@@ -175,7 +175,7 @@ i_forms(struct entry *e)
       for (lp = e->forms->first; lp; lp = lp->next)
 	{
 	  struct f2 *f2p = (struct f2*)(lp->data);
-	  i_cmt(ap->l.cmt);
+	  i_cmt(f2p->user);
 	  printf("@form %s", f2p->form);
 	  if (f2p->lang) /* careful: we only should only emit this if lang is explicit in form */
 	    printf(" %%%s", f2p->lang);
@@ -233,16 +233,16 @@ i_meta(struct entry *e)
 	    case EQUIV:
 	      {
 		struct equiv *val = (struct equiv *)(mo->val);
-		i_cmt(ap->l.cmt);
+		i_cmt(mo->l.cmt);
 		printf("@equiv %%%s %s\n", val->lang, val->text);
 	      }
 	      break;
 	    case PLEIADES:
 	      {
 		struct pleiades *val = (struct pleiades*)(mo->val);
-		i_cmt(ap->l.cmt);
+		i_cmt(val->l_coord.cmt);
 		printf("@pl_coord %s\n", val->coord);
-		i_cmt(ap->l.cmt);
+		i_cmt(val->l_id.cmt);
 		printf("@pl_id %s\n\n", val->id);
 		/* still need to emit val->pl_aliases */
 	      }
@@ -258,7 +258,7 @@ i_meta(struct entry *e)
 	    }
 	  if (at)
 	    {
-	      i_cmt(ap->l.cmt);
+	      i_cmt(mo->l.cmt);
 	      printf("@%s %s\n", at, (const char*)mo->val);
 	    }
 	}  
@@ -274,7 +274,7 @@ i_parts(struct entry *e)
       struct parts *p = (struct parts*)lp->data;
       if (p->cgps && list_len(p->cgps))
 	{
-	  i_cmt(ap->l.cmt);
+	  i_cmt(p->l.cmt);
 	  printf("@parts");
 	  List_node *cp;
 	  for (cp = p->cgps->first; cp; cp = cp->next)
@@ -287,36 +287,38 @@ i_parts(struct entry *e)
 static void
 i_phon(struct entry *e)
 {
-  i_cmt(ap->l.cmt);
+  i_cmt(e->phon->l.cmt);
   printf("@phon %s\n", (ccp)e->phon->val);
 }
 
 static void
 i_proplist(const char *p)
 {
-  i_cmt(ap->l.cmt);
   printf("@proplist %s\n", p);
 }
 
 static void
 i_root(struct entry *e)
 {
-  i_cmt(ap->l.cmt);
+  i_cmt(e->root->l.cmt);
   printf("@root %s\n", (ccp)e->root->val);
 }
 
 static void
 i_senses(struct entry *e)
 {
-  if (e->beginsenses)
-    printf("@senses\n");
+  if (e->senses)
+    {
+      i_cmt(e->senses->cmt);
+      printf("@senses\n");
+    }
 
   List_node *lp;
   for (lp = e->senses->first; lp; lp = lp->next)
     {
       struct sense *sp = (struct sense*)(lp->data);
 
-      i_cmt(ap->l.cmt);
+      i_cmt(sp->l.cmt);
 
       if (sp->ed)
 	{
@@ -363,14 +365,14 @@ i_senses(struct entry *e)
 	}
       if (sp->disc)
 	{
-	  i_cmt(ap->l.cmt);
+	  i_cmt(sp->disc->l.cmt);
 	  printf("@disc %s\n", sp->disc->val);
 	}
     }
   
   if (e->beginsenses)
     {
-      i_cmt(ap->l.cmt);
+      i_cmt(e->end_senses->cmt);
       printf("@end senses\n");
     }
 }
@@ -379,8 +381,8 @@ static void
 i_stems(struct entry *e)
 {
   List_node *lp;
+
   i_cmt(ap->l.cmt);
-      
   printf("@stems");
   for (lp = e->stems->first; lp; lp = lp->next)
     {

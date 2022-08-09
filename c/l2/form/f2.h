@@ -103,6 +103,9 @@ struct f2
 
   /* Store rank so it can persist across nlcp_rewrite */
   int rank;
+
+  /* Support for arbitrary user data extensions */
+  void *user;
 };
 
 #include <stdio.h>
