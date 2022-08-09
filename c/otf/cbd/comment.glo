@@ -1,0 +1,15 @@
+@project epsd2
+@lang sux
+@name epsd2/sux
+
+# Comment before entry
+@entry a [water] N
+# Comment before alias
+@alias e[water]N
+@bases a
+# Comment before form
+@form a /a #~
+# Comment before sense
+@sense N water
+# Comment before end entry
+@end entry

@@ -7,10 +7,11 @@
 #define YY_NO_UNISTD_H
 
 #define dup(s) yylval.text = (char*)npool_copy((unsigned char *)(s),curr_cbd->pool)
-#define ytdup() yylval.text = strdup(unspace(yytext))
+#define ytdup() (yylval.text = strdup(unspace(yytext)))
 #define ytdupn(n) yylval.text = strdup(unspace(yytext+(n)))
 #define yi(tok) yylval.i = tok;
 #define yln(s) if (ylntrace) {fprintf(stderr, "%s: %d\n",(s),yylineno);}
+
 static int after_xENTSNS = 0;
 static int after_xGW = 0;
 static int after_xPOS = 0;
@@ -21,6 +22,7 @@ static int yycolumn = 0;
 extern char *efile;
 
 extern int bang, star;
+extern List *cmt_queue;
 
 static void baseco(const char *type);
 static void basesc(const char *type);
@@ -82,6 +84,8 @@ char *ssnames[] = {
 <xENTSNS>@sense[\t ]+	 { BEGIN ss(after_xENTSNS); return(SENSE); }
 <xENTSNS>.		 { BEGIN ss(0); yyless(0); /* should error */ }
 
+^@why[\t ]+		 { BEGIN ss(xTEXT); return(WHY); }
+
 ^@entry[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; xdiscl = EDISCL; return(ENTRY); }
 ^@entry![\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); bang = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; xdiscl = EDISCL; return(ENTRY); }
 ^@entry"*"[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); star = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; xdiscl = EDISCL; return(ENTRY); }
@@ -105,10 +109,8 @@ char *ssnames[] = {
 
 ^@gwl[ \t]*	       	 { BEGIN ss(xLANG); after_xLANG = xTEXT; return GWL; }
 
-^#why:[\t ]+		 { BEGIN ss(xWHY); return(WHY); }
-<xWHY>.+		 { BEGIN ss(0); ytdup(); return WHYSPEC; }
 ^#			 { BEGIN ss(xCOMMENT); }
-<xCOMMENT>.*		 { BEGIN ss(0); }
+<xCOMMENT>.*		 { BEGIN ss(0); bld_cmt_queue((ucp)ytdup()); }
 ^@[A-Z]+[ \t]*		 { BEGIN ss(xTEXT); ytdupn(1); return(DCF); }
 
 ^@allow[ \t]+	      	 { BEGIN ss(xALLOW); return(ALLOW); }
@@ -236,9 +238,21 @@ gx_user_action(void)
 {
   if (flextrace)
     {
+      if (cmt_queue)
+	fprintf(stderr, "%s:%d: cmt_queue has %d items\n", efile, yylineno, (int)list_len(cmt_queue));
       fprintf(stderr, "%s:%d: flextrace: state=%s tok=::%s::\n", efile, yylineno, ssnames[mystate], yytext);
     }
   yylloc.file = efile;
+#if 0
+  if (yytext[0] == '@')
+    {
+      if (cmt_queue)
+        {
+          yylloc.cmt = cmt_queue;
+          cmt_queue = NULL;
+        }
+    }
+#endif
   yylloc.first_line = yylloc.last_line = yylineno;
   yylloc.first_column = yylloc.last_column;
   for(int i = 0; yytext[i] != '\0'; i++)

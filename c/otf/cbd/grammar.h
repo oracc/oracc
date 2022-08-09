@@ -9,6 +9,7 @@ struct YYLTYPE
   int last_line;
   int last_column;
   char *file;
+  List *cmt; /* List of comments that have been gathered up to this line */
 };
 
 #undef YYLLOC_DEFAULT

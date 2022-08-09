@@ -193,8 +193,7 @@ entry_wrapper:	 ENTRY
 	|	 error ENTRY  { yyerrok; }
 	;
 
-
-why:		WHY WHYSPEC
+why:		WHY TEXTSPEC
 
 modentry: 	RENAME cgp { bld_edit_entry(curr_entry, '>'); } ;
 	| 	MERGE  cgp { bld_edit_entry(curr_entry, '|'); } ;
@@ -205,7 +204,7 @@ aliases: 	alias
 alias:  	atalias cgp 	{ bld_alias(@1,curr_entry); }
 	|	DCF TEXTSPEC 	{ bld_dcf(@1,curr_entry, (ucp)$1, (ucp)$2); }
 
-atalias:	ALIAS ;
+atalias:	ALIAS
 
 parts:  	atparts cgplist { curr_parts->cgps = cgp_get_all(); }
 

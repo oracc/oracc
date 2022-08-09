@@ -1,3 +1,4 @@
+Add i_cmt() to all subrs that print @cmds in identity.c
 
 # Don't implement this until need is proven
 >!

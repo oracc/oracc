@@ -6,6 +6,7 @@
 
 extern void iterator(struct cbd *c, iterator_fnc fncs[]);
 
+static void i_cmt(List *c);
 static void i_proplist(const char *p);
 
 void
@@ -21,7 +22,11 @@ i_aliases(struct entry *e)
 {
   List_node *lp;
   for (lp = e->aliases->first; lp; lp = lp->next)
-    printf("@alias %s\n", ((struct alias *)(lp->data))->cgp->tight);
+    {
+      struct alias *ap = lp->data;
+      i_cmt(ap->l.cmt);
+      printf("@alias %s\n", ap->cgp->tight);
+    }
 }
 
 static void
@@ -80,6 +85,17 @@ i_cbd(struct cbd *c)
 }
 
 static void
+i_cmt(List *c)
+{
+  if (c)
+    {
+      List_node *lp;
+      for (lp = c->first; lp; lp = lp->next)
+	printf("#%s\n", (char*)lp->data);
+    }
+}
+
+static void
 i_dcfs(struct entry *e)
 {
   List_node *lp;
@@ -108,6 +124,7 @@ i_entry(struct entry *e)
 	  break;
 	}
     }
+  i_cmt(e->l.cmt);
   printf("@entry %s\n", e->cgp->loose);
   if (e->ed)
     {

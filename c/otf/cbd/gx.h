@@ -295,6 +295,8 @@ extern void bld_bases_alt(YYLTYPE l, struct entry *e, unsigned char *a);
 extern struct cbd *bld_cbd(void);
 extern void bld_cbd_setup(struct cbd *c);
 extern void bld_cbd_term(struct cbd *c);
+extern List *bld_cmt_append(List *to, List *from);
+extern void bld_cmt_queue(unsigned char *cmt);
 extern void bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg);
 extern void bld_discl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text, int e_or_s);
 extern void bld_edit(struct entry *e, char ctxt, char type);
