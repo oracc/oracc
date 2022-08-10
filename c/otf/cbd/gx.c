@@ -27,7 +27,10 @@ extern int yyparse(void);
 struct cbd* curr_cbd;
 struct entry*curr_entry;
 const char *efile = NULL;
+const char *rncfile = NULL;
 extern void yyrestart(FILE*);
+extern char *cbdrnc(void);
+
 extern int parser_status;
 
 extern int yydebug;
@@ -40,7 +43,7 @@ static void cbd_rnc_init(void);
 int
 main(int argc, char **argv)
 {
-  options(argc,argv,"cdefikstvx");
+  options(argc,argv,"cdefikr:stvx");
 
 #if 1
   file = argv[optind];
@@ -73,6 +76,22 @@ main(int argc, char **argv)
   cbds = hash_create(1);
   with_textid = 0;
 
+  if (rncfile)
+    {
+      FILE *f_rnc = fopen(rncfile,"w");
+      if (!f_rnc)
+	{
+	  fprintf(stderr,"ox: unable to write RNC file %s\n",rncfile);
+	  exit(2);
+	}
+      else
+	{
+	  fputs(cbdrnc(),f_rnc);
+	  fclose(f_rnc);
+	  exit(0);
+	}
+    }
+  
   if (file)
     {
       FILE *fp;
@@ -100,8 +119,14 @@ main(int argc, char **argv)
 
   if (xml_output)
     {
+      int rnvok = -1;
+      rnvif_init();
       cbd_rnc_init();
+      rnv_validate_start();      
       xmloutput(curr_cbd);
+      rnvok = rnv_validate_finish();
+      rnvif_term();
+      fprintf(stderr, "rnv returned %d\n", rnvok);
     }
   
   msglist_print(stderr);
@@ -155,6 +180,9 @@ int opts(int och,char *oarg)
       break;
     case 'p':
       break;
+    case 'r':
+      rncfile = optarg;
+      break;
     case 's':
       sigs = 1;
       break;
@@ -177,8 +205,7 @@ void
 cbd_rnc_init(void)
 {
   extern int cbdrnc_len;
-  extern char *cbdrnc(void);
-  if (validate)
+  if (xml_output)
     {
       char *cbd = cbdrnc();
       rnc_start = rnl_s("ORACC_SCHEMA/cbd.rnc",cbd,cbdrnc_len);

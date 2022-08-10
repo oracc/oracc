@@ -10,4 +10,6 @@ extern void rnv_start_element(void *userData,const char *name,const char **attrs
 extern void rnv_end_element(void *userData,const char *name);
 extern int rnv_validate(struct node *np);
 extern void rnv_characters(void *userData,const char *s,int len);
+extern int rnv_validate_start(void);
+extern int rnv_validate_finish(void);
 #endif

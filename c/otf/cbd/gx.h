@@ -127,9 +127,9 @@ struct entry {
   List *bases; /* list of base components in @bases; list data is another list, first element is pri, rest are alt */
   List *forms;
   List *senses;
-  locator *senses;
-  locator *end_entry;
+  locator *begin_senses;
   locator *end_senses;
+  locator *end_entry;
   Hash_table *hsenses; /* needed for building cbd from sigs */
   struct tag *phon;
   struct tag *root;
@@ -312,6 +312,7 @@ extern struct equiv *bld_equiv(struct entry *e, unsigned char *lang, unsigned ch
 extern struct f2 *bld_form(YYLTYPE l, struct entry *e);
 extern void bld_form_setup(struct entry *e, struct f2 *fp);
 extern void bld_gwl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text);
+extern locator *bld_locator(YYLTYPE lp);
 extern struct loctok *bld_loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok);
 extern struct meta *bld_meta_create(struct entry *e);
 extern void bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *name, void *val);

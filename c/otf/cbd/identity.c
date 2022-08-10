@@ -307,9 +307,9 @@ i_root(struct entry *e)
 static void
 i_senses(struct entry *e)
 {
-  if (e->senses)
+  if (e->begin_senses)
     {
-      i_cmt(e->senses->cmt);
+      i_cmt(e->begin_senses->cmt);
       printf("@senses\n");
     }
 
@@ -370,7 +370,7 @@ i_senses(struct entry *e)
 	}
     }
   
-  if (e->beginsenses)
+  if (e->begin_senses)
     {
       i_cmt(e->end_senses->cmt);
       printf("@end senses\n");
@@ -382,7 +382,7 @@ i_stems(struct entry *e)
 {
   List_node *lp;
 
-  i_cmt(ap->l.cmt);
+  i_cmt(((struct loctok *)(e->stems->first->data))->l.cmt);
   printf("@stems");
   for (lp = e->stems->first; lp; lp = lp->next)
     {

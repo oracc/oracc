@@ -1,10 +1,4 @@
-@senses and @end entry need a struct tag to carry loc to carry cmts
-
 stems need locs like base-pri or a tag and list structure
-
-e->senses needs begin_l and end_l
-
-Add i_cmt() to all subrs that print @cmds in identity.c
 
 # Don't implement this until need is proven
 >!

@@ -3,13 +3,13 @@ namespace c = "http://oracc.org/ns/cbd/2.0"
 
 start = cbd
 
-cbd	 = element c:cbd { cbd.attr , entries } 
+cbd	 = element cbd { cbd.attr , entries } 
 
 cbd.attr = attribute project { text } ,
-	   attribute lang { text } ,
+	   attribute xml:lang { text } ,
 	   attribute name { text } ,
-	   attribute translang { text } ,
-	   attribute version { text } ,
+	   attribute translang { text }? ,
+	   attribute version { text }? ,
 	   proplists? ,
 	   relations? ,
 	   i18nlangs?
@@ -29,12 +29,12 @@ entry    = entry_block , lang_block? , sense_block? , meta_block?
 entry_block = entry.model 
 
 entry.model = element entry { entry.attr ,
-	      	       	      cgp , gwls? , mod? ,
+	      	       	      cgp? , gwls? , mod? ,
 			      aliases? , partss? , discs? }
 
-entry.attr = attribute n      { text } ,
+entry.attr = attribute n      { text }? ,
 	     attribute oid    { text }? ,
-	     attribute xml:id { text } ,
+	     attribute xml:id { text }? ,
 	     attribute bang   { text }? ,
 	     attribute star   { text }?
 
@@ -55,7 +55,9 @@ aliases     = element aliases { alias+ }
 
 alias       = element alias { attribute target { text } }
 
-partss      = element partss { element parts { text }+ }
+partss      = element partss { element parts { cgpstr+ }+ }
+
+cgpstr	    = element cgp    { text }
 
 discs       = element discs { element disc { text } , element discl { text }* }
 

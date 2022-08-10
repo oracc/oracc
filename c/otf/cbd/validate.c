@@ -411,7 +411,7 @@ v_root(struct entry *e)
 static void
 v_senses(struct entry *e)
 {
-  if (e->beginsenses)
+  if (e->begin_senses)
     f1(/* @senses */ );
 
   List_node *lp;
@@ -470,7 +470,7 @@ v_senses(struct entry *e)
 	f1(/* @disc */ sp->disc);
     }
   
-  if (e->beginsenses)
+  if (e->begin_senses)
     f0(/* @end senses */ );
 }
 

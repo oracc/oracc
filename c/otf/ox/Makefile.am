@@ -44,12 +44,12 @@ post_option_setup.c: post_option_setup.c.in
 	$(ORACCIFY) post_option_setup.c.in
 
 f2test_SOURCES = \
-	f2test.c
+	f2test.c globals.c
 
 f2test_LDADD = $(xLDADD)
 
 sigx_SOURCES = \
-	sigx.c
+	sigx.c globals.c
 
 sigx_LDADD = $(xLDADD)
 

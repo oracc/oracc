@@ -19,5 +19,5 @@ int major_version = 1;
 int minor_version = 0;
 void help(void) { ; }
 int opts() { return 0; }
-int verbose = 0;
+/*int verbose = 0;*/
 

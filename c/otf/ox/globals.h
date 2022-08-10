@@ -1,6 +1,7 @@
 #ifndef GLOBALS_H_
 #define GLOBALS_H_
 #include <stdio.h>
+#include <stdarg.h>
 
 #define MAX_LINE_ID_BUF 1023
 #define MAX_IDBUF_LEN     32
@@ -92,5 +93,8 @@ extern FILE*f_atf;
 extern FILE*f_autolem;
 extern FILE*f_bad;
 extern FILE *f_unlemm;
+
+extern void msglist_warning(const char *file, int ln, const char *str);
+extern void msglist_vwarning(const char *file, int ln, const char *str, va_list ap);
 
 #endif/*GLOBALS_H_*/

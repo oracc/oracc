@@ -210,11 +210,25 @@ rnv_validate(struct node *np)
   return !ok;
 }
 
+int
+rnv_validate_start(void)
+{
+  previous=current=rnc_start;
+  ok = 1;
+}
+
+int
+rnv_validate_finish(void)
+{
+  clear();
+  return ok;
+}
+
 void
 rnvif_init()
 {
   init();
-  verbose = 0; nexp = 0; rnck=0;
+  verbose = 1; nexp = 0; rnck=0;
 }
 
 void

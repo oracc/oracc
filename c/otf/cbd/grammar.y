@@ -317,7 +317,7 @@ fnorm: 		FNORM 		{ curr_form->norm = (ucp)$1; }
 senses_block: senses
 	      | begin_senses sensesmeta end_senses
 
-begin_senses: SENSES		{ curr_entry->senses = bld_locator(@1); curr_meta = NULL; }
+begin_senses: SENSES		{ curr_entry->begin_senses = bld_locator(@1); curr_meta = NULL; }
 end_senses:   END_SENSES	{ curr_meta = curr_entry->meta; curr_entry->end_senses = bld_locator(@1); }
 		
 senses:	      sense
@@ -374,7 +374,7 @@ atsense:      	ssense
 atsensel:      	SENSEL 		{ curr_sense = bld_sensel(@1, curr_entry); }
 
 ssense:		SENSE 		{ curr_sense = bld_sense(@1, curr_entry); 
-		    		  if (curr_entry->beginsenses) { curr_meta = curr_sense->meta = bld_meta_create(curr_entry); } }
+		    		  if (curr_entry->begin_senses) { curr_meta = curr_sense->meta = bld_meta_create(curr_entry); } }
 slang:		'%' WORDSPEC   	{ curr_sense->lng = (ucp)$2; }
 
 sid:		'#' WORDSPEC	{ curr_sense->sid = (ucp)$2; }

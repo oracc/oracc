@@ -354,7 +354,7 @@ bld_form(YYLTYPE l, struct entry *e)
   f2p = mb_new(e->owner->formsmem);
   f2p->file = (ucp)l.file;
   f2p->lnum = l.first_line;
-  f2p->user = l.cmt;
+  cmts(f2p->user);
   list_add(e->forms, f2p);
   if (bang)
     {
@@ -393,7 +393,8 @@ locator *
 bld_locator(YYLTYPE l)
 {
   locator *lp = mb_new(curr_cbd->locatormem);
-  return (*lp = l);
+  *lp = l;
+  return lp;
 }
 
 struct loctok *
@@ -602,7 +603,7 @@ bld_stem(YYLTYPE l, struct entry *e, unsigned char *stem)
   if (!e->stems)
     e->stems = list_create(LIST_SINGLE);
   
-  list_add(e->stems, stem);
+  list_add(e->stems, bld_loctok(&l,e,stem));
 }
 
 struct tag *

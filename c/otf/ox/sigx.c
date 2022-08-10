@@ -7,10 +7,12 @@
 #include "f2.h"
 #include "sigs.h"
 
+#if 0
 int bootstrap_mode = 0;
 int fuzzy_aliasing = 0;
 int lem_autolem = 0;
 int lem_dynalem = 0;
+#endif
 
 const char *project = NULL;
 
@@ -61,5 +63,5 @@ int major_version = 1;
 int minor_version = 0;
 void help(void) { ; }
 int opts() { return 0; }
-int verbose = 0;
+/*int verbose = 0;*/
 

@@ -1,6 +1,7 @@
 #ifndef WARNING_H_
 #define WARNING_H_
 #include <stdio.h>
+#include <stdarg.h>
 #undef warning
 extern const char *textid;
 extern FILE *f_log;

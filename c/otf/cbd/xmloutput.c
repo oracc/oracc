@@ -25,29 +25,39 @@ static void
 rnvxml_ea(const char *qname, ...)
 {
   const char **atts = NULL, *arg;
-  int natts = 0;
+  int nargs = 0;
   va_list ap;
   va_start(ap, qname);
   while (va_arg(ap, const char*))
-    ++natts;
-  va_end(ap);
-  atts = malloc((natts+1) * sizeof(char*));
-  natts = 0;
-  va_start(ap, qname);
-  while ((arg = va_arg(ap, const char*)))
     {
-      atts[natts++] = arg;
-      (void)va_arg(ap, const char *);
+      if (NULL == arg)
+	break;
+      ++nargs;
     }
-  atts[natts] = NULL;
+  va_end(ap);
+  if (nargs)
+    {
+      atts = malloc((nargs+1) * sizeof(char*));
+      nargs = 0;
+      va_start(ap, qname);
+      while ((arg = va_arg(ap, const char*)))
+	{
+	  if (NULL == arg)
+	    break;
+	  atts[nargs++] = arg;
+	  atts[nargs++] = va_arg(ap, const char *);
+	}
+      atts[nargs] = NULL;
+    }
   rnv_start_element(NULL,qname,atts);
   fprintf(f_xml, "<%s", qname);
-  if (natts > 1)
+  if (nargs > 1)
     {
-      for (natts = 0; atts[natts]; natts += 2)
-	fprintf(f_xml, " %s=\"%s\"", atts[natts], atts[natts+1]);
+      for (nargs = 0; atts[nargs]; nargs += 2)
+	fprintf(f_xml, " %s=\"%s\"", atts[nargs], atts[nargs+1]);
     }
   fprintf(f_xml, ">");
+  free(atts);
 }
 static void
 rnvxml_ee(const char *qname)
@@ -61,7 +71,9 @@ xmloutput(struct cbd*cbd)
 {
   iterator_fnc *fncs = ifnc_init();
   f_xml = stdout;
+  /*rnvxml_ea("rnvwrapper", "xmlns", cbd2ns, NULL);*/
   iterator(cbd,fncs);
+  /*rnvxml_ee("rnvwrapper");*/
   free(fncs);
 }
 
@@ -69,8 +81,13 @@ static void
 xo_aliases(struct entry *e)
 {
   List_node *lp;
+  rnvxml_ea("aliases", (ccp)NULL);
   for (lp = e->aliases->first; lp; lp = lp->next)
-    f1(((struct alias *)(lp->data))->cgp->tight);
+    {
+      rnvxml_ea("alias", "target", ((struct alias *)(lp->data))->cgp->tight, NULL);
+      rnvxml_ee("alias");
+    }
+  rnvxml_ee("aliases");
 }
 
 static void
@@ -117,17 +134,13 @@ xo_bases(struct entry *e)
 static void
 xo_cbd(struct cbd *c)
 {
-#if 1
   rnvxml_ea("cbd",
-	    "xmlns:c", cbd2ns,
 	    "xmlns", cbd2ns,
+	    "xmlns:c", cbd2ns,
 	    "project", c->project,
 	    "xml:lang", c->lang,
 	    "name", c->name,
-	    NULL);
-#else
-  fprintf(f_xml, "<cbd %s project=\"%s\" lang=\"%s\" name=\"%s\">", xmlns, c->project, c->lang, c->name);
-#endif
+	    (ccp)NULL);
 }
 
 static void
@@ -177,6 +190,7 @@ xo_entry(struct entry *e)
 	  break;
 	}
     }
+  rnvxml_ea("entry", NULL);
   if (e->disc)
     f1(/* @disc */ e->disc);
 }
@@ -194,7 +208,7 @@ xo_end_cbd(struct cbd *c)
 static void
 xo_end_entry(struct entry *e)
 {
-  /* @end entry */
+  rnvxml_ee("entry");
 }
 
 static void
@@ -327,7 +341,7 @@ xo_root(struct entry *e)
 static void
 xo_senses(struct entry *e)
 {
-  if (e->beginsenses)
+  if (e->begin_senses)
     f1(/* @senses */ );
 
   List_node *lp;
@@ -382,7 +396,7 @@ xo_senses(struct entry *e)
 	f1(/* @disc */ sp->disc);
     }
   
-  if (e->beginsenses)
+  if (e->begin_senses)
     f0(/* @end senses */ );
 }
 

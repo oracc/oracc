@@ -69,9 +69,9 @@ char *ssnames[] = {
 <xWORD>[^ \t\n]+[\t ]*   { ytdup(); return(WORDSPEC); }
 <xTEXT>.+		 { ytdup(); return(TEXTSPEC); }
 ^@project[\t ]+		 { yln("@project"); BEGIN xPROJ; return PROJECT; }
-<xPROJ>[^ \t\n]+[ \t]*   { BEGIN ss(0); dup(unspace(yytext)); return PROJSPEC; }
+<xPROJ>[^ \t\n]+[ \t]*   { BEGIN ss(0); ytdup(); return PROJSPEC; }
 ^@lang[ \t]+		 { BEGIN ss(xLANG); after_xLANG = 0; return LANG; }
-<xLANG>[^ \t\n]+[ \t]*   { BEGIN ss(after_xLANG); dup(unspace(yytext)); return LANGSPEC; }
+<xLANG>[^ \t\n]+[ \t]*   { BEGIN ss(after_xLANG); ytdup(); return LANGSPEC; }
 ^@name[\t ]+		 { BEGIN ss(xTEXT); return NAME; }
 ^@cbd[\t ]+	 	 { BEGIN ss(xWORD); return CBD; }
 ^@proplist[\t ]+	 { BEGIN ss(xTEXT); return PROPLIST; }
