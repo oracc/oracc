@@ -12,8 +12,32 @@ static void xo_proplist(const char *p);
 #define f3(a,b,c)
 
 static const char *cbd2ns = "http://oracc.org/ns/cbd/2.0";
+static Hash_table *cbd_qnames = NULL;
 
-/* XMLIFY */
+static const char *cbd_xmlns_atts[] =
+  {
+   "xmlns" , cbd2ns ,
+   "xmlns:c" , cbd2ns ,
+  };
+
+static const char **xmlns_atts = cbd_xmlns_atts;
+
+static void
+rnvxml_init()
+{
+  int n = enames / sizeof(struct xname);
+  int i;
+
+  cbd_qnames = hash_create(1024);
+  for (i = 0; i < n; ++i)
+    hash_add(cbd_qnames, enames[i].pname, enames[i].qname);
+}
+static void
+rnvxml_term()
+{
+  hash_free(cbd_qnames);
+  cbd_qnames = NULL;
+}
 
 static void
 rnvxml_ch(const char *ch)
@@ -21,27 +45,31 @@ rnvxml_ch(const char *ch)
   rnv_characters(NULL, ch, strlen(ch));
   fputs(ch,f_xml);
 }
+
+/* To add xmlns info set xmlns_atts to point to a const char *[]
+ * consisting of the normal name/value pairs for an atts array
+ */
 static void
-rnvxml_ea(const char *qname, ...)
+rnvxml_ea(const char *pname, ...)
 {
   char **atts = NULL, *arg;
-  char *buf = NULL, *qqname;
+  char *buf = NULL, *qname;
   int nargs = 0, atts_used, atts_allocated;
   va_list ap;
   struct npool rnvxml_pool = NULL;
 
-  if (!(qqname = hash_find(cbd_qnames, qname)))
+  if (!(qname = hash_find(cbd_qnames, pname)))
     {
-      fprintf(stderr, "rnvxml: internal error: name %s not found in qname table\n", qname);
+      fprintf(stderr, "rnvxml: internal error: pname %s not found in qname table\n", pname);
       return;
     }
 
   atts = malloc(atts_alloced);
   rnvxml_pool = npool_create();
 
-  npool_copy(qqname, rnvxml_pool);
+  npool_copy(qname, rnvxml_pool);
 
-  va_start(ap, qname);
+  va_start(ap, pname);
   while ((arg = va_arg(ap, const char*)))
     {
       if (NULL == arg)
@@ -66,28 +94,15 @@ rnvxml_ea(const char *qname, ...)
   va_end(ap);
   atts[nargs] = NULL;
 
-#if 0 
-  atts = malloc((nargs+1) * sizeof(char*));
-  buf = malloc(len + nargs + 1);
-
-  strcpy(buf, qqname);
-  sofar = strlen(buf) + 1;
-  
-  nargs = 0;
-  va_start(ap, qname);
-  while ((arg = va_arg(ap, const char*)))
+  rnv_start_element(NULL,qname,atts);
+  fprintf(f_xml, "<%s", qname);
+  if (xmlns_atts)
     {
-      if (NULL == arg)
-	break;      
-      atts[nargs++] = strdup(arg);
-      strcpy(buf+sofar,atts);
-      atts[nargs++] = va_arg(ap, const char *);
+      int i;
+      for (i = 0; xmlns_atts[i]; i += 2)
+	fprintf(f_xml, " %s=\"%s\"", xmlns_atts[i], xmlns_atts[i+1]);
+      xlmns_atts = NULL;
     }
-  atts[nargs] = NULL;
-#endif
-
-  rnv_start_element(NULL,qqname,atts);
-  fprintf(f_xml, "<%s", qqname);
   if (nargs > 1)
     {
       for (nargs = 0; atts[nargs]; nargs += 2)
@@ -99,8 +114,9 @@ rnvxml_ea(const char *qname, ...)
   npool_term(rnvxml_pool);
 }
 static void
-rnvxml_ee(const char *qname)
+rnvxml_ee(const char *pname)
 {
+  
   rnv_end_element(NULL,qname);
   fprintf(f_xml, "</%s>", qname);
 }
@@ -173,6 +189,7 @@ xo_bases(struct entry *e)
 static void
 xo_cbd(struct cbd *c)
 {
+  rnvxml_init();
   rnvxml_ea("http://oracc.org/ns/cbd/2.0:cbd",
 	    "project", c->project,
 	    "xml:lang", c->lang,
@@ -237,6 +254,7 @@ xo_end_cbd(struct cbd *c)
 {
 #if 1
   rnvxml_ee("cbd");
+  rnvxml_term();
 #else
   fprintf(f_xml, "</cbd>");
 #endif
