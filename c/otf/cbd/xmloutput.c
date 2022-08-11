@@ -28,28 +28,25 @@ rnvxml_ea(const char *qname, ...)
   int nargs = 0;
   va_list ap;
   va_start(ap, qname);
-  while (va_arg(ap, const char*))
+  while ((arg = va_arg(ap, const char*)))
     {
       if (NULL == arg)
 	break;
       ++nargs;
     }
   va_end(ap);
-  if (nargs)
+  atts = malloc((nargs+1) * sizeof(char*));
+  nargs = 0;
+  va_start(ap, qname);
+  while ((arg = va_arg(ap, const char*)))
     {
-      atts = malloc((nargs+1) * sizeof(char*));
-      nargs = 0;
-      va_start(ap, qname);
-      while ((arg = va_arg(ap, const char*)))
-	{
-	  if (NULL == arg)
-	    break;
-	  atts[nargs++] = arg;
-	  atts[nargs++] = va_arg(ap, const char *);
-	}
-      atts[nargs] = NULL;
+      if (NULL == arg)
+	break;
+      atts[nargs++] = strdup(arg);
+      atts[nargs++] = va_arg(ap, const char *);
     }
-  rnv_start_element(NULL,qname,atts);
+  atts[nargs] = NULL;
+  rnv_start_element(NULL,strdup(qname),atts);
   fprintf(f_xml, "<%s", qname);
   if (nargs > 1)
     {
@@ -134,9 +131,7 @@ xo_bases(struct entry *e)
 static void
 xo_cbd(struct cbd *c)
 {
-  rnvxml_ea("cbd",
-	    "xmlns", cbd2ns,
-	    "xmlns:c", cbd2ns,
+  rnvxml_ea("http://oracc.org/ns/cbd/2.0:cbd",
 	    "project", c->project,
 	    "xml:lang", c->lang,
 	    "name", c->name,
