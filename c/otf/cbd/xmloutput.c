@@ -19,11 +19,13 @@ static void xo_proplist(const char *p);
 
 static const char *cbd2ns = CBD2NS;
 static Hash_table *cbd_qnames = NULL;
+static Hash_table *cbd_qanames = NULL;
 
 static const char *cbd_xmlns_atts[] =
   {
    "xmlns" , CBD2NS ,
    "xmlns:c" , CBD2NS ,
+   NULL, NULL, 
   };
 
 static const char **xmlns_atts = cbd_xmlns_atts;
@@ -36,6 +38,9 @@ rnvxml_init()
   cbd_qnames = hash_create(1024);
   for (i = 0; cbd_enames[i].pname[0]; ++i)
     hash_add(cbd_qnames, (ucp)cbd_enames[i].pname, cbd_enames[i].qname);
+  cbd_qanames = hash_create(1024);
+  for (i = 0; cbd_anames[i].pname[0]; ++i)
+    hash_add(cbd_qanames, (ucp)cbd_anames[i].pname, cbd_anames[i].qname);
 }
 static void
 rnvxml_term()
@@ -57,9 +62,9 @@ rnvxml_ch(const char *ch)
 static void
 rnvxml_ea(const char *pname, ...)
 {
-  char **atts = NULL, *arg;
+  char **atts = NULL, **qatts = NULL, *arg;
   char *qname;
-  int nargs = 0, atts_used, atts_alloced = 32;
+  int nargs = 0, atts_used = 0, atts_alloced = 32;
   va_list ap;
   struct npool *rnvxml_pool = NULL;
 
@@ -70,6 +75,7 @@ rnvxml_ea(const char *pname, ...)
     }
 
   atts = malloc(atts_alloced);
+  qatts = malloc(atts_alloced);
   rnvxml_pool = npool_init();
 
   npool_copy((ucp)qname, rnvxml_pool);
@@ -80,26 +86,33 @@ rnvxml_ea(const char *pname, ...)
       if (NULL == arg)
 	break;
 
-      if (atts_alloced - atts_used < 3)
-	atts = realloc(atts, atts_alloced *= 2);
-
-      if (nargs %2 == 0) /* even numbered args are names */
+      if (atts_alloced - nargs < 3)
 	{
-	  char *qarg = hash_find(cbd_qnames, (ucp)arg);
+	  atts = realloc(atts, atts_alloced *= 2);
+	  qatts = realloc(qatts, atts_alloced);
+	}
+
+      if ((nargs%2) == 0) /* even numbered args are names */
+	{
+	  char *qarg = hash_find(cbd_qanames, (ucp)arg);
+	  atts[nargs] = (char*)npool_copy((ucp)arg, rnvxml_pool);
 	  if (qarg)
-	    atts[atts_used] = (char*)npool_copy((ucp)qarg, rnvxml_pool);
+	    qatts[nargs] = (char*)npool_copy((ucp)qarg, rnvxml_pool);
+	  else
+	    qatts[nargs] = (char*)npool_copy((ucp)arg, rnvxml_pool);
 	}
       else
 	{
-	  atts[atts_used] = (char*)npool_copy(xmlify((ucp)arg), rnvxml_pool); /* odd numbered args are values */
+	  qatts[nargs] = atts[nargs] = (char*)npool_copy(xmlify((ucp)arg), rnvxml_pool); /* odd numbered args are values */
 	}
       ++nargs;
     }
   va_end(ap);
-  atts[nargs] = NULL;
+  atts[nargs] = qatts[nargs] = NULL;
 
-  rnv_start_element(NULL,qname,(const char **)atts);
-  fprintf(f_xml, "<%s", qname);
+  rnv_start_element(NULL,qname,(const char **)qatts);
+
+  fprintf(f_xml, "<%s", pname);
   if (xmlns_atts)
     {
       int i;
@@ -195,7 +208,7 @@ static void
 xo_cbd(struct cbd *c)
 {
   rnvxml_init();
-  rnvxml_ea("http://oracc.org/ns/cbd/2.0:cbd",
+  rnvxml_ea("cbd",
 	    "project", c->project,
 	    "xml:lang", c->lang,
 	    "name", c->name,
