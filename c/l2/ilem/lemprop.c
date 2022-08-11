@@ -55,6 +55,7 @@ main(int argc, char **argv)
       testf("fatherOf=@1"); 	/* must take ref */
       testf("fatherOf=Dada"); 	/* must take ref */
     }
+  return 1;
 }
 
 const char *prog = "prop";
