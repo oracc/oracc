@@ -57,7 +57,7 @@ cbd_rnc.c: cbd.rnc
 gx_SOURCES = \
 	gx.c globals.c scanner.c grammar.tab.c \
 	builder.c iterator.c identity.c validate.c \
-	xmloutput.c cbd_rnc.c
+	xmloutput.c cbd_rnc.c cbd_xmlnames.c
 
 gx_LDADD = -lfl $(xLDADD)
 

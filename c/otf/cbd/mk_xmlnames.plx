@@ -32,38 +32,38 @@ close(IN);
 ++$max_n;
 ++$max_q;
 
-open(H,">xmlnames.h");
+open(H,">cbd_xmlnames.h");
 print H <<H;
-#ifndef _XMLNAMES_H
-#define _XMLNAMES_H
-#define MAX_A_NAME  $max_n
-#define MAX_QA_NAME $max_q
-struct xname
+#ifndef _CBD_XMLNAMES_H
+#define _CBD_XMLNAMES_H
+#define CBD_MAX_A_NAME  $max_n
+#define CBD_MAX_QA_NAME $max_q
+struct cbd_xname
 {
-  char pname[MAX_A_NAME];
-  char qname[MAX_QA_NAME];
+  char pname[CBD_MAX_A_NAME];
+  char qname[CBD_MAX_QA_NAME];
 };
-enum a_type
+enum cbd_a_type
 {
 H
 foreach my $n (sort keys %ns) {
-    print H "  n_$n,\n";
+    print H "  cbd_n_$n,\n";
 }
 my $i = 0;
 foreach my $a (@a) {
     my $a2 = $a;
     $a2 =~ tr/:-/__/;
-    print H "  a_$a2,\n";
+    print H "  cbd_a_$a2,\n";
 }
 print H <<H;
-  a_enum_top
+  cbd_a_enum_top
 };
-struct attr
+struct cbd_attr
 {
   char *valpair[2];
   char *renpair[2];
 };
-enum e_type
+enum cbd_e_type
 {
 H
 $i = 0;
@@ -73,35 +73,35 @@ foreach my $e (@e) {
     print H "  e_$e2,\n";
 }
 print H <<H;
-  e_enum_top
+  cbd_e_enum_top
 };
 
-struct nstab { enum a_type prefix; const char *ns; };
+struct cbd_nstab { enum cbd_a_type prefix; const char *ns; };
 
-extern struct attr abases[];
-extern struct nstab nstab[];
-extern struct xname anames[];
-extern struct xname enames[];
+extern struct cbd_attr cbd_abases[];
+extern struct cbd_nstab cbd_nstab[];
+extern struct cbd_xname cbd_anames[];
+extern struct cbd_xname cbd_enames[];
 
-#endif /*_XMLNAMES_H*/
+#endif /*_CBD_XMLNAMES_H*/
 H
 close(H);
 
-open(C,">xmlnames.c");
+open(C,">cbd_xmlnames.c");
 print C <<C;
 #ifndef NULL
 #define NULL (char *)0
 #endif
-#include "xmlnames.h"
-struct nstab nstab[] = {
+#include "cbd_xmlnames.h"
+struct cbd_nstab cbd_nstab[] = {
 C
 foreach my $n (sort keys %ns) {
-    print C "  { n_$n, \"$ns{$n}\" },\n";
+    print C "  { cbd_n_$n, \"$ns{$n}\" },\n";
 }
 print C <<C;
 };
 
-struct xname anames[] =
+struct cbd_xname cbd_anames[] =
 {
 C
 foreach my $x (sort keys %ns) {
@@ -116,7 +116,7 @@ print C <<C;
 C
 
 print C <<C;
-struct attr abases[] =
+struct cbd_attr cbd_abases[] =
 {
 C
 my $top_a_n = (scalar keys %ns) + $#a;
@@ -128,7 +128,7 @@ print C <<C;
 C
 
 print C <<C;
-struct xname enames[] =
+struct cbd_xname cbd_enames[] =
 {
 C
 for (my $i = 0; $i <= $#e; ++$i) {

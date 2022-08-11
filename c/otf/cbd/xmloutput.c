@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include "rnvif.h"
+#include "xmlutil.h"
+#include "npool.h"
 #include "gx.h"
 #include "grammar.tab.h"
 #include "xmloutput_fncs.c"
+#include "cbd_xmlnames.h"
+
 extern void iterator(struct cbd *c, iterator_fnc fncs[]);
 static void xo_proplist(const char *p);
 
@@ -11,13 +15,15 @@ static void xo_proplist(const char *p);
 #define f2(a,b)
 #define f3(a,b,c)
 
-static const char *cbd2ns = "http://oracc.org/ns/cbd/2.0";
+#define CBD2NS "http://oracc.org/ns/cbd/2.0"
+
+static const char *cbd2ns = CBD2NS;
 static Hash_table *cbd_qnames = NULL;
 
 static const char *cbd_xmlns_atts[] =
   {
-   "xmlns" , cbd2ns ,
-   "xmlns:c" , cbd2ns ,
+   "xmlns" , CBD2NS ,
+   "xmlns:c" , CBD2NS ,
   };
 
 static const char **xmlns_atts = cbd_xmlns_atts;
@@ -25,17 +31,17 @@ static const char **xmlns_atts = cbd_xmlns_atts;
 static void
 rnvxml_init()
 {
-  int n = enames / sizeof(struct xname);
+  int n = sizeof(cbd_enames) / sizeof(struct cbd_xname);
   int i;
 
   cbd_qnames = hash_create(1024);
   for (i = 0; i < n; ++i)
-    hash_add(cbd_qnames, enames[i].pname, enames[i].qname);
+    hash_add(cbd_qnames, (ucp)cbd_enames[i].pname, cbd_enames[i].qname);
 }
 static void
 rnvxml_term()
 {
-  hash_free(cbd_qnames);
+  hash_free(cbd_qnames, NULL);
   cbd_qnames = NULL;
 }
 
@@ -53,55 +59,54 @@ static void
 rnvxml_ea(const char *pname, ...)
 {
   char **atts = NULL, *arg;
-  char *buf = NULL, *qname;
-  int nargs = 0, atts_used, atts_allocated;
+  char *qname;
+  int nargs = 0, atts_used, atts_alloced;
   va_list ap;
-  struct npool rnvxml_pool = NULL;
+  struct npool *rnvxml_pool = NULL;
 
-  if (!(qname = hash_find(cbd_qnames, pname)))
+  if (!(qname = hash_find(cbd_qnames, (ucp)pname)))
     {
       fprintf(stderr, "rnvxml: internal error: pname %s not found in qname table\n", pname);
       return;
     }
 
   atts = malloc(atts_alloced);
-  rnvxml_pool = npool_create();
+  rnvxml_pool = npool_init();
 
-  npool_copy(qname, rnvxml_pool);
+  npool_copy((ucp)qname, rnvxml_pool);
 
   va_start(ap, pname);
-  while ((arg = va_arg(ap, const char*)))
+  while ((arg = (char*)va_arg(ap, const char*)))
     {
       if (NULL == arg)
 	break;
 
       if (atts_alloced - atts_used < 3)
-	atts = realloc(att_alloced *= 2);
+	atts = realloc(atts, atts_alloced *= 2);
 
       if (nargs %2 == 0) /* even numbered args are names */
 	{
-	  char *qarg = hash_find(cbd_qnames, arg);
+	  char *qarg = hash_find(cbd_qnames, (ucp)arg);
 	  if (qarg)
-	    atts[atts_used] = npool_copy(qarg, rnvxml_pool);
+	    atts[atts_used] = (char*)npool_copy((ucp)qarg, rnvxml_pool);
 	}
       else
 	{
-	  atts[atts_used] = npool_copy(xmlify(arg), rnvxml_pool); /* odd numbered args are values */
+	  atts[atts_used] = (char*)npool_copy(xmlify((ucp)arg), rnvxml_pool); /* odd numbered args are values */
 	}
-      len += strlen(atts[atts_used++]);
       ++nargs;
     }
   va_end(ap);
   atts[nargs] = NULL;
 
-  rnv_start_element(NULL,qname,atts);
+  rnv_start_element(NULL,qname,(const char **)atts);
   fprintf(f_xml, "<%s", qname);
   if (xmlns_atts)
     {
       int i;
       for (i = 0; xmlns_atts[i]; i += 2)
 	fprintf(f_xml, " %s=\"%s\"", xmlns_atts[i], xmlns_atts[i+1]);
-      xlmns_atts = NULL;
+      xmlns_atts = NULL;
     }
   if (nargs > 1)
     {
@@ -116,9 +121,10 @@ rnvxml_ea(const char *pname, ...)
 static void
 rnvxml_ee(const char *pname)
 {
-  
-  rnv_end_element(NULL,qname);
-  fprintf(f_xml, "</%s>", qname);
+  char *qname = hash_find(cbd_qnames, (ucp)pname);
+  if (qname)
+    rnv_end_element(NULL,qname);
+  fprintf(f_xml, "</%s>", pname);
 }
 
 void
