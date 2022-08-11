@@ -31,11 +31,10 @@ static const char **xmlns_atts = cbd_xmlns_atts;
 static void
 rnvxml_init()
 {
-  int n = sizeof(cbd_enames) / sizeof(struct cbd_xname);
   int i;
 
   cbd_qnames = hash_create(1024);
-  for (i = 0; i < n; ++i)
+  for (i = 0; cbd_enames[i].pname[0]; ++i)
     hash_add(cbd_qnames, (ucp)cbd_enames[i].pname, cbd_enames[i].qname);
 }
 static void
@@ -60,7 +59,7 @@ rnvxml_ea(const char *pname, ...)
 {
   char **atts = NULL, *arg;
   char *qname;
-  int nargs = 0, atts_used, atts_alloced;
+  int nargs = 0, atts_used, atts_alloced = 32;
   va_list ap;
   struct npool *rnvxml_pool = NULL;
 

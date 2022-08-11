@@ -121,7 +121,7 @@ struct cbd_attr cbd_abases[] =
 C
 my $top_a_n = (scalar keys %ns) + $#a;
 for (my $i = 0; $i <= $top_a_n; ++$i) {
-    print C "  { { anames[$i].qname,NULL } , { anames[$i].pname,NULL } },\n";
+    print C "  { { cbd_anames[$i].qname,NULL } , { cbd_anames[$i].pname,NULL } },\n";
 }
 print C <<C;
 };
@@ -135,6 +135,7 @@ for (my $i = 0; $i <= $#e; ++$i) {
     my $e = $e[$i];
     print C "  { \"$e\", \"$e{$e}\" },\n";
 }
+    print C "  { \"\", \"\" },\n";
 print C <<C;
 };
 C
