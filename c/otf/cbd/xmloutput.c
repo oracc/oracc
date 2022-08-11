@@ -24,37 +24,79 @@ rnvxml_ch(const char *ch)
 static void
 rnvxml_ea(const char *qname, ...)
 {
-  const char **atts = NULL, *arg;
-  int nargs = 0;
+  char **atts = NULL, *arg;
+  char *buf = NULL, *qqname;
+  int nargs = 0, atts_used, atts_allocated;
   va_list ap;
+  struct npool rnvxml_pool = NULL;
+
+  if (!(qqname = hash_find(cbd_qnames, qname)))
+    {
+      fprintf(stderr, "rnvxml: internal error: name %s not found in qname table\n", qname);
+      return;
+    }
+
+  atts = malloc(atts_alloced);
+  rnvxml_pool = npool_create();
+
+  npool_copy(qqname, rnvxml_pool);
+
   va_start(ap, qname);
   while ((arg = va_arg(ap, const char*)))
     {
       if (NULL == arg)
 	break;
+
+      if (atts_alloced - atts_used < 3)
+	atts = realloc(att_alloced *= 2);
+
+      if (nargs %2 == 0) /* even numbered args are names */
+	{
+	  char *qarg = hash_find(cbd_qnames, arg);
+	  if (qarg)
+	    atts[atts_used] = npool_copy(qarg, rnvxml_pool);
+	}
+      else
+	{
+	  atts[atts_used] = npool_copy(xmlify(arg), rnvxml_pool); /* odd numbered args are values */
+	}
+      len += strlen(atts[atts_used++]);
       ++nargs;
     }
   va_end(ap);
+  atts[nargs] = NULL;
+
+#if 0 
   atts = malloc((nargs+1) * sizeof(char*));
+  buf = malloc(len + nargs + 1);
+
+  strcpy(buf, qqname);
+  sofar = strlen(buf) + 1;
+  
   nargs = 0;
   va_start(ap, qname);
   while ((arg = va_arg(ap, const char*)))
     {
       if (NULL == arg)
-	break;
+	break;      
       atts[nargs++] = strdup(arg);
+      strcpy(buf+sofar,atts);
       atts[nargs++] = va_arg(ap, const char *);
     }
   atts[nargs] = NULL;
-  rnv_start_element(NULL,strdup(qname),atts);
-  fprintf(f_xml, "<%s", qname);
+#endif
+
+  rnv_start_element(NULL,qqname,atts);
+  fprintf(f_xml, "<%s", qqname);
   if (nargs > 1)
     {
       for (nargs = 0; atts[nargs]; nargs += 2)
 	fprintf(f_xml, " %s=\"%s\"", atts[nargs], atts[nargs+1]);
     }
   fprintf(f_xml, ">");
+
   free(atts);
+  npool_term(rnvxml_pool);
 }
 static void
 rnvxml_ee(const char *qname)
