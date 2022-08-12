@@ -37,7 +37,7 @@ msglist_loc(YYLTYPE *locp)
   int need = 0;
   char *e = NULL;
 
-  /* re-implement with_texid here as well? */
+  /* re-implement with_textid here as well? */
   
   if (phase)
     {

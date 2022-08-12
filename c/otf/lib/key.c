@@ -27,7 +27,8 @@ struct keypair *
 key_parse(unsigned char *lp)
 {
   struct keypair *kp = mb_new(key_mem);
-  lp = kp->key = (char*)npool_copy(lp, key_pool);
+  kp->key = (char*)npool_copy(lp, key_pool);
+  lp = (unsigned char *)kp->key;
   while (*lp && (*lp >128 || (!isspace(*lp) && '=' != *lp)))
     ++lp;
   if (*lp)
@@ -46,7 +47,7 @@ key_parse(unsigned char *lp)
 	  while (*lp && (*lp > 128 || isspace(*lp)))
 	    ++lp;
 	  if (*lp)
-	    kp->url = lp;
+	    kp->url = (char*)lp;
 	  while (*lp && (*lp >128 || !isspace(*lp)))
 	    ++lp;
 	  if (*lp)

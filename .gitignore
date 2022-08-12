@@ -1,3 +1,5 @@
+cbd_xmlnames.c
+cbd_xmlnames.h
 cbd_rnc.c
 scanner.c
 grammar.tab.c

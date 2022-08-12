@@ -119,14 +119,17 @@ main(int argc, char **argv)
 
   if (xml_output)
     {
+      extern void rnvxml_rnvif_init(void);
       int rnvok = -1;
+      rnvxml_rnvif_init();
       rnvif_init();
       cbd_rnc_init();
       rnv_validate_start();      
       xmloutput(curr_cbd);
       rnvok = rnv_validate_finish();
       rnvif_term();
-      fprintf(stderr, "rnv returned %d\n", rnvok);
+      if (verbose)
+	fprintf(stderr, "rnv returned %d\n", rnvok);
     }
   
   msglist_print(stderr);

@@ -70,7 +70,7 @@ $i = 0;
 foreach my $e (@e) {
     my $e2 = $e;
     $e2 =~ tr/:-/__/;
-    print H "  e_$e2,\n";
+    print H "  cbd_e_$e2,\n";
 }
 print H <<H;
   cbd_e_enum_top

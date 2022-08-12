@@ -6,6 +6,19 @@
 #include "grammar.tab.h"
 #include "xmloutput_fncs.c"
 #include "cbd_xmlnames.h"
+#include "../rnv/erbit.h"
+#include "../rnv/m.h"
+#include "../rnv/rnv.h"
+#include "../rnv/rnx.h"
+
+#define XCL_ER_IO 0
+#define XCL_ER_XML 1
+#define XCL_ER_XENT 2
+
+extern int rnx_n_exp;
+static int nexp,rnck;
+static int current,previous;
+static locator *xo_loc;
 
 extern void iterator(struct cbd *c, iterator_fnc fncs[]);
 static void xo_proplist(const char *p);
@@ -29,12 +42,119 @@ static const char *cbd_xmlns_atts[] =
   };
 
 static const char **xmlns_atts = cbd_xmlns_atts;
+static const char *mytext;
+extern int (*er_printf)(char *format,...);
+extern int (*er_vprintf)(char *format,...);
+
+static void
+print_error_text()
+{
+  if (mytext && *mytext)
+    {
+      char buf[32];
+      int i;
+      strcpy(buf,"near '");
+      for (i = 0; i < 10 && mytext[i]; ++i)
+	buf[i+6] = mytext[i];
+      if (mytext[i])
+	strcpy(buf+i+6,"'...");
+      else
+	strcpy(buf+i+6, "'");
+      (*er_printf)("%s: ", buf);
+    }
+  else
+    (*er_printf)("near '': ");
+}
+
+#define xvh_err(msg) msglist_averr(xo_loc,(msg),ap);
+static void xo_verror_handler(int erno,va_list ap)
+{
+  if(erno&ERBIT_RNL)
+    {
+      rnl_verror_handler(erno&~ERBIT_RNL,ap);
+    }
+  else
+    {
+#if 1
+      char *xphase = phase;
+      phase = "xml";
+      switch(erno)
+	{
+	case RNV_ER_ELEM: xvh_err("element %s^%s not allowed"); break;
+	case RNV_ER_AKEY: xvh_err("attribute %s^%s not allowed"); break;
+	case RNV_ER_AVAL: xvh_err("attribute %s^%s with invalid value \"%s\""); break;
+	case RNV_ER_EMIS: xvh_err("incomplete content"); break;
+	case RNV_ER_AMIS: xvh_err("missing attributes of %s^%s"); break;
+	case RNV_ER_UFIN: xvh_err("unfinished content of element %s^%s"); break;
+	case RNV_ER_TEXT: xvh_err("invalid data or text not allowed"); break;
+	case RNV_ER_NOTX: xvh_err("text not allowed"); break;
+	default: assert(0);
+	}
+      phase = xphase;
+#else
+      int line = xo_loc->first_line;
+      
+      if (rnvif_text_id)
+	(*er_printf)("%s:%d:%s: XML error: ",file,line,rnvif_text_id);
+      else
+	(*er_printf)("%s:%d: XML error: ",file,line);
+      if(erno&ERBIT_RNV)
+	{
+	  if ((erno&~ERBIT_RNV) == RNV_ER_TEXT)
+	    print_error_text();
+	  rnv_verror_handler(erno&~ERBIT_RNV,ap);
+	  if(nexp)
+	    {
+	      int req=2, i=0; char *s;
+	      while(req--)
+		{
+		  rnx_expected(previous,req);
+		  if (i==rnx_n_exp)
+		    continue;
+		  if (rnx_n_exp>nexp)
+		    break;
+		  (*er_printf)((char*)(req?"required:\n":"allowed:\n"));
+		  for(; i!=rnx_n_exp; ++i)
+		    {
+		      (*er_printf)("\t%s\n",s=rnx_p2str(rnx_exp[i]));
+		      m_free(s);
+		    }
+		}
+	    }
+	}
+      else
+	{
+	  switch(erno)
+	    {
+	    case RNV_ER_ELEM: xvh_err("element %s^%s not allowed"); break;
+	    case RNV_ER_AKEY: xvh_err("attribute %s^%s not allowed"); break;
+	    case RNV_ER_AVAL: xvh_err("attribute %s^%s with invalid value \"%s\""); break;
+	    case RNV_ER_EMIS: xvh_err("incomplete content"); break;
+	    case RNV_ER_AMIS: xvh_err("missing attributes of %s^%s"); break;
+	    case RNV_ER_UFIN: xvh_err("unfinished content of element %s^%s"); break;
+	    case RNV_ER_TEXT: xvh_err("invalid data or text not allowed"); break;
+	    case RNV_ER_NOTX: xvh_err("text not allowed"); break;
+	    default: assert(0);
+	    }
+	}
+#endif
+    }
+}
+
+void
+rnvxml_rnvif_init()
+{
+  rnl_set_verror_handler(xo_verror_handler);
+  rnv_set_verror_handler(xo_verror_handler);
+}
 
 static void
 rnvxml_init()
 {
   int i;
 
+  rnvxml_rnvif_init(); /* replacement for rnvif_init() */
+  
   cbd_qnames = hash_create(1024);
   for (i = 0; cbd_enames[i].pname[0]; ++i)
     hash_add(cbd_qnames, (ucp)cbd_enames[i].pname, cbd_enames[i].qname);
@@ -42,6 +162,7 @@ rnvxml_init()
   for (i = 0; cbd_anames[i].pname[0]; ++i)
     hash_add(cbd_qanames, (ucp)cbd_anames[i].pname, cbd_anames[i].qname);
 }
+
 static void
 rnvxml_term()
 {
@@ -64,7 +185,7 @@ rnvxml_ea(const char *pname, ...)
 {
   char **atts = NULL, **qatts = NULL, *arg;
   char *qname;
-  int nargs = 0, atts_used = 0, atts_alloced = 32;
+  int nargs = 0, atts_alloced = 32;
   va_list ap;
   struct npool *rnvxml_pool = NULL;
 
@@ -101,9 +222,9 @@ rnvxml_ea(const char *pname, ...)
 	  else
 	    qatts[nargs] = (char*)npool_copy((ucp)arg, rnvxml_pool);
 	}
-      else
+      else /* odd numbered args are values */
 	{
-	  qatts[nargs] = atts[nargs] = (char*)npool_copy(xmlify((ucp)arg), rnvxml_pool); /* odd numbered args are values */
+	  qatts[nargs] = atts[nargs] = (char*)npool_copy(xmlify((ucp)arg), rnvxml_pool);
 	}
       ++nargs;
     }
@@ -144,9 +265,7 @@ xmloutput(struct cbd*cbd)
 {
   iterator_fnc *fncs = ifnc_init();
   f_xml = stdout;
-  /*rnvxml_ea("rnvwrapper", "xmlns", cbd2ns, NULL);*/
   iterator(cbd,fncs);
-  /*rnvxml_ee("rnvwrapper");*/
   free(fncs);
 }
 
@@ -154,10 +273,13 @@ static void
 xo_aliases(struct entry *e)
 {
   List_node *lp;
+  xo_loc = &((struct alias *)e->aliases->first->data)->l;
   rnvxml_ea("aliases", (ccp)NULL);
   for (lp = e->aliases->first; lp; lp = lp->next)
     {
-      rnvxml_ea("alias", "target", ((struct alias *)(lp->data))->cgp->tight, NULL);
+      xo_loc = &((struct alias *)lp->data)->l;
+      rnvxml_ea("alias", NULL);
+      rnvxml_ch((const char*)((struct alias *)(lp->data))->cgp->tight);
       rnvxml_ee("alias");
     }
   rnvxml_ee("aliases");

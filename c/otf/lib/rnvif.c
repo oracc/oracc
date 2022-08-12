@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <sys/types.h>
 #include <string.h> /*strerror*/
+#include <stdarg.h>
 #include <errno.h>
 #include <assert.h>
 #include "tree.h"
@@ -49,6 +50,11 @@ static int ok;
 
 static const char *mytext;
 
+void (*rnl_verror_handler)(int erno,va_list ap);
+void (*rnv_verror_handler)(int erno,va_list ap);
+void (*xrnl_verror_handler)(int erno,va_list ap);
+void (*xrnv_verror_handler)(int erno,va_list ap);
+
 static void
 print_error_text()
 {
@@ -75,10 +81,6 @@ static void verror_handler(int erno,va_list ap) {
     rnl_default_verror_handler(erno&~ERBIT_RNL,ap);
   } else {
     int line = tree_get_line();
-#if 0
-    if(line!=lastline) {
-      lastline=line;
-#endif
       
       if (rnvif_text_id)
 	(*er_printf)("%s:%d:%s: XML error: ",file,line,rnvif_text_id);
@@ -108,9 +110,6 @@ static void verror_handler(int erno,va_list ap) {
 	default: assert(0);
 	}
       }
-#if 0
-    }
-#endif
   }
 }
 
@@ -120,15 +119,35 @@ static void verror_handler_rnv(int erno,va_list ap) {verror_handler(erno|ERBIT_R
 static void windup(void);
 static int initialized=0;
 
+void
+rnl_set_verror_handler(void (*rnl_eh)(int erno,va_list ap))
+{
+  xrnl_verror_handler=rnl_eh;
+}
+void
+rnv_set_verror_handler(void (*rnv_eh)(int erno,va_list ap))
+{
+  xrnv_verror_handler=rnv_eh;
+}
+
+static void
+init_er()
+{
+  xrnl_verror_handler = &verror_handler_rnl;
+  xrnv_verror_handler = &verror_handler_rnv;
+}
+
 static void
 init(void)
 {
   if(!initialized) 
     {
       initialized=1;
-      rnl_init(); rnl_verror_handler=&verror_handler_rnl;
-      rnv_init(); rnv_verror_handler=&verror_handler_rnv;
-      rnx_init();
+      if (!xrnl_verror_handler || !xrnv_verror_handler)
+	init_er();
+      rnl_init(); rnl_verror_handler = xrnl_verror_handler;
+      rnv_init(); rnv_verror_handler = xrnv_verror_handler;
+      rnx_init(); 
       drv_add_dtl(DXL_URL,&dxl_equal,&dxl_allows);
       drv_add_dtl(DSL_URL,&dsl_equal,&dsl_allows);
       windup();
@@ -214,7 +233,7 @@ int
 rnv_validate_start(void)
 {
   previous=current=rnc_start;
-  ok = 1;
+  return ok = 1;
 }
 
 int
