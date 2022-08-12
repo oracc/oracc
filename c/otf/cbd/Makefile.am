@@ -54,6 +54,9 @@ scanner.o: scanner.c
 cbd_rnc.c: cbd.rnc
 	./mk_cbdrnc_c.plx >cbd_rnc.c
 
+cbd_xmlnames.c: cbd-gx.rnc mk_xmlnames.plx
+	./mk_xmlnames.plx cbd-gx.rnc
+
 gx_SOURCES = \
 	gx.c globals.c scanner.c grammar.tab.c \
 	builder.c iterator.c identity.c validate.c \

@@ -15,6 +15,7 @@
 
 const char *errmsg_fn = NULL;
 
+int acdstyle_xml = 0;
 int flextrace = 0;
 int identity_output = 0;
 int json_output = 0;
@@ -43,7 +44,7 @@ static void cbd_rnc_init(void);
 int
 main(int argc, char **argv)
 {
-  options(argc,argv,"cdefikr:stvx");
+  options(argc,argv,"acdefikr:stvx");
 
 #if 1
   file = argv[optind];
@@ -153,6 +154,9 @@ int opts(int och,char *oarg)
 {
   switch (och)
     {
+    case 'a':
+      acdstyle_xml = 1;
+      break;
     case 'b':
       break;
     case 'c':
@@ -196,7 +200,7 @@ int opts(int och,char *oarg)
       verbose = 1;
       break;
     case 'x':
-      output = xml_output = 1;
+      acdstyle_xml = output = xml_output = 1; /* in future we will move away from acdstyle */
       break;
     default:
       return 1;
