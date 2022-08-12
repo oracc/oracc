@@ -87,8 +87,8 @@ static void includeo(char *file);
 <xLANG>[^ \t\n]+[ \t]*   { BEGIN ss(after_xLANG); ytdup(); return LANGSPEC; }
 ^@name[\t ]+		 { BEGIN ss(xTEXT); return NAME; }
 ^@cbd[\t ]+	 	 { BEGIN ss(xWORD); return CBD; }
-^@proplist[\t ]+	 { BEGIN ss(xTEXT); return PROPLIST; }
-^@relations[\t ]+	 { BEGIN ss(xTEXT); return RELATIONS; }
+^@proplist[\t ]+	 { BEGIN ss(xTEXT); return PROPS; }
+^@relations[\t ]+	 { BEGIN ss(xTEXT); return RELDEF; }
 ^@translang[\t ]+	 { BEGIN ss(xLANG); after_xLANG = 0; return TRANSLANG; }
 ^@i18n[\t ]+		 { BEGIN ss(xTEXT); return I18N; }
 
@@ -293,6 +293,7 @@ includeo(char *file)
       fprintf( stderr, "Includes nested too deeply" );
       exit( 1 );
     }
+
   if (!include_stack_ptr)
     {
       /* ensure top-level state is saved first on stack */

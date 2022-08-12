@@ -3,7 +3,7 @@
 #include "grammar.tab.h"
 #include "validate_fncs.c"
 extern void iterator(struct cbd *c, iterator_fnc fncs[]);
-static void v_proplist(const char *p);
+static void v_props(const char *p);
 
 #define f0()
 #define f1(a)
@@ -170,8 +170,8 @@ static void
 v_cbd(struct cbd *c)
 {
   f3(c->project, c->lang, c->name);
-  if (list_len(c->proplists))
-    list_exec(c->proplists, (list_exec_func*)v_proplist);
+  if (list_len(c->propss))
+    list_exec(c->propss, (list_exec_func*)v_props);
 }
 
 static void
@@ -397,7 +397,7 @@ v_phon(struct entry *e)
 }
 
 static void
-v_proplist(const char *p)
+v_props(const char *p)
 {
   f1(/* @proplist */ p);
 }

@@ -7,7 +7,7 @@
 extern void iterator(struct cbd *c, iterator_fnc fncs[]);
 
 static void i_cmt(List *c);
-static void i_proplist(const char *p);
+static void i_props(const char *p);
 
 void
 identity(struct cbd*cbd)
@@ -81,8 +81,8 @@ static void
 i_cbd(struct cbd *c)
 {
   printf("@project %s\n@lang %s\n@name %s\n", c->project, c->lang, c->name);
-  if (list_len(c->proplists))
-    list_exec(c->proplists, (list_exec_func*)i_proplist);
+  if (list_len(c->propss))
+    list_exec(c->propss, (list_exec_func*)i_props);
   printf("\n");
 }
 
@@ -292,9 +292,9 @@ i_phon(struct entry *e)
 }
 
 static void
-i_proplist(const char *p)
+i_props(const char *p)
 {
-  printf("@proplist %s\n", p);
+  printf("@props %s\n", p);
 }
 
 static void

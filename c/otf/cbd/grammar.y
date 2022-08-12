@@ -60,8 +60,8 @@ extern int yylex(void);
 %token	<i>		EQUIV
 %token	<i>		PLEIADES
 
-%token ENTRY END_ENTRY SENSES END_SENSES PROJECT NAME ALIAS BASES FORM
-       END_FORM PROPLIST RELATIONS MERGE PARTS RENAME WHY ALLOW PHON ROOT
+%token ENTRY END_ENTRY SENSES END_SENSES PROJECT NAME PROPS RELDEF
+       ALIAS BASES FORM END_FORM MERGE PARTS RENAME WHY ALLOW PHON ROOT
        STEM EDISC SDISC EDISCL SDISCL EOL CBD TRANSLANG GWL I18N NOTEL
 
 %start cbd
@@ -100,10 +100,10 @@ optheader_one: 	atcbd
 	|	ati18n attranslang atcbd
 		
 optheader_multi:
-		atproplist
-	|	atrelations
-	|	optheader_multi atproplist
-	|	optheader_multi atrelations
+		atprops
+	|	atreldef
+	|	optheader_multi atprops
+	|	optheader_multi atreldef
 	;
 
 atproject: PROJECT PROJSPEC { curr_cbd->project = (ucp)yylval.text; }
@@ -114,9 +114,9 @@ atname:    NAME    TEXTSPEC { curr_cbd->name = (ucp)yylval.text; }
 
 atcbd:	   CBD     WORDSPEC { curr_cbd->version = (ucp)yylval.text; }
 
-atproplist:	PROPLIST TEXTSPEC { bld_proplist(curr_cbd, yylval.text); }
+atprops:	PROPS TEXTSPEC { bld_props(curr_cbd, yylval.text); }
 
-atrelations:	RELATIONS TEXTSPEC { bld_relations(curr_cbd, yylval.text); }
+atreldef:	RELDEF TEXTSPEC { bld_reldef(curr_cbd, yylval.text); }
 
 attranslang:	TRANSLANG LANGSPEC { curr_cbd->trans = (ucp)yylval.text; }
 

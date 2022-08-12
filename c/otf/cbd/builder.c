@@ -118,7 +118,8 @@ bld_cbd(void)
   c->letters = list_create(LIST_SINGLE);
   c->entries = list_create(LIST_SINGLE);
   c->edits = list_create(LIST_SINGLE);
-  c->proplists = list_create(LIST_SINGLE);
+  c->propss = list_create(LIST_SINGLE);
+  c->reldefs = list_create(LIST_SINGLE);
   c->haliases = hash_create(16);
   c->hentries = hash_create(1024);
   c->l.file = (char *)file;
@@ -556,19 +557,19 @@ bld_pl_alias(YYLTYPE l, struct pleiades *p, const char *lang, unsigned char *ali
 }
 
 void
-bld_proplist(struct cbd *c, char *text)
+bld_props(struct cbd *c, char *text)
 {
-  if (!c->proplists)
-    c->proplists = list_create(LIST_SINGLE);
-  list_add(c->proplists, text);
+  if (!c->propss)
+    c->propss = list_create(LIST_SINGLE);
+  list_add(c->propss, text);
 }
 
 void
-bld_relations(struct cbd *c, char *text)
+bld_reldef(struct cbd *c, char *text)
 {
-  if (!c->relations)
-    c->relations = list_create(LIST_SINGLE);
-  list_add(c->relations, text);
+  if (!c->reldefs)
+    c->reldefs = list_create(LIST_SINGLE);
+  list_add(c->reldefs, text);
 }
 
 struct sense *

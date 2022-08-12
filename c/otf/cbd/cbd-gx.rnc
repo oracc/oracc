@@ -10,16 +10,13 @@ cbd.attr = attribute project { text } ,
 	   attribute name { text } ,
 	   attribute translang { text }? ,
 	   attribute version { text }? ,
-	   proplists? ,
-	   relations? ,
+	   props* ,
+	   reldef* ,
 	   i18nlangs?
 
-proplists = element proplists { proplist+ }
-relations = element relations { relation+ }
+props  = element props  { text }
+reldef = element reldef { text }
 i18nlangs = element i18langs  { i18nlang+ }
-
-proplist  = element proplist { text }
-relation  = element relation { text }
 i18nlang  = element i18nlang { text }
 
 entries  = entry*
