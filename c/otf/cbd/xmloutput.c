@@ -76,7 +76,7 @@ static void xo_verror_handler(int erno,va_list ap)
   else
     {
 #if 1
-      char *xphase = phase;
+      const char *xphase = phase;
       phase = "xml";
       switch(erno)
 	{

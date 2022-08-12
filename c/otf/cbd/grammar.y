@@ -130,10 +130,10 @@ cgp:    CF '[' GW ']' POS { cgp_save((ucp)$1, (ucp)$3, (ucp)$5); } ;
 	|	CF '[' GW EOL { lyyerror(@1, "missing ']' (and maybe POS) after GW"); }
 	|	CF ']' POS { lyyerror(@1, "missing '[' before GW"); }
 
-disc:	disc_en
-	|	disc_en disc_trs
+disc:	disc_df
+	|	disc_df disc_trs
 
-disc_en:	EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
+disc_df:	EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
 	|     	SDISC TEXTSPEC { curr_sense->disc = bld_tag(@1, curr_entry, "disc",(ucp)$2); }
 
 disc_trs:	disc_tr

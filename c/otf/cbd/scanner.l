@@ -7,8 +7,8 @@
 #define YY_NO_UNISTD_H
 
 #define dup(s) yylval.text = (char*)npool_copy((unsigned char *)(s),curr_cbd->pool)
-#define ytdup() (yylval.text = strdup(unspace(yytext)))
-#define ytdupn(n) yylval.text = strdup(unspace(yytext+(n)))
+#define ytdup() (yylval.text = (char*)npool_copy((ucp)unspace(yytext),curr_cbd->pool))
+#define ytdupn(n) yylval.text = (char*)npool_copy((ucp)unspace(yytext+(n)),curr_cbd->pool)
 #define yi(tok) yylval.i = tok;
 #define yln(s) if (ylntrace) {fprintf(stderr, "%s: %d\n",(s),yylineno);}
 
@@ -46,8 +46,21 @@ char *ssnames[] = {
 "xCF", "xGW", "xPOS", "xSPOS",
 "xF", "xS", "xSW",
 "xPROJ", "xLANG", "xTEXT", "xWORD", "xENTSNS", "xWHY",
-"xCOMMENT", "xELANG", "xOID", "xFLUSH",
+"xCOMMENT", "xELANG", "xOID", "xFLUSH", "xINCL", 
 };
+
+#define MAX_INCLUDE_DEPTH 10
+struct bufstack
+{
+  char *file;
+  int line;
+  FILE *fp;
+  YY_BUFFER_STATE yycb;
+};
+struct bufstack include_stack[MAX_INCLUDE_DEPTH];
+int include_stack_ptr = 0;
+static void includec(void);
+static void includeo(char *file);
 
 %}
 
@@ -57,7 +70,7 @@ char *ssnames[] = {
 %x xF
 %x xS xSW
 %x xPROJ xLANG xTEXT xWORD xENTSNS xWHY xCOMMENT xELANG xOID xFLUSH
-
+%x xINCL
 %%
 
 <xCF,xGW,xPOS>\n	  { BEGIN ss(0); yycolumn = 1; return EOL; }
@@ -180,13 +193,18 @@ char *ssnames[] = {
 ^@pl_id[ \t]+     	  { BEGIN ss(xTEXT); return(PL_ID); }
 ^@prop[ \t]+		  { BEGIN ss(xTEXT); yi(PROP); return(PROP); }
 
+^@include[ \t]*		  { BEGIN ss(xINCL); }
+<xINCL>[^ \t\n]+   	  { includeo(yytext); }
+
 ^@[^ \t\n]+[ \t]*     	  { BEGIN ss(xFLUSH); yylloc.file=efile; yylloc.first_line=yylineno; vyyerror(yylloc,"unknown at-command %s\n",yytext, NULL); }
 <xFLUSH>.*		  { BEGIN ss(0); }
 
 .
 \n			  { yycolumn = 1; }
 
-<<EOF>>			  { if (flextrace) { fprintf(stderr, "<<EOF>>\n"); } return(0); }
+<<EOF>>			  { if (flextrace) { fprintf(stderr, "<<EOF>>\n"); }
+			    if (include_stack_ptr) { includec(); }
+			    return(0); }
 
 %%
 
@@ -243,16 +261,6 @@ gx_user_action(void)
       fprintf(stderr, "%s:%d: flextrace: state=%s tok=::%s::\n", efile, yylineno, ssnames[mystate], yytext);
     }
   yylloc.file = efile;
-#if 0
-  if (yytext[0] == '@')
-    {
-      if (cmt_queue)
-        {
-          yylloc.cmt = cmt_queue;
-          cmt_queue = NULL;
-        }
-    }
-#endif
   yylloc.first_line = yylloc.last_line = yylineno;
   yylloc.first_column = yylloc.last_column;
   for(int i = 0; yytext[i] != '\0'; i++)
@@ -268,3 +276,61 @@ gx_user_action(void)
         }
     }
 }
+
+/* include_stack_ptr indexes into include_stack and gives the current
+   state.  At the initial state, we push the top-level state into
+   include_stack[0] and then the first include is include_stack[1].
+
+   On closing an include, the state pointed to by include_stack_ptr is
+   the one we are shutting down.
+ */
+
+static void
+includeo(char *file)
+{
+  if ( include_stack_ptr >= MAX_INCLUDE_DEPTH )
+    {
+      fprintf( stderr, "Includes nested too deeply" );
+      exit( 1 );
+    }
+  if (!include_stack_ptr)
+    {
+      /* ensure top-level state is saved first on stack */
+      include_stack[include_stack_ptr].file = efile;
+      include_stack[include_stack_ptr].line = yylineno;
+      include_stack[include_stack_ptr].yycb = YY_CURRENT_BUFFER;
+      include_stack[include_stack_ptr].fp = yyin;
+    }
+
+  ++include_stack_ptr;      
+
+  efile = include_stack[include_stack_ptr].file = (char*)npool_copy((ucp)yytext,curr_cbd->pool);
+  include_stack[include_stack_ptr].yycb = YY_CURRENT_BUFFER;
+  include_stack[include_stack_ptr].line = yylineno;
+  include_stack[include_stack_ptr].fp = yyin = xfopen( yytext, "r" );
+  yylineno = 1;
+
+  if (flextrace) { fprintf(stderr, "%s:%d: include switching input to new file\n", efile, yylineno); }
+  yy_switch_to_buffer(yy_create_buffer( yyin, YY_BUF_SIZE ) );
+  BEGIN(ss(INITIAL));
+}
+
+static void
+includec(void)
+{
+  if (include_stack_ptr--)
+    {
+      fclose(include_stack[include_stack_ptr+1].fp);
+      yy_delete_buffer( YY_CURRENT_BUFFER );
+      yy_switch_to_buffer(include_stack[include_stack_ptr].yycb);
+      efile = include_stack[include_stack_ptr].file;
+      yylineno = include_stack[include_stack_ptr].line;
+      yyin = include_stack[include_stack_ptr].fp;
+      if (flextrace)
+        {
+          fprintf(stderr, "%s:%d: include of %s complete\n", efile, yylineno,
+        	  	           		             include_stack[include_stack_ptr+1].file);
+        }
+    }
+}
+
