@@ -12,6 +12,7 @@
 #include "hash.h"
 #include "xpd2.h"
 #include "f2.h"
+#include "iom.h"
 #include "memblock.h"
 #include "grammar.h"
 #include "grammar.tab.h"

@@ -13,6 +13,9 @@
 #include "rnvif.h"
 #include "../lib/rnv/rnl.h"
 
+extern struct iom *iomethod(const char *str, size_t len);
+struct iom *input_method, *output_method;
+
 const char *errmsg_fn = NULL;
 
 int acdstyle_xml = 0;
@@ -44,7 +47,7 @@ static void cbd_rnc_init(void);
 int
 main(int argc, char **argv)
 {
-  options(argc,argv,"acdefikr:stvx");
+  options(argc,argv,"acdefikr:stvxI:O:");
 
 #if 1
   file = argv[optind];
@@ -92,6 +95,8 @@ main(int argc, char **argv)
 	  exit(0);
 	}
     }
+
+  cbd_rnc_init();
   
   if (file)
     {
@@ -124,7 +129,6 @@ main(int argc, char **argv)
       int rnvok = -1;
       rnvxml_rnvif_init();
       rnvif_init();
-      cbd_rnc_init();
       rnv_validate_start();      
       xmloutput(curr_cbd);
       rnvok = rnv_validate_finish();
@@ -154,6 +158,12 @@ int opts(int och,char *oarg)
 {
   switch (och)
     {
+    case 'I':
+      input_method = iomethod(optarg, strlen(optarg));
+      break;
+    case 'O':
+      output_method = iomethod(optarg, strlen(optarg));
+      break;
     case 'a':
       acdstyle_xml = 1;
       break;
@@ -168,7 +178,7 @@ int opts(int och,char *oarg)
     case 'e':
       entries = 1;
       break;
-    case 'f':     
+    case 'f':
       break;
     case 'g':
       break;
@@ -217,5 +227,20 @@ cbd_rnc_init(void)
       char *cbd = cbdrnc();
       rnc_start = rnl_s("ORACC_SCHEMA/cbd.rnc",cbd,cbdrnc_len);
       status = !rnc_start;
+    }
+  else if (output_method)
+    {
+      char fn[12];
+      sprintf(fn, "cbd-%s.rnc", output_method->pref);
+      if (!xaccess(fn, R_OK, 0))
+	{
+	  fprintf(stderr, "gx: found output method schema %s\n", fn);
+	  rnc_start = rnl_fn(fn);
+	  status = !rnc_start;
+	}
+      else
+	{
+	  fprintf(stderr, "gx: no such output method schema %s\n", fn);
+	}
     }
 }
