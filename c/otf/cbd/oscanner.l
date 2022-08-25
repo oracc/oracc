@@ -98,7 +98,6 @@ static void includeo(char *file);
 <xENTSNS>.		 { BEGIN ss(0); yyless(0); /* should error */ }
 
 ^@why[\t ]+		 { BEGIN ss(xTEXT); return(WHY); }
-^#why[\t ]+		 { BEGIN ss(xTEXT); return(CMTWHY); }
 
 ^@entry[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; xdiscl = EDISCL; return(ENTRY); }
 ^@entry![\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); bang = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; xdisc = EDISC; xdiscl = EDISCL; return(ENTRY); }

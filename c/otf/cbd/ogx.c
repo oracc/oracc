@@ -43,16 +43,32 @@ extern int flex(const char *fname);
 
 static void cbd_rnc_init(void);
 
-static void gx_init(void);
-static void gx_run(void);
-static void gx_term(void);
-static void io_init(void);
-
-static void
-gx_init()
+int
+main(int argc, char **argv)
 {
+  options(argc,argv,"acdefikr:stvxI:O:");
+
+#if 1
+  file = argv[optind];
+#else
+  const char *fname[2];
+
+  /* no way to set stdin_input atm */
+  if (!stdin_input)
+    {
+      fname[0] = file = argv[optind];
+      fname[1] = NULL;
+    }
+
+  if (outfile)
+    f_xml = outfp = xfopen(outfile,"w");
+  else
+    f_xml = stdout;
+#endif
+
   f_log = stderr;
   math_mode = no_pi = do_cuneify = use_unicode = 1;
+  
   common_init();
   galloc_init();
   pool_init();
@@ -62,11 +78,25 @@ gx_init()
   curr_lang = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
   cbds = hash_create(1);
   with_textid = 0;
-}
 
-static void
-gx_run()
-{
+  if (rncfile)
+    {
+      FILE *f_rnc = fopen(rncfile,"w");
+      if (!f_rnc)
+	{
+	  fprintf(stderr,"ox: unable to write RNC file %s\n",rncfile);
+	  exit(2);
+	}
+      else
+	{
+	  fputs(cbdrnc(),f_rnc);
+	  fclose(f_rnc);
+	  exit(0);
+	}
+    }
+
+  cbd_rnc_init();
+  
   if (file)
     {
       FILE *fp;
@@ -107,11 +137,7 @@ gx_run()
     }
   
   msglist_print(stderr);
-}
-
-static void
-gx_term()
-{
+  
   lang_term();
   gdl_term();
   msglist_term();
@@ -119,21 +145,6 @@ gx_term()
   tree_term(1);
   galloc_term();
   common_term();
-}
-
-int
-main(int argc, char **argv)
-{
-  options(argc,argv,"A:I:O:i:o:v");
-
-  gx_init();
-
-  io_init();
-
-  gx_run();
-  
-  gx_term();
-
   return 1;
 }
 
