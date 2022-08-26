@@ -217,17 +217,19 @@ int opts(int och,char *oarg)
 void
 cbd_rnc_init(void)
 {
-  extern int cbdrnc_len;
   if (xml_output)
     {
+#if 0      
+      extern int cbdrnc_len;
       char *cbd = cbdrnc();
       rnc_start = rnl_s("ORACC_SCHEMA/cbd.rnc",cbd,cbdrnc_len);
       status = !rnc_start;
+#endif
     }
   else if (output_method)
     {
       char fn[12];
-      sprintf(fn, "cbd-%s.rnc", output_method->name);
+      sprintf(fn, "%s.rnc", output_method->name);
       if (!xaccess(fn, R_OK, 0))
 	{
 	  fprintf(stderr, "gx: found output method schema %s\n", fn);

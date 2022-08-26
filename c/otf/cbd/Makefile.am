@@ -65,7 +65,7 @@ tg1.xnn: tg1/tg1.rng rng2xnn.sh
 #	./mk_xmlnames.plx cbd-gx.rnc
 
 gx_SOURCES = \
-	gx.c globals.c tg1-l.c tg1.tab.c \
+	gx.c globals.c tg1-l.c tg1.tab.c rnvxml.c \
 	builder.c iterator.c identity.c validate.c \
 	xmloutput.c
 

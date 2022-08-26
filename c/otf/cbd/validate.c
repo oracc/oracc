@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "gx.h"
-#include "grammar.tab.h"
 #include "validate_fncs.c"
 extern void iterator(struct cbd *c, iterator_fnc fncs[]);
 static void v_props(const char *p);
@@ -321,28 +320,28 @@ v_meta(struct entry *e)
 	  
 	  switch (mo->tok)
 	    {
-	    case BIB:
+	    case yBIB:
 	      at = "bib";
 	      break;
-	    case COLLO:
+	    case yCOLLO:
 	      at = "collo";
 	      break;
-	    case INOTE:
+	    case yINOTE:
 	      at = "inote";
 	      break;
-	    case ISSLP:
+	    case yISSLP:
 	      at = "isslp";
 	      break;
-	    case NOTE:
+	    case yNOTE:
 	      at = "note";
 	      break;
-	    case OID:
+	    case yOID:
 	      at = "oid";
 	      break;
-	    case PROP:
+	    case yPROP:
 	      at = "prop";	      
 	      break;
-	    case EQUIV:
+	    case yEQUIV:
 	      {
 #if 0
 		struct equiv *val = (struct equiv *)(mo->val);
@@ -350,7 +349,7 @@ v_meta(struct entry *e)
 #endif
 	      }
 	      break;
-	    case PLEIADES:
+	    case yPL_ID:
 	      {
 #if 0
 		struct pleiades *val = (struct pleiades*)(mo->val);

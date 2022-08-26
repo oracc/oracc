@@ -3,30 +3,26 @@
 #include "xmlutil.h"
 #include "npool.h"
 #include "gx.h"
-#include "grammar.tab.h"
-#include "xmloutput_fncs.c"
-#include "cbd_xmlnames.h"
+#include "xnn.h"
 #include "../rnv/erbit.h"
 #include "../rnv/m.h"
 #include "../rnv/rnv.h"
 #include "../rnv/rnx.h"
 
 extern int rnx_n_exp;
-static int nexp,rnck;
-static int current,previous;
-static locator *xo_loc;
-
-extern void iterator(struct cbd *c, iterator_fnc fncs[]);
-static void xo_proplist(const char *p);
+/*static int nexp,rnck;*/
+/*static int current,previous;*/
 
 static Hash_table *cbd_qnames = NULL;
 static Hash_table *cbd_qanames = NULL;
 
-static const char **xmlns_atts = cbd_xmlns_atts;
-static const char *mytext;
+static const char **xmlns_atts;
+
 extern int (*er_printf)(char *format,...);
 extern int (*er_vprintf)(char *format,...);
 
+#if 0
+static const char *mytext;
 static void
 print_error_text()
 {
@@ -46,7 +42,9 @@ print_error_text()
   else
     (*er_printf)("near '': ");
 }
+#endif
 
+extern locator *xo_loc;
 #define xvh_err(msg) msglist_averr(xo_loc,(msg),ap);
 static void xo_verror_handler(int erno,va_list ap)
 {
@@ -81,29 +79,31 @@ rnvxml_rnvif_init()
   rnv_set_verror_handler(xo_verror_handler);
 }
 
-static void
-rnvxml_init()
+void
+rnvxml_init(struct xnn_xname *enames, struct xnn_xname *anames, const char *ns_atts[])
 {
   int i;
 
   rnvxml_rnvif_init(); /* replacement for rnvif_init() */
+
+  xmlns_atts = ns_atts;
   
   cbd_qnames = hash_create(1024);
-  for (i = 0; cbd_enames[i].pname[0]; ++i)
-    hash_add(cbd_qnames, (ucp)cbd_enames[i].pname, cbd_enames[i].qname);
+  for (i = 0; enames[i].pname[0]; ++i)
+    hash_add(cbd_qnames, (ucp)enames[i].pname, enames[i].qname);
   cbd_qanames = hash_create(1024);
-  for (i = 0; cbd_anames[i].pname[0]; ++i)
-    hash_add(cbd_qanames, (ucp)cbd_anames[i].pname, cbd_anames[i].qname);
+  for (i = 0; anames[i].pname[0]; ++i)
+    hash_add(cbd_qanames, (ucp)anames[i].pname, anames[i].qname);
 }
 
-static void
+void
 rnvxml_term()
 {
   hash_free(cbd_qnames, NULL);
   cbd_qnames = NULL;
 }
 
-static void
+void
 rnvxml_ch(const char *ch)
 {
   rnv_characters(NULL, ch, strlen(ch));
@@ -113,7 +113,7 @@ rnvxml_ch(const char *ch)
 /* To add xmlns info set xmlns_atts to point to a const char *[]
  * consisting of the normal name/value pairs for an atts array
  */
-static void
+void
 rnvxml_ea(const char *pname, ...)
 {
   char **atts = NULL, **qatts = NULL, *arg;
@@ -184,7 +184,8 @@ rnvxml_ea(const char *pname, ...)
   free(atts);
   npool_term(rnvxml_pool);
 }
-static void
+
+void
 rnvxml_ee(const char *pname)
 {
   char *qname = hash_find(cbd_qnames, (ucp)pname);
