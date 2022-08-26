@@ -1,9 +1,12 @@
-%name-prefix tg1
+%name-prefix "tg1"
+%file-prefix "tg1"
 %locations
 %define parse.error verbose
 %{
 #include <stdio.h>
 #include "gx.h"
+
+#define yylineno tg1lineno
 
 static struct f2 *curr_form;
 static struct meta *curr_meta;
@@ -41,17 +44,17 @@ extern int yylex(void);
 %token  <text> 		FMORPH
 %token  <text> 		FMORPH2
 %token  <text> 		FNORM
-%token	<text> 		PL_ID
-%token	<text>		PL_COORD
-%token	<text>		PL_ALIAS
-%token	<i>		BIB
-%token	<i>		OID
-%token	<i>		COLLO
-%token	<i>		PROP
-%token	<i>		NOTE
-%token	<i>		INOTE
-%token	<i>		ISSLP
-%token	<i>		EQUIV
+%token	<text> 		PL_ID		258
+%token	<text>		PL_COORD	259
+%token	<text>		PL_ALIAS	260
+%token	<i>		BIB 		261
+%token	<i>		OID 		262
+%token	<i>		COLLO		263
+%token	<i>		PROP		264
+%token	<i>		NOTE		265
+%token	<i>		INOTE		266
+%token	<i>		ISSLP		267
+%token	<i>		EQUIV		268
 
 %token ENTRY END_ENTRY PROJECT NAME PROPS ALIAS BASES
        FORM END_FORM MERGE PARTS RENAME CMTWHY ALLOW EOL

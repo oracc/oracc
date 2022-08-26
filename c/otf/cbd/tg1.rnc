@@ -1,25 +1,26 @@
-default namespace = "http://oracc.org/ns/cbd/2.0"
-namespace c = "http://oracc.org/ns/cbd/2.0"
+default namespace = "http://oracc.org/ns/cbd/2.0/tg1"
+
+namespace t1 = "http://oracc.org/ns/cbd/2.0/tg1"
 
 start = cbd
 
-cbd	 = element cbd { cbd.attr , entries } 
+## The redundant element with the namespace prefix is to force
+## 'namespace t1' to be added to the .rng output
+cbd	 = element cbd { cbd.attr , entries }
+	 | element t1:cbd { cbd.attr , entries }
 
 cbd.attr = attribute project { text } ,
 	   attribute xml:lang { text } ,
 	   attribute name { text } ,
 	   attribute translang { text }? ,
 	   attribute version { text }? ,
-	   proplists? ,
-	   relations? ,
+	   props* ,
+	   reldef* ,
 	   i18nlangs?
 
-proplists = element proplists { proplist+ }
-relations = element relations { relation+ }
+props  = element props  { text }
+reldef = element reldef { text }
 i18nlangs = element i18langs  { i18nlang+ }
-
-proplist  = element proplist { text }
-relation  = element relation { text }
 i18nlang  = element i18nlang { text }
 
 entries  = entry*
@@ -51,15 +52,21 @@ mod         = element mod { attribute type   { text } ,
 	      	      	    attribute target { text } ,
 	      	      	    attribute why    { text }? }
 
-aliases     = element aliases { alias+ }
+aliases     = element aliases 	{ alias+ }
 
-alias       = element alias { attribute target { text } }
+alias       = element alias 	{ text }
 
 partss      = element partss { element parts { cgpstr+ }+ }
 
 cgpstr	    = element cgp    { text }
 
-discs       = element discs { element disc { text } , element discl { text }* }
+discs       = element discs { element disc { disc.model } , element discl { disc.model }* }
+
+disc.model  = disc.text | disc.html
+
+disc.text   = text # actually otf:text in future
+
+disc.html   = text # actually html:div in future
 
 lang_block  = bases_block? , forms*
 

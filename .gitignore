@@ -1,3 +1,11 @@
+*.output
+*.tab.c
+*.tab.h
+*.xnn
+tg1-l.c
+*_xnn.c
+*_xnn.h
+iomethod.c
 cbd_xmlnames.c
 cbd_xmlnames.h
 cbd_rnc.c

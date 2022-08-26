@@ -1,4 +1,5 @@
 #include <ctype128.h>
+#include "grammar.h"
 #include "gx.h"
 
 static unsigned char *generic_sig(struct npool *pool, struct f2 *fp);

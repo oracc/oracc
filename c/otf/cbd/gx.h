@@ -14,8 +14,8 @@
 #include "f2.h"
 #include "iom.h"
 #include "memblock.h"
+
 #include "grammar.h"
-#include "grammar.tab.h"
 
 #undef ucc
 #define ccp const char *
@@ -23,18 +23,6 @@
 #define ucp unsigned char *
 
 typedef void (*iterator_fnc)(void*);
-
-#if 1
-typedef struct YYLTYPE locator;
-#else
-typedef struct {
-  const char *file;
-  int line;
-  int col_beg;
-  int col_end;
-} locator;
-#endif
-
 extern Hash_table *cbds;
 
 struct cbd {
@@ -300,7 +288,7 @@ extern struct cbd *bld_cbd(void);
 extern void bld_cbd_setup(struct cbd *c);
 extern void bld_cbd_term(struct cbd *c);
 extern List *bld_cmt_append(List *to, List *from);
-extern void bld_cmt_queue(unsigned char *cmt);
+extern void bld_cmt_queue(locator *lp, unsigned char *cmt);
 extern void bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg);
 extern void bld_discl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text, int e_or_s);
 extern void bld_edit(struct entry *e, char ctxt, char type);

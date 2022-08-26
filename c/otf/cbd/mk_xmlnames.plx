@@ -1,8 +1,21 @@
 #!/usr/bin/perl
 use warnings; use strict;
 
-my $max_n = 0;
-my $max_q = 0;
+use Getopt::Long;
+
+my $prefix = '';
+
+GetOptions(
+    'prefix:s'=>\$prefix,
+    );
+
+die "$0: must give prefix with -prefix option\n" unless $prefix;
+
+my $cbd = "cbd_$prefix";
+my $CBD = "\U$cbd";
+
+#my $max_n = 0;
+#my $max_q = 0;
 my %ns = (
     c  =>'http://oracc.org/ns/cbd/2.0',
     g  =>'http://oracc.org/ns/gdl/1.0',
@@ -14,94 +27,96 @@ my %ns = (
     xh =>'http://www.w3.org/1999/xhtml',
     xml=>'http://www.w3.org/XML/1998/namespace',
     );
+my %xns = ();
 my %a = ();
 my @a = ();
 my %e = ();
 my @e = ();
 
-open(IN,'cbd_rnc.c');
+my $ns = '';
+
+#open(IN,"${cbd}_rnc.c");
+open(IN, "$prefix.xnn") || die;
 while (<IN>) {
-    process_attr($_);
-    process_elem($_);
+    s/\s*$//; chomp;
+    if (/^ns=(.*)$/) {
+	$ns = $1;
+    } elsif (/^xmlns:(.*?)=(.*)$/) {
+	$xns{$1} = $2;
+    } elsif (/^attribute=(.*)$/) {
+	process_attr($1);
+    } elsif (/^element=(.*)$/) {
+	process_elem($1);
+    } else {
+	warn("$0: unprocessed line: $_\n");
+    }
 }
 close(IN);
 
 @a = sort keys %a;
 @e = sort keys %e;
 
-++$max_n;
-++$max_q;
+#++$max_n;
+#++$max_q;
 
-open(H,">cbd_xmlnames.h");
+open(H,">${cbd}_xnn.h");
 print H <<H;
-#ifndef _CBD_XMLNAMES_H
-#define _CBD_XMLNAMES_H
-#define CBD_MAX_A_NAME  $max_n
-#define CBD_MAX_QA_NAME $max_q
-struct cbd_xname
-{
-  char pname[CBD_MAX_A_NAME];
-  char qname[CBD_MAX_QA_NAME];
-};
-enum cbd_a_type
+#ifndef _${CBD}_XNN_H
+#define _${CBD}_XNN_H
+enum ${cbd}_a_type
 {
 H
 foreach my $n (sort keys %ns) {
-    print H "  cbd_n_$n,\n";
+    print H "  ${cbd}_n_$n,\n";
 }
 my $i = 0;
 foreach my $a (@a) {
     my $a2 = $a;
     $a2 =~ tr/:-/__/;
-    print H "  cbd_a_$a2,\n";
+    print H "  ${cbd}_a_$a2,\n";
 }
 print H <<H;
-  cbd_a_enum_top
+  ${cbd}_a_enum_top
 };
-struct cbd_attr
-{
-  char *valpair[2];
-  char *renpair[2];
-};
-enum cbd_e_type
+
+enum ${cbd}_e_type
 {
 H
 $i = 0;
 foreach my $e (@e) {
     my $e2 = $e;
     $e2 =~ tr/:-/__/;
-    print H "  cbd_e_$e2,\n";
+    print H "  ${cbd}_e_$e2,\n";
 }
 print H <<H;
-  cbd_e_enum_top
+  ${cbd}_e_enum_top
 };
 
-struct cbd_nstab { enum cbd_a_type prefix; const char *ns; };
+extern struct xnn_attr ${cbd}_abases[];
+extern struct xnn_nstab ${cbd}_nstab[];
+extern struct xnn_xname ${cbd}_anames[];
+extern struct xnn_xname ${cbd}_enames[];
 
-extern struct cbd_attr cbd_abases[];
-extern struct cbd_nstab cbd_nstab[];
-extern struct cbd_xname cbd_anames[];
-extern struct cbd_xname cbd_enames[];
-
-#endif /*_CBD_XMLNAMES_H*/
+#endif /*_${CBD}_XMLNAMES_H*/
 H
 close(H);
 
-open(C,">cbd_xmlnames.c");
+open(C,">${cbd}_xnn.c");
 print C <<C;
 #ifndef NULL
 #define NULL (char *)0
 #endif
-#include "cbd_xmlnames.h"
-struct cbd_nstab cbd_nstab[] = {
+#include "xnn.h"
+#include "${cbd}_xnn.h"
+struct xnn_nstab ${cbd}_nstab[] = {
 C
 foreach my $n (sort keys %ns) {
-    print C "  { cbd_n_$n, \"$ns{$n}\" },\n";
+    print C "  { ${cbd}_n_$n, \"$ns{$n}\" },\n";
 }
 print C <<C;
 };
 
-struct cbd_xname cbd_anames[] =
+struct xnn_xname ${cbd}_anames[] =
 {
 C
 foreach my $x (sort keys %ns) {
@@ -116,19 +131,24 @@ print C <<C;
 C
 
 print C <<C;
-struct cbd_attr cbd_abases[] =
+struct xnn_attr ${cbd}_abases[] =
 {
 C
 my $top_a_n = (scalar keys %ns) + $#a;
 for (my $i = 0; $i <= $top_a_n; ++$i) {
-    print C "  { { cbd_anames[$i].qname,NULL } , { cbd_anames[$i].pname,NULL } },\n";
+    #    print C "  { { ${cbd}_anames[$i].qname,NULL } , { ${cbd}_anames[$i].pname,NULL } },\n";
+    my $a = $a[$i] || '';
+    my $ap = $a{$a} || '';
+    if ($a) {
+	print C "  { { \"$a\",NULL } , { \"$ap\",NULL } },\n";
+    }
 }
 print C <<C;
 };
 C
 
 print C <<C;
-struct cbd_xname cbd_enames[] =
+struct xnn_xname ${cbd}_enames[] =
 {
 C
 for (my $i = 0; $i <= $#e; ++$i) {
@@ -141,11 +161,29 @@ print C <<C;
 C
 close(C);
 
+############################################################################
+
+sub nsuri {
+    my $ns = $1;
+    my $uri = '';
+    if (($uri = $xns{$ns})) {
+	return $uri;
+    } elsif (($uri = $ns{$ns})) {
+	return $uri;
+    } else {
+	warn "$0: unknown prefix $ns\n";
+    }
+    return undef;
+}
+
 sub
 a_nsify {
     my $n = shift;
     if ($n =~ s/^(.*?)://) {
-	$n = "$ns{$1}:$n";
+	my $uri = nsuri($1);
+	if ($uri) {
+	    $n = "$uri:$n";
+	}
     }
     $n;
 }
@@ -154,37 +192,34 @@ sub
 e_nsify {
     my $n = shift;
     if ($n =~ s/^(.*?)://) {
-	$n = "$ns{$1}:$n";
+	my $uri = nsuri($1);
+	if ($uri) {
+	    $n = "$uri:$n";
+	}
     } else {
-	$n = "$ns{'c'}:$n";
+	if ($ns) {
+	    $n = "$ns:$n";
+	}
     }
     $n;
 }
 
 sub
 process_attr {
-    my $aline = shift;
-    chomp $aline;
-    if ($aline =~ /attribute\s+(\S+)\s*/) {
-	my $n = $1;
-	$a{$n} = a_nsify($n);
-	$max_n = length($n) if length($n) > $max_n;
-	$max_q = (length($a{$n})+length($n)) 
-	    if (length($a{$n})+length($n)) > $max_q;
-    }
+    my $a = shift;
+    $a{$a} = a_nsify($a);
+#    $max_n = length($a) if length($a) > $max_n;
+#    $max_q = (length($a{$a})+length($a)) 
+#	if (length($a{$a})+length($a)) > $max_q;
 }
 
 sub
 process_elem {
-    my $eline = shift;
-    chomp $eline;
-    if ($eline =~ /element\s+(\S+)\s*/) {
-	my $n = $1;
-	$e{$n} = e_nsify($n);
-	$max_n = length($n) if length($n) > $max_n;
-	$max_q = (length($e{$n})+length($n)) 
-	    if (length($e{$n})+length($n)) > $max_q;
-    }
+    my $e = shift;
+    $e{$e} = e_nsify($e);
+#    $max_n = length($e) if length($e) > $max_n;
+#    $max_q = (length($e{$e})+length($e)) 
+#	if (length($e{$e})+length($e)) > $max_q;
 }
 
 1;

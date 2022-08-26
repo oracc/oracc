@@ -164,7 +164,7 @@ bld_cmt_append(List *to, List *from)
 }
 
 void
-bld_cmt_queue(unsigned char *cmt)
+bld_cmt_queue(locator *lp, unsigned char *cmt)
 {
   if (curr_entry)
     {
@@ -173,7 +173,7 @@ bld_cmt_queue(unsigned char *cmt)
       list_add(cmt_queue, cmt);
     }
   else
-    msglist_err(&yylloc, "#comments are only allowed inside entries");
+    msglist_err(lp, "#comments are only allowed inside entries");
 }
 
 void
@@ -421,53 +421,53 @@ bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *n
   struct metaorder *orderp;
   switch (tok)
     {
-    case BIB:
+    case yBIB:
       if (!mp->bib)
 	mp->bib = list_create(LIST_SINGLE);
       lp = mp->bib;
       break;
-    case COLLO:
+    case yCOLLO:
       if (!mp->collo)
 	mp->collo = list_create(LIST_SINGLE);
       lp = mp->collo;
       break;
-    case EQUIV:
+    case yEQUIV:
       if (!mp->equiv)
 	mp->equiv = list_create(LIST_SINGLE);
       lp = mp->equiv;
       break;
-    case INOTE:
+    case yINOTE:
       if (!mp->inote)
 	mp->inote = list_create(LIST_SINGLE);
       lp = mp->inote;
       break;
-    case ISSLP:
+    case yISSLP:
       if (!mp->isslp)
 	mp->isslp = list_create(LIST_SINGLE);
       lp = mp->isslp;
       break;
-    case NOTE:
+    case yNOTE:
       if (!mp->note)
 	mp->note = list_create(LIST_SINGLE);
       lp = mp->note;
       break;
-    case OID:
+    case yOID:
       if (!mp->oid)
 	mp->oid = list_create(LIST_SINGLE);
       lp = mp->oid;
       break;
-    case PROP:
+    case yPROP:
       if (!mp->prop)
 	mp->prop = list_create(LIST_SINGLE);
       lp = mp->prop;
       break;
-    case PLEIADES:
+    case yPL_COORD:
       if (!mp->pleiades)
 	mp->pleiades = list_create(LIST_SINGLE);
       lp = mp->pleiades;
       break;
 #if 0
-    case REL:
+    case yREL:
       lp = mp->rel;
       break;
 #endif

@@ -1,4 +1,5 @@
 %{
+#include "grammar.h"
 #include "gx.h"
 %}
 struct cbdpos;

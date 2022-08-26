@@ -26,17 +26,20 @@ int output = 0;
 int stdin_input = 0;
 int xml_output = 0;
 
-extern int yyparse(void);
 struct cbd* curr_cbd;
 struct entry*curr_entry;
 const char *efile = NULL;
 const char *rncfile = NULL;
-extern void yyrestart(FILE*);
 extern char *cbdrnc(void);
 
 extern int parser_status;
 
-extern int yydebug;
+extern int tg1debug, tg2debug;
+extern int tg1parse(void);
+/*extern int tg2parse(void);*/
+extern void tg1restart(FILE*);
+/*extern void tg2restart(FILE*);*/
+
 extern int math_mode;
 extern int cbd(const char *fname);
 extern int flex(const char *fname);
@@ -72,11 +75,11 @@ gx_run()
       FILE *fp;
       efile = file;
       if ((fp = xfopen(efile, "r")))
-	yyrestart(fp);
+	tg1restart(fp);
     }
   curr_cbd = bld_cbd();
   phase = "syn";
-  if (yyparse() || parser_status)
+  if (tg1parse() || parser_status)
     {
       if (!keepgoing)
 	{
@@ -121,6 +124,12 @@ gx_term()
   common_term();
 }
 
+static void
+io_init(void)
+{
+  ;
+}
+
 int
 main(int argc, char **argv)
 {
@@ -160,7 +169,7 @@ int opts(int och,char *oarg)
       check = 1;
       break;
     case 'd':
-      yydebug = 1;
+      tg1debug = 1; /* = tg2debug */
       break;
     case 'e':
       entries = 1;

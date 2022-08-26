@@ -43,24 +43,31 @@ xLDADD = \
 	@top_srcdir@/c/lib/liboracc.la \
 	./libcbd.la
 
-grammar.tab.c grammar.tab.h: grammar.y scanner.l
-	${YACC} -b grammar -vd grammar.y
+tg1.tab.c tg1.tab.h: tg1.y tg1.l
+	${YACC} -vd tg1.y
 
-scanner.c: scanner.l grammar.tab.h
-	flex -B -DYY_NO_INPUT -o scanner.c scanner.l
+tg1-l.c: tg1.l tg1.tab.h
+	flex -B -DYY_NO_INPUT tg1.l
 
-scanner.o: scanner.c
+tg1-l.o: tg1-l.c
 
-cbd_rnc.c: cbd.rnc
-	./mk_cbdrnc_c.plx >cbd_rnc.c
+tg1/tg1.rng: tg1.rnc
+	mkdir -p tg1
+	(cd tg1 ; java -jar ${javadir}/trang.jar ../tg1.rnc tg1.rng)
 
-cbd_xmlnames.c: cbd-gx.rnc mk_xmlnames.plx
-	./mk_xmlnames.plx cbd-gx.rnc
+tg1.xnn: tg1/tg1.rng rng2xnn.sh
+	(cd tg1 ; ../rng2xnn.sh . >../tg1.xnn)
+
+#cbd_rnc.c: cbd.rnc
+#	./mk_cbdrnc_c.plx >cbd_rnc.c
+#
+#cbd_xmlnames.c: cbd-gx.rnc mk_xmlnames.plx
+#	./mk_xmlnames.plx cbd-gx.rnc
 
 gx_SOURCES = \
-	gx.c globals.c scanner.c grammar.tab.c \
+	gx.c globals.c tg1-l.c tg1.tab.c \
 	builder.c iterator.c identity.c validate.c \
-	xmloutput.c cbd_rnc.c cbd_xmlnames.c
+	xmloutput.c
 
 gx_LDADD = -lfl $(xLDADD)
 

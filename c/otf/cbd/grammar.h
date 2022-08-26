@@ -1,6 +1,23 @@
 #ifndef _GRAMMAR_H
 #define _GRAMMAR_H
+
+#include "list.h"
+
+#define yPL_ID 258
+#define yPL_COORD 259
+#define yPL_ALIAS 260
+#define yBIB 261
+#define yOID 262
+#define yCOLLO 263
+#define yPROP 264
+#define yNOTE 265
+#define yINOTE 266
+#define yISSLP 267
+#define yEQUIV 268
+
 #define YYLTYPE_IS_DECLARED 1
+
+typedef struct YYLTYPE locator;
 typedef struct YYLTYPE YYLTYPE;
 struct YYLTYPE
 {

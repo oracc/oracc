@@ -1,6 +1,7 @@
 #include <ctype128.h>
 #include <npool.h>
 #include <unistd.h>
+#include "grammar.h"
 #include "gx.h"
 
 static List *cgplist = NULL;
