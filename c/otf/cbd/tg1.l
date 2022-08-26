@@ -87,26 +87,29 @@ YY_BUFFER_STATE bp;
 <xF>\n			  { BEGIN ss(0); yycolumn = 1; return(END_FORM); }
 <xS,xSPOS,xSW>\n          { BEGIN ss(0); yycolumn = 1; }
 
-<xTEXT>.+		 { ytdup(); return(TEXTSPEC); }
-^@project[\t ]+		 { yln("@project"); BEGIN xPROJ; return PROJECT; }
-<xPROJ>[^ \t\n]+[ \t]*   { BEGIN ss(0); ytdup(); return PROJSPEC; }
-^@lang[ \t]+		 { BEGIN ss(xLANG); after_xLANG = 0; return LANG; }
-<xLANG>[^ \t\n]+[ \t]*   { BEGIN ss(after_xLANG); ytdup(); return LANGSPEC; }
-^@name[\t ]+		 { BEGIN ss(xTEXT); return NAME; }
-^@proplist[\t ]+	 { BEGIN ss(xTEXT); return PROPS; }
+<xCF,xLANG,xPOS,xPROJ,xTEXT>[ \t]+
+<xTEXT>\n[ \t]+		 { yycolumn = 1; }
+<xTEXT>[^ \t\n].*	 { ytdup(); return(TEXTSPEC); }
+
+^@project		 { yln("@project"); BEGIN xPROJ; return PROJECT; }
+<xPROJ>[^ \t\n]+         { BEGIN ss(0); ytdup(); return PROJSPEC; }
+^@lang  		 { BEGIN ss(xLANG); after_xLANG = 0; return LANG; }
+<xLANG>[^ \t\n]+         { BEGIN ss(after_xLANG); ytdup(); return LANGSPEC; }
+^@name	  	         { BEGIN ss(xTEXT); return NAME; }
+^@proplist      	 { BEGIN ss(xTEXT); return PROPS; }
 
 ^[+-]			 { BEGIN ss(xENTSNS); return yytext[0]; }
-<xENTSNS>@entry[\t ]+	 { BEGIN ss(after_xENTSNS); return(ENTRY); }
-<xENTSNS>@sense[\t ]+	 { BEGIN ss(after_xENTSNS); return(SENSE); }
+<xENTSNS>@entry	 	 { BEGIN ss(after_xENTSNS); return(ENTRY); }
+<xENTSNS>@sense		 { BEGIN ss(after_xENTSNS); return(SENSE); }
 <xENTSNS>.		 { BEGIN ss(0); yyless(0); /* should error */ }
 
 ^#why:[\t ]+		 { BEGIN ss(xTEXT); return(CMTWHY); }
 
-^@entry[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; return(ENTRY); }
-^@entry![\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); bang = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; return(ENTRY); }
-^@entry"*"[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); star = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; return(ENTRY); }
-^@entry"*!"[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); bang = star = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; return(ENTRY); }
-^@end[ \t]+entry[\t ]*   { yln("@endentry"); BEGIN ss(0); return(END_ENTRY); }
+^@entry	 	 	 { yln("@entry"); BEGIN ss(xCF); after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; return(ENTRY); }
+^@entry!	 	 { yln("@entry"); BEGIN ss(xCF); bang = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; return(ENTRY); }
+^@entry"*"	 	 { yln("@entry"); BEGIN ss(xCF); star = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; return(ENTRY); }
+^@entry"*!"	 	 { yln("@entry"); BEGIN ss(xCF); bang = star = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; return(ENTRY); }
+^@end[ \t]+entry   	 { yln("@endentry"); BEGIN ss(0); return(END_ENTRY); }
 
 ^@alias[\t ]+		 { BEGIN ss(xCF); after_xPOS = 0; return(ALIAS); }
 
@@ -115,17 +118,18 @@ YY_BUFFER_STATE bp;
 ^>[\t ]*		 { BEGIN ss(after_xRENMRG); return(RENAME); }
 ^>>[\t ]*		 { BEGIN ss(after_xRENMRG); return(MERGE); }
 
-<xCF>[^\[\]\n]+		 { dup(unspace(yytext)); return(CF); }
-<xCF>[ \t]*"["      	 { BEGIN ss(xGW); return(yytext[yyleng-1]); }
+<xCF>[^\[\] \t\n][^\[\]\n]*[^\[\] \t\n]        { dup(unspace(yytext)); return(CF); }
+<xCF>[^\[\] \t\n]        { dup(unspace(yytext)); return(CF); }
+<xCF>"["      	 { BEGIN ss(xGW); return(yytext[yyleng-1]); }
 <xGW>([^\]\n]+)	 	 { ytdup(); return(GW); }
-<xCF,xGW>"]"[ \t]*     	 { BEGIN ss(after_xGW); return(yytext[0]); }
+<xCF,xGW>"]"     	 { BEGIN ss(after_xGW); return(yytext[0]); }
 <xPOS>[^ \t\n]+[ \t]*/\n { BEGIN ss(0); ytdup(); return(POS); }
 <xPOS>[^ \t\n]+[ \t]*	 { BEGIN ss(after_xPOS); ytdup(); return(POS); }
 <xPOS>[ \t]*/\n		 { BEGIN ss(0); }
 
 ^#			 { BEGIN ss(xCOMMENT); }
 <xCOMMENT>.*		 { BEGIN ss(0); bld_cmt_queue(&yylloc, (ucp)ytdup()); }
-^@[A-Z]+[ \t]*		 { BEGIN ss(xTEXT); ytdupn(1); return(DCF); }
+^@[A-Z]+		 { BEGIN ss(xTEXT); ytdupn(1); return(DCF); }
 
 ^@allow[ \t]+	      	 { BEGIN ss(xALLOW); return(ALLOW); }
 <xALLOW>[^ \t\n]       	 { ytdup(); return(BASE_PRI); }
@@ -182,11 +186,12 @@ YY_BUFFER_STATE bp;
 ^@include[ \t]*		  { BEGIN ss(xINCL); }
 <xINCL>[^ \t\n]+   	  { includeo(yytext); }
 
-^@[^ \t\n]+[ \t]*     	  { BEGIN ss(xFLUSH); yylloc.file=efile; yylloc.first_line=yylineno;
+^@[^ \t\n]+     	  { BEGIN ss(xFLUSH); yylloc.file=efile; yylloc.first_line=yylineno;
 			    vyyerror(yylloc,"unknown at-command %s\n",yytext, NULL); }
 <xFLUSH>.*		  { BEGIN ss(0); }
 
-.
+[ \t]+
+[^ \t\n]
 \n			  { yycolumn = 1; }
 
 <<EOF>>			  { if (flextrace) { fprintf(stderr, "<<EOF>>\n"); }
