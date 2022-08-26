@@ -8,6 +8,7 @@
 #include "../rnv/m.h"
 #include "../rnv/rnv.h"
 #include "../rnv/rnx.h"
+#include "rnvval.h"
 
 extern int rnx_n_exp;
 /*static int nexp,rnck;*/
@@ -16,8 +17,7 @@ extern int rnx_n_exp;
 static Hash_table *rnv_qnames = NULL;
 static Hash_table *rnv_qanames = NULL;
 
-static const char **xmlns_atts;
-static struct npool rnv_pool;
+static struct npool *rnv_pool;
 
 void
 rnvval_init(void (*eh)(int erno,va_list ap), struct xnn_data *xdp)
@@ -56,7 +56,7 @@ rnvval_ch(const char *ch)
 }
 
 void
-rnvval_atts_free(struct rnvval_atts *ratts)
+rnvval_free_atts(struct rnvval_atts *ratts)
 {
   free(ratts->atts);
   free(ratts->qatts);
@@ -74,7 +74,6 @@ rnvval_aa(const char *pname, ...)
   atts = malloc(atts_alloced);
   qatts = malloc(atts_alloced);
   npool_reset(rnv_pool);
-  npool_copy((ucp)qname, rnv_pool);
 
   va_start(ap, pname);
   while ((arg = (char*)va_arg(ap, const char*)))
@@ -105,14 +104,15 @@ rnvval_aa(const char *pname, ...)
     }
   va_end(ap);
   atts[nargs] = qatts[nargs] = NULL;
-  ratts->atts = atts;
-  ratts->qatts = qatts;
+  ratts->atts = (const char **)atts;
+  ratts->qatts = (const char **)qatts;
   return ratts;
 }
 
 void
 rnvval_ea(const char *pname, struct rnvval_atts *ratts)
 {
+  char *qname = NULL;
   if (!(qname = hash_find(rnv_qnames, (ucp)pname)))
     {
       fprintf(stderr, "rnvval: internal error: pname %s not found in qname table\n", pname);

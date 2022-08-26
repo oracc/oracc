@@ -9,7 +9,7 @@ noinst_LTLIBRARIES=libcbd.la
 bin_PROGRAMS=gx sx statis
 
 libcbd_la_SOURCES = \
-	common.c sig.c cbdpos.c sigops.c iomethod.c \
+	common.c sig.c cbdpos.c sigops.c \
 	editscript.c xgetline.c sigstats.c msglist.c
 
 AM_CPPFLAGS=\
@@ -65,7 +65,9 @@ tg1.xnn: tg1/tg1.rng rng2xnn.sh
 #	./mk_xmlnames.plx cbd-gx.rnc
 
 gx_SOURCES = \
-	gx.c globals.c tg1-l.c tg1.tab.c rnvxml.c \
+	gx.c globals.c iomethod.c \
+	tg1-l.c tg1.tab.c cbd_tg1_xnn.c \
+	rnvtgi.c rnvval.c rnvxml.c \
 	builder.c iterator.c identity.c validate.c \
 	xmloutput.c
 

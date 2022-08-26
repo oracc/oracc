@@ -8,7 +8,7 @@ struct rnvval_atts {
 
 extern void rnvval_init(void (*eh)(int erno,va_list ap), struct xnn_data *xdp);
 extern void rnvval_term(void);
-extern void rnvval_atts_free(struct rnvval_atts *ratts);
+extern void rnvval_free_atts(struct rnvval_atts *ratts);
 extern struct rnvval_atts *rnvval_aa(const char *pname, ...);
 extern void rnvval_ch(const char *ch);
 extern void rnvval_ea(const char *pname, struct rnvval_atts *ratts);

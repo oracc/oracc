@@ -44,7 +44,6 @@ extern int cbd(const char *fname);
 extern int flex(const char *fname);
 
 static void gx_init(void);
-static void gx_run(void);
 static void gx_term(void);
 static void io_init(void);
 
@@ -151,6 +150,8 @@ io_init(void)
 static void
 io_run(void)
 {
+  extern struct xnn_data cbd_tg1_data;
+  extern void rnvtgi_init(struct xnn_data *xdp);
   switch (input_method->type)
     {
     case iom_tg1:
@@ -159,13 +160,13 @@ io_run(void)
     case iom_tg2:
       break;
     case iom_xg1:
-    case iom_xg1:
+    case iom_xg2:
     case iom_x11:
     case iom_x12:
     case iom_x21:
     case iom_x22:
     default:
-      warning("input not supported for method %s", input_method->name);
+      vwarning("input not supported for method %s", input_method->name);
       exit(1);
       break;
     }
@@ -182,13 +183,12 @@ io_run(void)
       break;
     case iom_xg2:
       break;
-    case iom_xg1:
     case iom_x11:
     case iom_x12:
     case iom_x21:
     case iom_x22:
     default:
-      warning("output not supported for method %s", output_method->name);
+      vwarning("output not supported for method %s", output_method->name);
       exit(1);
       break;
     }

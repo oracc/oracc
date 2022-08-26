@@ -1,3 +1,13 @@
+#include <stdarg.h>
+#include "gx.h"
+#include "xnn.h"
+#include "rnvval.h"
+#include "../rnv/erbit.h"
+#include "../rnv/m.h"
+#include "../rnv/rnl.h"
+#include "../rnv/rnv.h"
+#include "../rnv/rnx.h"
+
 /* rnvtgi: Driver for rnv validation of T(ext) G(lossary) I(nfosets) */
 
 extern int (*er_printf)(char *format,...);

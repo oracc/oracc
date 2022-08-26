@@ -4,6 +4,7 @@
 #include "npool.h"
 #include "gx.h"
 #include "xmloutput_fncs.c"
+#include "rnvxml.h"
 
 locator *xo_loc;
 extern void iterator(struct cbd *c, iterator_fnc fncs[]);
@@ -34,7 +35,7 @@ xo_aliases(struct entry *e)
 {
   List_node *lp;
   xo_loc = &((struct alias *)e->aliases->first->data)->l;
-  rnvxml_ea("aliases", (ccp)NULL);
+  rnvxml_ea("aliases", NULL);
   for (lp = e->aliases->first; lp; lp = lp->next)
     {
       xo_loc = &((struct alias *)lp->data)->l;
@@ -89,12 +90,11 @@ xo_bases(struct entry *e)
 static void
 xo_cbd(struct cbd *c)
 {
-  rnvxml_init();
-  ratts = rnvval_aa("cbd",
-		    "project", c->project,
-		    "xml:lang", c->lang,
-		    "name", c->name,
-		    (ccp)NULL);
+  struct rnvval_atts *ratts = rnvval_aa("cbd",
+					"project", c->project,
+					"xml:lang", c->lang,
+					"name", c->name,
+					(ccp)NULL);
   rnvxml_ea("cbd", ratts);
 }
 

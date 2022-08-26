@@ -4,6 +4,7 @@
 #include "npool.h"
 #include "gx.h"
 #include "xnn.h"
+#include "rnvval.h"
 #include "../rnv/erbit.h"
 #include "../rnv/m.h"
 #include "../rnv/rnv.h"
@@ -12,9 +13,6 @@
 extern int rnx_n_exp;
 /*static int nexp,rnck;*/
 /*static int current,previous;*/
-
-static Hash_table *cbd_qnames = NULL;
-static Hash_table *cbd_qanames = NULL;
 
 static struct xnn_nstab *xmlns_atts;
 
@@ -64,15 +62,14 @@ rnvxml_term()
 void
 rnvxml_ch(const char *ch)
 {
-  rnvval_characters(ch);
+  rnvval_ch(ch);
   fputs(ch,f_xml);
 }
 
 void
-rnvxml_ea(const char *pname, struct rnvatts *ratts)
+rnvxml_ea(const char *pname, struct rnvval_atts *ratts)
 {
-  rnvval(pname, ratts);
-
+  int i;
   fprintf(f_xml, "<%s", pname);
   if (xmlns_atts)
     {
@@ -81,13 +78,15 @@ rnvxml_ea(const char *pname, struct rnvatts *ratts)
 	fprintf(f_xml, " %s=\"%s\"", xmlns_atts[i].ns, xmlns_atts[i].uri);
       xmlns_atts = NULL;
     }
-  if (nargs > 1)
-    {
-      for (nargs = 0; ratts->atts[nargs]; nargs += 2)
-	fprintf(f_xml, " %s=\"%s\"", ratts->atts[nargs], ratts->atts[nargs+1]);
-    }
+
+  if (ratts)
+    for (i = 0; ratts->atts[i]; i+=2)
+      fprintf(f_xml, " %s=\"%s\"", ratts->atts[i], ratts->atts[i+1]);
+
   fprintf(f_xml, ">");
-  rnvval_free_atts(ratts);
+
+  if (ratts)
+    rnvval_free_atts(ratts);
 }
 
 void
