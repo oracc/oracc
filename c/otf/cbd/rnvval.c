@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <psd_base.h>
 #include "rnvif.h"
 #include "xmlutil.h"
 #include "npool.h"
@@ -6,6 +7,7 @@
 #include "xnn.h"
 #include "../rnv/erbit.h"
 #include "../rnv/m.h"
+#include "../rnv/rnl.h"
 #include "../rnv/rnv.h"
 #include "../rnv/rnx.h"
 #include "rnvval.h"
@@ -20,11 +22,21 @@ static Hash_table *rnv_qanames = NULL;
 static struct npool *rnv_pool;
 
 void
-rnvval_init(void (*eh)(int erno,va_list ap), struct xnn_data *xdp)
+rnvval_init(void (*eh)(int erno,va_list ap), struct xnn_data *xdp, char *rncfile)
 {
   int i;
 
-  /* rnvxml_rnvif_init(); */ /* replacement for rnvif_init() */
+  if (!xaccess(rncfile, R_OK, 0))
+    {
+      if (verbose)
+      fprintf(stderr, "rnvval_init: using rnc schema %s\n", rncfile);
+      rnc_start = rnl_fn(rncfile);
+      status = !rnc_start;
+    }
+  else
+    {
+      fprintf(stderr, "rnvval_fn: no such schema %s\n", rncfile);
+    }
 
   rnl_set_verror_handler(eh);
   rnv_set_verror_handler(eh);

@@ -1,0 +1,6 @@
+start=x
+
+ay = xsd:token { pattern="[a-y]" } 
+
+x = element x { ay }
+

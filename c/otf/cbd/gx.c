@@ -151,11 +151,28 @@ static void
 io_run(void)
 {
   extern struct xnn_data cbd_tg1_data;
-  extern void rnvtgi_init(struct xnn_data *xdp);
+  extern void rnvtgi_init(struct xnn_data *xdp, const char *rncbase);
+  extern void tg1_l_init(char *s, size_t len);
+  extern void tg1_l_term(void);
+  
   switch (input_method->type)
     {
     case iom_tg1:
-      rnvtgi_init(&cbd_tg1_data);
+      rnvtgi_init(&cbd_tg1_data, input_method->name);
+      input_io.normed = glo_normalize(input_io);
+      if (input_io.normed)
+	{
+	  input_io.str = malloc((input_io.len = (strlen(input_io.normed)+2)));
+	  strcpy(input_io.str, input_io.normed);
+	  input_io.str[input_io.len-1] = '\0';
+	  tg1_l_init(input_io.str, input_io.len);
+	  curr_cbd = bld_cbd();
+	  phase = "syn";
+	  tg1parse();
+	  tg1_l_term();
+	}
+      free(input_io.str);
+      free(input_io.normed);
       break;
     case iom_tg2:
       break;

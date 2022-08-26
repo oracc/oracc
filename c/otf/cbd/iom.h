@@ -4,9 +4,12 @@
 struct iom_io {
   const char *fn;
   FILE *fp;
-  const char *str;
+  char *str;
+  char *normed;
   int use_expat;
   int use_stdio;
+  size_t len; /* len of str for use with flex; == strlen(str)+2 bc
+		 yy_scan_buffer needs double final \0 */
 };
 
 typedef struct cbd * (*iom_i_fnc)(struct iom_io *);

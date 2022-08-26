@@ -68,6 +68,8 @@ int include_stack_ptr = 0;
 static void includec(void);
 static void includeo(char *file);
 
+YY_BUFFER_STATE bp;
+
 %}
 
 %x xALLOW
@@ -317,5 +319,17 @@ includec(void)
         	  	           		             include_stack[include_stack_ptr+1].file);
         }
     }
+}
+
+void
+tg1_l_init(char *s, size_t len)
+{
+  bp = yy_scan_buffer(s, len);
+  yy_switch_to_buffer(bp);
+}
+void
+tg1_l_term(void)
+{
+  tg1_delete_buffer(bp);
 }
 

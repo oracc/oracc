@@ -41,7 +41,10 @@ static void tgi_verror_handler(int erno,va_list ap)
 }
 
 void
-rnvtgi_init(struct xnn_data *xdp)
+rnvtgi_init(struct xnn_data *xdp, const char *rncbase)
 {
-  rnvval_init(tgi_verror_handler, xdp);
+  char *fn = malloc(strlen(rncbase)+5);
+  sprintf(fn, "%s.rnc", rncbase);
+  rnvval_init(tgi_verror_handler, xdp, fn);
+  free(fn);
 }
