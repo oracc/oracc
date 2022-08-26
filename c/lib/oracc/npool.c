@@ -21,6 +21,13 @@ npool_init()
 }
 
 void
+npool_reset(struct npool *p)
+{
+  p->rover = p->base;
+  p->base->used = p->base->mem;
+}
+
+void
 npool_term(struct npool *p)
 {
   struct pool_block *pbp,*tmp;

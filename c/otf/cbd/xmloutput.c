@@ -90,11 +90,12 @@ static void
 xo_cbd(struct cbd *c)
 {
   rnvxml_init();
-  rnvxml_ea("cbd",
-	    "project", c->project,
-	    "xml:lang", c->lang,
-	    "name", c->name,
-	    (ccp)NULL);
+  ratts = rnvval_aa("cbd",
+		    "project", c->project,
+		    "xml:lang", c->lang,
+		    "name", c->name,
+		    (ccp)NULL);
+  rnvxml_ea("cbd", ratts);
 }
 
 static void

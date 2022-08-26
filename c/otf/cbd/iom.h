@@ -6,6 +6,7 @@ struct iom_io {
   FILE *fp;
   const char *str;
   int use_expat;
+  int use_stdio;
 };
 
 typedef struct cbd * (*iom_i_fnc)(struct iom_io *);

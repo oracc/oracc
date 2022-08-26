@@ -14,23 +14,22 @@
 #include "../lib/rnv/rnl.h"
 
 extern struct iom *iomethod(const char *str, size_t len);
-struct iom *input_method, *output_method;
+static struct iom *input_method, *output_method;
+static struct iom_io input_io, output_io;
+const char *input_file, *output_file;
 
+/* Different error mechanisms in libraries need to be unified */
 const char *errmsg_fn = NULL;
+const char *efile = NULL;
 
 int flextrace = 0;
-int identity_output = 0;
-int json_output = 0;
+
 int keepgoing = 0;
-int output = 0;
 int stdin_input = 0;
-int xml_output = 0;
+int stdin_output = 0;
 
 struct cbd* curr_cbd;
 struct entry*curr_entry;
-const char *efile = NULL;
-const char *rncfile = NULL;
-extern char *cbdrnc(void);
 
 extern int parser_status;
 
@@ -43,8 +42,6 @@ extern void tg1restart(FILE*);
 extern int math_mode;
 extern int cbd(const char *fname);
 extern int flex(const char *fname);
-
-static void cbd_rnc_init(void);
 
 static void gx_init(void);
 static void gx_run(void);
@@ -67,13 +64,14 @@ gx_init()
   with_textid = 0;
 }
 
+#if 0
 static void
 gx_run()
 {
   if (file)
     {
       FILE *fp;
-      efile = file;
+      efile = errmsg_fn = file;
       if ((fp = xfopen(efile, "r")))
 	tg1restart(fp);
     }
@@ -111,6 +109,7 @@ gx_run()
   
   msglist_print(stderr);
 }
+#endif
 
 static void
 gx_term()
@@ -127,7 +126,72 @@ gx_term()
 static void
 io_init(void)
 {
-  ;
+  memset(&input_io, '\0', sizeof(struct iom_io));
+  memset(&output_io, '\0', sizeof(struct iom_io));
+
+  if (!input_file)
+    input_file = "-";
+  if (!check && !output_file)
+    output_file = "-";
+  
+  input_io.fn = input_file;
+  if (!efile)
+    efile = errmsg_fn = input_file;
+  if (!strcmp(input_file, "-"))
+    input_io.use_stdio = 1;
+
+  if (output_file)
+    {
+      output_io.fn = output_file;
+      if (!strcmp(output_file, "-"))
+	output_io.use_stdio = 1;
+    }
+}
+
+static void
+io_run(void)
+{
+  switch (input_method->type)
+    {
+    case iom_tg1:
+      rnvtgi_init(&cbd_tg1_data);
+      break;
+    case iom_tg2:
+      break;
+    case iom_xg1:
+    case iom_xg1:
+    case iom_x11:
+    case iom_x12:
+    case iom_x21:
+    case iom_x22:
+    default:
+      warning("input not supported for method %s", input_method->name);
+      exit(1);
+      break;
+    }
+
+  /* THIS IS WHERE ACTIONS WILL BE EXECUTED */
+  
+  switch (output_method->type)
+    {
+    case iom_tg1:
+      break;
+    case iom_tg2:
+      break;
+    case iom_xg1:
+      break;
+    case iom_xg2:
+      break;
+    case iom_xg1:
+    case iom_x11:
+    case iom_x12:
+    case iom_x21:
+    case iom_x22:
+    default:
+      warning("output not supported for method %s", output_method->name);
+      exit(1);
+      break;
+    }
 }
 
 int
@@ -139,8 +203,12 @@ main(int argc, char **argv)
 
   io_init();
 
+#if 1
+  io_run();
+#else
   gx_run();
-  
+#endif
+
   gx_term();
 
   return 1;
@@ -149,8 +217,19 @@ main(int argc, char **argv)
 int major_version = 1; int minor_version = 0;
 const char *project = NULL;
 const char *prog = "gx";
-const char *usage_string = "[-I input-type] [-O output-type] [-A action] -i <FILE|-> -o <FILE|->";
-void help() { ; }
+const char *usage_string = "[OPTIONS] [-I input-type] [-O output-type] -i <FILE|-> -o <FILE|->";
+void help()
+{
+  fprintf(stderr, "OPTIONS:\n\n");
+  fprintf(stderr, "\t-c\tcheck input and exit without creating output\n");
+  fprintf(stderr, "\t-d\tdebug mode\n");
+  fprintf(stderr, "\t-e\tset file name to use in errors\n");
+  fprintf(stderr, "\t-k\tkeep going despite errors\n");
+  fprintf(stderr, "\t-v\tverbose mode\n");
+  fprintf(stderr, "\n\t-A [ACTIONS]\n\n");
+  fprintf(stderr, "ACTIONS:\n\n");
+  fprintf(stderr, "\t(none yet)\n\n");
+}
 int opts(int och,char *oarg)
 {
   switch (och)
@@ -172,17 +251,16 @@ int opts(int och,char *oarg)
       tg1debug = 1; /* = tg2debug */
       break;
     case 'e':
-      entries = 1;
+      efile = errmsg_fn = optarg;
       break;
     case 'f':
       break;
     case 'g':
       break;
     case 'i':
-      output = identity_output = 1;
+      input_file = optarg;
       break;
     case 'j':
-      output = json_output = 1;
       break;
     case 'k':
       keepgoing = 1;
@@ -190,11 +268,11 @@ int opts(int och,char *oarg)
     case 'n':
       break;
     case 'o':
+      output_file = optarg;
       break;
     case 'p':
       break;
     case 'r':
-      rncfile = optarg;
       break;
     case 's':
       sigs = 1;
@@ -206,7 +284,6 @@ int opts(int och,char *oarg)
       verbose = 1;
       break;
     case 'x':
-      output = xml_output = 1;
       break;
     default:
       return 1;
@@ -214,6 +291,7 @@ int opts(int och,char *oarg)
   return 0;
 }
 
+#if 0
 void
 cbd_rnc_init(void)
 {
@@ -242,3 +320,4 @@ cbd_rnc_init(void)
 	}
     }
 }
+#endif

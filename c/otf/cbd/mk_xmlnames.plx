@@ -3,9 +3,11 @@ use warnings; use strict;
 
 use Getopt::Long;
 
+my $allns = 0; # use -a to output all ns in the nstab
 my $prefix = '';
 
 GetOptions(
+    allns=>\$allns, 
     'prefix:s'=>\$prefix,
     );
 
@@ -17,6 +19,9 @@ my $CBD = "\U$cbd";
 #my $max_n = 0;
 #my $max_q = 0;
 my %ns = (
+    xml=>'http://www.w3.org/XML/1998/namespace',
+    );
+my %zns = (
     c  =>'http://oracc.org/ns/cbd/2.0',
     g  =>'http://oracc.org/ns/gdl/1.0',
     n  =>'http://oracc.org/ns/norm/1.0',
@@ -27,7 +32,12 @@ my %ns = (
     xh =>'http://www.w3.org/1999/xhtml',
     xml=>'http://www.w3.org/XML/1998/namespace',
     );
-my %xns = ();
+
+my %ns_omit = (
+    'http://www.w3.org/XML/1998/namespace'=>1,
+    'http://relaxng.org/ns/compatibility/annotations/1.0'=>1
+);
+
 my %a = ();
 my @a = ();
 my %e = ();
@@ -42,7 +52,7 @@ while (<IN>) {
     if (/^ns=(.*)$/) {
 	$ns = $1;
     } elsif (/^xmlns:(.*?)=(.*)$/) {
-	$xns{$1} = $2;
+	$ns{$1} = $2;
     } elsif (/^attribute=(.*)$/) {
 	process_attr($1);
     } elsif (/^element=(.*)$/) {
@@ -111,8 +121,10 @@ print C <<C;
 struct xnn_nstab ${cbd}_nstab[] = {
 C
 foreach my $n (sort keys %ns) {
-    print C "  { ${cbd}_n_$n, \"$ns{$n}\" },\n";
+    print C "  { ${cbd}_n_$n, \"$n\", \"$ns{$n}\" },\n"
+	unless $allns || exists($ns_omit{$ns{$n}});
 }
+print C "  { ${cbd}_a_enum_top, NULL, NULL },\n";
 print C <<C;
 };
 
@@ -126,6 +138,7 @@ for (my $i = 0; $i <= $#a; ++$i) {
     my $a = $a[$i];
     print C "  { \"$a\", \"$a{$a}\" },\n";
 }
+    print C "  { NULL, NULL },\n";
 print C <<C;
 };
 C
@@ -143,6 +156,7 @@ for (my $i = 0; $i <= $top_a_n; ++$i) {
 	print C "  { { \"$a\",NULL } , { \"$ap\",NULL } },\n";
     }
 }
+print  C "  { { NULL,NULL } , { NULL,NULL } },\n";
 print C <<C;
 };
 C
@@ -155,10 +169,13 @@ for (my $i = 0; $i <= $#e; ++$i) {
     my $e = $e[$i];
     print C "  { \"$e\", \"$e{$e}\" },\n";
 }
-    print C "  { \"\", \"\" },\n";
+print C "  { NULL, NULL },\n";
 print C <<C;
 };
 C
+
+print C "struct xnn_data ${cbd}_data = { ${cbd}_enames, ${cbd}_anames, ${cbd}_nstab };\n";
+
 close(C);
 
 ############################################################################
@@ -166,9 +183,7 @@ close(C);
 sub nsuri {
     my $ns = $1;
     my $uri = '';
-    if (($uri = $xns{$ns})) {
-	return $uri;
-    } elsif (($uri = $ns{$ns})) {
+    if (($uri = $ns{$ns})) {
 	return $uri;
     } else {
 	warn "$0: unknown prefix $ns\n";
