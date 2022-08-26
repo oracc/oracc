@@ -94,7 +94,9 @@ cgp:    CF '[' GW ']' POS { cgp_save((ucp)$1, (ucp)$3, (ucp)$5); } ;
 entrylist:	entry
 	|	entrylist entry
 
-entry:		atentry blocks end_entry
+entry:		atentry end_entry
+	|	atentry modentry end_entry
+	|	atentry blocks end_entry
 	|	atentry modentry blocks end_entry
 
 blocks:	any_block
@@ -112,10 +114,14 @@ entry_block:    alias
 atentry: 	ent_cgp		     { bld_entry_cgp(curr_entry); }
         |	'+' ent_cgp 	     { bld_entry_cgp(curr_entry); 
     				       bld_edit_entry(curr_entry, '+'); } ;
-	|	'-' ent_cgp  why     {
-	    			      bld_entry_cgp(curr_entry);
-    				      bld_edit_entry(curr_entry, '-');
-				      bld_edit_why(curr_entry, yylval.text); } ;
+	|	'-' ent_cgp why      {
+	    			       bld_entry_cgp(curr_entry);
+    				       bld_edit_entry(curr_entry, '-');
+				       bld_edit_why(curr_entry, yylval.text); } ;
+	|	'-' ent_cgp          {
+	    			       bld_entry_cgp(curr_entry);
+    				       bld_edit_entry(curr_entry, '-');
+				       bld_edit_why(curr_entry, "(no why given)"); } ;
 
 ent_cgp: 	begin_entry cgp
 
@@ -140,6 +146,7 @@ parts:  	atparts cgplist { curr_parts->cgps = cgp_get_all(); }
 atparts: 	PARTS { curr_parts = bld_parts(@1,curr_entry); }
 
 end_entry:	END_ENTRY { curr_entry->end_entry = bld_locator(@1); curr_entry = NULL; }
+	|	error END_ENTRY { curr_entry->end_entry = bld_locator(@1); curr_entry = NULL; yyerrok; }
 		
 lang_block: allow | bases | form
 
@@ -263,7 +270,8 @@ yyerror(const char *s)
 {
   YYLTYPE loc;
   extern int yylineno;
-  loc.file = (char *)file;
+  extern char *efile;
+  loc.file = efile;
   loc.first_line = yylineno;
   if (!strncmp(s, "syntax error, ", strlen("syntax error, ")))
     s += strlen("syntax error, ");

@@ -100,7 +100,7 @@ YY_BUFFER_STATE bp;
 <xENTSNS>@sense[\t ]+	 { BEGIN ss(after_xENTSNS); return(SENSE); }
 <xENTSNS>.		 { BEGIN ss(0); yyless(0); /* should error */ }
 
-^#why[\t ]+		 { BEGIN ss(xTEXT); return(CMTWHY); }
+^#why:[\t ]+		 { BEGIN ss(xTEXT); return(CMTWHY); }
 
 ^@entry[\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; return(ENTRY); }
 ^@entry![\t ]+	 	 { yln("@entry"); BEGIN ss(xCF); bang = 1; after_xRENMRG = after_xENTSNS = xCF; after_xGW = xPOS; after_xPOS = 0; return(ENTRY); }
@@ -182,7 +182,8 @@ YY_BUFFER_STATE bp;
 ^@include[ \t]*		  { BEGIN ss(xINCL); }
 <xINCL>[^ \t\n]+   	  { includeo(yytext); }
 
-^@[^ \t\n]+[ \t]*     	  { BEGIN ss(xFLUSH); yylloc.file=efile; yylloc.first_line=yylineno; vyyerror(yylloc,"unknown at-command %s\n",yytext, NULL); }
+^@[^ \t\n]+[ \t]*     	  { BEGIN ss(xFLUSH); yylloc.file=efile; yylloc.first_line=yylineno;
+			    vyyerror(yylloc,"unknown at-command %s\n",yytext, NULL); }
 <xFLUSH>.*		  { BEGIN ss(0); }
 
 .
@@ -322,14 +323,19 @@ includec(void)
 }
 
 void
-tg1_l_init(char *s, size_t len)
+tg1_l_init(struct iom_io *ip)
 {
-  bp = yy_scan_buffer(s, len);
-  yy_switch_to_buffer(bp);
+  if (!ip->use_stdio)
+    {
+      errmsg_fn = ip->fn;
+      efile = (char*)ip->fn;
+      if ((ip->fp = xfopen(efile, "r")))
+	yyrestart(ip->fp);
+    }
 }
 void
 tg1_l_term(void)
 {
-  tg1_delete_buffer(bp);
+  
 }
 

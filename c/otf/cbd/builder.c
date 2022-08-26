@@ -190,7 +190,7 @@ bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg)
   tp->name = (ccp)dcf;
   tp->val = dcfarg;
   list_add(e->dcfs, dcf);
-  hash_add(e->hdcfs, dcf, dcfarg);
+  hash_add(e->hdcfs, dcf, tp);
 }
 
 void
@@ -286,7 +286,7 @@ bld_edit_why(struct entry *e, char *why)
     e->ed->why = (ucp)why;
   /* should error if #why: doesn't follow an edit and valid it's only after -@entry */
 }
-  
+
 struct entry *
 bld_entry(YYLTYPE l, struct cbd* c)
 {

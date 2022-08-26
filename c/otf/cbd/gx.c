@@ -13,6 +13,8 @@
 #include "rnvif.h"
 #include "../lib/rnv/rnl.h"
 
+static const char *default_input_method = "tg1";
+
 extern struct iom *iomethod(const char *str, size_t len);
 static struct iom *input_method, *output_method;
 static struct iom_io input_io, output_io;
@@ -125,6 +127,12 @@ gx_term()
 static void
 io_init(void)
 {
+  if (!input_method)
+    input_method = iomethod(default_input_method, strlen(default_input_method));
+
+  if (!check && !output_method)
+    output_method = iomethod(default_input_method, strlen(default_input_method));
+  
   memset(&input_io, '\0', sizeof(struct iom_io));
   memset(&output_io, '\0', sizeof(struct iom_io));
 
@@ -132,7 +140,7 @@ io_init(void)
     input_file = "-";
   if (!check && !output_file)
     output_file = "-";
-  
+
   input_io.fn = input_file;
   if (!efile)
     efile = errmsg_fn = input_file;
@@ -152,27 +160,28 @@ io_run(void)
 {
   extern struct xnn_data cbd_tg1_data;
   extern void rnvtgi_init(struct xnn_data *xdp, const char *rncbase);
-  extern void tg1_l_init(char *s, size_t len);
+  extern void tg1_l_init(struct iom_io *ip);
   extern void tg1_l_term(void);
   
   switch (input_method->type)
     {
     case iom_tg1:
+      rnvif_init();
       rnvtgi_init(&cbd_tg1_data, input_method->name);
-      input_io.normed = glo_normalize(input_io);
-      if (input_io.normed)
+      tg1_l_init(&input_io);
+      curr_cbd = bld_cbd();
+      phase = "syn";
+      tg1parse();
+      if (tg1parse() || parser_status)
 	{
-	  input_io.str = malloc((input_io.len = (strlen(input_io.normed)+2)));
-	  strcpy(input_io.str, input_io.normed);
-	  input_io.str[input_io.len-1] = '\0';
-	  tg1_l_init(input_io.str, input_io.len);
-	  curr_cbd = bld_cbd();
-	  phase = "syn";
-	  tg1parse();
-	  tg1_l_term();
+	  msglist_print(stderr);
+	  if (!keepgoing)
+	    {
+	      fprintf(stderr, "gx: exiting after syntax errors\n");
+	      exit(1);
+	    }
 	}
-      free(input_io.str);
-      free(input_io.normed);
+      tg1_l_term();
       break;
     case iom_tg2:
       break;
@@ -183,48 +192,50 @@ io_run(void)
     case iom_x21:
     case iom_x22:
     default:
-      vwarning("input not supported for method %s", input_method->name);
+      fprintf(stderr, "gx: %s input not supported\n", input_method->name);
       exit(1);
       break;
     }
 
   /* THIS IS WHERE ACTIONS WILL BE EXECUTED */
-  
-  switch (output_method->type)
+
+  if (output_method)
     {
-    case iom_tg1:
-      break;
-    case iom_tg2:
-      break;
-    case iom_xg1:
-      break;
-    case iom_xg2:
-      break;
-    case iom_x11:
-    case iom_x12:
-    case iom_x21:
-    case iom_x22:
-    default:
-      vwarning("output not supported for method %s", output_method->name);
-      exit(1);
-      break;
+      switch (output_method->type)
+	{
+	case iom_tg1:
+	  identity(curr_cbd);
+	  break;
+	case iom_tg2:
+	case iom_xg1:
+	case iom_xg2:
+	case iom_x11:
+	case iom_x12:
+	case iom_x21:
+	case iom_x22:
+	default:
+	  fprintf(stderr, "gx: %s output not supported\n", output_method->name);
+	  break;
+	}
     }
 }
 
 int
 main(int argc, char **argv)
 {
-  options(argc,argv,"A:I:O:i:o:v");
+  status = 0;
+  options(argc,argv,"A:I:O:i:o:ktv");
+  if (status)
+    {
+      fprintf(stderr, "gx: quitting after errors in option processing\n");
+      exit(1);
+    }
 
   gx_init();
 
   io_init();
 
-#if 1
   io_run();
-#else
-  gx_run();
-#endif
 
   gx_term();
 
@@ -242,6 +253,7 @@ void help()
   fprintf(stderr, "\t-d\tdebug mode\n");
   fprintf(stderr, "\t-e\tset file name to use in errors\n");
   fprintf(stderr, "\t-k\tkeep going despite errors\n");
+  fprintf(stderr, "\t-t\ttrace tokenizing\n");
   fprintf(stderr, "\t-v\tverbose mode\n");
   fprintf(stderr, "\n\t-A [ACTIONS]\n\n");
   fprintf(stderr, "ACTIONS:\n\n");
@@ -252,10 +264,18 @@ int opts(int och,char *oarg)
   switch (och)
     {
     case 'I':
-      input_method = iomethod(optarg, strlen(optarg));
+      if (!(input_method = iomethod(optarg, strlen(optarg))))
+	{
+	  fprintf(stderr, "gx: unknown input method: %s\n", optarg);
+	  status = 1;
+	}
       break;
     case 'O':
-      output_method = iomethod(optarg, strlen(optarg));
+      if (!(output_method = iomethod(optarg, strlen(optarg))))
+	{
+	  fprintf(stderr, "gx: unknown output method: %s\n", optarg);
+	  status = 1;
+	}	
       break;
     case 'a':
       break;

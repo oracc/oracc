@@ -161,7 +161,8 @@ i_end_cbd(struct cbd *c)
 static void
 i_end_entry(struct entry *e)
 {
-  i_cmt(e->end_entry->cmt);
+  if (e->end_entry)
+    i_cmt(e->end_entry->cmt);
   printf("@end entry\n\n");
 }
 
