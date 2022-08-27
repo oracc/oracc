@@ -1,41 +1,31 @@
 default namespace = "http://oracc.org/ns/cbd/2.0/tg1"
 
-namespace t1 = "http://oracc.org/ns/cbd/2.0/tg1"
-
 start = cbd
 
-## The redundant element with the namespace prefix is to force
-## 'namespace t1' to be added to the .rng output
-cbd	 = element cbd { cbd.attr , entries }
-	 | element t1:cbd { cbd.attr , entries }
+cbd	 =  element cbd { (project&lang&name) , props* , entries }
 
-cbd.attr = attribute project { text } ,
-	   attribute xml:lang { text } ,
-	   attribute name { text } ,
-	   props*
+project = element project { text }
+lang = element lang { text }
+name = element name { text }
 
 props  = element props  { text }
 
 entries  = entry*
 
-entry    = entry_block , lang_block? , sense_block? , meta_block?
-
-entry_block = entry.model 
-
-entry.model = element entry { entry.attr ,
-	      	       	      cgp? , mod? ,
-			      aliases? , partss? }
+entry    = element entry { entry.attr ,
+	   	           cgp ,
+			   mod? ,
+			   alias* , parts* ,
+			   lang_block? ,
+			   sense* , meta_block?
+			  }
 
 entry.attr = attribute bang   { "!" }? ,
 	     attribute plus   { "+" }? ,
 	     attribute minus  { "-" }? ,
 	     attribute star   { "*" }?
 
-cgp = cf , gw , pos
-
-cf   = element cf   { text }
-gw   = element gw   { text }
-pos  = element pos  { text }
+cgp = element cgp   { text }
 
 mod         = element mod { attribute type   { text } ,
 	      	      	    attribute target { text } ,
@@ -45,7 +35,7 @@ aliases     = element aliases 	{ alias+ }
 
 alias       = element alias 	{ text }
 
-partss      = element partss { element parts { cgp+ }+ }
+parts      =  element parts { text }
 
 lang_block  = bases_block? , forms*
 
@@ -71,13 +61,11 @@ form.model  = attribute form   { text } ,
 	      attribute norm   { text } ,
 	      attribute bang   { text }?
 
-sense_block = element senses   { sense+ }
 sense 	    = element sense    { sense.model , mod? }
 
 sense.model = attribute sgw    { text }? ,
 	      attribute pos    { text }? ,
-	      element   mng    { text }  ,
-	      element   disc   { text }?
+	      element   mng    { text }
 
 meta_block  = equivs? , pleiades? , notes? , inote* , isslps? , bibs? , collos?
 

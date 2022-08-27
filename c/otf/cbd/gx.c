@@ -25,8 +25,9 @@ const char *errmsg_fn = NULL;
 const char *efile = NULL;
 
 int flextrace = 0;
-
+int rnvtrace = 0;
 int keepgoing = 0;
+int input_validation = 1;
 int stdin_input = 0;
 int stdin_output = 0;
 
@@ -160,18 +161,21 @@ io_run(void)
 {
   extern struct xnn_data cbd_tg1_data;
   extern void rnvtgi_init(struct xnn_data *xdp, const char *rncbase);
+  extern void rnvtgi_term(void);
   extern void tg1_l_init(struct iom_io *ip);
   extern void tg1_l_term(void);
   
   switch (input_method->type)
     {
     case iom_tg1:
+      rnvtgi_init_err();
       rnvif_init();
       rnvtgi_init(&cbd_tg1_data, input_method->name);
       tg1_l_init(&input_io);
       curr_cbd = bld_cbd();
       phase = "syn";
       tg1parse();
+      rnvtgi_term();
       if (tg1parse() || parser_status)
 	{
 	  msglist_print(stderr);
@@ -224,7 +228,7 @@ int
 main(int argc, char **argv)
 {
   status = 0;
-  options(argc,argv,"A:I:O:i:o:ktv");
+  options(argc,argv,"A:I:O:i:o:krtv");
   if (status)
     {
       fprintf(stderr, "gx: quitting after errors in option processing\n");
@@ -254,6 +258,7 @@ void help()
   fprintf(stderr, "\t-e\tset file name to use in errors\n");
   fprintf(stderr, "\t-k\tkeep going despite errors\n");
   fprintf(stderr, "\t-t\ttrace tokenizing\n");
+  fprintf(stderr, "\t-T\ttrace TGI validation\n");
   fprintf(stderr, "\t-v\tverbose mode\n");
   fprintf(stderr, "\n\t-A [ACTIONS]\n\n");
   fprintf(stderr, "ACTIONS:\n\n");
@@ -310,6 +315,7 @@ int opts(int och,char *oarg)
     case 'p':
       break;
     case 'r':
+      rnvtrace = 1;
       break;
     case 's':
       sigs = 1;

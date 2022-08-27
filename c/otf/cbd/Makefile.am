@@ -46,7 +46,7 @@ xLDADD = \
 tg1.tab.c tg1.tab.h: tg1.y tg1.l
 	${YACC} -vd tg1.y
 
-tg1-l.c: tg1.l tg1.tab.h
+tg1-l.c: tg1.l tg1.tab.h tg1.xnn
 	flex -B -DYY_NO_INPUT tg1.l
 
 tg1-l.o: tg1-l.c
@@ -55,14 +55,9 @@ tg1/tg1.rng: tg1.rnc
 	mkdir -p tg1
 	(cd tg1 ; java -jar ${javadir}/trang.jar ../tg1.rnc tg1.rng)
 
-tg1.xnn: tg1/tg1.rng rng2xnn.sh
+cbd_tg1_xnn.c: tg1.xnn tg1/tg1.rng rng2xnn.sh
 	(cd tg1 ; ../rng2xnn.sh . >../tg1.xnn)
-
-#cbd_rnc.c: cbd.rnc
-#	./mk_cbdrnc_c.plx >cbd_rnc.c
-#
-#cbd_xmlnames.c: cbd-gx.rnc mk_xmlnames.plx
-#	./mk_xmlnames.plx cbd-gx.rnc
+	./mk_xmlnames.plx -p tg1
 
 gx_SOURCES = \
 	gx.c globals.c iomethod.c \

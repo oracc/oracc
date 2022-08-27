@@ -50,7 +50,8 @@ static void xo_verror_handler(int erno,va_list ap)
 void
 rnvxml_init(struct xnn_data *xdp)
 {
-  rnvval_init(xo_verror_handler, xdp, NULL); /* need to implement as with rnvtgi_init */
+  rnvval_init_err(xo_verror_handler);
+  rnvval_init(xdp, NULL); /* need to implement as with rnvtgi_init */
   xmlns_atts = xdp->nstab;
 }
 

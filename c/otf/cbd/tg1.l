@@ -7,6 +7,7 @@
 #include "grammar.h"
 #include "gx.h"
 #include "tg1.tab.h"
+#include "rnvtgi.h"
 #include "npool.h"
 #define YY_NO_UNISTD_H
 
@@ -165,9 +166,9 @@ YY_BUFFER_STATE bp;
 <xF>\*[^ \t\n]+[ \t]*	  { ytdupn(1); return(FSTEM); }
 <xF>[^+$#*/\n][^ \t\n]*[ \t]* { ytdup(); return(FFORM); }
 
-^@sense[ \t]+		  { BEGIN ss(xS); after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; return(SENSE); }
-^@sense![ \t]+		  { BEGIN ss(xS); bang = 1; after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; return(SENSE); }
-^@sensel[ \t]+		  { BEGIN ss(xS); after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; return(SENSE); }
+^@sense		  	  { BEGIN ss(xS); after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; return(SENSE); }
+^@sense!		  { BEGIN ss(xS); bang = 1; after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; return(SENSE); }
+^@sensel		  { BEGIN ss(xS); after_xRENMRG = after_xENTSNS = after_xGW = xSPOS; return(SENSE); }
 <xS>\[			  { BEGIN ss(xGW); return(yytext[0]); }
 <xS>[^.#[\%][^ \t\n]*[ \t]* { BEGIN ss(xTEXT); ytdup(); return(POS); }
 <xSPOS>[^ \t\n]+[ \t]*	  { BEGIN ss(xTEXT); ytdup(); return(POS); }
@@ -246,6 +247,7 @@ unspace(char*s)
 static void
 gx_user_action(void)
 {
+  extern int input_validation;
   if (flextrace)
     {
       if (cmt_queue)
@@ -267,6 +269,8 @@ gx_user_action(void)
           yylloc.last_column++;
         }
     }
+  if (input_validation)
+    rnvtgi_token(efile, yylineno, mystate, yytext);
 }
 
 /* include_stack_ptr indexes into include_stack and gives the current
