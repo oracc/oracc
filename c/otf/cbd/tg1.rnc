@@ -25,7 +25,10 @@ entry.attr = attribute bang   { "!" }? ,
 	     attribute minus  { "-" }? ,
 	     attribute star   { "*" }?
 
-cgp = element cgp   { text }
+cgp = element cgp   { cgp.model }
+
+cgp.model = xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
+#cgp.model = text
 
 mod         = element mod { attribute type   { text } ,
 	      	      	    attribute target { text } ,
@@ -61,11 +64,7 @@ form.model  = attribute form   { text } ,
 	      attribute norm   { text } ,
 	      attribute bang   { text }?
 
-sense 	    = element sense    { sense.model , mod? }
-
-sense.model = attribute sgw    { text }? ,
-	      attribute pos    { text }? ,
-	      element   mng    { text }
+sense 	    = element sense    { text }
 
 meta_block  = equivs? , pleiades? , notes? , inote* , isslps? , bibs? , collos?
 

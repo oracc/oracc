@@ -17,6 +17,7 @@ static struct npool *tgi_pool;
 static List *tgi_stack;
 static char tgi_flags[5];
 static struct rnvval_atts *tgi_ratts;
+static List *tgi_ch;
 
 /* rnvtgi: Driver for rnv validation of T(ext) G(lossary) I(nfosets) */
 
@@ -65,6 +66,7 @@ rnvtgi_init(struct xnn_data *xdp, const char *rncbase)
   free(fn);
   tgi_pool = npool_init();
   tgi_stack = list_create(LIST_LIFO);
+  tgi_ch = list_create(LIST_SINGLE);
   tgi_flags[0] = '\0';
   rnv_validate_start();      
   rnvval_ea("cbd", NULL);
@@ -75,6 +77,9 @@ rnvtgi_term()
 {
   rnvval_ee("cbd");
   rnv_validate_finish();
+  list_free(tgi_ch, NULL);
+  list_free(tgi_stack, NULL);
+  npool_term(tgi_pool);
 }
 
 static void
@@ -106,6 +111,45 @@ tgi_flag_attr(void)
   tgi_flags[0] = '\0';
 }
 
+unsigned char *
+list_concat(List *l)
+{
+  unsigned char *s = NULL;
+  int len = 0;
+  unsigned char *n;
+  for (n = list_first(l); n; n = list_next(l))
+    len += strlen((const char *)n);
+  s = malloc(len+1);
+  *s = '\0';
+  for (n = list_first(l); n; n = list_next(l))
+    strcat(s,n);
+  return s;
+}
+
+static void
+rnvtgi_ch(void)
+{
+  if (list_len(tgi_ch))
+    {
+      unsigned char *s = list_concat(tgi_ch); 
+      unsigned char *tok = NULL, *end;
+      int i;      
+      tok = s;
+      while (isspace(*tok))
+	++tok;
+      end = tok + strlen(tok);
+      while (end > tok && isspace(end[-1]))
+	*--end = '\0';
+      for (i = 0; tok[i]; ++i)
+	if (!isspace(tok[i]))
+	  break;
+      if (tok[i])
+	rnvval_ch(npool_copy(tok, tgi_pool));
+      free(s);
+      list_reset(tgi_ch);
+    }
+}
+
 void
 rnvtgi_token(const char *tfile, int lno, int sstate, char *tok)
 {
@@ -117,6 +161,7 @@ rnvtgi_token(const char *tfile, int lno, int sstate, char *tok)
       char *open = list_pop(tgi_stack);
       if (open)
 	{
+	  rnvtgi_ch();
 	  rnvval_ee(open);
 	  msglist_print(stderr);
 	  msglist_init();
@@ -127,6 +172,7 @@ rnvtgi_token(const char *tfile, int lno, int sstate, char *tok)
 	  while (isspace(*tok))
 	    ++tok;
 	  open = list_pop(tgi_stack); /* this should be entry */
+	  rnvtgi_ch(); /* probably can't happen */
 	  rnvval_ee(open);
 	}
       else
@@ -136,6 +182,7 @@ rnvtgi_token(const char *tfile, int lno, int sstate, char *tok)
 	  else
 	    tgi_ratts = NULL;
 	  list_push(tgi_stack, tag);
+	  rnvtgi_ch();
 	  rnvval_ea(tag,tgi_ratts);
 	  if (!strcmp(tag, "entry"))
 	    {
@@ -151,12 +198,7 @@ rnvtgi_token(const char *tfile, int lno, int sstate, char *tok)
     }
   else
     {
-      int i;
-      for (i = 0; tok[i]; ++i)
-	if (!isspace(tok[i]))
-	  break;
-      if (tok[i])
-	rnvval_ch(tok);
+      list_add(tgi_ch, npool_copy(tok,tgi_pool));
     }
   msglist_print(stderr);
   msglist_init();

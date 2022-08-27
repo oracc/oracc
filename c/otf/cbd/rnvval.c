@@ -70,7 +70,7 @@ void
 rnvval_ch(const char *ch)
 {
   if (rnvtrace)
-    fprintf(stderr, "rnv-ch: %s\n", ch);
+    fprintf(stderr, "rnv-ch: ::%s::\n", ch);
   rnv_characters(NULL, ch, strlen(ch));
 }
 
