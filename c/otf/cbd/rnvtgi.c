@@ -21,6 +21,8 @@ static List *tgi_ch;
 
 /* rnvtgi: Driver for rnv validation of T(ext) G(lossary) I(nfosets) */
 
+extern char *rnv_xmsg(void);
+
 extern int (*er_printf)(char *format,...);
 extern int (*er_vprintf)(char *format,...);
 static locator tgi_loc;
@@ -33,7 +35,7 @@ static void tgi_verror_handler(int erno,va_list ap)
     }
   else
     {
-      const char *xphase = phase;
+      const char *xphase = phase, *xm;
       phase = "rnv";
       switch(erno)
 	{
@@ -47,6 +49,9 @@ static void tgi_verror_handler(int erno,va_list ap)
 	case RNV_ER_NOTX: xvh_err("text not allowed"); break;
 	default: assert(0);
 	}
+      xm = rnv_xmsg();
+      msglist_append(npool_copy(xm, tgi_pool));
+      free(xm);
       phase = xphase;
     }
 }
@@ -109,21 +114,6 @@ tgi_flag_attr(void)
   at[(i*2)] = NULL;
   tgi_ratts = rnvval_aa_qatts(at, i);
   tgi_flags[0] = '\0';
-}
-
-unsigned char *
-list_concat(List *l)
-{
-  unsigned char *s = NULL;
-  int len = 0;
-  unsigned char *n;
-  for (n = list_first(l); n; n = list_next(l))
-    len += strlen((const char *)n);
-  s = malloc(len+1);
-  *s = '\0';
-  for (n = list_first(l); n; n = list_next(l))
-    strcat(s,n);
-  return s;
 }
 
 static void

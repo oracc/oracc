@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <assert.h>
 #include "tree.h"
+#include "list.h"
 #include "../rnv/m.h"
 #include "../rnv/s.h"
 #include "../rnv/erbit.h"
@@ -54,6 +55,44 @@ void (*rnl_verror_handler)(int erno,va_list ap);
 void (*rnv_verror_handler)(int erno,va_list ap);
 void (*xrnl_verror_handler)(int erno,va_list ap);
 void (*xrnv_verror_handler)(int erno,va_list ap);
+
+char *
+rnv_xmsg(void)
+{
+  List *x = list_create(LIST_SINGLE);
+  List *xm = list_create(LIST_SINGLE);
+  char *ret = NULL;
+
+  nexp = 16;  
+  if(nexp) { int req=2, i=0; char *s;
+    while(req--) {
+      rnx_expected(previous,req);
+      if(i==rnx_n_exp) continue;
+      if(rnx_n_exp>nexp) break;
+#if 1
+      list_add(x,(req?"required:\n":"allowed:\n"));
+#else
+      (*er_printf)((char*)(req?"required:\n":"allowed:\n"));
+#endif
+      for(;i!=rnx_n_exp;++i) {
+#if 1
+	char *s2;
+	s=rnx_p2str(rnx_exp[i]);
+	s2 = malloc(strlen(s)+3);
+	sprintf(s2,"\t%s\n",s);
+	list_add(x,s2);
+	list_add(xm,s2);
+#else
+	(*er_printf)("\t%s\n",s=rnx_p2str(rnx_exp[i]));
+#endif
+	m_free(s);
+      }
+    }
+  }
+  ret = list_concat(x);
+  list_free(xm,free);
+  return ret;
+}
 
 static void
 print_error_text()

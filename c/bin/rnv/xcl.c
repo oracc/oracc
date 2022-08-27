@@ -68,18 +68,6 @@ static void verror_handler(int erno,va_list ap) {
       (*er_printf)("%s:%i:%i: error: ",xml,line,col);
       if(erno&ERBIT_RNV) {
 	rnv_default_verror_handler(erno&~ERBIT_RNV,ap);
-	if(nexp) { int req=2, i=0; char *s;
-	  while(req--) {
-	    rnx_expected(previous,req);
-	    if(i==rnx_n_exp) continue;
-	    if(rnx_n_exp>nexp) break;
-	    (*er_printf)((char*)(req?"required:\n":"allowed:\n"));
-	    for(;i!=rnx_n_exp;++i) {
-	      (*er_printf)("\t%s\n",s=rnx_p2str(rnx_exp[i]));
-	      m_free(s);
-	    }
-	  }
-	}
       } else {
 	switch(erno) {
 	case XCL_ER_IO: err("%s"); break;

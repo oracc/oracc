@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "gx.h"
 
+static struct npool *msgpool;
 static List *msglist;
 static int msg_cmp(const char **a, const char **b);
 
@@ -8,6 +9,7 @@ void
 msglist_init(void)
 {
   msglist = list_create(LIST_SINGLE);
+  msgpool = npool_init();
   warning_msglist();
 }
 
@@ -15,6 +17,7 @@ void
 msglist_term(void)
 {
   list_free(msglist, NULL);
+  npool_term(msgpool);
 }
 
 static char *
@@ -23,6 +26,17 @@ nl(char *e)
   if ('\n' != e[strlen(e)-1])
     strcat(e, "\n");
   return e;
+}
+
+void
+msglist_append(char *a)
+{
+  char *e = (char*)msglist->last->data, *n;
+  n = malloc(strlen(e)+strlen(a)+1);
+  strcpy(n,e);
+  strcat(n,a);
+  msglist->last->data = npool_copy(n,msgpool);
+  free(n);
 }
 
 void
@@ -67,7 +81,7 @@ msglist_err(YYLTYPE *locp, char *s)
       need = snprintf(NULL, 0, "%s: %s\n", loc, s);
       e = malloc(need + 1 + 1); /* always allocate space for an extra \n */
       sprintf(e, "%s: %s\n", loc, s);
-      msglist_add((char*)npool_copy((ucp)nl(e), curr_cbd->pool));
+      msglist_add((char*)npool_copy((ucp)nl(e), msgpool));
       free(e);
       free(loc);
     }
@@ -89,7 +103,7 @@ msglist_averr(YYLTYPE *locp, char *s, va_list ap)
   free(loc);
   vsprintf(e+strlen(e), s, ap2);
   va_end(ap2);
-  msglist_add((char*)npool_copy((ucp)nl(e), curr_cbd->pool));
+  msglist_add((char*)npool_copy((ucp)nl(e), msgpool));
   free(e);
 }
   

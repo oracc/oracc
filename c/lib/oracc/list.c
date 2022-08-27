@@ -8,6 +8,21 @@
 #include <psd_base.h>
 #include <list.h>
 
+unsigned char *
+list_concat(List *l)
+{
+  unsigned char *s = NULL;
+  int len = 0;
+  unsigned char *n;
+  for (n = list_first(l); n; n = list_next(l))
+    len += strlen((const char *)n);
+  s = malloc(len+1);
+  *s = '\0';
+  for (n = list_first(l); n; n = list_next(l))
+    strcat(s,n);
+  return s;
+}
+
 void
 list_add (List *lp, void *data)
 {

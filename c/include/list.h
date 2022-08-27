@@ -41,6 +41,7 @@ typedef struct List_hdr List;
 #define list_has_next(lp) ((lp)->rover->next)
 #define list_unnext(lp)   (lp->rover && (lp->rover=lp->rover->prev))
 
+extern unsigned char *list_concat(List *l);
 extern List * list_create (List_types_e);
 extern void list_add (List *, void *);
 extern List * list_append(List*lp1,List*lp2);

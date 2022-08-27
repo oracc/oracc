@@ -1,48 +1,40 @@
 default namespace = "http://oracc.org/ns/cbd/2.0/tg1"
 
+cgp.pat  = xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
+sns.pat  = xsd:token { pattern="\S+\s+.+" }
+lng.pat  = xsd:token { pattern="[a-z]{3}(-[a-z]{6})?" }
+
 start = cbd
 
-cbd	 =  element cbd { (project&lang&name) , props* , entries }
+cbd	 =  element cbd { (project&lang&name) , props* , entry* }
 
 project = element project { text }
-lang = element lang { text }
-name = element name { text }
-
-props  = element props  { text }
-
-entries  = entry*
+lang = 	  element lang 	  { text }
+name = 	  element name 	  { text }
+props =   element props   { text }
 
 entry    = element entry { entry.attr ,
-	   	           cgp ,
-			   mod? ,
+	   	           cgp , why? ,
+			   (merge|rename)? ,
 			   alias* , parts* ,
-			   lang_block? ,
-			   sense* , meta_block?
+			   allows* , bases? , forms ,
+			   sense* , meta*
 			  }
 
 entry.attr = attribute bang   { "!" }? ,
 	     attribute plus   { "+" }? ,
 	     attribute minus  { "-" }? ,
 	     attribute star   { "*" }?
+why 	   = element why { text }
 
-cgp = element cgp   { cgp.model }
+cgp = element cgp   { cgp.pat }
 
-cgp.model = xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
-#cgp.model = text
+merge        = element merge  { cgp.pat | sns.pat }
+rename	     = element rename { cgp.pat | sns.pat }
 
-mod         = element mod { attribute type   { text } ,
-	      	      	    attribute target { text } ,
-	      	      	    attribute why    { text }? }
+alias       = element alias   { cgp.pat }
 
-aliases     = element aliases 	{ alias+ }
-
-alias       = element alias 	{ text }
-
-parts      =  element parts { text }
-
-lang_block  = bases_block? , forms*
-
-bases_block = allows? , bases
+parts      =  element parts   { cgp.pat }
 
 allows 	    = element allows { allow+ }
 allow 	    = element allow  { attribute lhs { text } , attribute rhs { text } }
@@ -64,30 +56,22 @@ form.model  = attribute form   { text } ,
 	      attribute norm   { text } ,
 	      attribute bang   { text }?
 
-sense 	    = element sense    { text }
+sense 	    = element sense    { sns.pat } , inote?
 
-meta_block  = equivs? , pleiades? , notes? , inote* , isslps? , bibs? , collos?
+meta	    = (equiv & pleiades & note & inote & isslp & bib & collo)
 
-equivs 	    = element equivs  { equiv+ }
-equiv	    = element equiv   { attribute xml:lang { text } , text }
+equiv	    = element equiv    { text }
 
-pleiades    = element pleiades { attribute pl_id    { text } ,
-	      	      	         attribute pl_coord { text } ,
-				 pl_alias* }
+pleiades    = element pl_id    { text } ,
+	      element pl_coord { text } ,
+	      pl_alias*
 pl_alias    = element pl_alias { text }
 
-notes	    = element notes    { note+  }
 note	    = element note     { text }
 inote	    = element inote    { text }
 
-isslps	    = element isslp    { isslp+ }
-isslp	    = element isslp    { element year { text } ,
-				 element auth { text } ,
-				 element work { text } ,
-				 element locn { text } }
+isslp	    = element isslp    { text }
 
-bibs 	    = element bibs    { bib+ }
-bib	    = element bib     { text }
+bib	    = element bib      { text }
 
-collos	    = element collos  { collo+ }
 collo	    = element collo   { text }
