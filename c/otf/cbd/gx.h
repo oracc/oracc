@@ -247,9 +247,9 @@ extern const char *errmsg_fn;
 extern void common_init(void);
 extern void common_term(void);
 
-extern void identity(struct cbd*c);
+extern void o_tg2(struct cbd*c);
+extern void o_xg2(struct cbd*c);
 extern void validator(struct cbd*c);
-extern void xmloutput(struct cbd*c);
 
 extern struct cbdpos *cbdpos(const char *str, size_t len);
 extern void untab(unsigned char *s);

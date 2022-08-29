@@ -208,11 +208,19 @@ io_run(void)
       switch (output_method->type)
 	{
 	case iom_tg1:
-	  identity(curr_cbd);
+	  /*identity(curr_cbd);*/
+	  fprintf(stderr, "gx: tg1 output request should use tg2\n");
+	  exit(1);
 	  break;
 	case iom_tg2:
+	  o_tg2(curr_cbd);
+	  break;
 	case iom_xg1:
+	  fprintf(stderr, "gx: xg1 output request should use xg2\n");
+	  exit(1);
 	case iom_xg2:
+	  o_xg2(curr_cbd);
+	  break;
 	case iom_x11:
 	case iom_x12:
 	case iom_x21:

@@ -63,8 +63,8 @@ gx_SOURCES = \
 	gx.c globals.c iomethod.c \
 	tg1-l.c tg1.tab.c cbd_tg1_xnn.c \
 	rnvtgi.c rnvval.c rnvxml.c \
-	builder.c iterator.c identity.c validate.c \
-	xmloutput.c
+	builder.c iterator.c validate.c \
+	o_tg2.c o_xg2.c 
 
 gx_LDADD = -lfl $(xLDADD)
 
