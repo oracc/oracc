@@ -27,7 +27,8 @@ const char *efile = NULL;
 int flextrace = 0;
 int rnvtrace = 0;
 int keepgoing = 0;
-int input_validation = 1;
+int input_validation = 0;
+int output_validation = 0;
 int stdin_input = 0;
 int stdin_output = 0;
 
@@ -133,6 +134,17 @@ io_init(void)
 
   if (!check && !output_method)
     output_method = iomethod(default_input_method, strlen(default_input_method));
+
+  if (output_method)
+    {
+      input_validation = 0;
+      output_validation = 1;
+    }
+  else
+    {
+      input_validation = 1;
+      output_validation = 0;
+    }
   
   memset(&input_io, '\0', sizeof(struct iom_io));
   memset(&output_io, '\0', sizeof(struct iom_io));
