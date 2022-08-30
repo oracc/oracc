@@ -55,13 +55,26 @@ tg1/tg1.rng: tg1.rnc
 	mkdir -p tg1
 	(cd tg1 ; java -jar ${javadir}/trang.jar ../tg1.rnc tg1.rng)
 
-cbd_tg1_xnn.c: tg1.xnn tg1/tg1.rng rng2xnn.sh
+tg1.xnn: tg1/tg1.rng
 	(cd tg1 ; ../rng2xnn.sh . >../tg1.xnn)
+
+cbd_tg1_xnn.c: tg1.xnn rng2xnn.sh mk_xmlnames.plx
 	./mk_xmlnames.plx -p tg1
+
+xg2/xg2.rng: xg2.rnc
+	mkdir -p xg2
+	(cd xg2 ; java -jar ${javadir}/trang.jar ../xg2.rnc xg2.rng)
+
+xg2.xnn: xg2/xg2.rng rng2xnn.sh
+	(cd xg2 ; ../rng2xnn.sh . >../xg2.xnn)
+
+cbd_xg2_xnn.c: xg2.xnn mk_xmlnames.plx
+	./mk_xmlnames.plx -p xg2
 
 gx_SOURCES = \
 	gx.c globals.c iomethod.c \
 	tg1-l.c tg1.tab.c cbd_tg1_xnn.c \
+	cbd_xg2_xnn.c \
 	rnvtgi.c rnvval.c rnvxml.c \
 	builder.c iterator.c validate.c \
 	o_tg2.c o_xg2.c 

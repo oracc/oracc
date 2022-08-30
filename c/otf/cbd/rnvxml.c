@@ -9,8 +9,15 @@
 #include "../rnv/m.h"
 #include "../rnv/rnv.h"
 #include "../rnv/rnx.h"
+#include "rnvxml.h"
 
 extern int rnx_n_exp;
+
+static struct npool *xgi_pool;
+static List *xgi_stack;
+static char xgi_flags[5];
+static struct rnvval_atts *xgi_ratts;
+
 /*static int nexp,rnck;*/
 /*static int current,previous;*/
 
@@ -21,7 +28,7 @@ extern int (*er_vprintf)(char *format,...);
 
 extern locator *xo_loc;
 #define xvh_err(msg) msglist_averr(xo_loc,(msg),ap);
-static void xo_verror_handler(int erno,va_list ap)
+static void xgi_verror_handler(int erno,va_list ap)
 {
   if(erno&ERBIT_RNL)
     {
@@ -29,7 +36,7 @@ static void xo_verror_handler(int erno,va_list ap)
     }
   else
     {
-      const char *xphase = phase;
+      const char *xphase = phase, *xm;
       phase = "rnv";
       switch(erno)
 	{
@@ -43,16 +50,37 @@ static void xo_verror_handler(int erno,va_list ap)
 	case RNV_ER_NOTX: xvh_err("text not allowed"); break;
 	default: assert(0);
 	}
+      xm = rnv_xmsg();
+      msglist_append(npool_copy(xm, xgi_pool));
+      free(xm);
       phase = xphase;
     }
 }
 
 void
-rnvxml_init(struct xnn_data *xdp)
+rnvxml_init_err(void)
 {
-  rnvval_init_err(xo_verror_handler);
-  rnvval_init(xdp, NULL); /* need to implement as with rnvtgi_init */
+  rnvval_init_err(xgi_verror_handler);
+}
+
+void
+rnvxml_init(struct xnn_data *xdp, const char *rncbase)
+{
+#if 1
+  char *fn = malloc(strlen(rncbase)+5);
+  sprintf(fn, "%s.rnc", rncbase);
+  rnvval_init(xdp, fn);
+  free(fn);
   xmlns_atts = xdp->nstab;
+  xgi_pool = npool_init();
+  xgi_stack = list_create(LIST_LIFO);
+  xgi_flags[0] = '\0';
+  rnv_validate_start();      
+  rnvval_ea("cbd", NULL);
+#else
+  rnvval_init(xdp, NULL);
+  xmlns_atts = xdp->nstab;
+#endif
 }
 
 void

@@ -76,6 +76,7 @@ print H <<H;
 enum ${cbd}_a_type
 {
 H
+print H "  ${cbd}_n__,\n";
 foreach my $n (sort keys %ns) {
     print H "  ${cbd}_n_$n,\n";
 }
@@ -120,8 +121,11 @@ print C <<C;
 #include "${cbd}_xnn.h"
 struct xnn_nstab ${cbd}_nstab[] = {
 C
+if ($ns) {
+    print C "  { ${cbd}_n__, \"xmlns\", \"$ns\" },\n";
+}	
 foreach my $n (sort keys %ns) {
-    print C "  { ${cbd}_n_$n, \"$n\", \"$ns{$n}\" },\n"
+    print C "  { ${cbd}_n_$n, \"xmlns:$n\", \"$ns{$n}\" },\n"
 	unless $allns || exists($ns_omit{$ns{$n}});
 }
 print C "  { ${cbd}_a_enum_top, NULL, NULL },\n";

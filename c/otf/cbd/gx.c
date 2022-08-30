@@ -12,6 +12,8 @@
 #include "gx.h"
 #include "rnvif.h"
 #include "../lib/rnv/rnl.h"
+#include "rnvtgi.h"
+#include "rnvxml.h"
 
 static const char *default_input_method = "tg1";
 
@@ -171,7 +173,7 @@ io_init(void)
 static void
 io_run(void)
 {
-  extern struct xnn_data cbd_tg1_data;
+  extern struct xnn_data cbd_tg1_data, cbd_xg2_data;
   extern void rnvtgi_init(struct xnn_data *xdp, const char *rncbase);
   extern void rnvtgi_term(void);
   extern void tg1_l_init(struct iom_io *ip);
@@ -231,6 +233,9 @@ io_run(void)
 	  fprintf(stderr, "gx: xg1 output request should use xg2\n");
 	  exit(1);
 	case iom_xg2:
+	  rnvxml_init_err();
+	  rnvif_init();
+	  rnvxml_init(&cbd_xg2_data, output_method->name);
 	  o_xg2(curr_cbd);
 	  break;
 	case iom_x11:
