@@ -6,8 +6,9 @@ lng.pat  = xsd:token { pattern="[a-z]{3}(-[a-z]{6})?" }
 
 start = cbd
 
-cbd	 =  element cbd { (project&lang&name) , props* , entry* }
+cbd	 =  element cbd { cbd-header , entry* }
 
+cbd-header = (project&lang&name) , props*
 project = element project { text }
 lang = 	  element lang 	  { text }
 name = 	  element name 	  { text }
@@ -18,7 +19,7 @@ entry    = element entry { entry.attr ,
 			   (merge|rename)? ,
 			   alias* , parts* ,
 			   allows* , bases? , forms ,
-			   sense* , meta*
+			   senses , meta*
 			  }
 
 entry.attr = attribute bang   { "!" }? ,
@@ -56,7 +57,13 @@ form.model  = attribute form   { text } ,
 	      attribute norm   { text } ,
 	      attribute bang   { text }?
 
-sense 	    = element sense    { sns.pat } , inote?
+senses 	    = sense*
+
+sense	    = element sense    { sense.content }
+
+sense.content = sns.pat
+
+sense.model = notAllowed
 
 meta	    = (equiv & pleiades & note & inote & isslp & bib & collo)
 
