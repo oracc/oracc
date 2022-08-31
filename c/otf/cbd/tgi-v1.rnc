@@ -1,0 +1,9 @@
+default namespace = "http://oracc.org/ns/tgi/1.0"
+
+namespace tgi="http://oracc.org/ns/tgi/1.0"
+
+include "cbd-core.rnc" inherit=tgi
+
+start |= tgi-cbd.m
+
+tgi-cbd.m = element tgi:cbd { cbd.c }

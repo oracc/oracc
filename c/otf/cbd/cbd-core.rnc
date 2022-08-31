@@ -1,0 +1,45 @@
+start = cbd.m
+
+cbd.m = element cbd { cbd.c }
+
+cbd.c = cbd-hdr , cbd-entries
+
+cbd-hdr = (project&lang&name) , props*
+project = element project { text }
+lang = 	  element lang 	  { text }
+name = 	  element name 	  { text }
+props =   element props   { text }
+
+cbd-entries = entries.m
+
+cgp.pat  = xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
+sns.pat  = xsd:token { pattern="\S+\s+.+" }
+lng.pat  = xsd:token { pattern="[a-z]{3}(-[a-z]{6})?" }
+
+entries.m = entry.m*
+
+entry.m = element entry { entry.c }
+
+entry.c = cgp.m , mod.m , aliases.m , parts.m  , bases.m , forms.m , senses.m , meta.m
+
+cgp.m = element cgp { cgp.c }
+
+cgp.c = cgp.pat
+
+sns.c = sns.pat
+
+mod.m = (add.m | del.m | ren.m | mrg.m)
+
+add.m = attribute add { "+" }
+
+del.m = attribute del { "-" } , why.m
+why.m = element   why { text }
+
+ren.m = element rename { ren.c }
+
+mrg.m = element merge  { mrg.c }
+
+ren.c = cgp.c | sns.c
+
+mrg.c = cgp.c | sns.c
+
