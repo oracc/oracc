@@ -8,3 +8,32 @@ start |= tgi-cbd.m
 
 tgi-cbd.m = element tgi:cbd { cbd.c }
 
+cbd-header &= (translang.m & version.m) , reldef.m* , i18nlangs.m?
+
+translang.m = element translang { translang.c }
+translang.c = text
+version.m   = element version   { version.c }
+version.c   = ("1.0"|"2.0")
+reldef.m    = element reldef    { reldef.c }
+reldef.c    = text
+
+## @disc is new in 2.0
+meta.m &= disc.m
+disc.m = element disc { disc.c }
+disc.c = text
+
+## Internationalization support
+i18nlangs.m = element i18langs  { i18nlang.m+ }
+i18nlang.m  = element i18nlang  { i18nlang.c }
+i18nlang.c  = lng.pat
+
+cgp.m 	  &= gwl.m*
+gwl.m 	  = element gwl	        { gwl.c }
+gwl.c 	  = (attribute xml:lang { lng.pat } , text)
+
+sense.m   &= sensel.m*
+sensel.m  = element sensel	{ sensel.c }
+sensel.c  = (attribute xml:lang { lng.pat } , mng.m)
+
+disc.m    &= discl.m*
+discl.m	  = element discl { attribute xml:lang { lng.pat } , disc.c }

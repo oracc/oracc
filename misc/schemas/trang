@@ -1,0 +1,2 @@
+#!/bin/sh
+java -jar ${ORACC}/lib/java/trang.jar $*
