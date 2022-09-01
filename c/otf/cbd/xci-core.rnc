@@ -1,0 +1,117 @@
+# XML CBD Infoset Core Definitions
+
+# This schema encodes existing practice which has grown up over a
+# decade and is slightly messy as a result.
+
+namespace g="http://oracc.org/ns/gdl/1.0"
+namespace n="http://oracc.org/ns/norm/1.0"
+
+cgp.pat  = xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
+cgspe.pat= xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
+lng.pat  = xsd:token { pattern="([a-z]{2})|([a-z]{3}(-x-[a-z]{6})?)" }
+mng.pat  = text
+oid.pat	 = xsd:token { pattern="o[0-9]{8}(.[a-z][0-9]+)?" }
+pos.pat  = xsd:token { pattern="N|V/t|V/i|AJ" }
+
+gdlme.a.m = attribute g:file 	{ text } ,
+	    attribute g:line 	{ text } ,
+	    attribute g:me 	{ "1" }
+
+start = entries.m
+
+entries.m = element entries	{ entries.a , entries.c }
+entries.a = attribute xml:lang 	{ lng.pat } ,
+	    attribute project  	{ text } ,
+	    attribute n	       	{ text } ,
+	    attribute name 	{ text } ,
+	    attribute g:file	{ text } 
+entries.c = entry.m*
+
+entry.m   = element entry	{ entry.a , entry.c }
+entry.a   = attribute xml:id  	{ xsd:ID } ,
+	    attribute xml:lang	{ lng.pat } ,
+	    attribute n		{ cgp.pat } ,
+	    attribute oid	{ oid.pat }
+entry.c   = cgp.m , stems.m? , bases.m? , morphs.m?, forms.m?, norms.m? , senses.m?
+
+cgp.m	  = cf.m , gw.m , pos.m
+cf.m	  = element cf { cf.a , cf.c }
+cf.a	  = notAllowed
+cf.c	  = text
+gw.m	  = element gw { gw.a , gw.c }
+gw.a	  = notAllowed
+gw.c	  = text
+pos.m	  = element pos { pos.a , pos.c }
+pos.a	  = notAllowed
+pos.c	  = pos.pat
+
+stems.m	  = element stems	{ stems.a , stems.c }
+stems.a   = attribute defaulted { "no|yes" }
+stems.c	  = stem.m*
+stem.m	  = element stem	{ stem.a , stem.c }
+stem.a 	  = attribute n 	{ text }
+stem.c	  = notAllowed
+
+bases.m	  = element bases	{ bases.a , bases.c }
+bases.a	  = notAllowed
+bases.c   = base.m*
+
+base.m	  = element base	{ base.a , base.c }
+base.a	  = attribute literal	{ text } ,
+	    attribute xml:id   	{ xsd:ID }
+base.c	  = element t		{ t.a , t.c }
+t.a	  = gdlme.a.m
+t.c	  = text
+
+morphs.m  = element morphs	{ morphs.a , morphs.c }
+morphs.a  = notAllowed
+morphs.c  = morph.m*
+
+morph.m	  = element morph	{ morph.a , morph.c }
+morph.a   = attribute xml:id	{ xsd:ID }
+morph.c	  = text
+
+forms.m	  = element forms	{ forms.a , forms.c }
+forms.a	  = notAllowed
+forms.c	  = form.m*
+
+form.m	  = element form	{ form.a , form.c }
+form.a 	  = attribute literal	{ text } ,
+	    attribute xml:lang	{ lng.pat } ,
+	    attribute morph	{ xsd:IDREF } ,
+	    attribute xml:id	{ xsd:ID } ,
+    	    gdlme.a.m
+form.c	  = text
+
+norms.m	  = element norms	{ norms.a , norms.c }
+norms.a   = notAllowed
+norms.c	  = norm.m*
+
+norm.m	  = element norm	{ norm.a , norm.c }
+norm.a	  = attribute xml:id	{ xsd:ID }
+norm.c	  = norm_n.m , norm_form.m
+
+norm_n.m  = element n		{ norm_n.a , norm_n.c }
+norm_n.a  = notAllowed
+norm_n.c  = text
+
+norm_form.m = element form	{ norm_form.a , norm_form.c }
+norm_form.a = notAllowed
+norm_form.c = norm_form_f.m*
+
+norm_form_f.m = element f	 { norm_form_f.a , norm_form_f.c }
+norm_form_f.a = attribute xml:id { xsd:ID } ,
+	      	attribute ref	 { xsd:IDREF }
+norm_form_f.c = notAllowed
+
+senses.m      = element senses	{ senses.a , senses.c }
+senses.a      = notAllowed
+senses.c      = sense.m*
+
+sense.m	      = element	sense	 { sense.a , sense.c }
+sense.a       = attribute n	 { cgspe.pat } ,
+	      	attribute xml:id { xsd:ID }
+sense.c	      = pos.m , mng.m
+mng.m	      = element mng	 { mng.a , mng.c }
+mng.a	      = attribute xml:lang { lng.pat }
+mng.c	      = text

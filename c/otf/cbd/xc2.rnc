@@ -1,0 +1,26 @@
+# Schema corresponding to the .xml files that are built in layers during l2phase2
+# Files of this kind are called 'articles-with-periods.xml'.
+
+# These files are extensions of the .cbd format; this schema validates both cbd1 and cbd2
+# versions of articles-with-periods.xml.
+
+default namespace = "http://oracc.org/ns/cbd/1.0"
+
+namespace cbd="http://oracc.org/ns/cbd/1.0"
+namespace dc="http://dublincore.org/documents/2003/06/02/dces/"
+namespace xl="http://www.w3.org/1999/xlink"
+namespace epad="http://psd.museum.upenn.edu/epad/"
+
+start |= cbd-articles.m
+
+include "xci-core.rnc" inherit=cbd
+
+cbd-articles.m = element cbd:articles { letter.m* }
+
+letter.m       = element letter { letter.a , letter.c }
+letter.a       = attribute dc:title { text }
+letter.c       = article.m*
+
+article.m      = element article { entry.a , entry.m }
+
+

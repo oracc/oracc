@@ -2,7 +2,7 @@ default namespace = "http://oracc.org/ns/tgi/2.0"
 
 namespace tgi="http://oracc.org/ns/tgi/2.0"
 
-include "cbd-core.rnc" inherit=tgi
+include "tgi-core.rnc" inherit=tgi
 
 start |= tgi-cbd.m
 
@@ -37,3 +37,8 @@ sensel.c  = (attribute xml:lang { lng.pat } , mng.m)
 
 disc.m    &= discl.m*
 discl.m	  = element discl { attribute xml:lang { lng.pat } , disc.c }
+
+## additional components of @sense
+sense.d   &= (sid.m? , sok.m?)
+sid.m 	  = attribute sid { text }
+sok.m	  = attribute sok { text }

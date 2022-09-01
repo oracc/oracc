@@ -1,5 +1,12 @@
 start = cbd.m
 
+cgp.pat  = xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
+pos.pat  = xsd:token { pattern="N|V/t|V/i|AJ" }
+mng.pat  = text
+lng.pat  = xsd:token { pattern="([a-z]{2})|([a-z]{3}(-x-[a-z]{6})?)" }
+pri.pat  = xsd:token { pattern="\S+" }
+pri-alt.pat = xsd:token { pattern="\S+\(.*\)" }
+
 cbd.m = element cbd { cbd.c }
 
 cbd.c = cbd-header , cbd-entries
@@ -10,18 +17,10 @@ lang 	   = element lang    { text }
 name 	   = element name    { text }
 props 	   = element props   { text }
 
-cbd-entries = entries.m
+cbd-entries = (letter.m? , entries.m)*
 
-cgp.pat  = xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
-pos.pat  = xsd:token { pattern="N|V/t|V/i|AJ" }
-mng.pat  = text
-lng.pat  = xsd:token { pattern="([a-z]{2})|([a-z]{3}(-x-[a-z]{6})?)" }
-pri.pat  = xsd:token { pattern="\S+" }
-pri-alt.pat = xsd:token { pattern="\S+\(.*\)" }
-
-sns.req    = pos.m , mng.m
-pos.m	   = pos.pat
-mng.m	   = mng.pat
+letter.m    = element letter { letter.c }
+letter.c    = text
 
 entries.m = entry.m*
 
@@ -76,6 +75,9 @@ sense.m	   = element sense     { sense.c }
 sense.c    = sense.d , sense.mod.m?
 sense.d    = sgw.m? , sns.req
 sgw.m	   = attribute sgw { text }?
+sns.req    = pos.m , mng.m
+pos.m	   = pos.pat
+mng.m	   = mng.pat
 
 meta.m	    = (equiv.m & pleiades.m & note.m & inote.m & isslp.m & bib.m & collo.m)*
 
