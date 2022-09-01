@@ -11,9 +11,7 @@ namespace dc="http://dublincore.org/documents/2003/06/02/dces/"
 namespace xl="http://www.w3.org/1999/xlink"
 namespace epad="http://psd.museum.upenn.edu/epad/"
 
-start |= cbd-articles.m
-
-include "xci-core.rnc" inherit=cbd
+include "xci-core.rnc" inherit=cbd { start=cbd-articles.m }
 
 cbd-articles.m = element cbd:articles { letter.m* }
 
