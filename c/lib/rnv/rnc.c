@@ -16,6 +16,8 @@
 #include "er.h"
 #include "rnc.h"
 
+struct rnc_cym empty_sym = { NULL,0,0,0,0 };
+
 #define NKWD 19
 static char *kwdtab[NKWD]={
   "attribute", "datatypes", "default", "div", "element", "empty", "external",
@@ -912,6 +914,8 @@ static void add_well_known_nss(int dflt) {
 static int file(struct rnc_source *sp,int nsuri) {
   int ret=0;
   struct rnc_source src;
+  src.cur = 0;
+  src.sym[0] = src.sym[1] = empty_sym;
   add_well_known_nss(nsuri);
   if(rnc_open(&src,path)!=-1) {
     ret=topLevel(&src);
