@@ -1,6 +1,7 @@
 /* $Id: rnl.c,v 1.2 2004/01/15 23:47:45 dvd Exp $ */
 
 #include <stdarg.h>
+#include <string.h>
 #include "erbit.h"
 #include "rn.h"
 #include "rnc.h"
@@ -32,7 +33,9 @@ void rnl_clear(void) {}
 
 static int load(struct rnc_source *sp) {
   int start=-1;
-  if(!rnc_errors(sp)) start=rnc_parse(sp); rnc_close(sp);
+  if(!rnc_errors(sp))
+    start=rnc_parse(sp);
+  rnc_close(sp);
   if(!rnc_errors(sp)&&(start=rnd_fixup(start))) {
     start=rn_compress_last(start);
   } else start=0;
@@ -41,7 +44,7 @@ static int load(struct rnc_source *sp) {
 
 int rnl_fn(char *fn) {
   struct rnc_source src;
-  memset(src, '\0', sizeof(struct rnc_source);
+  memset(&src, '\0', sizeof(struct rnc_source));
   rnc_open(&src,fn); return load(&src);
 }
 
