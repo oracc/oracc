@@ -24,6 +24,8 @@
 
 FILE *f_log = NULL;
 
+int report;
+
 extern int rn_notAllowed,rx_compact,drv_compact;
 
 #define LEN_T XCL_LEN_T
@@ -45,13 +47,13 @@ extern int rn_notAllowed,rx_compact,drv_compact;
 #define PIXTF2LINE "atf-line"
 
 static int peipe,verbose,nexp,rnck;
-static char *xml;
+static char *xml, *rnc;
 static XML_Parser expat=NULL;
 static int start,current,previous;
 static int mixed=0;
 static int lastline,lastcol,level;
 static char *xgfile=NULL,*xgpos=NULL;
-static int ok;
+static int ok, errstatus;
 
 /* Expat does not normalize strings on input */
 static char *text; static int len_txt;
@@ -59,6 +61,7 @@ static int n_txt;
 
 #define err(msg) (*er_vprintf)(msg"\n",ap);
 static void verror_handler(int erno,va_list ap) {
+  ++errstatus;
   if(erno&ERBIT_RNL) {
     rnl_default_verror_handler(erno&~ERBIT_RNL,ap);
   } else {
@@ -68,6 +71,18 @@ static void verror_handler(int erno,va_list ap) {
       (*er_printf)("%s:%i:%i: error: ",xml,line,col);
       if(erno&ERBIT_RNV) {
 	rnv_default_verror_handler(erno&~ERBIT_RNV,ap);
+        if(nexp) { int req=2, i=0; char *s;
+          while(req--) {
+            rnx_expected(previous,req);
+            if(i==rnx_n_exp) continue;
+            if(rnx_n_exp>nexp) break;
+            (*er_printf)((char*)(req?"required:\n":"allowed:\n"));
+            for(;i!=rnx_n_exp;++i) {
+              (*er_printf)("\t%s\n",s=rnx_p2str(rnx_exp[i]));
+              m_free(s);
+            }
+          }
+        }
       } else {
 	switch(erno) {
 	case XCL_ER_IO: err("%s"); break;
@@ -234,6 +249,7 @@ int main(int argc,char **argv) {
       case 's': drv_compact=1; rx_compact=1; break;
       case 'p': peipe=1; break;
       case 'c': rnck=1; break;
+      case 'r': report=1; verbose=0; nexp=0; break;
 #if DXL_EXC
       case 'd': dxl_cmd=*(argv+1); if(*(argv+1)) ++argv; goto END_OF_OPTIONS;
 #endif
@@ -250,7 +266,7 @@ int main(int argc,char **argv) {
   }
 
   if(!*(argv)) {usage(); return 1;}
-
+  rnc = *argv;
   if((ok=start=rnl_fn(*(argv++)))) {
     if(*argv) {
       do {
@@ -260,7 +276,11 @@ int main(int argc,char **argv) {
 	  ok=0;
 	  continue;
 	}
-	if(verbose) (*er_printf)("%s\n",xml);
+	if (report) {
+	  (void)freopen("/dev/null", "w", stderr);
+	  printf("PID %ld: rnv %s %s: ", (long)getpid(), rnc, xml);
+	  fflush(stdout);
+	} else if(verbose) (*er_printf)("%s\n",xml);
 	validate(fd);
 	close(fd);
 	clear();
@@ -276,5 +296,9 @@ int main(int argc,char **argv) {
     }
   }
 
-  return ok?EXIT_SUCCESS:EXIT_FAILURE;
+  if (report) {
+    printf("%s\n", errstatus ? "bad" : "ok");
+  }
+  
+  return !errstatus?EXIT_SUCCESS:EXIT_FAILURE;
 }

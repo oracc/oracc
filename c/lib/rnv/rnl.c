@@ -41,6 +41,7 @@ static int load(struct rnc_source *sp) {
 
 int rnl_fn(char *fn) {
   struct rnc_source src;
+  memset(src, '\0', sizeof(struct rnc_source);
   rnc_open(&src,fn); return load(&src);
 }
 

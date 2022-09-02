@@ -21,12 +21,10 @@ stats.c.a = attribute c	    { xsd:int }
 stats4.a = stats.c.a & stats3.a
 
 cid = attribute cbd:id { xsd:ID }
-n.text.m	= attribute n { text }
 
 include "xci-core.rnc" inherit=cbd {
 		       start=cbd-articles.m
 		       entry.a = xc2.entry.a
-		       cpd.c = cgspe.m
 		       form.a =  xc2.form.a
 		       form.c =  (ref | (tlit.m,cof-form-norm.m*))
 		       base.a =  xc2.base.a

@@ -1,3 +1,4 @@
+*.xnl
 *.output
 *.tab.c
 *.tab.h
