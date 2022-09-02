@@ -10,8 +10,8 @@ SUBDIRS=collate expat libstemmer_c gsl oracc rnv sas skl
 noinst_LTLIBRARIES=liboracc.la
 liboracc_la_LIBADD= \
 	collate/libcoll.la \
-	oracc/liboracc.la \
 	expat/libexpat.la \
+	oracc/liboracc.la \
 	gsl/libgsl.la \
 	libstemmer_c/libstemmer.la \
 	rnv/librnv.la \
