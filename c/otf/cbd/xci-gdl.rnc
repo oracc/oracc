@@ -3,7 +3,7 @@ namespace n = "http://oracc.org/ns/norm/1.0"
 
 # copied from master gdl and adapted 
 
-gdl.m = word | normword
+gdl.m = (word | normword)*
 
 words = word*
 word = element g:w { g_w.a , g_w.c }

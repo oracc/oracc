@@ -48,6 +48,7 @@ entry.c   = cgp.m ,
 	     & prefs.m? & forms.m? & norms.m? & senses.m? & equivs.m? & bib.m?)
 
 cgp.m	  = cf.m , gw.m , pos.m
+cgspe.m	  = cf.m , gw.m , mng.m , pos.m , epos.m
 cf.m	  = element cf { cf.a , cf.c }
 cf.a	  = empty
 cf.c	  = text
@@ -55,9 +56,11 @@ gw.m	  = element gw { gw.a , gw.c }
 # There is a bug in existing .cbd generation where gw within compound/cpd lacks xml:lang
 gw.a	  = attribute xml:lang  { lng.pat }?
 gw.c	  = text
+mng.m	  = element mng { gw.a , gw.c }
 pos.m	  = element pos { pos.a , pos.c }
 pos.a	  = empty
 pos.c	  = pos.pat
+epos.m	  = element epos { pos.a , pos.c }
 
 compound.m = element compound	{ compound.a , compound.c }
 compound.a = empty
@@ -162,9 +165,6 @@ sense.m	      = element	sense	 { sense.a , sense.c }
 sense.a       = attribute n	 { cgspe.pat } ,
 	      	attribute xml:id { xsd:ID }
 sense.c	      = pos.m , mng.m
-mng.m	      = element mng	 { mng.a , mng.c }
-mng.a	      = attribute xml:lang { lng.pat }
-mng.c	      = text
 
 equivs.m  = element equivs	{ equivs.a , equivs.c }
 equivs.a  = empty

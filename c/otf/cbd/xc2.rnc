@@ -26,9 +26,11 @@ n.text.m	= attribute n { text }
 include "xci-core.rnc" inherit=cbd {
 		       start=cbd-articles.m
 		       entry.a = xc2.entry.a
+		       cpd.c = cgspe.m
 		       form.a =  xc2.form.a
-		       form.c =  ref | tlit.m
+		       form.c =  (ref | (tlit.m,cof-form-norm.m*))
 		       base.a =  xc2.base.a
+		       cont.a =  xc2.common.a
 		       base.c =  tlit.m?
 		       norm_form_f.a = xc2.norm_form_f.a
 		       morph.a = xc2.morph.a
@@ -50,6 +52,8 @@ letter.c       = entry.m*
 
 xc2.entry.a    = entry.a.m , stats3.a , dc.title.m
 entry.c        &= (see-compounds.m? & periods.m)
+
+cpd.a 	       &= ref
 
 see-compounds.m = element see-compounds { xcpd.m* }
 xcpd.m		= element xcpd 		{ xcpd.a , xcpd.c }
@@ -74,20 +78,38 @@ prefix.m	= element prefix  { prefix.a , prefix.c }
 prefix.a	= xc2.common.a
 prefix.c	= empty
 
-sense.a		&= oid , stats3.a , sense_num.a.m , sense_ok.a.m
+sense.a		&= oid , stats3.a , sense_num.a.m , sense_ok.a.m?
 sense_num.a.m 	= attribute num { text }
 sense_ok.a.m	= attribute ok  { text }
-sense.c		&= (forms.m & bases.m & norms.m & morphs.m & sigs.m)
+sense.c		&= (forms.m & bases.m? & conts.m? & norms.m & morphs.m? & prefixs.m? & sigs.m)
 
 sigs.m		= element sigs 	{ sigs.a , sigs.c }
 sigs.a		= empty
 sigs.c		= element sig	{ sig.a , sig.c } *
 sig.a		= xid , stats3.a ,
 		  attribute sig { text }
-sig.c		= empty
+sig.c		= cof-data.m?
 
 periods.m	= element periods { periods.a , periods.c }
 periods.a	= empty
 periods.c	= element p { p.a , p.c } *
 p.a		= stats3.a
 p.c		= text
+
+cof-data.m	= element cof-data { cof-data.a , cof-data.c }
+cof-data.a	= empty
+cof-data.c	= cof-head.m , cof-tail.m+
+
+cof-curr.a.m 	= attribute curr { "yes" }?
+
+cof-head.m	= element cof-head { cof-head.a , cof-head.c }
+cof-head.a	= cof-curr.a.m
+cof-head.c	= text
+
+cof-tail.m	= element cof-tail { cof-tail.a , cof-tail.c }
+cof-tail.a	= cof-curr.a.m
+cof-tail.c	= text
+
+cof-form-norm.m	= element cof-form-norm { cof-form-norm.a , cof-form-norm.c }
+cof-form-norm.a	= xc2.common.a
+cof-form-norm.c	= empty
