@@ -1,6 +1,6 @@
 #ifndef _RUNEXPAT_H
 #define _RUNEXPAT_H
-#include "xmlparse.h"
+#include "../lib/expat/lib/expat.h"
 enum isource { i_stdin , i_names , i_list };
 
 extern const char *pi_file;

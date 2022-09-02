@@ -1,6 +1,28 @@
 namespace g = "http://oracc.org/ns/gdl/1.0"
+namespace n = "http://oracc.org/ns/norm/1.0"
 
-grapheme = v | q | s | n | c | gloss | g | nongrapheme | punct | gsurro
+# copied from master gdl and adapted 
+
+gdl.m = word | normword
+
+words = word*
+word = element g:w { g_w.a , g_w.c }
+g_w.a = attribute xml:id { xsd:ID }? ,
+     	attribute xml:lang { xsd:language } ,
+	attribute form { text } ,
+    	delim?
+g_w.c = (group | grapheme)*
+
+accented = attribute g:accented { text }
+delim  = attribute g:delim { text }
+nongrapheme = empty
+sign   = attribute g:sign  { text }
+status = attribute g:status { "ok" }
+utf8   = attribute g:utf8  { text }
+
+g.meta = (accented? , delim? , sign? , status? , utf8?)
+
+grapheme = v | q | s | n | c | gloss | g | punct | gsurro
 form     = attribute form { text }
 sb       = element g:b { s.model }
 vb       = element g:b { v.model }
@@ -12,14 +34,10 @@ gsurro   =
   }
 
 # Values
-#v.model  = "x" | lV | lVCv | lCVc | lVCCvc | lCVCCvc
 v.model = text
 v        = element g:v { form? , g.meta , lang? , (v.model | (vb , mods+)) }
-#dingir   = element g:v { g.meta , lang? , ("d") }
-#mister   = element g:v { g.meta , lang? , ("m") }
 
 # Names
-#s.model  =  "N" | "X" | uV | uVCv | uCVc | uVCCvc | uCVCCvc | lst | num
 s.model  = text
 
 lst    = xsd:string {
@@ -87,3 +105,67 @@ p.model =
     attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/"|":r:"|"·" } , 
     g.meta , 
     (v|q|s|n|c)?
+
+group = 
+  element g:gg {
+    attribute g:type { 
+      "correction" | "alternation" | "group" | "reordering" | "ligature" | "implicit-ligature" | "logo" | "numword"
+    } ,
+    g.meta ,
+    (group | grapheme | normseg)+
+  }
+
+groupgroup = 
+  element g:gg {
+    attribute g:type { "group" } ,
+    g.meta ,
+    (group | grapheme | normword | normseg)+
+  }
+
+normwords = normword*
+normword = 
+  element n:w { 
+    g_w.a ,
+    (gsurro | normwordword | normwordgroup | gloss | nongrapheme | group)*
+  }
+
+normwordgroup = 
+  element n:word-group {
+     attribute g:type { "alternation" } ,
+     attribute g:delim { "-" }? ,
+     element n:grouped-word { normwordword }+
+  }
+
+normwordword = ( text | (normseg | normgroup)+)
+
+normseg =
+  element n:s {
+    n.meta ,
+    g.meta ,
+    text
+  }
+
+n.meta = normnum?
+
+normnum = attribute n:num { "yes" }
+
+normgroup = 
+  element n:g {
+    attribute g:type {
+      "correction" | "alternation" | "group" | "reordering" | "ligature" | "numword"
+    } ,
+    g.meta ,
+    (normgroup | normseg)+
+  }
+
+# Gloss from graphmeta.c
+
+gloss = det | glo
+pos = attribute g:pos { "pre" | "post" | "free" }
+det = element g:d { pos , dtyp , surroStart? , g.meta ,
+                    (g_w.c*)}
+dtyp= attribute g:role { "phonetic" | "semantic" }
+glo = element g:gloss { attribute g:type { "lang" | "text" } , surroEnd? , delim? , pos , words }
+
+surroStart = attribute g:surroStart { "1" }
+surroEnd = attribute g:surroEnd { xsd:IDREF }

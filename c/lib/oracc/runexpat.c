@@ -132,7 +132,7 @@ static void
 fail(XML_Parser parser, struct runinfo *rip)
 {
   fprintf(stderr,
-	  "runexpat: %s:%d: Expat error '%s'\n",
+	  "runexpat: %s:%ld: Expat error '%s'\n",
 	  rip->fname,
 	  XML_GetCurrentLineNumber(parser),
 	  XML_ErrorString(XML_GetErrorCode(parser)));

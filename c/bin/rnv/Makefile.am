@@ -24,5 +24,5 @@ AM_CFLAGS=${INC} ${DEF} ${WARN} ${OPT}
 
 bin_PROGRAMS=rnv
 rnv_SOURCES=xcl.c
-rnv_LDADD=@top_srcdir@/c/lib/liboracc.la -lexpat
+rnv_LDADD=@top_srcdir@/c/lib/liboracc.la
 AM_CPPFLAGS=-I@top_srcdir@/c/lib/rnv

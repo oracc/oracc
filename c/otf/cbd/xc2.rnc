@@ -11,14 +11,83 @@ namespace dc="http://dublincore.org/documents/2003/06/02/dces/"
 namespace xl="http://www.w3.org/1999/xlink"
 namespace epad="http://psd.museum.upenn.edu/epad/"
 
-include "xci-core.rnc" inherit=cbd { start=cbd-articles.m }
+# The statistics added from xc1 to xc2 are encoded in attributes
+# entry has stats3.a (because attribute c of stats4 would be the same as the icount)
+# child nodes have stats4.a
+stats3.a = attribute icount { xsd:int },
+	   attribute ipct   { xsd:int },
+	   attribute xis    { xsd:NMTOKEN }
+stats.c.a = attribute c	    { xsd:int }
+stats4.a = stats.c.a & stats3.a
 
-cbd-articles.m = element cbd:articles { letter.m* }
+cid = attribute cbd:id { xsd:ID }
+n.text.m	= attribute n { text }
+
+include "xci-core.rnc" inherit=cbd {
+		       start=cbd-articles.m
+		       entry.a = xc2.entry.a
+		       form.a =  xc2.form.a
+		       form.c =  ref | tlit.m
+		       base.a =  xc2.base.a
+		       base.c =  tlit.m?
+		       norm_form_f.a = xc2.norm_form_f.a
+		       morph.a = xc2.morph.a
+		       prefs.m = prefixs.m
+		       pref.m  = prefix.m
+	}
+
+include "xci-gdl.rnc"
+
+dc.title.m = attribute dc:title { text }
+
+cbd-articles.m = element cbd:articles { cbd-articles.a , cbd-articles.c }
+cbd-articles.a = header.a.m & dc.title.m
+cbd-articles.c = letter.m*
 
 letter.m       = element letter { letter.a , letter.c }
-letter.a       = attribute dc:title { text }
-letter.c       = article.m*
+letter.a       = dc.title.m
+letter.c       = entry.m*
 
-article.m      = element article { entry.a , entry.m }
+xc2.entry.a    = entry.a.m , stats3.a , dc.title.m
+entry.c        &= (see-compounds.m? & periods.m)
 
+see-compounds.m = element see-compounds { xcpd.m* }
+xcpd.m		= element xcpd 		{ xcpd.a , xcpd.c }
+xcpd.a		= attribute eref { xsd:IDREF }
+xcpd.c		= cgp.pat
 
+tlit.m		= s.m , t.m
+s.m		= element s { text }
+t.m		= element t { gdl.m } | element text { gdl.m }
+
+xc2.form.a	= (cid|xid) , n.text.m , stats.c.a? , stats3.a 
+# possibly a bug that current practice is not stats4.a
+norm.a		&= stats3.a
+xc2.norm_form_f.a = cid , ref , stats3.a
+xc2.common.a 	= (cid|xid) , n.text.m , stats3.a 
+xc2.base.a	= xc2.common.a
+xc2.morph.a	= xc2.common.a
+xc2.morphs.a	= xc2.common.a
+
+prefixs.m	= element prefixs { prefs.a , prefs.c }
+prefix.m	= element prefix  { prefix.a , prefix.c }
+prefix.a	= xc2.common.a
+prefix.c	= empty
+
+sense.a		&= oid , stats3.a , sense_num.a.m , sense_ok.a.m
+sense_num.a.m 	= attribute num { text }
+sense_ok.a.m	= attribute ok  { text }
+sense.c		&= (forms.m & bases.m & norms.m & morphs.m & sigs.m)
+
+sigs.m		= element sigs 	{ sigs.a , sigs.c }
+sigs.a		= empty
+sigs.c		= element sig	{ sig.a , sig.c } *
+sig.a		= xid , stats3.a ,
+		  attribute sig { text }
+sig.c		= empty
+
+periods.m	= element periods { periods.a , periods.c }
+periods.a	= empty
+periods.c	= element p { p.a , p.c } *
+p.a		= stats3.a
+p.c		= text

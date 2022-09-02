@@ -10,102 +10,152 @@ cgp.pat  = xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
 cgspe.pat= xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
 lng.pat  = xsd:token { pattern="([a-z]{2})|([a-z]{3}(-x-[a-z]{6})?)" }
 mng.pat  = text
-oid.pat	 = xsd:token { pattern="o[0-9]{8}(.[a-z][0-9]+)?" }
-pos.pat  = xsd:token { pattern="N|V/t|V/i|AJ" }
+oid.pat	 = xsd:token { pattern="o[0-9]{7}(\.[a-z][0-9]+)?" }
+pos.pat  = xsd:token { pattern="AJ|AV|N|V|DP|IP|PP|CNJ|J|MA|O|QP|RP|DET|PRP|POS|PRT|PSP|PTC|SBJ|NP|M|MOD|REL|XP|NU|AN|BN|CN|DN|EN|FN|GN|HN|IN|JN|KN|LN|MN|NN|ON|PN|QN|PNF|RN|SN|TN|U|UN|VN|WN|X|XN|YN|ZN|V/i|V/t" }
 
-gdlme.a.m = attribute g:file 	{ text } ,
-	    attribute g:line 	{ text } ,
+cof.a.m	  = (attribute cof-head  { "1" } | attribute cof-tail { "1" }) ,
+	    attribute secondary  { "1" } ?
+gdlme.a.m = attribute g:file 	{ text } ? ,
+	    attribute g:line 	{ text } ? ,
 	    attribute g:me 	{ "1" }
 
-start = entries.m
+oid = attribute oid    { oid.pat }
+ref = attribute ref    { xsd:IDREF }
+xid = attribute xml:id { xsd:ID }
+
+start 	  = entries.m
+
+header.a.m = attribute xml:lang 	{ lng.pat } ,
+	     attribute project  	{ text } ,
+	     attribute n	       	{ text }
 
 entries.m = element entries	{ entries.a , entries.c }
-entries.a = attribute xml:lang 	{ lng.pat } ,
-	    attribute project  	{ text } ,
-	    attribute n	       	{ text } ,
+entries.a = header.a.m ,
 	    attribute name 	{ text } ,
 	    attribute g:file	{ text } 
 entries.c = entry.m*
 
 entry.m   = element entry	{ entry.a , entry.c }
-entry.a   = attribute xml:id  	{ xsd:ID } ,
-	    attribute xml:lang	{ lng.pat } ,
-	    attribute n		{ cgp.pat } ,
-	    attribute oid	{ oid.pat }
-entry.c   = cgp.m , stems.m? , bases.m? , morphs.m?, forms.m?, norms.m? , senses.m?
+entry.a.m = attribute n		{ cgp.pat } ,
+	    attribute oid	{ oid.pat } ,
+	    attribute xml:id  	{ xsd:ID }
+entry.a   = entry.a.m ,
+	    attribute xml:lang	{ lng.pat }
+
+entry.c   = cgp.m ,
+	    compound.m ? ,
+	    (stems.m? & bases.m? & conts.m? & morphs.m? & morph2s.m
+	     & prefs.m? & forms.m? & norms.m? & senses.m? & equivs.m? & bib.m?)
 
 cgp.m	  = cf.m , gw.m , pos.m
 cf.m	  = element cf { cf.a , cf.c }
-cf.a	  = notAllowed
+cf.a	  = empty
 cf.c	  = text
 gw.m	  = element gw { gw.a , gw.c }
-gw.a	  = notAllowed
+# There is a bug in existing .cbd generation where gw within compound/cpd lacks xml:lang
+gw.a	  = attribute xml:lang  { lng.pat }?
 gw.c	  = text
 pos.m	  = element pos { pos.a , pos.c }
-pos.a	  = notAllowed
+pos.a	  = empty
 pos.c	  = pos.pat
 
+compound.m = element compound	{ compound.a , compound.c }
+compound.a = empty
+compound.c = cpd.m+
+
+cpd.m	   = element cpd	{ cpd.a , cpd.c }
+cpd.a 	   = attribute partsig  { cgp.pat },
+	     attribute primary 	{ "1" }?
+cpd.c 	   = cgp.m
+
 stems.m	  = element stems	{ stems.a , stems.c }
-stems.a   = attribute defaulted { "no|yes" }
+stems.a   = attribute defaulted { "no" | "yes" } ?
 stems.c	  = stem.m*
 stem.m	  = element stem	{ stem.a , stem.c }
 stem.a 	  = attribute n 	{ text }
-stem.c	  = notAllowed
+stem.c	  = empty
 
 bases.m	  = element bases	{ bases.a , bases.c }
-bases.a	  = notAllowed
+bases.a	  = empty
 bases.c   = base.m*
 
 base.m	  = element base	{ base.a , base.c }
 base.a	  = attribute literal	{ text } ,
 	    attribute xml:id   	{ xsd:ID }
-base.c	  = element t		{ t.a , t.c }
+base.c	  = element t		{ t.a , t.c } +
 t.a	  = gdlme.a.m
 t.c	  = text
 
+conts.m  = element conts	{ conts.a , conts.c }
+conts.a  = empty
+conts.c  = cont.m*
+
+cont.m	  = element cont	{ cont.a , cont.c }
+cont.a    = attribute xml:id	{ xsd:ID }
+cont.c	  = text
+
 morphs.m  = element morphs	{ morphs.a , morphs.c }
-morphs.a  = notAllowed
+morphs.a  = empty
 morphs.c  = morph.m*
 
 morph.m	  = element morph	{ morph.a , morph.c }
-morph.a   = attribute xml:id	{ xsd:ID }
+morph.a   = attribute xml:id	{ xsd:ID } ,
+	    attribute morph2	{ xsd:IDREF } ?
 morph.c	  = text
 
+morph2s.m  = element morph2s	{ morph2s.a , morph2s.c }
+morph2s.a  = empty
+morph2s.c  = morph.m*
+
+morph2.m   = element morph	{ morph2.a , morph2.c }
+morph2.a   = attribute xml:id	{ xsd:ID }
+morph2.c   = text
+
+prefs.m  = element prefs	{ prefs.a , prefs.c }
+prefs.a  = empty
+prefs.c  = pref.m*
+
+pref.m	  = element pref	{ pref.a , pref.c }
+pref.a    = attribute xml:id	{ xsd:ID }
+pref.c	  = text
+
 forms.m	  = element forms	{ forms.a , forms.c }
-forms.a	  = notAllowed
+forms.a	  = empty
 forms.c	  = form.m*
 
 form.m	  = element form	{ form.a , form.c }
 form.a 	  = attribute literal	{ text } ,
 	    attribute xml:lang	{ lng.pat } ,
-	    attribute morph	{ xsd:IDREF } ,
+	    attribute morph	{ xsd:IDREF } ? ,
+	    attribute cont	{ xsd:IDREF } ? ,
+	    attribute pref	{ xsd:IDREF } ? ,
 	    attribute xml:id	{ xsd:ID } ,
     	    gdlme.a.m
 form.c	  = text
 
 norms.m	  = element norms	{ norms.a , norms.c }
-norms.a   = notAllowed
+norms.a   = empty
 norms.c	  = norm.m*
 
 norm.m	  = element norm	{ norm.a , norm.c }
 norm.a	  = attribute xml:id	{ xsd:ID }
-norm.c	  = norm_n.m , norm_form.m
+norm.c	  = n.text.m | (norm_n.m , norm_forms.m)?
 
 norm_n.m  = element n		{ norm_n.a , norm_n.c }
-norm_n.a  = notAllowed
-norm_n.c  = text
+norm_n.a  = cof.a.m?
+norm_n.c  = text | norm_n.m+
 
-norm_form.m = element form	{ norm_form.a , norm_form.c }
-norm_form.a = notAllowed
-norm_form.c = norm_form_f.m*
+norm_forms.m = element forms	{ norm_forms.a , norm_forms.c }
+norm_forms.a = empty
+norm_forms.c = norm_form_f.m*
 
 norm_form_f.m = element f	 { norm_form_f.a , norm_form_f.c }
 norm_form_f.a = attribute xml:id { xsd:ID } ,
 	      	attribute ref	 { xsd:IDREF }
-norm_form_f.c = notAllowed
+norm_form_f.c = empty
 
 senses.m      = element senses	{ senses.a , senses.c }
-senses.a      = notAllowed
+senses.a      = empty
 senses.c      = sense.m*
 
 sense.m	      = element	sense	 { sense.a , sense.c }
@@ -115,3 +165,19 @@ sense.c	      = pos.m , mng.m
 mng.m	      = element mng	 { mng.a , mng.c }
 mng.a	      = attribute xml:lang { lng.pat }
 mng.c	      = text
+
+equivs.m  = element equivs	{ equivs.a , equivs.c }
+equivs.a  = empty
+equivs.c  = equiv.m*
+
+equiv.m	  = element equiv	{ equiv.a , equiv.c }
+equiv.a   = attribute xml:id	{ xsd:ID } ,
+	    attribute xml:lang	{ lng.pat }
+equiv.c	  = text
+
+bib.m	  = element bib		{ bib.a , bib.c }
+bib.a	  = empty
+bib.c	  = ref.m
+ref.m	  = element ref		{ ref.a , ref.c }
+ref.a	  = attribute year 	{ text }
+ref.c	  = text
