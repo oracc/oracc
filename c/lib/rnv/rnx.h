@@ -1,10 +1,9 @@
-/* $Id: rnx.h,v 1.7 2004/02/18 12:53:42 dvd Exp $ */
+/* $Id: rnx.h 390 2004-02-18 12:53:42Z dvd $ */
 
 #ifndef RNX_H
 #define RNX_H 1
 
 extern void rnx_init(void);
-extern void rnx_term(void);
 extern void rnx_clear(void);
 
 extern int rnx_n_exp,*rnx_exp;

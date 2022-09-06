@@ -1,4 +1,4 @@
-/* $Id: xsd.c,v 1.47 2005/01/06 21:04:06 dvd Exp $ */
+/* $Id: xsd.c 490 2012-10-03 22:41:24Z hartwork $ */
 
 #include <limits.h> /*INT_MAX*/
 #include <stdlib.h> /*atof,atol,strtol*/
@@ -328,7 +328,7 @@ struct facets {
 #define PAT_MONTH0 "(0[1-9]|1[0-2])"
 #define PAT_DAY0 "([0-2][0-9]|3[01])"
 #define PAT_YEAR "-?"PAT_YEAR0 PAT_ZONE"?"
-#define PAT_MONTH "--"PAT_MONTH0"--"PAT_ZONE"?"
+#define PAT_MONTH "--"PAT_MONTH0 PAT_ZONE"?"
 #define PAT_DAY "---"PAT_DAY0 PAT_ZONE"?"
 #define PAT_YEAR_MONTH "-?"PAT_YEAR0"-"PAT_MONTH0 PAT_ZONE"?"
 #define PAT_MONTH_DAY "--"PAT_MONTH0"-"PAT_DAY0 PAT_ZONE"?"
@@ -445,8 +445,7 @@ static int chktm(char *typ,char *fmt,struct facets *fp,char *s,int n) {
 int xsd_allows(char *typ,char *ps,char *s,int n) {
   int ok=1,length;
   int dt=s_tab(typ,typtab,NTYP);
-  struct facets fct = { 0, {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0}, 0, 0,0,0,0,0, 0,0,0,0, 0};
-  fct.set=0; fct.npat=0;
+  struct facets fct; fct.set=0; fct.npat=0;
   switch(dt) {
   case TYP_INTEGER:
     fct.pattern[fct.npat++]=PAT_INTEGER;

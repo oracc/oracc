@@ -1,5 +1,5 @@
-/* $Id: ht.c,v 1.14 2004/01/23 20:26:45 dvd Exp $ */
-#include <stdio.h>
+/* $Id: ht.c 338 2004-01-23 20:26:46Z dvd $ */
+
 #include <stdlib.h> /*NULL*/
 #include <assert.h> /*assert*/
 #include "m.h"
@@ -9,15 +9,10 @@
 
 void ht_init(struct hashtable *ht,int len,int (*hash)(int),int (*equal)(int,int)) {
   assert(len>0);
-  size_t j;
-
   ht->tablen=1; len*=LOAD_FACTOR;
   while(ht->tablen<len) ht->tablen<<=1;
   ht->limit=ht->tablen/LOAD_FACTOR;
   ht->table=(int*)m_alloc(ht->tablen<<1,sizeof(int)); /* the second half is hash values */
-
-  for(j=0;j!=ht->tablen;++j) ht->table[j]=-1;
-
   ht->hash=hash; ht->equal=equal;
   ht_clear(ht);
 }
@@ -68,11 +63,9 @@ void ht_put(struct hashtable *ht,int i) {
 
 static int del(struct hashtable *ht,int i,int eq) {
   if(ht->used!=0) {
-    int hv=ht->hash(i),j=0;
-    /*struct hashtable *xht = ht;*/
+    int hv=ht->hash(i),j;
     for(j=first(ht,hv);;j=next(ht,j)) {
       int tj=ht->table[j];
-      /*      fprintf(stderr,"hv=%d; tj=\n",hv); */
       if(tj==-1) break;
       if(eq?i==tj:ht->equal(i,tj)) {
 	do {

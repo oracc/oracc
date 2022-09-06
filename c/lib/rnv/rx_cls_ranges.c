@@ -1,4 +1,4 @@
-/* $Id: rx_cls_ranges.c,v 1.2 2003/12/21 23:07:39 dvd Exp $ */
+/* $Id: rx_cls_ranges.c 131 2003-12-21 23:07:39Z dvd $ */
 
 /* blocks */
 static int IsBasicLatinRanges[][2]={{0x0000,0x007F}};

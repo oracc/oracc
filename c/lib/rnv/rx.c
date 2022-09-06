@@ -1,4 +1,4 @@
-/* $Id: rx.c,v 1.33 2004/02/25 00:00:32 dvd Exp $ */
+/* $Id: rx.c 398 2004-02-25 00:00:32Z dvd $ */
 
 #include <string.h> /*strlen,strcpy,strcmp*/
 #include <assert.h>
@@ -212,9 +212,9 @@ static void error_handler(int erno,...) {
 #define M_SET(p) memo[i_m][M_SIZE-1]=p
 #define M_RET(m) memo[m][M_SIZE-1]
 
-static int (*memo)[M_SIZE] = 0;
-static int i_m=0,len_m=0;
-static struct hashtable ht_m = { 0, 0, 0, 0, 0, 0 };
+static int (*memo)[M_SIZE];
+static int i_m,len_m;
+static struct hashtable ht_m;
 
 static int new_memo(int p,int c) {
   int *me=memo[i_m];
@@ -236,29 +236,18 @@ static void accept_m(void) {
   if(ht_get(&ht_m,i_m)!=-1) ht_del(&ht_m,i_m);
   ht_put(&ht_m,i_m++);
   if(i_m>=LIM_M) i_m=0;
-  if(i_m==len_m)
-    {
-      int i,j;
-      memo=(int(*)[M_SIZE])m_stretch(memo,len_m=i_m*2,i_m,sizeof(int[M_SIZE]));
-      for (i=0; i < len_m; ++i)
-	for (j=0; j < M_SIZE; ++j)
-	  memo[i][j] = 0;
-    }
+  if(i_m==len_m) memo=(int(*)[M_SIZE])m_stretch(memo,len_m=i_m*2,i_m,sizeof(int[M_SIZE]));
 }
 
 static void windup(void);
 static int initialized=0;
 void rx_init(void) {
-  if (!initialized) { 
-    int i,j;
-    initialized=1;
+  if(!initialized) { initialized=1;
     pattern=(int *)m_alloc(len_p=P_AVG_SIZE*LEN_P,sizeof(int));
     r2p=(int (*)[2])m_alloc(len_2=LEN_2,sizeof(int[2]));
     regex=(char*)m_alloc(len_r=R_AVG_SIZE*LEN_R,sizeof(char));
     memo=(int (*)[M_SIZE])m_alloc(len_m=LEN_M,sizeof(int[M_SIZE]));
-    for (i=0; i < len_m; ++i)
-      for (j=0; j < M_SIZE; ++j)
-	memo[i][j] = 0;
+
     ht_init(&ht_p,LEN_P,&hash_p,&equal_p);
     ht_init(&ht_2,LEN_2,&hash_2,&equal_2);
     ht_init(&ht_r,LEN_R,&hash_r,&equal_r);
@@ -271,14 +260,6 @@ void rx_init(void) {
 void rx_clear(void) {
   ht_clear(&ht_p); ht_clear(&ht_2); ht_clear(&ht_r); ht_clear(&ht_m);
   windup();
-}
-
-void rx_term(void) {
-  ht_dispose(&ht_p); ht_dispose(&ht_2); ht_dispose(&ht_r); ht_dispose(&ht_m);
-  m_free(pattern);
-  m_free(r2p);
-  m_free(regex);
-  m_free(memo);
 }
 
 static void windup(void) {
@@ -674,7 +655,7 @@ static int in_class(int c,int cn) {
 
 
 static int drv(int p,int c) {
-  int p1=0,p2=0,cf=0,cl=0,cn=0,ret=0,m=0;
+  int p1,p2,cf,cl,cn,ret,m;
   assert(!P_IS(p,P_ERROR));
   m=new_memo(p,c);
   if(m!=-1) return M_RET(m);
@@ -701,7 +682,7 @@ int rx_match(char *rx,char *s,int n) {
   int p=compile(rx);
   if(!errors) {
     char *end=s+n;
-    int u = 0;
+    int u;
     for(;;) {
       if(p==notAllowed) return 0;
       if(s==end) return nullable(p);

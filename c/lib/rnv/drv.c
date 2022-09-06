@@ -1,4 +1,4 @@
-/* $Id: drv.c,v 1.41 2004/03/13 13:28:02 dvd Exp $ */
+/* $Id: drv.c 420 2004-03-13 13:28:02Z dvd $ */
 
 #include "xmlc.h" /*xmlc_white_space*/
 #include "m.h"
@@ -143,12 +143,6 @@ void drv_init(void) {
     ht_init(&ht_m,LEN_M,&hash_m,&equal_m);
     windup();
   }
-}
-
-void drv_term(void) {
-  ht_dispose(&ht_m);
-  m_free(dtl);
-  m_free(memo);
 }
 
 static void windup(void) {

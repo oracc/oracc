@@ -1,4 +1,4 @@
-/* $Id: rnc.c,v 1.74 2004/08/18 19:10:51 dvd Exp $ */
+/* $Id: rnc.c 432 2004-08-18 19:10:51Z dvd $ */
 
 #include <fcntl.h> /* open, close */
 #include <sys/types.h>
@@ -15,8 +15,6 @@
 #include "sc.h"
 #include "er.h"
 #include "rnc.h"
-
-struct rnc_cym empty_sym = { NULL,0,0,0,0 };
 
 #define NKWD 19
 static char *kwdtab[NKWD]={
@@ -218,11 +216,6 @@ void rnc_init(void) {
 }
 
 void rnc_clear(void) {}
-
-void rnc_term(void) {
-  m_free(path);
-  sc_term(&nss); sc_term(&dts); sc_term(&defs); sc_term(&refs); sc_term(&prefs);
-}
 
 static void error(int force,struct rnc_source *sp,int erno,...) {
   if(force || sp->line != sp->prevline) {
@@ -914,8 +907,6 @@ static void add_well_known_nss(int dflt) {
 static int file(struct rnc_source *sp,int nsuri) {
   int ret=0;
   struct rnc_source src;
-  src.cur = 0;
-  src.sym[0] = src.sym[1] = empty_sym;
   add_well_known_nss(nsuri);
   if(rnc_open(&src,path)!=-1) {
     ret=topLevel(&src);

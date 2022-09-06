@@ -1,4 +1,4 @@
-/* $Id: s.h,v 1.6 2005/01/05 09:46:25 dvd Exp $ */
+/* $Id: s.h 441 2005-01-05 09:46:25Z dvd $ */
 
 #ifndef S_H
 #define S_H 1

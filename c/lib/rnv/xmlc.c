@@ -1,4 +1,4 @@
-/* $Id: xmlc.c,v 1.3 2003/12/22 20:05:12 dvd Exp $ */
+/* $Id: xmlc.c 134 2003-12-22 20:05:12Z dvd $ */
 
 #include "u.h"
 #include "xmlc.h"

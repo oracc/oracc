@@ -1,4 +1,4 @@
-/* $Id: m.c,v 1.9 2004/03/13 13:28:02 dvd Exp $ */
+/* $Id: m.c 420 2004-03-13 13:28:02Z dvd $ */
 
 #include <stdlib.h>
 #include <string.h>

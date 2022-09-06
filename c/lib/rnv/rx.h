@@ -1,4 +1,4 @@
-/* $Id: rx.h,v 1.12 2004/01/24 18:42:41 dvd Exp $ */
+/* $Id: rx.h 339 2004-01-24 18:43:24Z dvd $ */
 
 #include <stdarg.h>
 
@@ -24,7 +24,6 @@ extern int rx_compact;
 extern void rx_default_verror_handler(int erno,va_list ap);
 
 extern void rx_init(void);
-extern void rx_term(void);
 extern void rx_clear(void);
 
 /* just compiles the expression to check the syntax */

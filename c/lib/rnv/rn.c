@@ -1,4 +1,4 @@
-/* $Id: rn.c,v 1.62 2004/03/13 14:12:11 dvd Exp $ */
+/* $Id: rn.c 421 2004-03-13 14:12:11Z dvd $ */
 
 #include <string.h> /* strcmp,strlen,strcpy*/
 #include "m.h"
@@ -303,13 +303,6 @@ void rn_init(void) {
 void rn_clear(void) {
   ht_clear(&ht_p); ht_clear(&ht_nc); ht_clear(&ht_s);
   windup();
-}
-
-void rn_term(void) {
-  ht_dispose(&ht_p); ht_dispose(&ht_nc); ht_dispose(&ht_s);
-  m_free(rn_pattern);
-  m_free(rn_nameclass);
-  m_free(rn_string);
 }
 
 static void windup(void) {

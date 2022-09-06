@@ -1,4 +1,4 @@
-/* $Id: rnv.h,v 1.7 2004/01/09 10:19:39 dvd Exp $ */
+/* $Id: rnv.h 271 2004-01-09 10:19:39Z dvd $ */
 
 #include <stdarg.h>
 
@@ -19,7 +19,6 @@ extern void (*rnv_verror_handler)(int erno,va_list ap);
 extern void rnv_default_verror_handler(int erno,va_list ap);
 
 extern void rnv_init(void);
-extern void rnv_term(void);
 extern void rnv_clear(void);
 
 extern int rnv_text(int *curp,int *prevp,char *text,int n_t,int mixed);

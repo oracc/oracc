@@ -1,4 +1,4 @@
-/* $Id: rnd.c,v 1.33 2004/02/25 00:00:32 dvd Exp $ */
+/* $Id: rnd.c 398 2004-02-25 00:00:32Z dvd $ */
 
 #include <stdlib.h>
 #include <assert.h>

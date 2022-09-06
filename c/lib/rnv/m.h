@@ -1,4 +1,4 @@
-/* $Id: m.h,v 1.2 2004/01/19 20:33:42 dvd Exp $ */
+/* $Id: m.h 309 2004-01-19 20:33:42Z dvd $ */
 
 #ifndef M_H
 #define M_H 1

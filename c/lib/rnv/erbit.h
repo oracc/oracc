@@ -1,4 +1,4 @@
-/* $Id: erbit.h,v 1.3 2004/01/10 00:48:46 dvd Exp $ */
+/* $Id: erbit.h 276 2004-01-10 00:48:46Z dvd $ */
 
 #ifndef ERBIT_H
 #define ERBIT_H 1

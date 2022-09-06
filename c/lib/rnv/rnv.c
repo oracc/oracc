@@ -1,4 +1,4 @@
-/* $Id: rnv.c,v 1.69 2004/01/28 23:21:24 dvd Exp $ */
+/* $Id: rnv.c 368 2004-01-28 23:21:24Z dvd $ */
 
 #include <string.h> /*strncpy,strrchr*/
 #include <assert.h>
@@ -49,11 +49,6 @@ void rnv_init(void) {
 
 void rnv_clear(void) {
   windup();
-}
-extern void rx_term(void);
-void rnv_term(void) {
-  drv_term();
-  rx_term();
 }
 
 static void windup(void) {

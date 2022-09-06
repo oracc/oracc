@@ -1,4 +1,4 @@
-/* $Id: drv.h,v 1.15 2004/01/01 00:57:14 dvd Exp $ */
+/* $Id: drv.h 217 2004-01-01 00:57:15Z dvd $ */
 
 #include <stdarg.h>
 
@@ -13,7 +13,6 @@ extern int drv_compact;
 extern void drv_default_verror_handler(int erno,va_list ap);
 
 extern void drv_init(void);
-extern void drv_term(void);
 extern void drv_clear(void);
 
 /* Expat passes character data unterminated.  Hence functions that can deal with cdata expect the length of the data */

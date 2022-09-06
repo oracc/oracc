@@ -1,4 +1,4 @@
-/* $Id: rn.h,v 1.35 2004/02/25 00:00:32 dvd Exp $ */
+/* $Id: rn.h 398 2004-02-25 00:00:32Z dvd $ */
 
 #ifndef RN_H
 #define RN_H 1
@@ -148,7 +148,6 @@ extern void rn_add_psval(char *s);
 extern void rn_end_ps(void);
 
 extern void rn_init(void);
-extern void rn_term(void);
 extern void rn_clear(void);
 
 extern void rn_compress(int *starts,int n);

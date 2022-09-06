@@ -1,4 +1,4 @@
-/* $Id: sc.h,v 1.7 2004/01/15 23:47:45 dvd Exp $ */
+/* $Id: sc.h 304 2004-01-15 23:47:45Z dvd $ */
 
 #ifndef SC_H
 #define SC_H 1
@@ -11,7 +11,6 @@ struct sc_stack {
 };
 
 extern void sc_init(struct sc_stack *stp);
-extern void sc_term(struct sc_stack *stp);
 extern void sc_clear(struct sc_stack *stp);
 
 extern void sc_open(struct sc_stack *stp);

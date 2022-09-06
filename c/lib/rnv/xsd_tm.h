@@ -1,4 +1,4 @@
-/* $Id: xsd_tm.h,v 1.2 2003/12/25 03:05:34 dvd Exp $ */
+/* $Id: xsd_tm.h 157 2003-12-25 03:05:34Z dvd $ */
 
 #ifndef XSD_TM_H
 #define XSD_TM_H 1

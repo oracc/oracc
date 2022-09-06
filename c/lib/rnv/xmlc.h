@@ -1,4 +1,4 @@
-/* $Id: xmlc.h,v 1.2 2003/12/21 22:38:28 dvd Exp $ */
+/* $Id: xmlc.h 130 2003-12-21 22:38:28Z dvd $ */
 
 #ifndef XMLC_H
 #define XMLC_H 1

@@ -1,4 +1,4 @@
-/* $Id: er.h,v 1.22 2004/01/20 00:20:57 dvd Exp $ */
+/* $Id: er.h 315 2004-01-20 00:22:29Z dvd $ */
 
 #ifndef ER_H
 #define ER_H 1

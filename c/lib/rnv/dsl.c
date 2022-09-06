@@ -1,11 +1,11 @@
-/* $Id: dsl.c,v 1.15 2004/01/28 23:13:53 dvd Exp $ */
+/* $Id: dsl.c 365 2004-01-28 23:13:53Z dvd $ */
 
 #include <stdlib.h>
 #include "dsl.h"
 
-#if DSL_SCM
-
 static char *dsl_scm=NULL;
+
+#if DSL_SCM
 
 #include <string.h>
 #include <assert.h>

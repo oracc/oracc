@@ -1,4 +1,4 @@
-VERSION=1.7.6sjt
+VERSION=1.7.11sjt
 EXPAT_H="<expat.h>"
 UNISTD_H="<unistd.h>"
 SCM_H="<scm/scm.h>"

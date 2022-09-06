@@ -1,4 +1,4 @@
-/* $Id: dsl.h,v 1.3 2004/01/28 12:34:12 dvd Exp $ */
+/* $Id: dsl.h 357 2004-01-28 12:34:12Z dvd $ */
 
 #ifndef DSL_H
 #define DSL_H 1

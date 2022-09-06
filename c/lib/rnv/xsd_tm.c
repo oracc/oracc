@@ -1,4 +1,4 @@
-/* $Id: xsd_tm.c,v 1.9 2004/02/25 00:00:32 dvd Exp $ */
+/* $Id: xsd_tm.c 398 2004-02-25 00:00:32Z dvd $ */
 
 #include <stdlib.h> /*strtol*/
 #include <limits.h>

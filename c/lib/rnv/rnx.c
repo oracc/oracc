@@ -1,4 +1,4 @@
-/* $Id: rnx.c,v 1.24 2004/02/25 00:00:32 dvd Exp $ */
+/* $Id: rnx.c 398 2004-02-25 00:00:32Z dvd $ */
 
 #include <stdlib.h> /*NULL*/
 #include <string.h> /*strcat*/
@@ -20,9 +20,7 @@ void rnx_init(void) {
     rnx_exp=(int*)m_alloc(len_exp=LEN_EXP,sizeof(int));
   }
 }
-void rnx_term(void) {
-  m_free(rnx_exp);
-}
+
 void rnx_clear(void) {}
 
 static void expected(int p,int first,int req) {

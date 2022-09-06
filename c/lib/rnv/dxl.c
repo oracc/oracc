@@ -1,4 +1,4 @@
-/* $Id: dxl.c,v 1.13 2004/01/28 12:34:12 dvd Exp $ */
+/* $Id: dxl.c 357 2004-01-28 12:34:12Z dvd $ */
 
 #include <stdlib.h>
 #include "dxl.h"

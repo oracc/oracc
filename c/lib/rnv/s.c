@@ -1,4 +1,4 @@
-/* $Id: s.c,v 1.4 2005/01/05 09:46:25 dvd Exp $ */
+/* $Id: s.c 441 2005-01-05 09:46:25Z dvd $ */
 
 #include <string.h> /*strcpy,strlen*/
 #include <assert.h>

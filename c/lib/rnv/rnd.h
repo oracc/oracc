@@ -1,4 +1,4 @@
-/* $Id: rnd.h,v 1.11 2004/01/02 20:27:23 dvd Exp $ */
+/* $Id: rnd.h 228 2004-01-02 20:27:23Z dvd $ */
 
 #include <stdarg.h>
 

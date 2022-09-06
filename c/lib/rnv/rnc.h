@@ -1,4 +1,4 @@
-/* $Id: rnc.h,v 1.13 2004/01/02 20:27:23 dvd Exp $ */
+/* $Id: rnc.h 228 2004-01-02 20:27:23Z dvd $ */
 
 #include <stdarg.h>
 
@@ -52,7 +52,6 @@ extern void (*rnc_verror_handler)(int er_no,va_list ap);
 extern void rnc_default_verror_handler(int erno,va_list ap);
 
 extern void rnc_init(void);
-extern void rnc_term(void);
 extern void rnc_clear(void);
 
 extern int rnc_open(struct rnc_source *sp,char *fn);

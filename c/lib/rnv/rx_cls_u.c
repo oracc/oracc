@@ -1,4 +1,4 @@
-/* $Id: rx_cls_u.c,v 1.2 2003/12/21 18:57:34 dvd Exp $ */
+/* $Id: rx_cls_u.c 129 2003-12-21 18:57:34Z dvd $ */
 
 #define CLS_U_  0
 #define CLS_U_C  1
