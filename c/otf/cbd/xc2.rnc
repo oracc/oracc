@@ -25,6 +25,7 @@ cid = attribute cbd:id { xsd:ID }
 include "xci-core.rnc" inherit=cbd {
 		       start=cbd-articles.m
 		       entry.a = xc2.entry.a
+		       cf.a = attribute xml:lang { lng.pat } ?
 		       form.a =  xc2.form.a
 		       form.c =  (ref | (tlit.m,cof-form-norm.m*))
 		       base.a =  xc2.base.a
