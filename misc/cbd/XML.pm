@@ -937,7 +937,8 @@ render_parts {
     for (my $i = 0; $i <= $#c; ++$i) {
 	my $c = $c[$i];
 	my $xmorph = '';
-	my $part_attr = " partsig=\"$c\"";
+	my $xc = xmlify($c);
+	my $part_attr = " partsig=\"$xc\"";
 	if ($part_sigs[$i]) {
 	    my $esig = $part_sigs[$i];
 	    $esig =~ s#^.*?=(.*?)//.*?(\]\S+?)'.*$#$1$2#;
@@ -1003,7 +1004,8 @@ render_parts {
 	} else {
 	    bad('compound',"malformed compound '$c': should be CF[GW]POS")
 		unless $ccf && defined($cgw) && $cpos;
-	    push @ret, "<cpd$part_attr$pattr$lattr><cf>$ccf</cf>$xgw$xpos</cpd>";
+	    my $xccf = xmlify($ccf);
+	    push @ret, "<cpd$part_attr$pattr$lattr><cf>$xccf</cf>$xgw$xpos</cpd>";
 	    ++$primary;
 	}
     }
