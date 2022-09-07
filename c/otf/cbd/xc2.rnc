@@ -32,6 +32,7 @@ include "xci-core.rnc" inherit=cbd {
 		       base.c =  tlit.m?
 		       norm_form_f.a = xc2.norm_form_f.a
 		       morph.a = xc2.morph.a
+		       morph2.a = xc2.morph2.a
 		       prefs.m = prefixs.m
 		       pref.m  = prefix.m
 	}
@@ -49,9 +50,12 @@ letter.a       = dc.title.m
 letter.c       = entry.m*
 
 xc2.entry.a    = entry.a.m , stats3.a , dc.title.m
-entry.c        &= (see-compounds.m? & periods.m)
+entry.c        &= (see-compounds.m? & periods.m? & form-sanss.m?)
 
-cpd.a 	       &= ref
+# This is a special ref with a lang prefix followed by a CGP, e.g., qpn:Adad[1]DN
+qref	       = attribute ref { text }
+
+cpd.a 	       &= qref
 
 see-compounds.m = element see-compounds { xcpd.m* }
 xcpd.m		= element xcpd 		{ xcpd.a , xcpd.c }
@@ -68,18 +72,26 @@ norm.a		&= stats3.a
 xc2.norm_form_f.a = cid , ref , stats3.a
 xc2.common.a 	= (cid|xid) , n.text.m , stats3.a 
 xc2.base.a	= xc2.common.a
-xc2.morph.a	= xc2.common.a
-xc2.morphs.a	= xc2.common.a
+xc2.morph.a	= xc2.common.a ,
+		  attribute morph2 { xsd:IDREFS } ?
+xc2.morph2.a	= xc2.common.a
+
+form-sanss.m	= element form-sanss { form-sanss.a , form-sanss.c }
+form-sanss.a	= empty
+form-sanss.c	= form-sans.m
+form-sans.m	= element form-sans  { form-sans.a , form-sans.c } *
+form-sans.a 	= xc2.common.a
+form-sans.c	= tlit.m?
 
 prefixs.m	= element prefixs { prefs.a , prefs.c }
 prefix.m	= element prefix  { prefix.a , prefix.c }
 prefix.a	= xc2.common.a
 prefix.c	= empty
 
-sense.a		&= oid , stats3.a , sense_num.a.m , sense_ok.a.m?
+sense.a		&= oid? , stats3.a , sense_num.a.m , sense_ok.a.m?
 sense_num.a.m 	= attribute num { text }
 sense_ok.a.m	= attribute ok  { text }
-sense.c		&= (forms.m & bases.m? & conts.m? & norms.m & morphs.m? & prefixs.m? & sigs.m)
+sense.c		&= (forms.m & bases.m? & conts.m? & norms.m & morphs.m? & morph2s.m? & form-sanss.m? & prefixs.m? & sigs.m)
 
 sigs.m		= element sigs 	{ sigs.a , sigs.c }
 sigs.a		= empty

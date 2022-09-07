@@ -3,7 +3,7 @@ namespace n = "http://oracc.org/ns/norm/1.0"
 
 # copied from master gdl and adapted 
 
-gdl.m = (word | normword)*
+gdl.m = (word | normword | nonword)*
 
 words = word*
 word = element g:w { g_w.a , g_w.c }
@@ -20,7 +20,9 @@ sign   = attribute g:sign  { text }
 status = attribute g:status { "ok" }
 utf8   = attribute g:utf8  { text }
 
-g.meta = (accented? , delim? , sign? , status? , utf8?)
+g.meta = (accented? , delim? , sign? , status? , utf8? , linguistic.attr? , queried? )
+
+queried = attribute g:queried  { xsd:boolean }
 
 grapheme = v | q | s | n | c | gloss | g | punct | gsurro
 form     = attribute form { text }
@@ -125,9 +127,16 @@ groupgroup =
 normwords = normword*
 normword = 
   element n:w { 
-    g_w.a ,
+    n_w.a ,
     (gsurro | normwordword | normwordgroup | gloss | nongrapheme | group)*
   }
+
+# restricted to (probably malformed) determinative use
+n_w.c	= normword
+n_w.a	= attribute xml:id { xsd:ID }? ,
+     	  attribute xml:lang { xsd:language } ,
+	  attribute form { text }? ,
+    	  delim?
 
 normwordgroup = 
   element n:word-group {
@@ -163,9 +172,32 @@ normgroup =
 gloss = det | glo
 pos = attribute g:pos { "pre" | "post" | "free" }
 det = element g:d { pos , dtyp , surroStart? , g.meta ,
-                    (g_w.c*)}
+                    (g_w.c*|n_w.c)}
 dtyp= attribute g:role { "phonetic" | "semantic" }
 glo = element g:gloss { attribute g:type { "lang" | "text" } , surroEnd? , delim? , pos , words }
 
 surroStart = attribute g:surroStart { "1" }
 surroEnd = attribute g:surroEnd { xsd:IDREF }
+
+linguistic.attr =
+  attribute xml:lang      { xsd:language } ? ,
+  (attribute g:role       { "sign" | "ideo" | "num" | "syll" }
+  | (attribute g:role     { "logo" } ,
+     attribute g:logolang { xsd:language }))
+
+nonword =
+  element g:nonw {
+    (
+    attribute xml:id { xsd:ID }? ,
+    attribute xml:lang { xsd:language }? ,
+    attribute type { "comment" | "dollar" | "excised" | "punct" | "surro" | "vari" }? ,
+    attribute form { text }? ,
+    attribute lemma { text }? ,
+    delim? , g.meta ,
+    (gdl.m | punct)
+    )
+    |
+    (
+    text
+    )
+  }

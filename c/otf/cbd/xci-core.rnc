@@ -8,12 +8,13 @@ namespace n="http://oracc.org/ns/norm/1.0"
 
 cgp.pat  = xsd:token { pattern="[^\[]+\[[^\]]*\].*" }
 cgspe.pat= xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
-lng.pat  = xsd:token { pattern="(a|s|[a-z]{2})|([a-z]{3}(-x-[a-z]{6})?)" }
+lng.pat  = xsd:token { pattern="(a|s|[a-z]{2})|([a-z]{3}(-x-[a-z]{6})?)|qpn-x-lineage" }
 mng.pat  = text
 oid.pat	 = xsd:token { pattern="o[0-9]{7}(\.[a-z][0-9]+)?" }
 pos.pat  = xsd:token { pattern="AJ|AV|N|V|DP|IP|PP|CNJ|J|MA|O|QP|RP|DET|PRP|POS|PRT|PSP|PTC|SBJ|NP|M|MOD|REL|XP|NU|AN|BN|CN|DN|EN|FN|GN|HN|IN|JN|KN|LN|MN|NN|ON|PN|QN|PNF|RN|SN|TN|U|UN|VN|WN|X|XN|YN|ZN|V/i|V/t" }
 
-cof.a.m	  = (attribute cof-head  { "1" } | attribute cof-tail { "1" }) ,
+# cofs under psus are emitted in .cbd files with only the secondary attribute; head and tail are implicit
+cof.a.m	  = (attribute cof-head  { "1" } | attribute cof-tail { "1" }) ? ,
 	    attribute secondary  { "1" } ?
 gdlme.a.m = attribute g:file 	{ text } ? ,
 	    attribute g:line 	{ text } ? ,
@@ -41,13 +42,16 @@ entry.m   = element entry	{ entry.a , entry.c }
 entry.a.m = attribute n		{ cgp.pat } ,
 	    attribute oid	{ oid.pat } ? ,
 	    attribute xml:id  	{ xsd:ID } ,
-	    attribute usage 	{ "1" } ?
+	    attribute usage 	{ "1" } ? ,
+	    attribute default { "yes" } ?
+
 entry.a   = entry.a.m ,
 	    attribute xml:lang	{ lng.pat } ?
 
 entry.c   = cgp.m ,
 	    compound.m ? ,
 	    (bffs-listed.m | bffs.m)* ,
+	    file.m? ,
 	    (stems.m? & bases.m? & conts.m? & morphs.m? & morph2s.m? & prefs.m?
 	     & forms.m? & norms.m? & senses.m? & equivs.m? & bib.m? & pleiades.m*)
 
@@ -93,11 +97,19 @@ cpd.a 	   = attribute partsig  { cgp.pat },
 	     attribute xml:lang { lng.pat } ?
 cpd.c 	   = cgp.m | cgspe.m
 
+file.m	   = element file	{ file.a , file.c }
+file.a	   = attribute name	{ text }
+file.c	   = empty
+
 stems.m	  = element stems	{ stems.a , stems.c }
 stems.a   = attribute defaulted { "no" | "yes" } ?
 stems.c	  = stem.m*
 stem.m	  = element stem	{ stem.a , stem.c }
-stem.a 	  = attribute n 	{ text }
+stem.a 	  = attribute n 	{ text } ,
+	    attribute stem	{ text } ? ,
+	    attribute func	{ text } ? ,
+	    attribute restrict	{ text } ? ,
+	    attribute xml:id	{ xsd:ID } ?
 stem.c	  = empty
 
 bases.m	  = element bases	{ bases.a , bases.c }
@@ -125,14 +137,14 @@ morphs.c  = morph.m*
 
 morph.m	  = element morph	{ morph.a , morph.c }
 morph.a   = attribute xml:id	{ xsd:ID } ,
-	    attribute morph2	{ xsd:IDREF } ?
+	    attribute morph2	{ xsd:IDREFS } ?
 morph.c	  = text
 
 morph2s.m  = element morph2s	{ morph2s.a , morph2s.c }
 morph2s.a  = empty
-morph2s.c  = morph.m*
+morph2s.c  = morph2.m*
 
-morph2.m   = element morph	{ morph2.a , morph2.c }
+morph2.m   = element morph2	{ morph2.a , morph2.c }
 morph2.a   = attribute xml:id	{ xsd:ID }
 morph2.c   = text
 
@@ -152,9 +164,13 @@ form.m	  = element form	{ form.a , form.c }
 form.a 	  = attribute literal	{ text } ,
 	    attribute xml:lang	{ lng.pat } ? ,
 	    attribute morph	{ xsd:IDREF } ? ,
+	    attribute morph2	{ xsd:IDREF } ? ,
 	    attribute cont	{ xsd:IDREF } ? ,
 	    attribute pref	{ xsd:IDREF } ? ,
+	    attribute rws	{ xsd:NMTOKEN } ? ,
+	    attribute stem	{ text } ? ,
 	    attribute xml:id	{ xsd:ID } ,
+	    attribute default { "yes" } ? ,
     	    gdlme.a.m
 form.c	  = text
 
@@ -185,8 +201,13 @@ senses.c      = sense.m*
 
 sense.m	      = element	sense	 { sense.a , sense.c }
 sense.a       = attribute n	 { cgspe.pat } ,
+	        attribute default { "yes" } ? ,
 	      	attribute xml:id { xsd:ID }
-sense.c	      = pos.m , mng.m
+sense.c	      = pos.m , sense.stem.m? , mng.m
+
+sense.stem.m  = element stem    { sense.stem.a , sense.stem.c }
+sense.stem.a  = empty
+sense.stem.c  = text
 
 equivs.m  = element equivs	{ equivs.a , equivs.c }
 equivs.a  = empty
