@@ -7,7 +7,7 @@ include "tg1.rnc"
 cbd-header &= (translang&version) , reldef* , i18nlangs?
 
 translang = element translang { text }
-version   = element version   { "1.0" | "2.0" }
+version   = element cbd	      { "1.0" | "2.0" }
 reldef 	  = element reldef    { text }
 i18nlangs = element i18langs  { i18nlang+ }
 i18nlang  = element i18nlang  { text }

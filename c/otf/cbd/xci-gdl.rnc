@@ -7,29 +7,37 @@ gdl.m = (word | normword | nonword)*
 
 words = word*
 word = element g:w { g_w.a , g_w.c }
-g_w.a = attribute xml:id { xsd:ID }? ,
-     	attribute xml:lang { xsd:language } ,
+g_w.a = xid? ,
+     	attribute xml:lang { lng.pat } ,
 	attribute form { text } ,
     	delim?
 g_w.c = (group | grapheme)*
 
 accented = attribute g:accented { text }
 delim  = attribute g:delim { text }
-nongrapheme = empty
+
 sign   = attribute g:sign  { text }
 status = attribute g:status { "ok" }
 utf8   = attribute g:utf8  { text }
 
-g.meta = (accented? , delim? , sign? , status? , utf8? , linguistic.attr? , queried? )
+g.meta = (accented? , delim? , sign? , status? , utf8? , linguistic.attr? ,
+       	  queried? , remarked? ,
+       	  break? , opener? , closer? , hsqb_o?, hsqb_c? , emhyph? ,
+   	  breakStart? , breakEnd? ,
+	  damageStart? , damageEnd? ,
+	  surroStart? , surroEnd? ,
+	  statusStart? , statusEnd?
+  	  )
 
-queried = attribute g:queried  { xsd:boolean }
+queried  = attribute g:queried   { xsd:boolean }
+remarked = attribute g:remarked  { xsd:boolean }
 
-grapheme = v | q | s | n | c | gloss | g | punct | gsurro
+grapheme = v | q | s | n | c | gloss | g | punct | gsurro | nongrapheme
 form     = attribute form { text }
 sb       = element g:b { s.model }
 vb       = element g:b { v.model }
 punct    = element g:p { p.model }
-lang     = attribute xml:lang { xsd:language }
+lang     = attribute xml:lang { lng.pat }
 gsurro   = 
   element g:surro {
     delim? , (s|c|n|punct|group) , groupgroup
@@ -37,7 +45,7 @@ gsurro   =
 
 # Values
 v.model = text
-v        = element g:v { form? , g.meta , lang? , (v.model | (vb , mods+)) }
+v        = element g:v { xid? , form? , g.meta , lang? , (v.model | (vb , mods+)) }
 
 # Names
 s.model  = text
@@ -49,7 +57,7 @@ lst    = xsd:string {
 #[ABCD] is a stop-gap until lateuruk numbers are fixed
 num      = xsd:string { pattern = "N|N\d+[ABCD]?" }
 
-s        = element g:s { form? , g.meta , (s.model | (sb , mods+)) }
+s        = element g:s { xid? , form? , g.meta , (s.model | (sb , mods+)) }
 
 # Qualified graphemes
 q        = element g:q { form? , g.meta , (v|s|c) , (s|c|n) }
@@ -61,7 +69,7 @@ r        = element g:r {
              xsd:string {
 	       pattern = "[nN]\+[0-9]+|[nN]|[0-9]+|[n1-9]+/[n1-9]" } }
 
-n        = element g:n { form? , g.meta , sexified?, n.model , mods* }
+n        = element g:n { xid? , form? , g.meta , sexified?, n.model , mods* }
 sexified = attribute sexified { text }
 
 # Modifiers
@@ -77,7 +85,7 @@ formvar = element g:f { xsd:string { pattern = "[a-z0-9]+" } }
 # Compounds
 c.model  = (compound , (o.join , compound)+) | unary | binary | ternary | (g , mods+)
 
-c        = element g:c { form? , g.meta , c.model , mods* }
+c        = element g:c { xid? , form? , g.meta , c.model , mods* }
 
 g        = element g:g { g.meta , c.model , mods* }
 
@@ -134,7 +142,7 @@ normword =
 # restricted to (probably malformed) determinative use
 n_w.c	= normword
 n_w.a	= attribute xml:id { xsd:ID }? ,
-     	  attribute xml:lang { xsd:language } ,
+     	  attribute xml:lang { lng.pat } ,
 	  attribute form { text }? ,
     	  delim?
 
@@ -180,16 +188,30 @@ surroStart = attribute g:surroStart { "1" }
 surroEnd = attribute g:surroEnd { xsd:IDREF }
 
 linguistic.attr =
-  attribute xml:lang      { xsd:language } ? ,
+  attribute xml:lang      { lng.pat } ? ,
   (attribute g:role       { "sign" | "ideo" | "num" | "syll" }
   | (attribute g:role     { "logo" } ,
-     attribute g:logolang { xsd:language }))
+     attribute g:logolang { lng.pat }))
+
+nongrapheme =
+  element g:x {
+    ( attribute g:type { "disambig" | "empty" | "linebreak" | "newline" | "user" | "dollar" | "comment" }
+    | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" | "word-linefrom" }
+        , status.spans , opener? , closer? , break? )),
+    delim? , text? , varnum? ,
+    attribute xml:id { xsd:ID }? ,
+    breakStart? , breakEnd? ,
+    damageStart? , damageEnd? , emhyph? ,
+    surroStart? , surroEnd? ,
+    statusStart? , statusEnd? ,
+    status.flags?
+    }
 
 nonword =
   element g:nonw {
     (
     attribute xml:id { xsd:ID }? ,
-    attribute xml:lang { xsd:language }? ,
+    attribute xml:lang { lng.pat }? ,
     attribute type { "comment" | "dollar" | "excised" | "punct" | "surro" | "vari" }? ,
     attribute form { text }? ,
     attribute lemma { text }? ,
@@ -200,4 +222,37 @@ nonword =
     (
     text
     )
+  }
+
+breakStart = attribute g:breakStart { "1" }
+breakEnd = attribute g:breakEnd { xsd:IDREF }
+damageStart = attribute g:damageStart { "1" }
+damageEnd = attribute g:damageEnd { xsd:IDREF }
+statusStart = attribute g:statusStart { "1" }
+statusEnd = attribute g:statusEnd { xsd:IDREF }
+opener = attribute g:o     { text }
+closer = attribute g:c     { text }
+hsqb_o = attribute g:ho    { "1" }
+hsqb_c = attribute g:hc    { "1" }
+emhyph = attribute g:em    { "1" }
+break = attribute g:break  { "damaged" | "missing" }
+
+varnum = (
+  attribute g:varo { text }? ,
+  attribute g:vari { text }? ,
+  attribute g:varc { text }?
+)
+
+status.flags =
+  attribute g:collated { xsd:boolean } ? ,
+  attribute g:queried  { xsd:boolean } ? ,
+  attribute g:remarked { xsd:boolean } ? ,
+  attribute g:uflag1 { xsd:boolean } ? ,
+  attribute g:uflag2 { xsd:boolean } ? ,
+  attribute g:uflag3 { xsd:boolean } ? ,
+  attribute g:uflag4 { xsd:boolean } ?
+
+status.spans =
+  attribute g:status {
+    "ok" | "erased" | "excised" | "implied" | "maybe" | "supplied" | "some"
   }

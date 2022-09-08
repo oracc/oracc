@@ -1,17 +1,18 @@
-# XML CBD Infoset Core Definitions
+# XML CBD Infoset Corxide Definitions
 
 # This schema encodes existing practice which has grown up over a
 # decade and is slightly messy as a result.
 
+namespace c="http://oracc.org/ns/cbd/1.0"
 namespace g="http://oracc.org/ns/gdl/1.0"
 namespace n="http://oracc.org/ns/norm/1.0"
 
 cgp.pat  = xsd:token { pattern="[^\[]+\[[^\]]*\].*" }
 cgspe.pat= xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
-lng.pat  = xsd:token { pattern="(a|s|[a-z]{2})|([a-z]{3}(-x-[a-z]{6})?)|qpn-x-lineage" }
+lng.pat  = xsd:token { pattern="(a|s|[a-z]{2})|([a-z]{3}(-x-[a-z]{6})?(-[0-9]{3})?)|qpn-x-lineage" }
 mng.pat  = text
-oid.pat	 = xsd:token { pattern="o[0-9]{7}(\.[a-z][0-9]+)?" }
-pos.pat  = xsd:token { pattern="AJ|AV|N|V|DP|IP|PP|CNJ|J|MA|O|QP|RP|DET|PRP|POS|PRT|PSP|PTC|SBJ|NP|M|MOD|REL|XP|NU|AN|BN|CN|DN|EN|FN|GN|HN|IN|JN|KN|LN|MN|NN|ON|PN|QN|PNF|RN|SN|TN|U|UN|VN|WN|X|XN|YN|ZN|V/i|V/t" }
+oid.pat	 = xsd:token { pattern="[ox][0-9]{7}(\.[a-z][0-9]+)?" }
+pos.pat  = xsd:token { pattern="AJ|AV|N|V|DP|IP|PP|CNJ|J|MA|O|QP|RP|DET|PRP|POS|PRT|PSP|PTC|SBJ|NP|M|MOD|REL|XP|NU|AN|BN|CN|DN|EN|FN|GN|HN|IN|JN|KN|LN|MN|NN|ON|PN|QN|PNF|RN|SN|TN|U|UN|VN|WN|X|XN|YN|ZN|V/i|V/t|n" }
 
 # cofs under psus are emitted in .cbd files with only the secondary attribute; head and tail are implicit
 cof.a.m	  = (attribute cof-head  { "1" } | attribute cof-tail { "1" }) ? ,
@@ -22,6 +23,7 @@ gdlme.a.m = attribute g:file 	{ text } ? ,
 
 n.text.m	= attribute n { text }
 
+cid = attribute c:id { xsd:ID }
 oid = attribute oid    { oid.pat }
 ref = attribute ref    { xsd:IDREF }
 xid = attribute xml:id { xsd:ID }
@@ -30,7 +32,10 @@ start 	  = entries.m
 
 header.a.m = attribute xml:lang 	{ lng.pat } ,
 	     attribute project  	{ text } ,
-	     attribute n	       	{ text }
+	     attribute n	       	{ text } ,
+	     attribute cbd 		{ "1.0" | "2.0" } ? ,
+	     attribute date		{ xsd:date } ? ,
+	     attribute version		{ text } ?
 
 entries.m = element entries	{ entries.a , entries.c }
 entries.a = header.a.m ,
@@ -53,7 +58,7 @@ entry.c   = cgp.m ,
 	    (bffs-listed.m | bffs.m)* ,
 	    file.m? ,
 	    (stems.m? & bases.m? & conts.m? & morphs.m? & morph2s.m? & prefs.m?
-	     & forms.m? & norms.m? & senses.m? & equivs.m? & bib.m? & pleiades.m*)
+	     & forms.m? & norms.m? & senses.m? & (equivs.m|bib.m)* & pleiades.m*)
 
 cgp.m	  = cf.m , gw.m , pos.m
 cgspe.m	  = cf.m , gw.m , (mng.m|legacy_sense.m)? , pos.m , epos.m?
@@ -92,7 +97,8 @@ compound.a = empty
 compound.c = cpd.m+
 
 cpd.m	   = element cpd	{ cpd.a , cpd.c }
-cpd.a 	   = attribute partsig  { cgp.pat },
+# optional partsig here may be buggy g2x output
+cpd.a 	   = attribute partsig  { cgp.pat } ?,
 	     attribute primary 	{ "1" } ?,
 	     attribute xml:lang { lng.pat } ?
 cpd.c 	   = cgp.m | cgspe.m
@@ -109,7 +115,7 @@ stem.a 	  = attribute n 	{ text } ,
 	    attribute stem	{ text } ? ,
 	    attribute func	{ text } ? ,
 	    attribute restrict	{ text } ? ,
-	    attribute xml:id	{ xsd:ID } ?
+	    (xid|cid)
 stem.c	  = empty
 
 bases.m	  = element bases	{ bases.a , bases.c }

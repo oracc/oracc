@@ -20,16 +20,16 @@ stats3.a = attribute icount { xsd:int },
 stats.c.a = attribute c	    { xsd:int }
 stats4.a = stats.c.a & stats3.a
 
-cid = attribute cbd:id { xsd:ID }
-
+# form.c def with no ref and optional tlit.m may come from buggy g2x output
 include "xci-core.rnc" inherit=cbd {
 		       start=cbd-articles.m
 		       entry.a = xc2.entry.a
 		       cf.a = attribute xml:lang { lng.pat } ?
 		       form.a =  xc2.form.a
-		       form.c =  (ref | (tlit.m,cof-form-norm.m*))
+		       form.c =  (ref | (tlit.m?,cof-form-norm.m*))
 		       base.a =  xc2.base.a
 		       cont.a =  xc2.common.a
+		       stem.a =  xc2.common.a
 		       base.c =  tlit.m?
 		       norm_form_f.a = xc2.norm_form_f.a
 		       morph.a = xc2.morph.a
@@ -50,8 +50,8 @@ letter.m       = element letter { letter.a , letter.c }
 letter.a       = dc.title.m
 letter.c       = entry.m*
 
-xc2.entry.a    = entry.a.m , stats3.a , dc.title.m
-entry.c        &= (see-compounds.m? & periods.m? & form-sanss.m?)
+xc2.entry.a    = entry.a.m , stats3.a , dc.title.m , rws.a.m?
+entry.c        &= (see-compounds.m? & periods.m? & form-sanss.m? & alias.m*)
 
 # This is a special ref with a lang prefix followed by a CGP, e.g., qpn:Adad[1]DN
 qref	       = attribute ref { text }
@@ -66,11 +66,13 @@ xcpd.c		= cgp.pat
 tlit.m		= s.m , t.m
 s.m		= element s { text }
 t.m		= element t { gdl.m } | element text { gdl.m }
+rws.a.m		= attribute rws { xsd:NMTOKEN }
+stem.a.m	= attribute stem { text }
+xc2.form.a	= (cid|xid) , n.text.m , stats.c.a? , stats3.a , stem.a.m? , rws.a.m?
 
-xc2.form.a	= (cid|xid) , n.text.m , stats.c.a? , stats3.a 
 # possibly a bug that current practice is not stats4.a
-norm.a		&= stats3.a
-xc2.norm_form_f.a = cid , ref , stats3.a
+norm.a		&= stats3.a , stem.a.m?
+xc2.norm_form_f.a = (cid|xid) , ref , stats3.a
 xc2.common.a 	= (cid|xid) , n.text.m , stats3.a 
 xc2.base.a	= xc2.common.a
 xc2.morph.a	= xc2.common.a ,
@@ -89,10 +91,11 @@ prefix.m	= element prefix  { prefix.a , prefix.c }
 prefix.a	= xc2.common.a
 prefix.c	= empty
 
-sense.a		&= oid? , stats3.a , sense_num.a.m , sense_ok.a.m?
+sense.a		&= oid? , stats3.a , sense_num.a.m , sense_ok.a.m? , stem.a.m?
 sense_num.a.m 	= attribute num { text }
 sense_ok.a.m	= attribute ok  { text }
-sense.c		&= (forms.m & bases.m? & conts.m? & norms.m & morphs.m? & morph2s.m? & form-sanss.m? & prefixs.m? & sigs.m)
+sense.c		&= (forms.m & bases.m? & conts.m? & stems.m? & norms.m?
+		    & morphs.m? & morph2s.m? & form-sanss.m? & prefixs.m? & sigs.m?)
 
 sigs.m		= element sigs 	{ sigs.a , sigs.c }
 sigs.a		= empty
