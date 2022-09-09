@@ -524,7 +524,7 @@ sub v_entry {
 		    pp_warn("quote mark ' in citation form should be raised right half circle, ʾ");
 		}
 		if ($cf =~ tr/\$//) {
-		    pp_warn("dollar sign '$' not allowed in citation form");
+		    pp_warn("dollar sign '\$' not allowed in citation form");
 		}
 		$is_compound = ($cf =~ /\s/);
 		if ($is_compound && !has_parts($i,$cbdref)) {
