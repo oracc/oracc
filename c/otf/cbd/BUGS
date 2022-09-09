@@ -1,6 +1,5 @@
-rws can produce <pos>N@EG</pos> e.g., dsst/sux-x-emesal/a-w-p.xml
+-rws can produce <pos>N@EG</pos> e.g., dsst/sux-x-emesal/a-w-p.xml
 
-morph #*NE:~ produces bad stem="" arg; need to escape #* so * doesn't trigger stem parse in sig
+-morph #*NE:~ produces bad stem="" arg; need to escape #* so * doesn't trigger stem parse in sig
 
 $ on PSU CF creates truncated sense n= attribute, e.g., ekal $mašarti in atae/akk/a-w-l.xml etc.
-

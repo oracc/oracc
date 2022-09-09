@@ -288,7 +288,7 @@ foreach my $lang (sort keys %data) {
 			%xis_info = xis($lang,$entry_xid,$xid,${${$s_field_freqs{$sense}}{$f}}{$k},$pct,
 					@{${${$s_field_insts{$sense}}{$f}}{$k}});
 			my $kn = $k;
-			$kn =~ s/^\%...://;
+			$kn =~ s/^\%.*?://;
 			$kn = xmlify($kn);
 			my $m2attr = '';
 			if ($f eq 'morph') {

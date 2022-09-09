@@ -204,6 +204,107 @@ $ORACC::L2GLO::Util::project = '';
     'qpn-x-snames'=>'p:ZN',
     );
 
+@ORACC::L2GLO::Util::instfields = qw/norm base cont morph morph2 stem rws/;
+
+%ORACC::L2GLO::Util::fieldchars = (
+    norm => '$',
+    base => '/',
+    cont => '+',
+    morph => '#',
+    morph2 => '##',
+    stem => '*',
+    rws => '@',
+    flags => '!',
+    );
+
+## Watchme: rws_map had EG=>''
+
+%ORACC::L2GLO::Util::rws_map = (
+    EG => 'sux',
+    ES => 'sux-x-emesal',
+    UGN=> 'sux-x-udganu',
+    MB => 'akk-x-midbab',
+    OA => 'akk-x-oldass',
+    OB => 'akk-x-oldbab',
+    SB => 'akk-x-stdbab',
+    NA => 'akk-x-neoass',
+    NB => 'akk-x-neoass',
+    );
+
+%ORACC::L2GLO::Util::qpnlangs = (
+    qpn=>'qpn',
+    AN=>'qpn-x-places', 
+    CN=>'qpn-x-celest',
+    DN=>'qpn-x-divine',
+    EN=>'qpn-x-ethnic',
+    FN=>'qpn-x-places', 
+    GN=>'qpn-x-places', 
+    LN=>'qpn-x-lineag',
+    MN=>'qpn-x-months',
+    ON=>'qpn-x-object',
+    PN=>'qpn-x-people', 
+    QN=>'qpn-x-places', 
+    RN=>'qpn-x-people',
+    SN=>'qpn-x-places', 
+    TN=>'qpn-x-temple',
+    WN=>'qpn-x-waters',
+    YN=>'qpn-x-ynames',
+    ZN=>'qpn-x-snames',
+    );
+
+%ORACC::L2GLO::Util::long_lang = (
+    akk=>'Akkadian',
+    arc=>'Aramaic',
+    egy=>'Egyptian',
+    qca=>'Canaanite',
+    qeb=>'Eblaite',
+    qpc=>'Proto-Cuneiform',
+    qpn=>'Proper Noun',
+    sux=>'Sumerian',
+    qka=>'Kassite',
+    'sux-es'=>'Emesal',
+    uga=>'Ugaritic',
+    xco=>'Chorasmian',
+    xhu=>'Hurrian',
+    xur=>'Urartian',
+    ar=>'Arabic',
+    en=>'English',
+    fa=>'Farsi',
+    he=>'Hebrew',
+    hu=>'Hungarian'
+    );
+
+%ORACC::L2GLO::Util::short_lang = (
+    akk=>'Akk',
+    arc=>'Aram',
+    egy=>'Egy',
+    qeb=>'Ebla',
+    qca=>'Can',
+    qka=>'Kass',
+    qpn=>'NN',
+    qpn=>'NN',
+    sux=>'Sum',
+    'sux-es'=>'ES',
+    uga=>'Uga',
+    xhu=>'Hur',
+    xur=>'Ura',
+    );
+
+%ORACC::L2GLO::Util::qpnchoices = (
+    'qpn-x-celest'=>'p:CN',
+    'qpn-x-divine'=>'p:DN',
+    'qpn-x-ethnic'=>'p:EN',
+    'qpn-x-lineag'=>'p:LN',
+    'qpn-x-months'=>'p:MN',
+    'qpn-x-object'=>'p:ON',
+    'qpn-x-places'=>'p:AN,p:FN,p:GN,p:QN,p:SN',
+    'qpn-x-people'=>'p:PN,p:RN',
+    'qpn-x-temple'=>'p:TN',
+    'qpn-x-waters'=>'p:WN',
+    'qpn-x-ynames'=>'p:YN',
+    'qpn-x-snames'=>'p:ZN',
+    );
+
 sub
 parse_psu {
     my $psu = shift;
@@ -258,6 +359,7 @@ sub
 parse_sig {
     my $sig = shift;
     my $noproj = 0;
+    my $rwslang = '';
 
     return parse_psu($sig) if $sig =~ /^\{/;
 
@@ -280,18 +382,18 @@ parse_sig {
     } else {
 	$noproj = 1;
     }
-    
+
     s#V/([ti])#V\cA$1#g; # protect V/i and V/t from // parse
     1 while s/\[([^\]]*?)'(.*?)\]/[$1\cB$2]/; # protect ' in GW/SENSE from EPOS parse
     
     if (/\'/) {
-	@x{'cf','gw','sense','pos','epos'} = /^(.*?)\[(.*?)\/\/(.*?)\](.*?)\'(.*?)(?:[\$\t\/]|$)/;
+	@x{'cf','gw','sense','pos','epos'} = /^(.*?)\[(.*?)\/\/(.*?)\](.*?)\'(.*?)(?:[\@\$\#\t\/]|$)/;
 	s/^.*?\'.*?(?=[\@\$\t\/]|$)//;
     } elsif (m,//,) {
-	@x{'cf','gw','sense','pos'} = /^(.*?)\[(.*?)\/\/(.*?)\](.*?)(?:[\$\t\/]|$)/;
+	@x{'cf','gw','sense','pos'} = /^(.*?)\[(.*?)\/\/(.*?)\](.*?)(?:[\@\$\#\t\/]|$)/;
 	s/^.*?\].*?(?=[\@\$\t\/]|$)//;
     } elsif (m,\[,) {
-	@x{'cf','gw','pos'} = /^(.*?)\[(.*?)\](.*?)(?:[\$\t\/\#]|$)/;
+	@x{'cf','gw','pos'} = /^(.*?)\[(.*?)\](.*?)(?:[\@\$\t\/\#]|$)/;
 	s/^.*?\].*?(?=[\@\$\t\/]|$)//;
     } elsif (/^[A-Za-z\/]+/) {
 	$x{'pos'} = $_; # Assume it's PN/DN etc
@@ -305,10 +407,12 @@ parse_sig {
     $x{'pos'} =~ tr,\cA,/, if $x{'pos'};
     $x{'epos'} =~ tr,\cA,/, if $x{'epos'};
 
-
     # new 2021-12-16: after POS there can be an RWS like @EG, @ES, @UGN
-    if (s/^\@(A-Z+)//) {
+    if (s/^\@([A-Z]+)//) {
 	$x{'rws'} = $1;
+       	$rwslang = $ORACC::L2GLO::Util::rws_map{$x{'rws'}};
+    } else {
+	$rwslang = '';
     }
     
     # unprotect remainder from V/[ti] protection because tum₂-u₃=tum[bring//to bring]V/t'V/t$tum!V/tum₂#~!V
@@ -334,14 +438,16 @@ parse_sig {
     }
 
     # must keep script tags in parsed signature
-    $x{'form'} = "\%$x{'lang'}\:$x{'form'}" if $x{'form'};
+    my $flang = $rwslang ? $rwslang : $x{'lang'};
+    $x{'form'} = "\%$flang\:$x{'form'}" if $x{'form'};
     
     #   if ($x{'proj'}) {
     #	s/^.*?\]//; # delete everything up to end of GW//SENSE
     #	s/^.*?([\$\/])/$1/; # delete anything else up to NORM or BASE
 
     # protect * in morphology; this is not robust enough yet
-    s/\*([a-zšŋV])/\cB$1/g;
+    s/\*([a-zšŋVA-Z]+(?:[:;!.,]))/\cB$1/g;
+    
     if (s/^\$(.*?)([\*\/#\t]|$)/$2/) {
 	$x{'norm'} = $1;
 	$x{'norm'} =~ tr/\cB/*/;
@@ -384,6 +490,9 @@ parse_sig {
     if (length $_) {
 	warn "$0: parse_sig: $.: bad parse: sig=`$sig'; leftovers=`$_'\n";
     }
+
+    warn "$0: parse_sig: form = $x{'form'}\n";
+
     ( %x );
 }
 
