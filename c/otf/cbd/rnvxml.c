@@ -125,3 +125,9 @@ rnvxml_ee(const char *pname)
   fprintf(f_xml, "</%s>", pname);
 }
 
+void
+rnvxml_ec(const char *pname, struct rnvval_atts *ratts)
+{
+  rnvxml_ea(pname, ratts);
+  rnvxml_ee(pname);
+}

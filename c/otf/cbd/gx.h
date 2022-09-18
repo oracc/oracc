@@ -113,7 +113,10 @@ struct entry {
   List *dcfs;
   Hash_table *hdcfs;
   List *parts; /* list of struct parts * */
-  List *bases; /* list of base components in @bases; list data is another list, first element is pri, rest are alt */
+  List *bases; /* list of base components in @bases; list data is
+		  another list, first element is pri, rest are alt
+		  pri/alt data are struct loctok
+	        */
   List *forms;
   List *senses;
   locator *begin_senses;
@@ -215,6 +218,11 @@ struct cbdpos {
   int val;
 };
 
+struct cbdrws {
+  const char *name;
+  const char *lang;
+};
+
 struct tag {
   locator l;
   const char *name;
@@ -252,6 +260,7 @@ extern void o_xg2(struct cbd*c);
 extern void validator(struct cbd*c);
 
 extern struct cbdpos *cbdpos(const char *str, size_t len);
+extern struct cbdrws *cbdrws(const char *str, size_t len);
 extern void untab(unsigned char *s);
 extern int edit_script(struct cbd *c);
 extern void cgp_init(struct cgp *c, unsigned char *cf, unsigned char *gw, unsigned char *pos);

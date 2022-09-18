@@ -189,6 +189,12 @@ bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg)
   cmts(tp->l.cmt);
   tp->name = (ccp)dcf;
   tp->val = dcfarg;
+  if (tp->val[0] == '=' && !tp->val[1])
+    {
+      struct cbdrws *cp = cbdrws(tp->name, strlen(tp->name));
+      if (cp)
+	e->lang = cp->lang;
+    }
   list_add(e->dcfs, dcf);
   hash_add(e->hdcfs, dcf, tp);
 }

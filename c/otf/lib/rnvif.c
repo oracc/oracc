@@ -298,10 +298,12 @@ rnv_reinit()
 void
 rnvif_term()
 {
-  extern void rn_term(void);
+  /*extern void rn_term(void);*/
   clear();
+#if 0
   rn_term();
   rnc_term();
   rnv_term();
   rnx_term();
+#endif
 }

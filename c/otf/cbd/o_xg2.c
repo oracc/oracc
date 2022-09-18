@@ -38,9 +38,10 @@ o_xg2_aliases(struct entry *e)
   rnvxml_ea("aliases", NULL);
   for (lp = e->aliases->first; lp; lp = lp->next)
     {
-      xo_loc = &((struct alias *)lp->data)->l;
+      struct alias *ap = lp->data;
+      xo_loc = &ap->l;
       rnvxml_ea("alias", NULL);
-      rnvxml_ch((const char*)((struct alias *)(lp->data))->cgp->tight);
+      rnvxml_ch((const char*)ap->cgp->tight);
       rnvxml_ee("alias");
     }
   rnvxml_ee("aliases");
@@ -50,11 +51,19 @@ static void
 o_xg2_allow(struct entry *e)
 {
   List_node *lp;
+  xo_loc = &((struct alias *)e->allows->first->data)->l;
+  rnvxml_ea("allows", NULL);
   for (lp = e->allows->first; lp; lp = lp->next)
     {
       struct allow *ap = lp->data;
-      f2(ap->lhs, ap->rhs);
+      xo_loc = &ap->l;
+      struct rnvval_atts *ratts = rnvval_aa("va",
+					    "lhs", ap->lhs,
+					    "rhs", ap->rhs,
+					    (ccp)NULL);
+      rnvxml_ec("allow",ratts);
     }
+  rnvxml_ee("allows");
 }
 
 static void
@@ -63,28 +72,36 @@ o_xg2_bases(struct entry *e)
   List_node *outer;
   int i;
 
+  xo_loc = &((struct loctok *)((List*)(e->bases->first->data))->first->data)->l;
+  rnvxml_ea("bases", NULL);
   for (i = 0, outer = e->bases->first; outer; outer = outer->next)
     {
       List *bp = ((List *)(outer->data));
       List_node *inner = bp->first;
-      if (i++)
-	/* ; */;
-      else
-	/* */;
-      f1((const char *)inner->data);
+      struct loctok *blt = NULL;
+
+      blt = inner->data;
+      xo_loc = &((struct loctok *)inner->data)->l;
+      rnvxml_ea("base", NULL);
+
+      if (!blt->lang)
+	blt->lang = e->lang;
+      rnvxml_ea("pri", rnvval_aa("av", "xml:lang", blt->lang, (ccp)NULL));
+      rnvxml_ch(blt->tok);
+      rnvxml_ee("pri");
       if (list_len(bp) > 1)
 	{
 	  int j;
-	  /* ( */;
 	  for (j = 0, inner = inner->next; inner; inner = inner->next)
 	    {
-	      if (j++)
-		/* , */;
-	      f1((const char *)inner->data);
+	      rnvxml_ea("alt", NULL);
+	      rnvxml_ch((const char *)((struct loctok *)inner->data)->tok);
+	      rnvxml_ee("alt");
 	    }
-	  /* ) */;
 	}
+      rnvxml_ee("base");
     }
+  rnvxml_ee("bases");
 }
 
 static void

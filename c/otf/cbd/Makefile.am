@@ -9,7 +9,7 @@ noinst_LTLIBRARIES=libcbd.la
 bin_PROGRAMS=gx sx statis
 
 libcbd_la_SOURCES = \
-	common.c sig.c cbdpos.c sigops.c \
+	common.c sig.c cbdpos.c cbdrws.c sigops.c \
 	editscript.c xgetline.c sigstats.c msglist.c
 
 AM_CPPFLAGS=\

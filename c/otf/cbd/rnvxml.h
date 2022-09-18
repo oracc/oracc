@@ -9,6 +9,7 @@ extern void rnvxml_init(struct xnn_data *xdp, const char *rncbase);
 extern void rnvxml_term(void);
 extern void rnvxml_ch(const char *ch);
 extern void rnvxml_ea(const char *pname, struct rnvval_atts *ratts);
+extern void rnvxml_ec(const char *pname, struct rnvval_atts *ratts);
 extern void rnvxml_ee(const char *pname);
 
 #endif/*_RNVXML_H*/
