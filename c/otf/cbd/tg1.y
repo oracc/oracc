@@ -31,8 +31,6 @@ extern int yylex(void);
 %token  <text> 		PROJSPEC
 %token	<text>		OIDSPEC
 %token	<text>		DCF
-%token	<text>		SENSE
-%token	<text>		LANG
 %token	<text>		BASE_PRI
 %token	<text>		BASE_ALT
 %token  <text> 		FFORM
@@ -44,6 +42,7 @@ extern int yylex(void);
 %token  <text> 		FMORPH
 %token  <text> 		FMORPH2
 %token  <text> 		FNORM
+
 %token	<text> 		PL_ID		258
 %token	<text>		PL_COORD	259
 %token	<text>		PL_ALIAS	260
@@ -55,9 +54,31 @@ extern int yylex(void);
 %token	<i>		INOTE		266
 %token	<i>		ISSLP		267
 %token	<i>		EQUIV		268
+%token  <i>		BASES		269
+%token  <i>		FORM		270
+%token	<text>		SENSE		271
+%token  <i>		PARTS		272
+%token  <i>		BFF		273
+%token  <i>		ALLOW		274
+%token  <i>		ALIAS		275
+%token  <i>		PROPS		276
+%token  <i>		FILE		278
+%token  <i>		DISC		279
 
-%token ENTRY END_ENTRY PROJECT NAME PROPS ALIAS BASES
-       FORM END_FORM MERGE PARTS RENAME CMTWHY ALLOW EOL
+%token  <i>		I18N		280
+%token  <i>		EDISCL		281
+%token  <i>		SDISCL		282
+%token  <i>		GWL		283
+%token  <i>		NOTEL		284
+
+%token  <i>		PROJECT		285
+%token	<text>		LANG		286
+%token  <i>		NAME		287
+
+%token  <i>	        ENTRY		288
+%token  <i>		END_ENTRY      	289
+
+%token END_FORM MERGE RENAME CMTWHY EOL
 
 %start cbd
 

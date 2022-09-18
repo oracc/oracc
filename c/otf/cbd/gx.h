@@ -238,7 +238,7 @@ struct tagl {
 
 struct cbdtag {
   const char *name;
-  void (*parser)(struct entry *e, unsigned char *s, locator *lp);
+  int tok;
 };
 
 extern int check;
