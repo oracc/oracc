@@ -51,9 +51,9 @@ tg1-l.c: tg1.l tg1.tab.h tg1.xnn
 
 tg1-l.o: tg1-l.c
 
-tg1/tg1.rng: tg1.rnc
+tg1/tg1.rng: tgi-v1.rnc tgi-core.rnc
 	mkdir -p tg1
-	(cd tg1 ; java -jar ${javadir}/trang.jar ../tg1.rnc tg1.rng)
+	(cd tg1 ; java -jar ${javadir}/trang.jar ../tgi-v1.rnc tg1.rng)
 
 tg1.xnn: tg1/tg1.rng
 	(cd tg1 ; ../rng2xnn.sh . >../tg1.xnn)
@@ -69,9 +69,9 @@ tg2-l.c: tg2.l tg2.tab.h tg2.xnn
 
 tg2-l.o: tg2-l.c
 
-tg2/tg2.rng: tg2.rnc
+tg2/tg2.rng: tgi-v2.rnc tgi-core.rnc
 	mkdir -p tg2
-	(cd tg2 ; java -jar ${javadir}/trang.jar ../tg2.rnc tg2.rng)
+	(cd tg2 ; java -jar ${javadir}/trang.jar ../tgi-v2.rnc tg2.rng)
 
 tg2.xnn: tg2/tg2.rng
 	(cd tg2 ; ../rng2xnn.sh . >../tg2.xnn)

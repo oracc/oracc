@@ -281,6 +281,7 @@ extern struct cgp*cgp_get_one(void);
 extern void cgp_save(unsigned char *cf, unsigned char *gw, unsigned char *pos);
 extern struct loctok *loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok);
 
+extern void msglist_append(char *a);
 extern void msglist_init(void);
 extern void msglist_print(FILE *fp);
 extern void msglist_term(void);

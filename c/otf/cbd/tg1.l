@@ -177,7 +177,7 @@ YY_BUFFER_STATE bp;
 ^@bib[ \t]+		  { BEGIN ss(xTEXT); yi(BIB); xreturn(BIB); }
 ^@collo[ \t]+		  { BEGIN ss(xTEXT); yi(COLLO); xreturn(COLLO); }
 ^@equiv[ \t]+		  { BEGIN ss(xELANG); yi(EQUIV); xreturn(EQUIV); }
-<xELANG>%[^ \t\n]+[ \t]+	  { BEGIN ss(xTEXT); ytdupn(1); xreturn(LANG)q; }
+<xELANG>%[^ \t\n]+[ \t]+  { BEGIN ss(xTEXT); ytdupn(1); xreturn(LANG); }
 ^@inote[ \t]+		  { BEGIN ss(xTEXT); yi(INOTE); xreturn(INOTE); }
 ^@isslp[ \t]+		  { BEGIN ss(xTEXT); yi(ISSLP); xreturn(ISSLP); }
 ^@note[ \t]+		  { BEGIN ss(xTEXT); yi(NOTE); xreturn(NOTE); }
@@ -275,8 +275,14 @@ int
 tg_validate(int retval)
 {
   extern int input_validation;
+  extern char *rnvtgi_yytext;
   if (input_validation && yytext && *yytext)
-    rnvtgi_token(efile, yylineno, mystate, yytext);
+    {
+      if (retval == DCF)
+        { rnvtgi_yytext = yytext , rnvtgi_token(efile, yylineno, mystate, "@dcf"); }
+      else
+        rnvtgi_token(efile, yylineno, mystate, yytext);
+    }
   return retval;
 }
 

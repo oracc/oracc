@@ -13,6 +13,7 @@
 #include "../rnv/rnv.h"
 #include "../rnv/rnx.h"
 
+char *rnvtgi_yytext = NULL;
 static struct npool *tgi_pool;
 static List *tgi_stack;
 static char tgi_flags[5];
@@ -50,8 +51,8 @@ static void tgi_verror_handler(int erno,va_list ap)
 	default: assert(0);
 	}
       xm = rnv_xmsg();
-      msglist_append(npool_copy(xm, tgi_pool));
-      free(xm);
+      msglist_append(npool_copy((ucp)xm, tgi_pool));
+      free((char*)xm);
       phase = xphase;
     }
 }
@@ -117,6 +118,18 @@ tgi_flag_attr(void)
 }
 
 static void
+tgi_yytext_attr(void)
+{
+  char *at[3];
+  at[0] = "n";
+  at[1] = (char*)npool_copy((ucp)rnvtgi_yytext, tgi_pool);
+  at[2] = NULL;
+  rnvtgi_yytext = NULL;
+  tgi_ratts = rnvval_aa_qatts(at, 1);
+  tgi_flags[0] = '\0';
+}
+
+static void
 rnvtgi_ch(void)
 {
   if (list_len(tgi_ch))
@@ -127,14 +140,14 @@ rnvtgi_ch(void)
       tok = s;
       while (isspace(*tok))
 	++tok;
-      end = tok + strlen(tok);
+      end = tok + strlen((ccp)tok);
       while (end > tok && isspace(end[-1]))
 	*--end = '\0';
       for (i = 0; tok[i]; ++i)
 	if (!isspace(tok[i]))
 	  break;
       if (tok[i])
-	rnvval_ch(npool_copy(tok, tgi_pool));
+	rnvval_ch((ccp)npool_copy(tok, tgi_pool));
       free(s);
       list_reset(tgi_ch);
     }
@@ -169,6 +182,8 @@ rnvtgi_token(const char *tfile, int lno, int sstate, char *tok)
 	{
 	  if (*tgi_flags)
 	    tgi_flag_attr();
+	  else if (rnvtgi_yytext)
+	    tgi_yytext_attr();
 	  else
 	    tgi_ratts = NULL;
 	  list_push(tgi_stack, tag);
@@ -188,7 +203,7 @@ rnvtgi_token(const char *tfile, int lno, int sstate, char *tok)
     }
   else
     {
-      list_add(tgi_ch, npool_copy(tok,tgi_pool));
+      list_add(tgi_ch, npool_copy((ucp)tok,tgi_pool));
     }
   msglist_print(stderr);
   msglist_init();
