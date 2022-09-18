@@ -108,7 +108,7 @@ any_block:	entry_block
 	|	meta
 
 entry_block:    alias
-	|	DCF TEXTSPEC 	{ bld_dcf(@1,curr_entry, (ucp)$1, (ucp)$2); }
+	|	DCF TEXTSPEC 	{ bld_dcf(@1, curr_entry, (ucp)$1, (ucp)$2); }
 	|	parts
 
 atentry: 	ent_cgp		     { bld_entry_cgp(curr_entry); }

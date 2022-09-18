@@ -1,5 +1,5 @@
 # Schema corresponding to the .xml files that are built in layers during l2phase2
-# Files of this kind are called 'articles-with-periods.xml'.
+# Terminal files of this kind are called 'articles-with-periods.xml'.
 
 # These files are extensions of the .cbd format; this schema validates both cbd1 and cbd2
 # versions of articles-with-periods.xml.

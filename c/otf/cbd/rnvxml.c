@@ -131,3 +131,11 @@ rnvxml_ec(const char *pname, struct rnvval_atts *ratts)
   rnvxml_ea(pname, ratts);
   rnvxml_ee(pname);
 }
+
+void
+rnvxml_et(const char *pname, struct rnvval_atts *ratts, const char *ch)
+{
+  rnvxml_ea(pname, ratts);
+  rnvxml_ch(ch);
+  rnvxml_ee(pname);
+}

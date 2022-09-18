@@ -61,23 +61,42 @@ tg1.xnn: tg1/tg1.rng
 cbd_tg1_xnn.c: tg1.xnn rng2xnn.sh mk_xmlnames.plx
 	./mk_xmlnames.plx -p tg1
 
-xg2/xg2.rng: xg2.rnc
-	mkdir -p xg2
-	(cd xg2 ; java -jar ${javadir}/trang.jar ../xg2.rnc xg2.rng)
+tg2.tab.c tg2.tab.h: tg2.y tg2.l
+	${YACC} -vd tg2.y
 
-xg2.xnn: xg2/xg2.rng rng2xnn.sh
-	(cd xg2 ; ../rng2xnn.sh . >../xg2.xnn)
+tg2-l.c: tg2.l tg2.tab.h tg2.xnn
+	flex -B -DYY_NO_INPUT tg2.l
 
-cbd_xg2_xnn.c: xg2.xnn mk_xmlnames.plx
-	./mk_xmlnames.plx -p xg2
+tg2-l.o: tg2-l.c
+
+tg2/tg2.rng: tg2.rnc
+	mkdir -p tg2
+	(cd tg2 ; java -jar ${javadir}/trang.jar ../tg2.rnc tg2.rng)
+
+tg2.xnn: tg2/tg2.rng
+	(cd tg2 ; ../rng2xnn.sh . >../tg2.xnn)
+
+cbd_tg2_xnn.c: tg2.xnn rng2xnn.sh mk_xmlnames.plx
+	./mk_xmlnames.plx -p tg2
+
+xc2/xc2.rng: xc2.rnc
+	mkdir -p xc2
+	(cd xc2 ; java -jar ${javadir}/trang.jar ../xc2.rnc xc2.rng)
+
+xc2.xnn: xc2/xc2.rng rng2xnn.sh
+	(cd xc2 ; ../rng2xnn.sh . >../xc2.xnn)
+
+cbd_xc2_xnn.c: xc2.xnn mk_xmlnames.plx
+	./mk_xmlnames.plx -p xc2
 
 gx_SOURCES = \
 	gx.c globals.c iomethod.c \
 	tg1-l.c tg1.tab.c cbd_tg1_xnn.c \
-	cbd_xg2_xnn.c \
+	tg2-l.c tg2.tab.c cbd_tg2_xnn.c \
+	cbd_xc2_xnn.c \
 	rnvtgi.c rnvval.c rnvxml.c \
 	builder.c iterator.c validate.c \
-	o_tg2.c o_xg2.c 
+	o_tg2.c o_xc2.c 
 
 gx_LDADD = -lfl $(xLDADD)
 

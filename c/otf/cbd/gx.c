@@ -41,9 +41,9 @@ extern int parser_status;
 
 extern int tg1debug, tg2debug;
 extern int tg1parse(void);
-/*extern int tg2parse(void);*/
+extern int tg2parse(void);
 extern void tg1restart(FILE*);
-/*extern void tg2restart(FILE*);*/
+extern void tg2restart(FILE*);
 
 extern int math_mode;
 extern int cbd(const char *fname);
@@ -173,11 +173,14 @@ io_init(void)
 static void
 io_run(void)
 {
-  extern struct xnn_data cbd_tg1_data, cbd_xg2_data;
+  extern struct xnn_data cbd_tg1_data, cbd_tg2_data, cbd_xc2_data;
   extern void rnvtgi_init(struct xnn_data *xdp, const char *rncbase);
   extern void rnvtgi_term(void);
   extern void tg1_l_init(struct iom_io *ip);
   extern void tg1_l_term(void);
+  extern void tg2_l_init(struct iom_io *ip);
+  extern void tg2_l_term(void);
+  int parse_return = 0;
   
   switch (input_method->type)
     {
@@ -188,9 +191,9 @@ io_run(void)
       tg1_l_init(&input_io);
       curr_cbd = bld_cbd();
       phase = "syn";
-      tg1parse();
+      parse_return = tg1parse();
       rnvtgi_term();
-      if (tg1parse() || parser_status)
+      if (parse_return || parser_status)
 	{
 	  msglist_print(stderr);
 	  if (!keepgoing)
@@ -202,9 +205,27 @@ io_run(void)
       tg1_l_term();
       break;
     case iom_tg2:
+      rnvtgi_init_err();
+      rnvif_init();
+      rnvtgi_init(&cbd_tg2_data, input_method->name);
+      tg2_l_init(&input_io);
+      curr_cbd = bld_cbd();
+      phase = "syn";
+      parse_return = tg2parse();
+      rnvtgi_term();
+      if (parse_return || parser_status)
+	{
+	  msglist_print(stderr);
+	  if (!keepgoing)
+	    {
+	      fprintf(stderr, "gx: exiting after syntax errors\n");
+	      exit(1);
+	    }
+	}
+      tg1_l_term();
       break;
-    case iom_xg1:
-    case iom_xg2:
+    case iom_xc1:
+    case iom_xc2:
     case iom_x11:
     case iom_x12:
     case iom_x21:
@@ -229,14 +250,14 @@ io_run(void)
 	case iom_tg2:
 	  o_tg2(curr_cbd);
 	  break;
-	case iom_xg1:
-	  fprintf(stderr, "gx: xg1 output request should use xg2\n");
+	case iom_xc1:
+	  fprintf(stderr, "gx: xg1 output request should use xc2\n");
 	  exit(1);
-	case iom_xg2:
+	case iom_xc2:
 	  rnvxml_init_err();
 	  rnvif_init();
-	  rnvxml_init(&cbd_xg2_data, output_method->name);
-	  o_xg2(curr_cbd);
+	  rnvxml_init(&cbd_xc2_data, output_method->name);
+	  o_xc2(curr_cbd);
 	  break;
 	case iom_x11:
 	case iom_x12:
@@ -253,7 +274,7 @@ int
 main(int argc, char **argv)
 {
   status = 0;
-  options(argc,argv,"A:I:O:i:o:krtv");
+  options(argc,argv,"A:I:O:i:o:ckrtTv");
   if (status)
     {
       fprintf(stderr, "gx: quitting after errors in option processing\n");
@@ -347,6 +368,9 @@ int opts(int och,char *oarg)
       break;
     case 't':
       flextrace = 1;
+      break;
+    case 'T':
+      rnvtrace = 1;
       break;
     case 'v':
       verbose = 1;

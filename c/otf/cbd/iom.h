@@ -17,7 +17,7 @@ typedef void (*iom_o_fnc)(struct cbd *, struct iom_io *);
 
 enum iomtypes {
   iom_tg1 , iom_tg2,
-  iom_xg1 , iom_xg2,
+  iom_xc1 , iom_xc2,
   iom_x11 , iom_x12,
   iom_x21 , iom_x22,
   iom_x31 , iom_x32,

@@ -26,7 +26,7 @@ entries.m = entry.m*
 
 entry.m = element entry { entry.c }
 
-entry.c = cgp.m , entry.mod.m? , aliases.m , parts.m , bases.m ,
+entry.c = cgp.m , entry.mod.m? , (aliases.m & dcf.m) , parts.m , bases.m ,
 	  forms.m , senses.m , meta.m
 
 cgp.m = element cgp { cgp.c }
@@ -47,6 +47,11 @@ mrg.c = cgp.m | sns.req
 
 aliases.m = alias.m*
 alias.m = element alias { cgp.c }
+
+dcfs.m = dcf.m*
+dcf.m = element dcf { attribute xml:lang { lng.pat } ,
+      		      attribute n { xsd:NMTOKEN } ,
+      		      text }
 
 parts.m = parts.c
 parts.c = element parts { cgp.m+ }

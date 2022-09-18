@@ -15,6 +15,7 @@
 #include "iom.h"
 #include "memblock.h"
 
+/* Common grammar header file for tg1.y and tg2.y */
 #include "grammar.h"
 
 #undef ucc
@@ -256,7 +257,7 @@ extern void common_init(void);
 extern void common_term(void);
 
 extern void o_tg2(struct cbd*c);
-extern void o_xg2(struct cbd*c);
+extern void o_xc2(struct cbd*c);
 extern void validator(struct cbd*c);
 
 extern struct cbdpos *cbdpos(const char *str, size_t len);
@@ -326,5 +327,5 @@ extern struct sense *bld_sense(YYLTYPE l, struct entry *e);
 extern struct sense *bld_sensel(YYLTYPE l, struct entry *e);
 extern void bld_stem(YYLTYPE l, struct entry *e, unsigned char *stem);
 extern struct tag *bld_tag(YYLTYPE l, struct entry *e, const char *name, unsigned char *val);
-
+extern int tg_validate(int);
 #endif
