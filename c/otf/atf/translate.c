@@ -15,6 +15,7 @@
 #include "pool.h"
 #include "note.h"
 
+extern int note_index;
 extern void note_initialize_line(void);
 
 Hash_table *trans_hash = NULL;
@@ -123,6 +124,7 @@ translation(unsigned char **lines,struct node*text,enum e_tu_types *transtype)
      because we don't want to reinitialize the line notes in interlinear
      translations */
   note_initialize_line();
+  note_index = 1;
 
   if (saa_mode)
     need_alignment = 0;
