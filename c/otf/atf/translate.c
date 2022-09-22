@@ -44,6 +44,8 @@ static int next_trans_p_id;
 extern int saa_mode;
 extern unsigned const char *curr_line_label;
 
+static int need_dir_rtl = 0;
+
 static int multi_trans_line;
 static char trans_p_idbuf[128];
 static int trans_wid;
@@ -123,6 +125,7 @@ translation(unsigned char **lines,struct node*text,enum e_tu_types *transtype)
      because we don't want to reinitialize the line notes in interlinear
      translations */
   note_initialize_line();
+  note_index = 1;
 
   if (saa_mode)
     need_alignment = 0;
@@ -174,6 +177,7 @@ translation(unsigned char **lines,struct node*text,enum e_tu_types *transtype)
 		 || tt->type == etu_unitary))
 	{
 	  unsigned char *id;
+	  
 	  trans->etype = tt->type;
 	  trans->tree = elem(e_xtr_translation,NULL,lnum,TEXT);
 	  trans->tree->xmlns = xtr_xmlns;
@@ -183,7 +187,12 @@ translation(unsigned char **lines,struct node*text,enum e_tu_types *transtype)
 	  appendAttr(trans->tree,attr(a_project, getAttr(text,"project")));
 	  appendAttr(trans->tree,attr(a_xml_lang,ucc(trans->lang)));
 	  if (langrtl(trans->lang,strlen(trans->lang)))
-	    appendAttr(trans->tree,attr(a_dir,ucc("rtl")));
+	    {
+	      need_dir_rtl = 1;
+	      appendAttr(trans->tree,attr(a_dir,ucc("rtl")));
+	    }
+	  else
+	    need_dir_rtl = 0;
 	  appendAttr(trans->tree,attr(a_xtr_type,ucc(trans->type)));
 	  appendAttr(trans->tree,attr(a_xtr_code,ucc(trans->code)));
 	  sprintf(trans_id_base,"%s_%s-%s",textid,trans->code,trans->lang);
@@ -1119,6 +1128,8 @@ trans_para(unsigned char **lines, unsigned char *s, struct node *p, int p_elem,
 	  if (!in_note)
 	    {
 	      setClass(cc,"cell");
+	      if (need_dir_rtl)
+		appendAttr(cc,attr(a_dir),"rtl");
 	      appendAttr(cc,attr(a_xtr_span,ucc("1")));
 	    }
 	  if (init_cell)
@@ -1189,6 +1200,8 @@ trans_para(unsigned char **lines, unsigned char *s, struct node *p, int p_elem,
 	    {
 	      cc = appendChild(p,elem(e_xh_span,NULL,lnum,CELL));
 	      setClass(cc,"cell");
+	      if (need_dir_rtl)
+		appendAttr(cc,attr(a_dir),"rtl");
 	      appendAttr(cc,attr(a_xtr_span,ucc("1")));
 	    }
 	  (void)trans_inline(cc,text,NULL,1);
