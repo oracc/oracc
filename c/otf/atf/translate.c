@@ -1130,7 +1130,7 @@ trans_para(unsigned char **lines, unsigned char *s, struct node *p, int p_elem,
 	    {
 	      setClass(cc,"cell");
 	      if (need_dir_rtl)
-		appendAttr(cc,attr(a_dir),"rtl");
+		appendAttr(cc,attr(a_dir,"rtl"));
 	      appendAttr(cc,attr(a_xtr_span,ucc("1")));
 	    }
 	  if (init_cell)
@@ -1202,7 +1202,7 @@ trans_para(unsigned char **lines, unsigned char *s, struct node *p, int p_elem,
 	      cc = appendChild(p,elem(e_xh_span,NULL,lnum,CELL));
 	      setClass(cc,"cell");
 	      if (need_dir_rtl)
-		appendAttr(cc,attr(a_dir),"rtl");
+		appendAttr(cc,attr(a_dir,"rtl"));
 	      appendAttr(cc,attr(a_xtr_span,ucc("1")));
 	    }
 	  (void)trans_inline(cc,text,NULL,1);
