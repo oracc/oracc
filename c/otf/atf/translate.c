@@ -15,6 +15,7 @@
 #include "pool.h"
 #include "note.h"
 
+extern int note_index;
 extern void note_initialize_line(void);
 
 Hash_table *trans_hash = NULL;

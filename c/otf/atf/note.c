@@ -24,7 +24,7 @@
  */
 
 static int notes_by_text = 1;
-static int note_index = 1;
+int note_index = 1;
 static List *notes_in_line = NULL;
 static List *notes_in_text = NULL;
 static struct mb *mb = NULL;

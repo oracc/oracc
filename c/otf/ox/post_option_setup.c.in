@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include <fname.h>
 #include "cdf_rnc.h"
 #include "rnl.h"
