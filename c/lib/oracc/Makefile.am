@@ -7,7 +7,7 @@
 
 include ../../../oracc-am-rules.txt
 
-AM_CFLAGS=-ansi -pedantic -Wall -g
+AM_CFLAGS=-std=c99 -pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=liboracc.la
 
@@ -21,7 +21,8 @@ liboracc_la_SOURCES = \
   fname.c     getline.c	 pgetopt.c   hash.c	list.c	    messages.c \
   options.c   vector.c	 wildcard.c  xmem.c	xsystem.c   utf.c     \
   runexpat.c  loadfile.c xmlutil.c   pool.c	inctrie.c   npool.c \
-  xmd.c       xpd2.c      memblock.c warning.c 	xrename.c   pct.c 
+  xmd.c       xpd2.c      memblock.c warning.c 	xrename.c   pct.c \
+  msglist.c
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/otf/prj \

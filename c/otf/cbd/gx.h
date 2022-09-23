@@ -21,7 +21,10 @@
 #undef ucc
 #define ccp const char *
 #define ucc unsigned const char *
+
+#ifndef ucp
 #define ucp unsigned char *
+#endif
 
 typedef void (*iterator_fnc)(void*);
 extern Hash_table *cbds;
@@ -280,16 +283,6 @@ extern List *cgp_get_all(void);
 extern struct cgp*cgp_get_one(void);
 extern void cgp_save(unsigned char *cf, unsigned char *gw, unsigned char *pos);
 extern struct loctok *loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok);
-
-extern void msglist_append(char *a);
-extern void msglist_init(void);
-extern void msglist_print(FILE *fp);
-extern void msglist_term(void);
-extern char *msglist_loc(YYLTYPE *locp);
-extern void msglist_err(YYLTYPE *locp, char *s);
-extern void msglist_verr(YYLTYPE *locp, char *s, ...);
-extern void msglist_averr(YYLTYPE *locp, char *s, va_list ap);
-extern void msglist_print(FILE *fp);
 
 extern struct alias *bld_alias(YYLTYPE l, struct entry *e);
 extern void bld_allow(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs);

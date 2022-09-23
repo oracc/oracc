@@ -18,7 +18,7 @@ bld_alias(YYLTYPE l, struct entry *e)
 {
   struct alias *a = mb_new(e->owner->aliasmem);
   a->l = l;
-  cmts(a->l.cmt);
+  cmts(a->l.user);
   list_add(e->aliases, a);
   a->cgp = cgp_get_one();
   hash_add(e->owner->haliases, a->cgp->tight, e);
@@ -40,7 +40,7 @@ bld_allow(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs)
   ap->lhs = lhs;
   ap->rhs = rhs;
   ap->l = l;
-  cmts(ap->l.cmt);
+  cmts(ap->l.user);
   list_add(e->allows, ap);
 
   h_a = hash_find(e->b_allow, lhs);
@@ -186,7 +186,7 @@ bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg)
     e->hdcfs = hash_create(1024);
   tp = mb_new(e->owner->tagmem);
   tp->l = l;
-  cmts(tp->l.cmt);
+  cmts(tp->l.user);
   tp->name = (ccp)dcf;
   tp->val = dcfarg;
   if (tp->val[0] == '=' && !tp->val[1])
@@ -224,7 +224,7 @@ bld_discl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text, int
     {
       struct i18n *i18 = mb_new(e->owner->i18nmem);
       i18->l = l;
-      cmts(i18->l.cmt);
+      cmts(i18->l.user);
       i18->lang = lang;
       i18->data = text;
       if (!e->discls)
@@ -305,7 +305,7 @@ bld_entry(YYLTYPE l, struct cbd* c)
   list_add(c->entries, e);
   e->meta = mb_new(c->metamem);
   e->l = l;
-  cmts(e->l.cmt);
+  cmts(e->l.user);
   if (bang)
     {
       bang = 0;
@@ -388,7 +388,7 @@ bld_gwl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text)
 {
   struct i18n *i18 = mb_new(e->owner->i18nmem);
   i18->l = l;
-  cmts(i18->l.cmt);
+  cmts(i18->l.user);
   i18->lang = lang;
   i18->data = text;
   if (!e->gwls)
@@ -409,7 +409,7 @@ bld_loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok)
 {
   struct loctok *ltp = mb_new(e->owner->loctokmem);
   ltp->l = *lp;
-  cmts(ltp->l.cmt);
+  cmts(ltp->l.user);
   ltp->tok = tok;
   return ltp;
 }
@@ -486,7 +486,7 @@ bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *n
       list_add(lp, val);
       orderp = mb_new(e->owner->metaordermem);
       orderp->l = l;
-      cmts(orderp->l.cmt);
+      cmts(orderp->l.user);
       orderp->name = name;
       orderp->tok = tok;
       orderp->val = val;
@@ -501,7 +501,7 @@ bld_note(YYLTYPE l, struct entry *e, struct meta *curr_meta, unsigned char *text
 {
   struct tagl *tlp = mb_new(e->owner->taglmem);
   tlp->l = l;
-  cmts(tlp->l.cmt);
+  cmts(tlp->l.user);
   tlp->data = text;
   if (!curr_meta->note)
     curr_meta->note = list_create(LIST_SINGLE);
@@ -514,7 +514,7 @@ bld_notel(YYLTYPE l, struct entry *e, struct meta *curr_meta, const char *lang, 
   struct i18n *i18p = mb_new(e->owner->i18nmem);
   struct tagl *tp = list_last(curr_meta->note);
   i18p->l = l;
-  cmts(i18p->l.cmt);
+  cmts(i18p->l.user);
   i18p->data = text;
   list_add(tp->i18n, i18p);
 }
@@ -527,7 +527,7 @@ bld_parts(YYLTYPE l, struct entry *e)
     e->parts = list_create(LIST_SINGLE);
   list_add(e->parts, pp);
   pp->l = l;
-  cmts(pp->l.cmt);
+  cmts(pp->l.user);
   return pp;
 }
 
@@ -536,7 +536,7 @@ bld_pl_id(YYLTYPE l, struct entry *e, unsigned char *id)
 {
   struct pleiades *p = mb_new(e->owner->pleiadesmem);
   p->l_id = l;
-  cmts(p->l_id.cmt);
+  cmts(p->l_id.user);
   p->id = id;
   return p;
 }
@@ -545,7 +545,7 @@ void
 bld_pl_coord(YYLTYPE l, struct pleiades *p, unsigned char *coord)
 {
   p->l_coord = l;
-  cmts(p->l_coord.cmt);
+  cmts(p->l_coord.user);
   p->coord = coord;
 }
 
@@ -557,7 +557,7 @@ bld_pl_alias(YYLTYPE l, struct pleiades *p, const char *lang, unsigned char *ali
     p->pl_aliases = list_create(LIST_SINGLE);
   list_add(p->pl_aliases, ltp);
   ltp->l = l;
-  cmts(ltp->l.cmt);
+  cmts(ltp->l.user);
   ltp->lang = (ucp)lang;
   ltp->tok = alias;
 }
@@ -583,7 +583,7 @@ bld_sense(YYLTYPE l, struct entry *e)
 {
   struct sense *sp = mb_new(e->owner->sensesmem);
   sp->l = l;
-  cmts(sp->l.cmt);
+  cmts(sp->l.user);
   list_add(e->senses, sp);
   if (bang)
     {
@@ -599,7 +599,7 @@ bld_sensel(YYLTYPE l, struct entry *e)
   struct sense *sp = mb_new(e->owner->sensesmem);
   struct sense *curr_sense = list_last(e->senses);
   sp->l = l;
-  cmts(sp->l.cmt);
+  cmts(sp->l.user);
   list_add(curr_sense->sensels, sp);
   return sp;
 }
@@ -619,7 +619,7 @@ bld_tag(YYLTYPE l, struct entry *e, const char *name, unsigned char *val)
   struct tag *tp;
   tp = mb_new(e->owner->tagmem);
   tp->l = l;
-  cmts(tp->l.cmt);
+  cmts(tp->l.user);
   tp->name = name;
   tp->val = val;
   return tp;

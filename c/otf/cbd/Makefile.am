@@ -10,7 +10,7 @@ bin_PROGRAMS=gx sx statis
 
 libcbd_la_SOURCES = \
 	common.c sig.c cbdpos.c cbdrws.c cbdtags.g sigops.c \
-	editscript.c xgetline.c sigstats.c msglist.c
+	editscript.c xgetline.c sigstats.c
 
 AM_CPPFLAGS=\
 	-I@top_srcdir@/c/otf/{atf,cdf,chr,gdl,lib,lng,run,ox} \

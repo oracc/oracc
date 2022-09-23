@@ -17,17 +17,10 @@
 
 #define YYLTYPE_IS_DECLARED 1
 
-typedef struct YYLTYPE locator;
-typedef struct YYLTYPE YYLTYPE;
-struct YYLTYPE
-{
-  int first_line;
-  int first_column;
-  int last_line;
-  int last_column;
-  char *file;
-  List *cmt; /* List of comments that have been gathered up to this line */
-};
+#include "msglist.h"
+
+typedef struct msgloc locator;
+typedef struct msgloc YYLTYPE;
 
 #undef YYLLOC_DEFAULT
 #define YYLLOC_DEFAULT(Current, Rhs, N)                                 \

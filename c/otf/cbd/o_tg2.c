@@ -23,7 +23,7 @@ o_tg2_aliases(struct entry *e)
   for (lp = e->aliases->first; lp; lp = lp->next)
     {
       struct alias *ap = lp->data;
-      o_tg2_cmt(ap->l.cmt);
+      o_tg2_cmt(ap->l.user);
       printf("@alias %s\n", ap->cgp->tight);
     }
 }
@@ -35,7 +35,7 @@ o_tg2_allow(struct entry *e)
   for (lp = e->allows->first; lp; lp = lp->next)
     {
       struct allow *ap = lp->data;
-      o_tg2_cmt(ap->l.cmt);
+      o_tg2_cmt(ap->l.user);
       printf("@allow %s = %s\n", ap->lhs, ap->rhs);
     }
 }
@@ -45,7 +45,7 @@ o_tg2_bases(struct entry *e)
 {
   List_node *outer;
   int i;
-  o_tg2_cmt(((struct loctok *)(e->bases->first->data))->l.cmt);
+  o_tg2_cmt(((struct loctok *)(e->bases->first->data))->l.user);
   printf("@bases");
   for (i = 0, outer = e->bases->first; outer; outer = outer->next)
     {
@@ -104,7 +104,7 @@ o_tg2_dcfs(struct entry *e)
     {
       unsigned char *lhs = ((ucp)(lp->data));
       struct tag *tp = hash_find(e->hdcfs, lhs);
-      o_tg2_cmt(tp->l.cmt);
+      o_tg2_cmt(tp->l.user);
       printf("@%s %s\n", lhs, tp->val);
     }
 }
@@ -126,7 +126,7 @@ o_tg2_entry(struct entry *e)
 	  break;
 	}
     }
-  o_tg2_cmt(e->l.cmt);
+  o_tg2_cmt(e->l.user);
   printf("@entry %s\n", e->cgp->loose);
   if (e->ed)
     {
@@ -147,7 +147,7 @@ o_tg2_entry(struct entry *e)
     }
   if (e->disc)
     {
-      o_tg2_cmt(e->disc->l.cmt);
+      o_tg2_cmt(e->disc->l.user);
       printf("@disc %s\n", e->disc->val);
     }
 }
@@ -162,7 +162,7 @@ static void
 o_tg2_end_entry(struct entry *e)
 {
   if (e->end_entry)
-    o_tg2_cmt(e->end_entry->cmt);
+    o_tg2_cmt(e->end_entry->user);
   printf("@end entry\n\n");
 }
 
@@ -233,16 +233,16 @@ o_tg2_meta(struct entry *e)
 	    case yEQUIV:
 	      {
 		struct equiv *val = (struct equiv *)(mo->val);
-		o_tg2_cmt(mo->l.cmt);
+		o_tg2_cmt(mo->l.user);
 		printf("@equiv %%%s %s\n", val->lang, val->text);
 	      }
 	      break;
 	    case yPL_ID:
 	      {
 		struct pleiades *val = (struct pleiades*)(mo->val);
-		o_tg2_cmt(val->l_coord.cmt);
+		o_tg2_cmt(val->l_coord.user);
 		printf("@pl_coord %s\n", val->coord);
-		o_tg2_cmt(val->l_id.cmt);
+		o_tg2_cmt(val->l_id.user);
 		printf("@pl_id %s\n\n", val->id);
 		/* still need to emit val->pl_aliases */
 	      }
@@ -258,7 +258,7 @@ o_tg2_meta(struct entry *e)
 	    }
 	  if (at)
 	    {
-	      o_tg2_cmt(mo->l.cmt);
+	      o_tg2_cmt(mo->l.user);
 	      printf("@%s %s\n", at, (const char*)mo->val);
 	    }
 	}  
@@ -274,7 +274,7 @@ o_tg2_parts(struct entry *e)
       struct parts *p = (struct parts*)lp->data;
       if (p->cgps && list_len(p->cgps))
 	{
-	  o_tg2_cmt(p->l.cmt);
+	  o_tg2_cmt(p->l.user);
 	  printf("@parts");
 	  List_node *cp;
 	  for (cp = p->cgps->first; cp; cp = cp->next)
@@ -287,7 +287,7 @@ o_tg2_parts(struct entry *e)
 static void
 o_tg2_phon(struct entry *e)
 {
-  o_tg2_cmt(e->phon->l.cmt);
+  o_tg2_cmt(e->phon->l.user);
   printf("@phon %s\n", (ccp)e->phon->val);
 }
 
@@ -300,7 +300,7 @@ o_tg2_props(const char *p)
 static void
 o_tg2_root(struct entry *e)
 {
-  o_tg2_cmt(e->root->l.cmt);
+  o_tg2_cmt(e->root->l.user);
   printf("@root %s\n", (ccp)e->root->val);
 }
 
@@ -309,7 +309,7 @@ o_tg2_senses(struct entry *e)
 {
   if (e->begin_senses)
     {
-      o_tg2_cmt(e->begin_senses->cmt);
+      o_tg2_cmt(e->begin_senses->user);
       printf("@senses\n");
     }
 
@@ -318,7 +318,7 @@ o_tg2_senses(struct entry *e)
     {
       struct sense *sp = (struct sense*)(lp->data);
 
-      o_tg2_cmt(sp->l.cmt);
+      o_tg2_cmt(sp->l.user);
 
       if (sp->ed)
 	{
@@ -365,14 +365,14 @@ o_tg2_senses(struct entry *e)
 	}
       if (sp->disc)
 	{
-	  o_tg2_cmt(sp->disc->l.cmt);
+	  o_tg2_cmt(sp->disc->l.user);
 	  printf("@disc %s\n", sp->disc->val);
 	}
     }
   
   if (e->begin_senses)
     {
-      o_tg2_cmt(e->end_senses->cmt);
+      o_tg2_cmt(e->end_senses->user);
       printf("@end senses\n");
     }
 }
@@ -382,7 +382,7 @@ o_tg2_stems(struct entry *e)
 {
   List_node *lp;
 
-  o_tg2_cmt(((struct loctok *)(e->stems->first->data))->l.cmt);
+  o_tg2_cmt(((struct loctok *)(e->stems->first->data))->l.user);
   printf("@stems");
   for (lp = e->stems->first; lp; lp = lp->next)
     {
