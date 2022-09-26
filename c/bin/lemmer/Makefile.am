@@ -3,7 +3,7 @@ bin_PROGRAMS=bigrams lemmer ngrammer nsa xis xis2
 noinst_PROGRAMS=test
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
-	-I@top_srcdir@/c/lib/expat/xmlparse \
+	-I@top_srcdir@/c/lib/expat/lib \
 	-I@top_srcdir@/c/otf/{chr,lib,lng} \
 	-I@top_srcdir@/c/l2/{form,ilem,link,ngram,nsa,prop,psus,sigs,word,xcl2,xli}
 

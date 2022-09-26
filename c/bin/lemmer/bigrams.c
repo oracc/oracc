@@ -5,7 +5,11 @@
 #include <xmem.h>
 #include <memblock.h>
 #include <fname.h>
+#if 1
+#include <expat.h>
+#else
 #include <xmlparse.h>
+#endif
 #include <runexpat.h>
 #include <list.h>
 #include <hash.h>

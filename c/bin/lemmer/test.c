@@ -4,7 +4,7 @@
 #include <xmem.h>
 #include <memblock.h>
 #include <fname.h>
-#include <xmlparse.h>
+#include <expat.h>
 #include <runexpat.h>
 #include <list.h>
 #include <hash.h>
