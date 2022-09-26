@@ -1,4 +1,5 @@
 #include "ox.h"
+#include <stdarg.h>
 
 /* Stub routines to make lib/oracc/warning.c happy; ox doesn't use this yet */
 void

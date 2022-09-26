@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+typedef int (*__compar_fn_t) (const void *, const void *);
+
 #define MAX_LINE_ID_BUF 1023
 #define MAX_IDBUF_LEN     32
 extern unsigned char idbuf[];

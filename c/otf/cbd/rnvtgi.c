@@ -51,7 +51,7 @@ static void tgi_verror_handler(int erno,va_list ap)
 	default: assert(0);
 	}
       xm = rnv_xmsg();
-      msglist_append(npool_copy((ucp)xm, tgi_pool));
+      msglist_append((char*)npool_copy((ucp)xm, tgi_pool));
       free((char*)xm);
       phase = xphase;
     }

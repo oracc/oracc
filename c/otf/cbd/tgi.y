@@ -1,12 +1,17 @@
-%name-prefix "tg1"
-%file-prefix "tg1"
+%define api.prefix {tgi}
+%file-prefix "tgi"
 %locations
 %define parse.error verbose
 %{
 #include <stdio.h>
 #include "gx.h"
+#include "msglist.h"
 
-#define yylineno tg1lineno
+#define TGILTYPE_IS_DECLARED 1
+
+typedef struct msgloc TGILTYPE;
+
+#define yylineno tgilineno
 
 static struct f2 *curr_form;
 static struct meta *curr_meta;
@@ -20,6 +25,7 @@ int bang = 0, star = 0;
 extern int yylex(void);
 #define dup(s) npool_copy((unsigned char *)(s),curr_cbd->pool)
 %}
+
 %union { char *text; int i; }
 
 %token	ENDOF  0
@@ -69,14 +75,15 @@ extern int yylex(void);
 %token  <i>		EDISCL		281
 %token  <i>		SDISCL		282
 %token  <i>		GWL		283
-%token  <i>		NOTEL		284
+%token  <i>		SENSEL		284
+%token  <i>		NOTEL		285
 
-%token  <i>		PROJECT		285
-%token	<text>		LANG		286
-%token  <i>		NAME		287
+%token  <i>		PROJECT		286
+%token	<text>		LANG		287
+%token  <i>		NAME		288
 
-%token  <i>	        ENTRY		288
-%token  <i>		END_ENTRY      	289
+%token  <i>	        ENTRY		289
+%token  <i>		END_ENTRY      	290
 
 %token END_FORM MERGE RENAME CMTWHY EOL
 

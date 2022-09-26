@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <psd_base.h>
 #include "rnvif.h"
 #include "xmlutil.h"

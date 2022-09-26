@@ -1,10 +1,12 @@
 include ../../../oracc-am-rules.txt
 
 #AM_CFLAGS=-ansi
-AM_CFLAGS=-pedantic -Wall -g -O0
+AM_CFLAGS=-pedantic -Wall -g -O0 -DTGILTYPE_IS_DECLARED
 CFLAGS=
 SUBDIRS=
 noinst_LTLIBRARIES=libcbd.la
+
+YACC=bison
 
 bin_PROGRAMS=gx sx statis
 
@@ -43,23 +45,23 @@ xLDADD = \
 	@top_srcdir@/c/lib/liboracc.la \
 	./libcbd.la
 
-tg1.tab.c tg1.tab.h: tg1.y tg1.l
-	${YACC} -vd tg1.y
+tgi.tab.c tgi.tab.h: tgi.y tgi.l
+	${YACC} -vd tgi.y
 
-tg1-l.c: tg1.l tg1.tab.h tg1.xnn
-	flex -B -DYY_NO_INPUT tg1.l
+tgi-l.c: tgi.l tgi.tab.h tgi.xnn
+	flex -B -DYY_NO_INPUT tgi.l
 
-tg1-l.o: tg1-l.c
+tgi-l.o: tgi-l.c
 
-tg1/tg1.rng: tgi-v1.rnc tgi-core.rnc
-	mkdir -p tg1
-	(cd tg1 ; java -jar ${javadir}/trang.jar ../tgi-v1.rnc tg1.rng)
+tgi/tgi.rng: tgi-v1.rnc tgi-core.rnc
+	mkdir -p tgi
+	(cd tgi ; java -jar ${javadir}/trang.jar ../tgi-v1.rnc tgi.rng)
 
-tg1.xnn: tg1/tg1.rng
-	(cd tg1 ; ../rng2xnn.sh . >../tg1.xnn)
+tgi.xnn: tgi/tgi.rng
+	(cd tgi ; ../rng2xnn.sh . >../tgi.xnn)
 
-cbd_tg1_xnn.c: tg1.xnn rng2xnn.sh mk_xmlnames.plx
-	./mk_xmlnames.plx -p tg1
+cbd_tgi_xnn.c: tgi.xnn rng2xnn.sh mk_xmlnames.plx
+	./mk_xmlnames.plx -p tgi
 
 tg2.tab.c tg2.tab.h: tg2.y tg2.l
 	${YACC} -vd tg2.y
@@ -91,7 +93,7 @@ cbd_xc2_xnn.c: xc2.xnn mk_xmlnames.plx
 
 gx_SOURCES = \
 	gx.c globals.c iomethod.c \
-	tg1-l.c tg1.tab.c cbd_tg1_xnn.c \
+	tgi-l.c tgi.tab.c cbd_tgi_xnn.c \
 	tg2-l.c tg2.tab.c cbd_tg2_xnn.c \
 	cbd_xc2_xnn.c \
 	rnvtgi.c rnvval.c rnvxml.c \

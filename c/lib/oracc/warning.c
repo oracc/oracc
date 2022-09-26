@@ -17,6 +17,8 @@ int nwarning = 0;
 int nnotice = 0;
 
 int use_msglist = 0;
+extern void msglist_warning(const char *file, int ln, const char *str);
+extern void msglist_vwarning(const char *file, int ln, const char *str, va_list ap);
 
 const char *phase = NULL;
 const char *textid = NULL;

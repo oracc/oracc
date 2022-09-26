@@ -8,7 +8,7 @@
 
 static struct npool *msgpool;
 static List *msglist;
-static int msg_cmp(const char **a, const char **b);
+static int msg_cmp(const void *pa, const void *pb);
 
 void
 msglist_init(void)
@@ -160,7 +160,7 @@ msglist_print(FILE *fp)
 	  char **mp = NULL;
 	  int i;
 	  mp = (char**)list2array(msglist);
-	  qsort(mp, list_len(msglist), sizeof(char*), (__compar_fn_t)msg_cmp);
+	  qsort(mp, list_len(msglist), sizeof(char*), msg_cmp);
 	  for (i = 0; mp[i]; ++i)
 	    fputs(mp[i], fp);
 	}
@@ -170,9 +170,9 @@ msglist_print(FILE *fp)
 }
 
 static int
-msg_cmp(const char **a, const char **b)
+msg_cmp(const void *pa, const void *pb)
 {
-  const char *af = *a, *bf = *b;
+  const char *af = *(const char **)pa, *bf = *(const char **)pb;
   const char *al = strchr(af,':')+1;
   const char *bl = strchr(bf,':')+1;
   int ret = strncmp(af,bf,al-af);

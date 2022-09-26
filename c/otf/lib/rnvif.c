@@ -51,8 +51,8 @@ static int ok;
 
 static const char *mytext;
 
-void (*rnl_verror_handler)(int erno,va_list ap);
-void (*rnv_verror_handler)(int erno,va_list ap);
+extern void (*rnl_verror_handler)(int erno,va_list ap);
+extern void (*rnv_verror_handler)(int erno,va_list ap);
 void (*xrnl_verror_handler)(int erno,va_list ap);
 void (*xrnv_verror_handler)(int erno,va_list ap);
 

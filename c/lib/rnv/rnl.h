@@ -2,7 +2,7 @@
 
 #ifndef RNL_H
 #define RNL_H 1
-
+#include <stdarg.h>
 extern void (*rnl_verror_handler)(int er_no,va_list ap);
 extern void rnl_default_verror_handler(int erno,va_list ap);
 

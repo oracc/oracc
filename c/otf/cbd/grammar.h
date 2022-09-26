@@ -21,6 +21,7 @@
 
 typedef struct msgloc locator;
 typedef struct msgloc YYLTYPE;
+typedef struct msgloc TGILTYPE;
 
 #undef YYLLOC_DEFAULT
 #define YYLLOC_DEFAULT(Current, Rhs, N)                                 \

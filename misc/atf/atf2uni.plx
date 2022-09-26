@@ -17,7 +17,7 @@ GetOptions(
     );
 
 while (<>) {
-    if (/^(\S+\.\s)(.*)$/ && !$lem_only) {
+    if ((/^(\S+\.\s)(.*)$/ || /^(==\S+\s+)(.*)$/) && !$lem_only) {
 	my($lnum,$text) = ($1,$2);
 	chomp;
 	my $u = ORACC::ATF::Unicode::gconv($text);

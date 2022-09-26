@@ -19,5 +19,6 @@ extern void (*xrnl_verror_handler)(int erno,va_list ap);
 extern void (*xrnv_verror_handler)(int erno,va_list ap);
 extern void rnl_set_verror_handler(void (*rnl_eh)(int erno,va_list ap));
 extern void rnv_set_verror_handler(void (*rnv_eh)(int erno,va_list ap));
+extern char *rnv_xmsg(void);
 
 #endif
