@@ -6,7 +6,7 @@ one tab stop more than their parent element. */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "xmlparse.h"
+#include "expat.h"
 
 const char *oraccns = "http://oracc.org/ns/";
 
@@ -132,7 +132,7 @@ int main()
     done = len < sizeof(buf);
     if (!XML_Parse(parser, buf, len, done)) {
       fprintf(stderr,
-              "%s at line %d\n",
+              "%s at line %ld\n",
               XML_ErrorString(XML_GetErrorCode(parser)),
               XML_GetCurrentLineNumber(parser));
       return 1;

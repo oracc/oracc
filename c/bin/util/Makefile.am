@@ -8,7 +8,7 @@
 include ../../../oracc-am-rules.txt
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
-	-I@top_srcdir@/c/lib/expat/xmlparse \
+	-I@top_srcdir@/c/lib/expat/lib \
 	-I@top_srcdir@/c/otf/{chr,gdl,lib,lng} \
 	-I@top_srcdir@/c/lib/{collate,sas} \
 	-I@top_srcdir@/c/l2/{form,ilem,link,ngram,prop,psus,sigs,word,xcl2}
