@@ -512,7 +512,8 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
 		  		  
 		  if (lem_simplify)
 		    {
-		      if (tmp[strlen((const char *)tmp)-1] == ')')
+		      if ('(' != *tmp
+			  && tmp[strlen((const char *)tmp)-1] == ')')
 			{
 			  unsigned char *end = tmp+strlen((const char *)tmp);
 			  while (end > tmp)

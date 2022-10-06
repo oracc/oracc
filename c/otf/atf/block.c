@@ -1138,6 +1138,14 @@ $ start of reverse missing
 #endif
 			}
 		    }
+		  else if (lines[1] && lines[1][0] == '=' && lines[1][1] == '=')
+		    {
+		      ++lines;
+		      ++lnum;
+		      line_bil(*lines);
+		      skip_blank();
+		    }
+		
 		}
 	      appendChild(ocurrent,current);
 	      /* current is the <lg> node */
