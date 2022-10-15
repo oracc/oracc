@@ -5,7 +5,7 @@ if [ "$project" == "" ]; then
     exit 1
 fi
 (cd $ORACC_BUILDS ; \
- find www/$project -maxdepth 3 -name 'o[0-9]*.html' | grep -v '\.[0-9fmn]' | grep -v qpn-x | grep '/[ox][0-9]\+\.' \
+ find www/$project -maxdepth 3 -name '[ox][0-9]*.html' | grep -v '\.[0-9fmn]' | grep -v qpn-x | grep '/[ox][0-9]\+\.' \
      | perl -ne 'm#/([ox][0-9]+)#;  print "$1\t$_"' \
      | sort -u >$ORACC_BUILDS/pub/$project/oid-index.tab
 )
