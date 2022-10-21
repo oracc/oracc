@@ -11,6 +11,11 @@ use Getopt::Long;
 use lib "$ENV{'ORACC'}/lib";
 use ORACC::ATF::Unicode;
 
+my $all = 0;
+GetOptions(
+    all=>\$all
+    );
+
 while (<>) {
     if (/^\s*$/ || /^[\&\#\@\$]/) {
 	print;
@@ -24,6 +29,10 @@ while (<>) {
 	chomp;
 	my $l = ORACC::ATF::Unicode::acc2num($_);
 	print "$lnum$l\n";
+    } elsif ($all) {
+	chomp;
+	my $l = ORACC::ATF::Unicode::acc2num($_);
+	print "$l\n";
     } else {
 	warn "$.: unhandled line: $_";
 	print;

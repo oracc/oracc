@@ -23,7 +23,11 @@
     <div class="xol2">
       <xsl:choose>
 	<xsl:when test="count(xtl:item)>0">
-	  <xsl:apply-templates/>
+	  <xsl:for-each select="xtl:item">
+	    <xsl:sort select="string-length(@sig)"/>
+	    <xsl:sort select="@sig"/>
+	    <xsl:apply-templates select="."/>
+	  </xsl:for-each>
 	</xsl:when>
 	<xsl:otherwise>
 	  <p><xsl:text> </xsl:text></p>

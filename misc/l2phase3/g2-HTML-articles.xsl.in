@@ -297,8 +297,10 @@
     <div class="purl">
       <p><xsl:text>ID=http://oracc.org/</xsl:text>
       <xsl:value-of select="concat(/*/@project,'/',@oid)"/><xsl:text></xsl:text></p>
-      <p><a href="http://oracc.org/epsd2/{@oid}">See full ePSD2 article for <xsl:value-of
+      <xsl:if test="starts-with(/*/@xml:lang,'sux')">
+	<p><a href="http://oracc.org/epsd2/{@oid}">See full ePSD2 article for <xsl:value-of
 	select="@n"/></a></p>
+      </xsl:if>
     </div>
   </xsl:if>
     
