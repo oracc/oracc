@@ -250,8 +250,16 @@
       <xsl:if test="string-length(md:excavation_no)>0">
 	<li><xsl:value-of select="md:excavation_no"/></li>
       </xsl:if>
-      <xsl:if test="string-length(md:primary_publication)>0">
-	<li><xsl:value-of select="md:primary_publication"/></li>
+      <xsl:choose>
+	<xsl:when test="string-length(md:primary_publication)>0">
+	  <li><xsl:value-of select="md:primary_publication"/></li>
+	</xsl:when>
+	<xsl:when test="string-length(md:primary_edition)>0">
+	  <li><xsl:value-of select="md:primary_edition"/></li>
+	</xsl:when>
+      </xsl:choose>
+      <xsl:if test="string-length(md:publication_history)>0">
+	<li><xsl:value-of select="md:publication_history"/></li>
       </xsl:if>
     </xsl:for-each>
   </ul>
