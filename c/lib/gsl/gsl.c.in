@@ -63,7 +63,7 @@ local_v(unsigned char *v)
 static void
 sH(void *userData, const char *name, const char **atts)
 {
-  static char *curr_xid = NULL;
+  static const char *curr_xid = NULL;
   if (!strcmp(name,"sign"))
     {
       if (!deprecated("sign",atts))
@@ -72,7 +72,7 @@ sH(void *userData, const char *name, const char **atts)
 	  sign_sn = curr_unitary_sn = curr_sn = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
 	  curr_xid = (char*)npool_copy((const unsigned char *)get_xml_id(atts), psl_pool);
 	  hash_add(psl,curr_sn,&n);
-	  hash_add(psl_id,curr_sn,curr_xid);
+	  hash_add(psl_id,curr_sn,(char *)curr_xid);
 	}
     }
   else if (!strcmp(name,"form"))
@@ -88,7 +88,7 @@ sH(void *userData, const char *name, const char **atts)
 	{
 	  hash_add(psl,curr_form,&n);
 	  if (form_xid)
-	    hash_add(psl_id,curr_form,form_xid);
+	    hash_add(psl_id,curr_form,(char*)form_xid);
 	}
 
 #if 0
@@ -110,7 +110,7 @@ sH(void *userData, const char *name, const char **atts)
 	{
 	  const unsigned char *n = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
 	  hash_add(psl, n, curr_sn);
-	  hash_add(psl_id, n, curr_xid);
+	  hash_add(psl_id, n, (char*)curr_xid);
 	}
     }
   else if (!strcmp(name,"v"))
@@ -120,7 +120,7 @@ sH(void *userData, const char *name, const char **atts)
 	  unsigned char *sn = NULL;
 	  const char *utf8 = findAttr(atts,"utf8");
 	  unsigned char *curr_val = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
-	  hash_add(psl_id,curr_val,curr_xid);
+	  hash_add(psl_id,curr_val,(void*)curr_xid);
 	  if (curr_form)
 	    {
 	      /* If this value is not known yet allow it as the default */
@@ -200,7 +200,7 @@ eH(void *userData, const char *name)
     }
 }
 
-static const unsigned char *
+static unsigned char *
 no_bs(const unsigned char *maybe_bs)
 {
   static unsigned char *buf = NULL;
@@ -322,11 +322,15 @@ psl_get_sname(const unsigned char *value)
 	      sbuf = realloc(sbuf,sbuf_alloced*sizeof(char));
 	    }
 	  strcpy((char *)sbuf,(char*)sname+1);
-	  if ((plus = strstr(sbuf,"++")))
+	  if ((plus = strstr((const char *)sbuf,"++")))
 	    *(strchr((char*)sbuf,'+')) = '\0';
 	  else
 	    *(strchr((char*)sbuf,'#')) = '\0';
 	  return sbuf;
+	}
+      else
+	{
+	  return hash_find(psl, value);
 	}
     }
   else if (sbuf)
@@ -341,7 +345,9 @@ psl_get_sname(const unsigned char *value)
 int
 psl_is_sname(const unsigned char *sname)
 {
-  return (intptr_t)hash_find(psl,no_bs(sname));
+  unsigned char *nobs = no_bs(sname);
+  void *ret = hash_find(psl,nobs);
+  return (ret != NULL);
 }
 
 int
