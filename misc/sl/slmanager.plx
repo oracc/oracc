@@ -119,7 +119,7 @@ while (<SL>) {
 
 	if (/^\@list\s+(\S+)(?:\s+(\S+)?)?\s*$/) {
 	    ++$longform if $in_form;
-	    my ($n,$name) = ($1,$2);
+	    my ($n,$name) = ($1,$2); $n =~ tr/?//d;
 	    $n = xmlify($n);
 	    if ($name) {
 		$name = xmlify($name);

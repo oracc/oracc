@@ -164,7 +164,7 @@ while (<SL>) {
 
 	if (/^\@list\s+(\S+)(?:\s+(\S+)?)?\s*$/) {
 	    form_check();
-	    my ($n,$name) = ($1,$2);
+	    my ($n,$name) = ($1,$2); $n =~ tr/?//d;
 	    my $xn = xmlify($n);
 	    if ($curr_form) {
 		push @{${$v{$curr_form}}{'#forml'}}, $n;
