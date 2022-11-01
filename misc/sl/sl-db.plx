@@ -429,7 +429,7 @@ subsign {
 	} elsif ($lname eq 'list') {
 	    # add the num entries (e.g. REC144)
 	    my $n = $c->getAttribute('n');
-	    my $n_orig = $n;
+	    my $n_orig = $n; $n_orig =~ tr/?//d;
 	    $values{$n} = $id;
 	    $n =~ s/\d+[a-z]*$//;
 	    push @{$values{$n,'h'}}, [$id,$n_orig];
