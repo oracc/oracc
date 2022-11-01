@@ -14,14 +14,19 @@ if [ ! -r $atffile ]; then
     echo atf2pdf.sh: ATF file $atffile non-existent or unreadable
     exit 1
 fi
-
+atfbase=`basename $atffile .atf`
 project=`/bin/echo -n $qname | cut -d: -f1` ; export project
 PATH=$PATH:@@ORACC_BUILDS@@/bin ; export PATH
-workdir=`dirname $atffile`
+workdir=`dirname $atffile | sed 's#bld#www/pdf#'`
+mkdir -p $workdir
 pqxbase=`basename $atffile .atf`
 pdffile="$pqxbase.pdf"
 makefile=@@ORACC_BUILDS@@/lib/data/OMakefile-pdf
 >&2 echo Making $project $pqxbase.pdf in $workdir using $makefile 
-(cd $workdir ; rm -fr odt ; mkdir -p odt ; make -s -f $makefile $pdffile)
+#(cd $workdir ; rm -fr odt ; mkdir -p odt ; make -s -f $makefile $pdffile)
+
+(cd $workdir ; rm -fr odt ; mkdir -p odt ; \
+ atf-driver.plx -a $atfbase.atf -o $atfbase.otf -p $project -w $workdir; chmod 0644 *otf* ;
+ pdf-driver.sh $project $atfbase ; chmod 0644 *pdf* )
 
 exit 0
