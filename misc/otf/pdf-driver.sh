@@ -8,6 +8,7 @@ pdfname=$3
 
 otfname="$pqxname.otf"
 texname="$pqxname.tex"
+texpdfname="$pqxname.pdf"
 
 translang=$ORACC_TRANS_DEFAULT_LANG
 if [ "$translang" = "" ]; then
@@ -35,8 +36,8 @@ mv -f odtpictures.lst odt
  xsltproc -xinclude $odtTeX content.xml >$texname
  >&2 echo ORACC=${ORACC}
  oracctex $texname
- if [ -r $pdfname ]; then
-     mv $pdfname ..
+ if [ -r $texpdfname ]; then
+     mv $texpdfname ../$pdfname
  else
      >&2 echo "pdf-driver.sh: $pdfname creation failed."
  fi
