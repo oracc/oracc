@@ -782,10 +782,11 @@ sub qualcheck {
 	my $qoid = ORACC::SL::BaseC::is_value($qq);
 	if (!$qoid) {
 	    # perform sametlit check, warn && return if it should be something else
-	    my $should = tlit_sig($qq);
-	    if ($should) {
-		qmsg("[Q5] vq=$qn: qualifier $qq should be $should");
-		qualcheck("$qv($should)");
+	    my $should = tlit_sig('',$qq);
+	    if ($should && $should !~ /\./) { # don't allow AN.AN.AŠ to pass this test if it's not a diri
+		my $should_sign = sign_of($should);
+		qmsg("[Q5] vq=$qn: qualifier $qq should be $should_sign");
+		qualcheck("$qv($should_sign)");
 	    } else {
 		qmsg("[Q7] vq=$qn: unknown qualifier $qq");
 	    }
