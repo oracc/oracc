@@ -1,0 +1,13 @@
+#!/bin/sh
+pdfdir=@@ORACC_BULDS@@/www/pdf
+pdf=`@@ORACC_BUILDS@@/bin/atf2pdf.sh $1 $2 $pdfdir`
+if [ -r $pdf ]; then
+    cat <<EOF
+Content-type: application/pdf
+Content-disposition: attachment; filename=$pdf
+
+EOF
+    cat $pdf
+else
+    >&2 echo $0 failed to produce PDF
+fi

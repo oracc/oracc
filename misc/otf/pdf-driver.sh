@@ -4,9 +4,10 @@
 #
 project=$1
 pqxname=$2
+pdfname=$3
+
 otfname="$pqxname.otf"
 texname="$pqxname.tex"
-pdfname="$pqxname.pdf"
 
 translang=$ORACC_TRANS_DEFAULT_LANG
 if [ "$translang" = "" ]; then
@@ -14,11 +15,11 @@ if [ "$translang" = "" ]; then
 else
     argtranslang="-7$translang"
 fi
-
-ox $argtranslang -p $project $otfname | xmllint --xinclude - | xsltproc - \
+mkdir -p odt
+ox $argtranslang -P $project $otfname | xmllint --xinclude - | xsltproc - \
     | xsltproc ${ORACC}/lib/scripts/odt-table-width.xsl - \
     | xsltproc -stringparam package odt ${ORACC}/lib/scripts/doc-split.xsl -
-mv odtpictures.lst odt
+mv -f odtpictures.lst odt
 (cd odt
  mkdir -p pictures ; odtpictures.plx >/dev/null
  projbase=`/bin/echo -n $project | sed 's#/.*$##'`

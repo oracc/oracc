@@ -1,0 +1,18 @@
+PDF WEB GENERATION
+
+Create output PDFNAME <= projhyph:PQX.pdf
+
+Check for www/pdf/PDFNAME
+
+if found, check ATF datestamp
+
+if ATF older than PDF return PDFNAME
+
+Build PDF:
+
+      create working dir as www/pdf/PID/odt
+      cd www/pdf/PID
+      create XMD fragment
+      create ATF driver with pdfstamp/servestamp/buildstamp
+      mv project.pdf $PDFNAME
+      return PDFNAME

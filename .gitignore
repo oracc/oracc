@@ -1,3 +1,6 @@
+atf-driver.sh
+clipdf.sh
+webpdf.sh
 cbdrws.c
 *.xnl
 *.output

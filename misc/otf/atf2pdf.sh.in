@@ -2,31 +2,35 @@
 #
 # N.B. THIS SCRIPT IS TO MAKE A PDF FROM A SINGLE ATF FILE
 #
-qname=$1
-if [ "$qname" == "" ]; then
-    echo atf2pdf.sh: must give PROJECT:PXQID on commandline
+project=$1
+pqx=$2
+workdir=$3
+
+if [ "$project" == "" || "$pqx" == "" || "$pdfdir" == "" ]; then
+    echo atf2pdf.sh: please give PROJECT PQX-ID PDFDIR on commandline
     exit 1
 fi
 
-atffile=`@@ORACC_BUILDS@@/bin/pqxpand atf $qname`
+if [ ! -d $workdir ]; then
+    echo atf2pdf.sh: working directory $workdir needs creating
+    exit 1
+fi
+
+atffile=`@@ORACC_BUILDS@@/bin/pqxpand atf $project:$pqx`
 
 if [ ! -r $atffile ]; then
     echo atf2pdf.sh: ATF file $atffile non-existent or unreadable
     exit 1
 fi
-atfbase=`basename $atffile .atf`
-project=`/bin/echo -n $qname | cut -d: -f1` ; export project
+
 PATH=$PATH:@@ORACC_BUILDS@@/bin ; export PATH
-workdir=`dirname $atffile | sed 's#bld#www/pdf#'`
-mkdir -p $workdir
-pqxbase=`basename $atffile .atf`
-pdffile="$pqxbase.pdf"
-makefile=@@ORACC_BUILDS@@/lib/data/OMakefile-pdf
+
+pdffile="$pqx.pdf"
+
 >&2 echo Making $project $pqxbase.pdf in $workdir using $makefile 
-#(cd $workdir ; rm -fr odt ; mkdir -p odt ; make -s -f $makefile $pdffile)
 
 (cd $workdir ; rm -fr odt ; mkdir -p odt ; \
- atf-driver.plx -a $atfbase.atf -o $atfbase.otf -p $project -w $workdir; chmod 0644 *otf* ;
+ atf-driver.sh $project $atf $atffile $workdir ; chmod 0644 *otf* ;
  pdf-driver.sh $project $atfbase ; chmod 0644 *pdf* )
 
 exit 0
