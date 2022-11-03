@@ -27,7 +27,7 @@ PATH=$PATH:@@ORACC_BUILDS@@/bin ; export PATH
 
 pdffile="$pqx.pdf"
 
->&2 echo Making $project $pqxbase.pdf in $workdir using $makefile 
+>&2 echo $0: Making $project $pqx.pdf in $workdir
 
 (cd $workdir ; rm -fr odt ; mkdir -p odt ; \
  atf-driver.sh $project $pqx $atffile $workdir ; chmod 0644 *otf* )

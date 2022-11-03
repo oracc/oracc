@@ -7,15 +7,18 @@ use Data::Dumper;
 
 my %args = @ARGV;
 
-# print STDERR Dumper \%args;
+#system '@@ORACC_BUILDS@@/bin/atf2pdf.sh', "$args{'project'}\:$args{'pqx'}";
 
-system '@@ORACC_BUILDS@@/bin/atf2pdf.sh', "$args{'project'}\:$args{'pqx'}";
+print STDERR "pdf.plx calling webpdf.sh $args{'project'} $args{'pqx'}\n";
 
-if (-r $args{'pdf'}) {
-    print "Content-type: application/pdf\nContent-disposition: attachment; filename=$args{'pqx'}.pdf\n\n";
-    exec 'cat', $args{'pdf'};
-} else {
-    exit 1;
-}
+system '@@ORACC_BUILDS@@/bin/webpdf.sh', $args{'project'}, $args{'pqx'};
+
+
+#if (-r $args{'pdf'}) {
+#    print "Content-type: application/pdf\nContent-disposition: attachment; filename=$args{'pqx'}.pdf\n\n";
+#    exec 'cat', $args{'pdf'};
+#} else {
+#    exit 1;
+#}
 
 1;

@@ -3,5 +3,5 @@
 TEXINPUTS=$TEXINPUTS:@@ORACC_BUILDS@@/lib/tex/:. \
     TEXFORMATS=@@ORACC_BUILDS@@/lib/tex/:. \
     TEXFONTS=@@ORACC_BUILDS@@/lib/tex:@@ORACC_BUILDS@@/lib/tex/fonts:. \
-    PATH=$PATH:@@TeXLive@@ \
+    PATH=$PATH:@@TeXLive@@:/opt/local/bin \
     xetex -kpathsea-debug=12 -interaction=batchmode -papersize=letter -fmt oracctex $* >xetex.out 2>xetex.err
