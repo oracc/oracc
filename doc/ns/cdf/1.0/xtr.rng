@@ -276,6 +276,11 @@
         <value>cell</value>
       </attribute>
       <optional>
+        <attribute name="dir">
+          <value>rtl</value>
+        </attribute>
+      </optional>
+      <optional>
         <attribute name="xtr:span">
           <data type="nonNegativeInteger"/>
         </attribute>

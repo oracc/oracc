@@ -17,7 +17,11 @@ main(int argc, char **argv)
       struct stat st;
       if (!stat(argv[2], &st))
 	{
+#ifdef st_mtime
+	  gmt = gmtime(&st.st_mtime);
+#else
 	  gmt = gmtime(&st.st_mtimespec.tv_sec);
+#endif
 	}
       else
 	{

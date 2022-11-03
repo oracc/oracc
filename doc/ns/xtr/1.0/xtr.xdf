@@ -187,7 +187,7 @@ trword    = element xh:span { attribute class      { "w" },
 			      id,
 			      (text | rspan | bspan | ispan | bispan | smaller | sc | sup | lab)* }
 
-trcell	  = element xh:span { attribute class { "cell" },  
+trcell	  = element xh:span { attribute class { "cell" }, attribute dir { "rtl" }?,
 			      attribute xtr:span { xsd:nonNegativeInteger }?,
 			      htext }
 comment   = attribute class { "tr-comment" }
