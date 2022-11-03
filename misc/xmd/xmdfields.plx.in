@@ -4,18 +4,20 @@ use lib '@@ORACC@@/lib';
 use ORACC::XMD::Fields;
 use ORACC::Expand2;
 use Getopt::Long;
+my $bare = 0; # give bare field data, no prepended id_text and no field names row
 my $fields = 0; # use -fields to output field names in row 1
 my $project = '';
 my $verbose = 0;
 my @default_fields = qw/designation museum_no excavation_no accession_no primary_publication publication_history genre subgenre period/;
 GetOptions(
+    'bare'=>\$bare,
     'fields'=>\$fields,
     'project:s'=>\$project,
     'verbose'=>\$verbose,
     );
 my @fields = @ARGV; @fields = @default_fields unless $#fields >= 0;
 
-if ($fields) {
+if ($fields && !$bare) {
     print join("\t", 'id_text', @fields), "\n";
 }
 
@@ -30,7 +32,8 @@ while (<>) {
     $project = $1 if s/^(.*?)://;
     my $fields = ORACC::XMD::Fields::get_in_project($project,$_);
     warn "$0: working on $_\n" if $verbose;
-    my @values = ($_);
+    my @values = ();
+    push @values, $_ unless $bare;
     foreach my $f (@fields) {
 	my $value = '';
 	foreach my $ff (split(/\|/,$f)) {

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# N.B. THIS SCRIPT IS TO MAKE A PDF FROM otf-driver.plx OUTPUT
+# N.B. THIS SCRIPT IS TO MAKE A PDF FROM atf-driver.plx OUTPUT
 #
 project=$1
 pqxname=$2
