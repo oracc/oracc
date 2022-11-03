@@ -7,7 +7,7 @@ if [ -r $pdf ]; then
     pdfbase = `basename $pdf`
     cat <<EOF
 Content-type: application/pdf
-Content-disposition: attachment; filename=$basepdf
+Content-disposition: attachment; filename=$pdfbase
 
 EOF
     exec cat $pdf
