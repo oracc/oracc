@@ -1,5 +1,5 @@
 #!/bin/sh
-pdfdir=@@ORACC_BULDS@@/www/pdf
+pdfdir=@@ORACC_BUILDS@@/www/pdf
 pdf=`@@ORACC_BUILDS@@/bin/atf2pdf.sh $1 $2 $pdfdir`
 if [ -r $pdf ]; then
     cat <<EOF

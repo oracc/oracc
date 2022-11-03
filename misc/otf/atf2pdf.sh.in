@@ -6,7 +6,7 @@ project=$1
 pqx=$2
 workdir=$3
 
-if [ "$project" == "" || "$pqx" == "" || "$pdfdir" == "" ]; then
+if [ "$project" == "" ] || [ "$pqx" == "" ] || [ "$workdir" == "" ]; then
     echo atf2pdf.sh: please give PROJECT PQX-ID PDFDIR on commandline
     exit 1
 fi
@@ -30,7 +30,6 @@ pdffile="$pqx.pdf"
 >&2 echo Making $project $pqxbase.pdf in $workdir using $makefile 
 
 (cd $workdir ; rm -fr odt ; mkdir -p odt ; \
- atf-driver.sh $project $atf $atffile $workdir ; chmod 0644 *otf* ;
- pdf-driver.sh $project $atfbase ; chmod 0644 *pdf* )
+ atf-driver.sh $project $pqx $atffile $workdir ; chmod 0644 *otf* )
 
 exit 0
