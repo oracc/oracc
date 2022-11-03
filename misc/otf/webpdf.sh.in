@@ -4,7 +4,7 @@ pdfdir=@@ORACC_BUILDS@@/www/pdf
 pdf=`@@ORACC_BUILDS@@/bin/atf2pdf.sh $1 $2 $pdfdir`
 >&2 echo webpdf.sh got PDF file name $pdf
 if [ -r $pdf ]; then
-    pdfbase = `basename $pdf`
+    pdfbase=`basename $pdf`
     cat <<EOF
 Content-type: application/pdf
 Content-disposition: attachment; filename=$pdfbase
