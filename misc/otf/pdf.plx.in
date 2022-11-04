@@ -13,7 +13,6 @@ print STDERR "pdf.plx calling webpdf.sh $args{'project'} $args{'pqx'}\n";
 
 system '@@ORACC_BUILDS@@/bin/webpdf.sh', $args{'project'}, $args{'pqx'};
 
-
 #if (-r $args{'pdf'}) {
 #    print "Content-type: application/pdf\nContent-disposition: attachment; filename=$args{'pqx'}.pdf\n\n";
 #    exec 'cat', $args{'pdf'};

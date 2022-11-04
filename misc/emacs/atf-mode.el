@@ -162,7 +162,7 @@ sequence Ctrl-x-` (control-x then backtick) or C-c-C-n (control-c
 then control-n) to jump to the first error in your ATF file, and
 then repeat this to step through the errors.
 
-For the ATF documentation see URL `http://oracc.museum.upenn.edu/doc/ATF/'."
+For the ATF documentation see URL `http://oracc.museum.upenn.edu/doc/help/editinginatf/index.html'."
   (interactive "P")
   (let ((on-p atf-mode))
     (kill-all-local-variables)
@@ -278,7 +278,7 @@ category.  Otherwise insert the pair at point."
 				    ("atf-args" . ,args)
 				    )))
        )
-    (insert-string (nth 2 resp))))
+    (insert (nth 2 resp))))
 
 (defun atf-check-async () ; based on 'compile'
   (interactive)
@@ -713,12 +713,12 @@ Generates
 
 (defun atf-browse-doc ()
   (interactive)
-  (browse-url "http://oracc.museum.upenn.edu/doc/ATF/"))
+  (browse-url "http://oracc.museum.upenn.edu/doc/help/editinginatf/index.html"))
 
 (defun atf-version ()
   "Display the release-version of the ATF mode you are using"
   (interactive)
-  (message "ATF mode version 2009-05-04")
+  (message "ATF mode version 2022-11-04")
 )
 
 (provide 'atf-mode)
