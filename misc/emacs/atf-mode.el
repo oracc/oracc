@@ -4,6 +4,8 @@
 
 (setq http-oracc-build (concat "http://" oracc-build "/"))
 
+(setq xml-rpc-allow-unicode-string nil)
+
 (defvar atf-mode nil
   "Non-nil means that ATF mode is enabled.")
 
