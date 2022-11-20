@@ -337,7 +337,7 @@ sub bases_merge {
 
     $h1{'#new'} = 0;
 
-    my %allow = %$allow_ref;
+    my %allow = $allow_ref ? %$allow_ref : ();
     
     if ($base_trace && scalar keys %allow) {
 	warn "allow hash = ", Dumper \%allow, "\n";

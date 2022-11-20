@@ -194,6 +194,7 @@ sub guess_init {
     foreach my $b (keys %b) {
 	next if $b =~ /\s\S+\s+\[/;
 	next if $b =~ /\%$/;
+	next if $b =~ /allow/;
 	my %bh = bases_hash($cbd[$b{$b}],0,$b{$b},$b{$b,'%'});
 #	print B Dumper(\%bh);
 	my @sigs = keys %{$bh{'#sigs'}};
