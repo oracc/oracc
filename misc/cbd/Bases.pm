@@ -219,10 +219,15 @@ sub bases_align {
 	} elsif ($cbd[$i] =~ /^\@bases/) {
 	    my $base_i = $base_bases{$curr_entry};
 	    if ($base_i) {
-		warn "aligning:\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n" if $base_trace;
+		warn "aligning: $curr_entry\n\t$cbd[$i]\ninto\t$base_cbd[$base_i]\n" if $base_trace;
+		my %allow = ();
+		if ($base_bases{$curr_entry,'allow'}) {
+		    %allow = %{$base_bases{$curr_entry,'allow'}};
+		}
 		pp_line($i+1);
 		my $base_lang = $base_bases{$curr_entry,'%'}; $base_lang = $blang_of{$base_lang} if $blang_of{$base_lang};
-		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry}, $base_i, $curr_entry, $base_lang);
+		my $b = bases_merge($base_cbd[$base_i], $cbd[$i], $base_cpd_flags{$curr_entry},
+				    $base_i, $curr_entry, $base_lang, \%allow);
 		if ($$b{'#map'} || $$b{'#new'}) {
 		    if ($$args{'apply'}) {
 			$bases{$curr_entry} = $b;
@@ -281,6 +286,11 @@ sub bases_collect {
 	    }
 	} elsif ($cbd[$i] =~ /^\@lang\s+(\S+)/) {
 	    $cbd_lang = $1;
+	} elsif ($cbd[$i] =~ /^\@allow\s+(\S+)\s+=\s+(\S+)\s*$/) {
+	    ++${${$b{$curr_entry,'allow'}}{$1}}{$2};
+	    ++${${$b{$curr_entry,'allow'}}{$2}}{$1};
+	    # ++${$allow{$1}}{$2};
+	    # ++${$allow{$2}}{$1};	    
 	}
     }
     %b;
@@ -302,9 +312,20 @@ sub bases_term {
     ORACC::SL::BaseC::term();
 }
 
+sub allowed {
+    my($p2,$p1,%a) = @_;
+    if ($a{$p2}) {
+	if (${$a{$p2}}{$p1}) {
+	    warn "allowing $p2 = $p1\n" if $base_trace;
+	    return 1;
+	}
+    }
+    return 0;
+}
+
 # This routine assumes that the bases conform to the constraints enforced by cbdpp
 sub bases_merge {
-    my($b1,$b2,$cpd,$base_i,$curr,$base_lang) = @_;
+    my($b1,$b2,$cpd,$base_i,$curr,$base_lang,$allow_ref) = @_;
 
     $p_entry = $curr || '';
 
@@ -316,23 +337,36 @@ sub bases_merge {
 
     $h1{'#new'} = 0;
 
+    my %allow = %$allow_ref;
+    
+    if ($base_trace && scalar keys %allow) {
+	warn "allow hash = ", Dumper \%allow, "\n";
+    }
+
     foreach my $p2 (keys %h2) {
 	next if $p2 =~ /#/;
 	warn "processing incoming base $p2\n" if $base_trace;
- 	if ($h1{$p2}) { # primary in b2 is already in b1
+
+	if ($h1{$p2}) { # primary in b2 is already in b1
+
 	    warn "found $p2 as primary in both\n" if $base_trace;
  	    $h1{"$p2#alt"} = merge_alts($p2, $h1{"$p2#alt"}, $h2{"$p2#alt"});
 	    ++${$h1{'#ref'}}{$p2};
- 	} elsif (${$h1{"#alt"}}{$p2}) { # primary in b2 is an alt in b1
+	    
+ 	} elsif (${$h1{"#alt"}}{$p2} && !allowed($p2,${$h1{"#alt"}}{$p2},%allow)) { # primary in b2 is an alt in b1
+
  	    my $p1 = ${$h1{"#alt"}{$p2}};
  	    warn "found $p2 as alternate to $p1 in base\n" if $base_trace;
  	    $h1{"$p1#alt"} = merge_alts($p1, $h1{"$p1#alt"}, $h2{"$p2#alt"});
  	    ${$h1{'#map'}}{$p2} = $p1;
 	    ++${$h1{'#ref'}}{$p1};
+
  	} else { # primary in b2 isn't known in b1
+
 	    my $p2sig = ORACC::SL::BaseC::check(undef,$p2,1);
-	    my $p1 = '';
-	    if (($p1 = ${$h1{'#sigs'}}{$p2sig})) {
+	    my $p1 = ${$h1{'#sigs'}}{$p2sig};
+	    if ($p1 && !allowed($p2,$p1,%allow)) {
+		
 		# This is a new alternate transliteration of $p1
 		warn "found $p2 as new alternate to $p1 in base\n" if $base_trace;
 		
@@ -349,6 +383,7 @@ sub bases_merge {
 		++${$h1{'#ref'}}{$p1};
 
 	    } else {
+		
 		# This is a new primary transliteration
 		warn "incoming $p2 is new primary\n" if $base_trace;
 		if ($use_map_fh) {

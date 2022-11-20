@@ -13,18 +13,21 @@ if ($ARGV[0] eq '-m') {
 
 my $file = $ARGV[0];
 
+my $first_pos = '';
 my $first_sense = '';
+
 my @senses = ();
 
 while (<>) {
     if (/^$acd_rx\@entry/) {
 	$first_sense = '';
 	print;
-    } elsif (/^$acd_rx\@sense\+?\s+\S+\s+(.*?)\s*$/) {
-	my $s = $1;
+    } elsif (/^$acd_rx\@sense\+?\s+(\S+)\s+(.*?)\s*$/) {
+	my $p = $1;
+	my $s = $2;
 	if ($first_sense) {
 	    if ($first_sense =~ /$s/) {
-		warn "$file:$.: suspicious second sense\n";
+		warn "$file:$.: suspicious second sense\n" unless $p ne $first_pos;
 #	    } elsif ($s =~ /$first_sense/) {
 #		warn "sux.glo:$.: suspicious first sense\n";
 #		$first_sense = $s;
@@ -37,6 +40,7 @@ while (<>) {
 	    }
 	} else {
 	    $first_sense = $s;
+	    $first_pos = $p;
 	    push @senses, $_;
 	}
     } else {

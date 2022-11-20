@@ -86,7 +86,7 @@ if ($args{'apply'}) {
     pp_diagnostics() if pp_status();
 } else {
     pp_diagnostics(\%args);
-    system "base-instances.plx bases.log >base-check.log 2>base-inst.log";
+    # system "base-instances.plx bases.log >base-check.log 2>base-inst.log";
 }
 
 1;

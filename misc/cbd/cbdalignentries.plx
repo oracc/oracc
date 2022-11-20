@@ -13,7 +13,7 @@ my $acd_rx = $ORACC::CBD::acd_rx;
 
 my %args = pp_args();
 
-$ORACC::CBD::nonormify = 1;
+$ORACC::CBD::nominusstripping = $ORACC::CBD::novalidate = $ORACC::CBD::nonormify = $ORACC::CBD::noforms = 1;
 
 my @base_cbd = ();
 
