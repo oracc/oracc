@@ -446,7 +446,9 @@ parse_sig {
     #	s/^.*?([\$\/])/$1/; # delete anything else up to NORM or BASE
 
     # protect * in morphology; this is not robust enough yet
-    s/\*([a-zšŋVA-Z]+(?:[:;!.,]))/\cB$1/g;
+    ## no: s/\*([a-zšŋVA-Z]+(?:[:;!.,]))/\cB$1/g;
+    ## This does morph-delimiter then * which must be a morph star and not a stem one
+    s/([:;!.,])\*/$1\cB/g;
     
     if (s/^\$(.*?)([\*\/#\t]|$)/$2/) {
 	$x{'norm'} = $1;
@@ -488,10 +490,11 @@ parse_sig {
 	$x{'stem'} = $1;
     }
     if (length $_) {
-	warn "$0: parse_sig: $.: bad parse: sig=`$sig'; leftovers=`$_'\n";
+	my $ln = $. || '0';
+	warn "$0: parse_sig: $ln: bad parse: sig=`$sig'; leftovers=`$_'\n";
     }
 
-    warn "$0: parse_sig: form = $x{'form'}\n";
+    # warn "$0: parse_sig: form = $x{'form'}\n";
 
     ( %x );
 }
