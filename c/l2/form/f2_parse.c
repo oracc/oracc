@@ -214,6 +214,7 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
     *orig_lp = lp, field = '\0', *psu_tmp = NULL, *psu_form = NULL;
   int ret = 0;
   const char *saved_phase = phase;
+  char *at1 = NULL, *at2 = NULL;
   int square, saved_with_textid = with_textid;
 
   if (!lp)
@@ -500,6 +501,7 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 		}
 	      else
 		lp = field_end(lp);
+
 	    }
 
 	  if (*lp)
@@ -595,6 +597,31 @@ f2_parse(const Uchar *file, size_t line, Uchar *lp, struct f2 *f2p, Uchar **psu_
 
  break_switch_loop:
 
+  /* A RWS may only occur after the POS because the use of @ in transliteration
+     could complicate parsing bases otherwise. Handling it here is a hack, but it
+     avoids having to add '@' to the field-end chars.
+   */
+  if ((f2p->pos && (at1 = strchr((const char *)f2p->pos, '@')))
+      || (f2p->epos && (at2 = strchr((const char *)f2p->epos, '@'))))
+    {
+      /*fprintf(stderr, "F2: found RWS in POS\n");*/
+      if (at1)
+	{
+	  f2p->pos = npool_copy(f2p->pos, f2_pool);
+	  at1 = strchr((const char *)f2p->pos,'@');
+	  *at1 = '\0';
+	  f2p->rws = (const Uchar *)(at1+1);
+	}
+      if (at2)
+	{
+	  f2p->epos = npool_copy(f2p->epos, f2_pool);
+	  at2 = strchr((const char *)f2p->epos,'@');
+	  *at2 = '\0';
+	  f2p->rws = (const Uchar *)(at2+1);
+	}
+      at1 = at2 = NULL;
+    }
+		
   if (f2p->pos)
     {
       if (*f2p->pos)
