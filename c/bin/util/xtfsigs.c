@@ -11,7 +11,7 @@
 extern char *strdup(const char *);
 extern FILE *f_log;
 
-static int long_output = 0;
+static int long_output = 1;
 
 static Hash_table *errh;
 static struct npool *errp;
@@ -41,7 +41,7 @@ sH(void *userData, const char *name, const char **atts)
     }
   else if (name[0] == 'l' && !name[1])
     {
-      int i, ref = -1, inst = -1, sig = -1;
+      int i, ref = -1, inst = -1, sig = -1, prj = -1;
       for (i = 0; atts[i] != NULL; i+=2)
 	{
 	  if (!strcmp(atts[i],"inst"))
@@ -51,9 +51,11 @@ sH(void *userData, const char *name, const char **atts)
 	  else if (!strcmp(atts[i], "sig"))
 	    sig = i+1;
 	  else if (!strcmp(atts[i], "exosig"))
-	    sig = i+1;
+	      sig = i+1;
 	  else if (!strcmp(atts[i], "newsig"))
 	    sig = i+1;
+	  else if (!strcmp(atts[i], "exoprj"))
+	    prj = i+1;
 	}
       if (inst > 0)
 	{
@@ -62,7 +64,7 @@ sH(void *userData, const char *name, const char **atts)
 	      char *err = hash_find(errh,(const unsigned char *)atts[ref]);
 	      /*fprintf(stderr,"find %s => %s in errh\n",atts[ref],err);*/
 	      if (long_output)
-		fprintf(tab, "%s\t%s\t%s\t%s\n", err, atts[ref], atts[inst], (sig > 0) ? atts[sig] : "");
+		fprintf(tab, "%s\t%s\t%s\t%s\t%s\n", err, atts[ref], atts[inst], (sig > 0) ? atts[sig] : "", (prj > 0) ? atts[prj] : "");
 	      else if (atts[sig])
 		fprintf(tab, "%s\t%s\n", atts[sig], atts[ref]);
 	    }
