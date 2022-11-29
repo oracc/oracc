@@ -8,7 +8,7 @@ d=`isogmt`
 echo Rebuilding CDLI with cdli-rebuild.sh ...
 (cd 00git/data ; git pull)
 if [ $? == 1 ]; then
-    head -1 00git/data/cdli_catalogue.csv >00lib/fieldnames.row
+    head -1 00git/data/cdli_cat.csv >00lib/fieldnames.row
     00bin/csv-clean.plx
     o2-catalog.sh
     exit 0
