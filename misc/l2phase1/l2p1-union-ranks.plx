@@ -96,10 +96,16 @@ sub set_gloname {
 	return "01bld/$lang/from_glo.sig";
     } else {
 	# TODO: handle qualified proj/lang combos
-	if ($p =~ /names/) {
-	    return "$ENV{'ORACC_BUILDS'}/$p/01bld/qpn/from_glo.sig";
+	my $arglang = $p; $arglang =~ s/^.*?://;
+	if ($arglang ne $p) {
+	    $p =~ s/:.*$//;
+	    return "$ENV{'ORACC_BUILDS'}/$p/01bld/$arglang/from_glo.sig";
 	} else {
-	    return "$ENV{'ORACC_BUILDS'}/$p/01bld/$lang/from_glo.sig";
+	    if ($p =~ /names/) {
+		return "$ENV{'ORACC_BUILDS'}/$p/01bld/qpn/from_glo.sig";
+	    } else {
+		return "$ENV{'ORACC_BUILDS'}/$p/01bld/$lang/from_glo.sig";
+	    }
 	}
     }
 }

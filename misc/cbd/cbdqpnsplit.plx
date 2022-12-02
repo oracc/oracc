@@ -8,8 +8,9 @@ my $pos = undef;
 my $qpn = 0;
 my $split_lang = undef;
 GetOptions(
-    'qpn'=>\$qpn,
+    'invert'=>\$invert,
     'pos:s'=>\$pos,
+    'qpn'=>\$qpn,
     'lang:s'=>\$split_lang,
     );
 

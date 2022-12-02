@@ -241,7 +241,8 @@ sub load_fixes {
 	}
 
 	if ($seen{$from}++) {
-	    warn "$file:$line: ignoring repeated from specification '$from'\n";
+	    warn "$file:$line: ignoring repeated from specification '$from'\n"
+		unless /\@sense/;
 	} elsif ($from eq $to) {
 	    warn "$file:$line: ignoring identity map '$from' == '$to'\n";
 	} elsif ($$args{'mode'} eq 'glossary') {

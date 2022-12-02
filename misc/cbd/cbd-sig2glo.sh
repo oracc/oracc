@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Feed this script sigs via stdin and a project name on the command line to create
-# a collection of glossarys in the directory sig-glo/
+# a collection of glossaries in the directory sig-glo/
 #
 proj=$1
 if [ "$proj" == "" ]; then

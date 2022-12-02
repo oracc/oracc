@@ -11,7 +11,7 @@ use ORACC::CBD::Senses;
 
 my %args = pp_args();
 
-$ORACC::CBD::nominusstripping = 1;
+$ORACC::CBD::noforms = $ORACC::CBD::nonormify = $ORACC::CBD::nominusstripping = 1;
 
 $args{'cbd'} = shift @ARGV unless $args{'cbd'};
 

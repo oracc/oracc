@@ -35,7 +35,7 @@ bin_SCRIPTS = cbdpp.plx c11e.plx cbdbases.plx cbdformbase.plx \
 	forms-fix-bases.plx cbdcompareforms.plx forms-fix-forms.plx \
 	cbd-why-because.plx cbd-parts-history.plx cbd-ripforms.plx \
 	forms-chars-check.plx cbdfile.plx art2div.sh cbdids.plx \
-	sigs-dotforms.plx
+	sigs-dotforms.plx forms-fix-dotforms.plx
 
 # cbd-glo-fix.plx cbd-lem-fix.plx # now in old/
 

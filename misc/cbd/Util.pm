@@ -303,33 +303,41 @@ sub header_vals {
     my ($c) = @_;
     my %h = ();
     if ($c) {
-	my @p = `head -4 $c`;
-	$p[0] =~ s/^\x{ef}\x{bb}\x{bf}//; # remove BOMs
-	$p[0] =~ s/^\x{feff}//; # remove BOMs
-#	print Dumper \@p;
-	foreach my $p (@p) {
-	    if ($p =~ /^\@(project|lang|name)\s+(.*?)\s*$/) {
-		my($t,$v) = ($1,$2);
-		$h{$t} = $v;
+	if (-r $c) {
+	    my @p = `head -4 $c`;
+	    if ($p[0]) {
+		$p[0] =~ s/^\x{ef}\x{bb}\x{bf}//; # remove BOMs
+		$p[0] =~ s/^\x{feff}//; # remove BOMs
+		#	print Dumper \@p;
+		foreach my $p (@p) {
+		    if ($p =~ /^\@(project|lang|name)\s+(.*?)\s*$/) {
+			my($t,$v) = ($1,$2);
+			$h{$t} = $v;
+		    } else {
+			$p = undef;
+		    }
+		}
+		
+		$h{'projdir'} = "$ENV{'ORACC_BUILDS'}/$h{'project'}";
+		$file_indexes{$c} = $file_index++ unless $file_indexes{$c};
+		$h{'file_index'} = $file_indexes{$c};
+		
+		if ($c =~ /^01tmp/) {
+		    my $e = $c;
+		    $e =~ s/01tmp/00lib/;
+		    if (-r $e) {
+			$h{'errfile'} = $e;
+		    } else {
+			$h{'errfile'} = $c;
+		    }
+		} else {
+		    $h{'errfile'} = $c;
+		}
 	    } else {
-		$p = undef;
-	    }
-	}
-    
-	$h{'projdir'} = "$ENV{'ORACC_BUILDS'}/$h{'project'}";
-	$file_indexes{$c} = $file_index++ unless $file_indexes{$c};
-	$h{'file_index'} = $file_indexes{$c};
-	
-	if ($c =~ /^01tmp/) {
-	    my $e = $c;
-	    $e =~ s/01tmp/00lib/;
-	    if (-r $e) {
-		$h{'errfile'} = $e;
-	    } else {
-		$h{'errfile'} = $c;
+		die "$0: can't get header info from empty file $c\n";
 	    }
 	} else {
-	    $h{'errfile'} = $c;
+	    die "$0: can't get header info from non-existent file $c\n";
 	}
     } else {
 	die "$0: can't get header info from empty file name\n";
