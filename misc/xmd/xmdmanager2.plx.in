@@ -159,6 +159,7 @@ my %valtab = ();
 # Variables to be set in config file:
 my $basename = '';
 my $catdir = '';
+my @cat_masters = ();
 my $cat_merge_periods = `oraccopt . cat-merge-periods`;
 my $dynacat = '';
 my $force = 0; # not used; just for oraccproject
@@ -1155,6 +1156,11 @@ sub cat_master {
 	last if $cat_master;
 	last unless $p =~ s#/[^/]+##;
     }
+    my @c = split(/\s+/,$cat_master);
+    if ($c[1]) {
+	$cat_master = shift @c;
+	@cat_masters = @c;
+    }
     warn "$0: found cat-master $cat_master\n" if $cat_master;
     $cat_master;
 }
@@ -1198,8 +1204,9 @@ make_dynacat {
     my @trylist = ();
     if ($cat_master) {
 	# cat_master is exclusive--if you use it you have to provide it with all the data
-	# you want in it
+	# you want in it, or give additional cats to search in the cat_master option
 	push (@trylist, $cat_master);
+	push (@trylist, @cat_masters) if $#cat_masters >= 0;
     } else {
 	push @trylist, 'cdli', 'qcat', 'xcat';
     }

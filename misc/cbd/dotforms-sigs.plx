@@ -21,8 +21,14 @@ my $line = 0;
 foreach (@input) {
     chomp;
     ++$line;
+    my $norm;
     my($cfgw,$form,$lxng,$base,$cont,$morph)
-	= (m#^(.*)\t\@form\s+(\S+)(\s+\%\S+)?\s+/(\S+)(\s+\+\S+)?\s+(\S+)\s*$#);
+	= (m#^(.*?)\t\@form\s+(\S+)(\s+\%\S+)?\s+/(\S+)(\s+\+\S+)?\s+(\S+)\s*$#);
+    unless ($cfgw) {
+	($cfgw,$form,$lxng,$norm)
+	    = (m#^(.*?)\t\@form\s+(\S+)(\s+\%\S+)?\s+\$(\S+)\s*$#);
+    }
+    $lang = $lxng if $lxng;
     if ($cfgw) {
 	$cfgw =~ s/\s+(\[.*?\])\s+/$1/;
 	$cfgw =~ s#\[(.*?)\]#[$1//$1]#;
@@ -30,7 +36,11 @@ foreach (@input) {
 	$cont = '' unless $cont; $cont =~ s/^\s*//;
 	$lang =~ s/^\s*// if $lang;
 	$lang = "\%$lang" unless $lang =~ /^\%/;
-	print "\@$proj$lang:$form=$cfgw/$base$cont$morph\n";
+	if ($base) {
+	    print "\@$proj$lang:$form=$cfgw/$base$cont$morph\n";
+	} else {
+	    print "\@$proj$lang:$form=$cfgw\$$norm\n";
+	}
     } else {
 	warn "$line: bad syntax in forms line\n";
     }

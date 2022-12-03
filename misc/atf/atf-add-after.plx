@@ -45,7 +45,7 @@ if (-d 'new') {
 		print;
 	    } else {
 		if ($pending) {
-		    print "\n#key: after $pending\n";
+		    print "\n#key: after $pending\n\n";
 		    $pending = '';
 		}
 		print;
