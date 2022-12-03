@@ -12,7 +12,7 @@ fi
 p=`proj-from-conf.sh`
 
 if [ -d 00res/downloads ]; then
-    w=$ORACC_BUILDS/www/$p/downloads
+    w=@@ORACC_BUILDS@@/www/$p/downloads
     if [ -d $w ]; then
 	echo $0: updating 00res/downloads into $w
 	(cd 00res/downloads
@@ -28,7 +28,7 @@ else
 fi
 
 if [ -d 00res/images ]; then
-    w=$ORACC_BUILDS/www/$p/images
+    w=@@ORACC_BUILDS@@/www/$p/images
     if [ -d $w ]; then
 	echo $0: updating 00res/images into $w
 	(cd 00res/images

@@ -35,6 +35,9 @@ bin_SCRIPTS = full-backup.sh incr-backup.sh projlist.sh			\
 #dmg.sh: dmg.sh.in
 #	$(ORACCIFY) dmg.sh.in
 
+update-00res.sh: update-00res.sh.in
+	$(ORACCIFY) update-00res.sh.in
+
 projsave-incr.sh: projsave-incr.sh.in
 	$(ORACCIFY) projsave-incr.sh.in
 
