@@ -8,13 +8,37 @@ if [ ! -d 00res ]; then
     echo $0: no 00res directory to update. Stop
     exit 1
 fi
+
 p=`proj-from-conf.sh`
+
 if [ -d 00res/downloads ]; then
-    echo $0: updating 00res/downloads
-    (cd 00res/downloads ;
-     d=`pwd`
-     cd $ORACC_BUILDS/www/$p/downloads ;
-     rsync -vic $d/* . )
+    w=$ORACC_BUILDS/www/$p/downloads
+    if [ -d $w ]; then
+	echo $0: updating 00res/downloads into $w
+	(cd 00res/downloads
+	 d=`pwd`
+	 cd $w
+	 rsync -vc $d/* . )
+    else
+	echo $0: no $w directory to update into, skipping.
+    fi
 else
     echo $0: no 00res/downloads directory, skipping.
+    exit 1
+fi
+
+if [ -d 00res/images ]; then
+    w=$ORACC_BUILDS/www/$p/images
+    if [ -d $w ]; then
+	echo $0: updating 00res/images into $w
+	(cd 00res/images
+	 d=`pwd`
+	 cd $w
+	 rsync -vc $d/* . )
+    else
+	echo $0: no $w directory to update into, skipping.
+    fi
+else
+    echo $0: no 00res/images directory, skipping.
+    exit 1
 fi
