@@ -1024,6 +1024,7 @@ sub v_form {
     if ($f =~ /\s\#([^\#]\S*)/) {
 	$morph = $1;
 	$morph =~ tr/*/✻/; #map * to U+273B TEARDROP-SPOKED ASTERISK
+	v_morph($formform, $morph);
 	# hook into ORACC::SMA::MorphData::mdata_validate() when epsd2 is cleaned
     } elsif (($ORACC::CBD::bases # || $lang =~ /^sux/ 
 	      || ($lang =~ /^qpn/ && $flang =~ /^$ORACC::CBD::qpn_base_lang/))
@@ -1069,6 +1070,15 @@ sub v_form {
 		pp_warn("COFs must have one NORM without parens (found none)");
 	    }
 	}
+    }
+}
+
+sub v_morph {
+    my ($f, $m) = @_;
+    if ($m !~ /~/ && $m ne 'X') {
+	pp_warn("no ~ in MORPH $f = $m");
+    } elsif ($m =~ /[:;,.!]$/) {
+	pp_warn("MORPH $m ends with punct");
     }
 }
 
