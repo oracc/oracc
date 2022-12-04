@@ -22,11 +22,12 @@ while (<>) {
 }
 
 sub fix {
-    my $x = $_[0];
+    my $x = shift @_;
+    my $orig = $x;
     $x =~ s/^\+//;
     $x =~ s#(]'?(?:V/[ti]|[A-Z']+)).*$#$1#;
     $x =~ s/\[\]PN/\[0\]PN/;
-    warn "$_[0] => $x\n" unless $_[0] eq $x;
+    warn "$orig => $x\n" unless $orig eq $x;
     $x;
 }
 
