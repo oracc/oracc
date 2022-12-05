@@ -22,6 +22,8 @@ my $COF_NONE = 0;
 my $COF_HEAD = 1;
 my $COF_TAIL = 2;
 
+my $bases_lnum = -1;
+my $form_lnum = -1;
 my $basesig = '';
 my %blangs = ();
 my @compound_parts = ();
@@ -94,6 +96,8 @@ my @global_cbd = ();
 
 my %e = ();
 my $err_glo = '';
+my $errfl = 0;
+my $errfile = '';
 my %forms_in_entry = ();
 my $glo = '';
 my @parts_errors = ();
@@ -229,6 +233,13 @@ sub sigs_from_glo {
 #    warn "sigs_from_glo [$passnumber]\n";
     my($args,@cbd) = @_;
     $lang = ORACC::CBD::Util::lang();
+
+    $errfl = $$args{'errfl'};
+    if ($errfl) {
+	$$args{'stdout'} = '-';
+	$errfile = pp_file();
+    }
+
     sigs_init();
     sigs_simple($args,@cbd);
     sigs_cofs();
@@ -323,7 +334,13 @@ sub sigs_simple {
 			# warn "autogenerating form $xsig\n";
 		    }
 		    ++$noprintsigs{ "$instsig1$coresig1/$f\t0\n" };
-		    $printsigs{ "$instsig1$coresig1$xsig\t0\n" } = ++$sigorder;
+
+		    if ($errfl) {
+			$printsigs{ "<$errfile:$bases_lnum>$instsig1$coresig1$xsig\t0\n" } = ++$sigorder;
+		    } else {
+			$printsigs{ "$instsig1$coresig1$xsig\t0\n" } = ++$sigorder;
+		    }
+		    
 #		    warn "base-form $b => $instsig1$coresig1$xsig\t0\n";
 		}
 	    }
@@ -394,8 +411,12 @@ sub sigs_simple {
 		    } elsif ($nsense == 1) {
 			$rank |= 1;
 		    }
-			
-		    $printsigs{ "$instsig0$coresig$erws$$instsig[1]\t$rank\n" } = ++$sigorder;
+		    # @instsigs get their locator when they are pushed onto the list
+#		    if ($errfl) {
+#			$printsigs{ "<$errfile:$i>$instsig0$coresig$erws$$instsig[1]\t$rank\n" } = ++$sigorder;
+#		    } else {
+			$printsigs{ "$instsig0$coresig$erws$$instsig[1]\t$rank\n" } = ++$sigorder;
+#		    }
 		    $found_simple_sig = 1;
 		}
 	    } else {
@@ -414,7 +435,11 @@ sub sigs_simple {
 			    my $instsig1 = "\@$project\%$lng:$f=";
 			    my $xsig = "\$$sig{'cf'}/$b#~";
 			    ++$noprintsigs{ "$instsig1$coresig/$f\t0\n" };
-			    $printsigs{ "$instsig1$coresig$erws$xsig\t0\n" } = ++$sigorder;
+			    if ($errfl) {
+				$printsigs{ "<$errfile:$i>$instsig1$coresig$erws$xsig\t0\n" } = ++$sigorder;
+			    } else {
+				$printsigs{ "$instsig1$coresig$erws$xsig\t0\n" } = ++$sigorder;
+			    }
 			}
 		    }
 		}
@@ -422,6 +447,7 @@ sub sigs_simple {
 	    
 	} elsif (/^\@bases\s+(.*)\s*$/) {
 
+	    $bases_lnum = $i;
 	    $current_first_base = $1;
 	    %blangs = index_base_langs($current_first_base);
 #	    warn "cfg3 = $current_first_base\n";
@@ -454,6 +480,7 @@ sub sigs_simple {
  
 	} elsif (s/^\@form(!?)\s+(\S+)//) {
 
+	    $form_lnum = $i;
 	    sigs_form($args,$1,$2,$_) unless
 		$ORACC::CBD::Forms::external;
 
@@ -607,7 +634,7 @@ sub sigs_form {
 	    if ($field eq 'base' && $sig{'blang'}) { # use it here
 		$instsig2 =~ s#/#/\%$sig{'blang'}:#;
 	    }
-	}    
+	}
 	if ($cof == $COF_HEAD) {
 	    $instsig2 .= '!0x01';
 	} elsif ($cof == $COF_TAIL) {
@@ -619,10 +646,18 @@ sub sigs_form {
 	    if ($formbang) {
 		$srank |= 4;
 	    }
-	    $printsigs{ "$instsig1$coresig$instsig2\t$srank\n" } = ++$sigorder;
+	    if ($errfl) {
+		$printsigs{ "<$errfile:$form_lnum>$instsig1$coresig$instsig2\t$srank\n" } = ++$sigorder;
+	    } else {
+		$printsigs{ "$instsig1$coresig$instsig2\t$srank\n" } = ++$sigorder;
+	    }
 	} else {
 	    $found_simple_sig = 1;
-	    push @instsigs, [ $formbang.$instsig1, $instsig2 ];
+	    if ($errfl) {
+		push @instsigs, [ $formbang."<$errfile:$form_lnum>".$instsig1, $instsig2 ];
+	    } else {
+		push @instsigs, [ $formbang.$instsig1, $instsig2 ];
+	    }
 	}
 	
     }
@@ -684,11 +719,16 @@ sub sigs_cofs {
 	    # so move instead to not anchoring the following regex with $, this means it can
 	    # have fields beyond rank without breaking anything (don't think this can happen
 	    # though)
-	    my($pre,$key,$sig,$nth,$rank) = (/^(.*?):(.*?)=(.*?)\!0x0*(\d+)\t(\d+)/);
+	    # warn "$_\n" if $errfl;
+	    my($pre,$key,$sig,$nth,$rank) = (/^(?:<.*?>)?(.*?):(.*?)=(.*?)\!0x0*(\d+)\t(\d+)/);
 	    if ($pre) {
 		my $index = $nth - 1;
 		my $v = '';
 		my ($lang) = ($pre =~ /\%(.*?)$/);
+		unless ($lang) {
+		    warn "no lang in pre $pre\n";
+		    $lang = '';
+		}
 		if ($index) {
 		    $v = "$pre:=$sig";
 		} else {
@@ -1016,12 +1056,14 @@ do_psu {
     }
     unless ($matched_parts) {
 	if ($#parts_errors >= 0) {
-	    my $err = pp_line();
-	    pp_line($err - 1);
-	    unless ($#parts_errors == 0 && $parts_errors[0] eq '#nowarn#') {
-		foreach (@parts_errors) {
-#		    pp_warn("psulang=$psulang; formline=$formline");
-		    pp_warn($_)
+	    if (!$errfl) { # suppress parts errors on errfl bc adding loc info to sigs breaks lookup
+		my $err = pp_line();
+		pp_line($err - 1);
+		unless ($#parts_errors == 0 && $parts_errors[0] eq '#nowarn#') {
+		    foreach (@parts_errors) {
+			#		    pp_warn("psulang=$psulang; formline=$formline");
+			pp_warn($_)
+		    }
 		}
 	    }
 	} else {

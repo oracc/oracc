@@ -1074,11 +1074,17 @@ sub v_form {
 }
 
 sub v_morph {
+    return;
     my ($f, $m) = @_;
     if ($m !~ /~/ && $m ne 'X') {
 	pp_warn("no ~ in MORPH $f = $m");
     } elsif ($m =~ /[:;,.!]$/) {
 	pp_warn("MORPH $m ends with punct");
+    } elsif (($m =~ tr/:/:/ > 1)
+	     || ($m =~ tr/;/;/ > 1)
+	     || ($m =~ tr/,/,/ > 1)
+	     || ($m =~ tr/!/!/ > 1)) {
+	pp_warn("duplicate segment delimiter (one of :;.!) in $m");
     }
 }
 

@@ -19,6 +19,7 @@ my $force = 0;
 my $freq = 0;
 my $glossary = '';
 my %lemmdata = ();
+my $lemmglo = '';
 my $rank = 0;
 my %sigorder = ();
 my $update = 0;
@@ -27,6 +28,7 @@ my $verbose = 1;
 GetOptions (
     force=>\$force, 
     'glossary'=>\$glossary,
+    'lemmglo:s'=>\$lemmglo,
     'update'=>\$update
     );
 
@@ -37,11 +39,18 @@ my %ranks = ();
 my @sigs = ();
 
 my @glosigs = ();
-if ($glossary) {
-    my @glo = <00lib/*.glo>;
+
+if ($glossary || $lemmglo) {
+    my @glo = ();
+    if ($lemmglo) {
+	push @glo, $lemmglo;
+    } else {
+	push @glo, <00lib/*.glo>;
+    }
     foreach my $g (@glo) {
 	warn "$0: loading $g in glossary-only mode\n";
 	push @glosigs, `cbdpp.plx -sig -std $g`;
+	# open(G, '>glosig.dump'); print G Dumper \@glosigs; close(G);
     }
 } else {
     my @glosig_files = ();
@@ -119,7 +128,6 @@ foreach my $l (@freq_files) {
 	    chomp;
 	    if (/^\@fields/) {
 		set_f($_, qw/sig freq/);
-		#	    warn Dumper \%f;
 		next;
 	    }
 	    my @fields = split(/\t/,$_);
@@ -131,6 +139,8 @@ foreach my $l (@freq_files) {
 	    unless $force;
     }
 }
+
+# open(D,'>freq.dump'); print D Dumper \%freqs; close(D);
 
 # Add freqs to sigs/ranks and dump new lemm-data. If a project
 # is using dynamic lemm-data from proxies that proxy data will 
@@ -168,6 +178,7 @@ if ($use_psus) {
 	}
     }
 }
+
 foreach my $l (keys %lemmdata) {
     open(L, ">02pub/lemm-$l.sig") 
 	|| die "l2p1-lemm-data.plx: Strange, can't write 02pub/lemm-$l.sig. Stop";
