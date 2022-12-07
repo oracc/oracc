@@ -16,7 +16,7 @@ struct wm_range *unit_map;
 const char *kwic_fn = "02pub/kwic.map";
 const char *unit_fn = "02pub/unit.map";
 
-int dump_kwic = 0, dump_unit = 0;
+int dump_kwic = 0, dump_unit = 0, verbose = 0;
 
 int
 main (int argc, char **argv)

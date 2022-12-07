@@ -36,7 +36,8 @@ else
     #    if [ -s 01bld/project.sig ]; then
     #	l2p1-lemm-data.plx
     #    else
-    echo running l2p1-lemm-data.plx -u -f
-    l2p1-lemm-data.plx -u -f
+    # 2022-12-05 with current architecture -g seems best
+    echo running l2p1-lemm-data.plx -g -f
+    l2p1-lemm-data.plx -g -f
 	#    fi
 fi

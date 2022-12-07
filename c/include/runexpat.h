@@ -19,4 +19,5 @@ extern void runexpatNSuD(enum isource from, void *list,
 			 XML_Char *ns_sep_p, void *userData);
 
 extern const char *get_xml_id(const char **atts);
+extern const char *get_xml_lang(const char **atts);
 #endif /*_RUNEXPAT_H*/

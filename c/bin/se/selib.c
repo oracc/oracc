@@ -60,6 +60,26 @@ attr_by_name(const char **atts,const char *name)
   return NULL;
 }
 
+const char *
+xml_id(const char **atts)
+{
+  const char *x = get_xml_id(atts);
+  if (x && *x)
+    return x;
+  else
+    return NULL;
+}
+
+const char *
+xml_lang(const char **atts)
+{
+  const char *x = get_xml_lang(atts);
+  if (x && *x)
+    return x;
+  else
+    return NULL;
+}
+
 int
 lang_mask(const char **atts)
 {

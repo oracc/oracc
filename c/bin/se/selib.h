@@ -6,6 +6,7 @@
 #include "types.h"
 #include "ce.h"
 #include "v2.h"
+#include "runexpat.h"
 
 struct est;
 
@@ -19,8 +20,9 @@ struct est;
 
 #define langs(a)  attr_by_name((a),"langs")
 #define ref(a)    attr_by_name((a),"ref")
-#define xml_id(a) attr_by_name((a),"xml:id")
-#define xml_lang(a) attr_by_name((a),"xml:lang")
+
+extern const char *xml_id(const char **atts);
+extern const char *xml_lang(const char **atts);
 
 extern const char *curr_se_lang;
 

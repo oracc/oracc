@@ -560,6 +560,9 @@ ce_data(const char *xid)
   char *dot = strchr(xid,'.');
   char cid[128];
 
+  if (verbose)
+    fprintf(stderr, "ce_xtf: ce_data called with xid=%s\n", xid);
+  
   if (dot)
     {
       linenum = atoi(dot+1);
@@ -610,9 +613,13 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
 	  || !strcmp(&name[strlen(name)-2], "|v")))
     strcpy(curr_label,findAttr(atts,"label"));
 
-  if (xid && hash_find(xtf_start, (unsigned char *)xid))
+  if (xid && *xid && hash_find(xtf_start, (unsigned char *)xid))
     {
       unsigned char *h = hash_find(xtf_headings, (unsigned char *)xid);
+
+      if (verbose)
+	fprintf(stderr, "ce_xtf: found xid %s for ce_data\n", xid);
+      
       /* This can be gdl:w or xtf:l(g) */
       charData_discard();
       
@@ -673,7 +680,7 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
 	      || !strcmp(localName, "score"))
 	    {
 	      strcpy(text_name, findAttr(atts, "n"));
-	      strcpy(text_id, findAttr(atts, "xml:id"));
+	      strcpy(text_id, xml_id(atts));
 	      strcpy(text_project, findAttr(atts, "project"));
 	    }
 	}

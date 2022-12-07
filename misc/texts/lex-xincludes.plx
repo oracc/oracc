@@ -14,10 +14,11 @@ foreach (`lex-provides-tab.plx`) {
     chomp;
     my($o,$x) = split(/\t/,$_);
     my $f = "$webdir/cbd/$lang/$o.html";
+    warn "$0: considering $f\n" if $verbose;
     if (-r $f) {
 	warn "$0: processing $f\n" if $verbose;
 	my $h = `cat $f`;
-	my ($a,$b) = ($h =~ /^(.*?)__LEXDATA__(.*?)$/s);
+	my ($a,$b) = ($h =~ /^(.*?)<!--__LEXDATA__-->(.*?)$/s);
 	open(N,">$f"); select N;
 	print $a;
 	xincludes($o,$x);

@@ -334,13 +334,13 @@ sub header_vals {
 		    $h{'errfile'} = $c;
 		}
 	    } else {
-		die "$0: can't get header info from empty file $c\n";
+		die "$0: can't get header info from empty file $c. Stop.\n";
 	    }
 	} else {
-	    die "$0: can't get header info from non-existent file $c\n";
+	    die "$0: can't get header info from non-existent file $c. Stop.\n";
 	}
     } else {
-	die "$0: can't get header info from empty file name\n";
+	die "$0: can't get header info from empty file name. Stop.\n";
     }
 #    print "header_vals $c = ", Dumper  \%h;
     %h;

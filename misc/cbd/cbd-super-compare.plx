@@ -60,6 +60,7 @@ if ($args{'base'}) {
 
 if ($args{'list'}) {
     my @l = `cat $args{'list'}`; chomp @l;
+    warn "$0: processing $args{'list'}: @l\n";
     foreach my $l (@l) {
 	pp_status(0);
 	pp_reinit();
@@ -103,6 +104,8 @@ sub do_one {
 	$mapfile = '00map/'.$mapfile;
     }
     $mapfile .= '~'.$base_h{'lang'}.'.map';
+
+    warn "$0: creating map file $mapfile\n";
 
     if ($args{'stdout'}) {
 	*MAP_FH = *STDOUT;

@@ -68,10 +68,14 @@ const char *
 findAttr(const char **atts, const char *name)
 {
   while (*atts)
-    if (!strcmp(*atts,name))
-      return atts[1];
-    else
-      atts+=2;
+    {
+      if (verbose)
+	fprintf(stderr, "findAttr testing attr %s looking for %s\n", *atts, name);
+      if (!strcmp(*atts,name))
+	return atts[1];
+      else
+	atts+=2;
+    }
   return "";
 }
 
@@ -376,6 +380,25 @@ get_xml_id(const char **atts)
   static const char *xml_id2 = "http://www.w3.org/XML/1998/namespace:id";
   static const char *xml_id3 = "xml|id";
   static const char *xml_id4 = "http://www.w3.org/XML/1998/namespace|id";
+  const char *x = findAttr(atts,xml_id1);
+  if (!*x)
+    x = findAttr(atts,xml_id2);
+  if (!*x)
+    x = findAttr(atts,xml_id3);
+  if (!*x)
+    x = findAttr(atts,xml_id4);
+  return x;
+}
+
+const char *
+get_xml_lang(const char **atts)
+{
+  /*Different versions of the expat library handle the xml: prefix differently :( */
+  /*And now Oracc harvest uses '|' for the delimiter not :, :(( */
+  static const char *xml_id1 = "xml:lang";
+  static const char *xml_id2 = "http://www.w3.org/XML/1998/namespace:lang";
+  static const char *xml_id3 = "xml|lang";
+  static const char *xml_id4 = "http://www.w3.org/XML/1998/namespace|lang";
   const char *x = findAttr(atts,xml_id1);
   if (!*x)
     x = findAttr(atts,xml_id2);

@@ -2,7 +2,20 @@
 #include <stdio.h>
 #include <string.h>
 #include "types.h"
+#include <runexpat.h>
 #include "wm.h"
+
+extern int verbose;
+
+const char *
+xml_id(const char **atts)
+{
+  const char *x = get_xml_id(atts);
+  if (x && *x)
+    return x;
+  else
+    return NULL;
+}
 
 const char *
 project_of(const char*id)
