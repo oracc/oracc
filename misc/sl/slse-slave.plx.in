@@ -397,7 +397,8 @@ esp_printhtml {
 	$p = '';
     }
     my $letter = letter_of($id);
-    my $html = "https://@@ORACC_HOST@@/$ixproject/signlist/$letter/$id/index.html";
+    #    my $html = "https://@@ORACC_HOST@@/$ixproject/signlist/$letter/$id/index.html";
+    my $html = "/$ixproject/signlist/$letter/$id/index.html";
     print "<p><a target=\"slmain\" href=\"$html\">$v<span class=\"sign\">$sn</span></a>$pspan</p>\n";
 }
 
