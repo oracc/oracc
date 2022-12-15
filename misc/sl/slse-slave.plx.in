@@ -153,7 +153,8 @@ if ($pr) {
 	my $pr1 = $pr;
 	$pr1 =~ s/\s.*$//;
 	my $letter = letter_of($pr1);
-	my $html = "https://@@ORACC_HOST@@/$ixproject/signlist/$letter/$pr1/index.html";
+	# my $html = "https://@@ORACC_HOST@@/$ixproject/signlist/$letter/$pr1/index.html";
+	my $html = "/$ixproject/signlist/$letter/$pr1/index.html";
 	warn "slse-slave: caller=esp so returning $html\n";
 #	use CGI;
 #	my $q = new CGI;
