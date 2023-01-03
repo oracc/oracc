@@ -2,6 +2,7 @@
 <xsl:transform 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns:sl="http://oracc.org/ns/sl/1.0"
+    xmlns:g="http://oracc.org/ns/gdl/1.0"
     xmlns:ex="http://exslt.org/common"
     xmlns:dc="http://dublincore.org/documents/2003/06/02/dces/"
     xmlns:xh="http://www.w3.org/1999/xhtml"
@@ -20,6 +21,9 @@
 
 <xsl:param name="project"/>
 <xsl:param name="with-stats"/>
+
+<xsl:param name="snippets" select="'/Users/stinney/orc/emss/00etc/snippets.xml'"/>
+<xsl:param name="snippetdir" select="'/emss/snippets'"/>
 
 <xsl:template match="sl:sign">
 <!--  <xsl:if test="$with-stats='yes'"><xsl:message>with-stats=yes</xsl:message></xsl:if> -->
@@ -53,18 +57,11 @@
 <xsl:template name="sign-or-form">
   <div iclass="ogsl-{local-name(.)}">
     <div class="ogsl-info">
-<!--
-      <esp:sh>
-	<xsl:value-of select="translate(@n,'|','')"/>
-	<xsl:if test="@var">
-	  <xsl:value-of select="concat(' (=',ancestor::sl:sign/@n,@var,')')"/>
-	</xsl:if>
-	<xsl:if test="string-length(sl:uname/text()) > 0">
-	  <xsl:text>: </xsl:text>
-	  <xsl:value-of select="sl:uname"/>
-	</xsl:if>
-      </esp:sh>
- -->
+      <p style="font-size: 150%">
+	<xsl:for-each select="sl:name[1]//*">
+	  <xsl:if test="@g:utf8"><xsl:value-of select="@g:utf8"/></xsl:if>
+	</xsl:for-each>
+      </p>
       <xsl:if test="sl:list">
 	<p>
 	  List numbers: 
@@ -76,6 +73,12 @@
 	  </xsl:for-each>
 	</p>
       </xsl:if>
+      <xsl:variable name="oid" select="@xml:id"/>
+      <xsl:for-each select="document($snippets)">
+	<xsl:for-each select="id($oid)">	  
+	  <p>See the <esp:link url="{$snippetdir}/{$oid}.html">scrapbook page for this sign</esp:link>.</p>
+	</xsl:for-each>
+      </xsl:for-each>
     </div>
     <xsl:if test="count(sl:v)>0">
       <div class="ogsl-values">
@@ -111,7 +114,7 @@
 	<xsl:for-each select="sl:v">
 	  <xsl:if test="sl:glo">
 	    <h2 class="psl-e"><span class="psl-ahead"><xsl:value-of select="@n"/></span></h2>
-	    <xsl:apply-templates/>
+	    <xsl:apply-templates select="sl:glo"/>
 	  </xsl:if>
 	</xsl:for-each>
       </div>

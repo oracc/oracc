@@ -105,7 +105,7 @@ is_signlist(register const unsigned char *s)
     case 'R':
       return !xstrncmp(s,"REC",3) || !xstrncmp(s,"RSP",3);
     case 'Z':
-      return !xstrncmp(s,"ZATU",3);
+      return !xstrncmp(s,"ZATU",4);
     default:
       return 0;
     }

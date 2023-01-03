@@ -15,7 +15,7 @@ bin_SCRIPTS = o2-atf.plx o2-atf.sh o2-atfsources.plx \
 	o2-update-lem.sh o2-cbdpp.sh o2-super-dyn.sh o2-super-prx-sig.sh o2-super-sig.sh \
 	o2-super-corpus.sh o2-lex.sh o2-catf-test.sh o2-index-downloads.sh \
 	o2-super-update.sh o2-loc-data.sh o2-super-chk.sh o2-bookindex.sh o2-check.sh \
-	o2-signiary.sh o2-super-pst-prx.sh
+	o2-signiary.sh o2-super-pst-prx.sh o2-signlist.sh
 
 scriptdata_DATA = o2-public.xsl
 

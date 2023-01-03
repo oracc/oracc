@@ -11,7 +11,9 @@ sub
 toTSV {
     my $ix = shift;
     my $name = $$ix{'#name'};
-    open(TSV,">:raw", "02pub/sl/$name-db.tsv"); select TSV;
+    my $tsv = "02pub/sl/$name-db.tsv";
+    open(TSV,">:raw", $tsv) || die "$0: failed to open $tsv. Stop.\n";
+    select TSV;
 
 #    my $fldtype = ref($$ix{'#fields'});
 #    if ($fldtype eq 'ARRAY') {
