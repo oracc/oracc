@@ -76,14 +76,14 @@
       <xsl:variable name="oid" select="@xml:id"/>
       <xsl:for-each select="document($snippets)">
 	<xsl:for-each select="id($oid)">	  
-	  <p>See the <esp:link url="{$snippetdir}/{$oid}.html">scrapbook page for this sign</esp:link>.</p>
+	  <p>See the <esp:link url="{$snippetdir}/{$oid}.html">EMSS scrapbook page for this sign</esp:link>.</p>
 	</xsl:for-each>
       </xsl:for-each>
     </div>
     <xsl:if test="count(sl:v)>0">
       <div class="ogsl-values">
 	<p>
-	  <span class="values-heading">Values:</span>
+	  <span class="values-heading">Values: </span>
 	  <xsl:for-each select="sl:v">
 	    <xsl:choose>
 	      <xsl:when test="@deprecated='yes'">

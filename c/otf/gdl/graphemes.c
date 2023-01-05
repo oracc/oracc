@@ -677,7 +677,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  gp = singleton(g,type); /* FIXME?: should we preserve the info that
 				     this is a signlist sign name */
 	  if (gdl_grapheme_sign_names && !inner_qual)
-	    list_add(gdl_sign_names, (void*)pool_copy(psl_is_sname(g)));
+	    list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(g)));
 	  if ((gid = psl_get_id(g)))
 	    {
 	      if (gdl_grapheme_sigs && !inner_qual)
@@ -928,7 +928,7 @@ gparse(register unsigned char *g, enum t_type type)
 	    {
 	      if (qualifier_warnings)
 		vwarning("qualified value %s is not in OGSL",value);
-	      vname = psl_is_sname(qual);
+	      vname = psl_get_sname(qual);
 	      if (!vname && qualifier_warnings)
 		vwarning("qualifier %s is not a sign-name in OGSL",qual);
 	    }
@@ -1070,7 +1070,7 @@ gparse(register unsigned char *g, enum t_type type)
 		    cattr = signify(input = buf);
 #endif
 		  if (cattr)
-		    appendAttr(gp->xml,gattr(a_g_sign,cattr));
+		    appendAttr(gp->xml,gattr(a_g_sign,psl_get_sname(cattr)));
 		  else if (showerr && gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
 		    vwarning("unable to signify %s", input);
 		}
@@ -1114,7 +1114,7 @@ gparse(register unsigned char *g, enum t_type type)
 			  else
 			    cattr = signify(buf);
 			  if (cattr)
-			    appendAttr(gp->xml,gattr(a_g_sign,cattr));
+			    appendAttr(gp->xml,gattr(a_g_sign,psl_get_sname(cattr)));
 			}
 		    }
 		  else

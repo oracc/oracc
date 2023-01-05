@@ -68,7 +68,7 @@ sH(void *userData, const char *name, const char **atts)
     {
       if (!deprecated("sign",atts))
 	{
-	  static int n = 1;
+	  static const char *n = "";
 	  sign_sn = curr_unitary_sn = curr_sn = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
 	  curr_xid = (char*)npool_copy((const unsigned char *)get_xml_id(atts), psl_pool);
 	  hash_add(psl,curr_sn,&n);
@@ -77,7 +77,7 @@ sH(void *userData, const char *name, const char **atts)
     }
   else if (!strcmp(name,"form"))
     {
-      static int n = 1;
+      static const char *n = "";
       const char *utf8 = findAttr(atts,"utf8"), *form_xid;
       curr_unitary_sn = curr_form = npool_copy((unsigned char *)findAttr(atts,"n"),psl_pool);
       curr_xid = form_xid = (char*)npool_copy((const unsigned char *)get_xml_id(atts), psl_pool);
@@ -200,7 +200,7 @@ eH(void *userData, const char *name)
     }
 }
 
-static unsigned char *
+static const unsigned char *
 no_bs(const unsigned char *maybe_bs)
 {
   static unsigned char *buf = NULL;
@@ -330,7 +330,11 @@ psl_get_sname(const unsigned char *value)
 	}
       else
 	{
-	  return hash_find(psl, value);
+	  unsigned char *p = hash_find(psl, value);
+	  if (p && !*p)
+	    return value;
+	  else
+	    return (const unsigned char *)p;
 	}
     }
   else if (sbuf)
@@ -345,7 +349,7 @@ psl_get_sname(const unsigned char *value)
 int
 psl_is_sname(const unsigned char *sname)
 {
-  unsigned char *nobs = no_bs(sname);
+  const unsigned char *nobs = no_bs(sname);
   void *ret = hash_find(psl,nobs);
   return (ret != NULL);
 }

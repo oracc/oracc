@@ -137,7 +137,9 @@ cuneify_one(const unsigned char *utf)
     }
   if (psl_is_sname(utf))
     {
-      unsigned const char *c = psl_cuneify(utf);
+      unsigned const char *c = NULL;
+      utf = psl_get_sname(utf); /* map list names to proper sign names */
+      c = psl_cuneify(utf);
       return c ? c : (const unsigned char *)"X";
     }
   else if (psl_looks_like_sname(utf))
