@@ -434,6 +434,8 @@ subsign {
 	    $n =~ s/\d+[a-z]*$//;
 	    push @{$values{$n,'h'}}, [$id,$n_orig];
 	} elsif ($lname eq 'v') {
+	    my $dropped = c->getattribute('deprecated');
+	    next if $dropped and $dropped eq 'yes';
 	    my $v = $c->getAttribute('n');
 	    $v =~ tr/?//d;
 	    my $orig_v = $v;
