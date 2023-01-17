@@ -25,6 +25,7 @@ my $db_file = "@@ORACC@@/pub/ogsl/sl";
 my $db_name = 'ogsl';
 
 my %db = ();
+my $deep = 0;
 my $loaded = 0;
 my @messages = ();
 my $pedantic = 0;
@@ -71,7 +72,7 @@ sub same_tlit {
 
 sub tlit_sig {
     my($context,$test) = @_;
-    my $s = _signature($context,tlitsplit($test,1));
+    my $s = _signature($context,tlitsplit($test,0));
     if ($s =~ /q/ && $test =~ /\|/) {
 	$test =~ tr/|//d;
 	$s = _signature($context,tlitsplit($test,1));
@@ -149,7 +150,7 @@ sub
 is_form {
 #    my $x = shift;
 #    Encode::_utf8_off($x);
-#    $db{$x};
+    #    $db{$x};
     slse("$_[0];form");
 }
 
@@ -159,6 +160,14 @@ is_sign {
 #    Encode::_utf8_off($x);
 #    $db{$x};
     slse($_[0]);
+}
+
+sub
+is_sign_sign {
+#    my $x = shift;
+#    Encode::_utf8_off($x);
+#    $db{$x};
+    slse("$_[0];sign");
 }
 
 sub
@@ -326,8 +335,16 @@ protect1 {
 sub
 protect2 {
     my $tmp = shift;
-    $tmp =~ tr/()+/\000\001\002/;
+    $tmp =~ tr/()+/\000\001\003/;
     $tmp;
+}
+
+## WARNING: HACKERY -- we quietly make |A+BA| the same as |A.BA| with this tr///
+sub
+protect3 {
+    my $tmp = shift;
+    $tmp =~ tr/.+/\003\003/;
+    "|".$tmp."|";
 }
 
 sub deepsplit {
@@ -413,6 +430,9 @@ tlitsplit {
     if ($csplit) {
 	my $d = deepsplit($tlit);
 	$tlit = $d if $d;
+    } else {
+	# protect all periods in compounds
+	1 while $tlit =~ s/\|([^.\+\|]+[\.\+].*?)\|/protect3($1)/eg;
     }
 
     # now do a basic split into graphemes
@@ -666,38 +686,42 @@ _signature {
 	    push @sig, 'q01';
 	}
     }
-    my @nsig = ();
-    foreach my $s (@sig) {
-#	warn "sign_of $s ...\n";
-	if ($s =~ /^q[0-9][0-9]/) {
-	    push @nsig, $s;
-	} else {
-	    my $sn = sign_of($s);
-	    if ($sn =~ tr/\|//d) {
-		my @c = ();
-		$sn =~ s/\(([^\)]+)\)/&hidedots($1)/eg;
-		my $ok = 1;
-		foreach my $c (split(/[\.\+]/, $sn)) {
-		    my $cs = is_sign(sign_of($c));
-		    if ($cs) {
-			push @c, $cs;
-		    } else {
-			$ok = 0;
-			last;
+    if ($deep) {
+	my @nsig = ();
+	foreach my $s (@sig) {
+	    #	warn "sign_of $s ...\n";
+	    if ($s =~ /^q[0-9][0-9]/) {
+		push @nsig, $s;
+	    } else {
+		my $sn = sign_of($s);
+		if ($sn =~ tr/\|//d) {
+		    my @c = ();
+		    $sn =~ s/\(([^\)]+)\)/&hidedots($1)/eg;
+		    my $ok = 1;
+		    foreach my $c (split(/[\.\+]/, $sn)) {
+			my $cs = is_sign(sign_of($c));
+			if ($cs) {
+			    push @c, $cs;
+			} else {
+			    $ok = 0;
+			    last;
+			}
 		    }
-		}
-		if ($ok) {
-		    #		warn "pushing ".join('.',@c)." onto nsig\n";
-		    push @nsig, @c;
+		    if ($ok) {
+			#		warn "pushing ".join('.',@c)." onto nsig\n";
+			push @nsig, @c;
+		    } else {
+			push @nsig, $s;
+		    }
 		} else {
 		    push @nsig, $s;
 		}
-	    } else {
-		push @nsig, $s;
 	    }
 	}
+	join('.',@nsig);
+    } else {
+	join('.',@sig);
     }
-    join('.',@nsig);
 }
 
 sub hidedots {

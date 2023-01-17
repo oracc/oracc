@@ -507,6 +507,7 @@ gparse(register unsigned char *g, enum t_type type)
   struct grapheme *gp = NULL;
   int bad_grapheme = 0;
   unsigned char *orig = pool_copy(g);
+  int ogsl_warned = 0;
   
   if (type == type_top)
     type = gtype(g);
@@ -974,7 +975,10 @@ gparse(register unsigned char *g, enum t_type type)
 		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
 		    {
 		      if (!psl_is_sname(buf))
-			vwarning("%s: compound not in OGSL",buf);
+			{
+			  vwarning("%s: compound not in OGSL",buf);
+			  ogsl_warned = 1;
+			}
 		    }
 		  else
 		    {
@@ -1158,7 +1162,7 @@ gparse(register unsigned char *g, enum t_type type)
       if (gp->type == g_c)
 	{
 	  unsigned const char *form = getAttr(gp->xml,"form");
-	  if (!psl_is_sname(form) && qualifier_warnings)
+	  if (!psl_is_sname(form) && qualifier_warnings && !ogsl_warned)
 	    vnotice("unknown compound sign %s",form);
 	}
       else if (gp->type == g_v && !inner_parse)

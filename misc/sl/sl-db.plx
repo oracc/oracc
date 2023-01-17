@@ -51,6 +51,26 @@ GetOptions(
 # Besides the actual data, the db also contains the XHTML link code to
 # find the article for a sign by id; this is given under <id>,link.
 
+#
+# Update 2023-01-16
+#
+# The following fields take a SIGNNAME in first place:
+#
+# ;c         -- OIDs for compounds including this name
+# ;cinit     -- OIDs for compounds where name is in initial position
+# ;clast     -- OIDs for compounds where name is in final position
+# ;contains  -- OIDs for signs that appear contained by this name
+# ;contained -- OIDs for signs containing this name
+# ;multi     -- OIDs for combinations of name 2-up, crossed, etc.
+# 
+#
+# The following fields take an OID in first place
+#
+# OID:forms -- OIDs which are @form of this OID
+# OID:signs -- OIDs which are @sign parents of this OID as @form
+#
+
+
 my $project = `oraccopt`;
 my $dc_uri = 'http://dublincore.org/documents/2003/06/02/dces/';
 my $html_uri = 'http://www.w3.org/1999/xhtml';
@@ -290,12 +310,12 @@ dump_db {
 	my $dbk = $k;
 	Encode::_utf8_off($dbk);
 	# sort the values here if the key otherwise contains a \^
-	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode|qbase)$/) {
+	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode|qbase|sign|form|list)$/) {
 	    my $v = $values{$k};
 	    Encode::_utf8_off($v);
 	    $db{$dbk} = $v;
 	} elsif ($dbk =~ /h$/) {
-	    my $str = hsort(@{$values{$k}});	    
+	    my $str = hsort(@{$values{$k}});
 	    $db{$dbk} = $str;
 	    if ($k =~ /₊/) {
 		$k =~ s/h$//;
@@ -392,8 +412,6 @@ subsign {
     my $id = '';
 
     # if an @form is a known sign name, use the ID of the sign name
-    ### THIS DOES NOT DO WHAT IT THINKS IT DOES; there is always a @ref attr but this does not mean
-    ### the @form is also an @sign
     if ($rf) {
 	$id = $rf;
     } else {
@@ -431,15 +449,13 @@ subsign {
 	    my $n = $c->getAttribute('n');
 	    my $n_orig = $n; $n_orig =~ tr/?//d;
 	    $values{$n} = $id;
+	    $values{$n,'list'} = $id; # only list names given with @list get ';list'
 	    $n =~ s/\d+[a-z]*$//;
 	    push @{$values{$n,'h'}}, [$id,$n_orig];
 	} elsif ($lname eq 'v') {
 	    my $dropped = $c->getAttribute('deprecated');
+	    next if $dropped and $dropped eq 'yes';
 	    my $v = $c->getAttribute('n');
-	    if ($dropped) {
-		warn "found dropped $dropped for $v\n";
-		next if $dropped eq 'yes';
-	    }
 	    $v =~ tr/?//d;
 	    my $orig_v = $v;
 	    $v =~ s/\{.*?\}//g;
@@ -472,13 +488,15 @@ subsign {
     if ($mode == TOP) {
 	$values{$sn} = $id;
 	$values{$xsn} = $id;
+	$values{$sn,'sign'} = $id;
+	$values{$xsn,'sign'} = $id;
     } else {
 	if ($form_is_TOP) {
 	    $values{$sn} = $id;
 	    $values{$xsn} = $id;
 	}
-	push @{$values{$sn,'form'}}, $id;
-	push @{$values{$xsn,'form'}}, $id;
+	$values{$sn,'form'} = $id;
+	$values{$xsn,'form'} = $id;
     }
 
     $values{$id,'ucode'} = $ucode if $ucode;

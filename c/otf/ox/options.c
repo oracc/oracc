@@ -91,7 +91,7 @@ ox_options(int argc, char **argv)
 	  exit(1);
 	  break;
 	case 'K':
-	  compound_warnings = 1;
+	  compound_warnings = qualifier_warnings = 1;
 	  break;
 	case 'l':
 	  logfile = optarg;

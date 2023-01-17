@@ -1,5 +1,5 @@
 package ORACC::SE::TSV;
-use warnings; use strict; 
+use warnings; use strict;
 #use open ':utf8'; 
 use utf8;
 use Encode;
@@ -7,6 +7,7 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::SE::DBM;
 
 binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+
 sub
 toTSV {
     my $ix = shift;
@@ -53,8 +54,10 @@ toTSV {
 		my $pv = $$ix{$k};
 		my $pk = $k;
 		$pk =~ tr//;/;
-#		Encode::_utf8_on($pk);
-#		Encode::_utf8_on($pv);
+		#		Encode::_utf8_on($pk);
+		#		Encode::_utf8_on($pv);
+		Encode::_utf8_off($pv) if $pk =~ /;(name|uchar)$/;
+		# warn "printing $pk\t$pv\n";
 		print "$pk\t$pv\n"
 	    }
 	}

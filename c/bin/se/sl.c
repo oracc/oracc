@@ -21,22 +21,34 @@ sl(Dbi_index *dbi, char *key)
 {
   char *v = NULL;
   char *k2 = NULL;
+  char tmp[32];
 
-  if ('|' == *key)
+  if ('|' == *key && !strchr(key, ';'))
     {
       k2 = malloc(strlen(key));
       strcpy(k2, key+1);
       k2[strlen(k2)-1] = '\0';
       key = k2;
     }
-
+  else if (key[0] == 'o' && isdigit(key[1]) && !strchr(key, ';'))
+    {
+      if (strlen(key) < 26) {
+	sprintf(tmp, "%s;name", key);
+	key = tmp;
+	/*fprintf(stderr, "key = %s\n", key);*/
+      } else {
+	fputc('\n',stdout);
+	goto RET;
+      }
+    }
+  
   dbi_find(dbi,(unsigned char *)key);
   if (dbi->data)
     {
       v = dbi->data;
       if (human_readable)
 	{
-	  unsigned char tmp[128];
+	  unsigned char tmp[128];	  
 	  sprintf((char*)tmp, "%s;name", v);
 	  dbi_find(dbi, tmp);
 	  fprintf(stdout, "%s\n", (char*)dbi->data);
@@ -66,6 +78,7 @@ sl(Dbi_index *dbi, char *key)
     }
   else
     fputc('\n',stdout);
+ RET:
   fflush(stdout);
   if (k2)
     free(k2);

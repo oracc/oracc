@@ -37,7 +37,7 @@ static int
 deprecated(const char *type,const char **atts)
 {
   const char *d = (const char *)findAttr(atts,"deprecated");
-  if (d && !strcmp(d,"1"))
+  if (d && (!strcmp(d,"1") || !strcmp(d,"yes")))
     {
       if (!strcmp(type,"sign"))
 	deprecated_sign = 1;
