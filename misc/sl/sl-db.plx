@@ -310,7 +310,7 @@ dump_db {
 	my $dbk = $k;
 	Encode::_utf8_off($dbk);
 	# sort the values here if the key otherwise contains a \^
-	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode|qbase|sign|form|list)$/) {
+	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode|qbase|sign|form|list|v)$/) {
 	    my $v = $values{$k};
 	    Encode::_utf8_off($v);
 	    $db{$dbk} = $v;
@@ -467,6 +467,7 @@ subsign {
 #		    unless !defined($v) || !length($v) || $v  =~ /ₓ/ || $v =~ /\.\.\./;
 	    } else {
 		$values{$v} = $id;
+		$values{$v,'v'} = $id;
 	    }
 	    push(@{$values{$id,'values'}}, $orig_v) if $v;
 	    # homophones: each value is a space-delimited string of IDs

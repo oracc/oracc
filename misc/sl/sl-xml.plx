@@ -419,7 +419,7 @@ sub compute_qualified {
 			    foreach my $fl (@{${$v{$f}}{'#forml'}}) {
 				next if $fl eq $f;
 				my $xfl = xmlify($fl);
-				push @qs, "<q type=\"map\" qn=\"$fv($xfl)\" qm=\"$fv($f)\"/>";				
+				push @qs, "<q type=\"map\" qn=\"$fv($xfl)\" qm=\"$fv($f)\" p=\"$sid\"/>";
 			    }
 			}
 		    } else {
@@ -434,12 +434,12 @@ sub compute_qualified {
 			}
 			$fv = xmlify($fv);
 			$f = xmlify($f);
-			push @qs, "<q type=\"may\" qn=\"$fv($f)\"$base/>";
+			push @qs, "<q type=\"may\" qn=\"$fv($f)\"$base p=\"$sid\"/>";
 			if (${$v{$f}}{'#forml'}) {
 			    foreach my $fl (@{${$v{$f}}{'#forml'}}) {
 				next if $fl eq $f;
 				my $xfl = xmlify($fl);
-				push @qs, "<q type=\"map\" qn=\"$fv($xfl)\" qm=\"$fv($f)\"/>";				
+				push @qs, "<q type=\"map\" qn=\"$fv($xfl)\" qm=\"$fv($f)\" p=\"$sid\"/>";
 			    }
 			}
 		    }
