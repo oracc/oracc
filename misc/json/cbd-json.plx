@@ -118,13 +118,14 @@ glossary_howtos {
     
     $howto{'cbd_letter'} = { type=>'#ignore' };
 
-    $howto{'cbd_see-compounds'} = { type=>'#ignore' };
-    $howto{'cbd_xcpd'} = { type=>'#ignore' };
+    $howto{'cbd_see-compounds'} = { nam=>'see-compounds',val=>'[' };
+    $howto{'cbd_xcpd'} = { type=>'{',nam=>'xcpd',val=>'text()',att=>'' };
 
-    $howto{'cbd_equivs'} = { nam=>'equivs',val=>'{' };
-    $howto{'cbd_equiv'} = { nam=>'equiv',val=>'text()',att=>'-xml:id', };
+    $howto{'cbd_equivs'} = { nam=>'equivs',val=>'[' };
+    $howto{'cbd_equiv'} = { type=>'{',nam=>'equiv',val=>'text()',att=>'-id', };
     
-    $howto{'cbd_bib'} = { type=>'#ignore', recurse=>'no' };
+    $howto{'cbd_bib'} = { nam=>'bib',val=>'[',att=>'' };
+    $howto{'cbd_ref'} = { type=>'{',nam=>'ref',val=>'text',att=>'' };
 
     $howto{'cbd_s'} = { type=>'#ignore', recurse=>'no' };
     $howto{'cbd_t'} = { type=>'#ignore', recurse=>'no' };
