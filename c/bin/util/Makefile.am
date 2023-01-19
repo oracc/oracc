@@ -20,7 +20,7 @@ bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
 	newext oraccopt pqunion sigfixer sigmap signiary xmlnl \
 	xmlns xmlsplit utf8v xalias xfrag filesize listdir \
 	xns xisdb wid2err rootnode wid2lem xis2json linksets \
-	xtfsigs
+	xtfsigs oxg
 
 #pqoutline pqsort xml2json
 
@@ -56,6 +56,9 @@ newext_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 oraccopt_SOURCES=oraccopt.c
 oraccopt_LDADD = @top_srcdir@/c/lib/liboracc.la
+
+oxg_SOURCES=oxg.c
+oxg_LDADD = @top_srcdir@/c/lib/liboracc.la
 
 #pqoutline_SOURCES=pqoutline.c otlenum.h
 #pqoutline_LDADD = ../expat/libexpat.la @top_srcdir@/c/lib/liboracc.la

@@ -56,7 +56,7 @@ toTSV {
 		$pk =~ tr//;/;
 		#		Encode::_utf8_on($pk);
 		#		Encode::_utf8_on($pv);
-		Encode::_utf8_off($pv) if $pk =~ /;(name|uchar)$/;
+		Encode::_utf8_off($pv) if $pk =~ /;(map|name|uchar)$/;
 		# warn "printing $pk\t$pv\n";
 		print "$pk\t$pv\n"
 	    }

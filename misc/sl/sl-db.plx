@@ -126,8 +126,10 @@ foreach my $q ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
     my $qm = $q->getAttribute('qm');
     my $type = $q->getAttribute('type');
     my $base = $q->getAttribute('base');
+    my $p = $q->getAttribute('p');
     # warn "setting values $qn to $type\n";
     $values{$qn} = $type;
+    $values{"$qn;p"} = $p;
     push(@{$values{$qn,'map'}}, $qm) if $qm;
     my $qv = $qn; $qv =~ s/\(.*$//;
     push @{$values{$qv,'qual'}}, $qn;
@@ -310,7 +312,7 @@ dump_db {
 	my $dbk = $k;
 	Encode::_utf8_off($dbk);
 	# sort the values here if the key otherwise contains a \^
-	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode|qbase|sign|form|list|v)$/) {
+	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode|qbase|sign|form|list|v|p)$/) {
 	    my $v = $values{$k};
 	    Encode::_utf8_off($v);
 	    $db{$dbk} = $v;

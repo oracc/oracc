@@ -372,25 +372,25 @@ sub compute_qualified {
 	my $xs = xmlify($curr_sign);
 	foreach my $v (grep /ₓ$/, keys %{$v{'#signv'}}) {
 	    my $xv = xmlify($v);
-	    push @qs, "<q type=\"must\" qn=\"$xv($xs)\"/>";
+	    push @qs, "<q type=\"must\" qn=\"$xv($xs)\" p=\"$sid\"/>";
 	    if ($v{'#signl'}) {
 		foreach my $l (@{$v{'#signl'}}) {
 		    next if $l eq $curr_sign;
 		    my $xl = xmlify($l);
-		    push @qs, "<q type=\"map\" qn=\"$xv($xl)\" qm=\"$xv($xs)\"/>";
+		    push @qs, "<q type=\"map\" qn=\"$xv($xl)\" qm=\"$xv($xs)\" p=\"$sid\"/>";
 		}
 	    }
 	}
 	foreach my $v (grep !/ₓ$/, keys %{$v{'#signv'}}) {
 #	    warn "compute_qualified $v\n";
 	    my $xv = xmlify($v);
-	    push @qs, "<q type=\"map\" qn=\"$xv($xs)\" qm=\"$xv\"/>";
+	    push @qs, "<q type=\"map\" qn=\"$xv($xs)\" qm=\"$xv\" p=\"$sid\"/>";
 	    if ($v{'#signl'}) {
 #		warn "processing #signl for $v\n";
 		foreach my $l (@{$v{'#signl'}}) {
 		    next if $l eq $curr_sign;
 		    my $xl = xmlify($l);
-		    push @qs, "<q type=\"map\" qn=\"$xv($xl)\" qm=\"$xv\"/>";
+		    push @qs, "<q type=\"map\" qn=\"$xv($xl)\" qm=\"$xv\" p=\"$sid\"/>";
 		}
 	    }
 	}
@@ -407,6 +407,7 @@ sub compute_qualified {
 		#    it is in the @sign's values
 		#    it applies to more than one @form
 		foreach my $fv (@fv) {
+		    next if $fv eq '#forml';
 		    my $fvbase = $fv; $fvbase =~ tr/₀-₉ₓ//d;
 		    next if $seen{$fvbase}++;
 		    if ($fv =~ /ₓ$/ || ($v{'#signv'} && ${$v{'#signv'}}{$fv}) || $#{$v{$fv}}) {
@@ -414,7 +415,7 @@ sub compute_qualified {
 			# must be qualified
 			$fv = xmlify($fv);
 			$f = xmlify($f);
-			push @qs, "<q type=\"must\" qn=\"$fv($f)\"/>";
+			push @qs, "<q type=\"must\" qn=\"$fv($f)\" p=\"$sid\"/>";
 			if (${$v{$f}}{'#forml'}) {
 			    foreach my $fl (@{${$v{$f}}{'#forml'}}) {
 				next if $fl eq $f;
@@ -450,12 +451,12 @@ sub compute_qualified {
 		foreach my $sv (@sv) {
 		    $sv = xmlify($sv);
 		    $f = xmlify($f);
-		    push @qs, "<q type=\"must\" qn=\"$sv($f)\"/>";
+		    push @qs, "<q type=\"must\" qn=\"$sv($f)\" p=\"$sid\"/>";
 		    if (${$v{$f}}{'#forml'}) {
 			foreach my $fl (@{${$v{$f}}{'#forml'}}) {
 			    next if $fl eq $f;
 			    my $xfl = xmlify($fl);
-			    push @qs, "<q type=\"map\" qn=\"$sv($xfl)\" qm=\"$sv($f)\"/>";
+			    push @qs, "<q type=\"map\" qn=\"$sv($xfl)\" qm=\"$sv($f)\" p=\"$sid\"/>";
 			}
 		    }
 		}

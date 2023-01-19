@@ -9,16 +9,22 @@ use lib "$ENV{'ORACC_BUILDS'}/lib";
 
 use Getopt::Long;
 
+my $asl = '';
+my $stdin = 0;
+
 GetOptions(
+    s=>\$stdin,
     );
 
 # add @list entries from ogsl--only if they aren't already in the
 # .asl named on the command line
 
-my $asl = shift @ARGV;
-
-die "$0: no asl on command line. Stop.\n" unless $asl;
-die "$0: unreadable asl $asl. Stop.\n" unless -r $asl;
+unless ($stdin) {
+    $asl = shift @ARGV;
+    
+    die "$0: no asl on command line. Stop.\n" unless $asl;
+    die "$0: unreadable asl $asl. Stop.\n" unless -r $asl;
+}
 
 my $ogsl = "$ENV{'ORACC_BUILDS'}/ogsl/00lib/ogsl.asl";
 die "$0: can't find $ogsl. Stop.\n" unless -r $ogsl;
@@ -38,9 +44,17 @@ while (<O>) {
 }
 close(O);
 
+my @asl_in = ();
+if ($stdin) {
+    @asl_in = (<>);
+} else {
+    open(A,$asl) || die "$0: failed to open $asl. Stop\n";
+    @asl_in = (<A>);
+    close(A);
+}
+
 my @asl = ();
-open(A,$asl) || die "$0: failed to open $asl. Stop\n";
-while (<A>) {
+foreach (@asl_in) {
     if (/^\@(sign|form)\s+(.*?)\s*$/) {
 	$curr = $1;
 	push @asl, $_;
@@ -50,7 +64,6 @@ while (<A>) {
 	push @asl, $_;
     }
 }
-close(A);
 
 foreach my $a (@asl) {
     print $a;
@@ -65,6 +78,9 @@ foreach my $a (@asl) {
 	}
 	print map { "\@list $_\n" } sort keys %l;
     }
+}
+
+sub do_list {
 }
 
 1;
