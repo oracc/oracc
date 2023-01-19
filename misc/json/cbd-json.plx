@@ -121,8 +121,11 @@ glossary_howtos {
     $howto{'cbd_see-compounds'} = { type=>'#ignore' };
     $howto{'cbd_xcpd'} = { type=>'#ignore' };
 
-    $howto{'cbd_equivs'} = { type=>'#ignore', recurse=>'no' };
+    $howto{'cbd_equivs'} = { nam=>'equivs',val=>'{' };
+    $howto{'cbd_equiv'} = { nam=>'equiv',val=>'text()',att=>'-xml:id', };
+    
     $howto{'cbd_bib'} = { type=>'#ignore', recurse=>'no' };
+
     $howto{'cbd_s'} = { type=>'#ignore', recurse=>'no' };
     $howto{'cbd_t'} = { type=>'#ignore', recurse=>'no' };
     $howto{'cbd_text'} = { type=>'#ignore', recurse=>'no' };
