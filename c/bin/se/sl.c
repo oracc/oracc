@@ -9,7 +9,7 @@
 #include <dbi.h>
 #include <oracclocale.h>
 
-static char *db = NULL, *project = NULL;
+static char *db = NULL, *project = NULL, *name = NULL;
 static char *key;
 static int human_readable = 0;
 static const char *oracc = NULL;
@@ -91,16 +91,18 @@ main(int argc, char **argv)
 
   setlocale(LC_ALL,ORACC_LOCALE);
   
-  options(argc, argv, "hk:p:u8");
+  options(argc, argv, "hk:p:n:u8");
 
   /* Figure out the db and open it */
   if (!project)
     project = "ogsl";
+  if (!name)
+    name = "ogsl";
 
   oracc = oracc_home();
   db = malloc(strlen(oracc)+strlen("/pub/sl/") + strlen(project) + 1);
   sprintf(db, "%s/pub/%s/sl", oracc, project);
-  if ((dbi = dbi_open(project, db)))
+  if ((dbi = dbi_open(name, db)))
     {
       /* do the look up or sit or enter stdin_mode */
       if (key)
@@ -141,6 +143,9 @@ int opts(int argc, char *arg)
       break;
     case 'k':
       key = arg;
+      break;
+    case 'n':
+      name = arg;
       break;
     case 'p':
       project = arg;

@@ -15,6 +15,8 @@ my $caller = '';
 my $extension = '';
 my $grapheme = '';
 my $project = 'ogsl';
+
+my $ixname = '';
 my $ixproject = '';
 
 GetOptions(
@@ -28,19 +30,21 @@ $extension = '' if $extension eq 'sign';
 
 # If the project actually has a signlist use that, otherwise reset project to ogsl
 $ixproject = $project;
-if (-d "@@ORACC_BUILDS@@/pub/$ixproject/signlist") {
-    ; # OK
+if (-d "@@ORACC_BUILDS@@/pub/$ixproject/signlist/sl") {
+    set_ixname("$ixproject/signlist"); # OK
 } else {
     $ixproject =~ s#/signlist##;
-    if (-d "@@ORACC_BUILDS@@/pub/$ixproject/signlist") {
-	; # OK
+    if (-d "@@ORACC_BUILDS@@/pub/$ixproject/signlist/sl") {
+	set_ixname("$ixproject/signlist"); # OK
+    } elsif (-d "@@ORACC_BUILDS@@/pub/$ixproject/sl") {
+	set_ixname("$ixproject"); # OK
     } else {
-	$ixproject = 'ogsl';
+	$ixname = $ixproject = 'ogsl';
     }    
 }
 
 my $db_file = "@@ORACC@@/pub/$ixproject";
-my $db_name = $ixproject;
+my $db_name = $ixname;
 
 my $letterfile = "@@ORACC@@/pub/$ixproject/letters.tab";
 
@@ -221,6 +225,18 @@ if ($pr) {
 ##############################################################################
 
 sub
+set_ixname {
+    my $buildproj = "@@ORACC_BUILDS@@/pub/$_[0]";
+    warn "$0: trying $buildproj/sl/corpus.dbi to set ixname\n";
+    if (-r "$buildproj/sl/corpus.dbi") {
+	$ixname = 'corpus';
+	warn "$0: found ixname=corpus\n";
+    } else {
+	warn "$0: ixname not found\n";
+    }
+}
+
+sub
 sign_frame {
     inter_frame_divs();
     print "<iframe seamless=\"seamless\" class=\"sign-frame\" id=\"signframe\" src=\"/$project/signs/$_[0].html\"> </iframe>";
@@ -310,7 +326,7 @@ is_signlist {
 
 sub
 slse {
-    `@@ORACC@@/bin/sl -p $ixproject -k '$_[0]'`
+    `@@ORACC@@/bin/sl -n $ixname -p $ixproject -k '$_[0]'`
 }
 
 sub

@@ -36,6 +36,11 @@ else
 fi
 o2-glo.sh
 o2-xtf.sh $*
+corpussignlist=`oraccopt . corpus-signlist`
+if [ "$corpussignlist" == "yes" ]; then
+    echo $0: running o2-corpus-signlist.sh
+    o2-corpus-signlist.sh
+fi
 #o2-web.sh
 o2-web-corpus.sh
 #o2-prm.sh

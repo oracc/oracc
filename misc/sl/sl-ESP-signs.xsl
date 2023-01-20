@@ -147,7 +147,7 @@
 <xsl:template match="sl:glo-inst">
   <tr><td class="psl-eleft"><xsl:apply-templates/></td
   ><td class="psl-eright"
-  ><esp:link hide-print="yes" url="/epsd2/cbd/sux/{@ref}.html"><xsl:value-of select="@cfgw"/></esp:link
+  ><esp:link hide-print="yes" url="/{$project}/cbd/sux/{@ref}.html"><xsl:value-of select="@cfgw"/></esp:link
   ><xsl:if test="$with-stats='yes'"><xsl:value-of select="concat(' (',@icount,'× / ',@ipct,'%)')"/></xsl:if>
   </td
   ></tr>

@@ -47,7 +47,7 @@ my %sign_ids = (); sign_ids();
 
 open(SL,$asl) || die "sl-xml.plx: can't read signlist `$asl'\n";
 my $xl = $asl;
-$xl =~ s#00lib#02xml#;
+$xl =~ s#00lib#02xml# || $xl =~ s#01bld/csl.d#02xml#;
 $xl =~ s/\.a?sl$/-sl.xml/;
 
 open(XL,"|gdlme2 -bs>$xl") || die "sl-xml.plx: can't write to $xl";
