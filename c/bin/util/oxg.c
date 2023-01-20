@@ -16,11 +16,13 @@ extern FILE *f_log;
 static FILE *tab = NULL;
 
 int printing = 0;
+int xcl = 0;
 
 static char pqx[128];
 static char tlabel[128];
 static char lid[128];
 static char llabel[128];
+static char project[1024];
 
 static void
 sH(void *userData, const char *name, const char **atts)
@@ -29,21 +31,27 @@ sH(void *userData, const char *name, const char **atts)
     {
       strcpy(pqx, get_xml_id(atts));
       strcpy(tlabel, findAttr(atts, "n"));
+      strcpy(project, findAttr(atts, "project"));
       printing = 1;
+      xcl = 0;
     }
-  else if (!strcmp(name, "l") && printing)
+  else if (!xcl && !strcmp(name, "l"))
     {
       strcpy(lid, get_xml_id(atts));
       strcpy(llabel, findAttr(atts, "label"));
-      fprintf(tab,"%s\t%d\t%s\t%s\t%s\t%s\t",pi_file,pi_line,pqx,tlabel,lid,llabel);
+      fprintf(tab,"%s/%s\t%d\t%s\t%s\t%s\t%s\t",project,pi_file,pi_line,pqx,tlabel,lid,llabel);
+      printing = 1;
     }
-  else if (!strcmp(name, "g:c") || !strcmp(name, "g:q"))
+  else if (printing && (!strcmp(name, "g:c") || !strcmp(name, "g:q")))
     {
       fprintf(tab, "%s ", findAttr(atts, "form"));
-      printing = 0;
+      --printing;
     }
   else if (!strcmp(name, "xcl"))
-    printing = 0;
+    {
+      printing = 0;
+      xcl = 1;
+    }  
 }
 
 static void
@@ -58,7 +66,7 @@ eH(void *userData, const char *name)
       fprintf(tab, "%s ", (char*)charData_retrieve());
     }
   else if (!strcmp(name, "g:c") || !strcmp(name, "g:q"))
-    printing = 1;
+    ++printing;
   else
     charData_discard();
 }

@@ -36,7 +36,9 @@ my $curr = '';
 
 open(O, $ogsl) || die "$0: failed to open $ogsl. Stop\n";
 while (<O>) {
-    if (/^\@(?:sign|form)\s+(.*?)\s*$/) {
+    if (/^\@sign\s+(.*?)\s*$/) {
+	$curr = $1;
+    } elsif (/^\@form\s+\S+\s+(.*?)\s*$/) {
 	$curr = $1;
     } elsif (/^\@list\s+(.*?)\s*$/) {
 	push @{$lists{$curr}}, $1;
@@ -55,7 +57,10 @@ if ($stdin) {
 
 my @asl = ();
 foreach (@asl_in) {
-    if (/^\@(sign|form)\s+(.*?)\s*$/) {
+    if (/^\@sign\s+(.*?)\s*$/) {
+	$curr = $1;
+	push @asl, $_;
+    } elsif (/^\@form\s+\S+\s+(.*?)\s*$/) {
 	$curr = $1;
 	push @asl, $_;
     } elsif (/^\@list\s+(.*?)\s*$/) {
@@ -67,7 +72,7 @@ foreach (@asl_in) {
 
 foreach my $a (@asl) {
     print $a;
-    if ($a =~ /^\@(?:sign|form)\s+(.*?)\s*$/) {
+    if ($a =~ /^\@sign\s+(.*?)\s*$/ || $a =~ /^\@form\s+\S+\s+(.*?)\s*$/) {
 	my $sf = $1;
 	my %l = ();
 	if ($asl_lists{$sf}) {
