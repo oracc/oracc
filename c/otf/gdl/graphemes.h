@@ -22,6 +22,7 @@ struct grapheme
 {
   enum t_type type;
   unsigned char *atf;
+  unsigned char *catf; /* Corrected ATF (not "CDLI ATF"); for compounds like |DUG×TIN| where TIN should be DIN */
   union
   {
     struct simple { unsigned const char *base; } s;

@@ -19,6 +19,24 @@
 #include "gdl.h"
 #include "gsl.h"
 
+/* Structure for simultaneous rendering of original grapheme form and
+   canonicalized form */
+
+#undef NEW_RENDER
+
+#if 0
+#define RBUF_MAX 1023
+
+static struct rbuf {
+  unsigned char obuf[RBUF_MAX+1]; /* original form */
+  unsigned char cbuf[RBUF_MAX+1]; /* canonicalized form */
+  unsigned char *oip;	    /* original buf insert point */
+  unsigned char *cip;       /* canonicalized buf insert point */
+} rbufs;
+static void rbuf_reset(struct rbuf *rbp);
+#endif
+
+static int render_canonically = 0;
 static int suppress_psl_id = 0;
 static int rg_verbose = 0;
 extern int math_mode, saa_mode;
@@ -125,6 +143,17 @@ static struct grapheme *qualified(register unsigned char *g);
 static struct grapheme *singleton(register unsigned char *g, enum t_type type);
 static struct grapheme *icmt_grapheme(const unsigned char *icmt);
 static const unsigned char *signify(const unsigned char *utf);
+
+#if 0
+static struct
+rbuf_reset(struct rbuf *rbp)
+{
+  *rbp->obuf = '\0';
+  rbp->oip = rbp->obuf;
+  *rbp->cbuf = '\0';
+  rbp->cip = rbp->cbuf;
+}
+#endif
 
 /* These grapheme allocations are cleared after every text; if they
    need to be preserved across a run use a hash and new memory for the
@@ -507,7 +536,10 @@ gparse(register unsigned char *g, enum t_type type)
   struct grapheme *gp = NULL;
   int bad_grapheme = 0;
   unsigned char *orig = pool_copy(g);
+  const unsigned char *signified = NULL;
   int ogsl_warned = 0;
+
+  render_canonically = compound_warnings;
   
   if (type == type_top)
     type = gtype(g);
@@ -672,6 +704,16 @@ gparse(register unsigned char *g, enum t_type type)
       gp = numerical(g);
       break;
     case g_s:
+      /* canonicalize sign names up here? */
+      if (render_canonically)
+	{
+	  signified = signify(g);
+	  if (signified && strcmp((char*)signified,(char*)g))
+	    {
+	      vnotice("coercing non-canonical sign-name %s to canonical %s", g, signified);
+	      g = (unsigned char *)signified;
+	    }
+	}
       if (is_signlist(g) && psl_is_sname(g))
 	{
 	  const char *gid = NULL;
@@ -944,7 +986,11 @@ gparse(register unsigned char *g, enum t_type type)
 	  static unsigned char buf[1024];
 	  unsigned char *insertp = buf;
 	  unsigned char *cleang = orig; /*, *tmpcg = NULL;*/
-	  
+
+#ifdef NEW_RENDER
+	  rbuf_reset(rbuf);
+#endif
+
 	  if (strpbrk((const char *)orig,bad_cg_chars))
 	    /*tmpcg = */cleang = gclean(cleang);
 	  
@@ -976,8 +1022,22 @@ gparse(register unsigned char *g, enum t_type type)
 		    {
 		      if (!psl_is_sname(buf))
 			{
-			  vwarning("%s: compound not in OGSL",buf);
-			  ogsl_warned = 1;
+#if 0
+			  static unsigned char cbuf[1024];
+			  unsigned char *cbufp = NULL;
+			  
+			  *cbuf = '\0';
+			  cbufp = cbuf;
+			  /*render_canonically = 1; */
+			  cbufp = render_g(gp->xml,cbufp,cbufp);
+			  *cbufp = '\0';
+			  render_canonically = 0;
+			  if (*cbuf)
+			    vwarning("%s: compound %s should be %s",buf,cbuf);
+			  else
+			    vwarning("%s: compound not in OGSL",buf);
+#endif
+			  /*ogsl_warned = 1;*/
 			}
 		    }
 		  else
@@ -987,23 +1047,6 @@ gparse(register unsigned char *g, enum t_type type)
 				 buf,curr_lang->signlist);
 		    }
 		}
-	      else if (gp->type == g_s)
-		{
-		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
-		    {
-		      /*const char *id = NULL;*/
-		      if (!psl_is_sname(buf) && compound_warnings) /* overload compound_warnings to cover sign names as well */
-			{
-			  const unsigned char *cattr = signify(buf);
-			  if (cattr)
-			    {
-			      vwarning("%s: sign name should be %s", buf, cattr);
-			    }
-			  else
-			    vwarning("%s: sign name not in OGSL",buf);
-			}
-		    }
-		  }
 
 	      appendAttr(gp->xml,gattr(a_form,buf));
 
@@ -1028,7 +1071,6 @@ gparse(register unsigned char *g, enum t_type type)
 		  static const unsigned char *cattr = NULL;
 		  const char *showerr = "yes";
 		  const unsigned char *input = NULL;
-#if 1
 		  if (gp->type == g_q)
 		    cattr = signify(input = gp->g.q.q->atf);
 		  else if (gp->type == g_n)
@@ -1055,24 +1097,7 @@ gparse(register unsigned char *g, enum t_type type)
 		    }
 		  else
 		    cattr = signify(input = buf);
-#else
-		  if (*buf) /* always use buf now because it includes modifiers */
-		    cattr = signify(input = buf);
-		  else if (gp->type == g_q)
-		    {
-			{
 
-			    {
-			    }
-			  else
-			    cattr = signify(input = gp->g.q.q->atf);
-			}
-		      else
-			cattr = signify(input = gp->g.q.q->g.s.base);
-		    }
-		  else
-		    cattr = signify(input = buf);
-#endif
 		  if (cattr)
 		    appendAttr(gp->xml,gattr(a_g_sign,psl_get_sname(cattr)));
 		  else if (showerr && gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
@@ -1088,12 +1113,64 @@ gparse(register unsigned char *g, enum t_type type)
 	  if (!inner_parse)
 	    {
 	      static unsigned char buf[1024] = { '\0' };
-	      unsigned char *insertp = NULL;
+	      unsigned char *ibufp = NULL;
+	      const unsigned char *cattr = NULL;
 
+	      ibufp = buf;
+	      ibufp = render_g(gp->xml,ibufp,ibufp);
+	      *ibufp = '\0';
+
+	      if (do_signnames)
+		{
+		  const char *showerr = "yes";
+		  const unsigned char *input = NULL;
+		  cattr = NULL;
+		  if (gp->type == g_q)
+		    cattr = signify(gp->g.q.q->g.s.base);
+		  else if (gp->type == g_n)
+		    {
+		      if (!strchr((char*)gp->atf,'('))
+			{
+			  int n = atoi((char*)gp->atf);
+			  unsigned char *sx = sexify(n,"disz");
+			  if (sx)
+			    input = sx;
+			  else
+			    input = gp->atf;
+			  /* sign "15" becomes "1(u) 5(disz)" which breaks signify for now */
+			  if (!strchr((char*)input, ' '))
+			    cattr = signify(input);
+			  else
+			    {
+			      showerr = NULL;
+			      cattr = NULL;
+			    }
+			}
+		    }
+		  else
+		    cattr = signify(buf);
+		  
+		  if (cattr)
+		    appendAttr(gp->xml,gattr(a_g_sign,psl_get_sname(cattr)));
+
+		  if (gp->type == g_s)
+		    {
+		      if (cattr)
+			{
+			  /* fprintf(stderr, "signify(%s) => %s\n", buf, cattr); */
+			  if (strcmp((const char*)cattr,(const char*)buf)
+			      && compound_warnings) /* overload compound_warnings to cover sign names as well */
+			    {
+			      vwarning("%s: sign name should be %s", buf, cattr);
+			    }
+			}
+		      else
+			vwarning("%s: sign name not in OGSL",buf);
+		    }
+		}
+	      
 	      if (do_cuneify && cuneifiable(curr_lang))
 		{
-		  insertp = render_g(gp->xml,buf,buf);
-		  *insertp = '\0';
 		  if (cbd_rules)
 		    {
 		      unsigned char *a = utf2atf(buf);
@@ -1110,16 +1187,6 @@ gparse(register unsigned char *g, enum t_type type)
 		      if (cattr)
 			appendAttr(gp->xml,gattr(a_g_utf8,cattr));
 
-		      if (do_signnames)
-			{
-			  cattr = NULL;
-			  if (gp->type == g_q)
-			    cattr = signify(gp->g.q.q->g.s.base);
-			  else
-			    cattr = signify(buf);
-			  if (cattr)
-			    appendAttr(gp->xml,gattr(a_g_sign,psl_get_sname(cattr)));
-			}
 		    }
 		  else
 		    {
@@ -1140,14 +1207,46 @@ gparse(register unsigned char *g, enum t_type type)
 		}
 	      if (f_graphemes)
 		{
-		  if (!insertp)
+		  if (!ibufp)
 		    {
-		      insertp = render_g(gp->xml,buf,buf);
-		      *insertp = '\0';
+		      ibufp = render_g(gp->xml,buf,buf);
+		      *ibufp = '\0';
 		    }
 		  fprintf(f_graphemes,"%s ",buf);
 		}
 	    }
+	  else
+	    {
+	      /* insider inner_parse */
+	      if (gp->type == g_s)
+		{
+		  static unsigned char ibuf[1024] = { '\0' };
+		  unsigned char *ibufp = NULL;
+
+		  ibufp = ibuf;
+		  ibufp = render_g(gp->xml,ibufp,ibufp);
+		  *ibufp = '\0';
+
+		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
+		    {
+		      const unsigned char *cattr = signify(ibuf);
+
+		      if (strcmp((const char*)cattr,(const char*)ibuf)
+			   && compound_warnings) /* overload compound_warnings to cover sign names as well */
+			{
+			  if (cattr)
+			    {
+			      vwarning("%s: compound sign name element should be %s", ibuf, cattr);
+			      if (render_canonically)
+				strcpy((char *)ibufp, (char*)cattr);
+			    }
+			  else
+			    vwarning("%s: compound sign name element not in OGSL",ibuf);
+			}
+		    }
+		}
+	    } 
+	    
 	}
 
       /* FIXME: this allows instance attributes to be put onto the
@@ -2258,7 +2357,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
   const unsigned char *aval;
   extern int suppress_next_hyphen, suppress_hyphen_delay;
   static int depth = 0, last_was_excised = 0;
-
+  
   ++depth;
   
   if (rg_verbose && np)
@@ -2273,13 +2372,6 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
   if (!xstrcmp(getAttr(np, "g:status"),"excised")
       || (!xstrcmp(np->names->pname, "g:x") && strcmp("ellipsis", (const char*)getAttr(np,"g:type"))))
     {
-      /* This is probably never right any more, because those '.' and '-' have 
-       * been put there by a g:delim attr which knows what it is doing 
-       */
-#if 0
-      if (insertp > startp && (insertp[-1] == '.' || insertp[-1] == '-'))
-	*--insertp = '\0';
-#endif
       if (!xstrcmp(getAttr(np, "g:status"),"excised"))
 	last_was_excised = 1;
       return insertp;
