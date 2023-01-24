@@ -29,6 +29,10 @@ sl-index.c: sl-index.c.in
 
 bin_PROGRAMS=se masktest sedbg wmapper wmdebug wm ce_xtf ce2 sl sl-index
 
+noinst_LTLIBRARIES=libsl.la
+
+libsl_la_SOURCES = sllib.c
+
 #v2
 #v2_SOURCES=v2.c
 #v2_LDADD=@top_srcdir@/c/lib/liboracc.la
