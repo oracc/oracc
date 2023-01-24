@@ -36,6 +36,7 @@ static struct rbuf {
 static void rbuf_reset(struct rbuf *rbp);
 #endif
 
+static int cw_warned = 0;
 static int render_canonically = 0;
 static int suppress_psl_id = 0;
 static int rg_verbose = 0;
@@ -53,6 +54,8 @@ extern int gdl_grapheme_sign_names;
 extern List *gdl_sig_deep;
 extern List *gdl_sig_list;
 extern List *gdl_sign_names;
+static List *cw_proper_c = NULL; /* List to build canonical (proper) version of compound */
+static unsigned char *proper_c = NULL;
 
 const unsigned char *cued_gdelim = NULL;
 
@@ -333,6 +336,11 @@ gmods(register unsigned char *g, struct mods *modsbuf)
 		}
 	    }
 	  *datap = '\0';
+	  if (cw_proper_c)
+	    {
+	      list_add(cw_proper_c, "@");
+	      list_add(cw_proper_c, npool_copy((const unsigned char *)&mp->data, graphemes_pool));
+	    }
 	  ++mp;
 	  break;
 	case '~':
@@ -362,6 +370,11 @@ gmods(register unsigned char *g, struct mods *modsbuf)
 	      return -1;
 	    }
 	  *datap = '\0';
+	  if (cw_proper_c)
+	    {
+	      list_add(cw_proper_c, "~");
+	      list_add(cw_proper_c, npool_copy((const unsigned char *)&mp->data, graphemes_pool));
+	    }
 	  ++mp;
 	  break;
 	case '\\':
@@ -705,15 +718,22 @@ gparse(register unsigned char *g, enum t_type type)
       break;
     case g_s:
       /* canonicalize sign names up here? */
-      if (render_canonically)
+      /*fprintf(stderr, "g_s: reached with g=%s; local_render=%d\n", g, local_render);*/
+      if (compound_warnings)
 	{
 	  signified = signify(g);
 	  if (signified && strcmp((char*)signified,(char*)g))
 	    {
-	      vnotice("coercing non-canonical sign-name %s to canonical %s", g, signified);
-	      g = (unsigned char *)signified;
+	      /* vnotice("coercing non-canonical sign-name %s to canonical %s", g, signified); */
+	      /* g = (unsigned char *)signified; */
+	    }
+	  if (cw_proper_c && signified)
+	    {
+	      /* fprintf(stderr, "g_s: adding %s to cw_proper_c\n", signified); */
+	      list_add(cw_proper_c, npool_copy(signified, graphemes_pool));
 	    }
 	}
+      
       if (is_signlist(g) && psl_is_sname(g))
 	{
 	  const char *gid = NULL;
@@ -962,8 +982,11 @@ gparse(register unsigned char *g, enum t_type type)
 	      else
 		{
 		  if (qualifier_warnings)
-		    vnotice("value %s is qualified with %s but expected %s",
-			    value,qual,vname);
+		    {
+		      if (strcmp((const char *)qual,(const char*)vname))
+			vnotice("value %s is qualified with %s but expected %s",
+				value,qual,vname);
+		    }
 		}
 	    }
 #if 0 /* this is redundant because of earlier sign name checks */
@@ -1022,22 +1045,14 @@ gparse(register unsigned char *g, enum t_type type)
 		    {
 		      if (!psl_is_sname(buf))
 			{
-#if 0
-			  static unsigned char cbuf[1024];
-			  unsigned char *cbufp = NULL;
-			  
-			  *cbuf = '\0';
-			  cbufp = cbuf;
-			  /*render_canonically = 1; */
-			  cbufp = render_g(gp->xml,cbufp,cbufp);
-			  *cbufp = '\0';
-			  render_canonically = 0;
-			  if (*cbuf)
-			    vwarning("%s: compound %s should be %s",buf,cbuf);
-			  else
-			    vwarning("%s: compound not in OGSL",buf);
-#endif
-			  /*ogsl_warned = 1;*/
+			  if (proper_c && strcmp((const char *)proper_c, (const char *)buf))
+			    {
+			      if (psl_is_sname(proper_c))
+				vwarning("compound %s should be %s", buf, proper_c);
+			      else
+				vwarning("no such compound as %s or %s", buf, proper_c);
+			      cw_warned = 1;
+			    }
 			}
 		    }
 		  else
@@ -1217,16 +1232,14 @@ gparse(register unsigned char *g, enum t_type type)
 	    }
 	  else
 	    {
-	      /* insider inner_parse */
+	      /* inside inner_parse */
 	      if (gp->type == g_s)
 		{
 		  static unsigned char ibuf[1024] = { '\0' };
 		  unsigned char *ibufp = NULL;
-
 		  ibufp = ibuf;
 		  ibufp = render_g(gp->xml,ibufp,ibufp);
 		  *ibufp = '\0';
-
 		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
 		    {
 		      const unsigned char *cattr = signify(ibuf);
@@ -1258,11 +1271,13 @@ gparse(register unsigned char *g, enum t_type type)
 	  appendAttr(gp->xml,gattr(a_g_o,ucc(cued_opener)));
 	  *cued_opener = '\0';
 	}
-      if (gp->type == g_c)
+      if (gp->type == g_c && !cw_warned)
 	{
 	  unsigned const char *form = getAttr(gp->xml,"form");
-	  if (!psl_is_sname(form) && qualifier_warnings && !ogsl_warned)
-	    vnotice("unknown compound sign %s",form);
+	  if (!psl_is_sname(form) && qualifier_warnings)
+	    {
+	      vnotice("[cw1] unknown compound sign %s",form);
+	    }
 	}
       else if (gp->type == g_v && !inner_parse)
 	{
@@ -1431,6 +1446,13 @@ compound(register unsigned char *g)
   struct grapheme *gp = galloc();
   unsigned const char *gid = NULL;
   int status = 0;
+  
+  if (compound_warnings)
+    {
+      cw_proper_c = list_create(LIST_SINGLE);
+      list_add(cw_proper_c, "|");
+    }
+  
   gp->type = g_c;
   gp->xml = gelem(gtags[g_c],NULL,lnum,GRAPHEME);
   if ((gid = (unsigned const char *)psl_get_id(g)))
@@ -1447,7 +1469,7 @@ compound(register unsigned char *g)
   else
     {
       if (gdl_strict_compound_warnings)
-	vwarning("unknown compound %s", g);
+	vwarning("[cw2] unknown compound %s", g);
       if (gdl_grapheme_sigs && !inner_qual)
 	{
 	  list_add(gdl_sig_list, "q99");
@@ -1459,6 +1481,14 @@ compound(register unsigned char *g)
   suppress_psl_id = 0;
   if (!status)
     {
+      if (compound_warnings)
+	{
+	  list_add(cw_proper_c, "|");
+	  proper_c = list_concat(cw_proper_c);
+	  list_free(cw_proper_c, NULL);
+	  cw_proper_c = NULL;
+	}
+      
       if (gp->xml->children.lastused == 1)
 	{
 	  warning("unnecessary pipes");
@@ -1561,6 +1591,8 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	      appendChild(parent,np);
 	      if (gdl_grapheme_sigs)
 		list_add(gdl_sig_deep, "×");
+	      if (cw_proper_c)
+		list_add(cw_proper_c, "×");
 	      continue;
 	    }
 	  else if (isdigit(*endp) || ('N' == *endp && '(' == endp[1]))
@@ -1649,9 +1681,17 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	    {
 	    case '(':
 	      last_g = np = gelem(gtags[g_g],NULL,lnum,GRAPHEME);
+
+	      if (cw_proper_c)
+		list_add(cw_proper_c,"(");
+
 	      if (!cparse(np,g+1,')',&eptr))
 		{
 		  unsigned char *mods = NULL;
+
+		  if (cw_proper_c)
+		    list_add(cw_proper_c,")");
+
 		  if (np->children.lastused == 1)
 		    {
 		      warning("unnecessary group in pipes");
@@ -1714,6 +1754,10 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	      }
 	      if (gdl_grapheme_sigs)
 		list_add(gdl_sig_deep,"×");
+
+	      if (cw_proper_c)
+		list_add(cw_proper_c,"×");
+		
 	      break;
 	    case '.':
 	    case ':':
@@ -1730,10 +1774,32 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		  vwarning("%c: compound grapheme must not end with boundary",
 			   g[0]);
 		}
+	      if (cw_proper_c)
+		{
+		  if (*g == '.' || *g == ':')
+		    list_add(cw_proper_c, ".");
+		  else
+		    {
+		      switch (*g)
+			{
+			case '&':
+			  list_add(cw_proper_c, "&");
+			  break;
+			case '@':
+			  list_add(cw_proper_c, "@");
+			  break;
+			case '%':
+			  list_add(cw_proper_c, "%");
+			  break;
+			default:
+			  break;
+			}
+		    }
+		}
 	      if (gdl_grapheme_sigs)
 		{
 		  if (')' == end && (*g == '.' || *g == ':' || *g == '+'))
-		    list_add(gdl_sig_deep, "+");
+		      list_add(gdl_sig_deep, "+");
 		  if (*g == '&')
 		    list_add(gdl_sig_deep, "&");
 		  else if (*g == '@')
