@@ -250,8 +250,8 @@ printHTMLStart(struct frag *frag)
 	  "<link rel=\"shortcut icon\" type=\"image/ico\" href=\"/favicon.ico\" />\n"
 	  "<link rel=\"stylesheet\" type=\"text/css\" href=\"/%s/css/p3colours.css\" media=\"screen\"/>\n"
 	  "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/p3.css\" media=\"screen\"/>\n"
-	  "<script src=\"/js/p3.js\" type=\"text/javascript\"> </script>\n",
-	  "<script src=\"https://code.jquery.com/jquery-3.2.1.min.js\" type=\"text/javascript\"><![CDATA[ ]]></script>",
+	  "<script src=\"/js/p3.js\" type=\"text/javascript\"> </script>\n"
+	  "<script src=\"https://code.jquery.com/jquery-3.2.1.min.js\" type=\"text/javascript\"><![CDATA[ ]]></script>\n",
 	  frag->cop->title ? frag->cop->title : project, project);
   if (frag->cop->ga)
     {
