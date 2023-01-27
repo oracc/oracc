@@ -37,8 +37,8 @@ GetOptions(
 #
 # ;f form
 # ;l list
-# ;n number
-# ;p punctuation
+# ;n number		(not yet implemented)
+# ;p punctuation	(not yet implemented)
 # ;s sign
 # ;v value
 # 
@@ -104,7 +104,7 @@ GetOptions(
 # A form also has an OID:par field which gives a space-separated list
 # of the signs under which it appears as a form.
 #
-# ;par
+# ;parents
 #
 # This is a change in SLDB2; formerly ;p was used with a qv to get the
 # parent sign and ensured that the result was a singleton OID not a
@@ -128,13 +128,15 @@ GetOptions(
 #
 # saŋ;h o0000518/1 o0000434/4 o0000485/5 o0002837/5 o0002477/0 o0002519/0
 #
+# The VBASE can also be a list abbreviation such as LAK in which case
+# the list gives the list entries that are entered in the signlist.
+#
 
 #
 # There are several fields specific to cs compounds.
 #
-# OID;incs	space-separated list of OIDs of cs entries that contain this OID
+# OID;cmemb	space-separated list of OIDs of cs entries that contain this OID
 # OID;cinit	space-separated list of OIDs of cs entries that start with this OID
-#?OID;cinner	space-separated list of OIDs of cs entries that contain this OID in medial position? needed?
 # OID;clast	space-separated list of OIDs of cs entries that end with this OID
 # OID;contains	OID is a container sign; list of space-separated OIDs that are part of contained sequences
 # OID;contained	OID is a contained sign; list of space-separated OIDs that are containers of OID
@@ -227,7 +229,8 @@ foreach my $q ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
     my $base = $q->getAttribute('base');
     my $p = $q->getAttribute('p');
     # warn "setting values $qn to $type\n";
-    $values{$qn} = $type unless $type eq 'map';
+    # $values{$qn} = $type unless $type eq 'map';
+    $values{$qn,'qv'} = $type if $type eq 'must';
     # $values{"$qn;p"} = $p;
     # push(@{$values{$qn,'map'}}, $qm) if $qm;
     my $qv = $qn; $qv =~ s/\(.*$//;
@@ -258,9 +261,9 @@ add_comp {
     my($id,$cg) = @_;
 #    warn "add_comp $id ", $cg->toString(), "\n";
     my $atf = $cg->getAttribute('form');
-    $values{$atf} = $id;
+    $values{$atf,'cs'} = $id;
     if ($atf =~ tr/\|//d) {
-	$values{$atf} = $id;
+	$values{$atf,'cs'} = $id;
     }
 #    push @{$values{$id,'values'}}, "|$atf|";
 #    my @g = $cg->getElementsByTagNameNS($gdl_uri,'g');
@@ -279,7 +282,7 @@ add_comp_children {
 	    my $g = $g[$i];
 	    my $n = $g->nextSibling();
 	    my $gt = gtext($g,$n,$id);
-	    push @{$values{$gt,'c'}}, $id;
+	    push @{$values{$gt,'cmemb'}}, $id;
 	    if ($i == 0) {
 		push @{$values{$gt,'cinit'}}, $id;
 	    } elsif ($i == $#g) {
@@ -410,7 +413,7 @@ dump_db {
 	my $dbk = $k;
 	Encode::_utf8_off($dbk);
 	# sort the values here if the key otherwise contains a \^
-	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode|s|f|l|v|p)$/) {
+	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode|s|f|l|v|p|cs|qv)$/) {
 	    my $v = $values{$k};
 	    Encode::_utf8_off($v);
 	    $db{$dbk} = $v;
@@ -424,7 +427,9 @@ dump_db {
 	    my $str = fsort(@{$values{$k}});
 	    $db{$k} = $str;
 	} elsif ($dbk =~ //) {
-	    my $v = join(' ', sort uniq(grep(defined,@{$values{$k}}))); # FIXME: shouldn't be necessary to grep out defined
+	    # FIXME: shouldn't be necessary to grep out defined
+	    # warn "dbk = $dbk\n";
+	    my $v = join(' ', sort uniq(grep(defined,@{$values{$k}})));
 	    Encode::_utf8_off($v);
 	    $db{$dbk} = $v;
 	} else {
@@ -454,7 +459,13 @@ hsort {
     my @srt = @_;
     my @ret = ();
     foreach my $s (sort { vkey($a) <=> vkey($b) } @srt) {
-	push @ret, $$s[0].'/'.vkey($s);
+	my $vk = vkey($s);
+	if ($vk == 1) {
+	    push @ret, $$s[0];
+	} else {
+	    $vk = 0 if $vk == 1000;
+	    push @ret, $$s[0].'/'.$vk;
+	}
     }
     join(' ', @ret);
 }
@@ -481,7 +492,7 @@ vkey {
     }
 
     if ($v =~ /ₓ/) {
-	$num = 0;
+	$num = 1000;
     }
 
     $num;
@@ -524,6 +535,7 @@ subsign {
 	my $var = $node->getAttribute('var');
 	warn "FORM $sn in SIGN $values{$parent_id,'name'} has no VAR attribute\n" unless $var;
 	push @{$values{$parent_id,'forms'}}, [$id,$var];
+	push @{$values{$id,'parents'}}, $parent_id;
     }
 
     foreach my $c ($node->childNodes()) {
@@ -539,9 +551,10 @@ subsign {
 	    my $n = $c->getAttribute('n');
 	    my $n_orig = $n; $n_orig =~ tr/?//d;
 	    # $values{$n} = $id;
-	    $values{$n,'l'} = $id; # only list names given with @list get ';list'
+	    $values{$n,'l'} = $id; # only list names given with @list get ';l'
 	    $n =~ s/\d+[a-z]*$//;
 	    push @{$values{$n,'h'}}, [$id,$n_orig];
+	    push @{$values{$id,'lists'}}, $n; # or n_orig?
 	} elsif ($lname eq 'v') {
 	    my $dropped = $c->getAttribute('deprecated');
 	    next if $dropped and $dropped eq 'yes';
