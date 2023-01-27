@@ -12,7 +12,7 @@ sub
 toTSV {
     my $ix = shift;
     my $name = $$ix{'#name'};
-    my $tsv = "02pub/sl/$name-db.tsv";
+    my $tsv = $$ix{'tsv'} ? $$ix{'tsv'} : "02pub/sl/$name-db.tsv";
     open(TSV,">:raw", $tsv) || die "$0: failed to open $tsv. Stop.\n";
     select TSV;
 
@@ -56,8 +56,8 @@ toTSV {
 		$pk =~ tr//;/;
 		#		Encode::_utf8_on($pk);
 		#		Encode::_utf8_on($pv);
-		Encode::_utf8_off($pv) if $pk =~ /;(map|name|uchar)$/;
 		# warn "printing $pk\t$pv\n";
+		Encode::_utf8_off($pv) if $pk =~ /;(map|name|uchar|values)$/;
 		print "$pk\t$pv\n"
 	    }
 	}

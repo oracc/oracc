@@ -8,7 +8,7 @@ bin_SCRIPTS = sametlit.plx sl-cuneify.plx sl-db.plx sl-install.sh sl-pdf.sh \
 	sl-check.plx tlitsig.plx sl-ucode.plx sladdsig.plx slsig-stats.plx \
 	sigsort.plx sl-list-from-ogsl.plx sl-uniq-@list.plx \
 	csl-rep-invert.plx csl-non-ogsl-atf.plx csl-merge-forms.plx csl-tab2asl.plx \
-	sl-csl-signlist.sh sl-signdata.plx
+	sl-csl-signlist.sh sl-signdata.plx sl-db2.plx
 
 # cgibin_SCRIPTS=slse
 texdata_DATA = slmac.tex repmac.tex

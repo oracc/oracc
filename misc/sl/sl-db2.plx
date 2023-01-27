@@ -22,60 +22,14 @@ GetOptions(
     'boot'=>\$boot
     ) || usage_and_exit();
 
-# This database uses the value as the primary key, with extensions
-# to index homophones, containers, etc.  The value may be lower or
-# upper case depending on whether the key data is a value or a sign
-# name.
-#
-# The following extensions and cases are used:
-#
-#  <lower>		sign value
-#  <lower>,h    	sign value homophones (gi1, gi2, gi3 etc.)
-#  <lower>,aka    	sign value aliases (ga2 => ja2 etc.)
-#  <lower>,forms    	sign forms (KA×GU, URU×GU etc.)
-#
-#  <upper>		sign name
-#  <upper>,form		form name; may return more than one result
-#  <upper>,uchar       	sign in Unicode/utf8
-#  <upper>,ucode       	sign's Unicode hex code
-#  <upper>,c		sign names used in compounds
-#  <upper>,cinit	sign names used in initial position in compounds
-#  <upper>,clast	sign names used in final position in compounds
-#  <upper>,contains	sign names used as containers
-#  <upper>,contained	sign names used within containers
-#  <upper>,multi	sign names repeated two-up, crossed, etc.
-#  
-# In addition, the special convention m,<mod> is used as a key which
-# returns all the signs utilising a given mod, e.g., m,g returns all
-# gunufied signs.
-#
-# Besides the actual data, the db also contains the XHTML link code to
-# find the article for a sign by id; this is given under <id>,link.
 
-#
-# Update 2023-01-16
-#
-# The following fields take a SIGNNAME in first place:
-#
-# ;c         -- OIDs for compounds including this name
-# ;cinit     -- OIDs for compounds where name is in initial position
-# ;clast     -- OIDs for compounds where name is in final position
-# ;contains  -- OIDs for signs that appear contained by this name
-# ;contained -- OIDs for signs containing this name
-# ;multi     -- OIDs for combinations of name 2-up, crossed, etc.
-# 
-#
-# The following fields take an OID in first place
-#
-# OID:forms -- OIDs which are @form of this OID
-# OID:signs -- OIDs which are @sign parents of this OID as @form
-#
+### OGSL BUG: @sign BAR.AN @v kunga₂ @form |ŠU₂.AN| ... @sign |ŠU₂.AN| @v kunga₂ shouldn't be allowed
 
-############################################################################################################
+##########################################################################################
 #
 #                         SLDB2 (2023-01-26)
 #
-############################################################################################################
+##########################################################################################
 
 # In SLDB2 type keys are single-letter. Key-base is a transliteration
 # component and the value is an OID.
@@ -116,10 +70,10 @@ GetOptions(
 # Data associated with a sign or form is stored in the following
 # fields where the key is the OID of the @sign or @form:
 #
-# ;name
+# <empty> 	an OID with no field has name of the sign or form as value
 # ;signs
-# ;uchar
-# ;ucode
+# ;uchar	the unicode value as UTF-8
+# ;ucode	the unicode value as hex
 #
 
 #
@@ -243,7 +197,7 @@ if ($boot) {
 	warn "sl-db.plx: must either give db-name or '-boot' on command line. Stop.\n";
 	exit 1;
     }
-    $dbname = "$dbbase-db";
+    $dbname = "$dbbase-db2";
     $sl_xml = "02xml/$dbbase-sl.xml";
 }
 
@@ -273,19 +227,19 @@ foreach my $q ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
     my $base = $q->getAttribute('base');
     my $p = $q->getAttribute('p');
     # warn "setting values $qn to $type\n";
-    $values{$qn} = $type;
-    $values{"$qn;p"} = $p;
-    push(@{$values{$qn,'map'}}, $qm) if $qm;
+    $values{$qn} = $type unless $type eq 'map';
+    # $values{"$qn;p"} = $p;
+    # push(@{$values{$qn,'map'}}, $qm) if $qm;
     my $qv = $qn; $qv =~ s/\(.*$//;
-    push @{$values{$qv,'qual'}}, $qn;
+    # push @{$values{$qv,'qual'}}, $qn;
     my $q0 = $qv; $q0 =~ tr/₀-₉ₓ⁻⁺//d; $q0 .= '₀';
-    push @{$values{$q0,'qual'}}, $qn;
-    $values{$qv,'qbase'} = $base if $base;
+    # push @{$values{$q0,'qual'}}, $qn;
+    # $values{$qv,'qbase'} = $base if $base;
 }
 
-#add_aliases() if $do_aliases;
+## add_aliases() if $do_aliases; # this was already commented out in sldb1
 
-add_dumb_aliases();
+# add_dumb_aliases(); # this was still in use in sldb1
 
 dump_db();
 
@@ -339,7 +293,7 @@ add_comp_children {
 			push @{$values{$gt,'contains'}}, $id;
 			push @{$values{$ngt,'contained'}}, $id;
 		    } elsif ($gt eq $ngt) {
-			push @{$values{$gt,'multi'}}, $id;
+			# push @{$values{$gt,'multi'}}, $id;
 		    }
 		}
 		++$i; # don't gtext this node
@@ -446,18 +400,17 @@ add_dumb_aliases {
 sub
 dump_db {
     unlink "$dbdir/$dbname";
-#    tie(%db, 'NDBM_File', "$dbdir/$dbname", O_RDWR|O_CREAT|O_TRUNC, 0644) 
-    #	|| die "mk-pslu.plx: can't write $dbdir/$dbname\n";
     my $ixname = "\U$project". ' Index';
     my $ix = ORACC::SE::Indexer::index($dbbase,$ixname,'x1',0,
 				       [ qw/h aka c cinit clast contains contained forms multi mod link/ ],
 				       [], 0, 10000, 0, 1);
     my %db = %$ix;
+    $db{'tsv'} = "02pub/sl/$dbname.tsv";
     foreach my $k (keys %values) {
 	my $dbk = $k;
 	Encode::_utf8_off($dbk);
 	# sort the values here if the key otherwise contains a \^
-	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode|qbase|sign|form|list|v|p)$/) {
+	if ($dbk =~ /(?:link|name|atf|aka|uchar|ucode|s|f|l|v|p)$/) {
 	    my $v = $values{$k};
 	    Encode::_utf8_off($v);
 	    $db{$dbk} = $v;
@@ -466,15 +419,10 @@ dump_db {
 	    $db{$dbk} = $str;
 	    if ($k =~ /₊/) {
 		$k =~ s/h$//;
-#		print STDERR "mk-pslu.plx: h-str for $k = $str\n";
 	    }
 	} elsif ($dbk =~ /forms$/) {
 	    my $str = fsort(@{$values{$k}});
-	    $db{$dbk} = $str;
-	    if ($k =~ /₊/) {
-		$k =~ s/h$//;
-#		print STDERR "mk-pslu.plx: h-str for $k = $str\n";
-	    }
+	    $db{$k} = $str;
 	} elsif ($dbk =~ //) {
 	    my $v = join(' ', sort uniq(grep(defined,@{$values{$k}}))); # FIXME: shouldn't be necessary to grep out defined
 	    Encode::_utf8_off($v);
@@ -487,12 +435,7 @@ dump_db {
     }
 
     ORACC::SE::DBM::setdir($dbdir);
-#    ORACC::SE::XML::toXML(\%db);
     ORACC::SE::TSV::toTSV(\%db);
-#    ORACC::SE::DBM::create($db{'#name'});
-
-#    ORACC::SE::XML::toXML(\%db);
-#    use Data::Dumper; open(D,'>./02pub/pslu.dump'); binmode(D, ':raw'); print D Dumper(\%db); close(D);
     untie %db;
 }
 
@@ -529,16 +472,16 @@ vkey {
     my $v = $$x[1];
     my $num = 0;
 
-    if ($v =~ /([0-9₀₁₂₃₄₅₆₇₈₉]+)$/) {
+    if ($v =~ /([₀₁₂₃₄₅₆₇₈₉]+)$/) {
 	my $n = $1;
 	$n =~ tr/₀-₉/0-9/;
 	$num = $n;
     } else {
-	$num = 0;
+	$num = 1;
     }
 
     if ($v =~ /ₓ/) {
-	$num += 1000;
+	$num = 0;
     }
 
     $num;
@@ -595,8 +538,8 @@ subsign {
 	    # add the num entries (e.g. REC144)
 	    my $n = $c->getAttribute('n');
 	    my $n_orig = $n; $n_orig =~ tr/?//d;
-	    $values{$n} = $id;
-	    $values{$n,'list'} = $id; # only list names given with @list get ';list'
+	    # $values{$n} = $id;
+	    $values{$n,'l'} = $id; # only list names given with @list get ';list'
 	    $n =~ s/\d+[a-z]*$//;
 	    push @{$values{$n,'h'}}, [$id,$n_orig];
 	} elsif ($lname eq 'v') {
@@ -613,7 +556,7 @@ subsign {
 #		warn "duplicate value in ogsl-sl.xml: $v occurs in $values{$values{$v},'name'} and $sn\n"
 #		    unless !defined($v) || !length($v) || $v  =~ /ₓ/ || $v =~ /\.\.\./;
 	    } else {
-		$values{$v} = $id;
+		# $values{$v} = $id;
 		$values{$v,'v'} = $id;
 	    }
 	    push(@{$values{$id,'values'}}, $orig_v) if $v;
@@ -621,7 +564,7 @@ subsign {
 	    #   strip off the digits
 	    #   add the id to the entry $v,h
 	    my $v_orig = $v;
-	    $v =~ s/[₊₀-₉]*$//;
+	    $v =~ s/[ₓ₀-₉]*$//;
 	    push @{$values{$v,'h'}}, [$id,$v_orig];
 	} elsif ($lname eq 'name') {
 	    foreach my $gc (tags($c,$GDL,'c')) {
@@ -634,22 +577,23 @@ subsign {
     $xsn =~ tr/|//d;
 
     if ($mode == TOP) {
-	$values{$sn} = $id;
-	$values{$xsn} = $id;
-	$values{$sn,'sign'} = $id;
-	$values{$xsn,'sign'} = $id;
+	# $values{$sn} = $id;
+	# $values{$xsn} = $id;
+	$values{$sn,'s'} = $id;
+	# $values{$xsn,'sign'} = $id;
     } else {
 	if ($form_is_TOP) {
-	    $values{$sn} = $id;
-	    $values{$xsn} = $id;
+	    # $values{$sn} = $id;
+	    # $values{$xsn} = $id;
 	}
-	$values{$sn,'form'} = $id;
-	$values{$xsn,'form'} = $id;
+	$values{$sn,'f'} = $id;
+	# $values{$xsn,'form'} = $id;
     }
 
     $values{$id,'ucode'} = $ucode if $ucode;
     $values{$id,'uchar'} = $uchar if $uchar;
-    $values{$id,'name'} = $sn;
+    $values{$id} = $sn;
+    # $values{$id,'name'} = $sn;
 
     $id;
 }
