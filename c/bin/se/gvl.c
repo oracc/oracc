@@ -3,9 +3,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <npool.h>
+#include <hash.h>
+#include <ctype128.h>
+#include <atf.h>
+
 #include "gvl.h"
-#include "npool.h"
-#include "hash.h"
 
 static gvl_i *sl = NULL; /* sl is always the head of the list of signlist datasets, not necessarily the current one */
 static gvl_i *curr_sl = NULL; /* the sl that should be used for look up */
@@ -16,6 +19,71 @@ const char *(*gvl_lookup)(const char *key);
 static gvl_i *gvl_i_init_d(const char *name, Dbi_index *dbi);
 static gvl_i *gvl_i_init_h(const char *name, Hash_table *h);
 static void   gvl_i_term(const char *name);
+
+#define g_v "v"
+#define g_s "s"
+#define g_n "n"
+#define g_p "p"
+#define g_c "cs"
+#define g_q "qv"
+
+static int
+gnr(const char *g)
+{
+  return ((*g == 'n' || *g == 'N') && (g[1]=='(' || g[1]=='+')) ? '1' : 0;
+}
+
+static const char *
+gvl_type(const char *g)
+{
+  if ((*g > 127 || isalpha(*g) || *g == '\'') && !gnr(g))
+    {
+      if (strchr(g,'('))
+	{
+	  while (*g)
+	    if ('!' == *g)
+	      return g_v;
+	    else if ('(' == *g)
+	      return g_q;
+	    else
+	      ++g;
+	  abort(); /* can't happen */
+	}
+      else
+	{
+	  if (u_isupper(g))
+	    {
+	      g += mbtowc(NULL,(const char *)g,6);
+	      while (*g)
+		if (u_islower(g))
+		  return g_v;
+		else if (isdigit(*g) || '@' == *g || '~' == *g)
+		  break;
+		else
+		  g += mbtowc(NULL,(const char *)g,6);
+	      return g_s;
+	    }
+	  else
+	    return g_v;
+	}
+    }
+  else if (isdigit(*g) || *g == 'n' || *g == 'N')
+    return g_n;
+  else if (*g == '|')
+    {
+      register unsigned char *e = g;
+      while (*++e != '|')
+	;
+      if (*e == '(')
+	return g_q;
+      else
+	return g_c;
+    }
+  else if (*g == '*' || *g == ':')
+    return g_p;
+  else
+    return -1;  
+}
 
 static const char *
 gvl_lookup_d(const char *key)
@@ -184,8 +252,8 @@ gvl_i_term(const char *name)
 gvl_g *
 gvl_validate(const char *g)
 {
-  const char *res = NULL;
-  res = gvl_lookup(g);
-  fprintf(stderr, "hello g=%s; res=%s\n", g, res);
+  const char *t = NULL;
+  t = gvl_type(g);
+  fprintf(stderr, "hello g=%s; type=%s\n", g, t);
   return NULL;
 }

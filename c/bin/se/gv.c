@@ -18,7 +18,7 @@ static int utf8 = 0;
 static int uhex = 0;
 
 const char *errmsg_fn = NULL;
-const char *file = NULL;
+extern const char *file;
 
 static int tsv = 1;
 
