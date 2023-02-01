@@ -186,6 +186,7 @@ gvl_i_init_(const char *name)
     }
   curr_sl = sl;
   sl->h = hash_create(1024);
+  sl->m = mb_init(sizeof(gvl_g), 1024);
   sl->p = npool_init();
 
   if (!sl->h || !sl->p)
@@ -252,8 +253,36 @@ gvl_i_term(const char *name)
 gvl_g *
 gvl_validate(const char *g)
 {
-  const char *t = NULL;
-  t = gvl_type(g);
-  fprintf(stderr, "hello g=%s; type=%s\n", g, t);
-  return NULL;
+  gvl_g *gp = NULL;
+
+  if (g)
+    {
+      if (!(gp = hash_find(sl->h,g)))
+	{
+	  gp = mb_new(sl->m);
+	  gp->text = npool_copy(g, sl->p);
+	  hash_add(sl->h, gp->text, gp);
+	  if ((gp->type = gvl_type(g)))
+	    {
+	      const char *k = npool_alloc(strlen(g)+2, sl->p);
+	      const char *l = NULL;
+	      sprintf(k, "%s;%s", g, gp->type);
+	      if ((l = sl_lookup(k)))
+		{
+		  fprintf(stderr, "hello g=%s; type=%s; lookup=%s\n", g, t, l);
+		  gp->oid = l;
+		}
+	      else
+		{
+		  gp->mess = "unknown grapheme";
+		}
+	    }
+	  else
+	    {
+	      gp->mess = "bad type";
+	    }
+	}
+    }
+  
+  return gp;
 }

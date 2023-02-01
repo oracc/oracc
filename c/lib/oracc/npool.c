@@ -89,6 +89,22 @@ new_block2(struct npool *p, size_t len)
 }
 
 unsigned char *
+npool_alloc(size_t len, struct npool *p)
+{
+  if (len >= POOL_BLOCK_SIZE)
+    {
+      fprintf(stderr, "len = %ld\n", len);
+      p->rover = new_block2(p,len);
+    }
+  else {
+    if ((p->rover->used+len) >= p->rover->top)
+      p->rover = new_block(p);
+  }
+  p->rover->used += len;
+  return p->rover->last_begin;
+}
+
+unsigned char *
 npool_copy(register const unsigned char *s, struct npool *p)
 {
   size_t len;

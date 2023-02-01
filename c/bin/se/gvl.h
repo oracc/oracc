@@ -5,10 +5,12 @@
 #include <sllib.h>
 
 struct gvl_g {
+  const char *text; /* grapheme as passed for validation */
   const char *type;
-  const char *sign;
-  const char *utf8;
-  const char *mess;
+  const char *oid;  /* OID for sign */
+  const char *sign; /* sign name for OID */
+  const char *utf8; /* UTF8 value for OID */
+  const char *mess; /* NULL if OK; if bad this is the error message for the grapheme */
 };
 
 typedef struct gvl_g gvl_g;
@@ -21,6 +23,7 @@ struct gvl_i {
     Hash_table *h;	/* in-memory hash table */
   } u;
   Hash_table *h;	/* Hash of items validated */
+  struct mb *m;		/* Memory blocks for gvl_g nodes */
   struct npool *p;	/* General purpose string pool */
   struct gvl_i *prev;
   struct gvl_i *next;
