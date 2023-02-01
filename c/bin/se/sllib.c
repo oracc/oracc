@@ -11,20 +11,22 @@
 
 static const char *oracc = NULL;
 
-unsigned char *
-sl_lookup(Dbi_index *dbi, char *key)
+static int sllib_verbose = 1;
+
+const char *
+sl_lookup_d(Dbi_index *dbi, const char *key)
 {
   if (dbi && key)
     {
-      dbi_find(dbi,(unsigned char *)key);
+      dbi_find(dbi,(const unsigned char *)key);
       if (dbi->data)
-	return dbi->data;
+	return (const char *)dbi->data;
     }
   return NULL;
 }
 
 Dbi_index *
-sl_init(char *project, char *name)
+sl_init_d(const char *project, const char *name)
 {
   Dbi_index *dbi = NULL;
   char *db;
@@ -47,8 +49,62 @@ sl_init(char *project, char *name)
 }
 
 void
-sl_term(Dbi_index *dbi)
+sl_term_d(Dbi_index *dbi)
 {
   if (dbi)
     dbi_close(dbi);
+}
+
+Hash_table *
+sl_init_h(const char *project, const char *name)
+{
+  Hash_table *h = NULL;
+  char *tsv_file;
+  unsigned char *tsv_data = NULL, *p;
+  ssize_t fsiz;
+
+  /* Figure out the db and open it */
+  if (!project)
+    project = "ogsl";
+
+  if (!name)
+    name = "ogsl";
+
+  oracc = oracc_home();
+  tsv_file = malloc(strlen(oracc)+strlen("/pub/sl/") + strlen(project) + strlen("/sl.tsv") + 1);
+  sprintf(tsv_file, "%s/pub/%s/sl/sl.tsv", oracc, project);
+
+  tsv_data = slurp("sllib", tsv_file, &fsiz);
+  if (tsv_data)
+    {
+      h = hash_create(1024);
+      for (p = tsv_data; *p; )
+	{
+	  unsigned char *k = p, *v = NULL;
+	  while (*p && '\t' != *p)
+	    ++p;
+	  if (*p)
+	    {
+	      *p++ = '\0';
+	      v = p;
+	      while (*p && '\n' != *p)
+		++p;
+	      if ('\n' == *p)
+		*p++ = '\0';
+	      if (v)
+		{
+		  hash_add(h, k, v);
+		  if (sllib_verbose)
+		    fprintf(stderr, "sl_init_h: adding k %s = v %s\n", k, v);
+		}
+	    }
+	}
+    }
+
+  return h;
+}
+
+void
+sl_term_h(Hash_table *h)
+{
 }

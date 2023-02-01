@@ -5,7 +5,7 @@
  $Id: dbi.h,v 0.3 1997/09/08 14:49:55 sjt Exp $
 */
 
-#ifndef DBI_H
+#ifndef DBI_H_
 #define DBI_H_	1
 
 #include <dra.h>

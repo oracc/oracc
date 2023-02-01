@@ -10,9 +10,6 @@ include ../../../oracc-am-rules.txt
 SUBDIRS = . secatx segdfx setxtx secbdx setrax selemx
 @SET_MAKE@
 
-.g.c:
-	gperf -N `basename $*` -tT $< >$@
-
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/libstemmer_c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
@@ -27,15 +24,18 @@ AM_LDFLAGS=-L/opt/local/lib
 sl-index.c: sl-index.c.in
 	$(ORACCIFY) sl-index.c.in
 
-bin_PROGRAMS=se masktest sedbg wmapper wmdebug wm ce_xtf ce2 sl sl-index
+bin_PROGRAMS=se masktest sedbg wmapper wmdebug wm ce_xtf ce2 sl sl-index gv
 
 noinst_LTLIBRARIES=libsl.la
 
-libsl_la_SOURCES = sllib.c
+libsl_la_SOURCES = sllib.c gvl.c slurp.c
 
 #v2
 #v2_SOURCES=v2.c
 #v2_LDADD=@top_srcdir@/c/lib/liboracc.la
+
+gv_SOURCES=gv.c
+gv_LDADD=@top_srcdir@/c/lib/liboracc.la libsl.la
 
 sl_SOURCES=sl.c
 sl_LDADD=@top_srcdir@/c/lib/liboracc.la
