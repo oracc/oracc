@@ -58,6 +58,7 @@ gvl_setup(const char *project, const char *name, int arg_tsv)
     }
 
   ret->tsv = arg_tsv;
+
   return ret;
 }
       
@@ -90,8 +91,10 @@ gvl_i_init_(const char *name)
   if (!name)
     return NULL;
   
-  if (!(p = malloc(sizeof(struct gvl_i))))
+  if (!(p = calloc(1, sizeof(struct gvl_i))))
     return NULL;
+
+  p->n = name;
   
   if (!sl)
     {
@@ -181,6 +184,8 @@ gvl_i_term(const char *name)
 gvl_g *
 gvl_validate(const char *g)
 {
-  fprintf(stderr, "hello g=%s\n", g);
+  const char *res = NULL;
+  res = gvl_lookup(g);
+  fprintf(stderr, "hello g=%s; res=%s\n", g, res);
   return NULL;
 }

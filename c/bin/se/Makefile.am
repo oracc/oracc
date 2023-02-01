@@ -35,7 +35,7 @@ libsl_la_SOURCES = sllib.c gvl.c slurp.c
 #v2_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 gv_SOURCES=gv.c
-gv_LDADD=@top_srcdir@/c/lib/liboracc.la libsl.la
+gv_LDADD=libsl.la @top_srcdir@/c/lib/liboracc.la
 
 sl_SOURCES=sl.c
 sl_LDADD=@top_srcdir@/c/lib/liboracc.la
