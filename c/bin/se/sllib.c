@@ -11,7 +11,7 @@
 
 static const char *oracc = NULL;
 
-static int sllib_verbose = 1;
+static int sllib_verbose = 0;
 
 const char *
 sl_lookup_d(Dbi_index *dbi, const char *key)
