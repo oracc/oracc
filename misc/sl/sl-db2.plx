@@ -204,7 +204,9 @@ if ($boot) {
 }
 
 my %db;
+my %topvalues = (); # these are values which occur as children of @sign
 my %values = ();
+my %vq = (); # these are values which must be deleted from %values at end of run and registered as $v,'q'
 
 my $xp = XML::LibXML->new();
 my $sl = $xp->parse_file($sl_xml);
@@ -227,10 +229,18 @@ foreach my $q ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
     my $qm = $q->getAttribute('qm');
     my $type = $q->getAttribute('type');
     my $base = $q->getAttribute('base');
+    my $o = $q->getAttribute('o');
     my $p = $q->getAttribute('p');
     # warn "setting values $qn to $type\n";
     # $values{$qn} = $type unless $type eq 'map';
-    $values{$qn,'qv'} = $type if $type eq 'must';
+
+    if ($type eq 'must') {
+	my $qv = $qn; $qv =~ s/\(.*$//;
+	my $qs = $qn; $qs =~ s/^.*?\((.*?)\)$/$1/;
+	push @{$vq{$qv}}, $qs;
+	$values{$qn,'qv'} = $o;
+    }
+
     # $values{"$qn;p"} = $p;
     # push(@{$values{$qn,'map'}}, $qm) if $qm;
     my $qv = $qn; $qv =~ s/\(.*$//;
@@ -243,6 +253,16 @@ foreach my $q ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
 ## add_aliases() if $do_aliases; # this was already commented out in sldb1
 
 # add_dumb_aliases(); # this was still in use in sldb1
+
+# Values in %vq must always be qualified; remove the version that has
+# no ';' field and enter it as ;q
+
+foreach my $vq (keys %vq) {
+    unless ($topvalues{$vq}) {
+	$values{$vq,'q'} = $vq{$vq};
+	delete $values{$vq};
+    }
+}
 
 dump_db();
 
@@ -261,10 +281,13 @@ add_comp {
     my($id,$cg) = @_;
 #    warn "add_comp $id ", $cg->toString(), "\n";
     my $atf = $cg->getAttribute('form');
-    $values{$atf,'cs'} = $id;
-    if ($atf =~ tr/\|//d) {
-	$values{$atf,'cs'} = $id;
-    }
+    $values{$atf} = $id; # 'cs'
+
+## TSV no longer contains pipeless versions of compounds
+#    if ($atf =~ tr/\|//d) {
+#	$values{$atf,'cs'} = $id;
+#   }
+
 #    push @{$values{$id,'values'}}, "|$atf|";
 #    my @g = $cg->getElementsByTagNameNS($gdl_uri,'g');
     add_comp_children($cg,$id);
@@ -570,7 +593,8 @@ subsign {
 #		    unless !defined($v) || !length($v) || $v  =~ /ₓ/ || $v =~ /\.\.\./;
 	    } else {
 		# $values{$v} = $id;
-		$values{$v,'v'} = $id;
+		$values{$v} = $id; # 'v'
+		++$topvalues{$v} if $mode == TOP;
 	    }
 	    push(@{$values{$id,'values'}}, $orig_v) if $v;
 	    # homophones: each value is a space-delimited string of IDs
@@ -592,7 +616,7 @@ subsign {
     if ($mode == TOP) {
 	# $values{$sn} = $id;
 	# $values{$xsn} = $id;
-	$values{$sn,'s'} = $id;
+	$values{$sn} = $id; # 's'
 	# $values{$xsn,'sign'} = $id;
     } else {
 	if ($form_is_TOP) {

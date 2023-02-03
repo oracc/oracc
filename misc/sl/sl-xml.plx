@@ -4,15 +4,25 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::XML;
 use ORACC::OID;
 use Data::Dumper;
+use Getopt::Long;
+
 binmode STDIN, ':utf8'; binmode STDERR, ':utf8';  binmode STDOUT, ':utf8';
 
+my $check = 0;
 my $project = 'ogsl';
 my $proof = '';
 
+GetOptions(
+    c=>\$check,
+    "p:s"=>\$project,
+    );
+
+# NO: use -p arg now
+#
 # you can say sl-xml.plx epsd2 01tmp/signdata.asl
-if ($#ARGV == 1) {
-    $project = shift @ARGV;
-}
+#if ($#ARGV == 1) {
+#    $project = shift @ARGV;
+#}
 
 my %oids = oid_load_domain('sl');
 
@@ -38,6 +48,9 @@ foreach my $s (@sortcodes) {
 #my %actual_signs = ();
 #my %actual_forms = ();
 
+my %form_values = ();
+my %globalq = ();
+
 #open(C, '>codes.dump');
 #print C Dumper \%sortcodes;
 #close(C);
@@ -46,12 +59,14 @@ my $xid = 'x0000000';
 my %sign_ids = (); sign_ids();
 
 open(SL,$asl) || die "sl-xml.plx: can't read signlist `$asl'\n";
-my $xl = $asl;
-$xl =~ s#00lib#02xml# || $xl =~ s#01bld/csl.d#02xml#;
-$xl =~ s/\.a?sl$/-sl.xml/;
 
-open(XL,"|gdlme2 -bs>$xl") || die "sl-xml.plx: can't write to $xl";
-select XL;
+unless ($check) {
+    my $xl = $asl;
+    $xl =~ s#00lib#02xml# || $xl =~ s#01bld/csl.d#02xml#;
+    $xl =~ s/\.a?sl$/-sl.xml/;
+    open(XL,"|gdlme2 -bs>$xl") || die "sl-xml.plx: can't write to $xl";
+    select XL;
+}
 
 # preload a list of known signs
 my %at_signs = ();
@@ -86,9 +101,12 @@ my $curr_form = '';
 
 my $pi_file = $asl;
 
-print '<?xml version="1.0" encoding="utf-8"?>',"\n";
-print "<?file $pi_file?>";
-print "<signlist project=\"$project\" xmlns:sl=\"http://oracc.org/ns/sl/1.0\" xmlns=\"http://oracc.org/ns/sl/1.0\" xmlns:g=\"http://oracc.org/ns/gdl/1.0\" xmlns:n=\"http://oracc.org/ns/norm/1.0\"\n>";
+unless ($check) {
+    print '<?xml version="1.0" encoding="utf-8"?>',"\n";
+    print "<?file $pi_file?>";
+    print "<signlist project=\"$project\" xmlns:sl=\"http://oracc.org/ns/sl/1.0\" xmlns=\"http://oracc.org/ns/sl/1.0\" xmlns:g=\"http://oracc.org/ns/gdl/1.0\" xmlns:n=\"http://oracc.org/ns/norm/1.0\"\n>";
+}
+
 while (<SL>) {
     next if /^\s*$/ || /^\#/;
     if (/^\@sign\s+(\S+)$/ || /^\@nosign\s+(\S+)$/) {
@@ -123,19 +141,19 @@ while (<SL>) {
 	    warn "sl-xml.plx: internal error: no ID found for $signname\n";
 	    $sid = $xid++;
 	}
-	pi_line();
+	pi_line() unless $check;
 	if (/\@nosign/) {
 	    $sid = "NOT.$sid";
 	}
-	print "<sign$deprecated n=\"$n\" xml:id=\"$sid\"><name g:me=\"1\">$n</name>";
+	print "<sign$deprecated n=\"$n\" xml:id=\"$sid\"><name g:me=\"1\">$n</name>" unless $check;
 	if ($sortcodes{$signname}) {
-	    print "<sort";
+	    print "<sort" unless $check;
 	    foreach my $c (@{$sortcodes{$signname}}) {
 		$c =~ s/^(.*?)=(.*?)$/ $1="$2"/;
 		$c =~ s/\"\"/\"/g;
-		print $c;
+		print $c unless $check;
 	    }
-	    print "/>";
+	    print "/>" unless $check;
 	}
     } else {
 	unless ($in_sign) {
@@ -146,13 +164,13 @@ while (<SL>) {
 	/^\@([a-z]+)/;
 	$curr_field = $1;
 	if (exists $v_closers{$curr_field} && $in_value) {
-	    print "</v>";
+	    print "</v>" unless $check;
 	    $in_value = 0;
 	}
 	if (exists $form_closers{$curr_field} && $in_form) {
 	    if ($curr_field ne 'end' || /sign/) {
 #		compute_qualified();
-		print "</form>";
+		print "</form>" unless $check;
 		$in_form = 0;
 		$curr_form = '';
 	    }
@@ -177,8 +195,8 @@ while (<SL>) {
 	    } else {
 		$name = '';
 	    }
-	    pi_line();
-	    print "<list n=\"$xn\"$name/>";
+	    pi_line() unless $check;
+	    print "<list n=\"$xn\"$name/>" unless $check;
 	} elsif (/^\@form\s+(\S+)\s+(\S+)(?:\s+\S+\s+(\S+))?$/) {
 	    if ($in_form) {
 		warn "$asl:$.: missing `\@end form'\n";
@@ -206,50 +224,57 @@ while (<SL>) {
 		    $ref = sprintf(" xml:id=\"%s\"", $sign_ids{'sl',$formname});
 		    ++$at_signs{$formname}; # prevent duplicate xml:id
 		}
-		pi_line();
+		pi_line() unless $check;
 		my $vv = $v; $vv =~ s/^~//;
 		if ($slv_form_vars{$vv}++) {
 		    warn "$asl:$.: duplicate var code $vv\n";
 		    continue;
 		}
-		print "<form n=\"$n\" var=\"$v\" varid=\"$sid.$vv\"$uattr$ref><name g:me=\"1\">$n</name>";
+		print "<form n=\"$n\" var=\"$v\" varid=\"$sid.$vv\"$uattr$ref><name g:me=\"1\">$n</name>" unless $check;
 		$in_form = 1;
 		if ($sortcodes{$n}) {
-		    print "<sort";
+		    print "<sort" unless $check;
 		    foreach my $c (@{$sortcodes{$n}}) {
 			$c =~ s/^(.*?)=(.*?)$/ $1="$2"/;
 			$c =~ s/\"\"/\"/g;
-			print $c;
+			print $c unless $check;
 		    }
-		    print '/>';
+		    print '/>' unless $check;
 		}
-		print "<proof>$proof</proof>" if $proof;
+		unless ($check) {
+		    print "<proof>$proof</proof>" if $proof;
+		}
 		$proof = '';
 	    }
 	} elsif (s/^\@v(\??)(-?)[\t\s]+//) {
 	    form_check();
 	    my $query = $1;
 	    my $dropped = $2;
-	    pi_line();
-	    print "<v\n";
-	    print " uncertain=\"yes\"" if $query;
-	    print " deprecated=\"yes\"" if $dropped;
+	    my $v_lang = '';
+	    unless ($check) {
+		pi_line();
+		print "<v\n";
+		print " uncertain=\"yes\"" if $query;
+		print " deprecated=\"yes\"" if $dropped;
 
 # what is this for?
-	    if (s/^\#(\S+)\s+//) {
-		print " comment=\"$1\"";
 	    }
-	    my $v_lang = '';
+	    
+	    if (s/^\#(\S+)\s+//) {
+		print " comment=\"$1\"" unless $check;
+	    }
 	    if (s/^\%(\S+)\s+//) {
 		$v_lang = "\%$1 ";
-		print " xml:lang=\"$1\"";
+		print " xml:lang=\"$1\"" unless $check;
 	    }
-
-	    if (s/\s+\[(.*?)\]\s*$//) {
-		$proof = xmlify($1);
+	    
+	    if (s/\s+\[(.*?)\s*$//) {
+		my $p = $1;
+		warn "$asl:$.: proof without closing ']'\n" unless $p =~ s/\]$//;
+		$proof = xmlify($p);		
 	    }
-
-	    if (/^(\S+)$/) {
+	    
+	    if (/^(\S+)$/ || /^#nib\s+(\S+)$/) {
 		my $n = $1;
 
 		if ($curr_form) {
@@ -268,19 +293,27 @@ while (<SL>) {
 		    warn "$asl:$.: value $n not allowed in $curr_sign because it's in $slv_val2sign{$n}\n";
 		    continue;
 		}
+
+		unless ($check) {
+		    my $xn = xmlify($n);
+		    $xn =~ tr/_/ /;
+		    print " n=\"$xn\">";
 		
-		my $xn = xmlify($n);
-		$xn =~ tr/_/ /;
-		print " n=\"$xn\">";
-		# don't GDL [...]ri and friends
-		if ($n =~ /\[\.\.\.\]/ || $n =~ m#^/# || $n =~ /\?/) {
-		    print "<name>$xn</name>";
-		} else {
-		    print "<name g:me=\"1\">$v_lang$xn</name>";
+		    # don't GDL [...]ri and friends
+		    if ($n =~ /\[\.\.\.\]/ || $n =~ m#^/# || $n =~ /\?/) {
+			print "<name>$xn</name>";
+		    } else {
+			print "<name g:me=\"1\">$v_lang$xn</name>";
+		    }
+		    print "<proof>$proof</proof>" if $proof;
 		}
-		print "<proof>$proof</proof>" if $proof;
+		
 		$proof = '';
 		$in_value = 1;
+	    } elsif (m#^\%(akk|akk/n|elx)\s+\S+$#) {
+		# don't warn about language-coded values
+	    } elsif (m,^#old\s+\S+$,) {
+		# don't warn about values tagged as #old
 	    } else {
 		warn "$asl:$.: syntax error in \@v\n";
 	    }
@@ -296,29 +329,33 @@ while (<SL>) {
 			$utf .= 'X';
 		    }
 		}
-		$utf =~ s/X/.X./g; $utf =~ s/^\.?(.*?)\.?$/$1/;
-		print "<utf8 hex=\"$hex\">$utf</utf8>" if $hex;
+		unless ($check) {
+		    $utf =~ s/X/.X./g; $utf =~ s/^\.?(.*?)\.?$/$1/;
+		    print "<utf8 hex=\"$hex\">$utf</utf8>" if $hex;
+		}
 	    } else {
 		warn "$asl:$.: bad format in \@ucode\n";
 	    }
 	} elsif (s/^\@pname\s+//) {
 	    form_check();
 	    chomp;
-	    print '<pname n="', xmlify($_), '"/>';
+	    print '<pname n="', xmlify($_), '"/>' unless $check;
 	} elsif (/^\@(?:note|inote|uname|unote|uphase|lit)/) {
 	    form_check();
 	    $curr_field = 'note' if $curr_field eq 'lit';
 	    s/^\S+\s+//;
 	    chomp;
-	    pi_line();
-	    print "<$curr_field>";
-	    print xmlify($_);
-	    print "</$curr_field>";
+	    unless ($check) {
+		pi_line();
+		print "<$curr_field>";
+		print xmlify($_);
+		print "</$curr_field>";
+	    }
 	} elsif (/^\@end\s+form\s*$/) {
 	    $post_form = 1;
 	    if ($in_form) {
 		$in_form = 0;
-		print "</form\n>";
+		print "</form\n>" unless $check;
 		$curr_form = '';
 	    } else {
 		warn "$asl:$.: superfluous '\@end form'\n";
@@ -333,7 +370,7 @@ while (<SL>) {
 		if (scalar keys %v) {
 		    compute_qualified();
 		}
-		print "</sign\n>";
+		print "</sign\n>" unless $check;
 	    } else {
 		warn "$asl:$.: superfluous '\@end sign'\n";
 	    }
@@ -345,6 +382,9 @@ while (<SL>) {
     }
 }
 
+##
+## Prior requirement that @form must have a corresponding @sign no longer enforced.
+##
 #foreach my $f (sort keys %actual_forms) {
 #    if (!$actual_signs{$f}) {
 #	my $foid = $sign_ids{'sl',$f};
@@ -354,13 +394,38 @@ while (<SL>) {
 #    }
 #}
 
-print '</signlist>';
+##
+## Require that values that don't exist as direct children of signs
+## are all contained within only one sign.  This ensures that all values
+## resolve unambiguously to a single sign or form.
+##
+
+# print Dumper \%globalq;
+
+foreach my $fv (sort keys %form_values) {
+    my @fvv = @{$form_values{$fv}};
+    if ($#fvv > 0) {
+	foreach my $fvv (@fvv) {
+	    if (${$globalq{$fv}}{$fvv}) {
+		# warn "form value $fv($fvv) not unique but must-qualification already applied\n";
+	    } else {
+		warn "form value $fv is not unique--listed in @fvv\n";
+	    }
+	}
+    }
+}
+
 close(SL);
 
-if ($project eq 'ogsl') {
-    system 'rm', '-f', '02xml/ogsl.xml';
-    system 'ln', '-sf', "$ENV{'ORACC_BUILDS'}/ogsl/02xml/ogsl-sl.xml", '02xml/ogsl.xml';
+unless ($check) {
+    print '</signlist>';
+    close(XL);
+    if ($project eq 'ogsl') {
+	system 'rm', '-f', '02xml/ogsl.xml';
+	system 'ln', '-sf', "$ENV{'ORACC_BUILDS'}/ogsl/02xml/ogsl-sl.xml", '02xml/ogsl.xml';
+    }
 }
+
 
 ##########################################################################################
 
@@ -372,12 +437,12 @@ sub compute_qualified {
 	my $xs = xmlify($curr_sign);
 	foreach my $v (grep /ₓ$/, keys %{$v{'#signv'}}) {
 	    my $xv = xmlify($v);
-	    push @qs, "<q type=\"must\" qn=\"$xv($xs)\" p=\"$sid\"/>";
+	    push @qs, "<q type=\"must\" qn=\"$xv($xs)\" o=\"$sid\"/>";
 	    if ($v{'#signl'}) {
 		foreach my $l (@{$v{'#signl'}}) {
 		    next if $l eq $curr_sign;
 		    my $xl = xmlify($l);
-		    push @qs, "<q type=\"map\" qn=\"$xv($xl)\" qm=\"$xv($xs)\" p=\"$sid\"/>";
+		    push @qs, "<q type=\"map\" qn=\"$xv($xl)\" qm=\"$xv($xs)\" o=\"$sid\"/>";
 		}
 	    }
 	}
@@ -398,10 +463,18 @@ sub compute_qualified {
 
     if ($v{'#forms'}) {
 	foreach my $f (keys %{$v{'#forms'}}) {
+	    my $o = $oids{'sl',$f};
+	    unless ($o) {
+		warn "no OID for form $f\n";
+		$o = '';
+	    }
 	    my %seen = ();
 	    # does the @form have any values
 	    if ($v{$f}) {
 		my @fv = keys %{$v{$f}};
+		foreach my $fv (@fv) {
+		    push(@{$form_values{$fv}}, $f) unless $fv eq '#forml' || $fv =~ /ₓ$/;
+		}
 		push @fv, keys %{$v{'#signv'}} if $v{'#signv'};
 		# A value is qualifiable if:
 		#    it is in the @sign's values
@@ -413,9 +486,10 @@ sub compute_qualified {
 		    if ($fv =~ /ₓ$/ || ($v{'#signv'} && ${$v{'#signv'}}{$fv}) || $#{$v{$fv}}) {
 			# sign is either x-value or both in form and in sign or applies to more than one @form
 			# must be qualified
+			++${$globalq{$fv}}{$f};
 			$fv = xmlify($fv);
 			$f = xmlify($f);
-			push @qs, "<q type=\"must\" qn=\"$fv($f)\" p=\"$sid\"/>";
+			push @qs, "<q type=\"must\" qn=\"$fv($f)\" o=\"$o\" p=\"$sid\"/>";
 			if (${$v{$f}}{'#forml'}) {
 			    foreach my $fl (@{${$v{$f}}{'#forml'}}) {
 				next if $fl eq $f;
@@ -451,7 +525,7 @@ sub compute_qualified {
 		foreach my $sv (@sv) {
 		    $sv = xmlify($sv);
 		    $f = xmlify($f);
-		    push @qs, "<q type=\"must\" qn=\"$sv($f)\" p=\"$sid\"/>";
+		    push @qs, "<q type=\"must\" qn=\"$sv($f)\" o=\"$o\" p=\"$sid\"/>";
 		    if (${$v{$f}}{'#forml'}) {
 			foreach my $fl (@{${$v{$f}}{'#forml'}}) {
 			    next if $fl eq $f;
@@ -463,7 +537,7 @@ sub compute_qualified {
 	    }
 	}
     }
-    if ($#qs >= 0) {
+    if ($#qs >= 0 && !$check) {
 	print '<qs>', @qs, '</qs>';
     }
 }
