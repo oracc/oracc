@@ -629,7 +629,7 @@ subsign {
 
     $values{$id,'ucode'} = $ucode if $ucode;
     $values{$id,'uchar'} = $uchar if $uchar;
-    $values{$id} = $sn;
+    # $values{$id} = $sn;
     # $values{$id,'name'} = $sn;
 
     $id;
