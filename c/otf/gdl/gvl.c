@@ -353,14 +353,16 @@ gvl_q_c10e(unsigned const char *g, unsigned const char **mess,
   gp = gvl_validate(v);
   if (gp)
     {
-      if (gp->mess)
+      if (gp->mess && !strstr((ccp)gp->mess, "must be qualified"))
 	{
 	  *mess = gp->mess;
 	  free(tmp);
 	  return NULL;
 	}
-      else
+      else if (gp->oid)
 	*v_oid = gp->oid;
+      else
+	*v_oid = ""; /* this happens if a value must be qualified--which it is if we are in this routine */
     }
   else
     {
@@ -430,9 +432,9 @@ gvl_validate(unsigned const char *g)
 		  static unsigned const char *mess = NULL;
 		  static const char *v_oid = NULL, *q_oid = NULL;
 		  unsigned char *q_c10e = gvl_q_c10e(g_orig, &mess, &v_oid, &q_oid);
-		  g = gvl_tmp_key(q_c10e,"qv");
 		  if (q_c10e)
 		    {
+		      g = gvl_tmp_key(q_c10e,"qv");
 		      if ((l = gvl_lookup(g)))
 			{
 			  gp->oid = (ccp)l;
