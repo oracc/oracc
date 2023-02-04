@@ -51,14 +51,12 @@ gvl_vmess(char *s, ...)
   return ret;
 }
 
-#if 0
-
-#define g_v "v"
-#define g_s "s"
-#define g_n "n"
-#define g_p "p"
-#define g_c "cs"
-#define g_q "qv"
+#define gvl_v "v"
+#define gvl_s "s"
+#define gvl_n "n"
+#define gvl_p "p"
+#define gvl_c "cs"
+#define gvl_q "qv"
 
 static int
 gnr(const char *g)
@@ -75,9 +73,9 @@ gvl_type(unsigned const char *g)
 	{
 	  while (*g)
 	    if ('!' == *g)
-	      return g_v;
+	      return gvl_v;
 	    else if ('(' == *g)
-	      return g_q;
+	      return gvl_q;
 	    else
 	      ++g;
 	  abort(); /* can't happen */
@@ -89,36 +87,34 @@ gvl_type(unsigned const char *g)
 	      g += mbtowc(NULL,(const char *)g,6);
 	      while (*g)
 		if (u_islower(g))
-		  return g_v;
+		  return gvl_v;
 		else if (isdigit(*g) || '@' == *g || '~' == *g)
 		  break;
 		else
 		  g += mbtowc(NULL,(const char *)g,6);
-	      return g_s;
+	      return gvl_s;
 	    }
 	  else
-	    return g_v;
+	    return gvl_v;
 	}
     }
   else if (isdigit(*g) || *g == 'n' || *g == 'N')
-    return g_n;
+    return gvl_n;
   else if (*g == '|')
     {
       register unsigned const char *e = g;
       while (*++e != '|')
 	;
       if (*e == '(')
-	return g_q;
+	return gvl_q;
       else
-	return g_c;
+	return gvl_c;
     }
   else if (*g == '*' || *g == ':')
-    return g_p;
+    return gvl_p;
   else
     return NULL;  
 }
-
-#endif
 
 unsigned const char *
 gvl_get_id(unsigned const char *g)
@@ -138,6 +134,16 @@ gvl_get_sname(unsigned const char *g)
     return gg->sign;
   else
     return NULL;
+}
+
+int
+gvl_is_sname(unsigned const char *g)
+{
+  gvl_g*gg = gvl_validate(g);
+  if (gg)
+    return gg->type && *gg->type == 's';
+  else
+    return 0;
 }
 
 int
@@ -325,6 +331,70 @@ gvl_tmp_key(unsigned const char *key, const char *field)
   return (ucp)tmpkey;
 }
 
+unsigned char *
+gvl_q_c10e(unsigned const char *g, unsigned const char **mess,
+	   const char **v_oid, const char **q_oid)
+{
+  gvl_g *gp = NULL;
+  unsigned const char *v, *q;
+  unsigned char *tmp = malloc(strlen((ccp)g)+1), *end;
+
+  strcpy((char*)tmp, (ccp)g);
+  end = tmp+strlen((ccp)tmp);
+  --end;
+  *end = '\0';
+  while ('(' != end[-1])
+    --end;
+  q = end--;
+  *end = '\0';
+  v = tmp;
+
+  /* is the value OK */
+  gp = gvl_validate(v);
+  if (gp)
+    {
+      if (gp->mess)
+	{
+	  *mess = gp->mess;
+	  free(tmp);
+	  return NULL;
+	}
+      else
+	*v_oid = gp->oid;
+    }
+  else
+    {
+      *mess = (uccp)"unknown validation failure";
+      free(tmp);
+    }
+
+  /* is the sign OK or correctable? */
+  gp = gvl_validate(q);
+  if (gp)
+    {
+      if (gp->sign)
+	{
+	  unsigned char *tmp2 = malloc(strlen((ccp)v) + strlen((ccp)gp->sign) + 3);
+	  sprintf((char*)tmp2, "%s(%s)", v, gp->sign);
+	  *q_oid = gp->oid;
+	  free(tmp);
+	  return tmp2;
+	}
+      else
+	{
+	  *mess = gp->mess;
+	  free(tmp);
+	  return NULL;
+	}
+    }
+  else
+    {
+      *mess = (uccp)"unknown validation failure";
+      free(tmp);
+    }
+  return NULL;
+}
+
 gvl_g *
 gvl_validate(unsigned const char *g)
 {
@@ -332,17 +402,65 @@ gvl_validate(unsigned const char *g)
 
   if (g)
     {
+      unsigned const char *g_orig = g;
       if (gvl_trace)
 	fprintf(stderr, "gvl_validate: called with g=%s\n", g);
       if (!(gp = hash_find(sl->h,g)))
 	{
+	  unsigned const char *l = NULL;
 	  if (gvl_trace)
 	    fprintf(stderr, "gvl_validate: %s not found in seen-hash\n", g);
+
 	  gp = mb_new(sl->m);
 	  gp->text = npool_copy(g, sl->p);
 	  hash_add(sl->h, gp->text, gp);
-	  unsigned const char *l = NULL;
-	  if ((l = gvl_lookup(g)))
+	  
+	  gp->type = gvl_type(g);
+
+	  if (*gp->type == 'q')
+	    {
+	      g = gvl_tmp_key(g,"qv");
+	      if ((l = gvl_lookup(g)))
+		{
+		  gp->oid = (ccp)l;
+		  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+		}
+	      else
+		{
+		  static unsigned const char *mess = NULL;
+		  static const char *v_oid = NULL, *q_oid = NULL;
+		  unsigned char *q_c10e = gvl_q_c10e(g_orig, &mess, &v_oid, &q_oid);
+		  g = gvl_tmp_key(q_c10e,"qv");
+		  if (q_c10e)
+		    {
+		      if ((l = gvl_lookup(g)))
+			{
+			  gp->oid = (ccp)l;
+			  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+			  gp->mess = gvl_vmess("qualified value %s should be %s", g_orig, q_c10e);
+			}
+		      else
+			{
+			  if (!strcmp(v_oid, q_oid))
+			    {
+			      gp->oid = q_oid;
+			      gp->sign = gvl_lookup(gvl_tmp_key((uccp)q_oid,""));
+			      gp->mess = gvl_vmess("unnecessary qualifier on value: %s", g_orig);
+			    }
+			  else if (strcmp((ccp)g_orig, (ccp)q_c10e))
+			    gp->mess = gvl_vmess("unknown qualified value: %s (also tried %s)", g_orig, q_c10e);
+			  else
+			    gp->mess = gvl_vmess("unknown qualified value: %s", g_orig);
+			}
+		      free(q_c10e);
+		    }
+		  else
+		    {
+		      gp->mess = gvl_vmess("error in qualified value %s: %s", g_orig, mess);
+		    }
+		}
+	    }
+	  else if ((l = gvl_lookup(g)))
 	    {
 	      /* best case: g is a known sign or value */
 	      gp->oid = (ccp)l;
@@ -367,7 +485,16 @@ gvl_validate(unsigned const char *g)
 			  unsigned char *c10e = c10e_compound(g);
 			  if (c10e)
 			    {
-			      gp->mess = gvl_vmess("pseudo-signname %s should be %s", g, c10e);
+			      if ((l=gvl_lookup(c10e)))
+				{
+				  gp->oid = (ccp)l;
+				  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+				  gp->mess = gvl_vmess("compound %s should be %s", g, c10e);
+				}
+			      else if (strcmp((ccp)g, (ccp)c10e))
+				gp->mess = gvl_vmess("unknown compound: %s (also tried %s)", g, c10e);
+			      else
+				gp->mess = gvl_vmess("unknown compound: %s", g);
 			    }
 			}
 		      else
@@ -380,9 +507,9 @@ gvl_validate(unsigned const char *g)
 		{
 		  const unsigned char *gq = gvl_lookup(gvl_tmp_key(g,"q"));
 		  if (gq)
-		    gp->mess = gvl_vmess("gvl_validate: value %s must be qualified with one of %s", g, gq);
+		    gp->mess = gvl_vmess("value %s must be qualified with one of %s", g, gq);
 		  else
-		    gp->mess = gvl_vmess("gvl_validate: unknown value: %s", g);
+		    gp->mess = gvl_vmess("unknown value: %s", g);
 		}
 	    }
 	}

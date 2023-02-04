@@ -639,14 +639,14 @@ subsign {
     if ($mode == TOP) {
 	# $values{$sn} = $id;
 	# $values{$xsn} = $id;
-	$values{$sn} = $id; # 's'
+	$values{$sn} = $id; # ,'s'
 	# $values{$xsn,'sign'} = $id;
     } else {
 	if ($form_is_TOP) {
 	    # $values{$sn} = $id;
 	    # $values{$xsn} = $id;
 	}
-	$values{$sn,'f'} = $id;
+	$values{$sn} = $id; # ,'f'
 	# $values{$xsn,'form'} = $id;
     }
 
