@@ -550,7 +550,6 @@ gparse(register unsigned char *g, enum t_type type)
   int bad_grapheme = 0;
   unsigned char *orig = pool_copy(g);
   const unsigned char *signified = NULL;
-  int ogsl_warned = 0;
 
   render_canonically = compound_warnings;
   
@@ -1438,6 +1437,16 @@ gtype(register unsigned char *g)
     return g_p;
   else
     return -1;
+}
+
+unsigned char *
+c10e_compound(unsigned char *g)
+{
+  int cw = compound_warnings;
+  compound_warnings = 1;
+  (void)compound(g);
+  compound_warnings = cw;
+  return proper_c;
 }
 
 static struct grapheme *

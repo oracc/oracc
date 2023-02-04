@@ -14,7 +14,7 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/libstemmer_c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/expat/xmlparse \
-	-I@top_srcdir@/c/otf/{chr,lng} \
+	-I@top_srcdir@/c/otf/{chr,gdl,lib,lng,run} \
 	-I/usr/local/include
 
 AM_CFLAGS=-pedantic -Wall -g
@@ -34,8 +34,16 @@ libsl_la_SOURCES = sllib.c gvl.c slurp.c
 #v2_SOURCES=v2.c
 #v2_LDADD=@top_srcdir@/c/lib/liboracc.la
 
-gv_SOURCES=gv.c
-gv_LDADD=libsl.la @top_srcdir@/c/otf/chr/libchr.la @top_srcdir@/c/lib/liboracc.la
+gv_SOURCES=gv.c \
+	@top_srcdir@/c/otf/atf/note.c \
+	@top_srcdir@/c/otf/ox/globals.c
+
+gv_LDADD=libsl.la \
+	@top_srcdir@/c/otf/chr/libchr.la \
+	@top_srcdir@/c/otf/gdl/libgdl.la \
+	@top_srcdir@/c/otf/lib/libcdf.la \
+	@top_srcdir@/c/otf/lng/liblng.la \
+	@top_srcdir@/c/lib/liboracc.la
 
 sl_SOURCES=sl.c
 sl_LDADD=@top_srcdir@/c/lib/liboracc.la

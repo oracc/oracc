@@ -235,8 +235,15 @@ foreach my $q ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
     # $values{$qn} = $type unless $type eq 'map';
 
     if ($type eq 'must') {
-	my $qv = $qn; $qv =~ s/\(.*$//;
-	my $qs = $qn; $qs =~ s/^.*?\((.*?)\)$/$1/;
+	my $qv = $qn;
+	my $qs = $qn;
+	if ($qn =~ /\)\(/) {
+	    $qv =~ s/\)\(.*$/\)/;
+	    $qs =~ s/^.*?\)\((.*?)\)$/$1/;
+	} else {
+	    $qv =~ s/\(.*$//;
+	    $qs =~ s/^.*?\((.*?)\)$/$1/;
+	}
 	push @{$vq{$qv}}, $qs;
 	$values{$qn,'qv'} = $o;
     }
@@ -546,9 +553,9 @@ subsign {
     }
     my $sn = $node->getAttribute('n');
 
-    if ($sn eq '|AŠ×DIŠ@t|') {
-	warn "found |AŠ×DIŠ\@t| id=$id\n";
-    }
+#    if ($sn eq '|AŠ×DIŠ@t|') {
+#	warn "found |AŠ×DIŠ\@t| id=$id\n";
+#    }
     
     if ($parent_id) {
 	push @{$values{$id,'signs'}}, $parent_id;

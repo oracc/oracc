@@ -168,7 +168,7 @@ utf_ucase(const unsigned char *s)
 {
   size_t len;
   wchar_t *ws = utf2wcs(s,&len);
-  if (ws)    
+  if (ws)
     return wcs2utf(wcs_ucase(ws),len);
   else
     return NULL;

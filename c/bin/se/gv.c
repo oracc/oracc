@@ -22,9 +22,23 @@ extern const char *file;
 
 static int tsv = 1;
 
+int sparse_lem = 0;
+int trans_inline = 0;
+int xcl_is_sparse_field = 0;
+
 #define ccp const char *
 #define ucp unsigned char *
 #define uccp unsigned const char *
+
+
+unsigned char *
+scan_comment_sub(unsigned char **lines, int *nlinesp, int badcolon)
+{
+  lines = NULL;
+  nlinesp = NULL;
+  badcolon = 0;
+  return NULL;
+}
 
 int
 main(int argc, char **argv)

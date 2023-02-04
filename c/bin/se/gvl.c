@@ -7,6 +7,7 @@
 #include <hash.h>
 #include <ctype128.h>
 #include <atf.h>
+#include <gdl.h>
 #include <memblock.h>
 
 #include "gvl.h"
@@ -257,10 +258,10 @@ gvl_i_term(const char *name)
 }
 
 unsigned char *
-gvl_tmp_key(const char *oid, const char *field)
+gvl_tmp_key(unsigned const char *key, const char *field)
 {
-  static char tmpkey[19]; /* oid is always length=8; longest field is "contained" */
-  strcpy(tmpkey,oid);
+  static char tmpkey[128];
+  strcpy(tmpkey,(ccp)key);
   if (*field)
     {
       char *tk = tmpkey + strlen(tmpkey);
@@ -291,13 +292,45 @@ gvl_validate(unsigned const char *g)
 	    {
 	      /* best case: g is a known sign or value */
 	      gp->oid = (ccp)l;
-	      gp->sign = gvl_lookup(gvl_tmp_key((ccp)l,""));
+	      gp->sign = gvl_lookup(gvl_tmp_key(l,""));
 	      fprintf(stderr, "hello g=%s; oid=%s; sn=%s\n", g, gp->oid, gp->sign);
 	    }
 	  else
 	    {
-	      if (gvl_trace)
-		fprintf(stderr, "gvl_validate: %s not found as sign or value\n", g);	      
+	      int g_is_sn = has_sign_indicator(g);
+	      if (g_is_sn)
+		{
+		  const unsigned char *lg = utf_lcase(g);
+		  if ((l = gvl_lookup(lg)))
+		    {
+		      gp->oid = (ccp)l;
+		      gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+		      fprintf(stderr, "gvl_validate: pseudo-signname %s should be %s\n", g, gp->sign);
+		    }
+		  else
+		    {
+		      if ('|' == *g)
+			{
+			  unsigned char *c10e = c10e_compound(g);
+			  if (c10e)
+			    {
+			      fprintf(stderr, "gvl_validate: compound %s should be %s\n", g, c10e);
+			    }
+			}
+		      else
+			{
+			  fprintf(stderr, "gvl_validate: unknown sign name: %s\n", g);
+			}
+		    }
+		}
+	      else
+		{
+		  const unsigned char *gq = gvl_lookup(gvl_tmp_key(g,"q"));
+		  if (gq)
+		    fprintf(stderr, "gvl_validate: value %s must be qualified with one of %s\n", g, gq);
+		  else
+		    fprintf(stderr, "gvl_validate: unknown value: %s\n", g);
+		}
 	    }
 	}
       else

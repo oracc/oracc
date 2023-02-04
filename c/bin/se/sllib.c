@@ -37,7 +37,7 @@ sl_init_si(void)
 }
 
 int
-has_sign_indicator(unsigned char *g)
+has_sign_indicator(unsigned const char *g)
 {
   while (*g)
     {

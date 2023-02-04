@@ -23,12 +23,15 @@
    target/ref system instead?]
  */
 
+extern void warning(const char *str);
+
 static int notes_by_text = 1;
 int note_index = 1;
 static List *notes_in_line = NULL;
 static List *notes_in_text = NULL;
 static struct mb *mb = NULL;
 static struct npool *note_pool = NULL;
+extern int lnum;
 
 enum note_status
 {
