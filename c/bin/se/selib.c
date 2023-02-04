@@ -125,7 +125,7 @@ wid2loc8(const char *id, const char *lang, struct location8 *l8p)
 {
   if (v2)
     {
-      l8p->text_id = v2s_add(id);
+      l8p->text_id = v2s_add((const unsigned char *)id);
       if (lang)
 	l8p->text_id |= lang2mask(lang);
     }

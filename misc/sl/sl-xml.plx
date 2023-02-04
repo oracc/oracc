@@ -112,6 +112,9 @@ while (<SL>) {
     if (/^\@sign\s+(\S+)$/ || /^\@nosign\s+(\S+)$/) {
 	my $deprecated = '';
 	my $signname = $curr_sign = $1;
+
+	v_sign($signname);
+	
 	# $actual_signs{$signname} = $.;
 	my $n = xmlify($signname);
  
@@ -206,6 +209,8 @@ while (<SL>) {
 		my $formname = $curr_form = $n;
 		#$actual_forms{$formname} = $.;
 
+		v_sign($formname);
+		
 		if (${$v{'#forms'}}{$curr_form}) {
 		    warn "$asl:$.: duplicate form $curr_form\n";
 		} else {
@@ -251,17 +256,21 @@ while (<SL>) {
 	    my $query = $1;
 	    my $dropped = $2;
 	    my $v_lang = '';
+	    my $comment = '';
+	    my $ignore = 0;
+	    
 	    unless ($check) {
 		pi_line();
 		print "<v\n";
 		print " uncertain=\"yes\"" if $query;
 		print " deprecated=\"yes\"" if $dropped;
 
-# what is this for?
+		# 9(|AŠ×DIŠ@t|) 
 	    }
 	    
 	    if (s/^\#(\S+)\s+//) {
-		print " comment=\"$1\"" unless $check;
+		$comment = $1;
+		print " comment=\"$comment\"" unless $check;
 	    }
 	    if (s/^\%(\S+)\s+//) {
 		$v_lang = "\%$1 ";
@@ -276,17 +285,34 @@ while (<SL>) {
 	    
 	    if (/^(\S+)$/ || /^#nib\s+(\S+)$/) {
 		my $n = $1;
+		my $type = '';
 
+		if ($n =~ /[-\{\}\[\]]/) {
+		    $type = ' type="tlit"';
+		    $ignore = 1;
+		} elsif ($n =~ m,^/,) {
+		    $type = ' type="word"';
+		    $ignore = 1;
+		} else {
+		    if ($v_lang =~ /^%akk/ || $comment eq 'old') {
+			$ignore = 1;
+		    } else {
+			v_value($n);
+		    }
+		}
+		
 		if ($curr_form) {
 		    ++${$v{'#forms'}}{$curr_form};
-		    ++${$v{$curr_form}}{$n};
+		    ++${$v{$curr_form}}{$n} unless $ignore;
 		    push @{$v{$n}}, $curr_form;
 		} else {
-		    ++${$v{'#signv'}}{$n};
-		    my $nn = $n; $nn =~ tr/₀-₉ₓ⁻⁺//d;
-		    ${$v{'#basev'}}{$nn} = $n;
-		    ++${$v{$curr_sign}{$n}};
-		    push @{$v{$n}}, $curr_sign;
+		    unless ($ignore) {
+			++${$v{'#signv'}}{$n};
+			my $nn = $n; $nn =~ tr/₀-₉ₓ⁻⁺//d;
+			${$v{'#basev'}}{$nn} = $n;
+			++${$v{$curr_sign}{$n}};
+			push @{$v{$n}}, $curr_sign;
+		    }
 		}
 		
 		if ($slv_val2sign{$n} && $slv_val2sign{$n} ne $curr_sign) {
@@ -297,7 +323,7 @@ while (<SL>) {
 		unless ($check) {
 		    my $xn = xmlify($n);
 		    $xn =~ tr/_/ /;
-		    print " n=\"$xn\">";
+		    print " n=\"$xn\"$type>";
 		
 		    # don't GDL [...]ri and friends
 		    if ($n =~ /\[\.\.\.\]/ || $n =~ m#^/# || $n =~ /\?/) {
@@ -566,6 +592,49 @@ sign_ids {
 	    $sign_ids{'sl',$1} = $xid++;
 	}	
     }
+}
+
+# This is simple validation to ensure that the assumptions made by gvl that
+# sign names must have an uppercase letter and that values can't have any
+# uppercase letters are correct.
+
+sub hasupperi {
+    my $t = shift;
+    return $t =~ tr/AEIUFNOPSX/AEIUFNOPSX/;
+}
+
+sub v_sign {
+    my $c = shift;
+    my $t = $c;
+    return if $c eq '15'; # horrid OGSL hack needed for eCUT
+    $t =~ s/^\|(.*?)\@(\1)\|$// && return;
+    1 while $t =~ s/(BAU|ELLES|LAK|RSP)\d\d\d[a-z]+//;
+    1 while $t =~ s/\@[cdfhgklrstnvz]// || $t =~ s/\@[0-9]+// || $t =~ s/~[a-z]//;
+    1 while $t =~ s#(/[0-9])##;
+    $t =~ tr/A-ZŊḪŠ0-9₀-₉ₓʾ?//d;
+    if ($c =~ /^\|/ || $c =~ /\(\|/) {
+	$t =~ tr/|()×%.&+//d;
+    }
+    if ($c =~ /^[0-9]/) {
+	$t =~ tr/()//d;
+    }
+    
+    warn "$asl:$.: sign name $c has bad characters $t\n" if length $t;
+    warn "$asl:$.: sign name $c has no uppercase indicator\n" unless hasupperi($c);
+}
+
+sub v_value {
+    my $c = shift;
+    my $t = $c;
+    1 while $t =~ s/\@[cdfglstv]// || $t =~ s/\@[0-9]+// || $t =~ s/~[a-z]//;
+    1 while $t =~ s#(/[0-9])##;
+    $t =~ tr/a-zŋḫšṣṭ0-9₀-₉ₓʾ?⁻⁺//d;
+    if ($c =~ /^[0-9]/) {
+	$t =~ tr/()//d;
+    }
+    $t =~ s/^(:|:"|:\.|::|𒑱)$//;
+    warn "$asl:$.: value $c has bad characters $t\n" if length $t;
+    warn "$asl:$.: value $c has uppercase indicator\n" if hasupperi($c);
 }
 
 1;

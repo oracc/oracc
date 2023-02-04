@@ -12,7 +12,7 @@
 #include <oracclocale.h>
 
 static char *project = NULL, *name = NULL;
-static char *key;
+static unsigned char *key;
 static int human_readable = 0;
 static int utf8 = 0;
 static int uhex = 0;
@@ -21,6 +21,10 @@ const char *errmsg_fn = NULL;
 extern const char *file;
 
 static int tsv = 1;
+
+#define ccp const char *
+#define ucp unsigned char *
+#define uccp unsigned const char *
 
 int
 main(int argc, char **argv)
@@ -37,13 +41,13 @@ main(int argc, char **argv)
 
   gvl_setup(project, name, tsv);
   if (key)
-    gvl_validate(key);
+    gvl_validate((uccp)key);
   else
     {
       char keybuf[256];
-      while ((key = fgets(keybuf, 256, stdin)))
+      while ((key = (ucp)fgets(keybuf, 256, stdin)))
 	{
-	  key[strlen(key)-1] = '\0';
+	  key[strlen((ccp)key)-1] = '\0';
 	  if (*key == 0x04) {
 	    goto quit;
 	  } else {
@@ -68,7 +72,7 @@ int opts(int argc, char *arg)
       human_readable = 1;
       break;
     case 'k':
-      key = arg;
+      key = (ucp)arg;
       break;
     case 'n':
       name = arg;

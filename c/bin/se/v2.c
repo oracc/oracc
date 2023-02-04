@@ -39,12 +39,12 @@ v2s_term()
   v2n = 0;
 }
 
-int
+uintptr_t
 v2s_add(const unsigned char *s)
 {
   void *vp = hash_find(v2_hash, s);
   if (vp)
-    return (int)vp;
+    return (uintptr_t)vp;
   hash_add(v2_hash, npool_copy(s,v2_pool), (void*)(uintptr_t)++v2n);
   return v2n;
 }
@@ -186,7 +186,7 @@ main(int argc, const char **argv)
 {
   int len = 0;
   int n = 2;
-  int id = 0;
+  uintptr_t id = 0;
 
   v2s_init();
   id = v2s_add((const unsigned char *)"one"); printf("added one with ID = %d\n", id);

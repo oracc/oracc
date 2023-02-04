@@ -9,18 +9,53 @@
 #include <dbi.h>
 #include "sllib.h"
 
+#define ccp const char *
+#define ucp unsigned char *
+#define uccp unsigned const char *
+
 static const char *oracc = NULL;
 
 static int sllib_verbose = 0;
 
-const char *
-sl_lookup_d(Dbi_index *dbi, const char *key)
+static int signindicator[256];
+
+/* Every sign name has at least one of these uppercase letters--this
+   is validated by sl-xml */
+void
+sl_init_si(void)
+{
+  signindicator['A'] = 
+    signindicator['E'] = 
+    signindicator['I'] = 
+    signindicator['U'] = 
+    signindicator['F'] = 
+    signindicator['N'] = 
+    signindicator['O'] = 
+    signindicator['P'] = 
+    signindicator['S'] = 
+    signindicator['X'] = 1;
+}
+
+int
+has_sign_indicator(unsigned char *g)
+{
+  while (*g)
+    {
+      if (signindicator[*g])
+	return 1;
+      ++g;
+    }
+  return 0;
+}
+
+unsigned const char *
+sl_lookup_d(Dbi_index *dbi, unsigned const char *key)
 {
   if (dbi && key)
     {
-      dbi_find(dbi,(const unsigned char *)key);
+      dbi_find(dbi,key);
       if (dbi->data)
-	return (const char *)dbi->data;
+	return dbi->data;
     }
   return NULL;
 }
@@ -31,6 +66,8 @@ sl_init_d(const char *project, const char *name)
   Dbi_index *dbi = NULL;
   char *db;
 
+  sl_init_si();
+    
   /* Figure out the db and open it */
   if (!project)
     project = "ogsl";
@@ -63,6 +100,8 @@ sl_init_h(const char *project, const char *name)
   unsigned char *tsv_data = NULL, *p;
   ssize_t fsiz;
 
+  sl_init_si();
+
   /* Figure out the db and open it */
   if (!project)
     project = "ogsl";
@@ -94,11 +133,25 @@ sl_init_h(const char *project, const char *name)
 	      if (v)
 		{
 		  hash_add(h, k, v);
+		  if ('o' == *v && isdigit(v[1]))
+		    {
+		      if (!strchr((ccp)k,';') && has_sign_indicator(k))
+			{
+			  if (hash_find(h,v))
+			    fprintf(stderr, "sl_init_h: duplicate key/val %s = %s\n", k, v);
+			  else
+			    hash_add(h,v,k);
+			}
+		    }
 		  if (sllib_verbose)
 		    fprintf(stderr, "sl_init_h: adding k %s = v %s\n", k, v);
 		}
 	    }
 	}
+    }
+  else
+    {
+      fprintf(stderr, "sl_init_h: failed to load %s\n", tsv_file);
     }
 
   return h;

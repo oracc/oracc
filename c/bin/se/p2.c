@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "npool.h"
 #include "p2.h"
 #include "xpd2.h"
@@ -52,7 +53,7 @@ p2_load(const char *project, const char *state, struct npool *pool)
 
   if (verbose)
     {
-      char *vstate = (state ? state : "(not set)");
+      const char *vstate = (state ? state : "(not set)");
       fprintf(stderr, "p2_load: state on entry = %s\n",vstate);
     }
   
@@ -60,7 +61,7 @@ p2_load(const char *project, const char *state, struct npool *pool)
     state = "default";
   else if (strcmp(state,"special"))
     {
-      char *special_ok = xpd_option(xpd, "outline-special-select");      
+      const char *special_ok = xpd_option(xpd, "outline-special-select");      
       if (!special_ok || strcmp(special_ok, "true"))
 	state = "default";
     }

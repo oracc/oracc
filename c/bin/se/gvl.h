@@ -5,12 +5,12 @@
 #include <sllib.h>
 
 struct gvl_g {
-  const char *text; /* grapheme as passed for validation */
+  unsigned const char *text; /* grapheme as passed for validation */
   const char *type;
   const char *oid;  /* OID for sign */
-  const char *sign; /* sign name for OID */
-  const char *utf8; /* UTF8 value for OID */
-  const char *mess; /* NULL if OK; if bad this is the error message for the grapheme */
+  unsigned const char *sign; /* sign name for OID */
+  unsigned const char *utf8; /* UTF8 value for OID */
+  unsigned const char *mess; /* NULL if OK; if bad this is the error message for the grapheme */
 };
 
 typedef struct gvl_g gvl_g;
@@ -31,13 +31,13 @@ struct gvl_i {
 
 typedef struct gvl_i gvl_i;
 
-extern const char *(*gvl_lookup)(const char *key);
+extern unsigned const char *(*gvl_lookup)(unsigned const char *key);
 
 extern gvl_i *gvl_setup(const char *project, const char *name, int arg_tsv);
 extern void gvl_wrapup(const char *name);
 
 extern gvl_i *gvl_i_find(const char *name);
 
-extern gvl_g *gvl_validate(const char *g);
+extern gvl_g *gvl_validate(unsigned const char *g);
 
 #endif/*_GVL_H*/

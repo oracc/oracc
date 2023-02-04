@@ -127,7 +127,7 @@ vid_map_id(struct vid_data *vp, const char *xid)
 #if 0
 	  fprintf(stderr,"vid_map_id: [1] no map for %s when trying %s\n",xid,buf);
 #else
-	  if (!hash_find(vp->seen,buf))
+	  if (!hash_find(vp->seen,(const unsigned char*)buf))
 	    {
 	      fprintf(stderr,"vid_map_id: %s was never catalogued\n",buf);
 	      hash_add(vp->seen,(unsigned char *)strdup(buf),&one);
@@ -151,7 +151,7 @@ vid_map_id(struct vid_data *vp, const char *xid)
 #if 0
 	  fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,buf);
 #else
-	  if (!hash_find(vp->seen,buf))
+	  if (!hash_find(vp->seen,(const unsigned char*)buf))
 	    {
 	      fprintf(stderr,"vid_map_id: [2] %s was never catalogued\n",buf);
 	      hash_add(vp->seen,(unsigned char *)strdup(buf),&one);
@@ -170,7 +170,7 @@ vid_map_id(struct vid_data *vp, const char *xid)
 #if 0
 	  fprintf(stderr,"vid_map_id: no map for %s when trying %s\n",xid,buf);
 #else
-	  if (!hash_find(vp->seen,buf))
+	  if (!hash_find(vp->seen,(const unsigned char*)buf))
 	    {
 	      fprintf(stderr,"vid_map_id: [3] %s was never catalogued\n",buf);
 	      hash_add(vp->seen,(unsigned char *)strdup(buf),&one);
@@ -269,7 +269,7 @@ vid_hash_data(struct vid_data *vp)
       vp->ids[i] = &vp->vpool[i*8];
       sprintf(vp->ids[i], "v%06d", i);
       keyptr = (unsigned char *)&vp->padded_ids[i*vp->max_len];
-      if ((atptr = strchr(keyptr, '@')))
+      if ((atptr = strchr((const char*)keyptr, '@')))
 	{
 	  /* This is a double-qualified entry: the first project, before the '@',
 	     is the one for XTF files; the second, after the '@', is for XMD files.
@@ -278,14 +278,14 @@ vid_hash_data(struct vid_data *vp)
 	     engine needs to select the correct project when handed a double-qualified
 	     QID */
 	  const char *colon = NULL;
-	  strcpy(keybuf, keyptr);
-	  colon = strchr(keyptr, ':'); /* colon can't point at keybuf because overlapping copy */
+	  strcpy(keybuf, (const char *)keyptr);
+	  colon = strchr((const char *)keyptr, ':'); /* colon can't point at keybuf because overlapping copy */
 	  strcpy(keybuf + (atptr-(const char*)keyptr), colon);
 	  hash_add(vp->vidh, 
-		   npool_copy(keybuf,vp->pool),
+		   npool_copy((const unsigned char*)keybuf,vp->pool),
 		   vp->ids[i]);
 	  hash_add(vp->vidh, 
-		   atptr+1,
+		   (const unsigned char*)(atptr+1),
 		   vp->ids[i]);
 	}
       else

@@ -12,7 +12,7 @@ sub
 toTSV {
     my $ix = shift;
     my $name = $$ix{'#name'};
-    my $tsv = $$ix{'tsv'} ? $$ix{'tsv'} : "02pub/sl/$name-db.tsv";
+    my $tsv = $$ix{'#tsv'} ? $$ix{'#tsv'} : "02pub/sl/$name-db.tsv";
     open(TSV,">:raw", $tsv) || die "$0: failed to open $tsv. Stop.\n";
     select TSV;
 
@@ -44,6 +44,8 @@ toTSV {
     if ($$ix{'#all_keys'}) {
 	foreach my $k (keys %$ix) {
 	    next if $k =~ /^\#.*?(item|record)_grep$/;
+	    next if $k =~ /^#/ && $$ix{'#nohash'};
+	    warn "TSV key starts with '#' $k\n" if $k =~ /^#/;
 	    if (defined $$ix{$k}) {
 #		my $f = '';
 #		if (defined $$ix{$k,'f'}) {

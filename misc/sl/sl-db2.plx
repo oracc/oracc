@@ -281,7 +281,8 @@ add_comp {
     my($id,$cg) = @_;
 #    warn "add_comp $id ", $cg->toString(), "\n";
     my $atf = $cg->getAttribute('form');
-    $values{$atf} = $id; # 'cs'
+
+    # $values{$atf} = $id; # 'cs' # NO: @sign/@form compounds are now added before this
 
 ## TSV no longer contains pipeless versions of compounds
 #    if ($atf =~ tr/\|//d) {
@@ -431,7 +432,8 @@ dump_db {
 				       [ qw/h aka c cinit clast contains contained forms multi mod link/ ],
 				       [], 0, 10000, 0, 1);
     my %db = %$ix;
-    $db{'tsv'} = "02pub/sl/$dbname.tsv";
+    $db{'#tsv'} = "02pub/sl/$dbname.tsv";
+    $db{'#nohash'} = 1;
     foreach my $k (keys %values) {
 	my $dbk = $k;
 	Encode::_utf8_off($dbk);
@@ -543,6 +545,10 @@ subsign {
 	$form_is_TOP = 1;
     }
     my $sn = $node->getAttribute('n');
+
+    if ($sn eq '|AŠ×DIŠ@t|') {
+	warn "found |AŠ×DIŠ\@t| id=$id\n";
+    }
     
     if ($parent_id) {
 	push @{$values{$id,'signs'}}, $parent_id;
@@ -581,6 +587,16 @@ subsign {
 	} elsif ($lname eq 'v') {
 	    my $dropped = $c->getAttribute('deprecated');
 	    next if $dropped and $dropped eq 'yes';
+
+	    my $type = $c->getAttribute('type');
+	    next if $type && ($type eq 'tlit' || $type eq 'word');
+
+	    my $xlang = $c->getAttribute('xml:lang');
+	    if ($xlang) {
+		# warn "found <v xml:lang> = $xlang\n";
+		next;
+	    }
+
 	    my $v = $c->getAttribute('n');
 	    $v =~ tr/?//d;
 	    my $orig_v = $v;

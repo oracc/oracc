@@ -7,18 +7,24 @@
 #include <hash.h>
 #include <ctype128.h>
 #include <atf.h>
+#include <memblock.h>
 
 #include "gvl.h"
 
 static gvl_i *sl = NULL; /* sl is always the head of the list of signlist datasets, not necessarily the current one */
 static gvl_i *curr_sl = NULL; /* the sl that should be used for look up */
 static int tsv = 0;
+static int gvl_trace = 0;
 
-const char *(*gvl_lookup)(const char *key);
+const unsigned char *(*gvl_lookup)(unsigned const char *key);
 
 static gvl_i *gvl_i_init_d(const char *name, Dbi_index *dbi);
 static gvl_i *gvl_i_init_h(const char *name, Hash_table *h);
 static void   gvl_i_term(const char *name);
+
+#define ccp const char *
+#define ucp unsigned char *
+#define uccp unsigned const char *
 
 #define g_v "v"
 #define g_s "s"
@@ -34,11 +40,11 @@ gnr(const char *g)
 }
 
 static const char *
-gvl_type(const char *g)
+gvl_type(unsigned const char *g)
 {
-  if ((*g > 127 || isalpha(*g) || *g == '\'') && !gnr(g))
+  if ((*g > 127 || isalpha(*g) || *g == '\'') && !gnr((const char *)g))
     {
-      if (strchr(g,'('))
+      if (strchr((ccp)g,'('))
 	{
 	  while (*g)
 	    if ('!' == *g)
@@ -71,7 +77,7 @@ gvl_type(const char *g)
     return g_n;
   else if (*g == '|')
     {
-      register unsigned char *e = g;
+      register unsigned const char *e = g;
       while (*++e != '|')
 	;
       if (*e == '(')
@@ -82,17 +88,17 @@ gvl_type(const char *g)
   else if (*g == '*' || *g == ':')
     return g_p;
   else
-    return -1;  
+    return NULL;  
 }
 
-static const char *
-gvl_lookup_d(const char *key)
+static unsigned const char *
+gvl_lookup_d(unsigned const char *key)
 {
   return sl_lookup_d(curr_sl->u.d,key);
 }
 
-static const char *
-gvl_lookup_h(const char *key)
+static unsigned const char *
+gvl_lookup_h(unsigned const char *key)
 {
   return hash_find(curr_sl->u.h, (const unsigned char *)key);
 }
@@ -250,22 +256,64 @@ gvl_i_term(const char *name)
     fprintf(stderr, "gvl_i named '%s' not found during gvl_i_term\n", name);
 }
 
+unsigned char *
+gvl_tmp_key(const char *oid, const char *field)
+{
+  static char tmpkey[19]; /* oid is always length=8; longest field is "contained" */
+  strcpy(tmpkey,oid);
+  if (*field)
+    {
+      char *tk = tmpkey + strlen(tmpkey);
+      *tk++ = ';';
+      strcpy(tk,field);
+    }
+  return (ucp)tmpkey;
+}
+
 gvl_g *
-gvl_validate(const char *g)
+gvl_validate(unsigned const char *g)
 {
   gvl_g *gp = NULL;
 
   if (g)
     {
+      if (gvl_trace)
+	fprintf(stderr, "gvl_validate: called with g=%s\n", g);
       if (!(gp = hash_find(sl->h,g)))
 	{
+	  if (gvl_trace)
+	    fprintf(stderr, "gvl_validate: %s not found in seen-hash\n", g);
 	  gp = mb_new(sl->m);
 	  gp->text = npool_copy(g, sl->p);
 	  hash_add(sl->h, gp->text, gp);
+	  unsigned const char *l = NULL;
+	  if ((l = gvl_lookup(g)))
+	    {
+	      /* best case: g is a known sign or value */
+	      gp->oid = (ccp)l;
+	      gp->sign = gvl_lookup(gvl_tmp_key((ccp)l,""));
+	      fprintf(stderr, "hello g=%s; oid=%s; sn=%s\n", g, gp->oid, gp->sign);
+	    }
+	  else
+	    {
+	      if (gvl_trace)
+		fprintf(stderr, "gvl_validate: %s not found as sign or value\n", g);	      
+	    }
+	}
+      else
+	{
+	  if (gvl_trace)
+	    fprintf(stderr, "gvl_validate: %s was found in hash\n", g);
+	}
+    }
+  
+  return gp;
+}
+
+/*
 	  if ((gp->type = gvl_type(g)))
 	    {
 	      const char *k = npool_alloc(strlen(g)+2, sl->p);
-	      const char *l = NULL;
 	      sprintf(k, "%s;%s", g, gp->type);
 	      if ((l = sl_lookup(k)))
 		{
@@ -281,8 +329,5 @@ gvl_validate(const char *g)
 	    {
 	      gp->mess = "bad type";
 	    }
-	}
-    }
-  
-  return gp;
-}
+*/
+
