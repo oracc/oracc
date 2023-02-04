@@ -45,25 +45,9 @@ scan_comment_sub(unsigned char **lines, int *nlinesp, int badcolon)
   return NULL;
 }
 
-static void
-run_gv(unsigned char *key)
-{
-  gvl_g *gv = NULL;
-  gv = gvl_validate((uccp)key);
-  if (gv)
-    {
-      if (gv->mess)
-	fprintf(stderr, "%s\n", gv->mess);
-      else
-	fprintf(stderr, "gv: g=%s; oid=%s; sn=%s\n", key, gv->oid, gv->sign);
-    }
-  else
-    fprintf(stderr, "gvl_validate failed on %s\n", key);
-}
-
 int
 main(int argc, char **argv)
-{  
+{
   setlocale(LC_ALL,ORACC_LOCALE);
   f_log = stderr;
 
@@ -81,7 +65,7 @@ main(int argc, char **argv)
 
   gvl_setup(project, name, tsv);
   if (key)
-    run_gv(key);
+    gvl_validate((uccp)key);
   else
     {
       char keybuf[256];
@@ -91,7 +75,7 @@ main(int argc, char **argv)
 	  if (*key == 0x04) {
 	    goto quit;
 	  } else {
-	    run_gv(key);
+	    gvl_validate(key);
 	  }
 	}
     }

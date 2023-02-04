@@ -26,26 +26,9 @@ sl-index.c: sl-index.c.in
 
 bin_PROGRAMS=se masktest sedbg wmapper wmdebug wm ce_xtf ce2 sl sl-index gv
 
-noinst_LTLIBRARIES=libsl.la
-
-libsl_la_SOURCES = sllib.c gvl.c slurp.c
-
 #v2
 #v2_SOURCES=v2.c
 #v2_LDADD=@top_srcdir@/c/lib/liboracc.la
-
-gv_SOURCES=gv.c \
-	@top_srcdir@/c/otf/atf/note.c \
-	@top_srcdir@/c/otf/ox/globals.c
-
-gv_LDADD=libsl.la \
-	@top_srcdir@/c/otf/chr/libchr.la \
-	@top_srcdir@/c/otf/atf/libatf.la \
-	@top_srcdir@/c/otf/gdl/libgdl.la \
-	@top_srcdir@/c/otf/chr/libchr.la \
-	@top_srcdir@/c/otf/lib/libcdf.la \
-	@top_srcdir@/c/otf/lng/liblng.la \
-	@top_srcdir@/c/lib/liboracc.la
 
 sl_SOURCES=sl.c
 sl_LDADD=@top_srcdir@/c/lib/liboracc.la

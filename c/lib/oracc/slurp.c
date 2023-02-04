@@ -5,6 +5,8 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
+#include <psd_base.h>
+
 extern const char *errmsg_fn;
 extern const char *file;
 

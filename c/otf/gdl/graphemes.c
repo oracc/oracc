@@ -1442,13 +1442,15 @@ gtype(register unsigned char *g)
 }
 
 unsigned char *
-c10e_compound(unsigned char *g)
+c10e_compound(unsigned const char *g)
 {
   int cw = compound_warnings;
+  unsigned char *g2 = (unsigned char *)strdup((const char *)g);
   gvl_mode = 1; compound_warnings = 1;
-  (void)compound(g);
+  (void)compound(g2);
   compound_warnings = cw;
   gvl_mode = 0;
+  free(g2);
   return proper_c;
 }
 

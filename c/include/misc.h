@@ -21,4 +21,7 @@ extern off_t fsize (const char *fn, FILE *fp);
 
 extern void filecopy (const char *from, const char *to);
 extern int pct(int amount, int total);
+
+extern unsigned char *slurp(const char *caller, const char *fname, ssize_t *fsizep);
+
 #endif /*MISC_H_*/

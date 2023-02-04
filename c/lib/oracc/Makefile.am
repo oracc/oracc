@@ -22,7 +22,7 @@ liboracc_la_SOURCES = \
   options.c   vector.c	 wildcard.c  xmem.c	xsystem.c   utf.c     \
   runexpat.c  loadfile.c xmlutil.c   pool.c	inctrie.c   npool.c \
   xmd.c       xpd2.c      memblock.c warning.c 	xrename.c   pct.c \
-  msglist.c
+  msglist.c   slurp.c
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/otf/prj \

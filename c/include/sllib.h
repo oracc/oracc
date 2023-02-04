@@ -1,7 +1,7 @@
 #ifndef _SLLIB_H
 #define _SLLIB_H
 
-#include <slurp.h>
+#include <psd_base.h>
 
 extern unsigned const char * sl_lookup_d(Dbi_index *dbi, unsigned const char *key);
 
