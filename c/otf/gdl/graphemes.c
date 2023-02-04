@@ -48,6 +48,7 @@ int backslash_is_formvar = 1;
 static struct npool *graphemes_pool;
 struct node *pending_disamb = NULL;
 
+int gvl_mode = 0;
 int gdl_strict_compound_warnings = 0;
 extern int gdl_grapheme_sigs;
 extern int gdl_grapheme_sign_names;
@@ -1248,7 +1249,8 @@ gparse(register unsigned char *g, enum t_type type)
 			{
 			  if (cattr)
 			    {
-			      vwarning("%s: compound sign name element should be %s", ibuf, cattr);
+			      if (!gvl_mode)
+				vwarning("%s: compound sign name element should be %s", ibuf, cattr);
 			      if (render_canonically)
 				strcpy((char *)ibufp, (char*)cattr);
 			    }
@@ -1443,9 +1445,10 @@ unsigned char *
 c10e_compound(unsigned char *g)
 {
   int cw = compound_warnings;
-  compound_warnings = 1;
+  gvl_mode = 1; compound_warnings = 1;
   (void)compound(g);
   compound_warnings = cw;
+  gvl_mode = 0;
   return proper_c;
 }
 

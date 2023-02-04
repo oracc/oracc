@@ -7,6 +7,10 @@
 #include <fname.h>
 #include <options.h>
 #include <dbi.h>
+#include <graphemes.h>
+#include <gdl.h>
+#include <lang.h>
+#include <tree.h>
 #include <sllib.h>
 #include <gvl.h>
 #include <oracclocale.h>
@@ -30,6 +34,7 @@ int xcl_is_sparse_field = 0;
 #define ucp unsigned char *
 #define uccp unsigned const char *
 
+extern FILE *f_log;
 
 unsigned char *
 scan_comment_sub(unsigned char **lines, int *nlinesp, int badcolon)
@@ -44,7 +49,12 @@ int
 main(int argc, char **argv)
 {
   setlocale(LC_ALL,ORACC_LOCALE);
-  
+  f_log = stderr;
+
+  tree_init();
+  gdl_init();
+  curr_lang = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
+
   options(argc, argv, "hk:p:n:u8");
 
   /* Figure out the db and open it */
