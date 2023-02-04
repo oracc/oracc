@@ -117,6 +117,32 @@ gvl_type(unsigned const char *g)
 }
 
 unsigned const char *
+gvl_cuneify(unsigned const char *g)
+{
+  return gvl_cuneify_gv(gvl_validate(g));
+}
+
+unsigned const char *
+gvl_cuneify_gv(gvl_g*gg)
+{
+  if (gg)
+    {
+      if (!gg->utf8)
+	{
+	  /*fprintf(stderr, "looking up utf8 for %s\n", gg->sign);*/
+	  gg->utf8 = gvl_lookup(gvl_tmp_key((uccp)gg->oid,"uchar"));
+	}
+      else
+	{
+	  /*fprintf(stderr, "utf8 for %s already in hash\n", gg->sign);*/
+	}
+      return gg->utf8;
+    }
+  else
+    return NULL;
+}
+
+unsigned const char *
 gvl_get_id(unsigned const char *g)
 {
   gvl_g*gg = gvl_validate(g);
@@ -331,7 +357,7 @@ gvl_tmp_key(unsigned const char *key, const char *field)
   return (ucp)tmpkey;
 }
 
-unsigned char *
+static unsigned char *
 gvl_q_c10e(unsigned const char *g, unsigned const char **mess,
 	   const char **v_oid, const char **q_oid)
 {
@@ -498,6 +524,12 @@ gvl_validate(unsigned const char *g)
 			      else
 				gp->mess = gvl_vmess("unknown compound: %s", g);
 			    }
+			}
+		      else if ((l = gvl_lookup(gvl_tmp_key(g,"l"))))
+			{
+			  gp->type = "l";
+			  gp->oid = (ccp)l;
+			  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
 			}
 		      else
 			{

@@ -40,7 +40,14 @@ extern gvl_i *gvl_i_find(const char *name);
 
 extern gvl_g *gvl_validate(unsigned const char *g);
 
+extern int gvl_is_sname(unsigned const char *g);
 extern int gvl_is_value(unsigned const char *g);
+extern unsigned char *gvl_tmp_key(unsigned const char *key, const char *field);
+extern unsigned const char *gvl_get_id(unsigned const char *g);
 extern unsigned const char *gvl_get_sname(unsigned const char *g);
+
+extern unsigned const char *gvl_cuneify(unsigned const char *g);
+extern unsigned const char *gvl_cuneify_gv(gvl_g *gp);
+
 
 #endif/*_GVL_H*/

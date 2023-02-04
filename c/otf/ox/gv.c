@@ -46,19 +46,47 @@ scan_comment_sub(unsigned char **lines, int *nlinesp, int badcolon)
 }
 
 static void
-run_gv(unsigned char *key)
+run_utf8(gvl_g *gv)
 {
-  gvl_g *gv = NULL;
-  gv = gvl_validate((uccp)key);
-  if (gv)
+  unsigned const char *u = gvl_cuneify_gv(gv);
+  if (u)
+    fprintf(stderr, "gv: g=%s; u=%s\n", gv->sign, gv->utf8);
+  else
+    fprintf(stderr, "gv: no Unicode for %s\n", gv->sign);
+}
+
+static void
+run_gv(unsigned const char *key)
+{
+  if ('o' == key[0] && isdigit(key[1]))
     {
-      if (gv->mess)
-	fprintf(stderr, "%s\n", gv->mess);
+      unsigned const char *sn = gvl_lookup(key);
+      if (sn)
+	{
+	  if (utf8)
+	    run_utf8(gvl_validate(sn));
+	  else
+	    fprintf(stderr, "OID %s => %s\n", key, sn);
+	}
       else
-	fprintf(stderr, "gv: g=%s; oid=%s; sn=%s\n", key, gv->oid, gv->sign);
+	fprintf(stderr, "%s is not an OID in the current signlist\n", key);
     }
   else
-    fprintf(stderr, "gvl_validate failed on %s\n", key);
+    {
+      gvl_g *gv = NULL;
+      gv = gvl_validate((uccp)key);
+      if (gv)
+	{	  
+	  if (gv->oid && utf8)
+	    run_utf8(gv);
+	  else if (gv->mess)
+	    fprintf(stderr, "%s\n", gv->mess);
+	  else
+	    fprintf(stderr, "gv: g=%s; oid=%s; sn=%s\n", key, gv->oid, gv->sign);
+	}
+      else
+	fprintf(stderr, "gvl_validate failed on %s\n", key);
+    }
 }
 
 int
