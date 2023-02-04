@@ -36,6 +36,7 @@ load_signs(struct lang_context *lp)
      if there is one, use it: */
   if (lp->owner && lp->owner->name && find_project_csl(lp->owner->name,lp->tag->lang))
     {
+#if 0
       char buf[16];
       sprintf(buf,"csl-%s",lp->tag->lang);
       lp->snames = skl_load(lp->owner->name,buf,"simple","signs");
@@ -54,6 +55,7 @@ load_signs(struct lang_context *lp)
 	  fprintf(stderr,"project signlist for %s, lang %s load %s\n",
 		  lp->owner->name, lp->tag->lang, slstat);
 	}
+#endif
     }
   /* if not, then if the signlist member is "#" we are using the 
      built-in sign list */
