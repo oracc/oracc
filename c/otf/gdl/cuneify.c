@@ -10,6 +10,12 @@
 #include "cuneify.h"
 #include "sexify.h"
 
+#define GVL_CUNEIFY 1
+
+#ifdef GVL_CUNEIFY
+#include "gvl.h"
+#endif
+
 #ifndef strdup
 #define strdup(a) (unsigned char *)strcpy(malloc(strlen((const char *)a)+1),(const char *)a)
 #endif
@@ -48,6 +54,7 @@ struct render_tab
     { NULL , NULL },
   };
 
+#ifndef GVL_CUNEIFY
 static const unsigned char *
 addpipes(const unsigned char *u)
 {
@@ -59,6 +66,7 @@ addpipes(const unsigned char *u)
   strcat((char*)buf,"|");
   return buf;
 }
+#endif
 
 static int
 all_digits(const char *str)
@@ -122,11 +130,20 @@ cuneify_one(const unsigned char *utf)
   const unsigned char *rtab_equiv;
   const unsigned char *tilde;
 
+#ifdef GVL_CUNEIFY
+  unsigned const char *u = NULL;
+
+  u = gvl_cuneify(utf);
+  if (u)
+    return u;
+#else
   if (psl_cuneify(utf))
     return psl_cuneify(utf);
 
   if (psl_is_value(utf))
     return psl_cuneify(psl_get_sname(utf));
+#endif
+  
   else if (cuneify_fuzzy_allographs 
 	   && ((tilde = (const unsigned char *)strchr((char*)utf,'~'))))
     {
@@ -135,6 +152,8 @@ cuneify_one(const unsigned char *utf)
       if (try)
 	return try;
     }
+
+#ifndef GVL_CUNEIFY
   if (psl_is_sname(utf))
     {
       unsigned const char *c = NULL;
@@ -157,6 +176,8 @@ cuneify_one(const unsigned char *utf)
       if ((try = psl_cuneify(withpipes)))
 	return try;
     }
+#endif
+
   if ((rtab_equiv = find_in_rtab(utf)))
     return cuneify_sequence(rtab_equiv);
   else if (all_digits((const char *)utf))

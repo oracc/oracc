@@ -1,4 +1,4 @@
-#define OX_VERSION 0.90
+#define OX_VERSION 1
 
 #include <stdio.h>
 #include <unistd.h>
@@ -56,7 +56,6 @@ signals(int argc, char **argv)
 
 const char *automatic_styles = NULL,
   *cdtfile = NULL, 
-  *errmsg_fn = NULL,
   *master_styles = NULL,
   *project_dir = NULL,
   *styles_styles = NULL;
@@ -65,8 +64,6 @@ char project_base[_MAX_PATH];
 
 const char *output_dir;
 List *cdt_master_list, *cdt_meta_list, *cdt_styles_list;
-
-const char *errmsg_fn;
 
 #define xstr(s) str(s)
 #define str(s)  #s

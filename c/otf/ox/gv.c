@@ -21,7 +21,6 @@ static int human_readable = 0;
 static int utf8 = 0;
 static int uhex = 0;
 
-const char *errmsg_fn = NULL;
 extern const char *file;
 
 static int tsv = 1;
@@ -108,6 +107,7 @@ main(int argc, char **argv)
     name = "ogsl";
 
   gvl_setup(project, name, tsv);
+
   if (key)
     run_gv((uccp)key);
   else

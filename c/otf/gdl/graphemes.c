@@ -19,6 +19,11 @@
 #include "gdl.h"
 #include "gsl.h"
 
+#define GVL_MODE 1
+#ifdef GVL_MODE
+#include "gvl.h"
+#endif
+
 /* Structure for simultaneous rendering of original grapheme form and
    canonicalized form */
 
@@ -553,6 +558,14 @@ gparse(register unsigned char *g, enum t_type type)
   const unsigned char *signified = NULL;
 
   render_canonically = compound_warnings;
+
+#ifdef GVL_MODE
+  {
+    gvl_g *gg = gvl_validate(g);
+    if (gg && gg->mess)
+      vwarning("(gvl) %s",gg->mess);
+  }
+#endif
   
   if (type == type_top)
     type = gtype(g);

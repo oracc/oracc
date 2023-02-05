@@ -16,6 +16,11 @@
 
 extern int do_show_insts;
 
+#define GVL_MODE 1
+#ifdef GVL_MODE
+#include "gvl.h"
+#endif
+
 void
 ox_init(void)
 {
@@ -23,6 +28,11 @@ ox_init(void)
   tree_init();
   galloc_init();
   gdl_init();
+
+#ifdef GVL_MODE
+  gvl_setup("ogsl", "ogsl", 1); /* 1=tsv */
+#endif
+
   text_vec_init();
   lemline_run_init();
   tree_functions(x2_serialize);
