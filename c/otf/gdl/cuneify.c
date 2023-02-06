@@ -7,13 +7,14 @@
 #include "cdf.h"
 #include "gsl.h"
 #include "xpd2.h"
-#include "cuneify.h"
 #include "sexify.h"
 
 #define GVL_CUNEIFY 1
 
 #ifdef GVL_CUNEIFY
 #include "gvl.h"
+#else
+#include "cuneify.h"
 #endif
 
 #ifndef strdup

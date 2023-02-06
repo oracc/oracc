@@ -17,11 +17,18 @@
 #include "sexify.h"
 #include "charsets.h"
 #include "gdl.h"
-#include "gsl.h"
 
 #define GVL_MODE 1
+
 #ifdef GVL_MODE
 #include "gvl.h"
+#define psl_get_id (const char *)gvl_get_id
+#define psl_get_sname gvl_get_sname
+#define psl_is_sname gvl_is_sname
+#define psl_is_value gvl_is_value
+#define psl_looks_like_sname gvl_looks_like_sname
+#else
+#include "gsl.h"
 #endif
 
 /* Structure for simultaneous rendering of original grapheme form and
@@ -971,6 +978,7 @@ gparse(register unsigned char *g, enum t_type type)
     }
   if (gp)
     {
+#ifndef GVL_MODE
       if (gp->type == g_q)
 	{
 	  unsigned const char *value = gp->g.q.g->g.s.base;
@@ -1013,6 +1021,7 @@ gparse(register unsigned char *g, enum t_type type)
 	    }
 #endif
 	}
+#endif
       gp->atf = orig;
       if (gp->xml && (gp->gflags & GFLAGS_DOTS))
 	    gp->xml->grapheme = gp; /* give rendering process access to parent grapheme not just struct node */
@@ -1099,6 +1108,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  static const unsigned char *cattr = NULL;
 		  const char *showerr = "yes";
 		  const unsigned char *input = NULL;
+
 		  if (gp->type == g_q)
 		    cattr = signify(input = gp->g.q.q->atf);
 		  else if (gp->type == g_n)
@@ -1153,6 +1163,9 @@ gparse(register unsigned char *g, enum t_type type)
 		  const char *showerr = "yes";
 		  const unsigned char *input = NULL;
 		  cattr = NULL;
+
+		  fprintf(stderr, "do_signnames\n");
+
 		  if (gp->type == g_q)
 		    cattr = signify(gp->g.q.q->g.s.base);
 		  else if (gp->type == g_n)
@@ -1375,7 +1388,9 @@ graphemes_init()
   gtags[g_g] = e_g_g;
   gtags[g_b] = e_g_b;
 
+#ifndef GVL_MODE
   psl_init();
+#endif
 }
 
 void
@@ -1399,7 +1414,10 @@ graphemes_term()
     }
 
   npool_term(graphemes_pool);
+
+#ifndef GVL_MODE
   psl_term();
+#endif
 }
 
 enum t_type

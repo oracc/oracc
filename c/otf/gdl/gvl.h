@@ -45,6 +45,7 @@ extern int gvl_is_value(unsigned const char *g);
 extern unsigned char *gvl_tmp_key(unsigned const char *key, const char *field);
 extern unsigned const char *gvl_get_id(unsigned const char *g);
 extern unsigned const char *gvl_get_sname(unsigned const char *g);
+extern int gvl_looks_like_sname(unsigned const char *g);
 
 extern unsigned const char *gvl_cuneify(unsigned const char *g);
 extern unsigned const char *gvl_cuneify_gv(gvl_g *gp);

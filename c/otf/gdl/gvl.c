@@ -173,6 +173,12 @@ gvl_is_sname(unsigned const char *g)
 }
 
 int
+gvl_looks_like_sname(unsigned const char *g)
+{
+  return has_sign_indicator(g);
+}
+
+int
 gvl_is_value(unsigned const char *g)
 {
   return gvl_validate(g) != NULL;
@@ -219,6 +225,7 @@ gvl_setup(const char *project, const char *name, int arg_tsv)
     }
 
   ret->tsv = arg_tsv;
+  sl_init_si();
 
   return ret;
 }

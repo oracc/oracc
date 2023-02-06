@@ -24,16 +24,17 @@ static int signindicator[256];
 void
 sl_init_si(void)
 {
-  signindicator['A'] = 
-    signindicator['E'] = 
-    signindicator['I'] = 
-    signindicator['U'] = 
-    signindicator['F'] = 
-    signindicator['N'] = 
-    signindicator['O'] = 
-    signindicator['P'] = 
-    signindicator['S'] = 
-    signindicator['X'] = 1;
+  if (!signindicator['A'])
+    signindicator['A'] = 
+      signindicator['E'] = 
+      signindicator['I'] = 
+      signindicator['U'] = 
+      signindicator['F'] = 
+      signindicator['N'] = 
+      signindicator['O'] = 
+      signindicator['P'] = 
+      signindicator['S'] = 
+      signindicator['X'] = 1;
 }
 
 int
