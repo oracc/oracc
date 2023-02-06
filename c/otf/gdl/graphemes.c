@@ -570,7 +570,10 @@ gparse(register unsigned char *g, enum t_type type)
   {
     gvl_g *gg = gvl_validate(g);
     if (gg && gg->mess)
-      vwarning("(gvl) %s",gg->mess);
+      {
+	if (!inner_qual) /* || !strstr((const char *)gg->mess, "must be qualified")) */
+	  vwarning("(gvl) %s",gg->mess);
+      }
   }
 #endif
   
