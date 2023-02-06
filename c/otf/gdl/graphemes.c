@@ -1164,7 +1164,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  const unsigned char *input = NULL;
 		  cattr = NULL;
 
-		  fprintf(stderr, "do_signnames\n");
+		  /* fprintf(stderr, "do_signnames\n"); */
 
 		  if (gp->type == g_q)
 		    cattr = signify(gp->g.q.q->g.s.base);
