@@ -617,7 +617,7 @@ subsign {
 	    } else {
 		# $values{$v} = $id;
 		$values{$v} = $id; # 'v'
-		++$topvalues{$v} if $mode == TOP;
+		++$topvalues{$v} if $mode == TOP && $v !~ /ₓ$/; # force ₓ-values to have ;q
 	    }
 	    push(@{$values{$id,'values'}}, $orig_v) if $v;
 	    # homophones: each value is a space-delimited string of IDs
