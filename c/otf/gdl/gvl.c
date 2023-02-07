@@ -18,6 +18,8 @@ static gvl_i *curr_sl = NULL; /* the sl that should be used for look up */
 static int tsv = 0;
 static int gvl_trace = 0;
 
+static const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalues/";
+
 const unsigned char *(*gvl_lookup)(unsigned const char *key);
 
 static gvl_i *gvl_i_init_d(const char *name, Dbi_index *dbi);
@@ -41,7 +43,7 @@ gvl_vmess(char *s, ...)
       va_start(ap, s);
       va_copy(ap2, ap);
       need = vsnprintf(NULL, 0, s, ap);
-      e = malloc(need);
+      e = malloc(need+1);
       vsprintf(e, s, ap2);
       va_end(ap2);
       va_end(ap);
@@ -550,7 +552,7 @@ gvl_validate(unsigned const char *g)
 		  if (gq)
 		    gp->mess = gvl_vmess("value %s must be qualified with one of %s", g, gq);
 		  else
-		    gp->mess = gvl_vmess("unknown value: %s", g);
+		    gp->mess = gvl_vmess("unknown value: %s. To request adding it please visit:\n\t%s", g, report);
 		}
 	    }
 	}

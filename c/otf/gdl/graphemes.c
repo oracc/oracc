@@ -571,7 +571,7 @@ gparse(register unsigned char *g, enum t_type type)
     gvl_g *gg = gvl_validate(g);
     if (gg && gg->mess)
       {
-	if (!inner_qual) /* || !strstr((const char *)gg->mess, "must be qualified")) */
+	if (!inner_qual && !inner_parse) /* || !strstr((const char *)gg->mess, "must be qualified")) */
 	  vwarning("(gvl) %s",gg->mess);
       }
   }
@@ -608,8 +608,10 @@ gparse(register unsigned char *g, enum t_type type)
 	  gcheck = g2utf(gcheck);
 	if (is_xvalue(gcheck))
 	  {
+#ifndef GVL_MODE
 	    if (!inner_qual && !gdl_bootstrap)
 	      vwarning("%s: x-values must be qualified with sign name", gcheck);
+#endif
 	    gp = singleton(g,type);
 	  }
 	else if (curr_lang->signlist 
@@ -781,9 +783,10 @@ gparse(register unsigned char *g, enum t_type type)
 	}
       else if (curr_lang->snames)
 	{
+#ifndef GVL_MODE
 	  if (is_xvalue(g) && !inner_qual && !gdl_bootstrap)
 	    vwarning("%s: x-values must be qualified with sign name", g);
-
+#endif
 	  if (!hash_find(curr_lang->snames,g))
 	    {
 	      const unsigned char *utf8g = g2utf(g), *lc;
@@ -823,9 +826,11 @@ gparse(register unsigned char *g, enum t_type type)
 	  const unsigned char *noheth = NULL, *lc_noheth = NULL;
 	  int len = 0;
 
+#ifndef GVL_MODE
 	  if (is_xvalue(g) && !inner_qual && !gdl_bootstrap)
 	    vwarning("%s: x-values must be qualified with sign name", g);
-
+#endif
+	  
 	  if (use_unicode)
 	    {
 	      gcheck = accnum(gcheck);
@@ -2045,7 +2050,9 @@ qualified(register unsigned char *g)
 	      struct grapheme *q_q;
 	      g2[-1] = '\0';
 	      ++inner_parse;
+	      inner_qual = 1;
 	      q_q = gparse(g,type_top);
+	      inner_qual = 0;
 	      --inner_parse;
 	      if (q_q)
 		{
