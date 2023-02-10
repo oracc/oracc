@@ -53,6 +53,7 @@ gvl_vmess(char *s, ...)
   return ret;
 }
 
+#define gvl_BAD ""
 #define gvl_v "v"
 #define gvl_s "s"
 #define gvl_n "n"
@@ -115,7 +116,7 @@ gvl_type(unsigned const char *g)
   else if (*g == '*' || *g == ':')
     return gvl_p;
   else
-    return NULL;  
+    return gvl_BAD;
 }
 
 unsigned const char *
@@ -212,9 +213,10 @@ gvl_setup(const char *project, const char *name, int arg_tsv)
   if (tsv)
     {
       Hash_table *h = NULL;
-      
-      gvl_lookup = gvl_lookup_h;
 
+      use_unicode = 1;
+      gvl_lookup = gvl_lookup_h;
+      
       if ((h = sl_init_h(project, name)))
 	ret = gvl_i_init_h(name, h);
       else
@@ -379,13 +381,20 @@ gvl_q_c10e(unsigned const char *g, unsigned const char **mess,
   gvl_g *gp = NULL;
   unsigned const char *v, *q;
   unsigned char *tmp = malloc(strlen((ccp)g)+1), *end;
+  int pnest = 0;
 
   strcpy((char*)tmp, (ccp)g);
   end = tmp+strlen((ccp)tmp);
   --end;
   *end = '\0';
-  while ('(' != end[-1])
-    --end;
+  while ('(' != end[-1] || pnest)
+    {
+      --end;
+      if (')' == *end)
+	++pnest;
+      else if ('(' == *end)
+	--pnest;
+    }
   q = end--;
   *end = '\0';
   v = tmp;
@@ -493,7 +502,22 @@ gvl_validate(unsigned const char *g)
 			  else if (strcmp((ccp)g_orig, (ccp)q_c10e))
 			    gp->mess = gvl_vmess("unknown qualified value: %s (also tried %s)", g_orig, q_c10e);
 			  else
-			    gp->mess = gvl_vmess("unknown qualified value: %s", g_orig);
+			    {
+			      if (v_oid && q_oid)
+				{
+				  unsigned const char *h = gvl_lookup(gvl_tmp_key(gvl_v_base(v_oidXXX),"h"));
+				  unsigned const char *p = NULL;
+				  if ((p = strstr(h, q_oid)))
+				    {
+				      p = strchr(p,'/');
+				      ++p;
+				      p = h_decode(p);
+				      gp->mess = gvl_vmess("
+				    }
+				}
+			      else
+				gp->mess = gvl_vmess("unknown qualified value: %s", g_orig);
+			    }
 			}
 		      free(q_c10e);
 		    }

@@ -21,7 +21,6 @@ static int human_readable = 0;
 static int utf8 = 0;
 static int uhex = 0;
 
-const char *errmsg_fn = NULL;
 extern const char *file;
 
 static int tsv = 1;

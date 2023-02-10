@@ -1278,7 +1278,7 @@ gparse(register unsigned char *g, enum t_type type)
 		    {
 		      const unsigned char *cattr = signify(ibuf);
 
-		      if (strcmp((const char*)cattr,(const char*)ibuf)
+		      if (cattr && strcmp((const char*)cattr,(const char*)ibuf)
 			   && compound_warnings) /* overload compound_warnings to cover sign names as well */
 			{
 			  if (cattr)

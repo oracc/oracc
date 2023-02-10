@@ -766,10 +766,14 @@ sub slse { slseA(@_) };
 
 sub
 slseA {
+    warn "slseA: trying $_[0]\n";
     print SL_IN "$_[0]\n";
     my $res = <SL_OUT>;
-    chomp($res);
-#    warn "slseA -k $_[0] => $res\n";
+    if (defined $res) {
+	chomp($res);
+    } else {
+	warn "slseA internal error on input $_[0]\n";
+    }
     $res;
 }
 

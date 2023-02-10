@@ -23,6 +23,8 @@ static const char *oracc = NULL;
 static int oid = 0;
 static int utf8 = 0;
 static int uhex = 0;
+
+static int gv_echo = 0;
 static int gv_mode = 0;
 
 #define ccp const char *
@@ -34,6 +36,10 @@ gv(unsigned const char *key)
 {
   unsigned char tmp[32];
   gvl_g *gvp = NULL;
+
+  if (gv_echo)
+    fprintf(stdout, "%s\t", key);
+  
   if ('o' == key[0] && isdigit(key[1]) && !strchr((ccp)key, ';'))
     {
       unsigned const char *sn = gvl_lookup(key);
@@ -163,7 +169,7 @@ main(int argc, char **argv)
   setlocale(LC_ALL,ORACC_LOCALE);
   f_log = stderr;
   
-  options(argc, argv, "ghk:p:n:ou8");
+  options(argc, argv, "eghk:p:n:ou8");
 
   /* Figure out the db and open it */
   if (!project)
@@ -189,14 +195,20 @@ main(int argc, char **argv)
       else
 	{
 	  char keybuf[256];
+	  file = "<stdin>";
+	  lnum = 0;
 	  while ((key = fgets(keybuf, 256, stdin)))
 	    {
 	      key[strlen((ccp)key)-1] = '\0';
-	      if (*key == 0x04) {
-		break;
-	      } else {
-		gv((uccp)key);
-	      }
+	      ++lnum;
+	      if (*key)
+		{
+		  if (*key == 0x04) {
+		    break;
+		  } else {
+		    gv((uccp)key);
+		  }
+		}
 	    }
 	}
       gvl_wrapup(name);
@@ -242,6 +254,9 @@ int opts(int argc, char *arg)
 {
   switch (argc)
     {
+    case 'e':
+      gv_echo = 1;
+      break;
     case 'g':
       gv_mode = 1;
       break;
