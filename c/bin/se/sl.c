@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <wchar.h>
 #include <wctype.h>
+#include <ctype128.h>
 #include <locale.h>
 #include <psd_base.h>
 #include <fname.h>
@@ -9,7 +10,11 @@
 #include <dbi.h>
 #include <oracclocale.h>
 #include <gvl.h>
+#include <gdl.h>
+#include <lang.h>
+#include <tree.h>
 
+extern FILE *f_log;
 const char *project;
 static char *db = NULL, *name = NULL;
 static char *key;
@@ -54,7 +59,7 @@ gv(unsigned const char *key)
   else
     {
       gvp = gvl_validate((uccp)key);
-      if (gvp)
+      if (gvp && gvp->sign)
 	{
 	  if (human_readable)
 	    fprintf(stdout, "%s\n", (char*)gvp->sign);
@@ -156,6 +161,7 @@ main(int argc, char **argv)
   Dbi_index *dbi = NULL;
 
   setlocale(LC_ALL,ORACC_LOCALE);
+  f_log = stderr;
   
   options(argc, argv, "ghk:p:n:ou8");
 
@@ -172,7 +178,11 @@ main(int argc, char **argv)
 	project = "ogsl";
       if (!name)
 	name = "ogsl";
-      
+
+      tree_init();
+      gdl_init();
+      curr_lang = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
+ 
       gvl_setup(project, name, 1);
       if (key)
 	gv((uccp)key);

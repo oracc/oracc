@@ -54,7 +54,7 @@ vwarning(const char *fmt,...)
 	  va_start(args,fmt);
 	  if (atf_cbd_err)
 	    fprintf(f_log,"%d: ",cbd_err_line);
-	  else if (with_textid)
+	  else if (with_textid && textid)
 	    fprintf(f_log,"%s:%d:%s: ",file ? file : "",lnum,textid ? textid : textid);
 	  else
 	    fprintf(f_log,"%s:%d: ",file,lnum);
@@ -84,7 +84,7 @@ vwarning2(const char *myfile, int mylnum, const char *fmt,...)
       va_start(args,fmt);
       if (atf_cbd_err)
 	fprintf(f_log,"%d: ",cbd_err_line);
-      else if (with_textid)
+      else if (with_textid && textid)
 	fprintf(f_log,"%s:%d:%s: ",myfile,mylnum,textid);
       else
 	fprintf(f_log,"%s:%d: ",myfile,mylnum);
@@ -115,7 +115,7 @@ warning(const char *str)
 	{
 	  if (atf_cbd_err)
 	    fprintf(f_log,"%d: ",cbd_err_line);
-	  else if (with_textid)
+	  else if (with_textid && textid)
 	    fprintf(f_log,"%s:%d:%s: ",file,lnum,textid);
 	  else
 	    fprintf(f_log,"%s:%d: ",file,lnum);
@@ -143,7 +143,7 @@ notice(const char *str)
 #endif
       if (atf_cbd_err)
 	fprintf(f_log,"%d: ",cbd_err_line);
-      else if (with_textid)
+      else if (with_textid && textid)
 	fprintf(f_log,"%s:%d:%s: %s\n",file,lnum,textid,str);
       else
 	fprintf(f_log,"%s:%d: %s\n",file,lnum,str);
@@ -158,7 +158,7 @@ notice2(const char *myfile, int mylnum, const char *str)
 {
   if (!lstatus++)
     {
-      if (with_textid)
+      if (with_textid && textid)
 	fprintf(f_log,"%s:%d:%s: %s\n",myfile,mylnum,textid,str);
       else
 	fprintf(f_log,"%s:%d: %s\n",myfile,mylnum,str);
@@ -179,7 +179,7 @@ vnotice(const char *fmt,...)
       va_start(args,fmt);
       if (atf_cbd_err)
 	fprintf(f_log,"%d: ",cbd_err_line);
-      else if (with_textid)
+      else if (with_textid && textid)
 	fprintf(f_log,"%s:%d:%s: ",file ? file : "",lnum,textid ? textid : "");
       else
 	fprintf(f_log,"%s:%d: ",file,lnum);
@@ -205,7 +205,7 @@ vnotice2(const char *myfile, int mylnum, const char *fmt,...)
       va_start(args,fmt);
       if (atf_cbd_err)
 	fprintf(f_log,"%d: ",cbd_err_line);
-      else if (with_textid)
+      else if (with_textid && textid)
 	fprintf(f_log,"%s:%d:%s: ",myfile,mylnum,textid);
       else
 	fprintf(f_log,"%s:%d: ",myfile,mylnum);
