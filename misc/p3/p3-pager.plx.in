@@ -34,6 +34,7 @@ my $oraccbld = "@@ORACC@@/bld";
 my $oracclib = "@@ORACC@@/lib";
 my $oraccpub = "@@ORACC@@/pub";
 my $oraccwww = "@@ORACC@@/www";
+my $oraccxml = "@@ORACC@@/xml";
 
 my $force_page = 0;
 my $fragid = '';
@@ -195,6 +196,15 @@ if ($rt{'prod'} eq 'list') {
     } else {
 	$p{'#list'} = "@@ORACC@@/www/$p{'project'}/lists/$p{'list'}";
 	$rt{'#list_type'} = 'cat';
+
+	# set outline info for list if it exists
+	my $list_cfg = undef;
+	if (($list_cfg = list_config($p{'project'}, $p{'list'}))) {
+	    $p{'#config'} = $list_config;
+	    $p{'p3OSdefault'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-default-sort-fields \@cfg=$list_config`;
+	    unless ($p{'p3OSdefault'}) {
+		$p{'p3OSdefault'} = "period,subgenre,provenience";		
+	}
 	set_list_items();
     }
 
@@ -452,6 +462,19 @@ html_by_proxy {
     ($proxy_project, $html);
 }
 
+
+sub
+list_config {
+    my($p,$l) = @_;
+    if (-r "$oraccxml/$p/pll.xml") {
+	my $cfg = `$oraccbin/pllcfg $oraccxml/$p/pll.xml $l`;
+	if (-r "$oraccxml/$p/$cfg") {
+	    return $cfg;
+	}
+    }
+    return '';
+}
+    
 sub
 p3adhoc {
     my $adhoc_list = "$p{'tmpdir'}/results.lst";
@@ -1305,6 +1328,8 @@ setup_pg_args {
 	my $tmp = undef;
 	if ($p{'#coerce'}) {
 	    $tmp = `@@ORACC@@/bin/oraccopt $p{'project'} outline-default-sort-fields`;
+	} elsif ($p{'#config'}) {
+	    $tmp = `@@ORACC@@/bin/oraccopt $p{'project'} outline-default-sort-fields \@cfg=$p{'#config'}`;
 	} else {
 	    $tmp = $rt{'sorttype'};
 	}

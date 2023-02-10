@@ -4,6 +4,11 @@
 
 extern FILE *f_log;
 
+static int looks_like_cfgname(char *arg)
+{
+  return !strncmp(arg,"@cfg=",5);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -16,15 +21,33 @@ main(int argc, char **argv)
       const char *project = NULL;
       const char *option = NULL;
       const char *deflt = NULL;
+      const char *cfgname = NULL;
 
-      if (argc == 3 || argc == 4)
+      if (argc == 3 || argc == 4 || argc == 5)
 	{
 	  project = argv[1];
 	  option = argv[2];
-	  if (argc == 4)
-	    deflt = argv[3];
-	  else
-	    deflt = "";
+	  switch (argc)
+	    {	      
+	    case 5:
+	      deflt = argv[3];
+	      cfgname = argv[4];
+	      break;
+	    case 4:
+	      if (looks_like_cfgname(argv[3]))
+		{
+		  cfgname = argv[3]+5;
+		  deflt = "";
+		}
+	      else
+		{
+		  deflt = argv[3];		  
+		}
+	      break;
+	    case 3:
+	      deflt = "";
+	      break;
+	    }
 	}
       else if (argc == 1)
 	{
@@ -43,6 +66,9 @@ main(int argc, char **argv)
       if (!textid)
 	textid = "<none>";
 
+      if (cfgname)
+	xpd_set_configname(cfgname);
+      
       if ((x = xpd_init(project,pool)))
 	{
 	  const char *val = xpd_option(x,option);

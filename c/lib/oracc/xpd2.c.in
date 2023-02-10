@@ -13,6 +13,8 @@
 
 extern int verbose;
 
+static const char *configname = "config.xml";
+
 static void xpds_load(struct xpd *, const char *);
 
 const char *
@@ -52,9 +54,9 @@ xpd_init(const char *project, struct npool *pool)
   struct xpd *xp = calloc(1,sizeof(struct xpd));
   if (*project == '.') 
     /* can't use 00lib because of config inheriting */
-    sprintf(buf,"%s/02xml/config.xml",project);
+    sprintf(buf,"%s/02xml/%s",project,configname);
   else
-    sprintf(buf,"%s/xml/%s/config.xml",oracc_home(),project);
+    sprintf(buf,"%s/xml/%s/%s",oracc_home(),project,configname);
   xp->project = (const char *)npool_copy((unsigned char *)project,pool);
   xp->file = (const char *)npool_copy((unsigned char *)buf,pool);
   xp->pool = pool;
@@ -130,8 +132,8 @@ xpd_eH(struct xpd *xp, const char *name)
   char *colon = strrchr(name, ':');
   if (colon && strcmp(colon, ":option") && strcmp(colon, ":project"))
     {
-      char *t = (unsigned char *)charData_retrieve(), *end;
-      unsigned char *n = npool_copy(colon+1,xp->pool);
+      char *t = (char *)charData_retrieve(), *end;
+      unsigned char *n = npool_copy((unsigned char *)(colon+1),xp->pool);
       while (isspace(*t))
 	++t;
       end = t + strlen(t);
@@ -140,7 +142,7 @@ xpd_eH(struct xpd *xp, const char *name)
       *end = '\0';
       hash_add(xp->opts,
 	       n,
-	       npool_copy(t,xp->pool));      
+	       npool_copy((unsigned char *)t,xp->pool));      
     }
   charData_discard();
 }
@@ -151,7 +153,7 @@ xpds_load(struct xpd *xp, const char *fname)
   const char *fns[2];
   fns[0] = fname;
   fns[1] = NULL;
-  runexpatNSuD(i_list, fns, (void(*)(void*,const char*,const char **))xpd_sH, xpd_eH, ":", xp);
+  runexpatNSuD(i_list, fns, (XML_StartElementHandler)xpd_sH, (XML_EndElementHandler)xpd_eH, ":", xp);
 }
 
 void
@@ -159,7 +161,7 @@ xpd_echo(const char *xpd_project, FILE *fp)
 {
   char tmp[_MAX_PATH], *text;
   size_t nbytes;
-  (void)sprintf(tmp,"@@ORACC@@/xml/%s/config.xml", xpd_project);
+  (void)sprintf(tmp,"@@ORACC@@/xml/%s/%s", xpd_project, configname);
   text = (char*)loadfile((unsigned char *)tmp, &nbytes);
   if (text)
     {
@@ -172,4 +174,10 @@ xpd_echo(const char *xpd_project, FILE *fp)
 	}
       fputs(text,fp);
     }
+}
+
+void
+xpd_set_configname(const char *cfgname)
+{
+  configname = cfgname;
 }

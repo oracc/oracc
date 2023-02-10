@@ -17,5 +17,6 @@ extern int xpd_option_int(struct xpd *, const char*);
 extern struct xpd *xpd_init(const char *project, struct npool *pool);
 extern void xpd_term(struct xpd *);
 extern void xpd_echo(const char *xpd_proj,FILE *fp);
+extern void xpd_set_configname(const char *cfgname);
 
 #endif/*XPD_H_*/

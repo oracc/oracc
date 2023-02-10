@@ -172,6 +172,7 @@ process_project {
     }
     foreach my $k (sort keys %srefs) {
 	print LINKBASE "<refs type=\"sources\" ref=\"$k\">";
+	my $auto_ex = 'EX001';
 	foreach my $r (sort keys %{$srefs{$k}}) {
 	    my $sym = $r; $sym =~ s/^.*?://; $sym = "$project:$sym";
 	    my $exsym = $sym;
@@ -183,10 +184,14 @@ process_project {
 		if ($ex) {
 		    warn "$0: found $ex = $exsym\n";
 		    $sym = " sig=\"$ex\"";
+		} else {
+		    $sym = " sig=\"$auto_ex\"";
 		}
 	    } else {
-		$sym = '';
+		$sym = " sig=\"$auto_ex\"";
+		# $sym = '';
 	    }
+	    ++$auto_ex;
 	    if ($sources_ok{"$k\->$r"} || $sources_ok{"$r\->$k"}) {
 		print LINKBASE "<r ref=\"$r\"$sym/>";
 	    } else {

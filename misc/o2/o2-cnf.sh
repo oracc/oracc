@@ -9,6 +9,8 @@ if [ -r 00lib/subconfig.xml ]; then
 else
     cp 00lib/config.xml 02xml/config.xml
 fi
+cp 00lib/config-*.xml 02xml/
+cp 00lib/pll.xml 02xml/
 cp 02xml/config.xml 02www
 chmod -f o+r 02xml/config.xml 02www/config.xml
 if [ -r 00lib/names.xml ]; then
