@@ -130,15 +130,21 @@ gvl_cuneify_gv(gvl_g*gg)
   if (gg)
     {
       if (!gg->utf8)
-	{
-	  /*fprintf(stderr, "looking up utf8 for %s\n", gg->sign);*/
-	  gg->utf8 = gvl_lookup(gvl_tmp_key((uccp)gg->oid,"uchar"));
-	}
-      else
-	{
-	  /*fprintf(stderr, "utf8 for %s already in hash\n", gg->sign);*/
-	}
+	gg->utf8 = gvl_lookup(gvl_tmp_key((uccp)gg->oid,"uchar"));
       return gg->utf8;
+    }
+  else
+    return NULL;
+}
+
+unsigned const char *
+gvl_ucode(gvl_g*gg)
+{
+  if (gg)
+    {
+      if (!gg->uhex)
+	gg->uhex = gvl_lookup(gvl_tmp_key((uccp)gg->oid,"ucode"));
+      return gg->uhex;
     }
   else
     return NULL;

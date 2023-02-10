@@ -30,8 +30,19 @@ bin_PROGRAMS=se masktest sedbg wmapper wmdebug wm ce_xtf ce2 sl sl-index
 #v2_SOURCES=v2.c
 #v2_LDADD=@top_srcdir@/c/lib/liboracc.la
 
-sl_SOURCES=sl.c
-sl_LDADD=@top_srcdir@/c/lib/liboracc.la
+sl_SOURCES=sl.c \
+        @top_srcdir@/c/otf/atf/note.c \
+        @top_srcdir@/c/otf/ox/globals.c
+
+sl_LDADD=@top_srcdir@/c/otf/chr/libchr.la \
+	@top_srcdir@/c/otf/atf/libatf.la \
+	@top_srcdir@/c/otf/gdl/libgdl.la \
+	@top_srcdir@/c/otf/chr/libchr.la \
+	@top_srcdir@/c/otf/lib/libcdf.la \
+	@top_srcdir@/c/otf/lng/liblng.la \
+        @top_srcdir@/c/otf/prj/libprj.la \
+        @top_srcdir@/c/l2/libl2.la \
+	@top_srcdir@/c/lib/liboracc.la
 
 sl_index_SOURCES=sl-index.c
 sl_index_LDADD=@top_srcdir@/c/lib/liboracc.la

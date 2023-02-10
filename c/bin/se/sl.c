@@ -8,15 +8,83 @@
 #include <options.h>
 #include <dbi.h>
 #include <oracclocale.h>
+#include <gvl.h>
 
-static char *db = NULL, *project = NULL, *name = NULL;
+const char *project;
+static char *db = NULL, *name = NULL;
 static char *key;
 static int human_readable = 0;
 static const char *oracc = NULL;
+static int oid = 0;
 static int utf8 = 0;
 static int uhex = 0;
+static int gv_mode = 0;
 
-void
+#define ccp const char *
+#define ucp unsigned char *
+#define uccp unsigned const char *
+
+static void
+gv(unsigned const char *key)
+{
+  unsigned char tmp[32];
+  gvl_g *gvp = NULL;
+  if ('o' == key[0] && isdigit(key[1]) && !strchr((ccp)key, ';'))
+    {
+      unsigned const char *sn = gvl_lookup(key);
+      if (sn)
+	{
+	  if (strlen((ccp)key) < 26) {
+	    sprintf((char*)tmp, "%s;name", key);
+	    key = tmp;
+	  } else {
+	    fputc('\n',stdout);
+	    goto RET;
+	  }
+	}
+    }
+  if (strchr((ccp)key, ';'))
+    {
+      unsigned const char *res = gvl_lookup(key);
+      if (res)
+	fprintf(stdout, "%s\n", res);
+      else
+	fputc('\n',stdout);
+    }
+  else
+    {
+      gvp = gvl_validate((uccp)key);
+      if (gvp)
+	{
+	  if (human_readable)
+	    fprintf(stdout, "%s\n", (char*)gvp->sign);
+	  else if (utf8)
+	    {
+	      if (gvl_cuneify_gv(gvp))
+		fprintf(stdout, "%s\n", (char*)gvp->utf8);
+	      else
+		fputc('\n',stdout);
+	    }
+	  else if (uhex)
+	    {
+	      if (gvl_ucode(gvp))
+		fprintf(stdout, "%s\n", (char*)gvp->uhex);
+	      else
+		fputc('\n',stdout);
+	    }
+	  else if (oid)
+	    fprintf(stdout, "%s\n", gvp->oid);
+	  else
+	    fprintf(stdout, "%s\n", gvp->sign);
+	}
+      else
+	fputc('\n',stdout);
+    }
+ RET:
+  fflush(stdout);
+}
+
+static void
 sl(Dbi_index *dbi, char *key)
 {
   char *v = NULL;
@@ -91,7 +159,7 @@ main(int argc, char **argv)
 
   setlocale(LC_ALL,ORACC_LOCALE);
   
-  options(argc, argv, "hk:p:n:u8");
+  options(argc, argv, "ghk:p:n:ou8");
 
   /* Figure out the db and open it */
   if (!project)
@@ -99,35 +167,63 @@ main(int argc, char **argv)
   if (!name)
     name = "ogsl";
 
-  oracc = oracc_home();
-  db = malloc(strlen(oracc)+strlen("/pub/sl/") + strlen(project) + 1);
-  sprintf(db, "%s/pub/%s/sl", oracc, project);
-  if ((dbi = dbi_open(name, db)))
+  if (gv_mode)
     {
-      /* do the look up or sit or enter stdin_mode */
+      /* Figure out the db and open it */
+      if (!project)
+	project = "ogsl";
+      if (!name)
+	name = "ogsl";
+      
+      gvl_setup(project, name, 1);
       if (key)
-	sl(dbi, key);
+	gv((uccp)key);
       else
 	{
 	  char keybuf[256];
 	  while ((key = fgets(keybuf, 256, stdin)))
 	    {
-	      key[strlen(key)-1] = '\0';
+	      key[strlen((ccp)key)-1] = '\0';
 	      if (*key == 0x04) {
-		goto quit;
+		break;
 	      } else {
-		sl(dbi, key);
+		gv((uccp)key);
 	      }
 	    }
 	}
+      gvl_wrapup(name);
     }
   else
     {
-      fprintf(stderr, "sl: failed to open %s/%s\n", (char *)project, (char*)db);
-      exit(1);
+      oracc = oracc_home();
+      db = malloc(strlen(oracc)+strlen("/pub/sl/") + strlen(project) + 1);
+      sprintf(db, "%s/pub/%s/sl", oracc, project);
+      if ((dbi = dbi_open(name, db)))
+	{
+	  /* do the look up or sit or enter stdin_mode */
+	  if (key)
+	    sl(dbi, key);
+	  else
+	    {
+	      char keybuf[256];
+	      while ((key = fgets(keybuf, 256, stdin)))
+		{
+		  key[strlen(key)-1] = '\0';
+		  if (*key == 0x04) {
+		    break;
+		  } else {
+		    sl(dbi, key);
+		  }
+		}
+	    }
+	  dbi_close(dbi);
+	}
+      else
+	{
+	  fprintf(stderr, "sl: failed to open %s/%s\n", (char *)project, (char*)db);
+	  exit(1);
+	}
     }
- quit:
-  dbi_close(dbi);
   return 0;
 }
 
@@ -138,6 +234,9 @@ int opts(int argc, char *arg)
 {
   switch (argc)
     {
+    case 'g':
+      gv_mode = 1;
+      break;
     case 'h':
       human_readable = 1;
       break;
@@ -146,6 +245,9 @@ int opts(int argc, char *arg)
       break;
     case 'n':
       name = arg;
+      break;
+    case 'o':
+      oid = 1;
       break;
     case 'p':
       project = arg;

@@ -10,6 +10,7 @@ struct gvl_g {
   const char *oid;  /* OID for sign */
   unsigned const char *sign; /* sign name for OID */
   unsigned const char *utf8; /* UTF8 value for OID */
+  unsigned const char *uhex; /* UTF8 value for OID */
   unsigned const char *mess; /* NULL if OK; if bad this is the error message for the grapheme */
 };
 
@@ -49,6 +50,7 @@ extern int gvl_looks_like_sname(unsigned const char *g);
 
 extern unsigned const char *gvl_cuneify(unsigned const char *g);
 extern unsigned const char *gvl_cuneify_gv(gvl_g *gp);
+extern unsigned const char *gvl_ucode(gvl_g *gp);
 
 
 #endif/*_GVL_H*/
