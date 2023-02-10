@@ -95,7 +95,7 @@ sub tlit_sig_clean {
 sub
 init {
     return if $loaded;
-    my $g = shift;
+    my $g = shift; $g = '' unless $g;
     
     if ($g eq 'g') {
 	$g = " -g";
@@ -766,7 +766,7 @@ sub slse { slseA(@_) };
 
 sub
 slseA {
-    warn "slseA: trying $_[0]\n";
+#    warn "slseA: trying $_[0]\n";
     print SL_IN "$_[0]\n";
     my $res = <SL_OUT>;
     if (defined $res) {

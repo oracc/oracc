@@ -376,7 +376,7 @@ gvl_tmp_key(unsigned const char *key, const char *field)
 
 static unsigned char *
 gvl_q_c10e(unsigned const char *g, unsigned const char **mess,
-	   const char **v_oid, const char **q_oid)
+	   unsigned const char **v_val, const char **v_oid, const char **q_oid)
 {
   gvl_g *gp = NULL;
   unsigned const char *v, *q;
@@ -398,6 +398,8 @@ gvl_q_c10e(unsigned const char *g, unsigned const char **mess,
   q = end--;
   *end = '\0';
   v = tmp;
+  if (v_val)
+    *v_val = v;
 
   /* is the value OK */
   gp = gvl_validate(v);
@@ -447,6 +449,103 @@ gvl_q_c10e(unsigned const char *g, unsigned const char **mess,
   return NULL;
 }
 
+#define GVL_x "ₓ"
+
+unsigned char *
+gvl_val_base(const unsigned char *v)
+{
+  if (v)
+    {
+      unsigned char *b = NULL, *sub = NULL;
+  
+      b = malloc(strlen((ccp)v));
+      sub = b + strlen((ccp)b);
+      while (1)
+	{
+	  sub -= 3;
+	  if (*sub == 0xe2 && sub[1] == 0x82)
+	    {
+	      switch (sub[2])
+		{
+		case 0x80:
+		case 0x81:
+		case 0x82:
+		case 0x83:
+		case 0x84:
+		case 0x85:
+		case 0x86:
+		case 0x87:
+		case 0x88:
+		case 0x89:
+		case 0x93:
+		  *sub = '\0';
+		  if (sub - 3 > b)
+		    {
+		      sub -= 3;
+		      continue;
+		    }
+		  break;
+		}
+	    }
+	  break;
+	}
+      return b;
+    }
+  return NULL;
+}
+
+const char *
+gvl_sub_of(int i)
+{
+  switch (i)
+    {
+    case 1:
+      return "₁";
+    case 2:
+      return "₂";
+    case 3:
+      return "₃";
+    case 4:
+      return "₄";
+    case 5:
+      return "₅";
+    case 6:
+      return "₆";
+    case 7:
+      return "₇";
+    case 8:
+      return "₈";
+    case 9:
+      return "₉";
+    case 0:
+      return "ₓ";
+    }
+  return NULL;
+}
+  
+unsigned char *
+gvl_v_from_h(const unsigned char *b, const unsigned char *qsub)
+{
+  if (b && qsub)
+    {
+      int qsub_i = atoi((ccp)qsub);
+      if (qsub_i >= 0)
+	{
+	  unsigned char *ret = malloc(strlen((ccp)b)+7);
+	  int tens = qsub_i / 10;
+	  int unit = qsub_i % 10;
+	  const char *tensp = gvl_sub_of(tens), *unitp = gvl_sub_of(unit);
+	  strcpy((char *)ret, (const char *)b);
+	  if (tensp)
+	    strcat((char *)ret,tensp);
+	  if (unitp)
+	    strcat((char *)ret,unitp);
+	  return ret;
+	}
+    }
+  return NULL;
+}
+
 gvl_g *
 gvl_validate(unsigned const char *g)
 {
@@ -480,8 +579,9 @@ gvl_validate(unsigned const char *g)
 	      else
 		{
 		  static unsigned const char *mess = NULL;
+		  static unsigned const char *v_val = NULL;
 		  static const char *v_oid = NULL, *q_oid = NULL;
-		  unsigned char *q_c10e = gvl_q_c10e(g_orig, &mess, &v_oid, &q_oid);
+		  unsigned char *q_c10e = gvl_q_c10e(g_orig, &mess, &v_val, &v_oid, &q_oid);
 		  if (q_c10e)
 		    {
 		      g = gvl_tmp_key(q_c10e,"qv");
@@ -503,17 +603,28 @@ gvl_validate(unsigned const char *g)
 			    gp->mess = gvl_vmess("unknown qualified value: %s (also tried %s)", g_orig, q_c10e);
 			  else
 			    {
-			      if (v_oid && q_oid)
+			      if (v_val && q_oid)
 				{
-				  unsigned const char *h = gvl_lookup(gvl_tmp_key(gvl_v_base(v_oidXXX),"h"));
-				  unsigned const char *p = NULL;
-				  if ((p = strstr(h, q_oid)))
+				  unsigned char *b = gvl_val_base(v_val);
+				  unsigned const char *h = gvl_lookup(gvl_tmp_key(b,"h"));
+				  if (h)
 				    {
-				      p = strchr(p,'/');
-				      ++p;
-				      p = h_decode(p);
-				      gp->mess = gvl_vmess("
+				      unsigned const char *p = NULL;
+				      if ((p = (uccp)strstr((ccp)h, q_oid)))
+					{
+					  if ((p = (uccp)strchr((ccp)p,'/')))
+					    {
+					      unsigned const char *q_val = gvl_lookup((uccp)q_oid);
+					      ++p;
+					      if ((p = gvl_v_from_h((uccp)b, (uccp)p)))
+						{
+						  gp->mess = gvl_vmess("qualifed value %s should be %s(%s)", g_orig, p, q_val);
+						  free((void*)p);
+						}
+					    }
+					}
 				    }
+				  free(b);
 				}
 			      else
 				gp->mess = gvl_vmess("unknown qualified value: %s", g_orig);
