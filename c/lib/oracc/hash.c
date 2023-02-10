@@ -119,6 +119,16 @@ hash_freeable_data(Hash_table *h,int i)
   h->freeable_data = i;
 }
 
+const unsigned char *
+hash_exists(Hash_table *htab, const unsigned char *key)
+{
+  static Hash_element *ret = NULL;
+  int ok = 0;
+  if ((ret = _hash_lookup(htab, key, NULL)))
+    return ret->key;
+  return NULL;
+}
+
 void *
 hash_find (Hash_table *htab, const unsigned char *key)
 {

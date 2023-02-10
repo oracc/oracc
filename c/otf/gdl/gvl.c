@@ -199,6 +199,13 @@ gvl_lookup_d(unsigned const char *key)
   return sl_lookup_d(curr_sl->u.d,key);
 }
 
+/* NOTE: THIS ONLY WORKS WITH HASH-BASED VERSION OF GVL */
+static unsigned const char *
+gvl_key_of(unsigned char *v)
+{
+  return hash_find(curr_sl->u.h, v);
+}
+
 static unsigned const char *
 gvl_lookup_h(unsigned const char *key)
 {
@@ -399,7 +406,7 @@ gvl_q_c10e(unsigned const char *g, unsigned const char **mess,
   *end = '\0';
   v = tmp;
   if (v_val)
-    *v_val = v;
+    *v_val = gvl_key_of(v);
 
   /* is the value OK */
   gp = gvl_validate(v);
