@@ -72,10 +72,8 @@ gv(unsigned const char *key)
 	      else
 		fputc('\n',stdout);
 	    }
-	  else if (oid)
-	    fprintf(stdout, "%s\n", gvp->oid);
 	  else
-	    fprintf(stdout, "%s\n", gvp->sign);
+	    fprintf(stdout, "%s\n", gvp->oid);
 	}
       else
 	fputc('\n',stdout);

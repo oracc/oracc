@@ -95,18 +95,29 @@ sub tlit_sig_clean {
 sub
 init {
     return if $loaded;
-
-    # check if the sldb exists
-    my $db_file = "@@ORACC@@/pub/ogsl/sl";
-    my $db_name = 'ogsl';
-    if (-r "$db_file/$db_name.dbh") {
-	$loaded = 1;
+    my $g = shift;
+    
+    if ($g eq 'g') {
+	$g = " -g";
+	my $tsv_file = "@@ORACC@@/pub/ogsl/sl/sl.tsv";
+	if (-r $tsv_file) {
+	    $loaded = 1;
+	} else {
+	    die "ORACC::SL::BaseC: signlist data $tsv_file\n";
+	}
     } else {
-	die "ORACC::SL::BaseC: no signlist database $db_file/$db_name\n";
+        # check if the sldb exists
+	my $db_file = "@@ORACC@@/pub/ogsl/sl";
+	my $db_name = 'ogsl';
+	if (-r "$db_file/$db_name.dbh") {
+	    $loaded = 1;
+	} else {
+	    die "ORACC::SL::BaseC: no signlist database $db_file/$db_name\n";
+	}
     }
 
     # open the signlist engine for write and read
-    $sl_pid = open2(\*SL_OUT, \*SL_IN, '@@ORACC@@/bin/sl');
+    $sl_pid = open2(\*SL_OUT, \*SL_IN, "@@ORACC@@/bin/sl$g");
     binmode SL_OUT, ':utf8';
     binmode SL_IN, ':utf8';
 

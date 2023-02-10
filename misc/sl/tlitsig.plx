@@ -13,7 +13,7 @@ GetOptions('s'=>\$sort,'e'=>\$errmsg);
 use lib "$ENV{'ORACC_BUILDS'}/lib";
 use ORACC::SL::BaseC;
 
-ORACC::SL::BaseC::init();
+ORACC::SL::BaseC::init('g');
 ORACC::SL::BaseC::pedantic();
 
 if ($#ARGV >= 0) {
