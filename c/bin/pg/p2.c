@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "npool.h"
 #include "p2.h"
 #include "xpd2.h"
@@ -98,6 +99,8 @@ p2_load(const char *project, const char *state, struct npool *pool)
   xpd_term(xpd);
   
   ret->sort_fields = p2_maybe_append_designation(ret->sort_fields, pool, ret);
+
+  fprintf(stderr, "pg/p2_load: sort_fields = %s\n", ret->sort_fields);
 
   if (csi_debug)
     dump_pgopts(ret);

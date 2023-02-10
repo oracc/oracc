@@ -50,6 +50,7 @@ struct npool *ce_pool;
 
 const char *project_en = NULL;
 
+const char *config = "config.xml";
 struct ce_config cfg;
 List *files = NULL, *pqs = NULL;
 Hash_table *ht, *wh, *xtf_headings;
@@ -538,7 +539,7 @@ int
 main(int argc, char * const*argv)
 {
   exit_on_error = TRUE;
-  options(argc, argv, "23a:c:f:g:i:l:m:o:p:S:tvx");
+  options(argc, argv, "23a:c:C:f:g:i:l:m:o:p:S:tvx");
 
   if (!project || !ce_index)
     {
@@ -663,6 +664,9 @@ opts(int argc, char *arg)
       break;
     case 'c':
       id = arg;
+      break;
+    case 'C':
+      config = arg;
       break;
     case 'f':
       xmd_fields = arg;

@@ -139,6 +139,7 @@ if ($rt{'prod'} eq 'list') {
 	    } else {
 		$p{'#list'} = "@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}/entry_ids.lst";
 	    }
+	    $p{'uimode'} = 'full';
 	    set_list_items();
 	}
     } elsif ($p{'adhoc'}) {
@@ -197,14 +198,6 @@ if ($rt{'prod'} eq 'list') {
 	$p{'#list'} = "@@ORACC@@/www/$p{'project'}/lists/$p{'list'}";
 	$rt{'#list_type'} = 'cat';
 
-	# set outline info for list if it exists
-	my $list_cfg = undef;
-	if (($list_cfg = list_config($p{'project'}, $p{'list'}))) {
-	    $p{'#config'} = $list_config;
-	    $p{'p3OSdefault'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-default-sort-fields \@cfg=$list_config`;
-	    unless ($p{'p3OSdefault'}) {
-		$p{'p3OSdefault'} = "period,subgenre,provenience";		
-	}
 	set_list_items();
     }
 
@@ -411,6 +404,8 @@ decode_args {
     $tmp{'zoom'} = '0' unless $tmp{'zoom'};
     $tmp{'setlang'} = 'en' unless $tmp{'setlang'};
     $tmp{'translation'} = $tmp{'setlang'};
+    $tmp{'uimode'} = 'full';
+    
     if (exists $tmp{'unicode'} || $tmp{'uimode'} eq 'search') {
 	$tmp{'unicode'} = 1;
     } else {
@@ -469,6 +464,7 @@ list_config {
     if (-r "$oraccxml/$p/pll.xml") {
 	my $cfg = `$oraccbin/pllcfg $oraccxml/$p/pll.xml $l`;
 	if (-r "$oraccxml/$p/$cfg") {
+	    warn "list_config: returning $cfg\n";
 	    return $cfg;
 	}
     }
@@ -673,7 +669,7 @@ run_form_maker {
 	    } elsif ($class eq 'runtime') {
 		if (defined $rt{$var}) {
 		    if ($var eq 'tmpdir') {
-			$rep = $rt{$var} if $p{'asrch'} eq 'yes';
+			$rep = $rt{$var} if $p{'asrch'} && $p{'asrch'} eq 'yes';
 		    } else {
 			$rep = $rt{$var};
 		    }
@@ -705,6 +701,7 @@ run_form_maker {
 	} elsif (/\@\@/) {
 	    if (/action=\"(.*?)\"/ && !/xforms/) {
 		if ($p{'referer'}) {
+		    $p{'referer'} = 'cli' unless $p{'referer'};
 		    s/action=\"(.*?)\"/action="$p{'referer'}"/;
 		} else {
 		    s/\@\@project\@\@/$p{'project'}/g;
@@ -714,6 +711,7 @@ run_form_maker {
 		    s/action/target="_blank" action/;
 		}
 	    } elsif (/\@\@referer\@\@/) {
+		$p{'referer'} = 'cli' unless $p{'referer'};
 		s/\@\@referer\@\@/$p{'referer'}/g;
 	    } elsif (/\@\@oas-instance\@\@/) {
 		print $oas_instance;
@@ -982,7 +980,8 @@ run_page_maker {
 	my $link_fields = `@@ORACC@@/bin/oraccopt $p{'project'} catalog-link-fields`;
 	my $lfopt = ($link_fields ? "-a$link_fields" : '');
 	warn "lfopt=$lfopt\n";
-	xsystem("cat $p{'tmpdir'}/pgwrap.out | $oraccbin/ce2 -3 $lfopt -S$rt{'outl'} @offset_arg -i$rt{'#list_type'} -p $p{'project'} >$p{'tmpdir'}/content.xml");
+	my $Copt = ($p{'#config'} ? "-C $p{'#config'}" : '');
+	xsystem("cat $p{'tmpdir'}/pgwrap.out | $oraccbin/ce2 -3 $Copt $lfopt -S$rt{'outl'} @offset_arg -i$rt{'#list_type'} -p $p{'project'} >$p{'tmpdir'}/content.xml");
 	xsystem('xsltproc', '-stringparam', 'fragment', 'yes', '-stringparam', 'project', $p{'project'}, @offset_param, 
 		'-o', "$p{'tmpdir'}/results.html", '@@ORACC@@/lib/scripts/p3-ce-HTML.xsl', "$p{'tmpdir'}/content.xml");
     } elsif ($rt{'#list_type'} eq 'cbd') {
@@ -996,7 +995,7 @@ run_page_maker {
 
 sub
 set_asrch_info {
-    
+    $p{'asrch'} = 'no';
 }
 
 sub
@@ -1028,6 +1027,18 @@ set_list_items {
     chomp($p{'#listitems'});
     $p{'#listitems'} =~ s/^.*?(\d+).*?$/$1/;
     warn "set_list_items: list=$p{'#list'}; count=$p{'#listitems'}\n" if $verbose;
+
+    # set outline info for list if it exists
+    my $list_cfg = undef;
+    if (($list_cfg = list_config($p{'project'}, $p{'list'}))) {
+	$p{'#config'} = $list_cfg;
+	$p{'p3OSdefault'} = `@@ORACC@@/bin/oraccopt $p{'project'} outline-default-sort-fields \@cfg=$list_cfg`;
+	warn "set_list_items: p#config=$list_cfg; p3OSdefault = $p{'p3OSdefault'}\n";
+	unless ($p{'p3OSdefault'}) {
+	    $p{'p3OSdefault'} = "period,subgenre,provenience";
+	}
+    }
+
 }
 
 sub
@@ -1337,6 +1348,9 @@ setup_pg_args {
     }
     push @pg_args, "-z$p{'zoom'}" if $p{'zoom'};
     push @pg_args, '-3';
+
+    push(@pg_args, '-C', $p{'#config'}) if $p{'#config'};
+
 }
 
 # sig_fixer($project)

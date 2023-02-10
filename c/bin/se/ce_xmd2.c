@@ -63,13 +63,15 @@ count_entries(const char *tmp, const char *option)
       if (',' == *tmp)
 	{
 	  ++i;
-	  while (isspace(tmp[1]))
+	  ++tmp;
+	  while (isspace(*tmp))
 	    ++tmp;
-	  if (',' == tmp[1])
+	  if (',' == *tmp)
 	    {
 	      fprintf(stderr, "ce_xmd2: %s/00lib/config.xml: empty field in `%s'\n",
 		      project, option);
-	      while (isspace(tmp[1]) || ',' == tmp[1])
+	      ++tmp;
+	      while (isspace(*tmp) || ',' == *tmp)
 		++tmp;
 	    }
 	}
@@ -96,13 +98,14 @@ set_entries(const char **entries, const char *option)
       if (',' == *tmp)
 	{
 	  *tmp++ = '\0';
-	  while (isspace(tmp[1]))
+	  while (isspace(*tmp))
 	    ++tmp;
-	  if (',' == tmp[1])
+	  if (',' == *tmp)
 	    {
 	      fprintf(stderr, "ce_xmd2: %s/00lib/config.xml: empty field in `%s'\n",
 		      project, option);
-	      while (isspace(tmp[1]) || ',' == tmp[1])
+	      ++tmp;
+	      while (isspace(*tmp) || ',' == tmp[1])
 		++tmp;
 	    }
 	  if (*tmp)

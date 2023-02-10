@@ -11,10 +11,12 @@
 #include "sortinfo.h"
 #include "pg.h"
 #include "npool.h"
+#include "xpd2.h"
 #include "p2.h"
 
 int l2 = 1, o2 = 0, p3 = 0;
 
+const char *config = NULL;
 int csi_debug = 0;
 int fragment = 0;
 int ood_mode = 0;
@@ -102,7 +104,7 @@ main(int argc, char **argv)
   struct page *pages = NULL;
   int nitems = 0, nlevels = 0, npages = 0;
 
-  options(argc,argv,"023dg:fh:i:l:mn:o:p:P:qs:S:xz:");
+  options(argc,argv,"023C:dg:fh:i:l:mn:o:p:P:qs:S:xz:");
 
   if (!project)
     project = "cdli";
@@ -294,6 +296,10 @@ opts(int argc, char *arg)
       csiname = (const char *)arg;
       break;
 #endif
+    case 'C':
+      config = arg;
+      xpd_set_configname(config);
+      break;
     case 'd':
       csi_debug = 1;
       fdbg = stderr;
