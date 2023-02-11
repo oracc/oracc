@@ -76,7 +76,7 @@ extern  void hash_exec_user (Hash_table *htab, void (*fnc)(void *, void *), void
 extern  void hash_exec_user_key (Hash_table *htab, void (*fnc)(const unsigned char *, void*), void *user);
 extern  void hash_exec_user_key_data (Hash_table *htab, void (*fnc)(const unsigned char *, void*, void *), void *user);
 extern  void hash_exec2 (Hash_table *htab, void (*fnc)(const unsigned char *,void *));
-extern  void hash_exists (Hash_table *htab, const unsigned char *key);
+extern  unsigned const char *hash_exists (Hash_table *htab, const unsigned char *key);
 extern  void *hash_find (Hash_table *htab, const unsigned char *key);
 extern  void hash_free (Hash_table *htab, void (*fnc)(void *));
 extern  void hash_free2 (Hash_table *htab, void (*keyfnc)(void *), void (*datfnc)(void *));

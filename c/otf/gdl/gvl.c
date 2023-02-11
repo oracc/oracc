@@ -203,7 +203,7 @@ gvl_lookup_d(unsigned const char *key)
 static unsigned const char *
 gvl_key_of(unsigned char *v)
 {
-  return hash_find(curr_sl->u.h, v);
+  return hash_exists(curr_sl->u.h, v);
 }
 
 static unsigned const char *
@@ -464,37 +464,41 @@ gvl_val_base(const unsigned char *v)
   if (v)
     {
       unsigned char *b = NULL, *sub = NULL;
-  
+      
       b = malloc(strlen((ccp)v));
-      sub = b + strlen((ccp)b);
-      while (1)
+      strcpy((char*)b, (ccp)v);
+      if (strlen(v) > 4)
 	{
-	  sub -= 3;
-	  if (*sub == 0xe2 && sub[1] == 0x82)
+	  sub = b + strlen((ccp)b);
+	  while (1)
 	    {
-	      switch (sub[2])
+	      sub -= 3;
+	      if (*sub == 0xe2 && sub[1] == 0x82)
 		{
-		case 0x80:
-		case 0x81:
-		case 0x82:
-		case 0x83:
-		case 0x84:
-		case 0x85:
-		case 0x86:
-		case 0x87:
-		case 0x88:
-		case 0x89:
-		case 0x93:
-		  *sub = '\0';
-		  if (sub - 3 > b)
+		  switch (sub[2])
 		    {
-		      sub -= 3;
-		      continue;
+		    case 0x80:
+		    case 0x81:
+		    case 0x82:
+		    case 0x83:
+		    case 0x84:
+		    case 0x85:
+		    case 0x86:
+		    case 0x87:
+		    case 0x88:
+		    case 0x89:
+		    case 0x93:
+		      *sub = '\0';
+		      if (sub - 3 > b)
+			{
+			  sub -= 3;
+			  continue;
+			}
+		      break;
 		    }
-		  break;
 		}
+	      break;
 	    }
-	  break;
 	}
       return b;
     }
@@ -541,7 +545,9 @@ gvl_v_from_h(const unsigned char *b, const unsigned char *qsub)
 	  unsigned char *ret = malloc(strlen((ccp)b)+7);
 	  int tens = qsub_i / 10;
 	  int unit = qsub_i % 10;
-	  const char *tensp = gvl_sub_of(tens), *unitp = gvl_sub_of(unit);
+	  const char *tensp = NULL, *unitp = gvl_sub_of(unit);
+	  if (tens)
+	    tensp = gvl_sub_of(tens);
 	  strcpy((char *)ret, (const char *)b);
 	  if (tensp)
 	    strcat((char *)ret,tensp);
