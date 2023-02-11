@@ -18,6 +18,8 @@ static gvl_i *curr_sl = NULL; /* the sl that should be used for look up */
 static int tsv = 0;
 static int gvl_trace = 0;
 
+int gvl_strict = 0;
+
 static const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalues/";
 
 const unsigned char *(*gvl_lookup)(unsigned const char *key);
@@ -667,7 +669,8 @@ gvl_validate(unsigned const char *g)
 		    {
 		      gp->oid = (ccp)l;
 		      gp->sign = gvl_lookup(gvl_tmp_key(l,""));
-		      gp->mess = gvl_vmess("pseudo-signname %s should be %s", g, gp->sign);
+		      if (gvl_strict)
+			gp->mess = gvl_vmess("pseudo-signname %s should be %s", g, gp->sign);
 		    }
 		  else
 		    {
@@ -680,7 +683,8 @@ gvl_validate(unsigned const char *g)
 				{
 				  gp->oid = (ccp)l;
 				  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
-				  gp->mess = gvl_vmess("compound %s should be %s", g, c10e);
+				  if (gvl_strict)
+				    gp->mess = gvl_vmess("compound %s should be %s", g, c10e);
 				}
 			      else if (strcmp((ccp)g, (ccp)c10e))
 				gp->mess = gvl_vmess("unknown compound: %s (also tried %s)", g, c10e);
