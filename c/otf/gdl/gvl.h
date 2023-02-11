@@ -6,6 +6,7 @@
 
 struct gvl_g {
   unsigned const char *text; /* grapheme as passed for validation */
+  unsigned const char *accn; /* grapheme mapped through accnum */
   const char *type;
   const char *oid;  /* OID for sign */
   unsigned const char *sign; /* sign name for OID */

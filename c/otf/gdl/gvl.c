@@ -203,7 +203,7 @@ gvl_lookup_d(unsigned const char *key)
 
 /* NOTE: THIS ONLY WORKS WITH HASH-BASED VERSION OF GVL */
 static unsigned const char *
-gvl_key_of(unsigned char *v)
+gvl_key_of(unsigned const char *v)
 {
   return hash_exists(curr_sl->u.h, v);
 }
@@ -469,7 +469,7 @@ gvl_val_base(const unsigned char *v)
       
       b = malloc(strlen((ccp)v));
       strcpy((char*)b, (ccp)v);
-      if (strlen(v) > 4)
+      if (strlen((ccp)v) > 4)
 	{
 	  sub = b + strlen((ccp)b);
 	  while (1)
@@ -574,15 +574,48 @@ gvl_validate(unsigned const char *g)
       if (!(gp = hash_find(sl->h,g)))
 	{
 	  unsigned const char *l = NULL;
+	  unsigned char *a = NULL;
+
+	  if (!strpbrk((ccp)g,"|("))
+	    {
+	      a = accnum(g);
+	      if (strcmp((ccp)a,(ccp)g))
+		{
+		  g = npool_copy(g,sl->p);
+		  if (gvl_trace)
+		    fprintf(stderr, "gvl_validate: %s mapped to %s\n", g, a);
+		  gvl_g *gp2 = hash_find(sl->h,a);
+		  if (gp2)
+		    {
+		      gp2->accn = g;
+		      hash_add(sl->h, g, gp2);
+		      return gp2;
+		    }
+		}
+	    }
+
 	  if (gvl_trace)
 	    fprintf(stderr, "gvl_validate: %s not found in seen-hash\n", g);
 
 	  gp = mb_new(sl->m);
-	  gp->text = npool_copy(g, sl->p);
-	  hash_add(sl->h, gp->text, gp);
+	  if (a)
+	    {
+	      gp->text = npool_copy(a,sl->p);
+	      gp->accn = npool_copy(g,sl->p);
+	      hash_add(sl->h, gp->text, gp);
+	      hash_add(sl->h, gp->accn, gp);
+	      g = a;
+	      a = NULL;
+	    }
+	  else
+	    {
+	      gp->text = npool_copy(g, sl->p);
+	      hash_add(sl->h, gp->text, gp);
+	    }
 	  
 	  gp->type = gvl_type(g);
 
+	  
 	  if (*gp->type == 'q')
 	    {
 	      g = gvl_tmp_key(g,"qv");
