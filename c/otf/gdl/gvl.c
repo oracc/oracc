@@ -561,12 +561,23 @@ gvl_v_from_h(const unsigned char *b, const unsigned char *qsub)
   return NULL;
 }
 
+int
+gvl_ignore(unsigned const char *g)
+{
+  while (*g)
+    if (*g < 128 && (isdigit(*g) || '/' == *g || '*' == *g))
+      ++g;
+    else
+      break;
+  return '\0' == *g || '(' == *g; /* ignore *(u) and friends */
+}
+
 gvl_g *
 gvl_validate(unsigned const char *g)
 {
   gvl_g *gp = NULL;
 
-  if (g)
+  if (g && !gvl_ignore(g))
     {
       unsigned const char *g_orig = g;
       if (gvl_trace)
@@ -579,7 +590,7 @@ gvl_validate(unsigned const char *g)
 	  if (!strpbrk((ccp)g,"|("))
 	    {
 	      a = accnum(g);
-	      if (strcmp((ccp)a,(ccp)g))
+	      if (a && strcmp((ccp)a,(ccp)g))
 		{
 		  g = npool_copy(g,sl->p);
 		  if (gvl_trace)
@@ -637,7 +648,8 @@ gvl_validate(unsigned const char *g)
 			{
 			  gp->oid = (ccp)l;
 			  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
-			  gp->mess = gvl_vmess("qualified value %s should be %s", g_orig, q_c10e);
+			  if (gvl_strict)
+			    gp->mess = gvl_vmess("qualified value %s should be %s", g_orig, q_c10e);
 			}
 		      else
 			{
@@ -645,7 +657,8 @@ gvl_validate(unsigned const char *g)
 			    {
 			      gp->oid = q_oid;
 			      gp->sign = gvl_lookup(gvl_tmp_key((uccp)q_oid,""));
-			      gp->mess = gvl_vmess("unnecessary qualifier on value: %s", g_orig);
+			      if (gvl_strict)
+				gp->mess = gvl_vmess("unnecessary qualifier on value: %s", g_orig);
 			    }
 			  else if (strcmp((ccp)g_orig, (ccp)q_c10e))
 			    gp->mess = gvl_vmess("unknown qualified value: %s (also tried %s)", g_orig, q_c10e);

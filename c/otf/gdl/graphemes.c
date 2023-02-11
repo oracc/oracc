@@ -556,6 +556,21 @@ unheth(const unsigned char *g)
   return NULL;
 }
 
+static unsigned char *
+unpipe(unsigned char *p)
+{
+  unsigned char *ret = p;
+  if ('|' == *p)
+    {
+      ++p;
+      ++ret;
+      p = p + strlen((const char *)p);
+      if ('|' == p[-1])
+	p[-1] = '\0';
+    }
+  return ret;
+}
+
 struct grapheme*
 gparse(register unsigned char *g, enum t_type type)
 {
@@ -755,7 +770,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  if (cw_proper_c && signified)
 	    {
 	      /* fprintf(stderr, "g_s: adding %s to cw_proper_c\n", signified); */
-	      list_add(cw_proper_c, npool_copy(signified, graphemes_pool));
+	      list_add(cw_proper_c, unpipe(npool_copy(signified, graphemes_pool)));
 	    }
 	}
       
@@ -1308,7 +1323,7 @@ gparse(register unsigned char *g, enum t_type type)
 	}
       if (gp->type == g_c && !cw_warned)
 	{
-	  unsigned const char *form = getAttr(gp->xml,"form");
+	  unsigned const char *form = gp->atf; /* getAttr(gp->xml,"form") */
 	  if (!psl_is_sname(form) && qualifier_warnings)
 	    {
 	      vnotice("[cw1] unknown compound sign %s",form);
