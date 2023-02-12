@@ -1,22 +1,6 @@
 #include <wctype.h>
 #include "atf.h"
 
-#define a_acute 0x00e1
-#define e_acute 0x00e9
-#define i_acute 0x00ed
-#define u_acute 0x00fa
-#define A_acute 0x00c1
-#define E_acute 0x00c9
-#define I_acute 0x00cd
-#define U_acute 0x00da
-#define a_grave 0x00e0
-#define e_grave 0x00e8
-#define i_grave 0x00ec
-#define u_grave 0x00f9
-#define A_grave 0x00c0
-#define E_grave 0x00c8
-#define I_grave 0x00cc
-#define U_grave 0x00d9
 #define SUB_2   0x2082
 #define SUB_3   0x2083
 
@@ -88,7 +72,7 @@ subdig_of(wchar_t w)
     case E_acute:
     case I_acute:
     case U_acute:
-      return SUB_2;
+      return U_s2;
     case a_grave:
     case e_grave:
     case i_grave:
@@ -97,7 +81,7 @@ subdig_of(wchar_t w)
     case E_grave:
     case I_grave:
     case U_grave:
-      return SUB_3;
+      return U_s3;
     }
   return w;
 }

@@ -587,10 +587,10 @@ gvl_validate(unsigned const char *g)
 	  unsigned const char *l = NULL;
 	  unsigned char *a = NULL;
 
-	  if (!strpbrk((ccp)g,"|("))
+	  a = g_c10e(g);
+	  if (a)
 	    {
-	      a = accnum(g);
-	      if (a && strcmp((ccp)a,(ccp)g))
+	      if (strcmp((ccp)a,(ccp)g))
 		{
 		  g = npool_copy(g,sl->p);
 		  if (gvl_trace)
@@ -600,8 +600,14 @@ gvl_validate(unsigned const char *g)
 		    {
 		      gp2->accn = g;
 		      hash_add(sl->h, g, gp2);
+		      free(a);
 		      return gp2;
 		    }
+		}
+	      else
+		{
+		  free(a);
+		  a = NULL;
 		}
 	    }
 
@@ -615,7 +621,8 @@ gvl_validate(unsigned const char *g)
 	      gp->accn = npool_copy(g,sl->p);
 	      hash_add(sl->h, gp->text, gp);
 	      hash_add(sl->h, gp->accn, gp);
-	      g = a;
+	      g = gp->text;
+	      free(a);
 	      a = NULL;
 	    }
 	  else

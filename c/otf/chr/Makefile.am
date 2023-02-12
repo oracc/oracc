@@ -3,7 +3,7 @@ SUBDIRS=
 noinst_LTLIBRARIES=libchr.la
 
 libchr_la_SOURCES = atf2utf.c utf.c wcs.c atf.c utf8check.c charsets.c \
-	subdig.c accnum.c sexify.c
+	subdig.c accnum.c sexify.c g_c10e.c
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/otf/{lib,lng}
