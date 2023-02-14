@@ -383,16 +383,16 @@ gvl_tmp_key(unsigned const char *key, const char *field)
   return (ucp)tmpkey;
 }
 
-static unsigned char *
-gvl_q_c10e(unsigned const char *g, unsigned const char **mess,
-	   unsigned const char **v_val, const char **v_oid, const char **q_oid)
+static int
+gvl_q_c10e(gvl_g**gp, unsigned char **mess)
 {
-  gvl_g *gp = NULL;
+  gvl_g *vp = NULL, *qp = NULL;
   unsigned const char *v, *q;
-  unsigned char *tmp = malloc(strlen((ccp)g)+1), *end;
-  int pnest = 0;
+  unsigned char *tmp = malloc(strlen((ccp)g)+1), *end = NULL, *q_fixed = NULL;
+  int pnest = 0, v_bad = 0, q_bad = 0, ret = 0;
 
-  strcpy((char*)tmp, (ccp)g);
+  /* get pointers to the value (v) and qualifier (q) parts */
+  strcpy((char*)tmp, (ccp)(*gp)->text);
   end = tmp+strlen((ccp)tmp);
   --end;
   *end = '\0';
@@ -408,54 +408,130 @@ gvl_q_c10e(unsigned const char *g, unsigned const char **mess,
   *end = '\0';
   v = tmp;
   if (v_val)
-    *v_val = gvl_key_of(v);
+    *v_val = gvl_key_of(v); /* get the stable form of v which is the key in the sl hash */
 
-  /* is the value OK */
-  gp = gvl_validate(v);
-  if (gp)
+  /* check the value */
+  vp = gvl_validate(v);
+  if (vp)
     {
-      if (gp->mess && !strstr((ccp)gp->mess, "must be qualified"))
+      if (vp->mess && !strstr((ccp)vp->mess, "must be qualified"))
+	v_bad = 1;
+    }
+
+#define QFIX (q_fixed ? (ccp)q_fixed : "")
+  
+  /* check the sign */
+  qp = gvl_validate(q);
+  if (qp)
+    {
+      if (!qp->sign)
+	q_bad = 1;
+      else if (strcmp(q, qp->sign))
 	{
-	  *mess = gp->mess;
-	  free(tmp);
-	  return NULL;
+	  q_fixed = malloc(strlen(q) + strlen(qp->sign) + strlen(" [ <= ] "));
+	  (void)sprintf(q_fixed," [%s <= %s]", qp->sign, q);
 	}
-      else if (gp->oid)
-	*v_oid = gp->oid;
+    }
+
+  /* Now if we have bad value and qualifier it's too hard to guess */
+  if (v_bad && q_bad)
+    {
+      *mess = "both value and qualifier are unknown--I can't do anything with that";
+      ret = g;
+    }
+  else if (v_bad)
+    {
+      /* If the v is unknown, report known v for q */
+      unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key(qp->oid, "values"));
+      if (tmp2)
+	*mess = gvl_vmess("unknown value %s: known values of %s are: %s%s", vp->text, qp->sign, tmp2, QFIX);
       else
-	*v_oid = ""; /* this happens if a value must be qualified--which it is if we are in this routine */
+	*mess = gvl_vmess("unknown value %s: there are no known values for %s%s", vp->text, qp->sign, QFIX);
+    }
+  else if (q_bad)
+    {
+      /* If the q is unknown, report known q for v */
+      unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key(vp->text, "q"));
+      if (tmp2)
+	*mess = gvl_vmess("unknown sign %s: known qualifiers of %s are: %s%s", qp->sign, vp->text, tmp2, QFIX);
+      else
+	*mess = gvl_vmess("unknown sign %s: %s only known as value of %s%s", qp->sign, vp->text, v_sign, QFIX);
     }
   else
     {
-      *mess = (uccp)"unknown validation failure";
-      free(tmp);
-    }
+      unsigned char *tmp2 = malloc(strlen((ccp)vp->text) + strlen((ccp)qp->sign) + 3);
+      sprintf((char*)tmp2, "%s(%s)", vp->text, qp->sign);
 
-  /* is the sign OK or correctable? */
-  gp = gvl_validate(q);
-  if (gp)
-    {
-      if (gp->sign)
+      /* tmp2 is now a vq with valid v and q components */
+      if (gvl_lookup(gvl_tmp_key(tmp2,"qv")))
 	{
-	  unsigned char *tmp2 = malloc(strlen((ccp)v) + strlen((ccp)gp->sign) + 3);
-	  sprintf((char*)tmp2, "%s(%s)", v, gp->sign);
-	  *q_oid = gp->oid;
-	  free(tmp);
-	  return tmp2;
+	  /* vq is known combo -- we have canonicalized the g that was passed as arg1 */
+	  (*gp)->oid = qp->oid;
+	  (*gp)->sign = gvl_lookup(gvl_tmp_key((uccp)qp->oid,""));
+	  if (gvl_strict)
+	    *mess = gvl_vmess("qualified value %s should be %s%s", g, (*gp)->sign, QFIX);
+	  ret = 1;
 	}
       else
 	{
-	  *mess = gp->mess;
-	  free(tmp);
-	  return NULL;
+	  /* is vq a v that doesn't need qualifying? */
+	  if (!strcmp(vp->oid, qp->oid))
+	    {
+	      (*gp)->oid = qp->oid;
+	      (*gp)->sign = gvl_lookup(gvl_tmp_key((uccp)qp->oid,""));
+	      if (gvl_strict)
+		*mess = gvl_vmess("unnecessary qualifier on value: %s%s", (*gp)->text, QFIX);
+	      ret = 1; /* this is still OK--we have resolved the issue deterministically */
+	    }
+	  else
+	    {
+	      /* if the qv is unknown see if the value has the wrong index in the q context */
+	      int qv_bad = 1;
+	      unsigned char *b = gvl_val_base(v_val);
+	      unsigned const char *h = gvl_lookup(gvl_tmp_key(b,"h"));
+	      if (h)
+		{
+		  unsigned const char *p = NULL;
+		  if ((p = (uccp)strstr((ccp)h, q_oid)))
+		    {
+		      if ((p = (uccp)strchr((ccp)p,'/')))
+			{
+			  unsigned const char *q_val = gvl_lookup((uccp)q_oid);
+			  ++p;
+			  if ((p = gvl_v_from_h((uccp)b, (uccp)p)))
+			    {
+			      *mess = gvl_vmess("qualified value %s should be %s(%s)%s", g, p, qp->sign, QFIX);
+			      free((void*)p);
+			      qv_bad = 0;
+			      ret = 1; /* ok because deterministically resolved */
+			    }
+			}
+		    }
+		}
+	      if (qv_bad)
+		{
+		  /* we know the q doesn't have a value which is correct except for the index;
+		     report known q for v */
+		  unsigned const char *q_for_v = gvl_lookup(gvl_tmp_key(v, "q"));
+		  if (q_for_v)
+		    *mess = gvl_vmess("%s can't be qualified by %s--maybe %s ?%s", vp->text, qp->sign, q_for_v, QFIX);
+		  else
+		    *mess = gvl_vmess("%s only known as value of %s%s", vp->text, vp->sign, QFIX);
+		}
+	      free(b);
+	    }
 	}
+      free(tmp2);
     }
-  else
-    {
-      *mess = (uccp)"unknown validation failure";
-      free(tmp);
-    }
-  return NULL;
+
+  if (!vp && !qp)
+    *mess = (uccp)"unknown validation failure%s", QFIX;
+
+  /* keep tmp until end because v and q give us the original text of
+     the vq--the sign may have been canonicalized by gvl_validate */
+  free(tmp);
+
+  return ret;
 }
 
 #define GVL_x "ₓ"
@@ -632,7 +708,6 @@ gvl_validate(unsigned const char *g)
 	    }
 	  
 	  gp->type = gvl_type(g);
-
 	  
 	  if (*gp->type == 'q')
 	    {
@@ -644,66 +719,9 @@ gvl_validate(unsigned const char *g)
 		}
 	      else
 		{
-		  static unsigned const char *mess = NULL;
-		  static unsigned const char *v_val = NULL;
-		  static const char *v_oid = NULL, *q_oid = NULL;
-		  unsigned char *q_c10e = gvl_q_c10e(g_orig, &mess, &v_val, &v_oid, &q_oid);
-		  if (q_c10e)
-		    {
-		      g = gvl_tmp_key(q_c10e,"qv");
-		      if ((l = gvl_lookup(g)))
-			{
-			  gp->oid = (ccp)l;
-			  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
-			  if (gvl_strict)
-			    gp->mess = gvl_vmess("qualified value %s should be %s", g_orig, q_c10e);
-			}
-		      else
-			{
-			  if (!strcmp(v_oid, q_oid))
-			    {
-			      gp->oid = q_oid;
-			      gp->sign = gvl_lookup(gvl_tmp_key((uccp)q_oid,""));
-			      if (gvl_strict)
-				gp->mess = gvl_vmess("unnecessary qualifier on value: %s", g_orig);
-			    }
-			  else if (strcmp((ccp)g_orig, (ccp)q_c10e))
-			    gp->mess = gvl_vmess("unknown qualified value: %s (also tried %s)", g_orig, q_c10e);
-			  else
-			    {
-			      if (v_val && q_oid)
-				{
-				  unsigned char *b = gvl_val_base(v_val);
-				  unsigned const char *h = gvl_lookup(gvl_tmp_key(b,"h"));
-				  if (h)
-				    {
-				      unsigned const char *p = NULL;
-				      if ((p = (uccp)strstr((ccp)h, q_oid)))
-					{
-					  if ((p = (uccp)strchr((ccp)p,'/')))
-					    {
-					      unsigned const char *q_val = gvl_lookup((uccp)q_oid);
-					      ++p;
-					      if ((p = gvl_v_from_h((uccp)b, (uccp)p)))
-						{
-						  gp->mess = gvl_vmess("qualifed value %s should be %s(%s)", g_orig, p, q_val);
-						  free((void*)p);
-						}
-					    }
-					}
-				    }
-				  free(b);
-				}
-			      else
-				gp->mess = gvl_vmess("unknown qualified value: %s", g_orig);
-			    }
-			}
-		      free(q_c10e);
-		    }
-		  else
-		    {
-		      gp->mess = gvl_vmess("error in qualified value %s: %s", g_orig, mess);
-		    }
+		  static unsigned char *mess = NULL;
+		  if (!gvl_q_c10e(&gp, &mess))
+		    gp->mess = gvl_vmess("vq error in %s: %s", g_orig, mess);
 		}
 	    }
 	  else if ((l = gvl_lookup(g)))
