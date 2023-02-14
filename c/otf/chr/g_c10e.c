@@ -15,7 +15,10 @@ g_c10e(const unsigned char *g, int *err)
   wchar_t *w;
   size_t len;
   int i;
-  int err = 0;
+  static int errx;
+
+  if (NULL == err)
+    err = &errx;
 
   if ((w = utf2wcs(g, &len)))
     {
@@ -24,6 +27,7 @@ g_c10e(const unsigned char *g, int *err)
       size_t xlen = 0;
       int found_l = 0;
       int found_u = 0;
+      unsigned char *ret;
       
       for (i = 0; i < len; ++i)
 	{
@@ -93,11 +97,11 @@ g_c10e(const unsigned char *g, int *err)
 	      x[xlen++] = vowel_of(w[i]);
 	      ++found_u;
 	      break;
-	    case U_sub_x:
+	    case U_s_x:
 	      /* This block may be unnecessary with GVL */
 	      x[xlen++] = w[i];
 	      if ('(' != w[i+1])
-		err |= G_C10E_FINAL_SUBX;
+		*err |= G_C10E_FINAL_SUBX;
 	      break;
 	    default:
 	      if (iswalpha(w[i]))
@@ -117,7 +121,7 @@ g_c10e(const unsigned char *g, int *err)
       if (found_l && found_u)
 	{
 	  size_t i;
-	  err |= G_C10E_MIXED_CASE;
+	  *err |= G_C10E_MIXED_CASE;
 	  if (found_l > found_u)
 	    for (i = 0; i < xlen; ++i)
 	      x[i] = towlower(x[i]);
@@ -125,8 +129,9 @@ g_c10e(const unsigned char *g, int *err)
 	    for (i = 0; i < xlen; ++i)
 	      x[i] = towupper(x[i]);
 	}
-      
-      return wcs2utf(x,xlen);
+      ret = wcs2utf(x,xlen);
+      free(x);
+      return ret;
     }
 
   return NULL;

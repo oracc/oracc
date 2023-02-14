@@ -586,8 +586,10 @@ gvl_validate(unsigned const char *g)
 	{
 	  unsigned const char *l = NULL;
 	  unsigned char *a = NULL;
+	  static int c10e_err = 0;
 
-	  a = g_c10e(g);
+	  c10e_err = 0;
+	  a = g_c10e(g, &c10e_err);
 	  if (a)
 	    {
 	      if (strcmp((ccp)a,(ccp)g))

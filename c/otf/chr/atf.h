@@ -129,6 +129,9 @@ extern unsigned char *accnum(const unsigned char *);
 extern unsigned char *numacc(const unsigned char *g);
 extern int hasacc(const unsigned char *g);
 
+extern unsigned char *g_c10e(const unsigned char *g, int *err);
+
+
 extern const unsigned char *natf2utf(const char *str, const char *end, int rx, 
 				     const char *file, int lnum);
 
