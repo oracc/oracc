@@ -222,7 +222,7 @@ wcs2atf(wchar_t *wc, size_t len)
 unsigned char *
 wcs2utf(const wchar_t*ws, size_t len)
 {
-  static unsigned char *dest;
+  static unsigned char *dest = NULL;
   static int dest_alloced = 0;
   size_t max = 1+(len*6);
 

@@ -602,13 +602,12 @@ gvl_validate(unsigned const char *g)
 		    {
 		      gp2->accn = g;
 		      hash_add(sl->h, g, gp2);
-		      free(a);
+		      /* note: don't free a directly as it belongs to wcs2utf */
 		      return gp2;
 		    }
 		}
 	      else
 		{
-		  free(a);
 		  a = NULL;
 		}
 	    }
@@ -624,7 +623,6 @@ gvl_validate(unsigned const char *g)
 	      hash_add(sl->h, gp->text, gp);
 	      hash_add(sl->h, gp->accn, gp);
 	      g = gp->text;
-	      free(a);
 	      a = NULL;
 	    }
 	  else
