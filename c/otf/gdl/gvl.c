@@ -24,6 +24,9 @@ static const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalu
 
 const unsigned char *(*gvl_lookup)(unsigned const char *key);
 
+unsigned char *gvl_v_from_h(const unsigned char *b, const unsigned char *qsub);
+unsigned char *gvl_val_base(const unsigned char *v);
+
 static gvl_i *gvl_i_init_d(const char *name, Dbi_index *dbi);
 static gvl_i *gvl_i_init_h(const char *name, Hash_table *h);
 static void   gvl_i_term(const char *name);
@@ -201,12 +204,14 @@ gvl_lookup_d(unsigned const char *key)
   return sl_lookup_d(curr_sl->u.d,key);
 }
 
+#if 0
 /* NOTE: THIS ONLY WORKS WITH HASH-BASED VERSION OF GVL */
 static unsigned const char *
 gvl_key_of(unsigned const char *v)
 {
   return hash_exists(curr_sl->u.h, v);
 }
+#endif
 
 static unsigned const char *
 gvl_lookup_h(unsigned const char *key)
@@ -384,15 +389,15 @@ gvl_tmp_key(unsigned const char *key, const char *field)
 }
 
 static int
-gvl_q_c10e(gvl_g**gp, unsigned char **mess)
+gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 {
   gvl_g *vp = NULL, *qp = NULL;
   unsigned const char *v, *q;
-  unsigned char *tmp = malloc(strlen((ccp)g)+1), *end = NULL, *q_fixed = NULL;
+  unsigned char *tmp = malloc(strlen((ccp)gp->text)+1), *end = NULL, *q_fixed = NULL;
   int pnest = 0, v_bad = 0, q_bad = 0, ret = 0;
 
   /* get pointers to the value (v) and qualifier (q) parts */
-  strcpy((char*)tmp, (ccp)(*gp)->text);
+  strcpy((char*)tmp, (ccp)gp->text);
   end = tmp+strlen((ccp)tmp);
   --end;
   *end = '\0';
@@ -407,9 +412,11 @@ gvl_q_c10e(gvl_g**gp, unsigned char **mess)
   q = end--;
   *end = '\0';
   v = tmp;
+#if 0
   if (v_val)
     *v_val = gvl_key_of(v); /* get the stable form of v which is the key in the sl hash */
-
+#endif
+  
   /* check the value */
   vp = gvl_validate(v);
   if (vp)
@@ -426,23 +433,20 @@ gvl_q_c10e(gvl_g**gp, unsigned char **mess)
     {
       if (!qp->sign)
 	q_bad = 1;
-      else if (strcmp(q, qp->sign))
+      else if (strcmp((ccp)q, (ccp)qp->sign))
 	{
-	  q_fixed = malloc(strlen(q) + strlen(qp->sign) + strlen(" [ <= ] "));
-	  (void)sprintf(q_fixed," [%s <= %s]", qp->sign, q);
+	  q_fixed = malloc(strlen((ccp)q) + strlen((ccp)qp->sign) + strlen(" [ <= ] "));
+	  (void)sprintf((char*)q_fixed," [%s <= %s]", qp->sign, q);
 	}
     }
 
   /* Now if we have bad value and qualifier it's too hard to guess */
   if (v_bad && q_bad)
-    {
-      *mess = "both value and qualifier are unknown--I can't do anything with that";
-      ret = g;
-    }
+    *mess = (ucp)"both value and qualifier are unknown--I can't do anything with that";
   else if (v_bad)
     {
       /* If the v is unknown, report known v for q */
-      unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key(qp->oid, "values"));
+      unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key((uccp)qp->oid, "values"));
       if (tmp2)
 	*mess = gvl_vmess("unknown value %s: known values of %s are: %s%s", vp->text, qp->sign, tmp2, QFIX);
       else
@@ -455,7 +459,7 @@ gvl_q_c10e(gvl_g**gp, unsigned char **mess)
       if (tmp2)
 	*mess = gvl_vmess("unknown sign %s: known qualifiers of %s are: %s%s", qp->sign, vp->text, tmp2, QFIX);
       else
-	*mess = gvl_vmess("unknown sign %s: %s only known as value of %s%s", qp->sign, vp->text, v_sign, QFIX);
+	*mess = gvl_vmess("unknown sign %s: %s only known as value of %s%s", qp->sign, vp->text, vp->sign, QFIX);
     }
   else
     {
@@ -466,10 +470,11 @@ gvl_q_c10e(gvl_g**gp, unsigned char **mess)
       if (gvl_lookup(gvl_tmp_key(tmp2,"qv")))
 	{
 	  /* vq is known combo -- we have canonicalized the g that was passed as arg1 */
-	  (*gp)->oid = qp->oid;
-	  (*gp)->sign = gvl_lookup(gvl_tmp_key((uccp)qp->oid,""));
+	  gp->oid = qp->oid;
+	  gp->sign = gvl_lookup(gvl_tmp_key((uccp)qp->oid,""));
+	  /* add gp->text to g hash as key of tmp2 ? */
 	  if (gvl_strict)
-	    *mess = gvl_vmess("qualified value %s should be %s%s", g, (*gp)->sign, QFIX);
+	    *mess = gvl_vmess("qualified value %s should be %s%s", gp->text, tmp2, QFIX);
 	  ret = 1;
 	}
       else
@@ -477,30 +482,30 @@ gvl_q_c10e(gvl_g**gp, unsigned char **mess)
 	  /* is vq a v that doesn't need qualifying? */
 	  if (!strcmp(vp->oid, qp->oid))
 	    {
-	      (*gp)->oid = qp->oid;
-	      (*gp)->sign = gvl_lookup(gvl_tmp_key((uccp)qp->oid,""));
+	      gp->oid = qp->oid;
+	      gp->sign = gvl_lookup(gvl_tmp_key((uccp)qp->oid,""));
 	      if (gvl_strict)
-		*mess = gvl_vmess("unnecessary qualifier on value: %s%s", (*gp)->text, QFIX);
+		*mess = gvl_vmess("unnecessary qualifier on value: %s%s", gp->text, QFIX);
 	      ret = 1; /* this is still OK--we have resolved the issue deterministically */
 	    }
 	  else
 	    {
 	      /* if the qv is unknown see if the value has the wrong index in the q context */
 	      int qv_bad = 1;
-	      unsigned char *b = gvl_val_base(v_val);
+	      unsigned char *b = gvl_val_base(vp->text);
 	      unsigned const char *h = gvl_lookup(gvl_tmp_key(b,"h"));
 	      if (h)
 		{
 		  unsigned const char *p = NULL;
-		  if ((p = (uccp)strstr((ccp)h, q_oid)))
+		  if ((p = (uccp)strstr((ccp)h, qp->oid)))
 		    {
 		      if ((p = (uccp)strchr((ccp)p,'/')))
 			{
-			  unsigned const char *q_val = gvl_lookup((uccp)q_oid);
 			  ++p;
 			  if ((p = gvl_v_from_h((uccp)b, (uccp)p)))
 			    {
-			      *mess = gvl_vmess("qualified value %s should be %s(%s)%s", g, p, qp->sign, QFIX);
+			      /* build a p(qp->sign) here and set gp->text to it ? */
+			      *mess = gvl_vmess("qualified value %s should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
 			      free((void*)p);
 			      qv_bad = 0;
 			      ret = 1; /* ok because deterministically resolved */
@@ -525,7 +530,7 @@ gvl_q_c10e(gvl_g**gp, unsigned char **mess)
     }
 
   if (!vp && !qp)
-    *mess = (uccp)"unknown validation failure%s", QFIX;
+    *mess = gvl_vmess("unknown validation failure%s", QFIX);
 
   /* keep tmp until end because v and q give us the original text of
      the vq--the sign may have been canonicalized by gvl_validate */
@@ -720,7 +725,7 @@ gvl_validate(unsigned const char *g)
 	      else
 		{
 		  static unsigned char *mess = NULL;
-		  if (!gvl_q_c10e(&gp, &mess))
+		  if (!gvl_q_c10e(gp, &mess))
 		    gp->mess = gvl_vmess("vq error in %s: %s", g_orig, mess);
 		}
 	    }

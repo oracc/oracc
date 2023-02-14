@@ -1183,7 +1183,7 @@ gparse(register unsigned char *g, enum t_type type)
 
 	      if (do_signnames)
 		{
-		  const char *showerr = "yes";
+		  /*const char *showerr = "yes";*/
 		  const unsigned char *input = NULL;
 		  cattr = NULL;
 
@@ -1206,7 +1206,7 @@ gparse(register unsigned char *g, enum t_type type)
 			    cattr = signify(input);
 			  else
 			    {
-			      showerr = NULL;
+			      /*showerr = NULL;*/
 			      cattr = NULL;
 			    }
 			}

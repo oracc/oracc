@@ -106,6 +106,7 @@ init {
 	    die "ORACC::SL::BaseC: signlist data $tsv_file\n";
 	}
     } else {
+	$g = '';
         # check if the sldb exists
 	my $db_file = "@@ORACC@@/pub/ogsl/sl";
 	my $db_name = 'ogsl';
