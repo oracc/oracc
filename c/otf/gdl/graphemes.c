@@ -102,7 +102,7 @@ int use_unicode = 0;
 extern int in_split_word;
 
 /* if non-zero the gparse was called from cparse, qualified, etc. */
-static int inner_parse = 0, inner_qual = 0;
+int inner_parse = 0, inner_qual = 0;
 
 static int is_bad_cg[256];
 static const char *bad_cg_chars = "[]<>{}#!?*";

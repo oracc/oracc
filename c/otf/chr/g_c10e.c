@@ -121,18 +121,23 @@ g_c10e(const unsigned char *g, int *err)
 	    }
 	}
 
+      if (cued_sub_23)
+	x[xlen++] = cued_sub_23;
       x[xlen] = 0;
 
       if (found_l && found_u && !suppress_case_check)
 	{
 	  size_t i;
 	  *err |= G_C10E_MIXED_CASE;
+#if 0
+	  /* this may not be worth the problems it causes */
 	  if (found_l > found_u)
 	    for (i = 0; i < xlen; ++i)
 	      x[i] = towlower(x[i]);
 	  else
 	    for (i = 0; i < xlen; ++i)
 	      x[i] = towupper(x[i]);
+#endif
 	}
       ret = wcs2utf(x,xlen);
       free(x);

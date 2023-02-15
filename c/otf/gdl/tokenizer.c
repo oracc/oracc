@@ -1479,10 +1479,16 @@ tokenize(register unsigned char *l,unsigned char *e)
 			{
 			  unsigned char save = *following;
 			  struct token *gtokp = NULL;
+			  extern int inner_parse;
 			  *following = '\0';
 			  gtokp = hash_lookup(g2,&table);
 			  if (!gtokp)
-			    gtokp = /*s_*/create_token(text, t, gparse(pool_copy(g2),t));
+			    {
+			      int save_inner_parse = inner_parse;
+			      inner_parse = 1;
+			      gtokp = /*s_*/create_token(text, t, gparse(pool_copy(g2),t));
+			      inner_parse = save_inner_parse;
+			    }
 #if 0
 			  gtokp = hash_insert(pool_copy(g2),
 						s_create_token(text,t,
