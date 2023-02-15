@@ -1218,7 +1218,11 @@ gparse(register unsigned char *g, enum t_type type)
 		    cattr = signify(buf);
 		  
 		  if (cattr)
-		    appendAttr(gp->xml,gattr(a_g_sign,psl_get_sname(cattr)));
+		    {
+		      unsigned const char *sn = psl_get_sname(cattr);
+		      if (sn)
+			appendAttr(gp->xml,gattr(a_g_sign,sn));
+		    }
 
 		  if (gp->type == g_s)
 		    {
