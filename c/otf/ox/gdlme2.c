@@ -12,6 +12,12 @@
 #include "npool.h"
 #include "globals.h"
 
+#define GVL_MODE 1
+
+#ifdef GVL_MODE
+#include "gvl.h"
+#endif
+
 static int gdlme;
 static int gdlme_debug = 0;
 const char *outfile = NULL;

@@ -56,6 +56,9 @@ main(int argc, char **argv)
   pool_init();
   tree_init();
   gdl_init();
+#ifdef GVL_MODE
+  gvl_setup("ogsl", "ogsl", 1); /* 1=tsv */
+#endif
   cuneify_init(xpd);
   curr_lang = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
 
