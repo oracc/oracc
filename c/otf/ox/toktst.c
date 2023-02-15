@@ -30,7 +30,9 @@ main(int argc, char **argv)
   atf_init();
   charsets_init();
   gdl_init();
-  
+#ifdef GVL_MODE
+  gvl_setup("ogsl", "ogsl", 1); /* 1=tsv */
+#endif  
   file = "stdin";
   while (NULL != fgets((char*)s,1024,stdin))
     {
