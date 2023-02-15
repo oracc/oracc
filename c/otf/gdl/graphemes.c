@@ -583,11 +583,14 @@ gparse(register unsigned char *g, enum t_type type)
 
 #ifdef GVL_MODE
   {
-    gvl_g *gg = gvl_validate(g);
-    if (gg && gg->mess)
+    if (!gdl_bootstrap)
       {
-	if (!inner_qual && !inner_parse) /* || !strstr((const char *)gg->mess, "must be qualified")) */
-	  vwarning("(gvl) %s",gg->mess);
+	gvl_g *gg = gvl_validate(g);
+	if (gg && gg->mess)
+	  {
+	    if (!inner_qual && !inner_parse) /* || !strstr((const char *)gg->mess, "must be qualified")) */
+	      vwarning("(gvl) %s",gg->mess);
+	  }
       }
   }
 #endif

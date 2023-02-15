@@ -9,11 +9,13 @@ use Getopt::Long;
 binmode STDIN, ':utf8'; binmode STDERR, ':utf8';  binmode STDOUT, ':utf8';
 
 my $check = 0;
+my $gdlme_output = 0;
 my $project = 'ogsl';
 my $proof = '';
 
 GetOptions(
     c=>\$check,
+    g=>\$gdlme_output,
     "p:s"=>\$project,
     );
 
@@ -64,7 +66,11 @@ unless ($check) {
     my $xl = $asl;
     $xl =~ s#00lib#02xml# || $xl =~ s#01bld/csl.d#02xml#;
     $xl =~ s/\.a?sl$/-sl.xml/;
-    open(XL,"|gdlme2 -bs>$xl") || die "sl-xml.plx: can't write to $xl";
+    if ($gdlme_output) {
+	open(XL,">gdlme2.xml") || die "sl-xml.plx: can't write to $xl";
+    } else {
+	open(XL,"|gdlme2 -bs>$xl") || die "sl-xml.plx: can't write to $xl";
+    }
     select XL;
 }
 
@@ -446,9 +452,11 @@ close(SL);
 unless ($check) {
     print '</signlist>';
     close(XL);
-    if ($project eq 'ogsl') {
-	system 'rm', '-f', '02xml/ogsl.xml';
-	system 'ln', '-sf', "$ENV{'ORACC_BUILDS'}/ogsl/02xml/ogsl-sl.xml", '02xml/ogsl.xml';
+    unless ($gdlme_output) {
+	if ($project eq 'ogsl') {
+	    system 'rm', '-f', '02xml/ogsl.xml';
+	    system 'ln', '-sf', "$ENV{'ORACC_BUILDS'}/ogsl/02xml/ogsl-sl.xml", '02xml/ogsl.xml';
+	}
     }
 }
 
