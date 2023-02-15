@@ -216,7 +216,7 @@ gvl_key_of(unsigned const char *v)
 static unsigned const char *
 gvl_lookup_h(unsigned const char *key)
 {
-  return hash_find(curr_sl->u.h, (const unsigned char *)key);
+  return key ? hash_find(curr_sl->u.h, (const unsigned char *)key) : NULL;
 }
 
 gvl_i*
@@ -378,14 +378,19 @@ unsigned char *
 gvl_tmp_key(unsigned const char *key, const char *field)
 {
   static char tmpkey[128];
-  strcpy(tmpkey,(ccp)key);
-  if (*field)
+  if (key)
     {
-      char *tk = tmpkey + strlen(tmpkey);
-      *tk++ = ';';
-      strcpy(tk,field);
+      strcpy(tmpkey,(ccp)key);
+      if (*field)
+	{
+	  char *tk = tmpkey + strlen(tmpkey);
+	  *tk++ = ';';
+	  strcpy(tk,field);
+	}
+      return (ucp)tmpkey;
     }
-  return (ucp)tmpkey;
+  else
+    return NULL;
 }
 
 static int

@@ -16,6 +16,7 @@ g_c10e(const unsigned char *g, int *err)
   size_t len;
   int i;
   static int errx;
+  int suppress_case_check = 0;
 
   if (NULL == err)
     err = &errx;
@@ -33,16 +34,20 @@ g_c10e(const unsigned char *g, int *err)
 	{
 	  switch (w[i])
 	    {
+	    case '@':
+	    case '~':
+	    case '\\':
+	      if (w[i+1] && iswalpha(w[i+1]) && iswlower(w[i+1]))
+		suppress_case_check = 1;
+	    case '|':
 	    case '.':
 	    case '-':
 	    case ':':
 	    case '+':
 	    case '&':
 	    case '%':
-	    case '@':
 	    case '(':
 	    case ')':
-	    case '|':
 	      if (cued_sub_23)
 		{
 		  x[xlen++] = cued_sub_23;
@@ -104,7 +109,7 @@ g_c10e(const unsigned char *g, int *err)
 		*err |= G_C10E_FINAL_SUBX;
 	      break;
 	    default:
-	      if (iswalpha(w[i]))
+	      if (iswalpha(w[i]) && !suppress_case_check)
 		{
 		  if (iswupper(w[i]))
 		    ++found_u;
@@ -118,7 +123,7 @@ g_c10e(const unsigned char *g, int *err)
 
       x[xlen] = 0;
 
-      if (found_l && found_u)
+      if (found_l && found_u && !suppress_case_check)
 	{
 	  size_t i;
 	  *err |= G_C10E_MIXED_CASE;

@@ -795,7 +795,7 @@ gparse(register unsigned char *g, enum t_type type)
 	    }
 	  else
 	    {
-	      if (!inner_qual)
+	      if (!inner_qual && !gdl_bootstrap)
 		vwarning("sign list name %s not in OGSL", g);
 	    }
 	}
