@@ -59,7 +59,10 @@ foreach my $arg (@ARGV) {
 	    @ln = (<L>);
 	    close(L);
 	}
-
+	# if a file has only \r line ends split it manually here.
+	if ($#ln == 0 && $l[0] =~ /\r/) {
+	    @ln = split(/\r/,$l[0]);
+	}
 	@ln = map { tr/\n\r//d; $_ } @ln;
 	@ln = valid_pqx(@ln);
 #	@ln = grep (/^\&?[PQX]/ || , @ln);
