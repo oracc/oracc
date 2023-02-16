@@ -2330,7 +2330,7 @@ numerical(register unsigned char *g)
 	  if (strchr((char*)gp->g.n.r, '/'))
 	    {
 	      qnum = qtmp = malloc(strlen((char*)gp->g.n.r) + 7);
-	      sprintf((char*)qnum, "%s(disz)", gp->g.n.r);
+	      sprintf((char*)qnum, "%s(diš)", gp->g.n.r);
 	    }
 	  else
 	    {

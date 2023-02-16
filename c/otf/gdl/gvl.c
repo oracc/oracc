@@ -10,6 +10,7 @@
 #include <atf.h>
 #include <gdl.h>
 #include <memblock.h>
+#include <sexify.h>
 
 #include "gvl.h"
 
@@ -739,6 +740,51 @@ gvl_validate(unsigned const char *g)
 	      /* best case: g is a known sign or value */
 	      gp->oid = (ccp)l;
 	      gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+	    }
+	  else if (*gp->type == 'n')
+	    {
+	      if (strchr((ccp)g, '('))
+		{
+		  if ((l = gvl_lookup(g)))
+		    {
+		      gp->oid = (ccp)l;
+		      gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+		    }
+		  else
+		    gp->mess = gvl_vmess("unknown number sign %s", g);
+		}
+	      else
+		{
+		  int n = 0;
+		  if ((n = atoi((ccp)g)))
+		    {
+		      unsigned char *sx = sexify(n, "disz");
+		      hash_add(sl->h, npool_copy(sx,sl->p), gp);
+		      if ((l = gvl_lookup(sx)))
+			{
+			  gp->oid = (ccp)l;
+			  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+			}
+		      else
+			gp->mess = gvl_vmess("unknown sexified number sign %s [< %s]", sx, g);
+		    }
+		  else if (strchr((char*)g, '/'))
+		    {
+		      char *qnum = malloc(strlen((char*)g) + strlen("(diš)") + 1);
+		      (void)sprintf((char*)qnum, "%s(diš)", g);
+		      hash_add(sl->h, npool_copy((uccp)qnum,sl->p), gp);
+		      if ((l = gvl_lookup((uccp)qnum)))
+			{
+			  gp->oid = (ccp)l;
+			  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+			}
+		      else
+			gp->mess = gvl_vmess("unknown sexified fraction %s [< %s]", qnum, g);
+		      free(qnum);
+		    }
+		  else
+		    gp->mess = gvl_vmess("unable to sexify non-numeric %s", g);
+		}
 	    }
 	  else
 	    {
