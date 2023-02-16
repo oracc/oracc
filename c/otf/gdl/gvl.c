@@ -663,6 +663,10 @@ gvl_g *
 gvl_validate(unsigned const char *g)
 {
   gvl_g *gp = NULL;
+  unsigned const char *orig_g = g;
+
+  if (!use_unicode)
+    g = g2utf(g);
 
   if (g && !gvl_ignore(g))
     {

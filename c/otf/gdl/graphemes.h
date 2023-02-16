@@ -46,6 +46,7 @@ struct grapheme
 
 extern struct node *pending_disamb;
 
+extern const unsigned char *g2utf(const unsigned char *g);
 extern void g_reinit(void);
 extern struct grapheme *gparse(register unsigned char *g, enum t_type type);
 extern void graphemes_init(void);

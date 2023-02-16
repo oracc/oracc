@@ -202,7 +202,7 @@ g_reinit()
   in_square = 0;
 }
 
-static const unsigned char *
+const unsigned char *
 g2utf(const unsigned char *g)
 {
   unsigned const char *g_dig = NULL, *g_end = NULL;
