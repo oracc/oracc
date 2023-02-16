@@ -743,7 +743,8 @@ gvl_validate(unsigned const char *g)
 	    }
 	  else if (*gp->type == 'n')
 	    {
-	      if (strchr((ccp)g, '('))
+	      char *paren = strchr((ccp)g, '(');
+	      if (paren)
 		{
 		  if ((l = gvl_lookup(g)))
 		    {
@@ -751,7 +752,10 @@ gvl_validate(unsigned const char *g)
 		      gp->sign = gvl_lookup(gvl_tmp_key(l,""));
 		    }
 		  else
-		    gp->mess = gvl_vmess("unknown number sign %s", g);
+		    {
+		      /* do nothing; let the validation happen when n
+			 is parsed into n and r components */
+		    }
 		}
 	      else
 		{
@@ -766,7 +770,12 @@ gvl_validate(unsigned const char *g)
 			  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
 			}
 		      else
-			gp->mess = gvl_vmess("unknown sexified number sign %s [< %s]", sx, g);
+			{
+#if 0
+			  /* TBD: if this has spaces split and possibly use a list in gp */
+			  gp->mess = gvl_vmess("unknown sexified number sign %s [< %s]", sx, g);
+#endif
+			}
 		    }
 		  else if (strchr((char*)g, '/'))
 		    {
