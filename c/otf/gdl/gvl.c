@@ -651,12 +651,16 @@ gvl_v_from_h(const unsigned char *b, const unsigned char *qsub)
 int
 gvl_ignore(unsigned const char *g)
 {
+#if 0
+  return 0;
+#else
   while (*g)
     if (*g < 128 && (/*isdigit(*g) || */'/' == *g || '*' == *g))
       ++g;
     else
       break;
   return '\0' == *g || '(' == *g; /* ignore *(u) and friends */
+#endif
 }
 
 gvl_g *
@@ -776,7 +780,7 @@ gvl_validate(unsigned const char *g)
 		      else
 			{
 #if 0
-			  /* TBD: if this has spaces split and possibly use a list in gp */
+			  /* TBD: if this has spaces; split and possibly use a list in gp */
 			  gp->mess = gvl_vmess("unknown sexified number sign %s [< %s]", sx, g);
 #endif
 			}
@@ -797,6 +801,36 @@ gvl_validate(unsigned const char *g)
 		    }
 		  else
 		    gp->mess = gvl_vmess("unable to sexify non-numeric %s", g);
+		}
+	    }
+	  else if (*gp->type == 'p')
+	    {
+	      if ((l = gvl_lookup(g)))
+		{
+		  gp->oid = (ccp)l;
+		  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+		}
+	      else
+		{
+		  char *paren = strchr((ccp)g, '(');
+		  if (paren)
+		    {
+		      unsigned char *q = malloc(strlen((ccp)q));
+		      strcpy((char*)q,paren+1);
+		      if ((paren = strrchr((ccp)q,')')))
+			{
+			  *paren = '\0';
+			  if ((l = gvl_lookup(q)))
+			    {
+			      gp->oid = (ccp)l;
+			      gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+			    }
+			  else
+			    gp->mess = gvl_vmess("%s: punctuation with unknown sign qualifier", g);
+			}
+		      else
+			gp->mess = gvl_vmess("%s: qualifier without closing ')'", g);
+		    }
 		}
 	    }
 	  else
