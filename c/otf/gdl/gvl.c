@@ -119,7 +119,7 @@ gvl_type(unsigned const char *g)
       else
 	return gvl_c;
     }
-  else if (*g == '*' || *g == ':')
+  else if (*g == '*' || *g == ':' || *g == '/')
     return gvl_p;
   else
     return gvl_BAD;
@@ -651,7 +651,7 @@ gvl_v_from_h(const unsigned char *b, const unsigned char *qsub)
 int
 gvl_ignore(unsigned const char *g)
 {
-#if 0
+#if 1
   return 0;
 #else
   while (*g)
