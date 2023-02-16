@@ -651,7 +651,7 @@ int
 gvl_ignore(unsigned const char *g)
 {
   while (*g)
-    if (*g < 128 && (isdigit(*g) || '/' == *g || '*' == *g))
+    if (*g < 128 && (/*isdigit(*g) || */'/' == *g || '*' == *g))
       ++g;
     else
       break;
