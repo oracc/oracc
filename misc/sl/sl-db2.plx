@@ -643,7 +643,8 @@ subsign {
 		my $ivb = $n;
 		$ivb =~ s/[₀-₉ₓ]+$//;
 		push @{$values{$ivb,'h'}}, [$id,$n];
-		warn "adding inherited $n to $ivb;h $id\n";
+		push @{$values{$id,'values'}}, $n;
+		# warn "adding inherited $n to $ivb;h $id\n";
 	    }
 	}
     }
