@@ -686,7 +686,7 @@ gvl_validate(unsigned const char *g)
   gvl_g *gp = NULL;
   unsigned const char *orig_g = g;
 
-  if (!use_unicode && !isdigit(g[0]) && ':' != g[0] && '*' != g[0])
+  if (!use_unicode && !isdigit(g[0]) && '|' != g[0] && ':' != g[0] && '*' != g[0])
     g = g2utf(g);
 
   if (g && !gvl_ignore(g))

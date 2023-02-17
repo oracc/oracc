@@ -583,7 +583,7 @@ gparse(register unsigned char *g, enum t_type type)
 
 #ifdef GVL_MODE
   {
-    if (!gdl_bootstrap)
+    if (curr_lang->signlist && '#' == *curr_lang->signlist && !gdl_bootstrap)
       {
 	gvl_g *gg = gvl_validate(g);
 	if (gg && gg->mess)
@@ -795,7 +795,7 @@ gparse(register unsigned char *g, enum t_type type)
 	    }
 	  else
 	    {
-	      if (!inner_qual && !gdl_bootstrap)
+	      if (curr_lang->signlist && '#' == *curr_lang->signlist && !inner_qual && !gdl_bootstrap)
 		vwarning("sign list name %s not in OGSL", g);
 	    }
 	}
