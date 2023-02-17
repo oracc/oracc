@@ -448,24 +448,24 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 
   /* Now if we have bad value and qualifier it's too hard to guess */
   if (v_bad && q_bad)
-    *mess = (ucp)"both value and qualifier are unknown--I can't do anything with that";
+    *mess = gvl_vmess("%s: both value and qualifier unknown", gp->text);
   else if (v_bad)
     {
       /* If the v is unknown, report known v for q */
       unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key((uccp)qp->oid, "values"));
       if (tmp2)
-	*mess = gvl_vmess("unknown value %s: known values of %s are: %s%s", vp->text, qp->sign, tmp2, QFIX);
+	*mess = gvl_vmess("%s: %s unknown. Known for %s: %s%s", gp->text, vp->text, qp->sign, tmp2, QFIX);
       else
-	*mess = gvl_vmess("unknown value %s: there are no known values for %s%s", vp->text, qp->sign, QFIX);
+	*mess = gvl_vmess("%s: %s unknown. No known values for %s%s", gp->text, vp->text, qp->sign, QFIX);
     }
   else if (q_bad)
     {
       /* If the q is unknown, report known q for v */
       unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key(vp->text, "q"));
       if (tmp2)
-	*mess = gvl_vmess("unknown sign %s: known qualifiers of %s are: %s%s", q, vp->text, tmp2, QFIX);
+	*mess = gvl_vmess("%s: %s unknown: known for %s: %s%s", gp->text, q, vp->text, tmp2, QFIX);
       else
-	*mess = gvl_vmess("unknown sign %s: %s only known as value of %s%s", q, vp->text, vp->sign, QFIX);
+	*mess = gvl_vmess("%s: %s unknown: %s is %s%s", gp->text, q, vp->text, vp->sign, QFIX);
     }
   else
     {
@@ -480,18 +480,18 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 	  gp->sign = gvl_lookup(gvl_tmp_key((uccp)qp->oid,""));
 	  /* add gp->text to g hash as key of tmp2 ? */
 	  if (gvl_strict)
-	    *mess = gvl_vmess("%s should be %s%s", gp->text, tmp2, QFIX);
+	    *mess = gvl_vmess("%s: should be %s%s", gp->text, tmp2, QFIX);
 	  ret = 1;
 	}
       else
 	{
 	  /* is vq a v that doesn't need qualifying? */
-	  if (!strcmp(vp->oid, qp->oid))
+	  if (vp->oid && qp->oid && !strcmp(vp->oid, qp->oid))
 	    {
 	      gp->oid = qp->oid;
 	      gp->sign = gvl_lookup(gvl_tmp_key((uccp)qp->oid,""));
 	      if (gvl_strict)
-		*mess = gvl_vmess("unnecessary qualifier on value: %s%s", gp->text, QFIX);
+		*mess = gvl_vmess("%s: unnecessary qualifier on value%s", gp->text, QFIX);
 	      ret = 1; /* this is still OK--we have resolved the issue deterministically */
 	    }
 	  else
@@ -529,8 +529,9 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 		      else
 			p = p2;
 		      /* build a p(qp->sign) here and set gp->text to it ? */
-		      *mess = gvl_vmess("%s should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
-		      free((void*)p);
+		      *mess = gvl_vmess("%s: should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
+		      if (p != p2)
+			free((void*)p);
 		      qv_bad = 0;
 		      /*ret = 1;*/ /* ok because deterministically resolved */
 		      free(p2);
@@ -542,11 +543,11 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 		     report known q for v */
 		  unsigned const char *q_for_v = gvl_lookup(gvl_tmp_key(v, "q"));
 		  if (q_for_v)
-		    *mess = gvl_vmess("%s can't be qualified by %s--maybe %s ?%s", vp->text, qp->sign, q_for_v, QFIX);
+		    *mess = gvl_vmess("%s: unknown. Possibly %s%s", gp->text, qp->sign, q_for_v, QFIX);
 		  else
-		    *mess = gvl_vmess("%s only known as value of %s%s", vp->text, vp->sign, QFIX);
+		    *mess = gvl_vmess("%s: %s is %s%s", gp->text, vp->text, vp->sign, QFIX);
 		}
-	      free(b);
+	      /* Dont' free(b) because it belongs to wcs2utf */ 
 	    }
 	}
       free(tmp2);
@@ -569,7 +570,7 @@ gvl_val_base(const unsigned char *v)
 {
   if (v)
     {
-      unsigned char *b = NULL, *sub = NULL;
+      unsigned char *b = NULL, *sub = NULL, *ret;
       
       b = malloc(strlen((ccp)v));
       strcpy((char*)b, (ccp)v);
@@ -606,7 +607,9 @@ gvl_val_base(const unsigned char *v)
 	      break;
 	    }
 	}
-      return b;
+      ret = g_lc(b);
+      free(b);
+      return ret;
     }
   return NULL;
 }
@@ -684,14 +687,14 @@ gvl_g *
 gvl_validate(unsigned const char *g)
 {
   gvl_g *gp = NULL;
-  unsigned const char *orig_g = g;
+  /* unsigned const char *orig_g = g; */
 
   if (!use_unicode && !isdigit(g[0]) && '|' != g[0] && ':' != g[0] && '*' != g[0])
     g = g2utf(g);
 
   if (g && !gvl_ignore(g))
     {
-      unsigned const char *g_orig = g;
+      /*unsigned const char *g_orig = g;*/
       if (gvl_trace)
 	fprintf(stderr, "gvl_validate: called with g=%s\n", g);
       if (!(gp = hash_find(sl->h,g)))
@@ -756,10 +759,8 @@ gvl_validate(unsigned const char *g)
 	      else
 		{
 		  static unsigned char *mess = NULL;
-		  if (!gvl_q_c10e(gp, &mess))
-		    gp->mess = gvl_vmess("%s", mess);
-		  else
-		    gp->mess = gvl_vmess("vq notice: %s", mess);
+		  (void)gvl_q_c10e(gp, &mess);
+		  gp->mess = gvl_vmess("%s", mess);
 		}
 	    }
 	  else if ((l = gvl_lookup(g)))

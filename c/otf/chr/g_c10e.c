@@ -8,6 +8,67 @@ extern wchar_t vowel_of(wchar_t w);
 #define G_C10E_MIXED_CASE 0x02
 #define G_C10E_FINAL_SUBX 0x04
 
+wchar_t *
+g_wlc(wchar_t *w)
+{
+  wchar_t *w_end = w;
+
+  while (*w_end && *w_end != '~' && *w_end != '\\'
+	 && (*w_end != '@' || iswupper(w_end[1]))
+	 && (*w_end < U_s0 || *w_end > U_s9)
+	 && *w_end != U_s_x
+	 )
+    {
+      *w_end = towlower(*w_end);
+      ++w_end;
+    }
+
+  return w;
+}
+
+wchar_t *
+g_wuc(wchar_t *w)
+{
+  wchar_t *w_end = w;
+
+  while (*w_end && *w_end != '~' && *w_end != '\\'
+	 && (*w_end != '@' || iswupper(w_end[1]))
+	 && (*w_end < U_s0 || *w_end > U_s9)
+	 && *w_end != U_s_x
+	 )
+    {
+      *w_end = towupper(*w_end);
+      ++w_end;
+    }
+
+  return w;
+}
+
+unsigned char *
+g_lc(unsigned char *g)
+{
+  wchar_t *w;
+  size_t len;  
+  if ((w = utf2wcs(g, &len)))
+    {
+      w = g_wlc(w);
+      return wcs2utf(w,len);
+    }
+  return NULL;
+}
+
+unsigned char *
+g_uc(unsigned char *g)
+{
+  wchar_t *w;
+  size_t len;  
+  if ((w = utf2wcs(g, &len)))
+    {
+      w = g_wuc(w);
+      return wcs2utf(w,len);
+    }
+  return NULL;
+}
 
 unsigned char *
 g_c10e(const unsigned char *g, int *err)
@@ -55,6 +116,15 @@ g_c10e(const unsigned char *g, int *err)
 		}
 	      x[xlen++] = w[i];
 	      break;
+	    case '*':
+	      /* In initial position this is a bullet and must be
+		 kept; otherwise it's a collation flag and is dropped */
+	      if (0 == i)
+		x[xlen++] = '*';
+	      break;
+	    case '#':
+	    case '?':
+	    case '!':
 	    case '[':
 	    case ']':
 	    case '<':
@@ -127,7 +197,7 @@ g_c10e(const unsigned char *g, int *err)
 
       if (found_l && found_u && !suppress_case_check)
 	{
-	  size_t i;
+	  /* size_t i; */
 	  *err |= G_C10E_MIXED_CASE;
 #if 0
 	  /* this may not be worth the problems it causes */
