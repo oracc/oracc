@@ -480,7 +480,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 	  gp->sign = gvl_lookup(gvl_tmp_key((uccp)qp->oid,""));
 	  /* add gp->text to g hash as key of tmp2 ? */
 	  if (gvl_strict)
-	    *mess = gvl_vmess("qualified value %s should be %s%s", gp->text, tmp2, QFIX);
+	    *mess = gvl_vmess("%s should be %s%s", gp->text, tmp2, QFIX);
 	  ret = 1;
 	}
       else
@@ -508,9 +508,9 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 		      unsigned char *p2 = NULL, *p_end = (ucp)strchr((char*)p,' '), *p_slash = NULL;
 		      if (p_end)
 			{
-			  p2 = malloc((p2-p) + 1);
-			  strncpy((char*)p2,(char*)p,p2-p);
-			  p2[p2-p] = '\0';
+			  p2 = malloc((p_end-p) + 1);
+			  strncpy((char*)p2,(char*)p,p_end-p);
+			  p2[p_end-p] = '\0';
 			}
 		      else
 			{
@@ -529,10 +529,10 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 		      else
 			p = p2;
 		      /* build a p(qp->sign) here and set gp->text to it ? */
-		      *mess = gvl_vmess("qualified value %s should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
+		      *mess = gvl_vmess("%s should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
 		      free((void*)p);
 		      qv_bad = 0;
-		      ret = 1; /* ok because deterministically resolved */
+		      /*ret = 1;*/ /* ok because deterministically resolved */
 		      free(p2);
 		    }
 		}
@@ -757,7 +757,9 @@ gvl_validate(unsigned const char *g)
 		{
 		  static unsigned char *mess = NULL;
 		  if (!gvl_q_c10e(gp, &mess))
-		    gp->mess = gvl_vmess("vq error in %s: %s", g_orig, mess);
+		    gp->mess = gvl_vmess("%s", mess);
+		  else
+		    gp->mess = gvl_vmess("vq notice: %s", mess);
 		}
 	    }
 	  else if ((l = gvl_lookup(g)))
@@ -832,7 +834,7 @@ gvl_validate(unsigned const char *g)
 		  char *paren = strchr((ccp)g, '(');
 		  if (paren)
 		    {
-		      unsigned char *q = malloc(strlen((ccp)q));
+		      unsigned char *q = malloc(strlen((ccp)paren));
 		      strcpy((char*)q,paren+1);
 		      if ((paren = strrchr((ccp)q,')')))
 			{
