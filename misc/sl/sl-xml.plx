@@ -84,6 +84,8 @@ foreach my $a (@at_signs) {
     ++$at_signs{$a};
 }
 
+my %fvb = (); # form-value-bases
+
 my %slv_val2sign = ();
 my %slv_form_vars = ();
 my %v = ();
@@ -178,7 +180,8 @@ while (<SL>) {
 	}
 	if (exists $form_closers{$curr_field} && $in_form) {
 	    if ($curr_field ne 'end' || /sign/) {
-#		compute_qualified();
+		#		compute_qualified();
+		form_inherited_values();
 		print "</form>" unless $check;
 		$in_form = 0;
 		$curr_form = '';
@@ -215,6 +218,8 @@ while (<SL>) {
 		my $formname = $curr_form = $n;
 		#$actual_forms{$formname} = $.;
 
+		%fvb = ();
+		
 		v_sign($formname);
 		
 		if (${$v{'#forms'}}{$curr_form}) {
@@ -311,10 +316,13 @@ while (<SL>) {
 		    ++${$v{'#forms'}}{$curr_form};
 		    ++${$v{$curr_form}}{$n} unless $ignore;
 		    push @{$v{$n}}, $curr_form;
+		    my $vbase = $n;
+		    $vbase =~ s/[₀-₉ₓ⁻⁺]+$//;
+		    ++$fvb{$vbase};
 		} else {
 		    unless ($ignore) {
 			++${$v{'#signv'}}{$n};
-			my $nn = $n; $nn =~ tr/₀-₉ₓ⁻⁺//d;
+			my $nn = $n; $nn =~ s/[₀-₉ₓ⁻⁺]+$//;
 			${$v{'#basev'}}{$nn} = $n;
 			++${$v{$curr_sign}{$n}};
 			push @{$v{$n}}, $curr_sign;
@@ -387,6 +395,7 @@ while (<SL>) {
 	    $post_form = 1;
 	    if ($in_form) {
 		$in_form = 0;
+		form_inherited_values();
 		print "</form\n>" unless $check;
 		$curr_form = '';
 	    } else {
@@ -515,7 +524,7 @@ sub compute_qualified {
 		#    it applies to more than one @form
 		foreach my $fv (@fv) {
 		    next if $fv eq '#forml';
-		    my $fvbase = $fv; $fvbase =~ tr/₀-₉ₓ//d;
+		    my $fvbase = $fv; $fvbase =~ s/[₀-₉ₓ⁻⁺]+$//;
 		    next if $seen{$fvbase}++;
 		    if ($fv =~ /ₓ$/ || ($v{'#signv'} && ${$v{'#signv'}}{$fv}) || $#{$v{$fv}}) {
 			# sign is either x-value or both in form and in sign or applies to more than one @form
@@ -534,7 +543,7 @@ sub compute_qualified {
 		    } else {
 			# sign may be qualified in corpora but not in @bases
 			# if there is a base value with different index, record that also
-			my $nn = $fv; $nn =~ tr/₀-₉ₓ⁻⁺//d;
+			my $nn = $fv; $nn =~ s/[₀-₉ₓ⁻⁺]+$//;
 			my $base = '';
 			if (${$v{'#basev'}}{$nn}) {
 			    my $bn = ${$v{'#basev'}}{$nn};
@@ -580,6 +589,23 @@ sub
 form_check {
     if ($post_form && !$in_form) {
 	warn "$pi_file:$.: extraneous tags after \@end form\n";
+    }
+}
+
+sub
+form_inherited_values {
+    my @iv = grep !/ₓ$/, keys %{$v{'#signv'}};
+    my @ivok = ();
+    foreach my $iv (@iv) {
+	my $ivb = $iv; $ivb =~ s/[₀-₉ₓ⁻⁺]+$//;
+	push @ivok, $iv unless $fvb{$ivb};
+    }
+    if ($#ivok >= 0) {
+	print '<inherited>';
+	foreach my $iv (@ivok) {
+	    print "<iv n=\"$iv\"/>";
+	}
+	print '</inherited>';
     }
 }
 

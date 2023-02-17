@@ -450,6 +450,9 @@ dump_db {
 	    Encode::_utf8_off($v);
 	    $db{$dbk} = $v;
 	} elsif ($dbk =~ /h$/) {
+	    my $kk = $dbk;
+	    $kk =~ tr//;/;
+            warn "db_dump $kk\n";
 	    my $str = hsort(@{$values{$k}});
 	    $db{$dbk} = $str;
 	    if ($k =~ /₊/) {
@@ -490,8 +493,10 @@ sub
 hsort {
     my @srt = @_;
     my @ret = ();
+    print STDERR "hsort in:";
     foreach my $s (sort { vkey($a) <=> vkey($b) } @srt) {
 	my $vk = vkey($s);
+	print STDERR " $$s[0]";
 	if ($vk == 1) {
 	    push @ret, $$s[0];
 	} else {
@@ -499,6 +504,8 @@ hsort {
 	    push @ret, $$s[0].'/'.$vk;
 	}
     }
+    print STDERR "\n";
+    warn "hsort ret: @ret\n";
     join(' ', @ret);
 }
 
@@ -629,6 +636,14 @@ subsign {
 	} elsif ($lname eq 'name') {
 	    foreach my $gc (tags($c,$GDL,'c')) {
 		add_comp($id,$gc);
+	    }
+	} elsif ($lname eq 'inherited') {
+	    foreach my $iv (tags($c,'','iv')) {
+		my $n = $iv->getAttribute('n');
+		my $ivb = $n;
+		$ivb =~ s/[₀-₉ₓ]+$//;
+		push @{$values{$ivb,'h'}}, [$id,$n];
+		warn "adding inherited $n to $ivb;h $id\n";
 	    }
 	}
     }

@@ -463,9 +463,9 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
       /* If the q is unknown, report known q for v */
       unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key(vp->text, "q"));
       if (tmp2)
-	*mess = gvl_vmess("unknown sign %s: known qualifiers of %s are: %s%s", qp->sign, vp->text, tmp2, QFIX);
+	*mess = gvl_vmess("unknown sign %s: known qualifiers of %s are: %s%s", q, vp->text, tmp2, QFIX);
       else
-	*mess = gvl_vmess("unknown sign %s: %s only known as value of %s%s", qp->sign, vp->text, vp->sign, QFIX);
+	*mess = gvl_vmess("unknown sign %s: %s only known as value of %s%s", q, vp->text, vp->sign, QFIX);
     }
   else
     {
