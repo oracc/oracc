@@ -37,6 +37,27 @@ static void   gvl_i_term(const char *name);
 #define uccp unsigned const char *
 
 static unsigned char *
+snames_of(unsigned const char *oids)
+{
+  List *l = list_create(LIST_SINGLE);
+  unsigned char *xoids = (ucp)strdup((ccp)oids), *xoid, *x, *ret;
+  x = xoids;
+  while (*x)
+    {
+      xoid = x;
+      while (*x && ' ' != *x)
+	++x;
+      if (*x)
+	*x++ = '\0';
+      list_add(l,(void*)gvl_lookup(xoid));
+    }
+  ret = list_concat(l);
+  list_free(l,NULL);
+  free(xoids);
+  return ret;
+}
+
+static unsigned char *
 gvl_vmess(char *s, ...)
 {
   unsigned char *ret = NULL;
@@ -541,11 +562,27 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 		{
 		  /* we know the q doesn't have a value which is correct except for the index;
 		     report known q for v */
-		  unsigned const char *q_for_v = gvl_lookup(gvl_tmp_key(v, "q"));
-		  if (q_for_v)
-		    *mess = gvl_vmess("%s: unknown. Possibly %s%s", gp->text, qp->sign, q_for_v, QFIX);
+		  if ('v' == *vp->type)
+		    {
+		      unsigned const char *q_for_v = gvl_lookup(gvl_tmp_key(v, "q"));
+		      if (q_for_v)
+			*mess = gvl_vmess("%s: unknown. Possibly %s%s", gp->text, q_for_v, QFIX);
+		      else
+			*mess = gvl_vmess("%s: %s is %s%s", gp->text, vp->text, vp->sign, QFIX);
+		    }
 		  else
-		    *mess = gvl_vmess("%s: %s is %s%s", gp->text, vp->text, vp->sign, QFIX);
+		    {
+		      unsigned const char *parents = gvl_lookup(gvl_tmp_key((uccp)qp->oid,"parents"));
+		      if (parents)
+			{
+			  unsigned char *snames = snames_of(parents);
+			  *mess = gvl_vmess("%s: bad qualifier: %s is a form of %s", gp->text, qp->sign, snames);
+			  free(snames);
+			}
+		      else
+			*mess = gvl_vmess("%s: value and qualifier are different signs (%s vs %s)",
+					  gp->text, vp->sign, qp->sign);
+		    }
 		}
 	      /* Dont' free(b) because it belongs to wcs2utf */ 
 	    }
@@ -579,32 +616,16 @@ gvl_val_base(const unsigned char *v)
 	  sub = b + strlen((ccp)b);
 	  while (1)
 	    {
-	      sub -= 3;
-	      if (*sub == 0xe2 && sub[1] == 0x82)
+	      if ('\0' == *sub && sub - 3 > b && sub[-3] == 0xe2 && sub[-2] == 0x82)
 		{
-		  switch (sub[2])
+		  if ((sub[-1] >= 0x80 && sub[-1] <= 0x89) || sub[-1] == 0x93)
 		    {
-		    case 0x80:
-		    case 0x81:
-		    case 0x82:
-		    case 0x83:
-		    case 0x84:
-		    case 0x85:
-		    case 0x86:
-		    case 0x87:
-		    case 0x88:
-		    case 0x89:
-		    case 0x93:
+		      sub -= 3;
 		      *sub = '\0';
-		      if (sub - 3 > b)
-			{
-			  sub -= 3;
-			  continue;
-			}
-		      break;
 		    }
 		}
-	      break;
+	      else
+		break;
 	    }
 	}
       ret = g_lc(b);
@@ -681,6 +702,22 @@ gvl_ignore(unsigned const char *g)
       break;
   return '\0' == *g || '(' == *g; /* ignore *(u) and friends */
 #endif
+}
+
+static unsigned char *
+strip_pp(unsigned const char *g)
+{
+  unsigned char *no_p = (ucp)strdup((ccp)g), *end;
+  end = no_p;
+  while (*g)
+    if ('+' == *g)
+      *end++ = '.', ++g;
+    else if ('(' != *g && ')' != *g)
+      *end++ = *g++;
+    else
+      ++g;
+  *end = '\0';
+  return no_p;
 }
 
 gvl_g *
@@ -760,7 +797,9 @@ gvl_validate(unsigned const char *g)
 		{
 		  static unsigned char *mess = NULL;
 		  (void)gvl_q_c10e(gp, &mess);
-		  gp->mess = gvl_vmess("%s", mess);
+		  if (mess)
+		    gp->mess = gvl_vmess("%s", mess);
+		  mess = NULL;
 		}
 	    }
 	  else if ((l = gvl_lookup(g)))
@@ -853,59 +892,78 @@ gvl_validate(unsigned const char *g)
 		    }
 		}
 	    }
-	  else
+	  else if (has_sign_indicator(g))
 	    {
-	      int g_is_sn = has_sign_indicator(g);
-	      if (g_is_sn)
+	      const unsigned char *lg = utf_lcase(g);
+	      if ((l = gvl_lookup(lg)))
 		{
-		  const unsigned char *lg = utf_lcase(g);
-		  if ((l = gvl_lookup(lg)))
+		  gp->oid = (ccp)l;
+		  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+		  if (gvl_strict)
+		    gp->mess = gvl_vmess("pseudo-signname %s should be %s", g, gp->sign);
+		}
+	      else if ((l = gvl_lookup(gvl_tmp_key(lg,"q"))))
+		{
+		  gp->sign = l;
+		  if (gvl_strict)
+		    gp->mess = gvl_vmess("pseudo-signname %s must be qualifed by one of %s",g,l);
+		}
+	      else
+		{
+		  if ('|' == *g)
 		    {
-		      gp->oid = (ccp)l;
-		      gp->sign = gvl_lookup(gvl_tmp_key(l,""));
-		      if (gvl_strict)
-			gp->mess = gvl_vmess("pseudo-signname %s should be %s", g, gp->sign);
-		    }
-		  else
-		    {
-		      if ('|' == *g)
+		      unsigned char *c10e = c10e_compound(g);
+		      if (c10e)
 			{
-			  unsigned char *c10e = c10e_compound(g);
-			  if (c10e)
+			  if ((l=gvl_lookup(c10e)))
 			    {
-			      if ((l=gvl_lookup(c10e)))
+			      gp->oid = (ccp)l;
+			      gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+			      if (gvl_strict)
+				gp->mess = gvl_vmess("compound %s should be %s", g, c10e);
+			    }
+			  else
+			    {
+			      unsigned char *c10e_no_p = strip_pp(c10e);
+			      if (c10e_no_p && (l=gvl_lookup(c10e_no_p)))
 				{
 				  gp->oid = (ccp)l;
 				  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
 				  if (gvl_strict)
-				    gp->mess = gvl_vmess("compound %s should be %s", g, c10e);
+				    gp->mess = gvl_vmess("compound %s should be %s", g, c10e_no_p);
 				}
-			      else if (strcmp((ccp)g, (ccp)c10e))
-				gp->mess = gvl_vmess("unknown compound: %s (also tried %s)", g, c10e);
 			      else
-				gp->mess = gvl_vmess("unknown compound: %s", g);
+				{
+				  if (strcmp((ccp)g, (ccp)c10e) && c10e_no_p)
+				    gp->mess = gvl_vmess("unknown compound: %s (also tried %s/%s)", g, c10e, c10e_no_p);
+				  else if (strcmp((ccp)g, (ccp)c10e))
+				    gp->mess = gvl_vmess("unknown compound: %s (also tried %s)", g, c10e);
+				  else if (c10e_no_p && strcmp((ccp)g, (ccp)c10e_no_p))
+				    gp->mess = gvl_vmess("unknown compound: %s (also tried %s)", g, c10e_no_p);
+				  else
+				    gp->mess = gvl_vmess("unknown compound: %s", g);
+				}
+			      free(c10e_no_p);
 			    }
 			}
-		      else if ((l = gvl_lookup(gvl_tmp_key(g,"l"))))
-			{
-			  gp->type = "l";
-			  gp->oid = (ccp)l;
-			  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
-			}
-		      else
-			{
-			  gp->mess = gvl_vmess("unknown sign name: %s", g);
-			}
 		    }
-		}
-	      else
-		{
-		  const unsigned char *gq = gvl_lookup(gvl_tmp_key(g,"q"));
-		  if (gq)
-		    gp->mess = gvl_vmess("value %s must be qualified with one of %s", g, gq);
+		  else if ((l = gvl_lookup(gvl_tmp_key(g,"l"))))
+		    {
+		      gp->type = "l";
+		      gp->oid = (ccp)l;
+		      gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+		    }
 		  else
-		    gp->mess = gvl_vmess("unknown value: %s. To request adding it please visit:\n\t%s", g, report);
+		    gp->mess = gvl_vmess("unknown sign name: %s", g);
 		}
+	    }
+	  else
+	    {
+	      const unsigned char *gq = gvl_lookup(gvl_tmp_key(g,"q"));
+	      if (gq)
+		gp->mess = gvl_vmess("value %s must be qualified with one of %s", g, gq);
+	      else
+		gp->mess = gvl_vmess("unknown value: %s. To request adding it please visit:\n\t%s", g, report);
 	    }
 	}
       else

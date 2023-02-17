@@ -1857,6 +1857,9 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		    {
 		      switch (*g)
 			{
+			case '+':
+			  list_add(cw_proper_c, "+");
+			  break;
 			case '&':
 			  list_add(cw_proper_c, "&");
 			  break;
