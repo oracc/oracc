@@ -505,18 +505,35 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 		  unsigned const char *p = NULL;
 		  if ((p = (uccp)strstr((ccp)h, qp->oid)))
 		    {
-		      if ((p = (uccp)strchr((ccp)p,'/')))
+		      unsigned char *p2 = NULL, *p_end = (ucp)strchr((char*)p,' '), *p_slash = NULL;
+		      if (p_end)
 			{
-			  ++p;
-			  if ((p = gvl_v_from_h((uccp)b, (uccp)p)))
+			  p2 = malloc((p2-p) + 1);
+			  strncpy((char*)p2,(char*)p,p2-p);
+			  p2[p2-p] = '\0';
+			}
+		      else
+			{
+			  p2 = malloc(strlen((char*)p) + 1);
+			  strcpy((char*)p2,(char*)p);
+			}
+		      if ((p_slash = (ucp)strchr((ccp)p,'/')))
+			{
+			  p = gvl_v_from_h((uccp)b, (uccp)p_slash+1);
+			  if (!p)
 			    {
-			      /* build a p(qp->sign) here and set gp->text to it ? */
-			      *mess = gvl_vmess("qualified value %s should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
-			      free((void*)p);
-			      qv_bad = 0;
-			      ret = 1; /* ok because deterministically resolved */
+			      fprintf(stderr, "gvl: internal error in data: gvl_from_h failed on %s\n", p_slash);
+			      p = (ucp)"(null)";
 			    }
 			}
+		      else
+			p = p2;
+		      /* build a p(qp->sign) here and set gp->text to it ? */
+		      *mess = gvl_vmess("qualified value %s should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
+		      free((void*)p);
+		      qv_bad = 0;
+		      ret = 1; /* ok because deterministically resolved */
+		      free(p2);
 		    }
 		}
 	      if (qv_bad)
