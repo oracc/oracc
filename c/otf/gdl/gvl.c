@@ -415,6 +415,53 @@ gvl_tmp_key(unsigned const char *key, const char *field)
     return NULL;
 }
 
+#define QFIX (q_fixed ? (ccp)q_fixed : "")
+
+static int
+gvl_try_h(gvl_g *gp, gvl_g *vp, gvl_g *qp, unsigned char *q_fixed, unsigned char **mess)
+{
+  int qv_bad = 1;
+  unsigned char *b = gvl_val_base(vp->text);
+  unsigned const char *h = gvl_lookup(gvl_tmp_key(b,"h"));
+  if (h)
+    {
+      unsigned const char *p = NULL;
+      if ((p = (uccp)strstr((ccp)h, qp->oid)))
+	{
+	  unsigned char *p2 = NULL, *p_end = (ucp)strchr((char*)p,' '), *p_slash = NULL;
+	  if (p_end)
+	    {
+	      p2 = malloc((p_end-p) + 1);
+	      strncpy((char*)p2,(char*)p,p_end-p);
+	      p2[p_end-p] = '\0';
+	    }
+	  else
+	    {
+	      p2 = malloc(strlen((char*)p) + 1);
+	      strcpy((char*)p2,(char*)p);
+	    }
+	  if ((p_slash = (ucp)strchr((ccp)p,'/')))
+	    {
+	      p = gvl_v_from_h((uccp)b, (uccp)p_slash+1);
+	      if (!p)
+		{
+		  fprintf(stderr, "gvl: internal error in data: gvl_from_h failed on %s\n", p_slash);
+		  p = (ucp)"(null)";
+		}
+	    }
+	  else
+	    p = p2;
+	  /* build a p(qp->sign) here and set gp->text to it ? */
+	  *mess = gvl_vmess("%s: should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
+	  if (p != p2)
+	    free((void*)p);
+	  qv_bad = 0;
+	  /*ret = 1;*/ /* ok because deterministically resolved */
+	  free(p2);
+	}
+    }
+  return qv_bad;
+}
 static int
 gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 {
@@ -428,7 +475,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
   end = tmp+strlen((ccp)tmp);
   --end;
   *end = '\0';
-  while ('(' != end[-1] || pnest)
+  while (end > tmp && '(' != end[-1] || pnest)
     {
       --end;
       if (')' == *end)
@@ -436,6 +483,12 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
       else if ('(' == *end)
 	--pnest;
     }
+  if (end == tmp)
+    {
+      *mess = gvl_vmess("%s: syntax error in value-qualifier", gp->text);
+      return 0;
+    }
+  
   q = end--;
   *end = '\0';
   v = tmp;
@@ -443,7 +496,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
   if (v_val)
     *v_val = gvl_key_of(v); /* get the stable form of v which is the key in the sl hash */
 #endif
-  
+      
   /* check the value */
   vp = gvl_validate(v);
   if (vp)
@@ -451,9 +504,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
       if (vp->mess && !strstr((ccp)vp->mess, "must be qualified"))
 	v_bad = 1;
     }
-
-#define QFIX (q_fixed ? (ccp)q_fixed : "")
-  
+      
   /* check the sign */
   qp = gvl_validate(q);
   if (qp)
@@ -466,7 +517,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 	  (void)sprintf((char*)q_fixed," [%s <= %s]", qp->sign, q);
 	}
     }
-
+      
   /* Now if we have bad value and qualifier it's too hard to guess */
   if (v_bad && q_bad)
     *mess = gvl_vmess("%s: both value and qualifier unknown", gp->text);
@@ -492,7 +543,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
     {
       unsigned char *tmp2 = malloc(strlen((ccp)vp->text) + strlen((ccp)qp->sign) + 3);
       sprintf((char*)tmp2, "%s(%s)", vp->text, qp->sign);
-
+	  
       /* tmp2 is now a vq with valid v and q components */
       if (gvl_lookup(gvl_tmp_key(tmp2,"qv")))
 	{
@@ -518,46 +569,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 	  else
 	    {
 	      /* if the qv is unknown see if the value has the wrong index in the q context */
-	      int qv_bad = 1;
-	      unsigned char *b = gvl_val_base(vp->text);
-	      unsigned const char *h = gvl_lookup(gvl_tmp_key(b,"h"));
-	      if (h)
-		{
-		  unsigned const char *p = NULL;
-		  if ((p = (uccp)strstr((ccp)h, qp->oid)))
-		    {
-		      unsigned char *p2 = NULL, *p_end = (ucp)strchr((char*)p,' '), *p_slash = NULL;
-		      if (p_end)
-			{
-			  p2 = malloc((p_end-p) + 1);
-			  strncpy((char*)p2,(char*)p,p_end-p);
-			  p2[p_end-p] = '\0';
-			}
-		      else
-			{
-			  p2 = malloc(strlen((char*)p) + 1);
-			  strcpy((char*)p2,(char*)p);
-			}
-		      if ((p_slash = (ucp)strchr((ccp)p,'/')))
-			{
-			  p = gvl_v_from_h((uccp)b, (uccp)p_slash+1);
-			  if (!p)
-			    {
-			      fprintf(stderr, "gvl: internal error in data: gvl_from_h failed on %s\n", p_slash);
-			      p = (ucp)"(null)";
-			    }
-			}
-		      else
-			p = p2;
-		      /* build a p(qp->sign) here and set gp->text to it ? */
-		      *mess = gvl_vmess("%s: should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
-		      if (p != p2)
-			free((void*)p);
-		      qv_bad = 0;
-		      /*ret = 1;*/ /* ok because deterministically resolved */
-		      free(p2);
-		    }
-		}
+	      int qv_bad = gvl_try_h(gp, vp, qp, q_fixed, mess);
 	      if (qv_bad)
 		{
 		  /* we know the q doesn't have a value which is correct except for the index;
@@ -589,14 +601,14 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 	}
       free(tmp2);
     }
-
+      
   if (!vp && !qp)
     *mess = gvl_vmess("unknown validation failure%s", QFIX);
-
+      
   /* keep tmp until end because v and q give us the original text of
      the vq--the sign may have been canonicalized by gvl_validate */
   free(tmp);
-
+  
   return ret;
 }
 
@@ -609,7 +621,7 @@ gvl_val_base(const unsigned char *v)
     {
       unsigned char *b = NULL, *sub = NULL, *ret;
       
-      b = malloc(strlen((ccp)v));
+      b = malloc(strlen((ccp)v)+1);
       strcpy((char*)b, (ccp)v);
       if (strlen((ccp)v) > 4)
 	{
