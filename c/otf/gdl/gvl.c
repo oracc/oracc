@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <wchar.h>
+#include <wctype.h>
 
 #include <npool.h>
 #include <hash.h>
@@ -418,6 +420,17 @@ gvl_tmp_key(unsigned const char *key, const char *field)
 #define QFIX (q_fixed ? (ccp)q_fixed : "")
 
 static int
+gvl_v_isupper(unsigned const char *v)
+{
+  static size_t s, i;
+  wchar_t *wv = utf2wcs(v,&s);
+  for (i = 0; i < s; ++i)
+    if (iswalpha(wv[i]))
+      break;
+  return iswupper(wv[i]);
+}
+
+static int
 gvl_try_h(gvl_g *gp, gvl_g *vp, gvl_g *qp, unsigned char *q_fixed, unsigned char **mess)
 {
   int qv_bad = 1;
@@ -428,10 +441,10 @@ gvl_try_h(gvl_g *gp, gvl_g *vp, gvl_g *qp, unsigned char *q_fixed, unsigned char
       unsigned const char *p = NULL;
       if ((p = (uccp)strstr((ccp)h, qp->oid)))
 	{
-	  unsigned char *p2 = NULL, *p_end = (ucp)strchr((char*)p,' '), *p_slash = NULL;
+	  unsigned char *p2 = NULL, *p_end = (ucp)strchr((char*)p,' '), *p_slash = NULL, *free1 = NULL, *free2 = NULL;
 	  if (p_end)
 	    {
-	      p2 = malloc((p_end-p) + 1);
+	      p2 = free2 = malloc((p_end-p) + 1);
 	      strncpy((char*)p2,(char*)p,p_end-p);
 	      p2[p_end-p] = '\0';
 	    }
@@ -442,7 +455,7 @@ gvl_try_h(gvl_g *gp, gvl_g *vp, gvl_g *qp, unsigned char *q_fixed, unsigned char
 	    }
 	  if ((p_slash = (ucp)strchr((ccp)p,'/')))
 	    {
-	      p = gvl_v_from_h((uccp)b, (uccp)p_slash+1);
+	      p = free1 = gvl_v_from_h((uccp)b, (uccp)p_slash+1);
 	      if (!p)
 		{
 		  fprintf(stderr, "gvl: internal error in data: gvl_from_h failed on %s\n", p_slash);
@@ -450,14 +463,24 @@ gvl_try_h(gvl_g *gp, gvl_g *vp, gvl_g *qp, unsigned char *q_fixed, unsigned char
 		}
 	    }
 	  else
-	    p = p2;
-	  /* build a p(qp->sign) here and set gp->text to it ? */
-	  *mess = gvl_vmess("%s: should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
-	  if (p != p2)
-	    free((void*)p);
+	    p = b;
+
+	  /* ? build a p(qp->sign) here and set gp->text to it ? */
+
+	  /* If the gp->text value is uppercase, make the result value
+	     uppercase; then if value == qp->sign, elide the value and
+	     just print the qp-sign with no parens */
+	  if (gvl_v_isupper(gp->text) && !strcmp((ccp)(p=g_uc(p)), (ccp)qp->sign))
+	    *mess = gvl_vmess("%s: should be %s%s", gp->text, qp->sign, QFIX);
+	  else if (strcmp((ccp)vp->text,(ccp)p) || (ccp)q_fixed)
+	    *mess = gvl_vmess("%s: should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
+
 	  qv_bad = 0;
 	  /*ret = 1;*/ /* ok because deterministically resolved */
-	  free(p2);
+	  if (free1)
+	    free(free1);
+	  if (free2)
+	    free(free2);
 	}
     }
   return qv_bad;
@@ -475,7 +498,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
   end = tmp+strlen((ccp)tmp);
   --end;
   *end = '\0';
-  while (end > tmp && '(' != end[-1] || pnest)
+  while (end > tmp && ('(' != end[-1] || pnest))
     {
       --end;
       if (')' == *end)
@@ -523,12 +546,16 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
     *mess = gvl_vmess("%s: both value and qualifier unknown", gp->text);
   else if (v_bad)
     {
-      /* If the v is unknown, report known v for q */
-      unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key((uccp)qp->oid, "values"));
-      if (tmp2)
-	*mess = gvl_vmess("%s: %s unknown. Known for %s: %s%s", gp->text, vp->text, qp->sign, tmp2, QFIX);
-      else
-	*mess = gvl_vmess("%s: %s unknown. No known values for %s%s", gp->text, vp->text, qp->sign, QFIX);
+      /* If the v is unknown, check if the base is known for q under a different index, else report known v for q */
+      int qv_bad = gvl_try_h(gp, vp, qp, q_fixed, mess);
+      if (qv_bad)
+	{
+	  unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key((uccp)qp->oid, "values"));
+	  if (tmp2)
+	    *mess = gvl_vmess("%s: %s unknown. Known for %s: %s%s", gp->text, vp->text, qp->sign, tmp2, QFIX);
+	  else
+	    *mess = gvl_vmess("%s: %s unknown. No known values for %s%s", gp->text, vp->text, qp->sign, QFIX);
+	}
     }
   else if (q_bad)
     {
@@ -578,7 +605,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 		    {
 		      unsigned const char *q_for_v = gvl_lookup(gvl_tmp_key(v, "q"));
 		      if (q_for_v)
-			*mess = gvl_vmess("%s: unknown. Possibly %s%s", gp->text, q_for_v, QFIX);
+			*mess = gvl_vmess("%s: unknown. Known for %s: %s%s", gp->text, vp->text, q_for_v, QFIX);
 		      else
 			*mess = gvl_vmess("%s: %s is %s%s", gp->text, vp->text, vp->sign, QFIX);
 		    }
@@ -720,12 +747,36 @@ static unsigned char *
 strip_pp(unsigned const char *g)
 {
   unsigned char *no_p = (ucp)strdup((ccp)g), *end;
+  unsigned const char *orig = g;
   end = no_p;
   while (*g)
     if ('+' == *g)
       *end++ = '.', ++g;
     else if ('(' != *g && ')' != *g)
       *end++ = *g++;
+    else if ('(' == *g)
+      {
+	if (g > orig && (isdigit(g[-1]) || 'n' != g[-1] || 'N' != g[-1]))
+	  {
+	    int nesting = 0;
+	    while (*g)
+	      {
+		*end++ = *g++;
+		if (')' == *g && !nesting)
+		  {
+		    *end++ = *g++;
+		    break;
+		  }
+		if ('(' == *g)
+		  ++nesting;
+		else if (')' == *g)
+		  if (nesting)
+		    --nesting;
+	      }
+	  }
+	else
+	  ++g;
+      }
     else
       ++g;
   *end = '\0';

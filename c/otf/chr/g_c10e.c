@@ -45,7 +45,7 @@ g_wuc(wchar_t *w)
 }
 
 unsigned char *
-g_lc(unsigned char *g)
+g_lc(unsigned const char *g)
 {
   wchar_t *w;
   size_t len;  
@@ -58,7 +58,7 @@ g_lc(unsigned char *g)
 }
 
 unsigned char *
-g_uc(unsigned char *g)
+g_uc(unsigned const char *g)
 {
   wchar_t *w;
   size_t len;  

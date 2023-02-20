@@ -139,7 +139,7 @@ extern const unsigned char *atf_strip_base_chars(const unsigned char *u);
 
 extern wchar_t *g_wlc(wchar_t *w);
 extern wchar_t *g_wuc(wchar_t *w);
-extern unsigned char *g_lc(unsigned char *g);
-extern unsigned char *g_uc(unsigned char *g);
+extern unsigned char *g_lc(unsigned const char *g);
+extern unsigned char *g_uc(unsigned const char *g);
 
 #endif /*ATF_H*/

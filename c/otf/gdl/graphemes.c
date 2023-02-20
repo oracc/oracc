@@ -72,7 +72,7 @@ static unsigned char *proper_c = NULL;
 
 const unsigned char *cued_gdelim = NULL;
 
-#define pool_copy(x) npool_copy((x),graphemes_pool)
+#define pool_copy(x) npool_copy((const unsigned char *)(x),graphemes_pool)
 
 #define insertp_is_delim() (insertp > startp && (insertp[-1] == '.' || insertp[-1] == '-'))
 
@@ -1644,10 +1644,18 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	    }
 	  buf[0] = *g;
 	  buf[1] = '\0';
+
+	  if (cw_proper_c)
+	    {
+	      list_add(cw_proper_c, pool_copy(buf));
+	      list_add(cw_proper_c, "×");
+	    }
+
 	  last_g = np = gtextElem(e_g_o,NULL,lnum,GRAPHEME,buf);
 	  np->user = (void*)(uintptr_t)'x';
 	  /* it has to be wrong to put these attributes on a g:o node */
 	  appendAttr(np,gattr(a_g_type,ucc("repeated")));
+
 	  g += 2;
 	  if (*g == 0x97)
 	    ++g;
@@ -2212,6 +2220,7 @@ numerical(register unsigned char *g)
 {
   struct grapheme*gp;
   unsigned char *n, *q, *end = g+xxstrlen(g),*orig_g = g, *gdl_sig_str = NULL;
+  int cw_paren_pending = 0;
 
   gdl_sig_str = pool_copy(g);
   while (*g && '(' != *g && '@' != *g && '~' != *g)
@@ -2230,6 +2239,13 @@ numerical(register unsigned char *g)
 	}
       *g++ = '\0';
       gp->g.n.r = pool_copy(orig_g); /*FIXME: HASH or ARRAY THESE REPEATERS*/
+      if (cw_proper_c)
+	{
+	  list_add(cw_proper_c, gp->g.n.r);
+	  list_add(cw_proper_c, "(");
+	  cw_paren_pending = 1;
+	}
+
       n = g;
       g = end;
       while (')' != *--g && *g)
@@ -2400,6 +2416,9 @@ numerical(register unsigned char *g)
       else
 	vwarning("no sign name found for %s", gdl_sig_str);
     }
+
+  if (cw_paren_pending)
+    list_add(cw_proper_c, ")");
   
   return gp;
 }
