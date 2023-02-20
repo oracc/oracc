@@ -349,11 +349,14 @@ gmods(register unsigned char *g, struct mods *modsbuf)
 		}
 	    }
 	  *datap = '\0';
+#if 0
+	  /* as of last implementation mods are copied onto cw_proper_c with base of grapheme */
 	  if (cw_proper_c)
 	    {
 	      list_add(cw_proper_c, "@");
-	      list_add(cw_proper_c, npool_copy((const unsigned char *)&mp->data, graphemes_pool));
+	      list_add(cw_proper_c, npool_copy((const unsigned char *)mp->data, graphemes_pool));
 	    }
+#endif
 	  ++mp;
 	  break;
 	case '~':
@@ -383,11 +386,14 @@ gmods(register unsigned char *g, struct mods *modsbuf)
 	      return -1;
 	    }
 	  *datap = '\0';
+#if 0
+	  /* as of last implementation mods are copied onto cw_proper_c with base of grapheme */
 	  if (cw_proper_c)
 	    {
 	      list_add(cw_proper_c, "~");
-	      list_add(cw_proper_c, npool_copy((const unsigned char *)&mp->data, graphemes_pool));
+	      list_add(cw_proper_c, npool_copy((const unsigned char *)mp->data, graphemes_pool));
 	    }
+#endif
 	  ++mp;
 	  break;
 	case '\\':
