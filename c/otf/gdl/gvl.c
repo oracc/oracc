@@ -213,7 +213,7 @@ gvl_is_sname(unsigned const char *g)
 int
 gvl_looks_like_sname(unsigned const char *g)
 {
-  return has_sign_indicator(g);
+  return sl_has_sign_indicator(g);
 }
 
 int
@@ -582,6 +582,26 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 	    *mess = gvl_vmess("%s: should be %s%s", gp->text, tmp2, QFIX);
 	  ret = 1;
 	}
+      else if ('s' == *vp->type || 'c' == *vp->type)
+	{
+	  /* This is a qualified uppercase value like TA@g(LAK654a) */
+	  if (strcmp(vp->oid, qp->oid))
+	    {
+	      unsigned const char *parents = gvl_lookup(gvl_tmp_key((uccp)qp->oid,"parents"));
+	      if (parents)
+		{
+		  if (!strstr((ccp)parents, vp->oid))
+		    {
+		      unsigned char *snames = snames_of(parents);
+		      *mess = gvl_vmess("%s: bad qualifier: %s is a form of %s", gp->text, qp->sign, snames);
+		      free(snames);
+		    }
+		}
+	      else
+		*mess = gvl_vmess("%s: value and qualifier are different signs (%s vs %s)",
+				  gp->text, vp->sign, qp->sign);
+	    }
+	}
       else
 	{
 	  /* is vq a v that doesn't need qualifying? */
@@ -609,6 +629,12 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 		      else
 			*mess = gvl_vmess("%s: %s is %s%s", gp->text, vp->text, vp->sign, QFIX);
 		    }
+#if 1
+		  else
+		    {
+		      fprintf(stderr, "gvl: unhandled case for input %s\n", gp->text);
+		    }
+#else
 		  else
 		    {
 		      unsigned const char *parents = gvl_lookup(gvl_tmp_key((uccp)qp->oid,"parents"));
@@ -618,10 +644,8 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 			  *mess = gvl_vmess("%s: bad qualifier: %s is a form of %s", gp->text, qp->sign, snames);
 			  free(snames);
 			}
-		      else
-			*mess = gvl_vmess("%s: value and qualifier are different signs (%s vs %s)",
-					  gp->text, vp->sign, qp->sign);
 		    }
+#endif
 		}
 	      /* Dont' free(b) because it belongs to wcs2utf */ 
 	    }
@@ -741,46 +765,6 @@ gvl_ignore(unsigned const char *g)
       break;
   return '\0' == *g || '(' == *g; /* ignore *(u) and friends */
 #endif
-}
-
-static unsigned char *
-strip_pp(unsigned const char *g)
-{
-  unsigned char *no_p = (ucp)strdup((ccp)g), *end;
-  unsigned const char *orig = g;
-  end = no_p;
-  while (*g)
-    if ('+' == *g)
-      *end++ = '.', ++g;
-    else if ('(' != *g && ')' != *g)
-      *end++ = *g++;
-    else if ('(' == *g)
-      {
-	if (g > orig && (isdigit(g[-1]) || 'n' != g[-1] || 'N' != g[-1]))
-	  {
-	    int nesting = 0;
-	    while (*g)
-	      {
-		*end++ = *g++;
-		if (')' == *g && !nesting)
-		  {
-		    *end++ = *g++;
-		    break;
-		  }
-		if ('(' == *g)
-		  ++nesting;
-		else if (')' == *g)
-		  if (nesting)
-		    --nesting;
-	      }
-	  }
-	else
-	  ++g;
-      }
-    else
-      ++g;
-  *end = '\0';
-  return no_p;
 }
 
 gvl_g *
@@ -955,7 +939,7 @@ gvl_validate(unsigned const char *g)
 		    }
 		}
 	    }
-	  else if (has_sign_indicator(g))
+	  else if (sl_has_sign_indicator(g))
 	    {
 	      const unsigned char *lg = utf_lcase(g);
 	      if ((l = gvl_lookup(lg)))
@@ -987,7 +971,7 @@ gvl_validate(unsigned const char *g)
 			    }
 			  else
 			    {
-			      unsigned char *c10e_no_p = strip_pp(c10e);
+			      unsigned char *c10e_no_p = sl_strip_pp(c10e);
 			      if (c10e_no_p && (l=gvl_lookup(c10e_no_p)))
 				{
 				  gp->oid = (ccp)l;

@@ -648,7 +648,7 @@ subsign {
 	    }
 	}
     }
-    
+
     my $xsn = $sn;
     $xsn =~ tr/|//d;
 
@@ -666,6 +666,9 @@ subsign {
 	# $values{$xsn,'form'} = $id;
     }
 
+#    my $psn = $sn;
+#    $values{$psn} = $id if $psn =~ tr/+/./;
+    
     $values{$id,'ucode'} = $ucode if $ucode;
     $values{$id,'uchar'} = $uchar if $uchar;
     # $values{$id} = $sn;
