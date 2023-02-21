@@ -867,8 +867,21 @@ gvl_validate(unsigned const char *g)
 		    }
 		  else
 		    {
-		      /* do nothing; let the validation happen when n
-			 is parsed into n and r components */
+		      const unsigned char *lg = utf_lcase(g);
+		      if ((l = gvl_lookup(lg)))
+			{
+			  gp->oid = (ccp)l;
+			  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+#if 0
+			  /* allow 1(U@c) as well as 1(u@c) without a warning--is this right? */
+			  if (gvl_strict)
+			    gp->mess = gvl_vmess("numeric pseudo-signname %s should be %s", g, gp->sign);
+#endif
+			}
+		      else
+			{
+			  gp->mess = gvl_vmess("unknown numeric sign %s", g, gp->sign);
+			}
 		    }
 		}
 	      else

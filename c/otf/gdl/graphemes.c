@@ -733,6 +733,9 @@ gparse(register unsigned char *g, enum t_type type)
 	  }
 	if (g_ok)
 	  {
+	    if (cw_proper_c)
+	      list_add(cw_proper_c, npool_copy(g_ok, graphemes_pool));
+
 	    if (gdl_grapheme_sign_names && !inner_qual)
 	      {
 		list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(g_ok)));
@@ -760,6 +763,9 @@ gparse(register unsigned char *g, enum t_type type)
 		  }
 	      }
 	  }
+	else if (cw_proper_c)
+	  list_add(cw_proper_c, npool_copy(g, graphemes_pool));
+
       }
       break;
     case g_n:

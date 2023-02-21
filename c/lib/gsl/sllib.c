@@ -56,25 +56,26 @@ sl_strip_pp(unsigned const char *g)
       *end++ = *g++;
     else if ('(' == *g)
       {
-	if (g > orig && (isdigit(g[-1]) || 'n' != g[-1] || 'N' != g[-1]))
+	if (g > orig && (isdigit(g[-1]) || 'n' == g[-1] || 'N' == g[-1]))
 	  {
+	    /* copy the contents of this (...) including the '(' and
+	       ')' because they belong to a number grapheme */
 	    int nesting = 0;
-	    ++g; /* skip the initial ( */
 	    while (*g)
 	      {
+		*end++ = *g++;
 		if (')' == *g)
 		  {
 		    if (nesting)
 		      --nesting;
 		    else
 		      {
-			++g;
+			*end++ = *g++;
 			break;
 		      }
 		  }
 		else if ('(' == *g)
 		  ++nesting;
- 		*end++ = *g++;
 	      }
 	  }
 	else
