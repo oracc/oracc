@@ -11,7 +11,7 @@ if [ -d "${ORACC}/etc/projects" ]; then
     done
 fi
 for a in `find ${ORACC}/xml -name 'config.xml'|grep -v ood`; do
-    echo "<xi:include xmlns:xi=\"http://www.w3.org/2001/XInclude\" href=\"$a\"/>" \
+    echo "<xi:include xmlns:xi=\"http://www.w3.org/2001/XInclude\" href=\"$a\"><xi:fallback/></xi:include>" \
 	>>all-projects.xml
 done
 echo '</projects>' >>all-projects.xml
