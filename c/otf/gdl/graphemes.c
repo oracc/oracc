@@ -2323,7 +2323,7 @@ numerical(register unsigned char *g)
 	  gp = NULL;
 	}
     }
-  else if ('n' == *orig_g) /*(*gp->g.n.r == 'n') */
+  else if ('n' == *orig_g || 'N' == *orig_g) /*(*gp->g.n.r == 'n') */
     {
       struct node *r;
       gp = galloc();
@@ -2331,6 +2331,9 @@ numerical(register unsigned char *g)
       gp->g.n.r = orig_g;
       r = gtextElem(e_g_r,NULL,lnum,GRAPHEME,gp->g.n.r);
 
+      if (cw_proper_c)
+	list_add(cw_proper_c, gp->g.n.r);
+      
       /* build an elem with an empty text child */
       gp->xml = build_singleton((unsigned char*)"",g_n,0,NULL);
       gp->type = g_n;
@@ -2349,7 +2352,10 @@ numerical(register unsigned char *g)
 	  unsigned char *qnum = NULL, *qtmp = NULL;
 	  gp = galloc();
 	  gp->g.n.r = orig_g;
+
 	  g = orig_g;
+	  if (cw_proper_c)
+	    list_add(cw_proper_c, pool_copy(orig_g));
 	  while (is_grapheme_base[*g] || '/' == *g)
 	    ++g;
 	  if (*g)
