@@ -994,7 +994,7 @@ gvl_validate(unsigned const char *g)
 				}
 			      else
 				{
-				  if (strcmp((ccp)g, (ccp)c10e) && c10e_no_p && strcmp((ccp)c10e, (ccp)c10e_no_p)
+				  if (strcmp((ccp)g, (ccp)c10e) && c10e_no_p && strcmp((ccp)c10e, (ccp)c10e_no_p))
 				    gp->mess = gvl_vmess("unknown compound: %s (also tried %s/%s)", g, c10e, c10e_no_p);
 				  else if (strcmp((ccp)g, (ccp)c10e))
 				    gp->mess = gvl_vmess("unknown compound: %s (also tried %s)", g, c10e);
