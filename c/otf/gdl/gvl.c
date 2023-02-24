@@ -722,7 +722,7 @@ gvl_sub_of(int i)
     case 9:
       return "₉";
     case 0:
-      return "ₓ";
+      return "₀";
     }
   return NULL;
 }
@@ -739,13 +739,16 @@ gvl_v_from_h(const unsigned char *b, const unsigned char *qsub)
 	  int tens = qsub_i / 10;
 	  int unit = qsub_i % 10;
 	  const char *tensp = NULL, *unitp = gvl_sub_of(unit);
-	  if (tens)
-	    tensp = gvl_sub_of(tens);
 	  strcpy((char *)ret, (const char *)b);
-	  if (tensp)
-	    strcat((char *)ret,tensp);
-	  if (unitp)
-	    strcat((char *)ret,unitp);
+	  if (qsub_i)
+	    {
+	      if (tens && ((tensp = gvl_sub_of(tens))))
+		strcat((char *)ret,tensp);
+	      if (unitp)
+		strcat((char *)ret,unitp);
+	    }
+	  else
+	    strcat((char*)ret,"ₓ");
 	  return ret;
 	}
     }

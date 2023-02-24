@@ -493,10 +493,10 @@ sub
 hsort {
     my @srt = @_;
     my @ret = ();
-    print STDERR "hsort in:";
+    # print STDERR "hsort in:";
     foreach my $s (sort { vkey($a) <=> vkey($b) } @srt) {
 	my $vk = vkey($s);
-	print STDERR " $$s[0]";
+	# print STDERR " $$s[0]";
 	if ($vk == 1) {
 	    push @ret, $$s[0];
 	} else {
@@ -504,8 +504,8 @@ hsort {
 	    push @ret, $$s[0].'/'.$vk;
 	}
     }
-    print STDERR "\n";
-    warn "hsort ret: @ret\n";
+    # print STDERR "\n";
+    # warn "hsort ret: @ret\n";
     join(' ', @ret);
 }
 
