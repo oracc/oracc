@@ -43,6 +43,7 @@ struct grapheme
 #define GFLAGS_REDUNDANT   0x004
 #define GFLAGS_HETH	   0x008
 #define GFLAGS_DOTS	   0x010
+#define GFLAGS_SURRO	   0x020
 
 extern struct node *pending_disamb;
 

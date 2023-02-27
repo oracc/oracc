@@ -102,7 +102,7 @@ int use_unicode = 0;
 extern int in_split_word;
 
 /* if non-zero the gparse was called from cparse, qualified, etc. */
-int inner_parse = 0, inner_qual = 0;
+int inner_parse = 0, inner_qual = 0, cw_surro = 0;
 
 static int is_bad_cg[256];
 static const char *bad_cg_chars = "[]<>{}#!?*";
@@ -782,7 +782,7 @@ gparse(register unsigned char *g, enum t_type type)
 	      /* vnotice("coercing non-canonical sign-name %s to canonical %s", g, signified); */
 	      /* g = (unsigned char *)signified; */
 	    }
-	  if (cw_proper_c && signified)
+	  if (cw_proper_c && signified && cw_surro != 1)
 	    {
 	      /* fprintf(stderr, "g_s: adding %s to cw_proper_c\n", signified); */
 	      list_add(cw_proper_c, unpipe(npool_copy(signified, graphemes_pool)));
@@ -998,6 +998,8 @@ gparse(register unsigned char *g, enum t_type type)
 	    }
 	  if (bad_grapheme)
 	    gp->gflags = GFLAGS_BAD;
+	  if (cw_surro == 1)
+	    gp->gflags |= GFLAGS_SURRO;
 	}
       break;
     case g_c:
@@ -1746,11 +1748,16 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		}
 	      ++endp;
 	    }
+	  else if ('<' == *endp && '(' == endp[1])
+	    cw_surro = 1;
+	  else if (')' == *endp && '>' == endp[1])
+	    cw_surro = 0;
 	  save = *endp;
 	  *endp = '\0';
 	  ++inner_parse;
 	  gp = gparse(g,type_top);
 	  --inner_parse;
+	  cw_surro = 2;
 	  if (gp)
 	    {
 	      last_g = np = gp->xml;

@@ -102,6 +102,7 @@ g_c10e(const unsigned char *g, int *err)
 		suppress_case_check = 1;
 	    case '|':
 	    case '.':
+	    case 0xd7:
 	    case '-':
 	    case ':':
 	    case '+':
@@ -127,8 +128,6 @@ g_c10e(const unsigned char *g, int *err)
 	    case '!':
 	    case '[':
 	    case ']':
-	    case '<':
-	    case '>':
 	    case U_ulhsq:
 	    case U_urhsq:
 	    case U_llhsq:
@@ -136,6 +135,28 @@ g_c10e(const unsigned char *g, int *err)
 	    case U_cdot:
 	    case U_degree:
 	      /* delete these */
+	      break;
+	    case '<':
+	      if (cued_sub_23)
+		{
+		  x[xlen++] = cued_sub_23;
+		  cued_sub_23 = 0;
+		}
+	      if (w[i+1] == '(')
+		{
+		  x[xlen++] = '<';
+		  x[xlen++] = '(';
+		}
+	      ++i;
+	      break;
+	    case '>':
+	      if (cued_sub_23)
+		{
+		  x[xlen++] = cued_sub_23;
+		  cued_sub_23 = 0;
+		}
+	      if (w[i-1] == ')')
+		x[xlen++] = '>';
 	      break;
 	    case U_heth:
 	      x[xlen++] = 'h';

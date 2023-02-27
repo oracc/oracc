@@ -543,7 +543,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
       
   /* Now if we have bad value and qualifier it's too hard to guess */
   if (v_bad && q_bad)
-    *mess = gvl_vmess("%s: both value and qualifier unknown", gp->text);
+    *mess = gvl_vmess("[vq] %s: value %s and qualifier %s unknown%s", gp->text, vp->text, qp->text, QFIX);
   else if (v_bad)
     {
       /* If the v is unknown, check if the base is known for q under a different index, else report known v for q */
@@ -552,9 +552,9 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 	{
 	  unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key((uccp)qp->oid, "values"));
 	  if (tmp2)
-	    *mess = gvl_vmess("[vq] %s: %s unknown. Known for %s: %s%s", gp->text, vp->text, qp->sign, tmp2, QFIX);
+	    *mess = gvl_vmess("[vq] %s: %s::%s unknown. Known for %s: %s%s", gp->text, vp->text, qp->sign, qp->sign, tmp2, QFIX);
 	  else
-	    *mess = gvl_vmess("[vq] %s: %s unknown. No known values for %s%s", gp->text, vp->text, qp->sign, QFIX);
+	    *mess = gvl_vmess("[vq] %s: %s::%s unknown. No known values for %s%s", gp->text, vp->text, qp->sign, qp->sign, QFIX);
 	}
     }
   else if (q_bad)
@@ -562,9 +562,9 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
       /* If the q is unknown, report known q for v */
       unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key(vp->text, "q"));
       if (tmp2)
-	*mess = gvl_vmess("[vq] %s: %s unknown: known for %s: %s%s", gp->text, q, vp->text, tmp2, QFIX);
+	*mess = gvl_vmess("[vq] %s: q %s unknown: known for %s: %s%s", gp->text, q, vp->text, tmp2, QFIX);
       else
-	*mess = gvl_vmess("[vq] %s: %s unknown: %s is %s%s", gp->text, q, vp->text, vp->sign, QFIX);
+	*mess = gvl_vmess("[vq] %s: q %s unknown: %s known as %s%s", gp->text, q, vp->text, vp->sign, QFIX);
     }
   else
     {
@@ -593,13 +593,13 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 		  if (!strstr((ccp)parents, vp->oid))
 		    {
 		      unsigned char *snames = snames_of(parents);
-		      *mess = gvl_vmess("[vq] %s: bad qualifier: %s is a form of %s", gp->text, qp->sign, snames);
+		      *mess = gvl_vmess("[vq] %s: bad qualifier: %s is a form of %s%s", gp->text, qp->sign, snames, QFIX);
 		      free(snames);
 		    }
 		}
 	      else
-		*mess = gvl_vmess("[vq] %s: value and qualifier are different signs (%s vs %s)",
-				  gp->text, vp->sign, qp->sign);
+		*mess = gvl_vmess("[vq] %s: value and qualifier are different signs (%s vs %s)%s",
+				  gp->text, vp->sign, qp->sign, QFIX);
 	    }
 	}
       else
