@@ -19,9 +19,11 @@ while (<>) {
 	$fixc = $1;
 	if (/\[(\S+?) <= (\S+?)\]\s*$/) {
 	    $fixc = $1;
-	    warn "fixq = $fixq\n";
 	} elsif (/also tried\s+(\S+?)\)$/) {
-	    $fixc = $1; $fixc =~ s#/.*$##;
+	    my $tmp = $1;
+	    unless ($fixc =~ /[()]/) { # keep versions with parens
+		$fixc .= "//$tmp";
+	    }
 	} else {
 	}
 	print "\@sign\t$fixc\n\@inote gvl unknown compound\n\@end sign\n\n";
