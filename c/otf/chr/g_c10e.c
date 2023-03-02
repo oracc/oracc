@@ -146,8 +146,8 @@ g_c10e(const unsigned char *g, int *err)
 		{
 		  x[xlen++] = '<';
 		  x[xlen++] = '(';
+		  ++i;
 		}
-	      ++i;
 	      break;
 	    case '>':
 	      if (cued_sub_23)

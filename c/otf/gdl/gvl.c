@@ -563,7 +563,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
       unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key(vp->text, "q"));
       if (tmp2)
 	*mess = gvl_vmess("[vq] %s: q %s unknown: known for %s: %s%s", gp->text, q, vp->text, tmp2, QFIX);
-      else
+      else if (!strchr((ccp)q,'X'))
 	*mess = gvl_vmess("[vq] %s: q %s unknown: %s known as %s%s", gp->text, q, vp->text, vp->sign, QFIX);
     }
   else
@@ -881,9 +881,23 @@ gvl_validate(unsigned const char *g)
 			    gp->mess = gvl_vmess("numeric pseudo-signname %s should be %s", g, gp->sign);
 #endif
 			}
+		      else if ('n' == *lg)
+			{
+			  char *oneify = strdup((ccp)lg);
+			  *oneify = '1';
+			  if ((l = gvl_lookup((uccp)oneify)))
+			    {
+			      gp->oid = (ccp)l;
+			      gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+			    }
+			  else
+			    gp->mess = gvl_vmess("expected to validate %s via %s but %s doesn't exist", g, oneify, oneify);
+			  if (oneify)
+			    free(oneify);
+			}
 		      else
 			{
-			  gp->mess = gvl_vmess("unknown numeric sign %s", g, gp->sign);
+			  gp->mess = gvl_vmess("unknown numeric sign %s", g);
 			}
 		    }
 		}
