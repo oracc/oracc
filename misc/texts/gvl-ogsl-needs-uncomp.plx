@@ -13,9 +13,9 @@ GetOptions(
     );
 
 my $fixc = '';
-
+my %seen = ();
 while (<>) {
-    if (/unknown compound:\s+(\S+)\s*$/) {
+    if (/unknown compound:\s+(\S+)/) {
 	$fixc = $1;
 	if (/\[(\S+?) <= (\S+?)\]\s*$/) {
 	    $fixc = $1;
@@ -26,7 +26,8 @@ while (<>) {
 	    }
 	} else {
 	}
-	print "\@sign\t$fixc\n\@inote gvl unknown compound\n\@end sign\n\n";
+	print "\@sign\t$fixc\n\@inote gvl unknown compound\n\@end sign\n\n"
+	    unless $seen{$fixc}++;
     }
 }
 
