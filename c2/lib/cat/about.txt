@@ -1,0 +1,6 @@
+CAT--Common AT library
+
+Provides routines to load any data using @-commands into memory;
+structural validation is performed but data-specific syntax and
+content validation is not done.
+

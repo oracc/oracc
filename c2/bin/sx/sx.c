@@ -1,0 +1,18 @@
+#include <cat.h>
+
+struct cat sxcat;
+
+struct catconfig sx_cat_config =
+  {
+    "signs", 	/* head */
+    cat_name, 	/* parser function to extract name from chunk */
+    sx_check	/* checker function to test names and get name info */
+  };
+
+int
+main(int argc, const char **argv)
+{
+  sxcat.f = argv[1];
+  sxcat.c = cat_read(argv[1]);
+  cat_dump(sxcat.c);
+}

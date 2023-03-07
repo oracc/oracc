@@ -12,7 +12,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_YACC
-AM_PROG_LEX
+AM_PROG_LEX([noyywrap])
 LT_INIT
 AC_PROG_INSTALL
 AC_PROG_LN_S
@@ -29,10 +29,6 @@ dnl AC_SEARCH_LIBS(iconv,iconv,,
 dnl     AC_SEARCH_LIBS(libiconv,iconv,,AC_MSG_ERROR(['libiconv' is required but it doesn't seem to be installed on this system.]),))
 
 dnl Checks for header files.
-m4_warn([obsolete],
-[The preprocessor macro `STDC_HEADERS' is obsolete.
-  Except in unusual embedded environments, you can safely include all
-  ISO C90 headers unconditionally.])dnl
 # Autoupdate added the next two lines to ensure that your configure
 # script's behavior did not change.  They are probably safe to remove.
 AC_CHECK_INCLUDES_DEFAULT
@@ -77,7 +73,6 @@ dnl    QDBMLIBDIR=
 dnl fi
 
 dnl Checks for library functions.
-AC_FUNC_SETVBUF_REVERSED
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(mkdir strerror)
 
@@ -245,5 +240,11 @@ AC_CONFIG_FILES([Makefile
 	doc/ns/xdf/1.0/Makefile
 	doc/ns/xtf/1.0/Makefile
 	doc/ns/xse/1.0/Makefile
+	c2/Makefile
+	c2/lib/Makefile
+	c2/lib/cat/Makefile
+	c2/bin/Makefile
+	c2/bin/ax/Makefile
+	c2/bin/sx/Makefile
 ])
 AC_OUTPUT

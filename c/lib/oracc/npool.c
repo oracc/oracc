@@ -100,6 +100,7 @@ npool_alloc(size_t len, struct npool *p)
     if ((p->rover->used+len) >= p->rover->top)
       p->rover = new_block(p);
   }
+  p->rover->last_begin = p->rover->used;
   p->rover->used += len;
   return p->rover->last_begin;
 }
