@@ -2,13 +2,16 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <npool.h>
+#include <pool.h>
 #include <memblock.h>
 
 #include "cat.h"
 #include "cat.tab.h"
 
-struct npool *catpool;
+static struct catstate *catstack_push(struct catnode *n, struct catinfo *i);
+static struct catstate *catstack_pop(void);
+
+Pool *catpool;
 struct mb *catchunk_mem;
 struct mb *catnode_mem;
 
@@ -27,7 +30,7 @@ cat_init(void)
     }
   catchunk_mem = mb_init(sizeof(struct catchunk),1024);
   catnode_mem = mb_init(sizeof(struct catnode),1024);
-  catpool = npool_init();
+  catpool = pool_init();
   head = tail;
 }
 
@@ -37,7 +40,7 @@ cat_term(void)
   if (cat_initted)
     {
       mb_term(catchunk_mem);
-      npool_term(catpool);
+      pool_term(catpool);
       catchunk_mem = NULL;
       catpool = NULL;
       head = tail = NULL;
@@ -95,35 +98,111 @@ cat_read(const char *file)
 }
 
 char *
-cat_name(struct catchunk *cp)
+cat_name(struct catchunk *cp, char **data)
 {
-  if ('@' == *cp)
+  char *n = NULL;
+  if (cp && '@' == *cp->text)
     {
-      char *end = ++cp;
+      char *end = NULL;
+      end = n = cp->text + 1;
       /* name is terminated by space or NULL */
       while (*end && (*end > 127 || !isspace(*end)))
 	++end;
       if (isspace(*end))
-	*end = '\0';
-      return cp;
+	{
+	  *end++ = '\0';
+	  *data = end;
+	}
+      else
+	{
+	  char *tmp = (char*)npool_alloc((end - n) + 1, catpool);
+	  strncpy(tmp, n, n - end);
+	  tmp[n-end] = '\0';
+	  n = tmp;
+	  *data = end;
+	}
+      return n;
     }
   else
     return NULL;
 }
 
+#define CS_MAX 	16
+static struct catstate cstack[CS_MAX];
+static int cs_depth = 0;
+
+static struct catstate *
+catstack_push(struct catnode *n, struct catinfo *i)
+{
+  struct catstate *csp = NULL;
+  if (cs_depth < CS_MAX)
+    {
+      csp = &cstack[cs_depth++];
+      csp->cn = n;
+      csp->cip = i;
+      csp->end = i->end; /* csp->end is an editable version of 'end';
+			    the one in csp->cip belongs to the
+			    reference structure for the name */
+    }
+  else
+    {
+      fprintf(stderr, "catstack_push: nesting too deep\n");
+    }
+  return csp;
+}
+
+static struct catstate *
+catstack_pop(void)
+{
+  struct catstate *csp = NULL;
+  if (cs_depth)
+    csp = &cstack[--cs_depth];
+  else
+    fprintf(stderr, "catstack_pop: attempt to pop empty stack\n");
+  return csp;
+}
+
+void
+cat_end(struct catstate *state, char *data)
+{
+  char *ename = data;
+  while (isalnum(*data))
+    ++data;
+  if (isspace(*data))
+    {
+      *data++ = '\0';
+      while (isspace(*data))
+	++data;
+    }
+  else if (*data)
+    {
+      /* junk after data */
+      fprintf(stderr, "cat_end: junk after data %s\n", data);
+      *data = '\0';
+    }
+  if (!strcmp(state->cn->name, ename))
+    {
+      /* matched @end tag */
+      state->end = 0;
+    }
+  else
+    {
+      /* mismatched @end tag */
+    }
+}
+
 struct catnode *
-cat_herd(struct catchunk *cp, struct catconfig *cfg)
+cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 {
   struct catnode *head = NULL;
-  List *cip_stack = NULL;
   struct catinfo *cip = NULL;
+  struct catstate *state = NULL;
+  struct catchunk *cp = NULL;
   
   head = mb_new(catnode_mem);
-  head->n = cfg->head;
-  cip = cfg->chkname(cn->n);
-
-  cips = list_create(LIST_DOUBLE);
-  push(cip_stack, cip);
+  head->name = cfg->head;
+  cip = cfg->chkname(head->name, strlen(head->name));
+  state = catstack_push(head, cip);
   
   for (cp = ccp; cp; cp = cp->next)
     {
@@ -132,31 +211,36 @@ cat_herd(struct catchunk *cp, struct catconfig *cfg)
 	  struct catnode *cn = mb_new(catnode_mem);
 	  static char *data;
 	  
-	  cn->n = cfg->getname(cp, &data);
-	  if (cn->n && (cip = cfg->chkname(cn->n)))
+	  cn->name = cfg->getname(cp, &data);
+	  if (cn->name && (cip = cfg->chkname(cn->name, strlen(cn->name))))
 	    {
-	      /* link cn into the herd using the rules in the info struct */
+	      /* always make cn the last child of curr */
+	      if (state->cn->k)
+		{
+		  state->cn->last->next = cn;
+		  state->cn->last = cn;
+		}
+	      else
+		state->cn->last = state->cn->k = cn;
+
 	      switch (cip->rel)
 		{
 		case CI_PARENT:
-		  /* this node acts a parent to all successive nodes
-		     until another node with the same level; can be @end
-		     XXX or @XXX, i.e., @entry is terminated by @end
-		     entry or @entry. If cip->end == 1 it is an
-		     error if there is no @end XXX.
-
-		     Value is an integer; 1 is top level; 2 is second
-		     level, etc.
-		  */
+		  if (cip->depth > state->cip->depth)
+		    state = catstack_push(cn, cip);
+		  else if (cip->depth < state->cip->depth)
+		    state = catstack_pop();
+		  else
+		    state->cn = cn;
+		  /*cn->d = cfg->parse(data);*/
 		  break;
 		case CI_CHILD:
-		  /* attach as a child of the current parent node */
+		  /*cn->d = cfg->parse(data);*/
 		  break;
-		default:
-		  /* no other cases */
+		case CI_END:
+		  cat_end(state, data);
 		  break;
 		}
-	      cn->d = cfg->parse(data);
 	    }
 	  else
 	    {

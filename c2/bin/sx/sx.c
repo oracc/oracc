@@ -1,7 +1,10 @@
+#include <stdlib.h>
 #include <cat.h>
 
 struct cat sxcat;
 
+extern struct catinfo *sx_check (const char *str,size_t len);
+     
 struct catconfig sx_cat_config =
   {
     "signs", 	/* head */

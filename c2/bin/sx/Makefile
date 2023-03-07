@@ -103,7 +103,7 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_sx_OBJECTS = sx.$(OBJEXT)
+am_sx_OBJECTS = sx.$(OBJEXT) sx_check.$(OBJEXT)
 sx_OBJECTS = $(am_sx_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -124,7 +124,7 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/sx.Po
+am__depfiles_remade = ./$(DEPDIR)/sx.Po ./$(DEPDIR)/sx_check.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -322,7 +322,7 @@ schemadir = $(prefix)/www/lib/schemas
 webscriptdatadir = $(prefix)/www/lib/scripts
 webdatadir = $(prefix)/www/lib/data
 downloadsdir = $(prefix)/www/downloads
-SUFFIXES = .lst .g .c .o
+SUFFIXES = .g .c .o
 xLDADD = \
 	../../lib/cat/libcat.la \
 	../../../c/lib/oracc/liboracc.la
@@ -331,13 +331,13 @@ AM_CPPFLAGS = \
 	../../../c/include \
 	-I../../lib/cat
 
-sx_SOURCES = sx.c
+sx_SOURCES = sx.c sx_check.c
 sx_LDADD = $(xLDADD)
 sx_DEPENDENCIES = $(sx_LDADD)
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .lst .g .c .o .lo .obj
+.SUFFIXES: .g .c .o .lo .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(srcdir)/../../../oracc-am-rules.txt $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -389,6 +389,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/sx.Po # am--include-marker
+include ./$(DEPDIR)/sx_check.Po # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -551,6 +552,7 @@ clean-am: clean-generic clean-libtool clean-local clean-noinstPROGRAMS \
 
 distclean: distclean-am
 		-rm -f ./$(DEPDIR)/sx.Po
+	-rm -f ./$(DEPDIR)/sx_check.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -597,6 +599,7 @@ installcheck-am:
 
 maintainer-clean: maintainer-clean-am
 		-rm -f ./$(DEPDIR)/sx.Po
+	-rm -f ./$(DEPDIR)/sx_check.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -641,12 +644,13 @@ install-exec-local:
 	$(top_srcdir)/oracc-pm.sh $(DESTDIR)$(prefix) $(top_srcdir)
 	$(top_srcdir)/maybe-install-cgi-bin.sh
 
+# .lst .g .c .o
+
 .g.c:
-#	gperf --size-type=size_t -N `basename $*` -tT $< >$@
 	$(top_srcdir)/gperf-size_t.sh `basename $*` $< $@
 
-.lst.c:
-	gperf --size-type=size_t -N$* -I -7 -e: $< >$@
+# .lst.c:
+#	gperf --size-type=size_t -N$* -I -7 -e: $< >$@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,1 +1,1 @@
-SUBDIRS=cat
+SUBDIRS=std cat

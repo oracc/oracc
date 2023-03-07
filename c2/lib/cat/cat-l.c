@@ -635,8 +635,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 6
-#define YY_END_OF_BUFFER 7
+#define YY_NUM_RULES 7
+#define YY_END_OF_BUFFER 8
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -646,8 +646,8 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[22] =
     {   0,
-        0,    0,    7,    6,    5,    6,    6,    6,    6,    0,
-        2,    0,    4,    0,    0,    0,    0,    0,    1,    3,
+        0,    0,    8,    7,    6,    7,    7,    7,    7,    0,
+        2,    0,    5,    0,    0,    0,    4,    0,    1,    3,
         0
     } ;
 
@@ -656,10 +656,10 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    4,    4,    4,    4,    4,    4,    4,    4,
-        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
-        4,    4,    1,    5,    1,    1,    1,    1,    1,    1,
+        1,    2,    1,    1,    4,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    5,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -688,40 +688,40 @@ static const YY_CHAR yy_meta[6] =
         1,    1,    2,    1,    1
     } ;
 
-static const flex_int16_t yy_base[26] =
+static const flex_int16_t yy_base[27] =
     {   0,
-       25,    0,   27,   29,    4,   23,   23,    7,   21,    0,
-        0,   20,   29,   19,   19,    0,   17,    0,   29,   29,
-       29,   12,   14,   18,   16
+       24,    0,   26,   28,    4,   22,   22,   20,   19,    0,
+        0,   18,   28,   17,   17,   15,   28,   14,   28,   28,
+       28,    7,    9,   15,   11,   13
     } ;
 
-static const flex_int16_t yy_def[26] =
+static const flex_int16_t yy_def[27] =
     {   0,
-       22,   21,   21,   21,   21,   23,   24,   21,   25,    5,
-        5,   23,   21,   24,   14,    8,   25,   17,   21,   21,
-        0,   21,   21,   21,   21
+       22,   21,   21,   21,   21,   23,   24,   25,   26,    5,
+        5,   23,   21,   24,   14,   25,   21,   26,   21,   21,
+        0,   21,   21,   21,   21,   21
     } ;
 
-static const flex_int16_t yy_nxt[35] =
+static const flex_int16_t yy_nxt[34] =
     {   0,
-        6,    7,    5,    8,    9,   10,   11,   12,   12,   13,
-       16,   17,    4,    4,   12,   12,   18,   18,   14,   19,
-       15,   20,   13,   19,   15,   13,   21,    5,    3,   21,
-       21,   21,   21,   21
+        6,    7,    5,    8,    9,   10,   11,    4,    4,   12,
+       12,   16,   16,   18,   18,   14,   19,   17,   15,   20,
+       13,   19,   17,   15,   13,   21,    5,    3,   21,   21,
+       21,   21,   21
     } ;
 
-static const flex_int16_t yy_chk[35] =
+static const flex_int16_t yy_chk[34] =
     {   0,
-        2,    2,    2,    2,    2,    5,    5,    8,    8,    8,
-        8,    8,   22,   22,   23,   23,   25,   25,   24,   17,
-       15,   14,   12,    9,    7,    6,    3,    1,   21,   21,
-       21,   21,   21,   21
+        2,    2,    2,    2,    2,    5,    5,   22,   22,   23,
+       23,   25,   25,   26,   26,   24,   18,   16,   15,   14,
+       12,    9,    8,    7,    6,    3,    1,   21,   21,   21,
+       21,   21,   21
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static const flex_int32_t yy_rule_can_match_eol[7] =
+static const flex_int32_t yy_rule_can_match_eol[8] =
     {   0,
-1, 1, 1, 1, 1, 0,     };
+1, 1, 1, 1, 1, 1, 0,     };
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
@@ -1069,22 +1069,32 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
+*yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+YY_LINENO_REWIND_TO(yy_cp - 1);
+(yy_c_buf_p) = yy_cp -= 1;
+YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 27 "cat.l"
-{ return BAD; }
+{ catlval.text=catsave(cattext); return CMT; }
 	YY_BREAK
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
 #line 28 "cat.l"
-{ return EOL; }
+{ return BAD; }
 	YY_BREAK
 case 6:
+/* rule 6 can match eol */
 YY_RULE_SETUP
-#line 30 "cat.l"
+#line 29 "cat.l"
+{ return EOL; }
+	YY_BREAK
+case 7:
+YY_RULE_SETUP
+#line 31 "cat.l"
 ECHO;
 	YY_BREAK
-#line 1087 "cat-l.c"
+#line 1097 "cat-l.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2104,7 +2114,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 30 "cat.l"
+#line 31 "cat.l"
 
 
 static void

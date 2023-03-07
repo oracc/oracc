@@ -21,7 +21,7 @@ static void cat_user_action(void);
 
 %%
 
-^[+->]*\@.*/\n  { catlval.text=catsave(cattext); return TOK; }
+^\@.*/\n  	{ catlval.text=catsave(cattext); return TOK; }
 \n([ \t]*\n)+	{ return PAR; }
 ^[ \t]+.+/\n    { catlval.text=catsave(cattext); return TAB; }
 ^#.*/\n		{ catlval.text=catsave(cattext); return CMT; }

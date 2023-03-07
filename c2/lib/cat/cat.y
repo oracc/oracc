@@ -36,6 +36,7 @@ line:	TOK		{ fprintf(stderr, "field/EOL: %s\n", catlval.text);
    			  cat_chunk(catlineno,(char*)catlval.text);
  			}
 
+
 cont: 	TAB		{ fprintf(stderr, "field/TAB: %s\n", catlval.text);
     			  cat_cont(catlineno,(char*)catlval.text);
  			}

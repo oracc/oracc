@@ -10,7 +10,7 @@ AM_CPPFLAGS=\
 	../../../c/include \
 	-I../../lib/cat
 
-sx_SOURCES=sx.c
+sx_SOURCES=sx.c sx_check.c
 
 sx_LDADD = $(xLDADD)
 
