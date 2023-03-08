@@ -2,12 +2,12 @@ include ../../../oracc-am-rules.txt
 
 noinst_LTLIBRARIES=libcat.la
 
-libcat_la_SOURCES = cat.c cat-l.c cat.tab.c
+libcat_la_SOURCES = cat.tab.c cat-l.c cat.c
 
 YACC=bison
 
 AM_CPPFLAGS=\
-	-I../../../c/include
+	-I../../../c2/lib/std
 
 cat.tab.c cat.tab.h: cat.y cat.l
 	${YACC} -vd cat.y

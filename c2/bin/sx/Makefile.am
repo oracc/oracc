@@ -4,7 +4,7 @@ noinst_PROGRAMS=sx
 
 xLDADD=\
 	../../lib/cat/libcat.la \
-	../../../c/lib/oracc/liboracc.la
+	../../lib/std/libstd.la
 
 AM_CPPFLAGS=\
 	../../../c/include \

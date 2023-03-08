@@ -17,5 +17,6 @@ main(int argc, const char **argv)
 {
   sxcat.f = argv[1];
   sxcat.c = cat_read(argv[1]);
-  cat_dump(sxcat.c);
+  /*cat_dump(sxcat.c);*/
+  cat_herd(sxcat.c, &sx_cat_config);
 }

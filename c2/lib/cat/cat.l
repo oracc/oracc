@@ -3,7 +3,7 @@
 %option never-interactive noyywrap yylineno
 
 %{
-#include <npool.h>
+#include <pool.h>
 #include "cat.tab.h"
 
 #define yylloc catlloc
@@ -13,8 +13,8 @@ const char *efile = "<stdin>";
 int flextrace = 0;
 int tok;
 
-extern struct npool *catpool;
-#define catsave(s) (char*)npool_copy((const unsigned char*)(s),catpool);
+extern Pool *catpool;
+#define catsave(s) (char*)pool_copy((const unsigned char*)(s),catpool);
 static void cat_user_action(void);
 
 %}

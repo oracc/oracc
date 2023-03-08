@@ -1,7 +1,7 @@
-%name-prefix="cat"
-%file-prefix="cat"
+%define api.prefix {cat}
+%file-prefix"cat"
 %locations
-%define "parse.error=verbose"
+%define parse.error verbose
 
 %{
 #include <stdio.h>

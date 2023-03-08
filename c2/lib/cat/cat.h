@@ -33,9 +33,9 @@ struct catconfig {
 		   signs is the nomain root of an asl tree */
   char * (*getname)(struct catchunk *, char **data); /* function to get a name from
 					   a chunk */
-  struct catinfo * (*chkname)(char *,size_t);  /* function to test name is
-					   known and obtain its
-					   catinfo */
+  struct catinfo * (*chkname)(const char *,size_t);  /* function to
+					   test name is known and
+					   obtain its catinfo */
 };
 
 struct catinfo {
