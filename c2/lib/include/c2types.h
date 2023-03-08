@@ -23,4 +23,18 @@ typedef uint16_t Unsigned16;
 typedef int32_t Signed32;
 typedef uint32_t Unsigned32;
 
+
+#ifndef ccp
+#define ccp const char *
+#endif
+
+#ifndef ucp
+#define ucp unsigned char *
+#endif
+
+#ifndef uccp
+#define uccp unsigned const char *
+#endif
+
+
 #endif /*C2TYPES_H_*/

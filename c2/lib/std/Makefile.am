@@ -5,4 +5,4 @@ AM_CPPFLAGS=\
 
 noinst_LTLIBRARIES=libstd.la
 
-libstd_la_SOURCES = hash.c list.c memo.c pool.c
+libstd_la_SOURCES = hash.c list.c memo.c mesg.c pool.c

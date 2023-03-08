@@ -69,4 +69,6 @@ unsigned char *list_to_str2(List *l, const char *sep);
 #define list_len(lp)	((lp) == NULL ? 0 : (lp)->count)
 #define list_at_beginning(lp) ((lp)->rover == (lp)->first)
 extern const char *vec_sep_str;
+extern void **list2array(List *l);
+
 #endif /* LIST_H_ */
