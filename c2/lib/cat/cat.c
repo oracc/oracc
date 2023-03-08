@@ -8,9 +8,6 @@
 #include "cat.h"
 #include "cat.tab.h"
 
-static struct catstate *catstack_push(struct catnode *n, struct catinfo *i);
-static struct catstate *catstack_pop(void);
-
 Pool *catpool;
 Memo *catchunk_mem;
 Memo *catnode_mem;
@@ -49,38 +46,6 @@ cat_term(void)
 }
 
 void
-cat_chunk(int l, char *t)
-{
-  struct catchunk *c = memo_new(catchunk_mem);
-  if (!head)
-    head = tail = c;
-  else
-    {
-      tail->next = c;
-      tail = c;
-    }
-  tail->line = l;
-  tail->text = t;
-}
-
-void
-cat_cont(int l, char *t)
-{
-  fprintf(stderr, "cat_cont: tail=%s; t=%s\n", tail->text, t);
-  while (isspace(t[1]))
-    ++t;
-  *t = ' ';
-  if (tail)
-    {
-      unsigned char *newtext = pool_alloc(strlen(tail->text) + strlen(t) + 1, catpool);
-      sprintf((char*)newtext, "%s%s", tail->text, t);
-      fprintf(stderr, "cat_cont: newtext=%s\n", newtext);
-      tail->text = (char*)newtext;
-      tail->last = l;
-    }
-}
-
-void
 cat_dump(struct catchunk *ccp)
 {
   struct catchunk *cp;
@@ -92,9 +57,7 @@ struct catchunk *
 cat_read(const char *file)
 {
   cat_init();
-  catparse();
-  /*cat_term();*/
-  return head;
+  return catyacc();
 }
 
 char *
@@ -125,50 +88,6 @@ cat_name(struct catchunk *cp, char **data)
     }
   else
     return NULL;
-}
-
-#define CS_MAX 	16
-static struct catstate cstack[CS_MAX];
-static int cs_depth = 0;
-
-static void
-catstack_reset(void)
-{
-  cs_depth = 0;
-}
-
-static struct catstate *
-catstack_push(struct catnode *n, struct catinfo *i)
-{
-  struct catstate *csp = NULL;
-  if (cs_depth < CS_MAX)
-    {
-      csp = &cstack[cs_depth++];
-      csp->cn = n;
-      csp->cip = i;
-      csp->end = i->end; /* csp->end is an editable version of 'end';
-			    the one in csp->cip belongs to the
-			    reference structure for the name */
-    }
-  else
-    {
-      fprintf(stderr, "catstack_push: nesting too deep\n");
-    }
-  return csp;
-}
-
-/* At depth 1 we are using stack entry 0 etc. */
-static struct catstate *
-catstack_pop(void)
-{
-  struct catstate *csp = NULL;
-  if (cs_depth)
-    {
-      --cs_depth;
-      if (cs_depth)
-	csp = &cstack[cs_depth - 1];
-    }
-  return csp;
 }
 
 /* return 1 if end matches current parent; 0 otherwise */

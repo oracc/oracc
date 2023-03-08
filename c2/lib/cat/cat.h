@@ -64,4 +64,9 @@ extern void cat_term(void);
 extern struct catchunk *cat_read(const char *file);
 extern struct catnode *cat_herd(struct catchunk *cp, struct catconfig *cfg);
 
+extern struct catstate *catstack_push(struct catnode *n, struct catinfo *i);
+extern struct catstate *catstack_pop(void);
+extern void catstack_reset(void);
+extern struct catchunk *catyacc(void);
+
 #endif/*CAT_H_*/
