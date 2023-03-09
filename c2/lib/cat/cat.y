@@ -9,7 +9,7 @@
 extern int yylex(void);
 extern void yyerror(const char *);
 extern const char *cattext;
-extern int catlineno;
+extern int catlineno, cattrace;
 %}
 
 %union { char *text; int i; }
@@ -25,19 +25,21 @@ fields: field
 
 field: 	line EOL
 	| cont EOL
-	| line PAR	{ fprintf(stderr, "PAR\n"); cat_chunk(catlineno-1, ""); }
-	| cont PAR	{ fprintf(stderr, "PAR\n"); cat_chunk(catlineno-1, ""); }
+	| line PAR	{ if (cattrace) fprintf(stderr, "PAR\n");
+			  cat_chunk(catlineno-1, ""); }
+	| cont PAR	{ if (cattrace) fprintf(stderr, "PAR\n");
+			  cat_chunk(catlineno-1, ""); }
 	| BAD		{ fprintf(stderr, "%d: lines must begin with '@' or whitespace\n", catlineno); }
 
-line:	TOK		{ fprintf(stderr, "field/EOL: %s\n", catlval.text);
+line:	TOK		{ if (cattrace) fprintf(stderr, "field/EOL: %s\n", catlval.text);
    			  cat_chunk(catlineno,(char*)catlval.text);
  			}
-	| CMT 		{ fprintf(stderr, "comment/EOL: %s\n", catlval.text);
+	| CMT 		{ if (cattrace) fprintf(stderr, "comment/EOL: %s\n", catlval.text);
    			  cat_chunk(catlineno,(char*)catlval.text);
  			}
 
 
-cont: 	TAB		{ fprintf(stderr, "field/TAB: %s\n", catlval.text);
+cont: 	TAB		{ if (cattrace) fprintf(stderr, "field/TAB: %s\n", catlval.text);
     			  cat_cont(catlineno,(char*)catlval.text);
  			}
 	| cont TAB

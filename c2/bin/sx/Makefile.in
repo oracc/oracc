@@ -327,7 +327,7 @@ xLDADD = \
 	../../lib/std/libstd.la
 
 AM_CPPFLAGS = \
-	../../../c/include \
+	-I../../lib/std \
 	-I../../lib/cat
 
 sx_SOURCES = sx.c sx_check.c

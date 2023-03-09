@@ -1,7 +1,5 @@
 include ../../../oracc-am-rules.txt
 
-SUFFIXES=.g .c .o
-
 AM_CFLAGS=-pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=libotf.la

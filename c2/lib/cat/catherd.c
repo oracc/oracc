@@ -4,8 +4,11 @@
 #include <ctype.h>
 #include <pool.h>
 #include <memo.h>
+#include <tree.h>
 
 #include "cat.h"
+
+extern int cattrace;
 
 extern Memo *catnode_mem;
 extern Pool *catpool;
@@ -41,8 +44,8 @@ cat_name(struct catchunk *cp, char **data)
 }
 
 /* return 1 if end matches current parent; 0 otherwise */
-struct catstate *
-cat_end(struct catstate *state, char *data)
+void
+cat_end(Tree *tp, char *data)
 {
   char *ename = data;
 
@@ -63,34 +66,34 @@ cat_end(struct catstate *state, char *data)
 
   while (1)
     {
-      if (!strcmp(state->cn->name, ename))
+      if (!strcmp(tp->curr->name, ename))
 	{
 	  /* matched @end tag */
-	  state->end = 0;
-	  return catstack_pop();
+	  /*state->end = 0;*/
+	  tree_pop(tp);
+	  return;
 	}
       else
 	{
 	  /* mismatched @end tag */
-	  if (!(state = catstack_pop()))
+	  if (!tree_pop(tp))
 	    break;
 	}
     }
-  return NULL;
+  return;
 }
 
-struct catnode *
+Tree *
 cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 {
   struct catnode *head = NULL;
   struct catinfo *cip = NULL, *head_cip = NULL;
-  struct catstate *state = NULL;
   struct catchunk *cp = NULL;
-  
-  head = memo_new(catnode_mem);
-  head->name = cfg->head;
-  head_cip = cfg->chkname(head->name, strlen(head->name));
-  state = catstack_push(head, head_cip);
+  Tree *tp = tree_init();
+  Node *np = NULL;
+
+  head_cip = cfg->chkname(cfg->head, strlen(cfg->head));
+  tp->curr = tree_node(tp, cfg->head, head_cip->depth, NULL);
   
   for (cp = ccp; cp; cp = cp->next)
     {
@@ -99,51 +102,43 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 	  struct catnode *cn = memo_new(catnode_mem);
 	  static char *data;
 	  
-	  fprintf(stderr, "cat_herd: depth before processing node: %d\n", state->cip->depth);
+	  if (cattrace)
+	    fprintf(stderr, "cat_herd: depth before processing node: %d\n", tp->curr->depth);
 	  cn->name = cfg->getname(cp, &data);
 	  if (cn->name && (cip = cfg->chkname(cn->name, strlen(cn->name))))
 	    {
 	      /* always make cn the last child of curr */
-	      if (state->cn->k)
-		{
-		  state->cn->last->next = cn;
-		  state->cn->last = cn;
-		}
-	      else
-		state->cn->last = state->cn->k = cn;
+	      np = tree_add(tp, cn->name, cip->depth, NULL);
 
 	      switch (cip->rel)
 		{
 		case CI_PARENT:
-		  fprintf(stderr, "cat_herd: curr=%s@%d: adding parent %s@%d; data=%s\n",
-			  state->cn->name, state->cip->depth,
-			  cn->name, cip->depth, data);
-		  if (cip->depth > state->cip->depth)
-		    state = catstack_push(cn, cip);
-		  else if (cip->depth < state->cip->depth)
-		    state = catstack_pop();
-		  else
-		    state->cn = cn;
+		  if (cattrace)
+		    fprintf(stderr, "cat_herd: curr=%s@%d: adding parent %s@%d; data=%s\n",
+			    tp->curr->name, tp->curr->depth,
+			    cn->name, cip->depth, data);
+		  if (cip->depth > tp->curr->depth)
+		    tree_push(tp);
+		  else if (cip->depth < tp->curr->depth)
+		    {
+		      while (cip->depth < tp->curr->depth)
+			tree_pop(tp);
+		    }
 		  /*cn->d = cfg->parse(data);*/
 		  break;
 		case CI_CHILD:
-		  fprintf(stderr, "cat_herd: curr=%s@%d: adding child %s@; data=%s\n",
-			  state->cn->name, state->cip->depth,
-			  cn->name, data);
+		  if (cattrace)
+		    fprintf(stderr, "cat_herd: curr=%s@%d: adding child %s@; data=%s\n",
+			    tp->curr->name, tp->curr->depth,
+			    cn->name, data);
 		  /*cn->d = cfg->parse(data);*/
 		  break;
 		case CI_END:
-		  fprintf(stderr, "cat_herd: curr=%s@%d: adding end %s@; data=%s\n",
-			  state->cn->name, state->cip->depth,
-			  cn->name, data);
-		  state = cat_end(state, data);
-		  if (!state)
-		    {
-		      /* recover from mismatch by resetting to root */
-		      fprintf(stderr, "mismatched @end\n");
-		      catstack_reset();
-		      state = catstack_push(head, head_cip);
-		    }
+		  if (cattrace)
+		    fprintf(stderr, "cat_herd: curr=%s@%d: adding end %s@; data=%s\n",
+			    tp->curr->name, tp->curr->depth,
+			    cn->name, data);
+		  cat_end(tp, data);
 		  break;
 		}
 	    }
@@ -151,12 +146,20 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 	    {
 	      /* unknown name error */
 	    }
-	  fprintf(stderr, "cat_herd: depth after processing node: %d\n", state->cip->depth);
+	  if (cattrace)
+	    fprintf(stderr, "cat_herd: depth after processing node: %d\n", tp->curr->depth);
 	}
       else
 	{
 	  /* This is a paragraph break; can do validation of missing @end ... here */
-	}      
+	  if (tp->curr->depth > 1)
+	    {
+	      fprintf(stderr, "cat_herd: unexpected blank line--only allowed between records\n");
+	      do
+		tree_pop(tp);
+	      while (tp->curr->depth > 1);
+	    }
+	}
     }
-  return head;
+  return tp;
 }

@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <pool.h>
 #include <memo.h>
+#include <tree.h>
 
 #include "cat.h"
 #include "cat.tab.h"
@@ -13,6 +14,7 @@ Memo *catchunk_mem;
 Memo *catnode_mem;
 
 int cat_initted = 0;
+int cattrace = 1;
 
 static struct catchunk *head = NULL;
 static struct catchunk *tail = NULL;

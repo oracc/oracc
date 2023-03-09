@@ -7,7 +7,7 @@ libcat_la_SOURCES = cat.tab.c cat-l.c catyacc.c catstack.c catherd.c cat.c
 YACC=bison
 
 AM_CPPFLAGS=\
-	-I../../../c2/lib/std
+	-I../../lib/std
 
 cat.tab.c cat.tab.h: cat.y cat.l
 	${YACC} -vd cat.y

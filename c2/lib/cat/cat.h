@@ -1,6 +1,8 @@
 #ifndef CAT_H_
 #define CAT_H_
 
+#include <tree.h>
+
 struct cat {
   const char *f;	/* filename */
   struct catchunk *c;	/* input chunks */
@@ -62,7 +64,7 @@ extern void cat_init(void);
 extern char* cat_name(struct catchunk *cp, char **data);
 extern void cat_term(void);
 extern struct catchunk *cat_read(const char *file);
-extern struct catnode *cat_herd(struct catchunk *cp, struct catconfig *cfg);
+extern Tree *cat_herd(struct catchunk *cp, struct catconfig *cfg);
 
 extern struct catstate *catstack_push(struct catnode *n, struct catinfo *i);
 extern struct catstate *catstack_pop(void);

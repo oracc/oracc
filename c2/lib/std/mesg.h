@@ -1,6 +1,8 @@
 #ifndef MESG_H_
 #define MESG_H_
 
+#include <stdio.h>
+
 struct Mloc
 {
   int first_line;

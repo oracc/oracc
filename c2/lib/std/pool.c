@@ -93,7 +93,7 @@ pool_alloc(size_t len, struct pool *p)
 {
   if (len >= POOL_BLOCK_SIZE)
     {
-      fprintf(stderr, "len = %ld\n", len);
+      /* fprintf(stderr, "len = %ld\n", len); */
       p->rover = new_block2(p,len);
     }
   else {
@@ -115,7 +115,7 @@ pool_copy(register const unsigned char *s, struct pool *p)
   len = strlen((char *)s) + 1;
   if (len >= POOL_BLOCK_SIZE)
     {
-      fprintf(stderr, "len = %ld\n", len);
+      /* fprintf(stderr, "len = %ld\n", len); */
       p->rover = new_block2(p,len);
     }
   else {
