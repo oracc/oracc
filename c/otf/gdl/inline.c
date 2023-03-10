@@ -2487,7 +2487,10 @@ finish_word(struct node *wp)
 
       /* This can happen when a word finishes inside a g:surro */
       if (wp->etype != e_g_gg)
-	appendAttr(wp,attr(a_form,form));
+	{
+	  /* const unsigned char *h = unheth(form); */
+	  appendAttr(wp,attr(a_form, /* h ? h : */ form));
+	}
 
       if (fp_forms && !in_split_word && strcmp(wp->parent->names->pname,"ag"))
 	fprintf(fp_forms,"%%%s:%s ",getAttr(wp,"xml:lang"),form);

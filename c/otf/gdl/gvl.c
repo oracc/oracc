@@ -216,10 +216,21 @@ gvl_looks_like_sname(unsigned const char *g)
   return sl_has_sign_indicator(g);
 }
 
+/* using gvl_validate here changes the semantics of
+
+     #define psl_is_value gvl_is_value
+
+   because gvl_validate succeeds on
+   graphemes spelled with heth and psl_is_value fails
+ */
 int
 gvl_is_value(unsigned const char *g)
 {
+#if 1
+  return gvl_lookup(g) != NULL;
+#else
   return gvl_validate(g) != NULL;
+#endif
 }
 
 static unsigned const char *

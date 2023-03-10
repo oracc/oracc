@@ -531,7 +531,7 @@ cuneifiable(struct lang_context *lang)
     return 0;
 }
 
-static const unsigned char *
+const unsigned char *
 unheth(const unsigned char *g)
 {
   wchar_t *w = NULL;
@@ -889,7 +889,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  if (curr_lang->signlist
 	      && '#' == *curr_lang->signlist
 	      && !gdl_bootstrap
-	      && !psl_is_sname(g_utf)
+	      /* && !psl_is_sname(g_utf) */
 	      && !psl_is_value(gcheck)
 	      && gcheck[len-1] != 'x')
 	    {
@@ -1018,6 +1018,7 @@ gparse(register unsigned char *g, enum t_type type)
     }
   if (gp)
     {
+      /* const unsigned char *h = NULL; */
 #ifndef GVL_MODE
       if (gp->type == g_q)
 	{
@@ -1125,7 +1126,8 @@ gparse(register unsigned char *g, enum t_type type)
 		    }
 		}
 
-	      appendAttr(gp->xml,gattr(a_form,buf));
+	      /*h = unheth(buf);*/
+	      appendAttr(gp->xml,gattr(a_form, /* h ? h : */ buf));
 
 	      if (do_cuneify && cuneifiable(curr_lang))
 		{

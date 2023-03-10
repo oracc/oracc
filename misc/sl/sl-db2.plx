@@ -608,7 +608,8 @@ subsign {
 	    my $xlang = $c->getAttribute('xml:lang');
 	    if ($xlang) {
 		# warn "found <v xml:lang> = $xlang\n";
-		next;
+		# next;
+		# need to allow %akk and %elx as valid graphemes
 	    }
 
 	    my $v = $c->getAttribute('n');

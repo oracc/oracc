@@ -65,4 +65,5 @@ extern unsigned char *_render_g(struct node *np, unsigned char *insertp, unsigne
 				const char *FILE, int LINE);
 extern unsigned char *render_g_text(struct node*tp, unsigned char *insertp, unsigned char *startp);
 extern void grapheme_id_reset(void);
+extern const unsigned char *unheth(const unsigned char *g);
 #endif

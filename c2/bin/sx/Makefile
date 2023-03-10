@@ -103,7 +103,7 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_sx_OBJECTS = sx.$(OBJEXT) sx_check.$(OBJEXT)
+am_sx_OBJECTS = sx.$(OBJEXT) sx_check.$(OBJEXT) sl.$(OBJEXT)
 sx_OBJECTS = $(am_sx_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -124,7 +124,8 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/sx.Po ./$(DEPDIR)/sx_check.Po
+am__depfiles_remade = ./$(DEPDIR)/sl.Po ./$(DEPDIR)/sx.Po \
+	./$(DEPDIR)/sx_check.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -304,6 +305,7 @@ target_alias =
 top_build_prefix = ../../../
 top_builddir = ../../..
 top_srcdir = ../../..
+AM_CFLAGS = -pedantic -Wall -g -O0
 ORACCIFY = $(abs_top_builddir)/oracc-subst.sh $(DESTDIR)$(prefix)
 cgibindir = $(prefix)/www/cgi-bin
 cgidatadir = $(prefix)/www/cgi-bin
@@ -321,22 +323,23 @@ schemadir = $(prefix)/www/lib/schemas
 webscriptdatadir = $(prefix)/www/lib/scripts
 webdatadir = $(prefix)/www/lib/data
 downloadsdir = $(prefix)/www/downloads
-SUFFIXES = .g .c .o
+SUFFIXES = .g .c .o .xnn .rnc
 xLDADD = \
 	../../lib/cat/libcat.la \
 	../../lib/std/libstd.la
 
 AM_CPPFLAGS = \
+	-I../../lib/include \
 	-I../../lib/std \
 	-I../../lib/cat
 
-sx_SOURCES = sx.c sx_check.c
+sx_SOURCES = sx.c sx_check.c sl.c
 sx_LDADD = $(xLDADD)
 sx_DEPENDENCIES = $(sx_LDADD)
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .g .c .o .lo .obj
+.SUFFIXES: .g .c .o .xnn .rnc .lo .obj .rng
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am $(srcdir)/../../../oracc-am-rules.txt $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -387,6 +390,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/sl.Po # am--include-marker
 include ./$(DEPDIR)/sx.Po # am--include-marker
 include ./$(DEPDIR)/sx_check.Po # am--include-marker
 
@@ -551,7 +555,8 @@ clean-am: clean-generic clean-libtool clean-local clean-noinstPROGRAMS \
 	mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ./$(DEPDIR)/sx.Po
+		-rm -f ./$(DEPDIR)/sl.Po
+	-rm -f ./$(DEPDIR)/sx.Po
 	-rm -f ./$(DEPDIR)/sx_check.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
@@ -598,7 +603,8 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ./$(DEPDIR)/sx.Po
+		-rm -f ./$(DEPDIR)/sl.Po
+	-rm -f ./$(DEPDIR)/sx.Po
 	-rm -f ./$(DEPDIR)/sx_check.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
@@ -636,6 +642,7 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
+override CFLAGS = 
 
 clean-local:
 	$(top_srcdir)/oracc-clean-in.sh
@@ -648,6 +655,15 @@ install-exec-local:
 
 .g.c:
 	$(top_srcdir)/gperf-size_t.sh `basename $*` $< $@
+
+.rnc.rng:
+	java -jar ${javadir}/trang.jar $< $@
+
+.rng.xnn:
+	c2-rng2xnn.sh $@
+
+.xnn.c:
+	c2-xnn2c.plx $<
 
 # .lst.c:
 #	gperf --size-type=size_t -N$* -I -7 -e: $< >$@

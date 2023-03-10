@@ -1,3 +1,6 @@
+override CFLAGS = 
+AM_CFLAGS =-pedantic -Wall -g -O0
+
 ORACCIFY = $(abs_top_builddir)/oracc-subst.sh $(DESTDIR)$(prefix)
 
 cgibindir     = $(prefix)/www/cgi-bin
@@ -26,12 +29,21 @@ install-exec-local:
 	$(top_srcdir)/oracc-pm.sh $(DESTDIR)$(prefix) $(top_srcdir)
 	$(top_srcdir)/maybe-install-cgi-bin.sh
 
-SUFFIXES=.g .c .o
+SUFFIXES=.g .c .o .xnn .rnc
 
 # .lst .g .c .o
 
 .g.c:
 	$(top_srcdir)/gperf-size_t.sh `basename $*` $< $@
+
+.rnc.rng:
+	java -jar ${javadir}/trang.jar $< $@
+
+.rng.xnn:
+	c2-rng2xnn.sh $@
+
+.xnn.c:
+	c2-xnn2c.plx $<
 
 # .lst.c:
 #	gperf --size-type=size_t -N$* -I -7 -e: $< >$@

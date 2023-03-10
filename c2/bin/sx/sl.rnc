@@ -1,0 +1,95 @@
+namespace sl = "http://oracc.org/ns/sl/1.0"
+
+start =
+  element sl:signlist {
+    attribute project { xsd:NCName },
+    element sl:sign {
+      attribute deprecated { xsd:integer }?,
+      attribute n { text },
+      attribute id { xsd:NCName },
+      sort?,
+      (inote
+       | \list
+       | note
+       | pname
+       | uname
+       | uphase
+       | utf8
+       | element sl:unote { text })*,
+      v*,
+      element sl:form {
+        attribute n { text },
+        attribute ref { xsd:NCName }?,
+        attribute utf8 { text }?,
+        attribute var { text },
+        attribute varid { xsd:NCName },
+        attribute id { xsd:NCName }?,
+        sort?,
+        (proof
+         | (inote | \list | note | pname | uname | uphase | utf8)*),
+        v*,
+        element sl:inherited {
+          element sl:iv {
+            attribute n { text }
+          }+
+        }?
+      }*,
+      element sl:qs {
+        element sl:q {
+          attribute base { text }?,
+          attribute o { xsd:NCName }?,
+          attribute p { xsd:NCName }?,
+          attribute qm { text }?,
+          attribute qn { text },
+          attribute type { xsd:NCName }
+        }+
+      }?
+    }+
+  }
+sort =
+  element sl:sort {
+    attribute bau { xsd:integer },
+    attribute elles { xsd:integer },
+    attribute hzl { xsd:integer },
+    attribute kw { xsd:integer },
+    attribute kwu { xsd:integer },
+    attribute lak { xsd:integer },
+    attribute mzl { xsd:integer },
+    attribute obzl { xsd:integer },
+    attribute ogsl { xsd:integer },
+    attribute rec { xsd:integer },
+    attribute rsp { xsd:integer },
+    attribute sllha { xsd:integer },
+    attribute zatu { xsd:integer }
+  }
+pname =
+  element sl:pname {
+    attribute n { text }
+  }
+utf8 =
+  element sl:utf8 {
+    attribute hex { xsd:NCName },
+    text
+  }
+uphase = element sl:uphase { xsd:NMTOKEN }
+\list =
+  element sl:list {
+    attribute n { text },
+    attribute name { xsd:integer }?
+  }
+note = element sl:note { text }
+inote = element sl:inote { text }
+uname = element sl:uname { text }
+v =
+  element sl:v {
+    attribute comment { xsd:NCName }?,
+    attribute deprecated { xsd:NCName }?,
+    attribute n { text },
+    attribute type { xsd:NCName }?,
+    attribute uncertain { xsd:NCName }?,
+    attribute lang { text }?,
+    uphase?,
+    proof?,
+    (inote | note)*
+  }
+proof = element sl:proof { text }
