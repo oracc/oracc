@@ -5,7 +5,7 @@ for a in *.rng; do
 	tr ' ' '\n' | tr -d '>"' | \
 	grep -v '^<' >> rngnames.out
     xl $a | grep '<attribute name=\|<element name=' | \
-	sed 's/<\(attribute\|element\) name=/\1=/g' | \
-	tr -d '>"/' | tr -s ' ' | sed 's/^ //' >>rngnames.out
+	sed 's/ name=/=/g' | \
+	tr -d '<>"/' | tr -s ' ' | sed 's/^ //' >>rngnames.out
 done
 grep -v xmlns= rngnames.out >$1

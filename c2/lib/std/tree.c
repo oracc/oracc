@@ -68,3 +68,21 @@ tree_push(Tree *tp)
   if (tp->curr->last)
     tp->curr = tp->curr->last;
 }
+
+static void
+_do_node(Node *np, void (*fnc)(Node *np, void *user), void *user)
+{
+  while (np)
+    {
+      fnc(np, user);
+      for (np = np->kids; np; np = np->next)
+	_do_node(np, fnc, user);
+    }     
+}
+
+void
+tree_iterator(Tree *tp, void (*fnc)(Node *np, void *user), void *user)
+{
+  if (tp && tp->root)
+    _do_node(tp->root, fnc, user);
+}

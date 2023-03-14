@@ -86,11 +86,9 @@ cat_end(Tree *tp, char *data)
 Tree *
 cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 {
-  struct catnode *head = NULL;
   struct catinfo *cip = NULL, *head_cip = NULL;
   struct catchunk *cp = NULL;
   Tree *tp = tree_init();
-  Node *np = NULL;
 
   head_cip = cfg->chkname(cfg->head, strlen(cfg->head));
   tp->curr = tree_node(tp, cfg->head, head_cip->depth, NULL);
@@ -107,6 +105,7 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 	  cn->name = cfg->getname(cp, &data);
 	  if (cn->name && (cip = cfg->chkname(cn->name, strlen(cn->name))))
 	    {
+	      Node *np = NULL;
 	      /* always make cn the last child of curr */
 	      np = tree_add(tp, cn->name, cip->depth, NULL);
 
@@ -124,14 +123,14 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 		      while (cip->depth < tp->curr->depth)
 			tree_pop(tp);
 		    }
-		  /*cn->d = cfg->parse(data);*/
+		  cip->parse(np, data);
 		  break;
 		case CI_CHILD:
 		  if (cattrace)
 		    fprintf(stderr, "cat_herd: curr=%s@%d: adding child %s@; data=%s\n",
 			    tp->curr->name, tp->curr->depth,
 			    cn->name, data);
-		  /*cn->d = cfg->parse(data);*/
+		  cip->parse(np, data);
 		  break;
 		case CI_END:
 		  if (cattrace)
