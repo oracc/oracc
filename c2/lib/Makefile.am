@@ -1,1 +1,1 @@
-SUBDIRS=std cat xml
+SUBDIRS=std cat gdl xml
