@@ -10,7 +10,7 @@
 #define YY_USER_ACTION gdl_user_action();
 
 const char *efile = "<stdin>";
-int flextrace = 0;
+int flextrace = 1;
 int tok;
 
 extern Pool *gdlpool;
@@ -52,19 +52,16 @@ R_LHS			{ return R_lhs; }
 &			{ return ALIGN; }
 ![a-z]+			{ return FTYPE; }
 
-[a-zA-Z0-9\x80-\xff]+    { gdllval.text=gdlsave(gdltext); return CHARS; }
+[a-zA-Z0-9\x80-\xff]+   { gdllval.text=gdlsave(gdltext); return CHARS; }
 
 @[a-z0-9]+		{ gdllval.text=gdlsave(gdltext); return MOD_AT; }
 ~[a-z0-9]+     		{ gdllval.text=gdlsave(gdltext); return MOD_TL; }
 
-"."			{ return yytext[0]; }
--			{ return yytext[0]; }
-"+"			{ return yytext[0]; }
-":"			{ return yytext[0]; }
+[-+:]     		{ return gdltext[0]; }
 
-[ \t]			{ return yytext[0]; }
+[ \t]+			{ return SPACE; }
 
-\n			{ return yytext[0]; }
+\n			{ return gdltext[0]; }
 
 "|"			{ BEGIN C; return C_O; }
 <C>"|"			{ BEGIN 0; return C_C; }
@@ -86,6 +83,18 @@ R_LHS			{ return R_lhs; }
 <C>~[a-z0-9]+		{ gdllval.text=gdlsave(gdltext); return MOD_TL; }
 
 %%
+
+void
+gdl_setup_buffer(char *buf)
+{
+  (void)gdl_scan_string(buf);
+}
+
+void
+gdl_wrapup_buffer(void)
+{
+  gdl_delete_buffer(YY_CURRENT_BUFFER);
+}
 
 static void
 gdl_user_action(void)

@@ -32,4 +32,14 @@ struct gdl_g {
   const char *flags;
 };
 
+extern void gdl_init(void);
+extern void gdl_term(void);
+
+extern void gdl_setup_buffer(char *buf);
+extern void gdlparse_string(char *s);
+extern void gdlparse_init(void);
+extern void gdlparse_reset(void);
+extern void gdlparse_term(void);
+
+
 #endif /*GDL_H_*/
