@@ -31,11 +31,12 @@ tree_node(Tree *tp, const char *name, int depth, Mloc *loc)
   return np;
 }
 
-void
+Node *
 tree_root(Tree *tp, const char *name, int depth, Mloc *loc)
 {
   Node *np = tree_node(tp, name, depth, loc);
   tp->root = tp->curr = np;
+  return np;
 }
 
 Node *
@@ -67,8 +68,8 @@ tree_add(Tree *tp, const char *name, int depth, Mloc *loc)
 	      tp->curr->last = tp->curr->kids = np;
 	    }
 	}
-      return np;
     }
+  return np;
 }
 
 Node *
@@ -88,19 +89,20 @@ tree_push(Tree *tp)
 }
 
 static void
-_do_node(Node *np, void (*fnc)(Node *np, void *user), void *user)
+_do_node(Node *np, void *user, void (*nodefnc)(Node *np, void *user), void (*postfnc)(Node *np, void *user))
 {
   while (np)
     {
-      fnc(np, user);
+      nodefnc(np, user);
       for (np = np->kids; np; np = np->next)
-	_do_node(np, fnc, user);
+	_do_node(np, user, nodefnc, postfnc);
+      postfnc(np, user);
     }     
 }
 
 void
-tree_iterator(Tree *tp, void (*fnc)(Node *np, void *user), void *user)
+tree_iterator(Tree *tp, void *user, void (*nodefnc)(Node *np, void *user), void (*postfnc)(Node *np, void *user))
 {
   if (tp && tp->root)
-    _do_node(tp->root, fnc, user);
+    _do_node(tp->root, user, nodefnc, postfnc);
 }

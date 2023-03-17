@@ -98,11 +98,14 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
       if (*cp->text)
 	{
 	  struct catnode *cn = memo_new(catnode_mem);
-	  static char *data;
+	  static char *data = NULL;
 	  
 	  if (cattrace)
 	    fprintf(stderr, "cat_herd: depth before processing node: %d\n", tp->curr->depth);
 	  cn->name = cfg->getname(cp, &data);
+	  if (data)
+	    while (isspace(*data))
+	      ++data;
 	  if (cn->name && (cip = cfg->chkname(cn->name, strlen(cn->name))))
 	    {
 	      Node *np = NULL;
