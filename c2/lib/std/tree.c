@@ -91,12 +91,13 @@ tree_push(Tree *tp)
 static void
 _do_node(Node *np, void *user, void (*nodefnc)(Node *np, void *user), void (*postfnc)(Node *np, void *user))
 {
-  while (np)
+  if (np)
     {
+      Node *entry_np = np;
       nodefnc(np, user);
       for (np = np->kids; np; np = np->next)
 	_do_node(np, user, nodefnc, postfnc);
-      postfnc(np, user);
+      postfnc(entry_np, user);
     }     
 }
 

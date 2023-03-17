@@ -10,16 +10,16 @@ static void
 catxml_node(Node *np, void *user)
 {
   Xmlhelper *xhp = user;
-  fprintf(xhp->fp, "<%s>\n", np->name);
+  fprintf(xhp->fp, "<%s>", np->name);
   if (np->data)
-    fprintf(xhp->fp, "<data>%s</data>\n", xmlify((uccp)np->data));
+    fprintf(xhp->fp, "<data>%s</data>", xmlify((uccp)np->data));
 }
 
 static void
 catxml_post(Node *np, void *user)
 {
   Xmlhelper *xhp = user;
-  fprintf(xhp->fp, "</%s>\n", np->name);
+  fprintf(xhp->fp, "</%s>", np->name);
 }
 
 void
