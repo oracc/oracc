@@ -6,12 +6,16 @@
 
 extern void gdl_wrapup_buffer(void);
 
-void
+Tree *
 gdlparse_string(char *s)
 {
+  Tree *tp = tree_init();
+  (void)tree_root(tp, "gdl:gdl", 1, NULL);
   gdl_setup_buffer(s);
+  gdl_set_tree(tp);
   gdlparse();
   gdl_wrapup_buffer();
+  return tp;
 }
 
 void

@@ -17,7 +17,8 @@ main(int argc, char **argv)
 	  char buf[1024], *s;	  
 	  while ((s = fgets(buf, 1024, stdin)))
 	    {
-	      gdlparse_string(s);
+	      Tree *tp = gdlparse_string(s);
+	      gdl_xml(stdout, tp);
 	      gdlparse_reset();
 	    }
 	}

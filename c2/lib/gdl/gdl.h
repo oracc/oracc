@@ -1,6 +1,17 @@
 #ifndef GDL_H_
 #define GDL_H_
 
+#include <pool.h>
+#include <tree.h>
+
+#ifndef uccp
+#define uccp unsigned const char *
+#endif
+
+#ifndef ccp
+#define ccp const char *
+#endif
+
 enum bracket {
   e_L_squ, e_R_squ,
   e_L_cur, e_R_cur,
@@ -32,14 +43,17 @@ struct gdl_g {
   const char *flags;
 };
 
+extern Pool *gdlpool;
+
 extern void gdl_init(void);
 extern void gdl_term(void);
 
 extern void gdl_setup_buffer(char *buf);
-extern void gdlparse_string(char *s);
+extern void gdl_set_tree(Tree *tp);
+extern Tree *gdlparse_string(char *s);
 extern void gdlparse_init(void);
 extern void gdlparse_reset(void);
 extern void gdlparse_term(void);
-
+extern void gdl_xml(FILE *fp, Tree *tp);
 
 #endif /*GDL_H_*/

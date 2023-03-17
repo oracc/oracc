@@ -10,6 +10,7 @@ extern int gdllex(void);
 extern void yyerror(const char *);
 extern const char *gdltext;
 extern int gdllineno, gdltrace;
+static Tree *ytp;
 %}
 
 %union { char *text; int i; }
@@ -58,7 +59,9 @@ comment:
 
 delim:
 	  '.'
-	| '-' 			{ fprintf(stderr, "DELIM: %c\n", '-'); }
+	| '-' 						{ fprintf(stderr, "DELIM: %c\n", '-');
+	  						  (void)tree_add(ytp, "g:delim", ytp->curr->depth, NULL); 
+	  						  ytp->curr->data = "-"; }
 	| '+'
 	| ':'
 	| '{'
@@ -79,7 +82,9 @@ grapheme:
 	;
 
 graph:
-	  CHARS						{ fprintf(stderr, "CHARS: %s\n", gdllval.text); }
+	  CHARS						{ fprintf(stderr, "CHARS: %s\n", gdllval.text);
+	  						  (void)tree_add(ytp, "g:chars", ytp->curr->depth, NULL);
+	  						  ytp->curr->data = (ccp)pool_copy((uccp)gdllval.text,gdlpool); }
 	| graph breakage CHARS
 	| graph gmods breakage
 	;
@@ -140,6 +145,12 @@ cdelim:
 	;
 
 %%
+
+void
+gdl_set_tree(Tree *tp)
+{
+  ytp = tp;
+}
 
 void
 gdlerror(const char *e)
