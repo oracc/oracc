@@ -57,6 +57,7 @@ R_LHS			{ return R_lhs; }
 @[a-z0-9]+		{ gdllval.text=gdlsave(gdltext); return MOD_AT; }
 ~[a-z0-9]+     		{ gdllval.text=gdlsave(gdltext); return MOD_TL; }
 
+"--"			{ return ENYHPHEN;
 [-+:]     		{ return gdltext[0]; }
 
 [ \t]+			{ return SPACE; }

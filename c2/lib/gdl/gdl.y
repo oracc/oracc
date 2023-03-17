@@ -14,7 +14,7 @@ extern int gdllineno, gdltrace;
 
 %union { char *text; int i; }
 
-%token	<text> 	ALIGN FIELD FTYPE LANG CHARS TEXT SPACE
+%token	<text> 	ALIGN FIELD FTYPE LANG CHARS TEXT SPACE ENHYPHEN
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES
 	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur
@@ -63,7 +63,8 @@ delim:
 	| ':'
 	| '{'
 	| '}'
-	| '\n'		
+	| '\n'
+	| ENHYPHEN
 	;
 
 word:
