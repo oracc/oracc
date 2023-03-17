@@ -23,7 +23,10 @@ main(int argc, char **argv)
 	    }
 	}
       else
-	gdlparse_string(argv[1]);
+	{
+	  Tree *tp = gdlparse_string(argv[1]);
+	  gdl_xml(stdout, tp);
+	}
       gdlparse_term();
     }
   else
