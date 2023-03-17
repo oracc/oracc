@@ -2,7 +2,7 @@ include ../../../oracc-am-rules.txt
 
 noinst_LTLIBRARIES=libcat.la
 
-libcat_la_SOURCES = cat.tab.c cat-l.c catyacc.c catherd.c cat.c
+libcat_la_SOURCES = cat.tab.c cat-l.c catyacc.c catherd.c cat.c catxml.c
 
 YACC=bison
 

@@ -35,22 +35,33 @@ Node *
 tree_add(Tree *tp, const char *name, int depth, Mloc *loc)
 {
   Node *np = NULL;
-  
-  if (tp->curr->kids)
+
+  if (tp)
     {
-      np = NULL;
-      np = tree_node(tp, name, depth, loc);
-      np->rent = tp->curr->last->rent;
-      tp->curr->last->next = np;
-      tp->curr->last = np;
+      if (tp->curr && tp->curr->kids)
+	{
+	  np = NULL;
+	  np = tree_node(tp, name, depth, loc);
+	  np->rent = tp->curr->last->rent;
+	  tp->curr->last->next = np;
+	  tp->curr->last = np;
+	}
+      else
+	{
+	  np = tree_node(tp, name, depth, loc);
+	  if (!tp->curr)
+	    {
+	      tp->curr = tp->root = np;
+	      /* leave tp->rent and tp->kids as NULL */
+	    }
+	  else
+	    {
+	      np->rent = tp->curr;
+	      tp->curr->last = tp->curr->kids = np;
+	    }
+	}
+      return np;
     }
-  else
-    {
-      np = tree_node(tp, name, depth, loc);
-      np->rent = tp->curr;
-      tp->curr->last = tp->curr->kids = np;
-    }
-  return np;
 }
 
 Node *

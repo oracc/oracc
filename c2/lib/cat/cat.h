@@ -66,6 +66,7 @@ extern char* cat_name(struct catchunk *cp, char **data);
 extern void cat_term(void);
 extern struct catchunk *cat_read(const char *file);
 extern Tree *cat_herd(struct catchunk *cp, struct catconfig *cfg);
+extern void cat_xml(FILE *fp, Tree *tp);
 
 extern struct catchunk *catyacc(void);
 

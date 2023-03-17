@@ -59,7 +59,11 @@
 
 #define XML_BUILDING_EXPAT 1
 
+#ifdef __APPLE_CC__
+#include "macos-expat_config.h"
+#else
 #include <expat_config.h>
+#endif
 
 #if ! defined(_GNU_SOURCE)
 #  define _GNU_SOURCE 1 /* syscall prototype */

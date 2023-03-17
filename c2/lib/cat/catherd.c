@@ -108,6 +108,7 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 	      Node *np = NULL;
 	      /* always make cn the last child of curr */
 	      np = tree_add(tp, cn->name, cip->depth, NULL);
+	      np->data = data;
 
 	      switch (cip->rel)
 		{

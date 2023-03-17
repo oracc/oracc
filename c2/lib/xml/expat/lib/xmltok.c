@@ -43,7 +43,11 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#ifdef __APPLE_CC__
+#include "macos-expat_config.h"
+#else
 #include <expat_config.h>
+#endif
 
 #include <stddef.h>
 #include <string.h> /* memcpy */

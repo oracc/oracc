@@ -17,7 +17,8 @@ typedef struct tree Tree;
 struct node {
   const char *name;    	/* node name */
   const char *id;      	/* node ID */
-  void *data;		/* data */
+  const char *data; 	/* unparsed data when node comes from cat-style input */
+  void *parsed;		/* parsed data; parsing is done by caller's routines */
   int depth;		/* nesting depth of node; may be -1 if not
 			   used by caller */
   struct node *rent; 	/* parent */
@@ -35,5 +36,6 @@ extern Node *tree_pop(Tree *tp);
 extern void tree_push(Tree *tp);
 extern Node *tree_add(Tree *tp, const char *name, int depth, Mloc *loc);
 extern Node *tree_node(Tree *tp, const char *name, int depth, Mloc *loc);
+extern void tree_iterator(Tree *tp, void (*fnc)(Node *np, void *user), void *user);
 
 #endif/*TREE_H_*/

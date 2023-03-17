@@ -37,7 +37,7 @@ rnvval_init(struct xnn_data *xdp, char *rncfile)
 {
   int i;
 
-  if (!xaccess(rncfile, R_OK, 0))
+  if (!access(rncfile, R_OK)) /*!xaccess(rncfile, R_OK, 0)*/
     {
       if (verbose)
 	fprintf(stderr, "rnvval_init: using rnc schema %s\n", rncfile);

@@ -15,8 +15,10 @@ struct catconfig sx_cat_config =
 int
 main(int argc, const char **argv)
 {
+  Tree *tp = NULL;
   sxcat.f = argv[1];
   sxcat.c = cat_read(argv[1]);
   /*cat_dump(sxcat.c);*/
-  cat_herd(sxcat.c, &sx_cat_config);
+  tp = cat_herd(sxcat.c, &sx_cat_config);
+  cat_xml(NULL, tp);
 }

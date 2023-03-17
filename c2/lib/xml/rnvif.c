@@ -120,7 +120,7 @@ static void verror_handler(int erno,va_list ap) {
   if(erno&ERBIT_RNL) {
     rnl_default_verror_handler(erno&~ERBIT_RNL,ap);
   } else {
-    int line = tree_get_line();
+    int line = 0; /* tree_get_line();*/
       
       if (rnvif_text_id)
 	(*er_printf)("%s:%d:%s: XML error: ",file,line,rnvif_text_id);
@@ -265,7 +265,7 @@ rnv_validate(struct node *np)
 {
   previous=current=rnc_start;
   ok = 1;
-  tree_validate(np);
+  /*tree_validate(np);*/
   return !ok;
 }
 
