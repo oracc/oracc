@@ -11,7 +11,7 @@ AM_CPPFLAGS=\
 	-I../../lib/std \
 	-I../../lib/cat
 
-sx_SOURCES=sx.c sx_check.c sl.c
+sx_SOURCES=sx.c sx_check.c sx_parse.c sl.c
 
 sx_LDADD = $(xLDADD)
 

@@ -33,11 +33,11 @@ struct catconfig {
   char *head; 	/* @-tag which is the tree root; normally virtual
 		   because, e.g., .asl files don't use @signs, bug
 		   signs is the nomain root of an asl tree */
-  char * (*getname)(struct catchunk *, char **data); /* function to get a name from
-					   a chunk */
-  struct catinfo * (*chkname)(const char *,size_t);  /* function to
-					   test name is known and
-					   obtain its catinfo */
+  char * (*getname)(struct catchunk *, char **data); 	/* function to get a name from
+							   a chunk */
+  struct catinfo * (*chkname)(const char *,size_t);  	/* function to test name is known and
+							   obtain its catinfo */
+  void (*parse)(struct catchunk *, char *data);		/* function to parse data based on name of chunk */
 };
 
 struct catinfo {
@@ -45,6 +45,7 @@ struct catinfo {
   enum ci_rel rel;	/* parent or child type */
   int depth;		/* tree depth, root level == 1 */
   int end;		/* 0 == @end is optional ; 1 == @end is required */
+  void (*parse)(Node *, char *); /* function to parse data associated with name */
   char *pre_flags;	/* string of characters allowed in pre-tag flags */
   char *post_flags;	/* string of characters allowed in post-tag flags */
 };
@@ -66,9 +67,6 @@ extern void cat_term(void);
 extern struct catchunk *cat_read(const char *file);
 extern Tree *cat_herd(struct catchunk *cp, struct catconfig *cfg);
 
-extern struct catstate *catstack_push(struct catnode *n, struct catinfo *i);
-extern struct catstate *catstack_pop(void);
-extern void catstack_reset(void);
 extern struct catchunk *catyacc(void);
 
 #endif/*CAT_H_*/
