@@ -22,9 +22,14 @@ extern int gdllineno, gdltrace;
 		L_uhs R_uhs L_lhs R_lhs
 		C_L_par C_R_par MOD_AT MOD_TL
 
-%start structure word grapheme
+%start top
 
 %%
+
+top:	  structure
+	| word
+	| grapheme
+	;
 
 structure:
 	  ALIGN

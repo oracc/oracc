@@ -31,6 +31,13 @@ tree_node(Tree *tp, const char *name, int depth, Mloc *loc)
   return np;
 }
 
+void
+tree_root(Tree *tp, const char *name, int depth, Mloc *loc)
+{
+  Node *np = tree_node(tp, name, depth, loc);
+  tp->root = tp->curr = np;
+}
+
 Node *
 tree_add(Tree *tp, const char *name, int depth, Mloc *loc)
 {

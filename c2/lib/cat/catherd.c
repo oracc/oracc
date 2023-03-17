@@ -91,7 +91,7 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
   Tree *tp = tree_init();
 
   head_cip = cfg->chkname(cfg->head, strlen(cfg->head));
-  tp->curr = tree_node(tp, cfg->head, head_cip->depth, NULL);
+  tree_root(tp, cfg->head, head_cip->depth, NULL);
   
   for (cp = ccp; cp; cp = cp->next)
     {
