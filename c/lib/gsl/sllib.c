@@ -19,7 +19,7 @@ static const char *oracc = NULL;
 
 static Hash_table *h = NULL;
 
-static int sllib_verbose = 0;
+static int sllib_trace = 0;
 
 static int signindicator[256];
 
@@ -162,10 +162,9 @@ sl_kstrip(void *k)
 	  kh = hash_find(h,k);
 	  if (kh)
 	    {
-#if 0
-	      fprintf(stderr, "adding stripped version %s for %s with OID %s\n",
-		      (const char *)ks, (const char *)k, (const char *)kh);
-#endif
+	      if (sllib_trace)
+		fprintf(stderr, "adding stripped version %s for %s with OID %s\n",
+			(const char *)ks, (const char *)k, (const char *)kh);
 	      hash_add(h,ks,kh);
 	    }
 	  else
@@ -197,6 +196,8 @@ sl_init_h(const char *project, const char *name)
   tsv_data = slurp("sllib", tsv_file, &fsiz);
   if (tsv_data)
     {
+      if (sllib_trace)
+	fprintf(stderr, "sllib: slurped %s\n", tsv_file);
       h = hash_create(1024);
       kstrip = list_create(LIST_SINGLE);
       for (p = tsv_data; *p; )
@@ -214,6 +215,8 @@ sl_init_h(const char *project, const char *name)
 		*p++ = '\0';
 	      if (v)
 		{
+		  if (sllib_trace)
+		    fprintf(stderr, "sllib: adding %s = %s\n", k, v);
 		  hash_add(h, k, v);
 		  if ('o' == *v && isdigit(v[1]))
 		    {
@@ -223,13 +226,15 @@ sl_init_h(const char *project, const char *name)
 			  if (k2)
 			    fprintf(stderr, "sl_init_h: duplicate key/val %s = %s\n", k, v);
 			  else
-			    hash_add(h,v,k);
+			    {
+			      if (sllib_trace)
+				fprintf(stderr, "sllib: adding %s = %s\n", v, k);
+			      hash_add(h,v,k);
+			    }
 			  if (strpbrk((const char *)k,"()+"))
 			    list_add(kstrip, k);
 			}
 		    }
-		  if (sllib_verbose)
-		    fprintf(stderr, "sl_init_h: adding k %s = v %s\n", k, v);
 		}
 	    }
 	}

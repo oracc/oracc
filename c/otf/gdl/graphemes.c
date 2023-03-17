@@ -585,13 +585,17 @@ gparse(register unsigned char *g, enum t_type type)
   unsigned char *orig = pool_copy(g);
   const unsigned char *signified = NULL;
 
+#ifdef GVL_MODE
+  gvl_g *gg = NULL;
+#endif
+  
   render_canonically = compound_warnings;
 
 #ifdef GVL_MODE
   {
     if (curr_lang->signlist && '#' == *curr_lang->signlist && !gdl_bootstrap)
       {
-	gvl_g *gg = gvl_validate(g);
+	gg = gvl_validate(g);
 	if (gg && gg->mess)
 	  {
 	    if (!inner_qual && !inner_parse) /* || !strstr((const char *)gg->mess, "must be qualified")) */
@@ -889,7 +893,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  if (curr_lang->signlist
 	      && '#' == *curr_lang->signlist
 	      && !gdl_bootstrap
-	      /* && !psl_is_sname(g_utf) */
+	      && !psl_is_sname(g_utf)
 	      && !psl_is_value(gcheck)
 	      && gcheck[len-1] != 'x')
 	    {
