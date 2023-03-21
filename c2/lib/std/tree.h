@@ -4,12 +4,14 @@
 #include <memo.h>
 #include <mesg.h>
 #include <pool.h>
+#include <prop.h>
 
 struct tree {
   struct node *root;
   struct node *curr;
   Memo *nodemem;
   Pool *pool;
+  Prop *propmem;
 };
 
 typedef struct tree Tree;
@@ -25,6 +27,8 @@ struct node {
   struct node *kids; 	/* children */
   struct node *last; 	/* last sibling, i.e., where we are adding sibs */
   struct node *next; 	/* next sibling */
+  Tree *tree;
+  Prop *props;
   Mloc *mloc;
 };
 

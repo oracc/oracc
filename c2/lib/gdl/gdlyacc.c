@@ -1,4 +1,4 @@
-#include <stdlib.h>
+m#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <tree.h>
@@ -61,7 +61,7 @@ gdl_prop(Node *ynp, enum gprop type, const char *s)
 {
   if (ynp)
     {
-      
+      ynp->props = prop_add(ynp->tree->propmem, ynp->props, type, 0, s, NULL);
     }
   else
     {
