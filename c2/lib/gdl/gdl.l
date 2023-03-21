@@ -19,18 +19,27 @@ static void gdl_user_action(void);
 
 %}
 
-%x C
+%s C
 %x T
 
 %%
 
-"($"			{ BEGIN T; return L_inl_dol; }
-<T>"$)"			{ BEGIN 0; return R_inl_dol; }
+<C>"|"			{ BEGIN 0; return C_C; }
+"|"			{ BEGIN C; return C_O; }
 
-"(#"			{ BEGIN T; return L_inl_cmt; }
-<T>"#)"			{ BEGIN 0; return R_inl_cmt; }
+<C>"."			{ return C_PERIOD; }
+<C>"+"			{ return C_PLUS; }
+<C>":"			{ return C_COLON; }
+<C>"&"			{ return C_ABOVE; }
+<C>"%"			{ return C_CROSSING; }
+<C>@/[^a-z0-9]		{ return C_OPPOSING; }
+<C>"4\xc3\x97"		{ return C_4TIMES; }
+<C>"3\xc3\x97"		{ return C_3TIMES; }
+<C>"\xc3\x97"	       	{ return C_TIMES; }
+<C>"("			{ return '('; }
+<C>")"			{ return ')'; }
 
-<T>.+			{ gdllval.text=gdlsave(gdltext); return TEXT; }
+"\xc3\x97"	       	{ return C_TIMES; }
 
 "<<"			{ return L_dbl_ang; }
 ">>"			{ return R_dbl_ang; }
@@ -52,10 +61,7 @@ R_LHS			{ return R_lhs; }
 &			{ return ALIGN; }
 ![a-z]+			{ return FTYPE; }
 
-[a-zA-Z0-9\x80-\xff]+   { gdllval.text=gdlsave(gdltext); return CHARS; }
-
-@[a-z0-9]+		{ gdllval.text=gdlsave(gdltext); return MOD_AT; }
-~[a-z0-9]+     		{ gdllval.text=gdlsave(gdltext); return MOD_TL; }
+[a-zA-Z0-9\x80-\xc2\xc4-\xff]+([@~][a-z0-9]+)* { gdllval.text=gdlsave(gdltext); return GRAPHEME; }
 
 "--"			{ return ENHYPHEN; }
 [-+:]     		{ return gdltext[0]; }
@@ -64,25 +70,15 @@ R_LHS			{ return R_lhs; }
 
 \n			{ return gdltext[0]; }
 
-"|"			{ BEGIN C; return C_O; }
-<C>"|"			{ BEGIN 0; return C_C; }
+"($"			{ BEGIN T; return L_inl_dol; }
+<T>"$)"			{ BEGIN 0; return R_inl_dol; }
 
-<C>"."			{ return C_PERIOD; }
-<C>"+"			{ return C_PLUS; }
-<C>":"			{ return C_COLON; }
-<C>"&"			{ return C_ABOVE; }
-<C>"%"			{ return C_CROSSING; }
-<C>@/[^a-z0-9]		{ return C_OPPOSING; }
-<C>4TIMES		{ return C_4TIMES; }
-<C>3TIMES		{ return C_3TIMES; }
-<C>TIMES		{ return C_TIMES; }
-<C>"("			{ return C_L_par; }
-<C>")"			{ return C_R_par; }
+"(#"			{ BEGIN T; return L_inl_cmt; }
+<T>"#)"			{ BEGIN 0; return R_inl_cmt; }
 
-<C>[a-zA-Z0-9\x80-\xff]+ { gdllval.text=gdlsave(gdltext); return CHARS; }
-<C>@[a-z0-9]+		{ gdllval.text=gdlsave(gdltext); return MOD_AT; }
-<C>~[a-z0-9]+		{ gdllval.text=gdlsave(gdltext); return MOD_TL; }
+<T>.+			{ gdllval.text=gdlsave(gdltext); return TEXT; }
 
+<<EOF>>			{ return 0; }
 %%
 
 void

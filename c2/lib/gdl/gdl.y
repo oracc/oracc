@@ -16,14 +16,12 @@ static Node *ynp;
 
 %union { char *text; int i; }
 
-%token	<text> 	ALIGN FIELD FTYPE LANG CHARS TEXT SPACE ENHYPHEN
+%token	<text> 	ALIGN FIELD FTYPE LANG GRAPHEME TEXT SPACE ENHYPHEN
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES
 	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
 		L_uhs R_uhs L_lhs R_lhs
-		C_L_par C_R_par MOD_AT MOD_TL
-%token <i>    '.' '-' '+' ':' '{' '}' '\n'
 
 %start top
 
@@ -49,100 +47,104 @@ lineseg:
 	| comment
 	;
 
-words:    word
-	| words SPACE word
-	;
-
 comment:
 	  L_inl_dol TEXT R_inl_dol
 	| L_inl_cmt TEXT R_inl_cmt
 	;
 
-delim:
-	  '.'
-	| '-' 						{ fprintf(stderr, "DELIM: %c\n", '-');
-	  						  ynp = tree_add(ytp, "g:delim", ytp->curr->depth, NULL); 
-	  						  ynp->data = "-"; }
-	| '+'
-	| ':'
-	| '{'
-	| '}'
-	| '\n'
-	| ENHYPHEN
+words:    word
+	| words SPACE word
 	;
 
 word:
-	  grapheme
-	| word delim grapheme
+	  sorc
+	| word delim sorc
 	;
 
-grapheme:
-	  graph
-	| graph gmeta
-	| compound
+delim:
+	  '.' 						{ ynp = gdl_delim(ytp, "."); }
+        | '-' 						{ ynp = gdl_delim(ytp, "-"); }
+	| '+' 						{ ynp = gdl_delim(ytp, "+"); }
+	| ':' 						{ ynp = gdl_delim(ytp, ":"); }
+	| '{' 						
+	| '}' 						
+	| '\n'
+	| ENHYPHEN 			       		{ ynp = gdl_delim(ytp, "--"); }
 	;
 
-graph:
-	  CHARS						{ fprintf(stderr, "CHARS: %s\n", gdllval.text);
-	  						  ynp = tree_add(ytp, "g:chars", ytp->curr->depth, NULL);
-	  						  ynp->data = (ccp)pool_copy((uccp)gdllval.text,gdlpool); }
-	| graph breakage CHARS
-	| graph gmods breakage
+sorc:
+	  s
+	| c
 	;
 
-gmeta:
-	  flags
-	| state
-	| gmeta flags
-	| gmeta state
+s:	  stateo simplexg gflags statec
 	;
 
-state:
-	  '<'
-	| '>'
-	| L_dbl_ang
-	| R_dbl_ang
-	| L_dbl_cur
-	| R_dbl_cur
+c:	  stateo compound gflags statec
 	;
 
-breakage:
-	  '['
-	| ']'
-	| L_uhs
-	| R_uhs
-	| L_lhs
-	| R_lhs
+
+simplexg: GRAPHEME					{ ynp = gdl_graph(ytp, gdllval.text); }
 	;
 
-flags:	  '*' | '#' | '!' | '?' ;
+gflags:	  '*'						{ gdl_prop(ynp, GP_FLAGS , "*"); }
+	| '#'						{ gdl_prop(ynp, GP_FLAGS , "#"); }
+	| '!'						{ gdl_prop(ynp, GP_FLAGS , "!"); }
+	| '?'						{ gdl_prop(ynp, GP_FLAGS , "?"); }
+	| /* empty */
+	;
 
-gmods:
-	  MOD_AT
-	| MOD_TL
-	| MOD_AT MOD_TL
+stateo:  
+	  '<'						{ gdl_prop(ynp, GP_STATE , "<"); }
+	| L_dbl_ang				       	{ gdl_prop(ynp, GP_STATE , "<<"); }
+	| L_dbl_cur			       		{ gdl_prop(ynp, GP_STATE , "{{"); }
+	| '['						{ gdl_prop(ynp, GP_BREAK , "["); }
+	| L_uhs						{ gdl_prop(ynp, GP_BREAK , "[#"); }
+	| L_lhs						{ gdl_prop(ynp, GP_BREAK , "[##"); }
+        | /* empty */
+	;
+
+
+statec:
+	  '>'						{ gdl_prop(ynp, GP_STATE , ">"); }
+	| R_dbl_ang			       		{ gdl_prop(ynp, GP_STATE , ">>"); }
+	| R_dbl_cur					{ gdl_prop(ynp, GP_STATE , "}}"); }
+	| ']'						{ gdl_prop(ynp, GP_BREAK , "]"); }
+	| R_uhs						{ gdl_prop(ynp, GP_BREAK , "#]"); }
+	| R_lhs						{ gdl_prop(ynp, GP_BREAK , "##]"); }
+        | /* empty */
 	;
 
 compound:
-	C_O cgraphemes C_C
+	C_O 						{ gdl_push(ytp,"g:c"); }
+	cword
+	C_C 						{ gdl_pop(ytp,"g:c"); }
 	;
 
-cgraphemes:
-	  graph cdelim
-	| cgraphemes graph
-	| C_L_par cgraphemes C_R_par
+cword:
+	  sorg
+	| cword cdelim sorg
+        ;
+
+sorg:
+          s | g
+        ;
+
+g:        '('						{ gdl_push(ytp,"g:gp"); }
+	  cword
+	  ')'						{ gdl_pop(ytp,"g:gp"); }
 	;
 
 cdelim:
-	C_PERIOD
-	| C_ABOVE
-	| C_COLON
-	| C_CROSSING
-	| C_OPPOSING
-	| C_PLUS
-	| C_TIMES
-	| C_4TIMES
-	| C_3TIMES
+	  C_PERIOD					{ ynp = gdl_delim(ytp, "."); }
+	| C_ABOVE					{ ynp = gdl_delim(ytp, "&"); }
+	| C_COLON					{ ynp = gdl_delim(ytp, ":"); }
+	| C_CROSSING					{ ynp = gdl_delim(ytp, "%"); }
+	| C_OPPOSING					{ ynp = gdl_delim(ytp, "@"); }
+	| C_PLUS					{ ynp = gdl_delim(ytp, "+"); }
+	| C_TIMES					{ ynp = gdl_delim(ytp, "×"); }
+	| C_3TIMES					{ ynp = gdl_delim(ytp, "3×"); }
+	| C_4TIMES					{ ynp = gdl_delim(ytp, "4×"); }
 	;
 
 %%

@@ -12,6 +12,7 @@
 #define ccp const char *
 #endif
 
+#if 0
 enum bracket {
   e_L_squ, e_R_squ,
   e_L_cur, e_R_cur,
@@ -25,11 +26,14 @@ enum bracket {
   e_L_inl_dol , e_R_inl_dol,
   e_L_inl_cmt , e_R_inl_cmt
 };
+#endif
 
-struct brackets {
-  int index;
-  enum bracket type;
-  struct brackets *next; /* only used with medial brackets */
+enum gprop { GP_BREAK , GP_FLAGS , GP_STATE };
+
+struct gdl_prop {
+  enum gprop type;
+  const char *data;
+  struct gdl_prop *next;
 };
 
 struct gdl_g {
@@ -37,9 +41,6 @@ struct gdl_g {
   unsigned const char *orig; /* original grapheme */
   unsigned const char *accn; /* canonicalized grapheme mapped through accnum */
   const char *type;
-  struct brackets *o;
-  struct brackets *m; /* medial brackets, for legacy mode */
-  struct brackets *c;
   const char *flags;
 };
 
@@ -55,5 +56,13 @@ extern void gdlparse_init(void);
 extern void gdlparse_reset(void);
 extern void gdlparse_term(void);
 extern void gdl_xml(FILE *fp, Tree *tp);
+
+extern void gdl_append(Node *ynp, const char *s);
+extern Node *gdl_delim(Tree *ytp, const char *data);
+extern Node *gdl_graph(Tree *ytp, const char *data);
+extern void gdl_prop(Node *ynp, enum gprop type, const char *s);
+
+extern void gdl_pop(Tree *ytp, const char *s);
+extern void gdl_push(Tree *ytp, const char *s);
 
 #endif /*GDL_H_*/
