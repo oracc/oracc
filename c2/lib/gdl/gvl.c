@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <ctype.h>
 #include <wchar.h>
 #include <wctype.h>
 
+#include <oraccsys.h>
 #include <memo.h>
 #include <pool.h>
 #include <hash.h>
@@ -15,7 +17,6 @@
 
 static gvl_i *sl = NULL; /* sl is always the head of the list of signlist datasets, not necessarily the current one */
 static gvl_i *curr_sl = NULL; /* the sl that should be used for look up */
-static int tsv = 0;
 static int gvl_trace = 0;
 
 int gvl_strict = 0;
@@ -27,8 +28,7 @@ const unsigned char *(*gvl_lookup)(unsigned const char *key);
 unsigned char *gvl_v_from_h(const unsigned char *b, const unsigned char *qsub);
 unsigned char *gvl_val_base(const unsigned char *v);
 
-static gvl_i *gvl_i_init_d(const char *name, Dbi_index *dbi);
-static gvl_i *gvl_i_init_h(const char *name, Hash_table *h);
+static gvl_i *gvl_i_init_h(const char *name, Hash *h);
 static void   gvl_i_term(const char *name);
 
 #define ccp const char *
@@ -230,57 +230,34 @@ gvl_is_value(unsigned const char *g)
 #endif
 }
 
-static unsigned const char *
-gvl_lookup_d(unsigned const char *key)
-{
-  return sl_lookup_d(curr_sl->u.d,key);
-}
-
 #if 0
 /* NOTE: THIS ONLY WORKS WITH HASH-BASED VERSION OF GVL */
 static unsigned const char *
 gvl_key_of(unsigned const char *v)
 {
-  return hash_exists(curr_sl->u.h, v);
+  return hash_exists(curr_sl->sl, v);
 }
 #endif
 
 static unsigned const char *
 gvl_lookup_h(unsigned const char *key)
 {
-  return key ? hash_find(curr_sl->u.h, (const unsigned char *)key) : NULL;
+  return key ? hash_find(curr_sl->sl, (const unsigned char *)key) : NULL;
 }
 
 gvl_i*
-gvl_setup(const char *project, const char *name, int arg_tsv)
+gvl_setup(const char *project, const char *name)
 {
   gvl_i *ret = NULL;
-  tsv = arg_tsv;
-  if (tsv)
-    {
-      Hash_table *h = NULL;
+  Hash *h = NULL;
 
-      use_unicode = 1;
-      gvl_lookup = gvl_lookup_h;
-      
-      if ((h = sl_init_h(project, name)))
-	ret = gvl_i_init_h(name, h);
-      else
-	fprintf(stderr, "gvl: failed to open TSV %s/%s\n", (char *)project, (char*)name);
-    }
+  gvl_lookup = gvl_lookup_h;
+  
+  if ((h = sl_init(project, name)))
+    ret = gvl_i_init_h(name, h);
   else
-    {
-      Dbi_index *dbi = NULL;
+    fprintf(stderr, "gvl: failed to open TSV %s/%s\n", (char *)project, (char*)name);
 
-      gvl_lookup = gvl_lookup_d;
-
-      if ((dbi = sl_init_d(project, name)))
-	ret = gvl_i_init_d(name, dbi);
-      else
-	fprintf(stderr, "gvl: failed to open DBI %s/%s\n", (char *)project, (char*)name);
-    }
-
-  ret->tsv = arg_tsv;
   sl_init_si();
 
   return ret;
@@ -352,27 +329,14 @@ gvl_i_init_(const char *name)
 }
 
 gvl_i *
-gvl_i_init_d(const char *name, Dbi_index *dbi)
-{
-  gvl_i *p = NULL;
-  if (dbi)
-    {
-      p = gvl_i_init_(name);
-      if (!p->u.d)
-	p->u.d = dbi;
-    }
-  return p;
-}
-
-gvl_i *
-gvl_i_init_h(const char *name, Hash_table *h)
+gvl_i_init_h(const char *name, Hash *h)
 {
   gvl_i *p = NULL;
   if (h)
     {
       p = gvl_i_init_(name);
-      if (!p->u.h)
-	p->u.h = h;
+      if (!p->sl)
+	p->sl = h;
     }
   return p;  
 }
@@ -387,10 +351,7 @@ gvl_i_term(const char *name)
       if (!strcmp(tmp->n, name))
 	{
 	  gvl_i *next = tmp->next;
-	  if (tmp->tsv)
-	    hash_free(tmp->u.h, NULL);
-	  else
-	    sl_term_d(tmp->u.d);
+	  hash_free(tmp->sl, NULL);
 	  hash_free(tmp->h, NULL);
 	  pool_term(tmp->p);
 	  free(tmp);
@@ -784,8 +745,10 @@ gvl_validate(unsigned const char *g)
   gvl_g *gp = NULL;
   /* unsigned const char *orig_g = g; */
 
+#if 0
   if (!use_unicode && !isdigit(g[0]) && '|' != g[0] && ':' != g[0] && '*' != g[0])
     g = g2utf(g);
+#endif
 
   if (g && !gvl_ignore(g))
     {

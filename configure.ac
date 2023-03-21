@@ -242,6 +242,7 @@ AC_CONFIG_FILES([Makefile
 	doc/ns/xse/1.0/Makefile
 	c2/Makefile
 	c2/lib/Makefile
+	c2/lib/sys/Makefile
 	c2/lib/std/Makefile
 	c2/lib/cat/Makefile
 	c2/lib/gdl/Makefile

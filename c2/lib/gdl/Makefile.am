@@ -2,12 +2,13 @@ include ../../../oracc-am-rules.txt
 
 noinst_LTLIBRARIES=libgdl.la
 
-libgdl_la_SOURCES = gdl.tab.c gdl-l.c gdlyacc.c gdl.c gdlxml.c sll.c gvl.c
+libgdl_la_SOURCES = gdl.tab.c gdl-l.c gdlyacc.c gdl.c gdlxml.c sll.c gvl.c g_c10e.c
 
 YACC=bison
 
 AM_CPPFLAGS=\
 	-I../../lib/include \
+	-I../../lib/sys \
 	-I../../lib/std \
 	-I../../lib/xml
 

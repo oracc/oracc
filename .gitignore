@@ -649,6 +649,7 @@ c/bin/util/unittable
 c/bin/util/unittable
 
 c/lib/oracc/fname.c
+c2/lib/sys/fname.c
 
 c/bin/server/builtins.c
 

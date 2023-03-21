@@ -5,6 +5,8 @@
 #include <wchar.h>
 #include <wctype.h>
 #include <locale.h>
+
+#include <oraccsys.h>
 #include <pool.h>
 #include "sll.h"
 

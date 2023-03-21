@@ -1,7 +1,7 @@
 #ifndef _GVL_H
 #define _GVL_H
 
-#include <sllib.h>
+#include "sll.h"
 
 struct gvl_g {
   unsigned const char *text; /* grapheme as passed for validation */
@@ -17,12 +17,11 @@ struct gvl_g {
 typedef struct gvl_g gvl_g;
 
 struct gvl_i {
-  int tsv;		/* 1 if tsv mode; 0 if dbi mode */
   const char *n;	/* name of SL DB */
-  Hash_table *sl;	/* in-memory signlist hash */
-  Hash_table *h;	/* Hash of items validated */
-  struct mb *m;		/* Memory blocks for gvl_g nodes */
-  struct npool *p;	/* General purpose string pool */
+  Hash *sl;		/* in-memory signlist hash */
+  Hash *h;		/* Hash of items validated */
+  Memo *m;		/* Memory blocks for gvl_g nodes */
+  Pool *p;		/* General purpose string pool */
   struct gvl_i *prev;
   struct gvl_i *next;
 };
@@ -31,7 +30,7 @@ typedef struct gvl_i gvl_i;
 
 extern unsigned const char *(*gvl_lookup)(unsigned const char *key);
 
-extern gvl_i *gvl_setup(const char *project, const char *name, int arg_tsv);
+extern gvl_i *gvl_setup(const char *project, const char *name);
 extern void gvl_wrapup(const char *name);
 
 extern gvl_i *gvl_i_find(const char *name);
@@ -49,5 +48,10 @@ extern unsigned const char *gvl_cuneify(unsigned const char *g);
 extern unsigned const char *gvl_cuneify_gv(gvl_g *gp);
 extern unsigned const char *gvl_ucode(gvl_g *gp);
 
+extern unsigned char *g_c10e(const unsigned char *g, int *err);
+extern wchar_t *g_wlc(wchar_t *w);
+extern wchar_t *g_wuc(wchar_t *w);
+extern unsigned char *g_lc(unsigned const char *g);
+extern unsigned char *g_uc(unsigned const char *g);
 
 #endif/*_GVL_H*/
