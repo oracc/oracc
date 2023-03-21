@@ -4,6 +4,7 @@
 %define parse.error verbose
 
 %{
+#include <stdlib.h>
 #include <stdio.h>
 #include "gdl.h"
 extern int gdllex(void);
@@ -19,8 +20,10 @@ static Node *ynp;
 %token	<text> 	ALIGN FIELD FTYPE LANG GRAPHEME TEXT SPACE ENHYPHEN
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES
-	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
+
+%token <i>	'*' '!' '?' '#' '<' '>' '{' '}' '[' ']'
+       	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur
 		L_uhs R_uhs L_lhs R_lhs
 
 %start top
@@ -87,31 +90,31 @@ c:	  stateo compound gflags statec
 simplexg: GRAPHEME					{ ynp = gdl_graph(ytp, gdllval.text); }
 	;
 
-gflags:	  '*'						{ gdl_prop(ynp, GP_FLAGS , "*"); }
-	| '#'						{ gdl_prop(ynp, GP_FLAGS , "#"); }
-	| '!'						{ gdl_prop(ynp, GP_FLAGS , "!"); }
-	| '?'						{ gdl_prop(ynp, GP_FLAGS , "?"); }
+gflags:	  '*'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
+	| '#'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
+	| '!'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
+	| '?'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
 	| /* empty */
 	;
 
 stateo:  
-	  '<'						{ gdl_prop(ynp, GP_STATE , "<"); }
-	| L_dbl_ang				       	{ gdl_prop(ynp, GP_STATE , "<<"); }
-	| L_dbl_cur			       		{ gdl_prop(ynp, GP_STATE , "{{"); }
-	| '['						{ gdl_prop(ynp, GP_BREAK , "["); }
-	| L_uhs						{ gdl_prop(ynp, GP_BREAK , "[#"); }
-	| L_lhs						{ gdl_prop(ynp, GP_BREAK , "[##"); }
+	  '<'						{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
+	| L_dbl_ang				       	{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
+	| L_dbl_cur			       		{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
+	| '['						{ gdl_prop(ynp, $1, PG_GDL_BREAK, NULL, NULL); }
+	| L_uhs						{ gdl_prop(ynp, $1, PG_GDL_BREAK, NULL, NULL); }
+	| L_lhs						{ gdl_prop(ynp, $1, PG_GDL_BREAK, NULL, NULL); }
         | /* empty */
 	;
 
 
 statec:
-	  '>'						{ gdl_prop(ynp, GP_STATE , ">"); }
-	| R_dbl_ang			       		{ gdl_prop(ynp, GP_STATE , ">>"); }
-	| R_dbl_cur					{ gdl_prop(ynp, GP_STATE , "}}"); }
-	| ']'						{ gdl_prop(ynp, GP_BREAK , "]"); }
-	| R_uhs						{ gdl_prop(ynp, GP_BREAK , "#]"); }
-	| R_lhs						{ gdl_prop(ynp, GP_BREAK , "##]"); }
+	  '>'						{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
+	| R_dbl_ang			       		{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
+	| R_dbl_cur					{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
+	| ']'						{ gdl_prop(ynp, $1, PG_GDL_BREAK, NULL, NULL); }
+	| R_uhs						{ gdl_prop(ynp, $1, PG_GDL_BREAK, NULL, NULL); }
+	| R_lhs						{ gdl_prop(ynp, $1, PG_GDL_BREAK, NULL, NULL); }
         | /* empty */
 	;
 

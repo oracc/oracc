@@ -14,3 +14,19 @@ prop_add(Memo *propmem, Prop *p, int ptype, int gtype, const char *key, const ch
   p->v = value;
   return p;
 }
+
+Prop*
+prop_last(Prop *p)
+{
+  if (p)
+    while (p->next)
+      p = p->next;
+  return p;
+}
+
+int
+prop_user_group(void)
+{
+  static int pug = PG_LAST;
+  return ++pug;
+}

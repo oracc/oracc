@@ -10,6 +10,7 @@ tree_init(void)
   Tree *tp = calloc(1, sizeof(Tree));
   tp->nodemem = memo_init(sizeof(Node), 1024);
   tp->pool = pool_init();
+  tp->propmem = memo_init(sizeof(Prop), 1024);
   return tp;
 }
 

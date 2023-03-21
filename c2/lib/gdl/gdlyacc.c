@@ -1,4 +1,4 @@
-m#include <stdlib.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <tree.h>
@@ -57,16 +57,12 @@ gdl_graph(Tree *ytp, const char *data)
 }
 
 void
-gdl_prop(Node *ynp, enum gprop type, const char *s)
+gdl_prop(Node *ynp, int ptype, int gtype, const char *k, const char *v)
 {
   if (ynp)
-    {
-      ynp->props = prop_add(ynp->tree->propmem, ynp->props, type, 0, s, NULL);
-    }
+    ynp->props = prop_add(ynp->tree->propmem, ynp->props, ptype, gtype, k, v);
   else
-    {
-      fprintf(stderr, "gdl_prop passed NULL ynp\n");
-    }
+    fprintf(stderr, "gdl_prop passed NULL ynp\n");
 }
 
 void

@@ -28,14 +28,6 @@ enum bracket {
 };
 #endif
 
-enum gprop { GP_BREAK , GP_FLAGS , GP_STATE };
-
-struct gdl_prop {
-  enum gprop type;
-  const char *data;
-  struct gdl_prop *next;
-};
-
 struct gdl_g {
   unsigned const char *c10e; /* canonicalized grapheme */
   unsigned const char *orig; /* original grapheme */
@@ -60,7 +52,7 @@ extern void gdl_xml(FILE *fp, Tree *tp);
 extern void gdl_append(Node *ynp, const char *s);
 extern Node *gdl_delim(Tree *ytp, const char *data);
 extern Node *gdl_graph(Tree *ytp, const char *data);
-extern void gdl_prop(Node *ynp, enum gprop type, const char *s);
+extern void gdl_prop(Node *ynp, int p, int g, const char *k, const char *v);
 
 extern void gdl_pop(Tree *ytp, const char *s);
 extern void gdl_push(Tree *ytp, const char *s);

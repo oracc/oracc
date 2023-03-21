@@ -10,8 +10,8 @@ struct tree {
   struct node *root;
   struct node *curr;
   Memo *nodemem;
+  Memo *propmem;
   Pool *pool;
-  Prop *propmem;
 };
 
 typedef struct tree Tree;
