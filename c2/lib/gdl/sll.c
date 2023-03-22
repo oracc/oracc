@@ -214,3 +214,122 @@ void
 sl_term(Hash *h)
 {
 }
+
+const char *
+gvl_sub_of(int i)
+{
+  switch (i)
+    {
+    case 1:
+      return "₁";
+    case 2:
+      return "₂";
+    case 3:
+      return "₃";
+    case 4:
+      return "₄";
+    case 5:
+      return "₅";
+    case 6:
+      return "₆";
+    case 7:
+      return "₇";
+    case 8:
+      return "₈";
+    case 9:
+      return "₉";
+    case 0:
+      return "₀";
+    }
+  return NULL;
+}
+
+unsigned char *
+sll_tmp_key(unsigned const char *key, const char *field)
+{
+  static char tmpkey[128];
+  if (key)
+    {
+      strcpy(tmpkey,(ccp)key);
+      if (*field)
+	{
+	  char *tk = tmpkey + strlen(tmpkey);
+	  *tk++ = ';';
+	  strcpy(tk,field);
+	}
+      return (ucp)tmpkey;
+    }
+  else
+    return NULL;
+}
+
+/* sl.tsv encodings homophones as an OID/INDEX pair; this routine
+   */
+
+unsigned char *
+sll_v_from_h(const unsigned char *b, const unsigned char *qsub)
+{
+  if (b && qsub)
+    {
+      int qsub_i = atoi((ccp)qsub);
+      if (qsub_i >= 0)
+	{
+	  unsigned char *ret = malloc(strlen((ccp)b)+7);
+	  int tens = qsub_i / 10;
+	  int unit = qsub_i % 10;
+	  const char *tensp = NULL, *unitp = gvl_sub_of(unit);
+	  strcpy((char *)ret, (const char *)b);
+	  if (qsub_i)
+	    {
+	      if (tens && ((tensp = gvl_sub_of(tens))))
+		strcat((char *)ret,tensp);
+	      if (unitp)
+		strcat((char *)ret,unitp);
+	    }
+	  else
+	    strcat((char*)ret,"ₓ");
+	  return ret;
+	}
+    }
+  return NULL;
+}
+
+unsigned const char *
+sll_try_h(unsigned const char *g)
+{
+  unsigned char *b = gvl_val_base(g);
+  unsigned const char *h = sll_lookup(sll_tmp_key(b,"h"));
+  unsigned const char *p = NULL;
+  if (h)
+    {
+      if ((p = (uccp)strstr((ccp)h, qp->oid)))
+	{
+	  unsigned char *p2 = NULL, *p_end = (ucp)strchr((char*)p,' '), *p_slash = NULL, *free1 = NULL, *free2 = NULL;
+	  if (p_end)
+	    {
+	      p2 = free2 = malloc((p_end-p) + 1);
+	      strncpy((char*)p2,(char*)p,p_end-p);
+	      p2[p_end-p] = '\0';
+	    }
+	  else
+	    {
+	      p2 = malloc(strlen((char*)p) + 1);
+	      strcpy((char*)p2,(char*)p);
+	    }
+	  if ((p_slash = (ucp)strchr((ccp)p,'/')))
+	    {
+	      p = free1 = sll_v_from_h((uccp)b, (uccp)p_slash+1);
+	      if (!p)
+		{
+		  fprintf(stderr, "sll: internal error in data: sll_from_h failed on %s\n", p_slash);
+		  p = (ucp)"(null)";
+		}
+	    }
+	  else
+	    p = b;
+	}
+    }
+  if (free2)
+    free(free2);
+  return p;
+}

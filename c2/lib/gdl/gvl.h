@@ -5,14 +5,15 @@
 #include "sll.h"
 
 struct gvl_g {
-  unsigned const char *text; /* grapheme as passed for validation */
+  unsigned const char *text; /* grapheme as passed for validation; for a vq this is the vq as passed */
   unsigned const char *accn; /* grapheme mapped through accnum */
   const char *type;
   const char *oid;  /* OID for sign */
-  unsigned const char *sign; /* sign name for OID */
+  unsigned const char *sign; /* sign name for OID; for a vq this is the canonical vq */
   unsigned const char *utf8; /* UTF8 value for OID */
-  unsigned const char *uhex; /* UTF8 value for OID */
+  unsigned const char *uhex; /* HEX value for OID */
   unsigned const char *mess; /* NULL if OK; if bad this is the error message for the grapheme */
+  int status; 		     /* 0 for exactly right; 1 for required canonicalization; -1 on error */
 };
 
 typedef struct gvl_g gvl_g;
@@ -28,6 +29,8 @@ struct gvl_i {
 };
 
 typedef struct gvl_i gvl_i;
+
+#define QFIX (q_fixed ? (ccp)q_fixed : "")
 
 extern unsigned const char *(*gvl_lookup)(unsigned const char *key);
 

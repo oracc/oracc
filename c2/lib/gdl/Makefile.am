@@ -2,7 +2,8 @@ include ../../../oracc-am-rules.txt
 
 noinst_LTLIBRARIES=libgdl.la
 
-libgdl_la_SOURCES = gdl.tab.c gdl-l.c gdlyacc.c gdl.c gdlxml.c sll.c gvl.c g_c10e.c
+libgdl_la_SOURCES = gdl.tab.c gdl-l.c gdlyacc.c gdl.c gdlxml.c sll.c g_c10e.c \
+	 gvl.c gvl_setup.c gvl_vq.c
 
 YACC=bison
 

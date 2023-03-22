@@ -27,7 +27,7 @@ gdlparse_string(char *s)
 void
 gdl_validate(Tree *tp)
 {
-  tree_iterator(tp, NULL, gvl_iterator_fnc, NULL);
+  tree_iterator(tp, NULL, gvl_iterator_pre_fnc, gvl_iterator_post_fnc);
 }
 
 void

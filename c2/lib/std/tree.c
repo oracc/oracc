@@ -112,6 +112,12 @@ tree_iterator(Tree *tp, void *user, void (*nodefnc)(Node *np, void *user), void 
 }
 
 void
+node_iterator(Node *np, void *user, void (*nodefnc)(Node *np, void *user), void (*postfnc)(Node *np, void *user))
+{
+  _do_node(np, user, nodefnc, postfnc);
+}
+
+void
 kids_add_node(Tree *tp, Node *np)
 {
   if (tp && tp->curr)
