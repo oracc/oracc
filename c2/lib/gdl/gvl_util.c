@@ -1,3 +1,8 @@
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include "gvl.h"
+
 void
 gvl_iterator_pre_fnc(Node *np, void *user)
 {
@@ -23,28 +28,7 @@ gvl_iterator_post_fnc(Node *np, void *user)
     }
 }
 
-static unsigned char *
-snames_of(unsigned const char *oids)
-{
-  List *l = list_create(LIST_SINGLE);
-  unsigned char *xoids = (ucp)strdup((ccp)oids), *xoid, *x, *ret;
-  x = xoids;
-  while (*x)
-    {
-      xoid = x;
-      while (*x && ' ' != *x)
-	++x;
-      if (*x)
-	*x++ = '\0';
-      list_add(l,(void*)gvl_lookup(xoid));
-    }
-  ret = list_concat(l);
-  list_free(l,NULL);
-  free(xoids);
-  return ret;
-}
-
-static unsigned char *
+unsigned char *
 gvl_vmess(char *s, ...)
 {
   unsigned char *ret = NULL;
@@ -94,36 +78,3 @@ gvl_key_of(unsigned const char *v)
   return hash_exists(curr_sl->sl, v);
 }
 #endif
-
-unsigned char *
-gvl_val_base(const unsigned char *v)
-{
-  if (v)
-    {
-      unsigned char *b = NULL, *sub = NULL, *ret;
-      
-      b = malloc(strlen((ccp)v)+1);
-      strcpy((char*)b, (ccp)v);
-      if (strlen((ccp)v) > 4)
-	{
-	  sub = b + strlen((ccp)b);
-	  while (1)
-	    {
-	      if ('\0' == *sub && sub - 3 > b && sub[-3] == 0xe2 && sub[-2] == 0x82)
-		{
-		  if ((sub[-1] >= 0x80 && sub[-1] <= 0x89) || sub[-1] == 0x93)
-		    {
-		      sub -= 3;
-		      *sub = '\0';
-		    }
-		}
-	      else
-		break;
-	    }
-	}
-      ret = g_lc(b);
-      free(b);
-      return ret;
-    }
-  return NULL;
-}

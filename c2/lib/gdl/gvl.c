@@ -22,8 +22,6 @@ int gvl_strict = 0;
 
 static const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalues/";
 
-const unsigned char *(*gvl_lookup)(unsigned const char *key);
-
 unsigned char *gvl_v_from_h(const unsigned char *b, const unsigned char *qsub);
 unsigned char *gvl_val_base(const unsigned char *v);
 
@@ -165,8 +163,8 @@ gvl_is_value(unsigned const char *g)
 #endif
 }
 
-static unsigned const char *
-gvl_lookup_h(unsigned const char *key)
+unsigned const char *
+gvl_lookup(unsigned const char *key)
 {
   if (gvl_trace)
     {
@@ -199,8 +197,7 @@ static int
 gvl_try_h(gvl_g *gp, gvl_g *vp, gvl_g *qp, unsigned char *q_fixed, unsigned char **mess)
 {
   int qv_bad = 1;
-  unsigned const char *p = sll_try_h(vp->text);
-  /* ? build a p(qp->sign) here and set gp->text to it ? */
+  unsigned const char *p = sll_try_h(qp->oid, vp->text);
   
   /* If the gp->text value is uppercase, make the result value
      uppercase; then if value == qp->sign, elide the value and
@@ -211,7 +208,6 @@ gvl_try_h(gvl_g *gp, gvl_g *vp, gvl_g *qp, unsigned char *q_fixed, unsigned char
     *mess = gvl_vmess("%s: should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
   
   qv_bad = 0;
-  /*ret = 1;*/ /* ok because deterministically resolved */
 
   if (p)
     free(p);

@@ -15,7 +15,7 @@
 #define uccp unsigned const char *
 
 static const char *oracc = NULL;
-
+static Hash *sll_sl = NULL;
 static Pool *sllpool = NULL;
 
 static Hash *h = NULL;
@@ -29,7 +29,7 @@ static List *kstrip;
 /* Every sign name has at least one of these uppercase letters--this
    is validated by sl-xml */
 void
-sl_init_si(void)
+sll_init_si(void)
 {
   if (!signindicator['A'])
     signindicator['A'] = 
@@ -44,8 +44,14 @@ sl_init_si(void)
       signindicator['X'] = 1;
 }
 
+void
+sll_set_sl(Hash *sl)
+{
+  sll_sl = sl;
+}
+
 unsigned char *
-sl_strip_pp(unsigned const char *g)
+sll_strip_pp(unsigned const char *g)
 {
   unsigned char *no_p = (ucp)strdup((ccp)g), *end;
   unsigned const char *orig = g;
@@ -87,13 +93,13 @@ sl_strip_pp(unsigned const char *g)
   *end = '\0';
 #if 0
   if (strcmp((const char*)no_p,(const char*)orig))
-    fprintf(stderr, "sl_strip_pp %s => %s\n", (const char *)orig, (const char *)no_p);
+    fprintf(stderr, "sll_strip_pp %s => %s\n", (const char *)orig, (const char *)no_p);
 #endif
   return no_p;
 }
 
 int
-sl_has_sign_indicator(unsigned const char *g)
+sll_has_sign_indicator(unsigned const char *g)
 {
   while (*g)
     {
@@ -105,14 +111,14 @@ sl_has_sign_indicator(unsigned const char *g)
 }
 
 static void
-sl_kstrip(void *k)
+sll_kstrip(void *k)
 {
-  unsigned char *ks = sl_strip_pp((unsigned char *)k);
+  unsigned char *ks = sll_strip_pp((unsigned char *)k);
   if (strcmp((const char *)ks,(const char *)k))
     {
       unsigned char *kh = hash_find(h,ks);
       if (kh)
-	; /* fprintf(stderr, "sl_init_h: stripped key %s=>%s duplicates known key with OID %s\n",
+	; /* fprintf(stderr, "sll_init_h: stripped key %s=>%s duplicates known key with OID %s\n",
 	     (const char*)k, (const char*)ks, (const char*)kh);*/
       else
 	{
@@ -132,13 +138,13 @@ sl_kstrip(void *k)
 }
 
 Hash *
-sl_init(const char *project, const char *name)
+sll_init(const char *project, const char *name)
 {
   char *tsv_file;
   unsigned char *tsv_data = NULL, *p;
   ssize_t fsiz;
 
-  sl_init_si();
+  sll_init_si();
   sllpool = NULL;
 
   /* Figure out the db and open it */
@@ -181,11 +187,11 @@ sl_init(const char *project, const char *name)
 		  hash_add(h, k, v);
 		  if ('o' == *v && isdigit(v[1]))
 		    {
-		      if (!strchr((ccp)k,';') && sl_has_sign_indicator(k))
+		      if (!strchr((ccp)k,';') && sll_has_sign_indicator(k))
 			{
 			  unsigned char *k2 = hash_find(h,v);
 			  if (k2)
-			    fprintf(stderr, "sl_init_h: duplicate key/val %s = %s\n", k, v);
+			    fprintf(stderr, "sll_init_h: duplicate key/val %s = %s\n", k, v);
 			  else
 			    {
 			      if (sll_trace)
@@ -199,49 +205,26 @@ sl_init(const char *project, const char *name)
 		}
 	    }
 	}
-      list_exec(kstrip, (list_exec_func*)sl_kstrip);
+      list_exec(kstrip, (list_exec_func*)sll_kstrip);
       list_free(kstrip,NULL);
     }
   else
     {
-      fprintf(stderr, "sl_init_h: failed to load %s\n", tsv_file);
+      fprintf(stderr, "sll_init_h: failed to load %s\n", tsv_file);
     }
 
-  return h;
+  return sll_sl = h;
 }
 
 void
-sl_term(Hash *h)
+sll_term(Hash *h)
 {
 }
 
-const char *
-gvl_sub_of(int i)
+unsigned const char *
+sll_lookup(unsigned const char *key)
 {
-  switch (i)
-    {
-    case 1:
-      return "₁";
-    case 2:
-      return "₂";
-    case 3:
-      return "₃";
-    case 4:
-      return "₄";
-    case 5:
-      return "₅";
-    case 6:
-      return "₆";
-    case 7:
-      return "₇";
-    case 8:
-      return "₈";
-    case 9:
-      return "₉";
-    case 0:
-      return "₀";
-    }
-  return NULL;
+  return key ? hash_find(sll_sl, (const unsigned char *)key) : NULL;
 }
 
 unsigned char *
@@ -264,8 +247,8 @@ sll_tmp_key(unsigned const char *key, const char *field)
 }
 
 /* sl.tsv encodings homophones as an OID/INDEX pair; this routine
-   */
-
+   decodes a value base plus INDEX into the base+subdigits
+ */
 unsigned char *
 sll_v_from_h(const unsigned char *b, const unsigned char *qsub)
 {
@@ -277,11 +260,11 @@ sll_v_from_h(const unsigned char *b, const unsigned char *qsub)
 	  unsigned char *ret = malloc(strlen((ccp)b)+7);
 	  int tens = qsub_i / 10;
 	  int unit = qsub_i % 10;
-	  const char *tensp = NULL, *unitp = gvl_sub_of(unit);
+	  const char *tensp = NULL, *unitp = sub_of(unit);
 	  strcpy((char *)ret, (const char *)b);
 	  if (qsub_i)
 	    {
-	      if (tens && ((tensp = gvl_sub_of(tens))))
+	      if (tens && ((tensp = sub_of(tens))))
 		strcat((char *)ret,tensp);
 	      if (unitp)
 		strcat((char *)ret,unitp);
@@ -295,14 +278,14 @@ sll_v_from_h(const unsigned char *b, const unsigned char *qsub)
 }
 
 unsigned const char *
-sll_try_h(unsigned const char *g)
+sll_try_h(const char *oid, unsigned const char *g)
 {
-  unsigned char *b = gvl_val_base(g);
+  unsigned char *b = base_of(g);
   unsigned const char *h = sll_lookup(sll_tmp_key(b,"h"));
   unsigned const char *p = NULL;
   if (h)
     {
-      if ((p = (uccp)strstr((ccp)h, qp->oid)))
+      if ((p = (uccp)strstr((ccp)h, oid)))
 	{
 	  unsigned char *p2 = NULL, *p_end = (ucp)strchr((char*)p,' '), *p_slash = NULL, *free1 = NULL, *free2 = NULL;
 	  if (p_end)
@@ -332,4 +315,25 @@ sll_try_h(unsigned const char *g)
   if (free2)
     free(free2);
   return p;
+}
+
+unsigned char *
+sll_snames_of(unsigned const char *oids)
+{
+  List *l = list_create(LIST_SINGLE);
+  unsigned char *xoids = (ucp)strdup((ccp)oids), *xoid, *x, *ret;
+  x = xoids;
+  while (*x)
+    {
+      xoid = x;
+      while (*x && ' ' != *x)
+	++x;
+      if (*x)
+	*x++ = '\0';
+      list_add(l,(void*)sll_lookup(xoid));
+    }
+  ret = list_concat(l);
+  list_free(l,NULL);
+  free(xoids);
+  return ret;
 }

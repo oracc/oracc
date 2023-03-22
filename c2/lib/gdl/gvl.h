@@ -57,7 +57,13 @@ extern wchar_t *g_wlc(wchar_t *w);
 extern wchar_t *g_wuc(wchar_t *w);
 extern unsigned char *g_lc(unsigned const char *g);
 extern unsigned char *g_uc(unsigned const char *g);
+extern unsigned char *base_of(const unsigned char *v);
+const char *sub_of(int i);
 
-extern void gvl_iterator_fnc(Node *np, void *user);
+extern void gvl_iterator_pre_fnc(Node *np, void *user);
+extern void gvl_iterator_post_fnc(Node *np, void *user);
+
+extern int gvl_vq_c10e(gvl_g *gp, unsigned char **mess);
+extern unsigned char *gvl_vmess(char *s, ...);
 
 #endif/*_GVL_H*/

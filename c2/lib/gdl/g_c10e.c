@@ -242,6 +242,68 @@ g_c10e(const unsigned char *g, int *err)
   return NULL;
 }
 
+unsigned char *
+base_of(const unsigned char *v)
+{
+  if (v)
+    {
+      unsigned char *b = NULL, *sub = NULL, *ret;
+      
+      b = malloc(strlen((ccp)v)+1);
+      strcpy((char*)b, (ccp)v);
+      if (strlen((ccp)v) > 4)
+	{
+	  sub = b + strlen((ccp)b);
+	  while (1)
+	    {
+	      if ('\0' == *sub && sub - 3 > b && sub[-3] == 0xe2 && sub[-2] == 0x82)
+		{
+		  if ((sub[-1] >= 0x80 && sub[-1] <= 0x89) || sub[-1] == 0x93)
+		    {
+		      sub -= 3;
+		      *sub = '\0';
+		    }
+		}
+	      else
+		break;
+	    }
+	}
+      ret = g_lc(b);
+      free(b);
+      return ret;
+    }
+  return NULL;
+}
+
+const char *
+sub_of(int i)
+{
+  switch (i)
+    {
+    case 1:
+      return "₁";
+    case 2:
+      return "₂";
+    case 3:
+      return "₃";
+    case 4:
+      return "₄";
+    case 5:
+      return "₅";
+    case 6:
+      return "₆";
+    case 7:
+      return "₇";
+    case 8:
+      return "₈";
+    case 9:
+      return "₉";
+    case 0:
+      return "₀";
+    }
+  return NULL;
+}
+
 wchar_t
 subdig_of(wchar_t w)
 {

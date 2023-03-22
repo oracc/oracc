@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <tree.h>
 
+#include "sll.h"
 #include "gvl.h"
 
 /* This interface is used from a Node with name=g:q */
@@ -16,11 +17,11 @@ gvl_vq_node(Node *np)
 void
 gvl_vq(unsigned const char *g, gvl_g *gp)
 {
-  g = gvl_tmp_key(g,"qv");
+  g = sll_tmp_key(g,"qv");
   if ((l = gvl_lookup(g)))
     {
       gp->oid = (ccp)l;
-      gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+      gp->sign = gvl_lookup(sll_tmp_key(l,""));
     }
   else
     {
@@ -32,7 +33,7 @@ gvl_vq(unsigned const char *g, gvl_g *gp)
     }
 }
 
-static int
+int
 gvl_vq_c10e(gvl_g *gp, unsigned char **mess)
 {
   gvl_g *vp = NULL, *qp = NULL;
@@ -108,7 +109,7 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
       int qv_bad = gvl_try_h(gp, vp, qp, q_fixed, mess);
       if (qv_bad)
 	{
-	  unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key((uccp)qp->oid, "values"));
+	  unsigned const char *tmp2 = gvl_lookup(sll_tmp_key((uccp)qp->oid, "values"));
 	  if (tmp2)
 	    *mess = gvl_vmess("[vq] %s: %s::%s unknown. Known for %s: %s%s", gp->text, vp->text, qp->sign, qp->sign, tmp2, QFIX);
 	  else
@@ -118,7 +119,7 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
   else if (q_bad)
     {
       /* If the q is unknown, report known q for v */
-      unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key(vp->text, "q"));
+      unsigned const char *tmp2 = gvl_lookup(sll_tmp_key(vp->text, "q"));
       if (tmp2)
 	*mess = gvl_vmess("[vq] %s: q %s unknown: known for %s: %s%s", gp->text, q, vp->text, tmp2, QFIX);
       else if (!strchr((ccp)q,'X'))
@@ -130,11 +131,11 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
       sprintf((char*)tmp2, "%s(%s)", vp->text, qp->sign);
 	  
       /* tmp2 is now a vq with valid v and q components */
-      if (gvl_lookup(gvl_tmp_key(tmp2,"qv")))
+      if (gvl_lookup(sll_tmp_key(tmp2,"qv")))
 	{
 	  /* vq is known combo -- we have canonicalized the g that was passed as arg1 */
 	  gp->oid = qp->oid;
-	  gp->sign = gvl_lookup(gvl_tmp_key((uccp)qp->oid,""));
+	  gp->sign = gvl_lookup(sll_tmp_key((uccp)qp->oid,""));
 	  /* add gp->text to g hash as key of tmp2 ? */
 	  if (gvl_strict)
 	    *mess = gvl_vmess("[vq] %s: should be %s%s", gp->text, tmp2, QFIX);
@@ -145,7 +146,7 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 	  /* This is a qualified uppercase value like TA@g(LAK654a) */
 	  if (strcmp(vp->oid, qp->oid))
 	    {
-	      unsigned const char *parents = gvl_lookup(gvl_tmp_key((uccp)qp->oid,"parents"));
+	      unsigned const char *parents = gvl_lookup(sll_tmp_key((uccp)qp->oid,"parents"));
 	      if (parents)
 		{
 		  if (!strstr((ccp)parents, vp->oid))
@@ -166,7 +167,7 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 	  if (vp->oid && qp->oid && !strcmp(vp->oid, qp->oid))
 	    {
 	      gp->oid = qp->oid;
-	      gp->sign = gvl_lookup(gvl_tmp_key((uccp)qp->oid,""));
+	      gp->sign = gvl_lookup(sll_tmp_key((uccp)qp->oid,""));
 	      if (gvl_strict)
 		*mess = gvl_vmess("[vq] %s: unnecessary qualifier on value%s", gp->text, QFIX);
 	      ret = 1; /* this is still OK--we have resolved the issue deterministically */
@@ -181,7 +182,7 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 		     report known q for v */
 		  if ('v' == *vp->type)
 		    {
-		      unsigned const char *q_for_v = gvl_lookup(gvl_tmp_key(v, "q"));
+		      unsigned const char *q_for_v = gvl_lookup(sll_tmp_key(v, "q"));
 		      if (q_for_v)
 			*mess = gvl_vmess("[vq] %s: unknown. Known for %s: %s%s", gp->text, vp->text, q_for_v, QFIX);
 		      else
@@ -195,7 +196,7 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 #else
 		  else
 		    {
-		      unsigned const char *parents = gvl_lookup(gvl_tmp_key((uccp)qp->oid,"parents"));
+		      unsigned const char *parents = gvl_lookup(sll_tmp_key((uccp)qp->oid,"parents"));
 		      if (parents)
 			{
 			  unsigned char *snames = snames_of(parents);

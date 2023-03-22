@@ -23,12 +23,15 @@ gvl_setup(const char *project, const char *name)
 
   gvl_lookup = gvl_lookup_h;
   
-  if ((h = sl_init(project, name)))
-    ret = gvl_i_init_h(name, h);
+  if ((h = sll_init(project, name)))
+    {
+      ret = gvl_i_init_h(name, h);
+      sll_set_sl(ret->sl);
+    }
   else
     fprintf(stderr, "gvl: failed to open TSV %s/%s\n", (char *)project, (char*)name);
 
-  sl_init_si();
+  sll_init_si();
 
   return ret;
 }
