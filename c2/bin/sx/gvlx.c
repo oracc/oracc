@@ -3,12 +3,15 @@
 #include <string.h>
 
 #include "gdl.h"
+#include "gvl.h"
 
 /* test harness for gvl/gdl libraries */
 
 int
 main(int argc, char **argv)
 {
+  gvl_setup("ogsl", "ogsl");
+
   if (argv[1])
     {
       gdlparse_init();
@@ -33,5 +36,6 @@ main(int argc, char **argv)
     {
       fprintf(stderr, "gvlx: give grapheme on command line\n");
     }
+
   return 0;
 }

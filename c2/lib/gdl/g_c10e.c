@@ -241,3 +241,63 @@ g_c10e(const unsigned char *g, int *err)
 
   return NULL;
 }
+
+wchar_t
+subdig_of(wchar_t w)
+{
+  switch (w)
+    {
+    case a_acute:
+    case e_acute:
+    case i_acute:
+    case u_acute:
+    case A_acute:
+    case E_acute:
+    case I_acute:
+    case U_acute:
+      return U_s2;
+    case a_grave:
+    case e_grave:
+    case i_grave:
+    case u_grave:
+    case A_grave:
+    case E_grave:
+    case I_grave:
+    case U_grave:
+      return U_s3;
+    }
+  return w;
+}
+
+wchar_t
+vowel_of(wchar_t w)
+{
+  switch (w)
+    {
+    case A_acute:
+    case A_grave:
+      return (wchar_t)'A';
+    case E_acute:
+    case E_grave:
+      return (wchar_t)'E';
+    case I_acute:
+    case I_grave:
+      return (wchar_t)'I';
+    case U_acute:
+    case U_grave:
+      return (wchar_t)'U';
+    case a_acute:
+    case a_grave:
+      return (wchar_t)'a';
+    case e_acute:
+    case e_grave:
+      return (wchar_t)'e';
+    case i_acute:
+    case i_grave:
+      return (wchar_t)'i';
+    case u_acute:
+    case u_grave:
+      return (wchar_t)'u';
+    }
+  return w;
+}

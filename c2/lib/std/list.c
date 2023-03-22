@@ -7,6 +7,8 @@
 
 #include <list.h>
 
+const char *list_vec_sep_str = "\t\n ";
+
 unsigned char *
 list_concat(List *l)
 {
@@ -328,7 +330,6 @@ list_pop (List *lp)
   return data;
 }
 
-extern const char *vec_sep_str;
 List *
 list_from_str (char *str, char *(*tok)(char *), List_types_e type)
 {
@@ -337,7 +338,7 @@ list_from_str (char *str, char *(*tok)(char *), List_types_e type)
 
   while (1)
     {
-      s = (NULL == tok) ? strtok (str, vec_sep_str) : tok (str);
+      s = (NULL == tok) ? strtok (str, list_vec_sep_str) : tok (str);
       if (NULL == s)
 	break;
       list_add(tmp, strdup(s));

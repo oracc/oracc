@@ -3,6 +3,7 @@
 
 #include <pool.h>
 #include <tree.h>
+#include "gvl.h"
 
 #ifndef uccp
 #define uccp unsigned const char *
@@ -28,13 +29,13 @@ enum bracket {
 };
 #endif
 
+#if 0
+/* This may not be necessary given the emerging GDL/GVL architecture; see gvl_g in gvl.h */
 struct gdl_g {
-  unsigned const char *c10e; /* canonicalized grapheme */
-  unsigned const char *orig; /* original grapheme */
-  unsigned const char *accn; /* canonicalized grapheme mapped through accnum */
-  const char *type;
-  const char *flags;
+  gvl_g g;		/* constant data from GVL */
+  const char *flags;	/* instance data */
 };
+#endif
 
 extern Pool *gdlpool;
 
@@ -52,6 +53,8 @@ extern void gdl_xml(FILE *fp, Tree *tp);
 extern void gdl_append(Node *ynp, const char *s);
 extern Node *gdl_delim(Tree *ytp, const char *data);
 extern Node *gdl_graph(Tree *ytp, const char *data);
+extern Node *gdl_listnum(Tree *ytp, const char *data);
+extern Node *gdl_number(Tree *ytp, const char *data);
 extern void gdl_prop(Node *ynp, int p, int g, const char *k, const char *v);
 
 extern void gdl_pop(Tree *ytp, const char *s);

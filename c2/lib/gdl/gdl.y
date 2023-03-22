@@ -12,12 +12,12 @@ extern void yyerror(const char *);
 extern const char *gdltext;
 extern int gdllineno, gdltrace;
 static Tree *ytp;
-static Node *ynp;
+static Node *ynp, *yrem;
 %}
 
 %union { char *text; int i; }
 
-%token	<text> 	ALIGN FIELD FTYPE LANG GRAPHEME TEXT SPACE ENHYPHEN
+%token	<text> 	ALIGN FIELD FTYPE LANG GRAPHEME NUMBER LISTNUM TEXT SPACE ENHYPHEN
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
@@ -60,8 +60,8 @@ words:    word
 	;
 
 word:
-	  sorc
-	| word delim sorc
+	  scorqorsgs
+	| word delim scorqorsgs
 	;
 
 delim:
@@ -75,19 +75,12 @@ delim:
 	| ENHYPHEN 			       		{ ynp = gdl_delim(ytp, "--"); }
 	;
 
-sorc:
-	  s
-	| c
-	;
+scorqorsgs:  stateo corqors gflags statec
 
-s:	  stateo simplexg gflags statec
-	;
-
-c:	  stateo compound gflags statec
-	;
-
-
-simplexg: GRAPHEME					{ ynp = gdl_graph(ytp, gdllval.text); }
+corqors:
+	  compound
+	| valuqual
+	| simplexg
 	;
 
 gflags:	  '*'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
@@ -107,7 +100,6 @@ stateo:
         | /* empty */
 	;
 
-
 statec:
 	  '>'						{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
 	| R_dbl_ang			       		{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
@@ -118,6 +110,11 @@ statec:
         | /* empty */
 	;
 
+simplexg: GRAPHEME					{ ynp = gdl_graph(ytp, gdllval.text); }
+	| NUMBER					{ ynp = gdl_number(ytp, gdllval.text); }
+	| LISTNUM					{ ynp = gdl_listnum(ytp, gdllval.text); }
+	;
+
 compound:
 	C_O 						{ gdl_push(ytp,"g:c"); }
 	cword
@@ -125,15 +122,15 @@ compound:
 	;
 
 cword:
-	  sorg
-	| cword cdelim sorg
+	  cgors
+	| cword cdelim cgors
         ;
 
-sorg:
-          s | g
+cgors:
+          cg | simplexg
         ;
 
-g:        '('						{ gdl_push(ytp,"g:gp"); }
+cg:       '('						{ gdl_push(ytp,"g:gp"); }
 	  cword
 	  ')'						{ gdl_pop(ytp,"g:gp"); }
 	;
@@ -148,6 +145,20 @@ cdelim:
 	| C_TIMES					{ ynp = gdl_delim(ytp, "×"); }
 	| C_3TIMES					{ ynp = gdl_delim(ytp, "3×"); }
 	| C_4TIMES					{ ynp = gdl_delim(ytp, "4×"); }
+	;
+
+cors:
+	  compound
+	| simplexg
+	;
+
+valuqual:
+	  cors
+	  '(' 						{ yrem=kids_rem_last(ytp);
+	    						  gdl_push(ytp,"g:q");
+							  kids_add_node(ytp,yrem); }
+	  cors
+	  ')' 						{ gdl_pop(ytp,"g:q"); }
 	;
 
 %%

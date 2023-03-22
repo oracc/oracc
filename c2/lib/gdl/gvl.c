@@ -11,13 +11,14 @@
 #include <memo.h>
 #include <pool.h>
 #include <hash.h>
+#include <tree.h>
 
 #include "gdl.h"
 #include "gvl.h"
 
 static gvl_i *sl = NULL; /* sl is always the head of the list of signlist datasets, not necessarily the current one */
 static gvl_i *curr_sl = NULL; /* the sl that should be used for look up */
-static int gvl_trace = 0;
+static int gvl_trace = 1;
 
 int gvl_strict = 0;
 
@@ -34,6 +35,8 @@ static void   gvl_i_term(const char *name);
 #define ccp const char *
 #define ucp unsigned char *
 #define uccp unsigned const char *
+
+ucp c10e_compound(uccp g){ return (ucp)g; }
 
 static unsigned char *
 snames_of(unsigned const char *oids)
@@ -242,7 +245,20 @@ gvl_key_of(unsigned const char *v)
 static unsigned const char *
 gvl_lookup_h(unsigned const char *key)
 {
-  return key ? hash_find(curr_sl->sl, (const unsigned char *)key) : NULL;
+  if (gvl_trace)
+    {
+      if (key)
+	{
+	  uccp res = hash_find(curr_sl->sl, (const unsigned char *)key);
+	  if (res)
+	    fprintf(stderr, "gvl: gvl_lookup found %s for key %s\n", res, key);
+	  return res;
+	}
+      else
+	return NULL;
+    }
+  else
+    return key ? hash_find(curr_sl->sl, (const unsigned char *)key) : NULL;
 }
 
 gvl_i*
@@ -454,6 +470,7 @@ gvl_try_h(gvl_g *gp, gvl_g *vp, gvl_g *qp, unsigned char *q_fixed, unsigned char
     }
   return qv_bad;
 }
+
 static int
 gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 {
@@ -509,7 +526,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 	  (void)sprintf((char*)q_fixed," [%s <= %s]", qp->sign, q);
 	}
     }
-      
+
   /* Now if we have bad value and qualifier it's too hard to guess */
   if (v_bad && q_bad)
     *mess = gvl_vmess("[vq] %s: value %s and qualifier %s unknown%s", gp->text, vp->text, qp->text, QFIX);
@@ -1025,4 +1042,15 @@ gvl_validate(unsigned const char *g)
     }
   
   return gp;
+}
+
+void
+gvl_iterator_fnc(Node *np, void *user)
+{
+  if (np && np->name && !strcmp(np->name, "g:g"))
+    {
+      gvl_g *g = gvl_validate((uccp)np->data);
+      g->text = (uccp)np->data;
+      np->parsed = g;
+    }
 }

@@ -4,19 +4,30 @@
 #include <tree.h>
 #include "gdl.tab.h"
 #include "gdl.h"
+#include "gvl.h"
 
+extern int gdltrace;
 extern void gdl_wrapup_buffer(void);
+extern void gdl_validate(Tree *tp);
 
 Tree *
 gdlparse_string(char *s)
 {
   Tree *tp = tree_init();
-  (void)tree_root(tp, "gdl:gdl", 1, NULL);
+  (void)tree_root(tp, "g:gdl", 1, NULL);
+  gdl_prop(tp->curr, 0, PG_XNS, "xmlns:g", "http://oracc.org/ns/gdl/2.0");
   gdl_setup_buffer(s);
   gdl_set_tree(tp);
   gdlparse();
   gdl_wrapup_buffer();
+  gdl_validate(tp);
   return tp;
+}
+
+void
+gdl_validate(Tree *tp)
+{
+  tree_iterator(tp, NULL, gvl_iterator_fnc, NULL);
 }
 
 void
@@ -40,20 +51,44 @@ Node *
 gdl_delim(Tree *ytp, const char *data)
 {
   Node *np = NULL;
-  fprintf(stderr, "DELIM: %c\n", '-');
+  if (gdltrace)
+    fprintf(stderr, "DELIM: %c\n", '-');
   np = tree_add(ytp, "g:d", ytp->curr->depth, NULL); 
   np->data = data;
+  return np;
+}
+
+static Node *
+gdl_graph_node(Tree *ytp, const char *name, const char *data)
+{
+  Node *np = NULL;
+  np = tree_add(ytp, name, ytp->curr->depth, NULL);
+  np->data = (ccp)pool_copy((uccp)data,gdlpool);
   return np;
 }
 
 Node *
 gdl_graph(Tree *ytp, const char *data)
 {
-  Node *np = NULL;
-  fprintf(stderr, "GRAPH: %s\n", gdllval.text);
-  np = tree_add(ytp, "g:g", ytp->curr->depth, NULL);
-  np->data = (ccp)pool_copy((uccp)data,gdlpool);
-  return np;
+  if (gdltrace)
+    fprintf(stderr, "GRAPH: %s\n", gdllval.text);
+  return gdl_graph_node(ytp, "g:g", data);
+}
+
+Node *
+gdl_listnum(Tree *ytp, const char *data)
+{
+  if (gdltrace)
+    fprintf(stderr, "LISTNUM: %s\n", gdllval.text);
+  return gdl_graph_node(ytp, "g:l", data);
+}
+
+Node *
+gdl_number(Tree *ytp, const char *data)
+{
+  if (gdltrace)
+    fprintf(stderr, "NUMBER: %s\n", gdllval.text);
+  return gdl_graph_node(ytp, "g:n", data);
 }
 
 void

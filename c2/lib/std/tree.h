@@ -45,4 +45,7 @@ extern void tree_iterator(Tree *tp, void *user,
 			  void (*nodefnc)(Node *np, void *user),
 			  void (*postfnc)(Node *np, void *user));
 
+extern void kids_add_node(Tree *tp, Node *np);
+extern Node *kids_rem_last(Tree *tp);
+
 #endif/*TREE_H_*/

@@ -1,6 +1,7 @@
 #ifndef _GVL_H
 #define _GVL_H
 
+#include <tree.h>
 #include "sll.h"
 
 struct gvl_g {
@@ -53,5 +54,7 @@ extern wchar_t *g_wlc(wchar_t *w);
 extern wchar_t *g_wuc(wchar_t *w);
 extern unsigned char *g_lc(unsigned const char *g);
 extern unsigned char *g_uc(unsigned const char *g);
+
+extern void gvl_iterator_fnc(Node *np, void *user);
 
 #endif/*_GVL_H*/

@@ -58,6 +58,7 @@ u_isupper(const unsigned char *g)
     return isupper(*g);
 }
 
+#if 0
 unsigned char *
 utf2atf(const unsigned char *src)
 {
@@ -68,6 +69,7 @@ utf2atf(const unsigned char *src)
   else
     return NULL;
 }
+#endif
 
 wchar_t
 utf1char(const unsigned char *src,size_t *len)
@@ -180,3 +182,63 @@ utf_ucase(const unsigned char *s)
   else
     return NULL;
 }
+
+unsigned char *
+wcs2utf(const wchar_t*ws, size_t len)
+{
+  static unsigned char *dest = NULL;
+  static int dest_alloced = 0;
+  size_t max = 1+(len*6);
+
+  if (!ws)
+    {
+      if (dest)
+	{
+	  free(dest);
+	  dest_alloced = 0;
+	  dest = NULL;
+	}
+      return NULL;
+    }
+
+  if (max >= dest_alloced)
+    {
+      while (max >= dest_alloced)
+	dest_alloced += 1024;
+      dest = realloc(dest,dest_alloced);
+    }
+  if (((size_t)-1 == wcstombs((char*)dest,ws,max)))
+    {
+      fprintf(stderr,"wcs2utf: illegal wide character in wchar string\n");
+      return NULL;
+    }
+  else
+    return dest;
+}
+
+wchar_t*
+wcs_lcase(wchar_t*ws)
+{
+  wchar_t *ws_orig = ws;
+  while (*ws)
+    {
+      if (iswupper(*ws))
+	*ws = towlower(*ws);
+      ++ws;
+    }
+  return ws_orig;
+}
+
+wchar_t*
+wcs_ucase(wchar_t*ws)
+{
+  wchar_t *ws_orig = ws;
+  while (*ws)
+    {
+      if (iswlower(*ws))
+	*ws = towupper(*ws);
+      ++ws;
+    }
+  return ws_orig;
+}
+

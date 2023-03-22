@@ -26,6 +26,7 @@ Node *
 tree_node(Tree *tp, const char *name, int depth, Mloc *loc)
 {
   Node *np = memo_new(tp->nodemem);
+  np->tree = tp;
   np->name = name;
   np->depth = depth;
   np->mloc = loc;
@@ -49,7 +50,6 @@ tree_add(Tree *tp, const char *name, int depth, Mloc *loc)
     {
       if (tp->curr && tp->curr->kids)
 	{
-	  np = NULL;
 	  np = tree_node(tp, name, depth, loc);
 	  np->rent = tp->curr->last->rent;
 	  tp->curr->last->next = np;
@@ -95,11 +95,13 @@ _do_node(Node *np, void *user, void (*nodefnc)(Node *np, void *user), void (*pos
   if (np)
     {
       Node *entry_np = np;
-      nodefnc(np, user);
+      if (nodefnc)
+	nodefnc(np, user);
       for (np = np->kids; np; np = np->next)
 	_do_node(np, user, nodefnc, postfnc);
-      postfnc(entry_np, user);
-    }     
+      if (postfnc)
+	postfnc(entry_np, user);
+    }
 }
 
 void
@@ -107,4 +109,51 @@ tree_iterator(Tree *tp, void *user, void (*nodefnc)(Node *np, void *user), void 
 {
   if (tp && tp->root)
     _do_node(tp->root, user, nodefnc, postfnc);
+}
+
+void
+kids_add_node(Tree *tp, Node *np)
+{
+  if (tp && tp->curr)
+    {
+      if (tp->curr->kids)
+	{
+	  np->rent = tp->curr->last->rent;
+	  tp->curr->last->next = np;
+	  tp->curr->last = np;
+	}
+      else
+	{
+	  np->rent = tp->curr;
+	  tp->curr->last = tp->curr->kids = np;
+	}
+    }
+}
+
+Node *
+kids_rem_last(Tree *tp)
+{
+  Node *np = NULL;
+  if (tp && tp->curr)
+    {
+      if (tp->curr->kids)
+	{
+	  Node *kp = tp->curr->kids;
+	  if (kp->next)
+	    {
+	      while (kp->next != tp->curr->last)
+		kp = kp->next;
+	      tp->curr->last = kp;
+	      np = kp->next;
+	      kp->next = NULL;
+	    }
+	  else
+	    {
+	      np = kp;
+	      kp->rent->kids = NULL;
+	    }
+	  np->rent = NULL;
+	}
+    }
+  return np;
 }

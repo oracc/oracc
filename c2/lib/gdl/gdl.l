@@ -10,7 +10,7 @@
 #define YY_USER_ACTION gdl_user_action();
 
 const char *efile = "<stdin>";
-int flextrace = 1;
+int flextrace = 0;
 int tok;
 
 extern Pool *gdlpool;
@@ -61,7 +61,16 @@ R_LHS			{ return R_lhs; }
 &			{ return ALIGN; }
 ![a-z]+			{ return FTYPE; }
 
-[a-zA-Z0-9\x80-\xc2\xc4-\xff]+([@~][a-z0-9]+)* { gdllval.text=gdlsave(gdltext); return GRAPHEME; }
+[0-9]+(\/[0-9]+)?	{ gdllval.text=gdlsave(gdltext); return NUMBER; }
+
+[A-Z]+[0-9]+[a-z]*	{ gdllval.text=gdlsave(gdltext); return LISTNUM; }
+
+[a-zA-Z\x80-\xc2\xc4-\xff]+([@~][a-z0-9]+)* { gdllval.text=gdlsave(gdltext);
+					      if (strlen(gdllval.text) == 1
+						  && ('n' == *gdllval.text || 'N' == *gdllval.text))
+						return NUMBER;
+					      else
+	  			 	        return GRAPHEME; }
 
 "--"			{ return ENHYPHEN; }
 [-+:]     		{ return gdltext[0]; }

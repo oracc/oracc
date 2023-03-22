@@ -6,12 +6,14 @@ xLDADD=\
 	../../lib/cat/libcat.la \
 	../../lib/gdl/libgdl.la \
 	../../lib/std/libstd.la \
+	../../lib/sys/libsys.la \
 	../../lib/xml/libxml.la
 
 AM_CPPFLAGS=\
 	-I../../lib/include \
 	-I../../lib/gdl \
 	-I../../lib/std \
+	-I../../lib/sys \
 	-I../../lib/xml \
 	-I../../lib/cat
 

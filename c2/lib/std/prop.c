@@ -5,9 +5,15 @@
 Prop *
 prop_add(Memo *propmem, Prop *p, int ptype, int gtype, const char *key, const char *value)
 {
+  Prop *newprop = memo_new(propmem);
   p = prop_last(p);
-  p->next = memo_new(propmem);
-  p = p->next;
+  if (p)
+    {
+      p->next = newprop;
+      p = p->next;
+    }
+  else
+    p = newprop;
   p->p = ptype;
   p->g = gtype;
   p->k = key;
