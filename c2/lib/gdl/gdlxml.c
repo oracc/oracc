@@ -38,6 +38,13 @@ gdlxml_attr(Node *np, void *user)
 }
 
 static void
+gdlxml_parsed(gvl_g *gp, void *user)
+{
+  Xmlhelper *xhp = user;
+  fprintf(xhp->fp, "<gvl_g><c10e>%s</c10e></gvl_g>", gp->c10e);
+}
+
+static void
 gdlxml_node(Node *np, void *user)
 {
   Xmlhelper *xhp = user;
@@ -47,6 +54,8 @@ gdlxml_node(Node *np, void *user)
   fputc('>', xhp->fp);
   if (np->data)
     fprintf(xhp->fp, "<data>%s</data>", xmlify((uccp)np->data));
+  if (np->parsed)
+    gdlxml_parsed((gvl_g*)np->parsed, user);
 }
 
 static void

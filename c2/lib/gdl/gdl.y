@@ -110,7 +110,12 @@ statec:
         | /* empty */
 	;
 
-simplexg: GRAPHEME					{ ynp = gdl_graph(ytp, gdllval.text); }
+simplexg:
+	sg						{ gvl_simplexg(ynp); }
+	;
+
+sg:
+	  GRAPHEME					{ ynp = gdl_graph(ytp, gdllval.text); }
 	| NUMBER					{ ynp = gdl_number(ytp, gdllval.text); }
 	| LISTNUM					{ ynp = gdl_listnum(ytp, gdllval.text); }
 	;

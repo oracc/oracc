@@ -6,76 +6,16 @@
 #include "gvl.h"
 #include "unidef.h"
 
+#if 0
 extern wchar_t subdig_of(wchar_t w);
 extern wchar_t vowel_of(wchar_t w);
+#endif
 
 #define G_C10E_MIXED_CASE 0x02
 #define G_C10E_FINAL_SUBX 0x04
 
-wchar_t *
-g_wlc(wchar_t *w)
-{
-  wchar_t *w_end = w;
-
-  while (*w_end && *w_end != '~' && *w_end != '\\'
-	 && (*w_end != '@' || iswupper(w_end[1]))
-	 && (*w_end < U_s0 || *w_end > U_s9)
-	 && *w_end != U_s_x
-	 )
-    {
-      *w_end = towlower(*w_end);
-      ++w_end;
-    }
-
-  return w;
-}
-
-wchar_t *
-g_wuc(wchar_t *w)
-{
-  wchar_t *w_end = w;
-
-  while (*w_end && *w_end != '~' && *w_end != '\\'
-	 && (*w_end != '@' || iswupper(w_end[1]))
-	 && (*w_end < U_s0 || *w_end > U_s9)
-	 && *w_end != U_s_x
-	 )
-    {
-      *w_end = towupper(*w_end);
-      ++w_end;
-    }
-
-  return w;
-}
-
 unsigned char *
-g_lc(unsigned const char *g)
-{
-  wchar_t *w;
-  size_t len;  
-  if ((w = utf2wcs(g, &len)))
-    {
-      w = g_wlc(w);
-      return wcs2utf(w,len);
-    }
-  return NULL;
-}
-
-unsigned char *
-g_uc(unsigned const char *g)
-{
-  wchar_t *w;
-  size_t len;  
-  if ((w = utf2wcs(g, &len)))
-    {
-      w = g_wuc(w);
-      return wcs2utf(w,len);
-    }
-  return NULL;
-}
-
-unsigned char *
-g_c10e(const unsigned char *g, int *err)
+gvl_s_c10e(const unsigned char *g, int *err)
 {
   wchar_t *w;
   size_t len;
@@ -106,7 +46,7 @@ g_c10e(const unsigned char *g, int *err)
 		suppress_case_check = 1;
 	    case '|':
 	    case '.':
-	    case 0xd7:
+	    case U_times:
 	    case '-':
 	    case ':':
 	    case '+':
@@ -362,4 +302,66 @@ vowel_of(wchar_t w)
       return (wchar_t)'u';
     }
   return w;
+}
+
+wchar_t *
+g_wlc(wchar_t *w)
+{
+  wchar_t *w_end = w;
+
+  while (*w_end && *w_end != '~' && *w_end != '\\'
+	 && (*w_end != '@' || iswupper(w_end[1]))
+	 && (*w_end < U_s0 || *w_end > U_s9)
+	 && *w_end != U_s_x
+	 )
+    {
+      *w_end = towlower(*w_end);
+      ++w_end;
+    }
+
+  return w;
+}
+
+wchar_t *
+g_wuc(wchar_t *w)
+{
+  wchar_t *w_end = w;
+
+  while (*w_end && *w_end != '~' && *w_end != '\\'
+	 && (*w_end != '@' || iswupper(w_end[1]))
+	 && (*w_end < U_s0 || *w_end > U_s9)
+	 && *w_end != U_s_x
+	 )
+    {
+      *w_end = towupper(*w_end);
+      ++w_end;
+    }
+
+  return w;
+}
+
+unsigned char *
+g_lc(unsigned const char *g)
+{
+  wchar_t *w;
+  size_t len;  
+  if ((w = utf2wcs(g, &len)))
+    {
+      w = g_wlc(w);
+      return wcs2utf(w,len);
+    }
+  return NULL;
+}
+
+unsigned char *
+g_uc(unsigned const char *g)
+{
+  wchar_t *w;
+  size_t len;  
+  if ((w = utf2wcs(g, &len)))
+    {
+      w = g_wuc(w);
+      return wcs2utf(w,len);
+    }
+  return NULL;
 }

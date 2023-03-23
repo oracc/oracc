@@ -236,7 +236,7 @@ gvl_validate(unsigned const char *g)
 	  static int c10e_err = 0;
 
 	  c10e_err = 0;
-	  a = g_c10e(g, &c10e_err);
+	  a = gvl_s_c10e(g, &c10e_err);
 	  if (a)
 	    {
 	      if (strcmp((ccp)a,(ccp)g))
@@ -265,17 +265,17 @@ gvl_validate(unsigned const char *g)
 	  gp = memo_new(curr_sl->m);
 	  if (a)
 	    {
-	      gp->text = pool_copy(a,curr_sl->p);
-	      gp->accn = pool_copy(g,curr_sl->p);
-	      hash_add(curr_sl->h, gp->text, gp);
-	      hash_add(curr_sl->h, gp->accn, gp);
-	      g = gp->text;
+	      gp->orig = pool_copy(a,curr_sl->p);
+	      gp->c10e = pool_copy(g,curr_sl->p);
+	      hash_add(curr_sl->h, gp->orig, gp);
+	      hash_add(curr_sl->h, gp->c10e, gp);
+	      g = gp->orig;
 	      a = NULL;
 	    }
 	  else
 	    {
-	      gp->text = pool_copy(g, curr_sl->p);
-	      hash_add(curr_sl->h, gp->text, gp);
+	      gp->orig = pool_copy(g, curr_sl->p);
+	      hash_add(curr_sl->h, gp->orig, gp);
 	    }
 	  
 	  gp->type = gvl_type(g);
@@ -284,7 +284,7 @@ gvl_validate(unsigned const char *g)
 	    {
 	      gvl_vq(g, gp);
 	    }
-	  else if ((l = gvl_lookup(g)))
+    	  else if ((l = gvl_lookup(g)))
 	    {
 	      /* best case: g is a known sign or value */
 	      gp->oid = (ccp)l;
@@ -486,4 +486,75 @@ gvl_validate(unsigned const char *g)
     }
   
   return gp;
+}
+
+void
+gvl_compound(Node *ynp)
+{
+  
+}
+
+void
+gvl_simplexg(Node *ynp)
+{
+  gvl_g *gp = NULL;
+  unsigned const char *g = NULL;
+  unsigned const char *l = NULL;
+
+  if (!ynp || !ynp->data)
+    return;
+
+  g = (uccp)ynp->data;
+  
+  if (gvl_trace)
+    fprintf(stderr, "gvl_validate: called with g=%s\n", g);
+
+  if (!(gp = hash_find(curr_sl->h,g)))
+    {
+      static int c10e_err = 0;
+      
+      gp = memo_new(curr_sl->m);
+
+      gp->orig = g;
+      g = gp->c10e = gvl_s_c10e(gp->orig, &c10e_err);
+  
+      if ((l = gvl_lookup(g)))
+	{
+	  /* best case: g is a known sign or value */
+	  gp->oid = (ccp)l;
+	  gp->sign = gvl_lookup(sll_tmp_key(l,""));
+	}
+      else if (sll_has_sign_indicator(g))
+	{
+	  const unsigned char *lg = utf_lcase(g);
+	  if ((l = gvl_lookup(lg)))
+	    {
+	      gp->oid = (ccp)l;
+	      gp->sign = gvl_lookup(sll_tmp_key(l,""));
+	      if (gvl_strict)
+		gp->mess = gvl_vmess("pseudo-signname %s should be %s", g, gp->sign);
+	    }
+	  else if ((l = gvl_lookup(sll_tmp_key(lg,"q"))))
+	    {
+	      gp->sign = l;
+	      if (gvl_strict)
+		gp->mess = gvl_vmess("pseudo-signname %s must be qualifed by one of %s",g,l);
+	    }
+	  else if ((l = gvl_lookup(sll_tmp_key(g,"l"))))
+	    {
+	      gp->type = "l";
+	      gp->oid = (ccp)l;
+	      gp->sign = gvl_lookup(sll_tmp_key(l,""));
+	    }
+	  else
+	    gp->mess = gvl_vmess("unknown sign name: %s", g);
+	}
+    }
+  ynp->parsed = gp;
+}
+
+void
+gvl_valuqual(Node *ynp)
+{
+  
 }

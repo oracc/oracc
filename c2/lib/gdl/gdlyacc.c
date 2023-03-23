@@ -20,15 +20,17 @@ gdlparse_string(char *s)
   gdl_set_tree(tp);
   gdlparse();
   gdl_wrapup_buffer();
-  gdl_validate(tp);
+  /* gdl_validate(tp); */
   return tp;
 }
 
+#if 0
 void
 gdl_validate(Tree *tp)
 {
   tree_iterator(tp, NULL, gvl_iterator_pre_fnc, gvl_iterator_post_fnc);
 }
+#endif
 
 void
 gdlparse_init(void)

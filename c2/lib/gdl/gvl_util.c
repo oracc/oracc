@@ -3,13 +3,16 @@
 #include <string.h>
 #include "gvl.h"
 
+extern gvl_i *curr_sl;
+
+#if 0
 void
 gvl_iterator_pre_fnc(Node *np, void *user)
 {
   if (np && np->name && !strcmp(np->name, "g:g"))
     {
       gvl_g *g = gvl_validate((uccp)np->data);
-      g->text = (uccp)np->data;
+      g->orig = (uccp)np->data;
       np->parsed = g;
     }
 }
@@ -27,6 +30,7 @@ gvl_iterator_post_fnc(Node *np, void *user)
 #endif
     }
 }
+#endif
 
 unsigned char *
 gvl_vmess(char *s, ...)
@@ -63,7 +67,7 @@ gvl_cuneify_gv(gvl_g*gg)
   if (gg)
     {
       if (!gg->utf8)
-	gg->utf8 = gvl_lookup(gvl_tmp_key((uccp)gg->oid,"uchar"));
+	gg->utf8 = gvl_lookup(sll_tmp_key((uccp)gg->oid,"uchar"));
       return gg->utf8;
     }
   else

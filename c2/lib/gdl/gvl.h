@@ -5,10 +5,14 @@
 #include "sll.h"
 
 struct gvl_g {
-  unsigned const char *text; /* grapheme as passed for validation; for a vq this is the vq as passed */
-  unsigned const char *accn; /* grapheme mapped through accnum */
   const char *type;
-  const char *oid;  /* OID for sign */
+  unsigned const char *orig; /* grapheme as passed for validation; for
+				a vq this is the vq as passed */
+  unsigned const char *c10e; /* canonicalized grapheme; for use in
+				orthographic forms (note: does not
+				include aliasing) */
+  unsigned const char *accn; /* grapheme passed through accnum--lazily done */
+  const char *oid;  	     /* OID for sign */
   unsigned const char *sign; /* sign name for OID; for a vq this is the canonical vq */
   unsigned const char *utf8; /* UTF8 value for OID */
   unsigned const char *uhex; /* HEX value for OID */
@@ -51,13 +55,16 @@ extern unsigned const char *gvl_cuneify(unsigned const char *g);
 extern unsigned const char *gvl_cuneify_gv(gvl_g *gp);
 extern unsigned const char *gvl_ucode(gvl_g *gp);
 
-extern unsigned char *g_c10e(const unsigned char *g, int *err);
+extern unsigned char *gvl_s_c10e(const unsigned char *g, int *err);
+
 extern wchar_t *g_wlc(wchar_t *w);
 extern wchar_t *g_wuc(wchar_t *w);
 extern unsigned char *g_lc(unsigned const char *g);
 extern unsigned char *g_uc(unsigned const char *g);
 extern unsigned char *base_of(const unsigned char *v);
-const char *sub_of(int i);
+extern const char *sub_of(int i);
+extern wchar_t subdig_of(wchar_t w);
+extern wchar_t vowel_of(wchar_t w);
 
 extern void gvl_iterator_pre_fnc(Node *np, void *user);
 extern void gvl_iterator_post_fnc(Node *np, void *user);
@@ -67,5 +74,9 @@ extern int gvl_vq_c10e(gvl_g *gp, unsigned char **mess);
 extern int gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq);
 
 extern unsigned char *gvl_vmess(char *s, ...);
+
+extern void gvl_compound(Node *ynp);
+extern void gvl_simplexg(Node *ynp);
+extern void gvl_valuqual(Node *ynp);
 
 #endif/*_GVL_H*/
