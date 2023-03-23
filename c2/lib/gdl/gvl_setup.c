@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 #include <oraccsys.h>
+#include <oracclocale.h>
 #include <memo.h>
 #include <pool.h>
 #include <hash.h>
@@ -21,6 +23,8 @@ gvl_setup(const char *project, const char *name)
   gvl_i *ret = NULL;
   Hash *h = NULL;
 
+  setlocale(LC_ALL,ORACC_LOCALE);
+  
   if ((h = sll_init(project, name)))
     {
       ret = gvl_i_init_h(name, h);
