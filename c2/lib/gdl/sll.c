@@ -9,6 +9,7 @@
 #include <oraccsys.h>
 #include <pool.h>
 #include "sll.h"
+#include "gvl.h"
 
 #define ccp const char *
 #define ucp unsigned char *
@@ -277,15 +278,15 @@ sll_v_from_h(const unsigned char *b, const unsigned char *qsub)
   return NULL;
 }
 
-unsigned const char *
+unsigned char *
 sll_try_h(const char *oid, unsigned const char *g)
 {
   unsigned char *b = base_of(g);
   unsigned const char *h = sll_lookup(sll_tmp_key(b,"h"));
-  unsigned const char *p = NULL;
+  unsigned char *p = NULL;
   if (h)
     {
-      if ((p = (uccp)strstr((ccp)h, oid)))
+      if ((p = (ucp)strstr((ccp)h, oid)))
 	{
 	  unsigned char *p2 = NULL, *p_end = (ucp)strchr((char*)p,' '), *p_slash = NULL, *free1 = NULL, *free2 = NULL;
 	  if (p_end)
@@ -310,10 +311,10 @@ sll_try_h(const char *oid, unsigned const char *g)
 	    }
 	  else
 	    p = b;
+	  if (free2)
+	    free(free2);
 	}
     }
-  if (free2)
-    free(free2);
   return p;
 }
 

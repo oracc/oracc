@@ -13,7 +13,7 @@
 static gvl_i *gvl_i_init_h(const char *name, Hash *h);
 static void   gvl_i_term(const char *name);
 static gvl_i *sl = NULL; /* sl is always the head of the list of signlist datasets, not necessarily the current one */
-static gvl_i *curr_sl = NULL; /* the sl that should be used for look up */
+gvl_i *curr_sl = NULL; /* the sl that should be used for look up */
 
 gvl_i*
 gvl_setup(const char *project, const char *name)
@@ -21,8 +21,6 @@ gvl_setup(const char *project, const char *name)
   gvl_i *ret = NULL;
   Hash *h = NULL;
 
-  gvl_lookup = gvl_lookup_h;
-  
   if ((h = sll_init(project, name)))
     {
       ret = gvl_i_init_h(name, h);

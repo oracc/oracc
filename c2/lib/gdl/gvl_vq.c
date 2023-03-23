@@ -5,7 +5,7 @@
 #include "gvl.h"
 
 /* This interface is used from a Node with name=g:q */
-gvl_gg*
+gvl_g*
 gvl_vq_node(Node *np)
 {
   gvl_g *qv = NULL;
@@ -17,6 +17,7 @@ gvl_vq_node(Node *np)
 void
 gvl_vq(unsigned const char *g, gvl_g *gp)
 {
+  unsigned const char *l = NULL;
   g = sll_tmp_key(g,"qv");
   if ((l = gvl_lookup(g)))
     {
@@ -26,7 +27,7 @@ gvl_vq(unsigned const char *g, gvl_g *gp)
   else
     {
       static unsigned char *mess = NULL;
-      (void)gvl_q_c10e(gp, &mess);
+      (void)gvl_vq_c10e(gp, &mess);
       if (mess)
 	gp->mess = gvl_vmess("%s", mess);
       mess = NULL;
@@ -39,7 +40,7 @@ gvl_vq_c10e(gvl_g *gp, unsigned char **mess)
   gvl_g *vp = NULL, *qp = NULL;
   unsigned const char *v, *q;
   unsigned char *tmp = malloc(strlen((ccp)gp->text)+1), *end = NULL;
-  int pnest = 0, v_bad = 0, q_bad = 0, ret = 0;
+  int pnest = 0;
 
   /* get pointers to the value (v) and qualifier (q) parts */
   strcpy((char*)tmp, (ccp)gp->text);
@@ -85,45 +86,48 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 	v_bad = 1;
     }
   else
-    return NULL;
+    return -1;
 
   if (qp)
     {
       if (!qp->sign)
 	q_bad = 1;
-      else if (strcmp((ccp)q, (ccp)qp->sign))
+      else if (strcmp((ccp)qp->text, (ccp)qp->sign))
 	{
-	  q_fixed = malloc(strlen((ccp)q) + strlen((ccp)qp->sign) + strlen(" [ <= ] "));
-	  (void)sprintf((char*)q_fixed," [%s <= %s]", qp->sign, q);
+	  q_fixed = malloc(strlen((ccp)qp->text) + strlen((ccp)qp->sign) + strlen(" [ <= ] "));
+	  (void)sprintf((char*)q_fixed," [%s <= %s]", qp->sign, qp->text);
 	}
     }
   else
-    return NULL;
+    return -1;
 
   /* Now if we have bad value and qualifier it's too hard to guess */
   if (v_bad && q_bad)
-    *mess = gvl_vmess("[vq] %s: value %s and qualifier %s unknown%s", gp->text, vp->text, qp->text, QFIX);
+    vq->mess = gvl_vmess("[vq]: value %s and qualifier %s both unknown%s", vp->text, qp->text, QFIX);
   else if (v_bad)
     {
-      /* If the v is unknown, check if the base is known for q under a different index, else report known v for q */
-      int qv_bad = gvl_try_h(gp, vp, qp, q_fixed, mess);
-      if (qv_bad)
+      /* If the v is unknown, check if the base is known for q under a
+	 different index, else report known v for q */
+      unsigned char *altindex = sll_try_h(qp->oid, vp->text);
+      if (!altindex)
 	{
 	  unsigned const char *tmp2 = gvl_lookup(sll_tmp_key((uccp)qp->oid, "values"));
 	  if (tmp2)
-	    *mess = gvl_vmess("[vq] %s: %s::%s unknown. Known for %s: %s%s", gp->text, vp->text, qp->sign, qp->sign, tmp2, QFIX);
+	    vq->mess = gvl_vmess("[vq]: %s::%s unknown. Known for %s: %s%s", vp->text, qp->sign, qp->sign, tmp2, QFIX);
 	  else
-	    *mess = gvl_vmess("[vq] %s: %s::%s unknown. No known values for %s%s", gp->text, vp->text, qp->sign, qp->sign, QFIX);
+	    vq->mess = gvl_vmess("[vq]: %s::%s unknown. No known values for %s%s", vp->text, qp->sign, qp->sign, QFIX);
 	}
+      else
+	; /* ought to be a 'x₂(Y) should be x₃(Y)' err here */
     }
   else if (q_bad)
     {
       /* If the q is unknown, report known q for v */
       unsigned const char *tmp2 = gvl_lookup(sll_tmp_key(vp->text, "q"));
       if (tmp2)
-	*mess = gvl_vmess("[vq] %s: q %s unknown: known for %s: %s%s", gp->text, q, vp->text, tmp2, QFIX);
-      else if (!strchr((ccp)q,'X'))
-	*mess = gvl_vmess("[vq] %s: q %s unknown: %s known as %s%s", gp->text, q, vp->text, vp->sign, QFIX);
+	vq->mess = gvl_vmess("[vq]: q %s unknown: known for %s: %s%s", qp->text, vp->text, tmp2, QFIX);
+      else if (!strchr((ccp)qp->text,'X'))
+	vq->mess = gvl_vmess("[vq]: q %s unknown: %s known as %s%s", qp->text, vp->text, vp->sign, QFIX);
     }
   else
     {
@@ -133,12 +137,13 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
       /* tmp2 is now a vq with valid v and q components */
       if (gvl_lookup(sll_tmp_key(tmp2,"qv")))
 	{
+	  extern int gvl_strict;
 	  /* vq is known combo -- we have canonicalized the g that was passed as arg1 */
-	  gp->oid = qp->oid;
-	  gp->sign = gvl_lookup(sll_tmp_key((uccp)qp->oid,""));
+	  vq->oid = qp->oid;
+	  vq->sign = gvl_lookup(sll_tmp_key((uccp)qp->oid,""));
 	  /* add gp->text to g hash as key of tmp2 ? */
 	  if (gvl_strict)
-	    *mess = gvl_vmess("[vq] %s: should be %s%s", gp->text, tmp2, QFIX);
+	    vq->mess = gvl_vmess("[vq] %s(%s): should be %s%s", vp->text, qp->text, tmp2, QFIX);
 	  ret = 1;
 	}
       else if ('s' == *vp->type || 'c' == *vp->type)
@@ -151,14 +156,15 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 		{
 		  if (!strstr((ccp)parents, vp->oid))
 		    {
-		      unsigned char *snames = snames_of(parents);
-		      *mess = gvl_vmess("[vq] %s: bad qualifier: %s is a form of %s%s", gp->text, qp->sign, snames, QFIX);
+		      unsigned char *snames = sll_snames_of(parents);
+		      vq->mess = gvl_vmess("[vq] %s(%s): bad qualifier: %s is a form of %s%s",
+					   vp->text, qp->text, qp->sign, snames, QFIX);
 		      free(snames);
 		    }
 		}
 	      else
-		*mess = gvl_vmess("[vq] %s: value and qualifier are different signs (%s vs %s)%s",
-				  gp->text, vp->sign, qp->sign, QFIX);
+		vq->mess = gvl_vmess("[vq] %s(%s): value and qualifier are different signs (%s vs %s)%s",
+				     vp->text, qp->text, vp->sign, qp->sign, QFIX);
 	    }
 	}
       else
@@ -166,32 +172,37 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 	  /* is vq a v that doesn't need qualifying? */
 	  if (vp->oid && qp->oid && !strcmp(vp->oid, qp->oid))
 	    {
-	      gp->oid = qp->oid;
-	      gp->sign = gvl_lookup(sll_tmp_key((uccp)qp->oid,""));
+	      extern int gvl_strict;
+	      vq->oid = qp->oid;
+	      vq->sign = gvl_lookup(sll_tmp_key((uccp)qp->oid,""));
 	      if (gvl_strict)
-		*mess = gvl_vmess("[vq] %s: unnecessary qualifier on value%s", gp->text, QFIX);
+		vq->mess = gvl_vmess("[vq] %s(%s): unnecessary qualifier on value%s",
+				     vp->text, qp->text, QFIX);
 	      ret = 1; /* this is still OK--we have resolved the issue deterministically */
 	    }
 	  else
 	    {
 	      /* if the qv is unknown see if the value has the wrong index in the q context */
-	      int qv_bad = gvl_try_h(gp, vp, qp, q_fixed, mess);
-	      if (qv_bad)
+	      unsigned char *altindex = sll_try_h(qp->oid, vp->text);
+	      if (!altindex)
 		{
 		  /* we know the q doesn't have a value which is correct except for the index;
 		     report known q for v */
 		  if ('v' == *vp->type)
 		    {
-		      unsigned const char *q_for_v = gvl_lookup(sll_tmp_key(v, "q"));
+		      unsigned const char *q_for_v = gvl_lookup(sll_tmp_key(vp->text, "q"));
 		      if (q_for_v)
-			*mess = gvl_vmess("[vq] %s: unknown. Known for %s: %s%s", gp->text, vp->text, q_for_v, QFIX);
+			vq->mess = gvl_vmess("[vq] %s(%s): unknown. Known for %s: %s%s",
+					     vp->text, qp->text, vp->text, q_for_v, QFIX);
 		      else
-			*mess = gvl_vmess("[vq] %s: %s is %s%s", gp->text, vp->text, vp->sign, QFIX);
+			vq->mess = gvl_vmess("[vq] %s(%s): %s is %s%s",
+					     vp->text, qp->text, vp->text, vp->sign, QFIX);
 		    }
 #if 1
 		  else
 		    {
-		      fprintf(stderr, "gvl: [vq] unhandled case for input %s\n", gp->text);
+		      fprintf(stderr, "gvl: [vq] unhandled case for input %s(%s)\n",
+			      vp->text, qp->text);
 		    }
 #else
 		  else
@@ -200,12 +211,15 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 		      if (parents)
 			{
 			  unsigned char *snames = snames_of(parents);
-			  *mess = gvl_vmess("[vq] %s: bad qualifier: %s is a form of %s", gp->text, qp->sign, snames);
+			  vq->mess = gvl_vmess("[vq] %s(%s): bad qualifier: %s is a form of %s",
+					       vp->text, qp->text, qp->sign, snames);
 			  free(snames);
 			}
 		    }
 #endif
 		}
+	      else
+		; /* port old should be x₂ should be x₃ mess here */
 	      /* Dont' free(b) because it belongs to wcs2utf */ 
 	    }
 	}
@@ -213,12 +227,8 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
     }
       
   if (!vp && !qp)
-    *mess = gvl_vmess("[vq] unknown validation failure%s", QFIX);
+    vq->mess = gvl_vmess("[vq] unknown validation failure%s", QFIX);
       
-  /* keep tmp until end because v and q give us the original text of
-     the vq--the sign may have been canonicalized by gvl_validate */
-  free(tmp);
-
   if (q_fixed)
     free(q_fixed);
   

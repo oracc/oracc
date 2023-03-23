@@ -32,7 +32,7 @@ typedef struct gvl_i gvl_i;
 
 #define QFIX (q_fixed ? (ccp)q_fixed : "")
 
-extern unsigned const char *(*gvl_lookup)(unsigned const char *key);
+extern unsigned const char *gvl_lookup(unsigned const char *key);
 
 extern gvl_i *gvl_setup(const char *project, const char *name);
 extern void gvl_wrapup(const char *name);
@@ -43,7 +43,6 @@ extern gvl_g *gvl_validate(unsigned const char *g);
 
 extern int gvl_is_sname(unsigned const char *g);
 extern int gvl_is_value(unsigned const char *g);
-extern unsigned char *gvl_tmp_key(unsigned const char *key, const char *field);
 extern unsigned const char *gvl_get_id(unsigned const char *g);
 extern unsigned const char *gvl_get_sname(unsigned const char *g);
 extern int gvl_looks_like_sname(unsigned const char *g);
@@ -63,7 +62,10 @@ const char *sub_of(int i);
 extern void gvl_iterator_pre_fnc(Node *np, void *user);
 extern void gvl_iterator_post_fnc(Node *np, void *user);
 
+extern void gvl_vq(unsigned const char *g, gvl_g *gp);
 extern int gvl_vq_c10e(gvl_g *gp, unsigned char **mess);
+extern int gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq);
+
 extern unsigned char *gvl_vmess(char *s, ...);
 
 #endif/*_GVL_H*/
