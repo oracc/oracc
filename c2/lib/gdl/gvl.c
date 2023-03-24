@@ -556,5 +556,16 @@ gvl_simplexg(Node *ynp)
 void
 gvl_valuqual(Node *ynp)
 {
-  
+  if (ynp && !strcmp(ynp->name, "g:q"))
+    {
+      gvl_g *vq = memo_new(curr_sl->m);
+      vq->orig = pool_alloc(strlen(ynp->kids->data) + strlen(ynp->kids->next->data) + 3);
+      sprintf(vq->orig, "%s(%s)", ynp->kids->data, ynp->kids->next->data);
+      if (gvl_vq_gg(ynp->kids->parsed, ynp->kids->next->parsed, vq))
+	{
+	  vq->c10e = pool_alloc(strlen(((gvl_g*)(ynp->kids->parsed))->c10e) + strlen(((gvl_g*)(ynp->kids->next->parsed))->sign) + 3);
+	  sprintf(vq->c10e, "%s(%s)", ((gvl_g*)(ynp->kids->parsed))->c10e, ((gvl_g*)(ynp->kids->next->parsed))->sign);
+	  ynp->parsed = vq;
+	}
+    }
 }

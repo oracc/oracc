@@ -37,7 +37,7 @@ gvl_vq(unsigned const char *g, gvl_g *gp)
 int
 gvl_vq_c10e(gvl_g *gp, unsigned char **mess)
 {
-  gvl_g *vp = NULL, *qp = NULL;
+  gvl_g *vp = NULL, *qp = NULL, *vq = NULL;
   unsigned const char *v, *q;
   unsigned char *tmp = malloc(strlen((ccp)gp->orig)+1), *end = NULL;
   int pnest = 0;
@@ -71,7 +71,14 @@ gvl_vq_c10e(gvl_g *gp, unsigned char **mess)
   /* check the sign */
   qp = gvl_validate(q);
 
-  return gvl_vq_gg(vp, qp, NULL);
+  vq = memo_new(curr_sl->m);
+  vq->orig = pool_alloc(strlen(vp->orig) + strlen(qp->orig) + 3);
+  sprintf(vq->orig, "%s(%s)", vp->orig, qp->orig);
+  if (gvl_vq_gg(vp, qp, vq))
+    {
+      vq->c10e = pool_alloc(strlen(vp->c10e) + strlen(qp->sign) + 3);
+      sprintf(vq->c10e, "%s(%s)", vp->c10e, qp->sign);
+    }
 }
 
 int
