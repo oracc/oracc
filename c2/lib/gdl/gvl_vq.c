@@ -38,6 +38,7 @@ int
 gvl_vq_c10e(gvl_g *gp, unsigned char **mess)
 {
   gvl_g *vp = NULL, *qp = NULL, *vq = NULL;
+  char *p = NULL;
   unsigned const char *v, *q;
   unsigned char *tmp = malloc(strlen((ccp)gp->orig)+1), *end = NULL;
   int pnest = 0;
@@ -57,7 +58,7 @@ gvl_vq_c10e(gvl_g *gp, unsigned char **mess)
     }
   if (end == tmp)
     {
-      *mess = gvl_vmess("[vq] %s: syntax error in value-qualifier", gp->orig);
+      vq->mess = gvl_vmess("[vq] %s: syntax error in value-qualifier", gp->orig);
       return 0;
     }
   
@@ -72,19 +73,24 @@ gvl_vq_c10e(gvl_g *gp, unsigned char **mess)
   qp = gvl_validate(q);
 
   vq = memo_new(curr_sl->m);
-  vq->orig = pool_alloc(strlen(vp->orig) + strlen(qp->orig) + 3);
-  sprintf(vq->orig, "%s(%s)", vp->orig, qp->orig);
+  p = (char*)pool_alloc(strlen((ccp)vp->orig) + strlen((ccp)qp->orig) + 3, curr_sl->p);
+  sprintf(p, "%s(%s)", vp->orig, qp->orig);
+  vq->orig = (uccp)p;
   if (gvl_vq_gg(vp, qp, vq))
     {
-      vq->c10e = pool_alloc(strlen(vp->c10e) + strlen(qp->sign) + 3);
-      sprintf(vq->c10e, "%s(%s)", vp->c10e, qp->sign);
+      p = (char*)pool_alloc(strlen((ccp)vp->c10e) + strlen((ccp)qp->sign) + 3, curr_sl->p);
+      sprintf(p, "%s(%s)", vp->c10e, qp->sign);
+      vq->c10e = (uccp)p;
+      return 1;
     }
+
+  return 0;
 }
 
 int
 gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 {
-  int v_bad = 0, q_bad = 0, ret = 0;
+  int v_bad = 0, q_bad = 0, ret = 1;
   unsigned char *q_fixed = NULL;
 
   if (vp)
@@ -125,7 +131,15 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 	    vq->mess = gvl_vmess("[vq]: %s::%s unknown. No known values for %s%s", vp->orig, qp->sign, qp->sign, QFIX);
 	}
       else
-	; /* ought to be a 'x₂(Y) should be x₃(Y)' err here */
+	{
+	  /* If the gp->text value is uppercase, make the result value
+	     uppercase; then if value == qp->sign, elide the value and
+	     just print the qp-sign with no parens [FIRST ERROR MESSAGE MAY BE IN WRONG PLACE] */
+	  if (gvl_v_isupper(vp->orig) && !strcmp((ccp)(altindex=g_uc(altindex)), (ccp)qp->sign))
+	    vq->mess = gvl_vmess("%s: should be %s%s", vq->orig, qp->sign, QFIX);
+	  else if (strcmp((ccp)vp->orig,(ccp)altindex) || (ccp)q_fixed)
+	    vq->mess = gvl_vmess("%s: should be %s(%s)%s", vq->orig, altindex, qp->sign, QFIX);
+	}
     }
   else if (q_bad)
     {
@@ -226,8 +240,12 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 #endif
 		}
 	      else
-		; /* port old should be x₂ should be x₃ mess here */
-	      /* Dont' free(b) because it belongs to wcs2utf */ 
+		{
+		  if (gvl_v_isupper(vp->orig) && !strcmp((ccp)(altindex=g_uc(altindex)), (ccp)qp->sign))
+		    vq->mess = gvl_vmess("%s: should be %s%s", vq->orig, qp->sign, QFIX);
+		  else if (strcmp((ccp)vp->orig,(ccp)altindex) || (ccp)q_fixed)
+		    vq->mess = gvl_vmess("%s: should be %s(%s)%s", vq->orig, altindex, qp->sign, QFIX);
+		}
 	    }
 	}
       free(tmp2);

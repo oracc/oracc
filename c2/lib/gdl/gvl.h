@@ -36,6 +36,8 @@ typedef struct gvl_i gvl_i;
 
 #define QFIX (q_fixed ? (ccp)q_fixed : "")
 
+extern gvl_i *curr_sl;
+
 extern unsigned const char *gvl_lookup(unsigned const char *key);
 
 extern gvl_i *gvl_setup(const char *project, const char *name);
@@ -65,6 +67,8 @@ extern unsigned char *base_of(const unsigned char *v);
 extern const char *sub_of(int i);
 extern wchar_t subdig_of(wchar_t w);
 extern wchar_t vowel_of(wchar_t w);
+
+extern int gvl_v_isupper(unsigned const char *v);
 
 extern void gvl_iterator_pre_fnc(Node *np, void *user);
 extern void gvl_iterator_post_fnc(Node *np, void *user);

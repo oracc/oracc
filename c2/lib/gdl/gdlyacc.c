@@ -102,12 +102,13 @@ gdl_prop(Node *ynp, int ptype, int gtype, const char *k, const char *v)
     fprintf(stderr, "gdl_prop passed NULL ynp\n");
 }
 
-void
+Node *
 gdl_pop(Tree *ytp, const char *s)
 {
   Node *np = tree_pop(ytp);
   if (!strcmp(np->name, s))
     /* error */;
+  return np;
 }
 
 void

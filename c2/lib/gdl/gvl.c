@@ -17,7 +17,6 @@
 #include "gvl.h"
 
 static int gvl_trace = 1;
-extern gvl_i *curr_sl;
 int gvl_strict = 0;
 
 static const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalues/";
@@ -182,19 +181,6 @@ gvl_lookup(unsigned const char *key)
     return key ? hash_find(curr_sl->sl, (const unsigned char *)key) : NULL;
   return NULL;
 }
-
-#if 0
-static int
-gvl_v_isupper(unsigned const char *v)
-{
-  static size_t s, i;
-  wchar_t *wv = utf2wcs(v,&s);
-  for (i = 0; i < s; ++i)
-    if (iswalpha(wv[i]))
-      break;
-  return iswupper(wv[i]);
-}
-#endif
 
 #if 0
 static int
@@ -507,7 +493,7 @@ gvl_simplexg(Node *ynp)
   g = (uccp)ynp->data;
   
   if (gvl_trace)
-    fprintf(stderr, "gvl_validate: called with g=%s\n", g);
+    fprintf(stderr, "gvl_simplexg: called with g=%s\n", g);
 
   if (!(gp = hash_find(curr_sl->h,g)))
     {
@@ -556,16 +542,22 @@ gvl_simplexg(Node *ynp)
 void
 gvl_valuqual(Node *ynp)
 {
+  if (gvl_trace)
+    fprintf(stderr, "gvl_valuqual: called\n");
+
   if (ynp && !strcmp(ynp->name, "g:q"))
     {
       gvl_g *vq = memo_new(curr_sl->m);
-      vq->orig = pool_alloc(strlen(ynp->kids->data) + strlen(ynp->kids->next->data) + 3);
-      sprintf(vq->orig, "%s(%s)", ynp->kids->data, ynp->kids->next->data);
+      char *p = (char *)pool_alloc(strlen(ynp->kids->data) + strlen(ynp->kids->next->data) + 3, curr_sl->p);
+      sprintf(p, "%s(%s)", ynp->kids->data, ynp->kids->next->data);
+      vq->orig = (uccp)p;
+      ynp->parsed = vq;
       if (gvl_vq_gg(ynp->kids->parsed, ynp->kids->next->parsed, vq))
 	{
-	  vq->c10e = pool_alloc(strlen(((gvl_g*)(ynp->kids->parsed))->c10e) + strlen(((gvl_g*)(ynp->kids->next->parsed))->sign) + 3);
-	  sprintf(vq->c10e, "%s(%s)", ((gvl_g*)(ynp->kids->parsed))->c10e, ((gvl_g*)(ynp->kids->next->parsed))->sign);
-	  ynp->parsed = vq;
+	  p = (char*)pool_alloc(strlen((ccp)((gvl_g*)(ynp->kids->parsed))->c10e)
+				+ strlen((ccp)((gvl_g*)(ynp->kids->next->parsed))->sign) + 3, curr_sl->p);
+	  sprintf(p, "%s(%s)", (ccp)((gvl_g*)(ynp->kids->parsed))->c10e, (ccp)((gvl_g*)(ynp->kids->next->parsed))->sign);
+	  vq->c10e = (uccp)p;
 	}
     }
 }

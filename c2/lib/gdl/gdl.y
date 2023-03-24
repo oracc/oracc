@@ -158,12 +158,17 @@ cors:
 	;
 
 valuqual:
+	  vq	    				       	 { gvl_valuqual(ytp->curr);
+	  						   ynp = gdl_pop(ytp,"g:q"); }
+	;
+
+vq:
 	  cors
 	  '(' 						{ yrem=kids_rem_last(ytp);
 	    						  gdl_push(ytp,"g:q");
 							  kids_add_node(ytp,yrem); }
 	  cors
-	  ')' 						{ gdl_pop(ytp,"g:q"); }
+	  ')' 						
 	;
 
 %%

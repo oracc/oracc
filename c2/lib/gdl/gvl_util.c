@@ -3,7 +3,16 @@
 #include <string.h>
 #include "gvl.h"
 
-extern gvl_i *curr_sl;
+int
+gvl_v_isupper(unsigned const char *v)
+{
+  static size_t s, i;
+  wchar_t *wv = utf2wcs(v,&s);
+  for (i = 0; i < s; ++i)
+    if (iswalpha(wv[i]))
+      break;
+  return iswupper(wv[i]);
+}
 
 #if 0
 void
