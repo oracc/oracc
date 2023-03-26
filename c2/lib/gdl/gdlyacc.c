@@ -93,6 +93,14 @@ gdl_number(Tree *ytp, const char *data)
   return gdl_graph_node(ytp, "g:n", data);
 }
 
+Node *
+gdl_punct(Tree *ytp, const char *data)
+{
+  if (gdltrace)
+    fprintf(stderr, "PUNCT: %s\n", gdllval.text);
+  return gdl_graph_node(ytp, "g:p", data);
+}
+
 void
 gdl_prop(Node *ynp, int ptype, int gtype, const char *k, const char *v)
 {

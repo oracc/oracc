@@ -73,9 +73,9 @@ extern int gvl_v_isupper(unsigned const char *v);
 extern void gvl_iterator_pre_fnc(Node *np, void *user);
 extern void gvl_iterator_post_fnc(Node *np, void *user);
 
-extern void gvl_vq(unsigned const char *g, gvl_g *gp);
-extern int gvl_vq_c10e(gvl_g *gp, unsigned char **mess);
-extern int gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq);
+extern gvl_g *gvl_s(Node *ynp);
+
+extern int gvl_q(gvl_g *vp, gvl_g *qp, gvl_g *vq);
 
 extern unsigned char *gvl_vmess(char *s, ...);
 

@@ -16,10 +16,8 @@
 #include "gdl.h"
 #include "gvl.h"
 
-static int gvl_trace = 1;
+int gvl_trace = 1;
 int gvl_strict = 0;
-
-static const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalues/";
 
 unsigned char *gvl_v_from_h(const unsigned char *b, const unsigned char *qsub);
 unsigned char *gvl_val_base(const unsigned char *v);
@@ -30,6 +28,7 @@ unsigned char *gvl_val_base(const unsigned char *v);
 
 ucp c10e_compound(uccp g){ return (ucp)g; }
 
+#if 0
 #define gvl_BAD ""
 #define gvl_v "v"
 #define gvl_s "s"
@@ -95,6 +94,8 @@ gvl_type(unsigned const char *g)
   else
     return gvl_BAD;
 }
+
+#endif
 
 unsigned const char *
 gvl_ucode(gvl_g*gg)
@@ -211,6 +212,13 @@ gvl_validate(unsigned const char *g)
 {
   gvl_g *gp = NULL;
 
+  if ((gp = hash_find(curr_sl->h,g)))
+    return gp;
+  else
+    return NULL;
+
+#if 0
+  
   if (g)
     {
       if (gvl_trace)
@@ -268,7 +276,7 @@ gvl_validate(unsigned const char *g)
 	  
 	  if (*gp->type == 'q')
 	    {
-	      gvl_vq(g, gp);
+	      gvl_q(g, gp);
 	    }
     	  else if ((l = gvl_lookup(g)))
 	    {
@@ -472,6 +480,7 @@ gvl_validate(unsigned const char *g)
     }
   
   return gp;
+#endif
 }
 
 void
@@ -485,7 +494,6 @@ gvl_simplexg(Node *ynp)
 {
   gvl_g *gp = NULL;
   unsigned const char *g = NULL;
-  unsigned const char *l = NULL;
 
   if (!ynp || !ynp->data)
     return;
@@ -496,63 +504,32 @@ gvl_simplexg(Node *ynp)
     fprintf(stderr, "gvl_simplexg: called with g=%s\n", g);
 
   if (!(gp = hash_find(curr_sl->h,g)))
-    {
-      static int c10e_err = 0;
-      
-      gp = memo_new(curr_sl->m);
-
-      gp->orig = g;
-      g = gp->c10e = gvl_s_c10e(gp->orig, &c10e_err);
+    gp = gvl_s(ynp);
   
-      if ((l = gvl_lookup(g)))
-	{
-	  /* best case: g is a known sign or value */
-	  gp->oid = (ccp)l;
-	  gp->sign = gvl_lookup(sll_tmp_key(l,""));
-	}
-      else if (sll_has_sign_indicator(g))
-	{
-	  const unsigned char *lg = utf_lcase(g);
-	  if ((l = gvl_lookup(lg)))
-	    {
-	      gp->oid = (ccp)l;
-	      gp->sign = gvl_lookup(sll_tmp_key(l,""));
-	      if (gvl_strict)
-		gp->mess = gvl_vmess("pseudo-signname %s should be %s", g, gp->sign);
-	    }
-	  else if ((l = gvl_lookup(sll_tmp_key(lg,"q"))))
-	    {
-	      gp->sign = l;
-	      if (gvl_strict)
-		gp->mess = gvl_vmess("pseudo-signname %s must be qualifed by one of %s",g,l);
-	    }
-	  else if ((l = gvl_lookup(sll_tmp_key(g,"l"))))
-	    {
-	      gp->type = "l";
-	      gp->oid = (ccp)l;
-	      gp->sign = gvl_lookup(sll_tmp_key(l,""));
-	    }
-	  else
-	    gp->mess = gvl_vmess("unknown sign name: %s", g);
-	}
-    }
   ynp->parsed = gp;
 }
 
 void
 gvl_valuqual(Node *ynp)
 {
+
+  if (!ynp || !ynp->kids || !ynp->kids->next)
+    return;
+
   if (gvl_trace)
     fprintf(stderr, "gvl_valuqual: called\n");
 
   if (ynp && !strcmp(ynp->name, "g:q"))
     {
       gvl_g *vq = memo_new(curr_sl->m);
+      vq->type = "q";
       char *p = (char *)pool_alloc(strlen(ynp->kids->data) + strlen(ynp->kids->next->data) + 3, curr_sl->p);
       sprintf(p, "%s(%s)", ynp->kids->data, ynp->kids->next->data);
       vq->orig = (uccp)p;
       ynp->parsed = vq;
-      if (gvl_vq_gg(ynp->kids->parsed, ynp->kids->next->parsed, vq))
+
+      /* This block replaces the old gvl_vq_c10e routine */
+      if (gvl_q(ynp->kids->parsed, ynp->kids->next->parsed, vq))
 	{
 	  p = (char*)pool_alloc(strlen((ccp)((gvl_g*)(ynp->kids->parsed))->c10e)
 				+ strlen((ccp)((gvl_g*)(ynp->kids->next->parsed))->sign) + 3, curr_sl->p);

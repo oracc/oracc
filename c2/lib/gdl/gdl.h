@@ -53,6 +53,7 @@ extern void gdl_xml(FILE *fp, Tree *tp);
 extern void gdl_append(Node *ynp, const char *s);
 extern Node *gdl_delim(Tree *ytp, const char *data);
 extern Node *gdl_graph(Tree *ytp, const char *data);
+extern Node *gdl_punct(Tree *ytp, const char *data);
 extern Node *gdl_listnum(Tree *ytp, const char *data);
 extern Node *gdl_number(Tree *ytp, const char *data);
 extern void gdl_prop(Node *ynp, int p, int g, const char *k, const char *v);

@@ -32,11 +32,9 @@ gvl_iterator_post_fnc(Node *np, void *user)
   if (np && np->name)
     {
       if (!strcmp(np->name, "g:q"))
-	np->parsed = gvl_vq_node(np);
-#if 0
+	np->parsed = gvl_q_node(np);
       else if (!strcmp(np->name, "g:c"))
 	np->parsed = gvl_c_node(np);
-#endif
     }
 }
 #endif

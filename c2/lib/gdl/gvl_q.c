@@ -4,91 +4,8 @@
 #include "sll.h"
 #include "gvl.h"
 
-/* This interface is used from a Node with name=g:q */
-gvl_g*
-gvl_vq_node(Node *np)
-{
-  gvl_g *qv = NULL;
-  gvl_vq_gg(np->kids->parsed, np->kids->next->parsed, qv);
-  return qv;
-}
-
-/* This interface is used when gvl_validate is passed a vq, e.g., e₄(A) */
-void
-gvl_vq(unsigned const char *g, gvl_g *gp)
-{
-  unsigned const char *l = NULL;
-  g = sll_tmp_key(g,"qv");
-  if ((l = gvl_lookup(g)))
-    {
-      gp->oid = (ccp)l;
-      gp->sign = gvl_lookup(sll_tmp_key(l,""));
-    }
-  else
-    {
-      static unsigned char *mess = NULL;
-      (void)gvl_vq_c10e(gp, &mess);
-      if (mess)
-	gp->mess = gvl_vmess("%s", mess);
-      mess = NULL;
-    }
-}
-
 int
-gvl_vq_c10e(gvl_g *gp, unsigned char **mess)
-{
-  gvl_g *vp = NULL, *qp = NULL, *vq = NULL;
-  char *p = NULL;
-  unsigned const char *v, *q;
-  unsigned char *tmp = malloc(strlen((ccp)gp->orig)+1), *end = NULL;
-  int pnest = 0;
-
-  /* get pointers to the value (v) and qualifier (q) parts */
-  strcpy((char*)tmp, (ccp)gp->orig);
-  end = tmp+strlen((ccp)tmp);
-  --end;
-  *end = '\0';
-  while (end > tmp && ('(' != end[-1] || pnest))
-    {
-      --end;
-      if (')' == *end)
-	++pnest;
-      else if ('(' == *end)
-	--pnest;
-    }
-  if (end == tmp)
-    {
-      vq->mess = gvl_vmess("[vq] %s: syntax error in value-qualifier", gp->orig);
-      return 0;
-    }
-  
-  q = end--;
-  *end = '\0';
-  v = tmp;
-
-  /* check the value */
-  vp = gvl_validate(v);
-      
-  /* check the sign */
-  qp = gvl_validate(q);
-
-  vq = memo_new(curr_sl->m);
-  p = (char*)pool_alloc(strlen((ccp)vp->orig) + strlen((ccp)qp->orig) + 3, curr_sl->p);
-  sprintf(p, "%s(%s)", vp->orig, qp->orig);
-  vq->orig = (uccp)p;
-  if (gvl_vq_gg(vp, qp, vq))
-    {
-      p = (char*)pool_alloc(strlen((ccp)vp->c10e) + strlen((ccp)qp->sign) + 3, curr_sl->p);
-      sprintf(p, "%s(%s)", vp->c10e, qp->sign);
-      vq->c10e = (uccp)p;
-      return 1;
-    }
-
-  return 0;
-}
-
-int
-gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
+gvl_q(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 {
   int v_bad = 0, q_bad = 0, ret = 1;
   unsigned char *q_fixed = NULL;
@@ -259,3 +176,94 @@ gvl_vq_gg(gvl_g *vp, gvl_g *qp, gvl_g *vq)
   
   return ret;
 }
+
+#if 0
+static int gvl_q_c10e(gvl_g *gp, unsigned char **mess);
+int
+gvl_q_c10e(gvl_g *gp, unsigned char **mess)
+{
+  gvl_g *vp = NULL, *qp = NULL, *vq = NULL;
+  char *p = NULL;
+  unsigned const char *v, *q;
+  unsigned char *tmp = malloc(strlen((ccp)gp->orig)+1), *end = NULL;
+  int pnest = 0;
+
+  /* get pointers to the value (v) and qualifier (q) parts */
+  strcpy((char*)tmp, (ccp)gp->orig);
+  end = tmp+strlen((ccp)tmp);
+  --end;
+  *end = '\0';
+  while (end > tmp && ('(' != end[-1] || pnest))
+    {
+      --end;
+      if (')' == *end)
+	++pnest;
+      else if ('(' == *end)
+	--pnest;
+    }
+  if (end == tmp)
+    {
+      vq->mess = gvl_vmess("[vq] %s: syntax error in value-qualifier", gp->orig);
+      return 0;
+    }
+  
+  q = end--;
+  *end = '\0';
+  v = tmp;
+
+  /* check the value */
+  vp = gvl_validate(v);
+      
+  /* check the sign */
+  qp = gvl_validate(q);
+
+  vq = memo_new(curr_sl->m);
+  p = (char*)pool_alloc(strlen((ccp)vp->orig) + strlen((ccp)qp->orig) + 3, curr_sl->p);
+  sprintf(p, "%s(%s)", vp->orig, qp->orig);
+  vq->orig = (uccp)p;
+  if (gvl_q(vp, qp, vq))
+    {
+      p = (char*)pool_alloc(strlen((ccp)vp->c10e) + strlen((ccp)qp->sign) + 3, curr_sl->p);
+      sprintf(p, "%s(%s)", vp->c10e, qp->sign);
+      vq->c10e = (uccp)p;
+      return 1;
+    }
+
+  return 0;
+}
+#endif
+
+#if 0
+/* This interface is used from a Node with name=g:q */
+gvl_g*
+gvl_q_node(Node *np)
+{
+  gvl_g *qv = NULL;
+  gvl_vq_gg(np->kids->parsed, np->kids->next->parsed, qv);
+  return qv;
+}
+#endif
+
+#if 0
+/* This interface is used when gvl_validate is passed a vq, e.g., e₄(A) */
+void
+gvl_q_bis(unsigned const char *g, gvl_g *gp)
+{
+  unsigned const char *l = NULL;
+  g = sll_tmp_key(g,"qv");
+  if ((l = gvl_lookup(g)))
+    {
+      gp->oid = (ccp)l;
+      gp->sign = gvl_lookup(sll_tmp_key(l,""));
+    }
+  else
+    {
+      static unsigned char *mess = NULL;
+      (void)gvl_vq_c10e(gp, &mess);
+      if (mess)
+	gp->mess = gvl_vmess("%s", mess);
+      mess = NULL;
+    }
+}
+#endif
+

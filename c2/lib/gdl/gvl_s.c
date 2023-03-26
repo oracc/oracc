@@ -6,10 +6,80 @@
 #include "gvl.h"
 #include "unidef.h"
 
-#if 0
-extern wchar_t subdig_of(wchar_t w);
-extern wchar_t vowel_of(wchar_t w);
-#endif
+extern int gvl_strict;
+extern int gvl_trace;
+
+static const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalues/";
+
+gvl_g *
+gvl_s(Node *ynp)
+{
+  static int c10e_err = 0;
+  gvl_g *gp = NULL;
+  unsigned const char *l = NULL;
+
+  gp = memo_new(curr_sl->m);
+  
+  gp->orig = (uccp)ynp->data;
+  gp->type = ynp->name + 2;
+  if ('g' == *gp->type)
+    {
+      if (sll_has_sign_indicator(gp->orig))
+	{
+	  gp->type = "s";
+	  ynp->name = "g:s";
+	}
+      else
+	{
+	  gp->type = "v";
+	  ynp->name = "g:v";
+	}  
+    }
+
+  gp->c10e = pool_copy(gvl_s_c10e(gp->orig, &c10e_err), curr_sl->p);
+  
+  if ((l = gvl_lookup(gp->c10e)))
+    {
+      /* best case: g is a known sign or value */
+      gp->oid = (ccp)l;
+      gp->sign = gvl_lookup(sll_tmp_key(l,""));
+    }
+  else if ('s' == *gp->type)
+    {
+      const unsigned char *lg = utf_lcase(gp->c10e);
+      if ((l = gvl_lookup(lg)))
+	{
+	  gp->oid = (ccp)l;
+	  gp->sign = gvl_lookup(sll_tmp_key(l,""));
+	  if (gvl_strict)
+	    gp->mess = gvl_vmess("pseudo-signname %s should be %s", gp->orig, gp->sign);
+	}
+      else if ((l = gvl_lookup(sll_tmp_key(lg,"q"))))
+	{
+	  gp->sign = l;
+	  if (gvl_strict)
+	    gp->mess = gvl_vmess("pseudo-signname %s must be qualifed by one of %s",gp->orig,l);
+	}
+      else if ((l = gvl_lookup(sll_tmp_key(gp->c10e,"l"))))
+	{
+	  gp->type = "l";
+	  gp->oid = (ccp)l;
+	  gp->sign = gvl_lookup(sll_tmp_key(l,""));
+	}
+      else
+	gp->mess = gvl_vmess("unknown sign name: %s", gp->orig);
+    }
+  else
+    {
+      const unsigned char *gq = gvl_lookup(sll_tmp_key(gp->c10e,"q"));
+      if (gq)
+	gp->mess = gvl_vmess("value %s must be qualified with one of %s", gp->orig, gq);
+      else
+	gp->mess = gvl_vmess("unknown value: %s. To request adding it please visit:\n\t%s", gp->orig, report);
+    }
+
+  return gp;
+}
 
 #define G_C10E_MIXED_CASE 0x02
 #define G_C10E_FINAL_SUBX 0x04

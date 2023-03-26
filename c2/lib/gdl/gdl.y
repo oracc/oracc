@@ -17,7 +17,8 @@ static Node *ynp, *yrem;
 
 %union { char *text; int i; }
 
-%token	<text> 	ALIGN FIELD FTYPE LANG GRAPHEME NUMBER LISTNUM TEXT SPACE ENHYPHEN
+%token	<text> 	ALIGN FIELD FTYPE LANG TEXT SPACE ENHYPHEN
+		GRAPHEME NUMBER LISTNUM PUNCT
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
@@ -111,20 +112,26 @@ statec:
 	;
 
 simplexg:
-	sg						{ gvl_simplexg(ynp); }
+	s						{ gvl_simplexg(ynp); }
 	;
 
-sg:
+s:
 	  GRAPHEME					{ ynp = gdl_graph(ytp, gdllval.text); }
-	| NUMBER					{ ynp = gdl_number(ytp, gdllval.text); }
 	| LISTNUM					{ ynp = gdl_listnum(ytp, gdllval.text); }
+	| NUMBER					{ ynp = gdl_number(ytp, gdllval.text); }
+	| PUNCT						{ ynp = gdl_punct(ytp, gdllval.text); }
 	;
 
 compound:
-	C_O 						{ gdl_push(ytp,"g:c"); }
-	cword
-	C_C 						{ gdl_pop(ytp,"g:c"); }
+	c	    				       	 { gvl_valuqual(ytp->curr);
+	  						   ynp = gdl_pop(ytp,"g:c"); }
 	;
+
+c:
+	  C_O 						{ gdl_push(ytp,"g:c"); }
+	  cword
+	  C_C 						
+	  ;
 
 cword:
 	  cgors
@@ -158,17 +165,17 @@ cors:
 	;
 
 valuqual:
-	  vq	    				       	 { gvl_valuqual(ytp->curr);
+	q	    				       	 { gvl_valuqual(ytp->curr);
 	  						   ynp = gdl_pop(ytp,"g:q"); }
 	;
 
-vq:
-	  cors
-	  '(' 						{ yrem=kids_rem_last(ytp);
+q:
+	cors
+	'(' 						{ yrem=kids_rem_last(ytp);
 	    						  gdl_push(ytp,"g:q");
 							  kids_add_node(ytp,yrem); }
-	  cors
-	  ')' 						
+	cors
+	')' 						
 	;
 
 %%
