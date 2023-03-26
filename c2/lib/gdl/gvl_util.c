@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <oraccsys.h>
 #include "gvl.h"
 
 int

@@ -123,7 +123,7 @@ s:
 	;
 
 compound:
-	c	    				       	 { gvl_valuqual(ytp->curr);
+	c	    				       	 { gvl_compound(ytp->curr);
 	  						   ynp = gdl_pop(ytp,"g:c"); }
 	;
 

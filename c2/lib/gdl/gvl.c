@@ -495,20 +495,20 @@ gvl_compound(Node *ynp)
   if (!strcmp(ynp->name, "g:c"))
     {
       gvl_g *cp = NULL;
-      cp->orig = gvl_c_orig(ynp);
-      if (!(cp = hash_find(curr_sl->h, cp->orig)))
+      unsigned char *c_orig = gvl_c_orig(ynp);
+      if (!(cp = hash_find(curr_sl->h, c_orig)))
 	{
-	  cp = memo_new(curr_sl->m);
+	  ynp->parsed = cp = memo_new(curr_sl->m);
 	  cp->type = "c";
-	  cp->c10e = gvl_c_c10e(ynp);
+	  cp->orig = pool_copy(c_orig, curr_sl->p);
+	  cp->c10e = pool_copy(gvl_c_c10e(ynp), curr_sl->p);
 
 	  gvl_c(cp);
 	  
 	  hash_add(curr_sl->h, cp->orig, cp);
-	  if (strcmp(cp->orig, cp->c10e))
+	  if (strcmp((ccp)cp->orig, (ccp)cp->c10e))
 	    hash_add(curr_sl->h, cp->c10e, cp);
 	}
-      ynp->parsed = cp;
     }
 }
 
@@ -545,8 +545,8 @@ gvl_valuqual(Node *ynp)
   if (!strcmp(ynp->name, "g:q"))
     {
       gvl_g *vq = NULL;
-      char *p = (char *)pool_alloc(strlen(ynp->kids->data) + strlen(ynp->kids->next->data) + 3, curr_sl->p);
-      sprintf(p, "%s(%s)", ynp->kids->data, ynp->kids->next->data);
+      unsigned char *p = (ucp)pool_alloc(strlen(ynp->kids->data) + strlen(ynp->kids->next->data) + 3, curr_sl->p);
+      sprintf((char*)p, "%s(%s)", ynp->kids->data, ynp->kids->next->data);
 
       if (!(vq = hash_find(curr_sl->h, p)))
 	{
@@ -557,13 +557,13 @@ gvl_valuqual(Node *ynp)
 	  /* This block replaces the old gvl_vq_c10e routine */
 	  if (gvl_q(ynp->kids->parsed, ynp->kids->next->parsed, vq))
 	    {
-	      p = (char*)pool_alloc(strlen((ccp)((gvl_g*)(ynp->kids->parsed))->c10e)
+	      p = (ucp)pool_alloc(strlen((ccp)((gvl_g*)(ynp->kids->parsed))->c10e)
 				    + strlen((ccp)((gvl_g*)(ynp->kids->next->parsed))->sign) + 3, curr_sl->p);
-	      sprintf(p, "%s(%s)", (ccp)((gvl_g*)(ynp->kids->parsed))->c10e, (ccp)((gvl_g*)(ynp->kids->next->parsed))->sign);
+	      sprintf((char*)p, "%s(%s)", (ccp)((gvl_g*)(ynp->kids->parsed))->c10e, (ccp)((gvl_g*)(ynp->kids->next->parsed))->sign);
 	      vq->c10e = (uccp)p;
 	    }
 	  hash_add(curr_sl->h, vq->orig, vq);
-	  if (strcmp(vq->orig, vq->c10e))
+	  if (strcmp((ccp)vq->orig, (ccp)vq->c10e))
 	    hash_add(curr_sl->h, vq->c10e, vq);
 	}
       ynp->parsed = vq;

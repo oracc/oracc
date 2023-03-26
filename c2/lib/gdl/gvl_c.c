@@ -5,10 +5,13 @@
 #include "sll.h"
 #include "gvl.h"
 
+extern int gvl_strict;
+
 /* This routine should be called after cp->orig and cp->c10e have been set */
 void
 gvl_c(gvl_g *cp)
 {
+  unsigned const char *l = NULL;
   if ((l=gvl_lookup(cp->c10e)))
     {
       cp->oid = (ccp)l;
@@ -35,9 +38,9 @@ gvl_c(gvl_g *cp)
 	    {
 	      if (strcmp((ccp)cp->orig, (ccp)cp->c10e) && c10e_no_p && strcmp((ccp)cp->c10e, (ccp)c10e_no_p))
 		cp->mess = gvl_vmess("unknown compound: %s (also tried %s/%s)", cp->orig, cp->c10e, c10e_no_p);
-	      else if (strcmp((ccp)g, (ccp)c10e))
+	      else if (strcmp((ccp)cp->orig, (ccp)cp->c10e))
 		cp->mess = gvl_vmess("unknown compound: %s (also tried %s)", cp->orig, cp->c10e);
-	      else if (c10e_no_p && strcmp((ccp)g, (ccp)c10e_no_p))
+	      else if (c10e_no_p && strcmp((ccp)cp->orig, (ccp)c10e_no_p))
 		cp->mess = gvl_vmess("unknown compound: %s (also tried %s)", cp->orig, c10e_no_p);
 	      else
 		cp->mess = gvl_vmess("unknown compound: %s", cp->orig);
@@ -49,12 +52,12 @@ gvl_c(gvl_g *cp)
 
 static void gvl_c_node_orig(Node * np, void *user)
 {
-  list_add((List*)user, np->orig);
+  list_add((List*)user, (void*)((gvl_g*)(np->parsed))->orig);
 }
 
 static void gvl_c_node_c10e(Node * np, void *user)
 {
-  list_add((List*)user, np->c10e);
+  list_add((List*)user, (void*)((gvl_g*)(np->parsed))->c10e);
 }
 
 unsigned char *
@@ -62,8 +65,8 @@ gvl_c_orig(Node *ynp)
 {
   List *lp = list_create(LIST_SINGLE);
   unsigned char *s = NULL;
-  node_iterate(ynp, gvl_c_node_orig, NULL, lp);
-  s = list2str(lp);
+  node_iterator(ynp, lp, gvl_c_node_orig, NULL);
+  s = list_to_str(lp);
   free(lp);
   return s;
 }
@@ -73,8 +76,8 @@ gvl_c_c10e(Node *ynp)
 {
   List *lp = list_create(LIST_SINGLE);
   unsigned char *s = NULL;
-  node_iterate(ynp, gvl_c_node_c10e, NULL, lp);
-  s = list2str(lp);
+  node_iterator(ynp, lp, gvl_c_node_c10e, NULL);
+  s = list_to_str(lp);
   free(lp);
   return s;
 }
