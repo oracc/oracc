@@ -4,8 +4,35 @@
 #include "sll.h"
 #include "gvl.h"
 
+void
+gvl_q(Node *ynp)
+{
+  gvl_g *vq = NULL;
+  unsigned char *p = (ucp)pool_alloc(strlen(ynp->kids->data) + strlen(ynp->kids->next->data) + 3, curr_sl->p);
+  sprintf((char*)p, "%s(%s)", ynp->kids->data, ynp->kids->next->data);
+
+  if (!(vq = hash_find(curr_sl->h, p)))
+    {
+      vq = memo_new(curr_sl->m);
+      vq->type = "q";
+      vq->orig = (uccp)p;
+
+      if (gvl_q_c10e(ynp->kids->parsed, ynp->kids->next->parsed, vq))
+	{
+	  p = (ucp)pool_alloc(strlen((ccp)((gvl_g*)(ynp->kids->parsed))->c10e)
+			      + strlen((ccp)((gvl_g*)(ynp->kids->next->parsed))->sign) + 3, curr_sl->p);
+	  sprintf((char*)p, "%s(%s)", (ccp)((gvl_g*)(ynp->kids->parsed))->c10e, (ccp)((gvl_g*)(ynp->kids->next->parsed))->sign);
+	  vq->c10e = (uccp)p;
+	}
+      hash_add(curr_sl->h, vq->orig, vq);
+      if (strcmp((ccp)vq->orig, (ccp)vq->c10e))
+	hash_add(curr_sl->h, vq->c10e, vq);
+    }
+  ynp->parsed = vq;
+}
+
 int
-gvl_q(gvl_g *vp, gvl_g *qp, gvl_g *vq)
+gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 {
   int v_bad = 0, q_bad = 0, ret = 1;
   unsigned char *q_fixed = NULL;

@@ -80,8 +80,8 @@ scorqorsgs:  stateo corqors gflags statec
 
 corqors:
 	  compound
-	| valuqual
 	| simplexg
+	| valuqual
 	;
 
 gflags:	  '*'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }

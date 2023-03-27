@@ -24,7 +24,7 @@
 #include "gvl.h"
 #define psl_get_id (const char *)gvl_get_id
 #define psl_get_sname gvl_get_sname
-#define psl_is_sname gvl_is_sname
+#define psl_is_sname gvl_psl_lookup
 #define psl_is_value gvl_is_value
 #define psl_looks_like_sname gvl_looks_like_sname
 #else

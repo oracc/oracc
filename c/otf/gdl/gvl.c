@@ -201,6 +201,12 @@ gvl_get_sname(unsigned const char *g)
 }
 
 int
+gvl_psl_lookup(unsigned const char *g)
+{
+  return gvl_lookup(g) != NULL;
+}
+
+int
 gvl_is_sname(unsigned const char *g)
 {
   gvl_g*gg = gvl_validate(g);

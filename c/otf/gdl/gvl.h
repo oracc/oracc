@@ -42,6 +42,7 @@ extern gvl_i *gvl_i_find(const char *name);
 
 extern gvl_g *gvl_validate(unsigned const char *g);
 
+extern int gvl_psl_lookup(unsigned const char *g);
 extern int gvl_is_sname(unsigned const char *g);
 extern int gvl_is_value(unsigned const char *g);
 extern unsigned char *gvl_tmp_key(unsigned const char *key, const char *field);

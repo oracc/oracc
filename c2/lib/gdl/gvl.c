@@ -527,7 +527,26 @@ gvl_simplexg(Node *ynp)
     fprintf(stderr, "gvl_simplexg: called with g=%s\n", g);
 
   if (!(gp = hash_find(curr_sl->h,g)))
-    gp = gvl_s(ynp);
+    {
+      gp = gvl_s(ynp);
+#if 0      
+      switch (ynp->name[2])
+	{
+	case 'g':
+	  gp = gvl_s(ynp);
+	  break;
+	case 'n':
+	  /* only happens with unadorned numbers */
+	  break;
+	case 'p':
+	  /* does this need to be separate from gvl_s ? */
+	  break;
+	default:
+	  /* shouldn't be able to happen */
+	  break;
+	}
+#endif
+    }
   
   ynp->parsed = gp;
 }
@@ -542,30 +561,11 @@ gvl_valuqual(Node *ynp)
   if (gvl_trace)
     fprintf(stderr, "gvl_valuqual: called\n");
 
-  if (!strcmp(ynp->name, "g:q"))
+  if ('q' == ynp->name[2])
     {
-      gvl_g *vq = NULL;
-      unsigned char *p = (ucp)pool_alloc(strlen(ynp->kids->data) + strlen(ynp->kids->next->data) + 3, curr_sl->p);
-      sprintf((char*)p, "%s(%s)", ynp->kids->data, ynp->kids->next->data);
-
-      if (!(vq = hash_find(curr_sl->h, p)))
-	{
-	  vq = memo_new(curr_sl->m);
-	  vq->type = "q";
-	  vq->orig = (uccp)p;
-
-	  /* This block replaces the old gvl_vq_c10e routine */
-	  if (gvl_q(ynp->kids->parsed, ynp->kids->next->parsed, vq))
-	    {
-	      p = (ucp)pool_alloc(strlen((ccp)((gvl_g*)(ynp->kids->parsed))->c10e)
-				    + strlen((ccp)((gvl_g*)(ynp->kids->next->parsed))->sign) + 3, curr_sl->p);
-	      sprintf((char*)p, "%s(%s)", (ccp)((gvl_g*)(ynp->kids->parsed))->c10e, (ccp)((gvl_g*)(ynp->kids->next->parsed))->sign);
-	      vq->c10e = (uccp)p;
-	    }
-	  hash_add(curr_sl->h, vq->orig, vq);
-	  if (strcmp((ccp)vq->orig, (ccp)vq->c10e))
-	    hash_add(curr_sl->h, vq->c10e, vq);
-	}
-      ynp->parsed = vq;
+      if ('n' == ynp->kids->name[2])
+	gvl_n(ynp);
+      else
+	gvl_q(ynp);
     }
 }

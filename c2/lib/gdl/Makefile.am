@@ -3,7 +3,7 @@ include ../../../oracc-am-rules.txt
 noinst_LTLIBRARIES=libgdl.la
 
 libgdl_la_SOURCES = gdl.tab.c gdl-l.c gdlyacc.c gdl.c gdlxml.c sll.c \
-	gvl.c gvl_setup.c gvl_util.c gvl_s.c gvl_c.c gvl_q.c
+	gvl.c gvl_setup.c gvl_util.c gvl_s.c gvl_c.c gvl_q.c gvl_n.c
 
 YACC=bison
 

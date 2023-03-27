@@ -61,6 +61,8 @@ R_LHS			{ return R_lhs; }
 &			{ return ALIGN; }
 ![a-z]+			{ return FTYPE; }
 
+(^|[ \t])\*|:['".:]?|\/	       	{ gdllval.text=gdlsave(gdltext); return PUNCT; }
+
 [0-9]+(\/[0-9]+)?	{ gdllval.text=gdlsave(gdltext); return NUMBER; }
 
 [A-Z]+[0-9]+[a-z]*	{ gdllval.text=gdlsave(gdltext); return LISTNUM; }
