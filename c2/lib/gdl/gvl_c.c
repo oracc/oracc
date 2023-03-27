@@ -7,6 +7,10 @@
 
 extern int gvl_strict;
 
+static unsigned char *gvl_c_form(Node *ynp, void (*fnc)(Node *np, void *user));
+static void gvl_c_node_orig(Node * np, void *user);
+static void gvl_c_node_c10e(Node * np, void *user);
+
 /* This routine should be called after cp->orig and cp->c10e have been set */
 void
 gvl_c(gvl_g *cp)
@@ -50,34 +54,53 @@ gvl_c(gvl_g *cp)
     }
 }
 
-static void gvl_c_node_orig(Node * np, void *user)
-{
-  list_add((List*)user, (void*)((gvl_g*)(np->parsed))->orig);
-}
-
-static void gvl_c_node_c10e(Node * np, void *user)
-{
-  list_add((List*)user, (void*)((gvl_g*)(np->parsed))->c10e);
-}
-
 unsigned char *
 gvl_c_orig(Node *ynp)
 {
-  List *lp = list_create(LIST_SINGLE);
-  unsigned char *s = NULL;
-  node_iterator(ynp, lp, gvl_c_node_orig, NULL);
-  s = list_to_str(lp);
-  free(lp);
-  return s;
+  return gvl_c_form(ynp, gvl_c_node_orig);
 }
 
 unsigned char *
 gvl_c_c10e(Node *ynp)
 {
+  return gvl_c_form(ynp, gvl_c_node_c10e);
+}
+
+static void
+gvl_c_node_orig(Node * np, void *user)
+{
+  if (strcmp(np->name, "g:c"))
+    {
+      if (np->parsed)
+	list_add((List*)user, (void*)((gvl_g*)(np->parsed))->orig);
+      else if (np->data)
+	list_add((List*)user, (void*)np->data);
+    }
+}
+
+static void
+gvl_c_node_c10e(Node * np, void *user)
+{
+  if (strcmp(np->name, "g:c"))
+    {
+      if (np->parsed)
+	list_add((List*)user, (void*)((gvl_g*)(np->parsed))->sign);
+      else if (np->data)
+	list_add((List*)user, (void*)np->data);
+    }
+}
+
+static unsigned char *
+gvl_c_form(Node *ynp, void (*fnc)(Node *np, void *user))
+{
   List *lp = list_create(LIST_SINGLE);
-  unsigned char *s = NULL;
-  node_iterator(ynp, lp, gvl_c_node_c10e, NULL);
-  s = list_to_str(lp);
+  unsigned char *s = NULL, *ret = NULL;
+  list_add(lp, "|");
+  node_iterator(ynp, lp, fnc, NULL);
+  list_add(lp, "|");
+  s = list_concat(lp);
+  ret = pool_copy(s, curr_sl->p);
+  free(s);
   free(lp);
-  return s;
+  return ret;
 }
