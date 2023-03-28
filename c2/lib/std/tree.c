@@ -127,8 +127,8 @@ treexml_o_generic(Node *np, void *user)
 {
   Xmlhelper *xhp = user;
   fprintf(xhp->fp, "<%s>", np->name);
-  if (np->data)
-    fprintf(xhp->fp, "<data>%s</data>", xmlify((uccp)np->data));
+  if (np->text)
+    fprintf(xhp->fp, "<text>%s</text>", xmlify((uccp)np->text));
 }
 
 /* no generic output for parsed nodes */

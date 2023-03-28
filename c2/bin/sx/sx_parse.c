@@ -8,7 +8,7 @@ sx_p_sign(Node *np, char *data)
 {
   Tree *tp = gdlparse_string(data);
   /* assert(!tp->root->kids->next) */
-  np->data = tp->root->kids; /* root will be g:gdl, data data will begin at root->kids */
+  np->data = tp->root/*->kids*/; /* root will be g:gdl, data data will begin at root->kids */
   gdlparse_reset();
 }
 
@@ -17,7 +17,7 @@ sx_p_form(Node *np, char *data)
 {
   Tree *tp = gdlparse_string(data);
   /* assert(!tp->root->kids->next) */
-  np->data = tp->root->kids; /* root will be g:gdl, data data will begin at root->kids */
+  np->data = tp->root/*->kids*/; /* root will be g:gdl, data data will begin at root->kids */
   gdlparse_reset();
 }
 
@@ -26,6 +26,6 @@ sx_p_v(Node *np, char *data)
 {
   Tree *tp = gdlparse_string(data);
   /* assert(!tp->root->kids->next) */
-  np->data = tp->root->kids; /* root will be g:gdl, data data will begin at root->kids */
+  np->data = tp->root/*->kids*/; /* root will be g:gdl, data data will begin at root->kids */
   gdlparse_reset();
 }
