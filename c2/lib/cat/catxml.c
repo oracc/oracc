@@ -6,17 +6,17 @@
 
 /* Debugging tool to output generic XML dump for tree generated via catherd */
 
-nodehandlerset catxmlhandlers;
+nodehandlers catxmlhandlers;
 
 static void
 catxml_node(Node *np, void *user)
 {
   Xmlhelper *xhp = user;
   fprintf(xhp->fp, "<%s>", np->name);
-  if (np->data)
-    fprintf(xhp->fp, "<data>%s</data>", xmlify((uccp)np->data));
-  if (np->parsed)
-    (catxmlhandlers[np->ntype])(np, xhp);
+  if (np->text)
+    fprintf(xhp->fp, "<data>%s</data>", xmlify((uccp)np->text));
+  if (np->data && catxmlhandlers[np->ns])
+    (catxmlhandlers[np->ns])(np, xhp);
 }
 
 static void

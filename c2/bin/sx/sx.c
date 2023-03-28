@@ -1,7 +1,16 @@
 #include <stdlib.h>
+#include <stdio.h>
+#include <mesg.h>
 #include <tree.h>
 #include <cat.h>
 #include <gdl.h>
+
+Mloc xo_loc;
+FILE *f_xml;
+const char *file;
+int verbose;
+int status;
+int rnvtrace;
 
 struct cat sxcat;
 
@@ -19,7 +28,9 @@ main(int argc, const char **argv)
 {
   mesg_init();
   gvl_setup("ogsl", "ogsl");
-  nodehandler_register(treexmlhandlers, NT_GDL, gdl_xml_handler);
+  nodeh_register(treexml_o_handlers, NS_SL, treexml_o_generic);
+  nodeh_register(treexml_p_handlers, NS_GDL, gdl_xml_handler);
+  nodeh_register(treexml_c_handlers, NS_SL, treexml_c_generic);
   gdlparse_init();
   sxcat.f = argv[1];
   sxcat.c = cat_read(argv[1]);

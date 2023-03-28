@@ -2,7 +2,8 @@ include ../../../oracc-am-rules.txt
 
 AM_CPPFLAGS=\
 	-I../include \
-	-I../std
+	-I../std \
+	-I../xml
 
 noinst_LTLIBRARIES=libstd.la
 

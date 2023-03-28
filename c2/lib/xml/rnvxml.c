@@ -19,7 +19,8 @@ extern int rnx_n_exp;
 static struct pool *xgi_pool;
 static List *xgi_stack;
 static char xgi_flags[5];
-static struct rnvval_atts *xgi_ratts;
+
+/*static struct rnvval_atts *xgi_ratts;*/
 
 /*static int nexp,rnck;*/
 /*static int current,previous;*/
@@ -54,7 +55,7 @@ static void xgi_verror_handler(int erno,va_list ap)
 	default: assert(0);
 	}
       xm = rnv_xmsg();
-      mesg_append(pool_copy(xm, xgi_pool));
+      mesg_append((char*)pool_copy((uccp)xm, xgi_pool));
       free((void*)xm);
       phase = xphase;
     }
@@ -67,7 +68,7 @@ rnvxml_init_err(void)
 }
 
 void
-rnvxml_init(struct xnn_data *xdp, const char *rncbase)
+rnvxml_init(Tree *tp, struct xnn_data *xdp, const char *rncbase)
 {
 #if 1
   char *fn = malloc(strlen(rncbase)+5);
@@ -79,7 +80,7 @@ rnvxml_init(struct xnn_data *xdp, const char *rncbase)
   xgi_stack = list_create(LIST_LIFO);
   xgi_flags[0] = '\0';
   rnv_validate_start();      
-  rnvval_ea("cbd", NULL);
+  /*rnvval_ea(tp->root->name, NULL);*/
 #else
   rnvval_init(xdp, NULL);
   xmlns_atts = xdp->nstab;
@@ -87,8 +88,9 @@ rnvxml_init(struct xnn_data *xdp, const char *rncbase)
 }
 
 void
-rnvxml_term()
+rnvxml_term(Tree *tp)
 {
+  /*rnvval_ee(tp->root->name);*/
 }
 
 void

@@ -500,7 +500,7 @@ gvl_compound(Mloc ml, Node *ynp)
       unsigned char *c_orig = gvl_c_orig(ynp);
       if (!(cp = hash_find(curr_sl->h, c_orig)))
 	{
-	  ynp->parsed = cp = memo_new(curr_sl->m);
+	  ynp->user = cp = memo_new(curr_sl->m);
 	  cp->type = "c";
 	  cp->orig = pool_copy(c_orig, curr_sl->p);
 	  cp->c10e = pool_copy(gvl_c_c10e(ynp), curr_sl->p);
@@ -551,7 +551,7 @@ gvl_simplexg(Mloc ml, Node *ynp)
 #endif
     }
   
-  ynp->parsed = gp;
+  ynp->user = gp;
 }
 
 void

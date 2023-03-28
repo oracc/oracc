@@ -116,7 +116,7 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 		case CI_PARENT:
 		  /* always make cn the last child of curr */
 		  np = tree_add(tp, name, cip->depth, NULL);
-		  np->data = data;
+		  np->text = data;
 		  if (cattrace)
 		    fprintf(stderr, "cat_herd: curr=%s@%d: adding parent %s@%d; data=%s\n",
 			    tp->curr->name, tp->curr->depth,
@@ -133,7 +133,7 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 		case CI_CHILD:
 		  /* always make cn the last child of curr */
 		  np = tree_add(tp, name, cip->depth, NULL);
-		  np->data = data;
+		  np->text = data;
 		  if (cattrace)
 		    fprintf(stderr, "cat_herd: curr=%s@%d: adding child %s@; data=%s\n",
 			    tp->curr->name, tp->curr->depth,

@@ -52,10 +52,10 @@ gdlxml_node(Node *np, void *user)
   gdlxml_ns(np, user);
   gdlxml_attr(np, user);
   fputc('>', xhp->fp);
+  if (np->text)
+    fprintf(xhp->fp, "<data>%s</data>", xmlify((uccp)np->text));
   if (np->data)
-    fprintf(xhp->fp, "<data>%s</data>", xmlify((uccp)np->data));
-  if (np->parsed)
-    gdlxml_parsed((gvl_g*)np->parsed, user);
+    gdlxml_parsed((gvl_g*)np->data, user);
 }
 
 static void

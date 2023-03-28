@@ -10,8 +10,8 @@ gvl_n(Node *ynp)
 {
   gvl_g *nq = NULL;
   unsigned const char *l = NULL;
-  unsigned char *p = (ucp)pool_alloc(strlen(ynp->kids->data) + strlen(ynp->kids->next->data) + 3, curr_sl->p);
-  sprintf((char*)p, "%s(%s)", ynp->kids->data, ynp->kids->next->data);
+  unsigned char *p = (ucp)pool_alloc(strlen(ynp->kids->text) + strlen(ynp->kids->next->text) + 3, curr_sl->p);
+  sprintf((char*)p, "%s(%s)", ynp->kids->text, ynp->kids->next->text);
 
   if (!(nq = hash_find(curr_sl->h, p)))
     {
@@ -54,5 +54,5 @@ gvl_n(Node *ynp)
 	    }
 	}
     }
-  ynp->parsed = nq;
+  ynp->user = nq;
 }

@@ -7,7 +7,8 @@ xLDADD=\
 	../../lib/gdl/libgdl.la \
 	../../lib/std/libstd.la \
 	../../lib/sys/libsys.la \
-	../../lib/xml/libxml.la
+	../../lib/xml/libxml.la \
+	../../lib/xml/rnv/librnv.la
 
 AM_CPPFLAGS=\
 	-I../../lib/include \

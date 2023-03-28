@@ -8,8 +8,8 @@ void
 gvl_q(Node *ynp)
 {
   gvl_g *vq = NULL;
-  unsigned char *p = (ucp)pool_alloc(strlen(ynp->kids->data) + strlen(ynp->kids->next->data) + 3, curr_sl->p);
-  sprintf((char*)p, "%s(%s)", ynp->kids->data, ynp->kids->next->data);
+  unsigned char *p = (ucp)pool_alloc(strlen(ynp->kids->text) + strlen(ynp->kids->next->text) + 3, curr_sl->p);
+  sprintf((char*)p, "%s(%s)", ynp->kids->text, ynp->kids->next->text);
 
   if (!(vq = hash_find(curr_sl->h, p)))
     {
@@ -17,18 +17,18 @@ gvl_q(Node *ynp)
       vq->type = "q";
       vq->orig = (uccp)p;
 
-      if (gvl_q_c10e(ynp->kids->parsed, ynp->kids->next->parsed, vq))
+      if (gvl_q_c10e(ynp->kids->user, ynp->kids->next->user, vq))
 	{
-	  p = (ucp)pool_alloc(strlen((ccp)((gvl_g*)(ynp->kids->parsed))->c10e)
-			      + strlen((ccp)((gvl_g*)(ynp->kids->next->parsed))->sign) + 3, curr_sl->p);
-	  sprintf((char*)p, "%s(%s)", (ccp)((gvl_g*)(ynp->kids->parsed))->c10e, (ccp)((gvl_g*)(ynp->kids->next->parsed))->sign);
+	  p = (ucp)pool_alloc(strlen((ccp)((gvl_g*)(ynp->kids->user))->c10e)
+			      + strlen((ccp)((gvl_g*)(ynp->kids->next->user))->sign) + 3, curr_sl->p);
+	  sprintf((char*)p, "%s(%s)", (ccp)((gvl_g*)(ynp->kids->user))->c10e, (ccp)((gvl_g*)(ynp->kids->next->user))->sign);
 	  vq->c10e = (uccp)p;
 	}
       hash_add(curr_sl->h, vq->orig, vq);
       if (strcmp((ccp)vq->orig, (ccp)vq->c10e))
 	hash_add(curr_sl->h, vq->c10e, vq);
     }
-  ynp->parsed = vq;
+  ynp->user = vq;
 }
 
 int
@@ -266,7 +266,7 @@ gvl_g*
 gvl_q_node(Node *np)
 {
   gvl_g *qv = NULL;
-  gvl_vq_gg(np->kids->parsed, np->kids->next->parsed, qv);
+  gvl_vq_gg(np->kids->user, np->kids->next->user, qv);
   return qv;
 }
 #endif

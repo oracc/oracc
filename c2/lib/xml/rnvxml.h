@@ -1,15 +1,16 @@
-#ifndef _RNVXML_H
-#define _RNVXML_H
+#ifndef RNVXML_H_
+#define RNVXML_H_
 
+#include <tree.h>
 #include "xnn.h"
 #include "rnvval.h"
 
 extern void rnvxml_init_err(void);
-extern void rnvxml_init(struct xnn_data *xdp, const char *rncbase);
-extern void rnvxml_term(void);
+extern void rnvxml_init(Tree *tp, struct xnn_data *xdp, const char *rncbase);
+extern void rnvxml_term(Tree *tp);
 extern void rnvxml_ch(const char *ch);
 extern void rnvxml_ea(const char *pname, struct rnvval_atts *ratts);
 extern void rnvxml_ec(const char *pname, struct rnvval_atts *ratts);
 extern void rnvxml_ee(const char *pname);
 
-#endif/*_RNVXML_H*/
+#endif/*RNVXML_H_*/

@@ -3,7 +3,16 @@
 #include "pool.h"
 #include "memo.h"
 #include "tree.h"
-#include "../xml/xml.h"
+#include "xml.h"
+#include "rnvxml.h"
+
+/* For validating vs non-validating XML output register distinct
+   routines in these handler arrays which are all used by
+   tree_xml_node and tree_xml_post via a tree_xml call to
+   tree_iterator */
+nodehandlers treexml_o_handlers;
+nodehandlers treexml_p_handlers;
+nodehandlers treexml_c_handlers;
 
 Tree *
 tree_init(void)
@@ -112,30 +121,59 @@ tree_iterator(Tree *tp, void *user, void (*nodefnc)(Node *np, void *user), void 
     _do_node(tp->root, user, nodefnc, postfnc);
 }
 
-nodehandlerset treexmlhandlers;
-
-static void
-tree_xml_node(Node *np, void *user)
+void
+treexml_o_generic(Node *np, void *user)
 {
   Xmlhelper *xhp = user;
   fprintf(xhp->fp, "<%s>", np->name);
   if (np->data)
     fprintf(xhp->fp, "<data>%s</data>", xmlify((uccp)np->data));
-  if (np->parsed)
-    (treexmlhandlers[np->ntype])(np, xhp);
+}
+
+/* no generic output for parsed nodes */
+
+void
+treexml_c_generic(Node *np, void *user)
+{
+  Xmlhelper *xhp = user;
+  fprintf(xhp->fp, "</%s>", np->name);
+}
+
+static void
+tree_xml_node(Node *np, void *user)
+{
+  Xmlhelper *xhp = user;
+  if (treexml_o_handlers[np->ns])
+    (treexml_o_handlers[np->ns])(np, xhp);
+  else
+    treexml_o_generic(np, xhp);
+  if (np->data && treexml_p_handlers[np->data->ns])
+    (treexml_p_handlers[np->data->ns])(np, xhp);
 }
 
 static void
 tree_xml_post(Node *np, void *user)
 {
   Xmlhelper *xhp = user;
-  fprintf(xhp->fp, "</%s>", np->name);
+  if (treexml_c_handlers[np->ns])
+    (treexml_c_handlers[np->ns])(np, xhp);
+  else
+    treexml_c_generic(np, xhp);
 }
 
 void
 tree_xml(FILE *fp, Tree *tp)
 {
   Xmlhelper *xhp = xmlh_init(fp ? fp : stdout);
+  tree_iterator(tp, xhp, tree_xml_node, tree_xml_post);
+  free(xhp);
+}
+
+void
+tree_xml_rnv(FILE *fp, Tree *tp, struct xnn_data *xdp, const char *rncbase)
+{
+  Xmlhelper *xhp = xmlh_init(fp ? fp : stdout);
+  rnvxml_init(tp, xdp, rncbase);
   tree_iterator(tp, xhp, tree_xml_node, tree_xml_post);
   free(xhp);
 }
@@ -194,7 +232,7 @@ kids_rem_last(Tree *tp)
 }
 
 void
-nodehandler_register(nodehandlerset nh, nodetype nt, nodehandler fnc)
+nodeh_register(nodehandlers nh, nscode nt, nodehandler fnc)
 {
   nh[nt] = fnc;
 }

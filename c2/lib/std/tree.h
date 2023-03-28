@@ -16,17 +16,19 @@ struct tree {
 
 typedef struct tree Tree;
 
-enum nodetype { NT_GDL , NT_NOT };
-typedef enum nodetype nodetype;
+enum nscode { NONE , NS_CBD , NS_GDL , NS_SL , NS_XTF , NS_XMD , NS_LAST };
+typedef enum nscode nscode;
 
 struct node {
+  enum nscode ns;   	/* node namespace */
   const char *name;    	/* node name */
-  const char *id;      	/* node ID */
-  const char *data; 	/* unparsed data when node comes from cat-style input */
-  void *parsed;		/* parsed data; parsing is done by caller's routines */
-  nodetype ntype;	/* type for parsed data */
+  const char *text; 	/* unparsed text-data when node comes from cat-style input */
+  const char *id;      	/* node ID unique to current run; used for
+			   hashing/listing data when processing
+			   tree */
   int depth;		/* nesting depth of node; may be -1 if not
 			   used by caller */
+  struct node *data;	/* parsed data which is an island off of the current tree */
   struct node *rent; 	/* parent */
   struct node *kids; 	/* children */
   struct node *last; 	/* last sibling, i.e., where we are adding sibs */
@@ -34,12 +36,21 @@ struct node {
   Tree *tree;
   Prop *props;
   Mloc *mloc;
+  void *user;		/* data dependent on node prefix/prefix:name combination */
 };
 
 typedef struct node Node;
 
 typedef void (*nodehandler)(Node *np, void *user);
-typedef nodehandler nodehandlerset[NT_NOT];
+typedef nodehandler nodehandlers[NS_LAST];
+extern void nodeh_register(nodehandlers nh, nscode c, nodehandler fnc);
+
+extern nodehandlers treexml_o_handlers;
+extern nodehandlers treexml_p_handlers;
+extern nodehandlers treexml_c_handlers;
+
+extern void treexml_o_generic(Node *np, void *user);
+extern void treexml_c_generic(Node *np, void *user);
 
 extern Tree *tree_init(void);
 extern void tree_term(Tree *tp);
@@ -55,15 +66,11 @@ extern void node_iterator(Node *tp, void *user,
 			  void (*nodefnc)(Node *np, void *user),
 			  void (*postfnc)(Node *np, void *user));
 
+extern void tree_iterator_nh(Tree *tp, void *user, nodehandlers nh_node, nodehandlers nh_post);
+
 extern void kids_add_node(Tree *tp, Node *np);
 extern Node *kids_rem_last(Tree *tp);
 
 extern void tree_xml(FILE *fp, Tree *tp);
-
-/* When iterating over a tree containing heterogenous parsed data it
-   is necessary to set handlers which will descend into the void
-   *parsed elements. The nodehandler_register mechanism enables this. */
-extern nodehandlerset treexmlhandlers;
-extern void nodehandler_register(nodehandlerset nh, nodetype nt, nodehandler fnc);
 
 #endif/*TREE_H_*/

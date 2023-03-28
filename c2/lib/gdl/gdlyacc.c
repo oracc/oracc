@@ -56,7 +56,7 @@ gdl_delim(Tree *ytp, const char *data)
   if (gdltrace)
     fprintf(stderr, "DELIM: %c\n", '-');
   np = tree_add(ytp, "g:d", ytp->curr->depth, NULL); 
-  np->data = data;
+  np->text = data;
   return np;
 }
 
@@ -65,7 +65,7 @@ gdl_graph_node(Tree *ytp, const char *name, const char *data)
 {
   Node *np = NULL;
   np = tree_add(ytp, name, ytp->curr->depth, NULL);
-  np->data = (ccp)pool_copy((uccp)data,gdlpool);
+  np->text = (ccp)pool_copy((uccp)data,gdlpool);
   return np;
 }
 
