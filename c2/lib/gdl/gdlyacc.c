@@ -14,7 +14,7 @@ Tree *
 gdlparse_string(char *s)
 {
   Tree *tp = tree_init();
-  (void)tree_root(tp, "g:gdl", 1, NULL);
+  (void)tree_root(tp, NS_GDL, "g:gdl", 1, NULL);
   gdl_prop(tp->curr, 0, PG_XNS, "xmlns:g", "http://oracc.org/ns/gdl/2.0");
   gdl_setup_buffer(s);
   gdl_set_tree(tp);
@@ -55,7 +55,7 @@ gdl_delim(Tree *ytp, const char *data)
   Node *np = NULL;
   if (gdltrace)
     fprintf(stderr, "DELIM: %c\n", '-');
-  np = tree_add(ytp, "g:d", ytp->curr->depth, NULL); 
+  np = tree_add(ytp, NS_GDL, "g:d", ytp->curr->depth, NULL); 
   np->text = data;
   return np;
 }
@@ -64,7 +64,7 @@ static Node *
 gdl_graph_node(Tree *ytp, const char *name, const char *data)
 {
   Node *np = NULL;
-  np = tree_add(ytp, name, ytp->curr->depth, NULL);
+  np = tree_add(ytp, NS_GDL, name, ytp->curr->depth, NULL);
   np->text = (ccp)pool_copy((uccp)data,gdlpool);
   return np;
 }
@@ -122,7 +122,7 @@ gdl_pop(Tree *ytp, const char *s)
 void
 gdl_push(Tree *ytp, const char *s)
 {
-  tree_add(ytp, s, ytp->curr->depth, NULL);
+  tree_add(ytp, NS_GDL, s, ytp->curr->depth, NULL);
   tree_push(ytp);
 }
 

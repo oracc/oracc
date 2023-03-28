@@ -33,10 +33,11 @@ tree_term(Tree *tp)
 }
 
 Node *
-tree_node(Tree *tp, const char *name, int depth, Mloc *loc)
+tree_node(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc)
 {
   Node *np = memo_new(tp->nodemem);
   np->tree = tp;
+  np->ns = ns;
   np->name = name;
   np->depth = depth;
   np->mloc = loc;
@@ -44,15 +45,15 @@ tree_node(Tree *tp, const char *name, int depth, Mloc *loc)
 }
 
 Node *
-tree_root(Tree *tp, const char *name, int depth, Mloc *loc)
+tree_root(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc)
 {
-  Node *np = tree_node(tp, name, depth, loc);
+  Node *np = tree_node(tp, ns, name, depth, loc);
   tp->root = tp->curr = np;
   return np;
 }
 
 Node *
-tree_add(Tree *tp, const char *name, int depth, Mloc *loc)
+tree_add(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc)
 {
   Node *np = NULL;
 
@@ -60,14 +61,14 @@ tree_add(Tree *tp, const char *name, int depth, Mloc *loc)
     {
       if (tp->curr && tp->curr->kids)
 	{
-	  np = tree_node(tp, name, depth, loc);
+	  np = tree_node(tp, ns, name, depth, loc);
 	  np->rent = tp->curr->last->rent;
 	  tp->curr->last->next = np;
 	  tp->curr->last = np;
 	}
       else
 	{
-	  np = tree_node(tp, name, depth, loc);
+	  np = tree_node(tp, ns, name, depth, loc);
 	  if (!tp->curr)
 	    {
 	      tp->curr = tp->root = np;

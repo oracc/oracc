@@ -56,9 +56,9 @@ extern Tree *tree_init(void);
 extern void tree_term(Tree *tp);
 extern Node *tree_pop(Tree *tp);
 extern void tree_push(Tree *tp);
-extern Node *tree_add(Tree *tp, const char *name, int depth, Mloc *loc);
-extern Node *tree_node(Tree *tp, const char *name, int depth, Mloc *loc);
-extern Node *tree_root(Tree *tp, const char *name, int depth, Mloc *loc);
+extern Node *tree_add(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc);
+extern Node *tree_node(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc);
+extern Node *tree_root(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc);
 extern void tree_iterator(Tree *tp, void *user,
 			  void (*nodefnc)(Node *np, void *user),
 			  void (*postfnc)(Node *np, void *user));

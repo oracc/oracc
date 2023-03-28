@@ -36,9 +36,10 @@ struct catnode {
 enum ci_rel { CI_PARENT , CI_CHILD , CI_END };
 
 struct catconfig {
+  nscode ns;	/* NS code of host type; data parser may set child nodes and data islands to different NS */
   char *head; 	/* @-tag which is the tree root; normally virtual
-		   because, e.g., .asl files don't use @signs, bug
-		   signs is the nomain root of an asl tree */
+		   because, e.g., .asl files don't use @signs, but
+		   signs is the nominal root of an asl tree */
   char * (*getname)(struct catchunk *, char **data); 	/* function to get a name from
 							   a chunk */
   struct catinfo * (*chkname)(const char *,size_t);  	/* function to test name is known and

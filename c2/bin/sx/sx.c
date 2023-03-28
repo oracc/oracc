@@ -18,6 +18,7 @@ extern struct catinfo *sx_check (const char *str,size_t len);
      
 struct catconfig sx_cat_config =
   {
+    NS_SL, 	/* namespace */
     "signs", 	/* head */
     cat_name, 	/* parser function to extract name from chunk */
     sx_check	/* checker function to test names and get name info */
