@@ -3,15 +3,16 @@
 %option never-interactive noyywrap yylineno nounput
 
 %{
+#include <mesg.h>
 #include <pool.h>
+
+#define GDLLTYPE Mloc
 #include "gdl.tab.h"
-
-#define yylloc gdllloc
 #define YY_USER_ACTION gdl_user_action();
+extern Mloc gdllloc;
+const char *gdlfile = "<stdin>";
 
-const char *efile = "<stdin>";
-int flextrace = 0;
-int tok;
+int gdlflextrace = 0;
 
 extern Pool *gdlpool;
 #define gdlsave(s) (char*)pool_copy((const unsigned char*)(s),gdlpool);
@@ -61,7 +62,7 @@ R_LHS			{ return R_lhs; }
 &			{ return ALIGN; }
 ![a-z]+			{ return FTYPE; }
 
-(^|[ \t])\*|:['".:]?|\/	       	{ gdllval.text=gdlsave(gdltext); return PUNCT; }
+(^|[ \t])\*|:['".:]?|\/	       	{ /* " */ gdllval.text=gdlsave(gdltext); return PUNCT; }
 
 [0-9]+(\/[0-9]+)?	{ gdllval.text=gdlsave(gdltext); return NUMBER; }
 
@@ -107,10 +108,9 @@ gdl_wrapup_buffer(void)
 static void
 gdl_user_action(void)
 {
-  if (flextrace)
-    fprintf(stderr, "%s:%d: flextrace: text=::%s::\n", efile, gdllineno, gdltext);
-#if 0
-  yylloc.file = efile;
-  yylloc.first_line = yylloc.last_line = yylineno;
-#endif
+  if (gdlflextrace)
+    fprintf(stderr, "%s:%d: flextrace: text=::%s::\n", gdlfile, gdllineno, gdltext);
+
+  gdllloc.file = gdlfile;
+  gdllloc.line = yylineno;
 }

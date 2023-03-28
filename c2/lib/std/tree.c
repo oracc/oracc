@@ -163,3 +163,9 @@ kids_rem_last(Tree *tp)
     }
   return np;
 }
+
+void
+nodehandler_register(nodehandlerset nh, nodetype nt, nodehandler fnc)
+{
+  nh[nt] = fnc;
+}

@@ -86,8 +86,8 @@ extern void gvl_n(Node *ynp);
 
 extern unsigned char *gvl_vmess(char *s, ...);
 
-extern void gvl_compound(Node *ynp);
-extern void gvl_simplexg(Node *ynp);
-extern void gvl_valuqual(Node *ynp);
+extern void gvl_compound(Mloc mlp, Node *ynp);
+extern void gvl_simplexg(Mloc mlp, Node *ynp);
+extern void gvl_valuqual(Mloc mlp, Node *ynp);
 
 #endif/*_GVL_H*/

@@ -6,6 +6,7 @@
 %{
 #include <stdlib.h>
 #include <stdio.h>
+#include <mesg.h>
 #include "gdl.h"
 extern int gdllex(void);
 extern void yyerror(const char *);
@@ -13,6 +14,12 @@ extern const char *gdltext;
 extern int gdllineno, gdltrace;
 static Tree *ytp;
 static Node *ynp, *yrem;
+
+#define GDLLTYPE_IS_DECLARED 1
+/*typedef struct Mloc GDLLTYPE;*/
+#define GDLLTYPE Mloc
+#define yylineno gdllineno
+GDLLTYPE gdllloc;
 %}
 
 %union { char *text; int i; }
@@ -112,7 +119,7 @@ statec:
 	;
 
 simplexg:
-	s						{ gvl_simplexg(ynp); }
+	  s						{ gvl_simplexg(@1, ynp); }
 	;
 
 s:
@@ -123,7 +130,7 @@ s:
 	;
 
 compound:
-	c	    				       	 { gvl_compound(ytp->curr);
+	c	    				       	 { gvl_compound(@1, ytp->curr);
 	  						   ynp = gdl_pop(ytp,"g:c"); }
 	;
 
@@ -165,7 +172,7 @@ cors:
 	;
 
 valuqual:
-	q	    				       	 { gvl_valuqual(ytp->curr);
+	q	    				       	 { gvl_valuqual(@1, ytp->curr);
 	  						   ynp = gdl_pop(ytp,"g:q"); }
 	;
 

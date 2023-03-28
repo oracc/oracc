@@ -56,6 +56,8 @@ struct catstate {
   int end;
 };
 
+extern nodehandlerset catxmlhandlers;
+
 extern int catparse(void); /* bison */
 
 extern void cat_chunk(int l, char *t);

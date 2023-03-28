@@ -66,7 +66,21 @@ gdlxml_post(Node *np, void *user)
 }
 
 void
-gdl_xml(FILE *fp, Tree *tp)
+gdl_xml_handler(Node *np, void *xhp)
+{
+  node_iterator(np, xhp, gdlxml_node, gdlxml_post);
+}
+
+void
+gdl_xml_node(FILE *fp, Node *np)
+{
+  Xmlhelper *xhp = xmlh_init(fp ? fp : stdout);
+  node_iterator(np, xhp, gdlxml_node, gdlxml_post);
+  free(xhp);
+}
+
+void
+gdl_xml_tree(FILE *fp, Tree *tp)
 {
   Xmlhelper *xhp = xmlh_init(fp ? fp : stdout);
   tree_iterator(tp, xhp, gdlxml_node, gdlxml_post);

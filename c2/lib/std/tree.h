@@ -16,11 +16,15 @@ struct tree {
 
 typedef struct tree Tree;
 
+enum nodetype { NT_GDL , NT_NOT };
+typedef enum nodetype nodetype;
+
 struct node {
   const char *name;    	/* node name */
   const char *id;      	/* node ID */
   const char *data; 	/* unparsed data when node comes from cat-style input */
   void *parsed;		/* parsed data; parsing is done by caller's routines */
+  nodetype ntype;	/* type for parsed data */
   int depth;		/* nesting depth of node; may be -1 if not
 			   used by caller */
   struct node *rent; 	/* parent */
@@ -33,6 +37,9 @@ struct node {
 };
 
 typedef struct node Node;
+
+typedef void (*nodehandler)(Node *np, void *user);
+typedef nodehandler nodehandlerset[NT_NOT];
 
 extern Tree *tree_init(void);
 extern void tree_term(Tree *tp);
@@ -50,5 +57,10 @@ extern void node_iterator(Node *tp, void *user,
 
 extern void kids_add_node(Tree *tp, Node *np);
 extern Node *kids_rem_last(Tree *tp);
+
+/* When iterating over a tree containing heterogenous parsed data it
+   is necessary to set handlers which will descend into the void
+   *parsed elements. The nodehandler_register mechanism enables this. */
+extern void nodehandler_register(nodehandlerset nh, nodetype nt, nodehandler fnc);
 
 #endif/*TREE_H_*/

@@ -10,6 +10,13 @@ extern int yylex(void);
 extern void yyerror(const char *);
 extern const char *cattext;
 extern int catlineno, cattrace;
+
+#define CATLTYPE_IS_DECLARED 1
+/*typedef struct Mloc GDLLTYPE;*/
+#define CATLTYPE Mloc
+#define yylineno catlineno
+CATLTYPE catlloc;
+
 %}
 
 %union { char *text; int i; }

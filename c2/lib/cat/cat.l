@@ -3,15 +3,16 @@
 %option never-interactive noyywrap yylineno
 
 %{
+#include <mesg.h>
 #include <pool.h>
+
+#define CATLTYPE Mloc
 #include "cat.tab.h"
-
-#define yylloc catlloc
 #define YY_USER_ACTION cat_user_action();
+extern Mloc catlloc;
+const char *catfile = "<stdin>";
 
-const char *efile = "<stdin>";
-int flextrace = 0;
-int tok;
+int catflextrace = 0;
 
 extern Pool *catpool;
 #define catsave(s) (char*)pool_copy((const unsigned char*)(s),catpool);
@@ -33,10 +34,10 @@ static void cat_user_action(void);
 static void
 cat_user_action(void)
 {
-  if (flextrace)
-    fprintf(stderr, "%s:%d: flextrace: text=::%s::\n", efile, catlineno, cattext);
+  if (catflextrace)
+    fprintf(stderr, "%s:%d: flextrace: text=::%s::\n", catfile, catlineno, cattext);
 #if 0
-  yylloc.file = efile;
+  yylloc.file = catfile;
   yylloc.first_line = yylloc.last_line = yylineno;
 #endif
 }

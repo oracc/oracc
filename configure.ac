@@ -250,7 +250,7 @@ AC_CONFIG_FILES([Makefile
 	c2/lib/xml/expat/Makefile
 	c2/lib/xml/rnv/Makefile
 	c2/bin/Makefile
-	c2/bin/ax/Makefile
 	c2/bin/sx/Makefile
+	c2/bin/tx/Makefile
 ])
 AC_OUTPUT

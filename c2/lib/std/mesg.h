@@ -5,12 +5,8 @@
 
 struct Mloc
 {
-  int first_line;
-  int first_column;
-  int last_line;
-  int last_column;
-  char *file;
-  void *user;
+  const char *file;
+  int line;
 };
 
 typedef struct Mloc Mloc;
@@ -27,5 +23,34 @@ extern void mesg_verr(Mloc *locp, char *s, ...);
 extern void mesg_averr(Mloc *locp, char *s, va_list ap);
 extern void mesg_print(FILE *fp);
 
-#endif/*MESG_H_*/
+extern void mloc_init(void);
+extern void mloc_term(void);
+extern Mloc *mloc_file_line(const char *file, int line);
+extern Mloc *mloc_mloc(Mloc *arg_ml);
 
+/* Support for Yacc -- include mesg.h before xxx.tab.h and add
+ *
+ * #define XXXLTYPE Mloc
+ *
+ * Before including xxx.tab.h--XXX is API, e.g., GDL
+ *
+ */
+
+#define YYLTYPE_IS_DECLARED 1
+#undef YYLLOC_DEFAULT
+#define YYLLOC_DEFAULT(Current, Rhs, N)                                 \
+    do                                                                  \
+      if (N)                                                            \
+        {                                                               \
+          (Current).line   = YYRHSLOC (Rhs, 1).line;        		\
+          (Current).file         = YYRHSLOC (Rhs, N).file;              \
+	}                                                               \
+      else                                                              \
+        {                                                               \
+          (Current).line   = YYRHSLOC (Rhs, 0).line;              	\
+          (Current).file         = NULL; 				\
+    }  								        \
+    while (0)
+
+
+#endif/*MESG_H_*/

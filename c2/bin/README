@@ -1,0 +1,26 @@
+c2/bin
+======
+
+This directory contains a rewrite of core Oracc programs which are
+intended to be easier to understand and maintain than the previous
+implementation. As part of the rewrite, dependency on Perl for core
+functions will be eliminated.
+
+The following conversion programs are planned:
+
+    ax	ATF (replaces 'ox')
+    cx	CDF (replaces 'ox')	
+    gx	Glossary (replaces ORACC::CBD::*)
+    mx  Metadata (replaces xmdmanager.plx)
+    sx	Signlist (replaces sl-xml.plx)
+    tx	Test harnesses (e.g., gvlx)
+
+In addition, the following functionality will be revised/rewrittten:
+
+    ws	Web server (replaces oracc-server)
+    p3	Web pager (replaces p3.plx)
+    sc	Search/Context (replaces se/ce chain)
+    ix  Indexer for ax/gx/mx/sx output
+
+This will be done over a span of several years.
+

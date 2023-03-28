@@ -484,13 +484,15 @@ gvl_validate(unsigned const char *g)
 }
 
 void
-gvl_compound(Node *ynp)
+gvl_compound(Mloc ml, Node *ynp)
 {
   if (!ynp || !ynp->kids)
     return;
 
   if (gvl_trace)
     fprintf(stderr, "gvl_compound: called\n");
+
+  ynp->mloc = mloc_mloc(&ml);
 
   if (!strcmp(ynp->name, "g:c"))
     {
@@ -513,7 +515,7 @@ gvl_compound(Node *ynp)
 }
 
 void
-gvl_simplexg(Node *ynp)
+gvl_simplexg(Mloc ml, Node *ynp)
 {
   gvl_g *gp = NULL;
   unsigned const char *g = NULL;
@@ -522,6 +524,7 @@ gvl_simplexg(Node *ynp)
     return;
 
   g = (uccp)ynp->data;
+  ynp->mloc = mloc_mloc(&ml);
   
   if (gvl_trace)
     fprintf(stderr, "gvl_simplexg: called with g=%s\n", g);
@@ -552,7 +555,7 @@ gvl_simplexg(Node *ynp)
 }
 
 void
-gvl_valuqual(Node *ynp)
+gvl_valuqual(Mloc ml, Node *ynp)
 {
 
   if (!ynp || !ynp->kids || !ynp->kids->next)
@@ -560,6 +563,8 @@ gvl_valuqual(Node *ynp)
 
   if (gvl_trace)
     fprintf(stderr, "gvl_valuqual: called\n");
+
+  ynp->mloc = mloc_mloc(&ml);
 
   if ('q' == ynp->name[2])
     {

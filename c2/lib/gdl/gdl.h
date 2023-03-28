@@ -48,7 +48,10 @@ extern Tree *gdlparse_string(char *s);
 extern void gdlparse_init(void);
 extern void gdlparse_reset(void);
 extern void gdlparse_term(void);
-extern void gdl_xml(FILE *fp, Tree *tp);
+
+extern void gdl_xml_handler(Node *np, void *xhp);
+extern void gdl_xml_node(FILE *fp, Node *np);
+extern void gdl_xml_tree(FILE *fp, Tree *tp);
 
 extern void gdl_append(Node *ynp, const char *s);
 extern Node *gdl_delim(Tree *ytp, const char *data);

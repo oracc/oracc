@@ -10,8 +10,3 @@ AM_CPPFLAGS=\
 	../../../c/include \
 	-I../../lib/cat
 
-ax_SOURCES=ax.c
-
-ax_LDADD = $(xLDADD)
-
-ax_DEPENDENCIES = $(ax_LDADD)

@@ -1,21 +1,34 @@
+/*
+ * This file contains mesg_xxx routines and mloc_xxx routines
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include "list.h"
-#include "pool.h"
+#include "memo.h"
 #include "mesg.h"
+#include "pool.h"
+
+/************************************************
+ ***
+ *** 		Mesg routines
+ ***
+ ***********************************************/
 
 const char *phase = NULL;
 
 static Pool *msgpool;
 static List *mesg_list;
 static int msg_cmp(const void *pa, const void *pb);
+static char *nl(char *e);
 
 void
 mesg_init(void)
 {
   mesg_list = list_create(LIST_SINGLE);
   msgpool = pool_init();
+  mloc_init();
   /*warning_mesg();*/
 }
 
@@ -24,14 +37,7 @@ mesg_term(void)
 {
   list_free(mesg_list, NULL);
   pool_term(msgpool);
-}
-
-static char *
-nl(char *e)
-{
-  if ('\n' != e[strlen(e)-1])
-    strcat(e, "\n");
-  return e;
+  mloc_term();
 }
 
 void
@@ -62,16 +68,16 @@ mesg_loc(Mloc *locp)
   if (phase)
     {
       const char *fmt = "%s:%d: (%s)";
-      need = snprintf(NULL, 0, fmt, locp->file, locp->first_line, phase);
+      need = snprintf(NULL, 0, fmt, locp->file, locp->line, phase);
       e = malloc(need+1);
-      sprintf(e, fmt, locp->file, locp->first_line, phase);
+      sprintf(e, fmt, locp->file, locp->line, phase);
     }
   else
     {
       const char *fmt = "%s:%d";
-      need = snprintf(NULL, 0, fmt, locp->file, locp->first_line);
+      need = snprintf(NULL, 0, fmt, locp->file, locp->line);
       e = malloc(need+1);
-      sprintf(e, fmt, locp->file, locp->first_line);
+      sprintf(e, fmt, locp->file, locp->line);
     }
   return e;
 }
@@ -130,7 +136,7 @@ mesg_warning(const char *file, int ln, const char *str)
 {
   static Mloc l;
   l.file = (char*)file;
-  l.first_line = ln;
+  l.line = ln;
   mesg_err(&l,(char*)str);
 }
 
@@ -139,7 +145,7 @@ mesg_vwarning(const char *file, int ln, const char *str, va_list ap)
 {
   static Mloc l;
   l.file = (char*)file;
-  l.first_line = ln;
+  l.line = ln;
   mesg_averr(&l,(char*)str,ap);
 }
 
@@ -180,4 +186,50 @@ msg_cmp(const void *pa, const void *pb)
   if (!ret)
     ret = atoi(al) - atoi(bl);
   return ret;
+}
+
+static char *
+nl(char *e)
+{
+  if ('\n' != e[strlen(e)-1])
+    strcat(e, "\n");
+  return e;
+}
+
+/************************************************
+ ***
+ *** 		Mloc routines
+ ***
+ ***********************************************/
+
+static Memo *mloc_mem = NULL;
+
+void
+mloc_init(void)
+{
+  mloc_mem = memo_init(1024, sizeof(Mloc));
+}
+
+void
+mloc_term(void)
+{
+  memo_term(mloc_mem);
+  mloc_mem = NULL;
+}
+
+Mloc *
+mloc_file_line(const char *file, int line)
+{
+  Mloc *ml = memo_new(mloc_mem);
+  ml->file = file;
+  ml->line = line;
+  return ml;
+}
+
+Mloc *
+mloc_mloc(Mloc *arg_ml)
+{
+  Mloc *ml = memo_new(mloc_mem);
+  *ml = *arg_ml;
+  return ml;
 }

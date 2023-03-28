@@ -10,6 +10,7 @@
 int
 main(int argc, char **argv)
 {
+  mesg_init();
   gvl_setup("ogsl", "ogsl");
 
   if (argv[1])
@@ -34,7 +35,7 @@ main(int argc, char **argv)
     }
   else
     {
-      fprintf(stderr, "gvlx: give grapheme on command line\n");
+      fprintf(stderr, "gdlx: give grapheme on command line\n");
     }
 
   return 0;

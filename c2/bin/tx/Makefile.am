@@ -1,6 +1,6 @@
 include ../../../oracc-am-rules.txt
 
-noinst_PROGRAMS=sx
+noinst_PROGRAMS=catx gdlx
 
 xLDADD=\
 	../../lib/cat/libcat.la \
@@ -17,8 +17,14 @@ AM_CPPFLAGS=\
 	-I../../lib/xml \
 	-I../../lib/cat
 
-sx_SOURCES=sx.c sx_check.c sx_parse.c sl.c
+catx_SOURCES=catx.c
 
-sx_LDADD = $(xLDADD)
+catx_LDADD = $(xLDADD)
 
-sx_DEPENDENCIES = $(sx_LDADD)
+catx_DEPENDENCIES = $(xLDADD)
+
+gdlx_SOURCES=gdlx.c
+
+gdlx_LDADD = $(xLDADD)
+
+gdlx_DEPENDENCIES = $(xLDADD)
