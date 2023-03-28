@@ -11,7 +11,7 @@
 
 Pool *catpool;
 Memo *catchunk_mem;
-Memo *catnode_mem;
+/*Memo *catnode_mem;*/
 
 int cat_initted = 0;
 int cattrace = 1;
@@ -28,7 +28,7 @@ cat_init(void)
       return;
     }
   catchunk_mem = memo_init(sizeof(struct catchunk),1024);
-  catnode_mem = memo_init(sizeof(struct catnode),1024);
+  /* catnode_mem = memo_init(sizeof(struct catnode),1024); */
   catpool = pool_init();
   head = tail;
 }

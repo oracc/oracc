@@ -6,7 +6,11 @@
 struct cat {
   const char *f;	/* filename */
   struct catchunk *c;	/* input chunks */
+#if 1
+  Tree *t;		/* tree created by cat_herd */
+#else
   struct catnode *t; 	/* tree of nodes */
+#endif
 };
 
 struct catchunk {
@@ -17,6 +21,7 @@ struct catchunk {
   struct catchunk *next;
 };
 
+#if 0
 struct catnode {
   char *name; 		/* @-tag name */
   struct catchunk *c; 	/* chunk where this node begins */
@@ -26,6 +31,7 @@ struct catnode {
   struct catnode *next; /* next sibling */
   struct catnode *last;	/* last sibling--i.e., where we are attaching nodes */
 };
+#endif
 
 enum ci_rel { CI_PARENT , CI_CHILD , CI_END };
 
@@ -56,8 +62,6 @@ struct catstate {
   int end;
 };
 
-extern nodehandlerset catxmlhandlers;
-
 extern int catparse(void); /* bison */
 
 extern void cat_chunk(int l, char *t);
@@ -68,7 +72,6 @@ extern char* cat_name(struct catchunk *cp, char **data);
 extern void cat_term(void);
 extern struct catchunk *cat_read(const char *file);
 extern Tree *cat_herd(struct catchunk *cp, struct catconfig *cfg);
-extern void cat_xml(FILE *fp, Tree *tp);
 
 extern struct catchunk *catyacc(void);
 

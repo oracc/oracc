@@ -58,9 +58,12 @@ extern void node_iterator(Node *tp, void *user,
 extern void kids_add_node(Tree *tp, Node *np);
 extern Node *kids_rem_last(Tree *tp);
 
+extern void tree_xml(FILE *fp, Tree *tp);
+
 /* When iterating over a tree containing heterogenous parsed data it
    is necessary to set handlers which will descend into the void
    *parsed elements. The nodehandler_register mechanism enables this. */
+extern nodehandlerset treexmlhandlers;
 extern void nodehandler_register(nodehandlerset nh, nodetype nt, nodehandler fnc);
 
 #endif/*TREE_H_*/

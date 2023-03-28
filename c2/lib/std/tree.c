@@ -3,6 +3,7 @@
 #include "pool.h"
 #include "memo.h"
 #include "tree.h"
+#include "../xml/xml.h"
 
 Tree *
 tree_init(void)
@@ -109,6 +110,34 @@ tree_iterator(Tree *tp, void *user, void (*nodefnc)(Node *np, void *user), void 
 {
   if (tp && tp->root)
     _do_node(tp->root, user, nodefnc, postfnc);
+}
+
+nodehandlerset treexmlhandlers;
+
+static void
+tree_xml_node(Node *np, void *user)
+{
+  Xmlhelper *xhp = user;
+  fprintf(xhp->fp, "<%s>", np->name);
+  if (np->data)
+    fprintf(xhp->fp, "<data>%s</data>", xmlify((uccp)np->data));
+  if (np->parsed)
+    (treexmlhandlers[np->ntype])(np, xhp);
+}
+
+static void
+tree_xml_post(Node *np, void *user)
+{
+  Xmlhelper *xhp = user;
+  fprintf(xhp->fp, "</%s>", np->name);
+}
+
+void
+tree_xml(FILE *fp, Tree *tp)
+{
+  Xmlhelper *xhp = xmlh_init(fp ? fp : stdout);
+  tree_iterator(tp, xhp, tree_xml_node, tree_xml_post);
+  free(xhp);
 }
 
 void

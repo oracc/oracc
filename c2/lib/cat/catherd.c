@@ -97,16 +97,17 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
     {
       if (*cp->text)
 	{
-	  struct catnode *cn = memo_new(catnode_mem);
+	  /*struct catnode *cn = memo_new(catnode_mem);*/
 	  static char *data = NULL;
+	  char *name = NULL;
 	  
 	  if (cattrace)
 	    fprintf(stderr, "cat_herd: depth before processing node: %d\n", tp->curr->depth);
-	  cn->name = cfg->getname(cp, &data);
+	  name = cfg->getname(cp, &data);
 	  if (data)
 	    while (isspace(*data))
 	      ++data;
-	  if (cn->name && (cip = cfg->chkname(cn->name, strlen(cn->name))))
+	  if (name && (cip = cfg->chkname(name, strlen(name))))
 	    {
 	      Node *np = NULL;
 
@@ -114,12 +115,12 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 		{
 		case CI_PARENT:
 		  /* always make cn the last child of curr */
-		  np = tree_add(tp, cn->name, cip->depth, NULL);
+		  np = tree_add(tp, name, cip->depth, NULL);
 		  np->data = data;
 		  if (cattrace)
 		    fprintf(stderr, "cat_herd: curr=%s@%d: adding parent %s@%d; data=%s\n",
 			    tp->curr->name, tp->curr->depth,
-			    cn->name, cip->depth, data);
+			    name, cip->depth, data);
 		  if (cip->depth > tp->curr->depth)
 		    tree_push(tp);
 		  else if (cip->depth < tp->curr->depth)
@@ -131,19 +132,19 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 		  break;
 		case CI_CHILD:
 		  /* always make cn the last child of curr */
-		  np = tree_add(tp, cn->name, cip->depth, NULL);
+		  np = tree_add(tp, name, cip->depth, NULL);
 		  np->data = data;
 		  if (cattrace)
 		    fprintf(stderr, "cat_herd: curr=%s@%d: adding child %s@; data=%s\n",
 			    tp->curr->name, tp->curr->depth,
-			    cn->name, data);
+			    name, data);
 		  cip->parse(np, data);
 		  break;
 		case CI_END:
 		  if (cattrace)
 		    fprintf(stderr, "cat_herd: curr=%s@%d: adding end %s@; data=%s\n",
 			    tp->curr->name, tp->curr->depth,
-			    cn->name, data);
+			    name, data);
 		  cat_end(tp, data);
 		  break;
 		}
