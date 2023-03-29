@@ -5,6 +5,16 @@
 #include "xml.h"
 
 /* Debugging tool to output generic XML dump for tree generated via catherd */
+static void gdl_xml_o(Node *np, void *user);
+static void gdl_xml_c(Node *np, void *user);
+
+void
+gdlxml_setup(void)
+{
+  nodeh_register(treexml_o_handlers, NS_GDL, gdl_xml_o);
+  nodeh_register(treexml_p_handlers, NS_GDL, NULL);
+  nodeh_register(treexml_c_handlers, NS_GDL, gdl_xml_c);
+}
 
 static void
 gdlxml_keqv(const char *k, const char *v, void *user)
@@ -13,6 +23,7 @@ gdlxml_keqv(const char *k, const char *v, void *user)
   fprintf(xhp->fp, " %s=\"%s\"", k, xmlify((uccp)v));
 }
 
+#if 0
 static void
 gdlxml_ns(Node *np, void *user)
 {
@@ -24,6 +35,7 @@ gdlxml_ns(Node *np, void *user)
       p = p->next;
     }
 }
+#endif
 
 static void
 gdlxml_attr(Node *np, void *user)
@@ -41,38 +53,43 @@ static void
 gdlxml_parsed(gvl_g *gp, void *user)
 {
   Xmlhelper *xhp = user;
-  fprintf(xhp->fp, "<gvl_g><c10e>%s</c10e></gvl_g>", gp->c10e);
+  fprintf(xhp->fp, "<gvl_g><c10e>%s</c10e>", xmlify(gp->c10e));
+  if (gp->mess)
+    fprintf(xhp->fp, "<mess>%s</mess>", xmlify(gp->mess));
+  fprintf(xhp->fp, "</gvl_g>");
 }
 
 static void
-gdlxml_node(Node *np, void *user)
+gdl_xml_o(Node *np, void *user)
 {
   Xmlhelper *xhp = user;
   fprintf(xhp->fp, "<%s", np->name);
-  gdlxml_ns(np, user);
+  if (!np->rent)
+    tree_ns_print(np->tree, xhp->fp);
   gdlxml_attr(np, user);
   fputc('>', xhp->fp);
   if (np->text)
-    fprintf(xhp->fp, "<data>%s</data>", xmlify((uccp)np->text));
-  if (np->data)
-    gdlxml_parsed((gvl_g*)np->data, user);
+    fprintf(xhp->fp, "<text>%s</text>", xmlify((uccp)np->text));
+  if (np->user)
+    gdlxml_parsed((gvl_g*)np->user, user);
 }
 
 static void
-gdlxml_post(Node *np, void *user)
+gdl_xml_c(Node *np, void *user)
 {
   Xmlhelper *xhp = user;
   fprintf(xhp->fp, "</%s>", np->name);
 }
 
+#if 0
 void
 gdl_xml_handler(Node *np, void *xhp)
 {
-  node_iterator(np->data, xhp, gdlxml_node, gdlxml_post);
+  node_iterator(np->data, xhp, gdl_xml_o, gdl_xml_c);
 }
+#endif
 
 #if 0
-
 void
 gdl_xml_node(FILE *fp, Node *np)
 {

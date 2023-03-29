@@ -500,7 +500,7 @@ gvl_compound(Mloc ml, Node *ynp)
       unsigned char *c_orig = gvl_c_orig(ynp);
       if (!(cp = hash_find(curr_sl->h, c_orig)))
 	{
-	  ynp->user = cp = memo_new(curr_sl->m);
+	  cp = memo_new(curr_sl->m);
 	  cp->type = "c";
 	  cp->orig = pool_copy(c_orig, curr_sl->p);
 	  cp->c10e = pool_copy(gvl_c_c10e(ynp), curr_sl->p);
@@ -511,6 +511,9 @@ gvl_compound(Mloc ml, Node *ynp)
 	  if (strcmp((ccp)cp->orig, (ccp)cp->c10e))
 	    hash_add(curr_sl->h, cp->c10e, cp);
 	}
+      ynp->user = cp;
+      if (cp->mess)
+	mesg_err(ynp->mloc, (ccp)cp->mess);
     }
 }
 
@@ -520,38 +523,21 @@ gvl_simplexg(Mloc ml, Node *ynp)
   gvl_g *gp = NULL;
   unsigned const char *g = NULL;
 
-  if (!ynp || !ynp->data)
+  if (!ynp || !ynp->text)
     return;
 
-  g = (uccp)ynp->data;
+  g = (uccp)ynp->text;
   ynp->mloc = mloc_mloc(&ml);
   
   if (gvl_trace)
     fprintf(stderr, "gvl_simplexg: called with g=%s\n", g);
 
   if (!(gp = hash_find(curr_sl->h,g)))
-    {
-      gp = gvl_s(ynp);
-#if 0      
-      switch (ynp->name[2])
-	{
-	case 'g':
-	  gp = gvl_s(ynp);
-	  break;
-	case 'n':
-	  /* only happens with unadorned numbers */
-	  break;
-	case 'p':
-	  /* does this need to be separate from gvl_s ? */
-	  break;
-	default:
-	  /* shouldn't be able to happen */
-	  break;
-	}
-#endif
-    }
-  
+    gp = gvl_s(ynp);
+
   ynp->user = gp;
+  if (gp->mess)
+    mesg_err(ynp->mloc, (ccp)gp->mess);
 }
 
 void

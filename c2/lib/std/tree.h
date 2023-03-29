@@ -30,7 +30,9 @@ struct node {
 			   tree */
   int depth;		/* nesting depth of node; may be -1 if not
 			   used by caller */
-  struct node *data;	/* parsed data which is an island off of the current tree */
+#if 0
+  struct node *data; /* parsed data which is an island off of the current tree */
+#endif
   struct node *rent; 	/* parent */
   struct node *kids; 	/* children */
   struct node *last; 	/* last sibling, i.e., where we are adding sibs */
@@ -77,5 +79,6 @@ extern void tree_xml(FILE *fp, Tree *tp);
 
 extern void tree_ns_default(Tree *tp, nscode ns);
 extern void tree_ns_merge(Tree *tp, nsrefs used);
+extern void tree_ns_print(Tree *tp, FILE *fp);
 
 #endif/*TREE_H_*/

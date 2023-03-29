@@ -99,7 +99,9 @@ tree_add(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc)
 
   if (tp)
     {
-      if (tp->curr && tp->curr->kids)
+      /* the case tp->curr->last == NULL indicates that tp->curr->kids
+	 is a graft from another tree */
+      if (tp->curr && tp->curr->kids && tp->curr->last)
 	{
 	  np = tree_node(tp, ns, name, depth, loc);
 	  np->rent = tp->curr->last->rent;
@@ -194,8 +196,10 @@ tree_xml_node(Node *np, void *user)
     (treexml_o_handlers[np->ns])(np, xhp);
   else
     treexml_o_generic(np, xhp);
+#if 0
   if (np->data && treexml_p_handlers[np->data->ns])
     (treexml_p_handlers[np->data->ns])(np, xhp);
+#endif
 }
 
 static void
@@ -223,6 +227,19 @@ tree_xml_rnv(FILE *fp, Tree *tp, struct xnn_data *xdp, const char *rncbase)
   rnvxml_init(tp, xdp, rncbase);
   tree_iterator(tp, xhp, tree_xml_node, tree_xml_post);
   free(xhp);
+}
+
+/* Graft the kids of tree tp onto node np */
+void
+tree_graft(Node *np, Tree *tp)
+{
+  if (np->kids)
+    fprintf(stderr, "tree_graft: internal error: np->kids should be NUL\n");
+  else
+    {
+      np->kids = tp->root->kids;
+      tree_ns_merge(np->tree, tp->ns_used);
+    }
 }
 
 void

@@ -73,8 +73,8 @@ gvl_c_node_orig(Node * np, void *user)
     {
       if (np->user)
 	list_add((List*)user, (void*)((gvl_g*)(np->user))->orig);
-      else if (np->data)
-	list_add((List*)user, (void*)np->data);
+      else if (np->text)
+	list_add((List*)user, (void*)np->text);
     }
 }
 
@@ -85,8 +85,8 @@ gvl_c_node_c10e(Node * np, void *user)
     {
       if (np->user)
 	list_add((List*)user, (void*)((gvl_g*)(np->user))->sign);
-      else if (np->data)
-	list_add((List*)user, (void*)np->data);
+      else if (np->text)
+	list_add((List*)user, (void*)np->text);
     }
 }
 

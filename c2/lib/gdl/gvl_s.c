@@ -20,7 +20,7 @@ gvl_s(Node *ynp)
 
   gp = memo_new(curr_sl->m);
   
-  gp->orig = (uccp)ynp->data;
+  gp->orig = (uccp)ynp->text;
   gp->type = ynp->name + 2;
   if ('g' == *gp->type)
     {

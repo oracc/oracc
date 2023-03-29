@@ -21,9 +21,7 @@ int
 main(int argc, char **argv)
 {
   mesg_init();
-  nodeh_register(treexml_o_handlers, NS_GDL, treexml_o_generic);
-  nodeh_register(treexml_p_handlers, NS_GDL, gdl_xml_handler);
-  nodeh_register(treexml_c_handlers, NS_GDL, treexml_c_generic);
+  gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
 
   options(argc, argv, "c");
@@ -46,6 +44,7 @@ main(int argc, char **argv)
   else if (argv[optind])
     {
       Tree *tp = gdlparse_string(argv[1]);
+      mesg_print(stderr);
       tree_xml(stdout, tp);
     }
   else

@@ -5,7 +5,7 @@
 #include "xml.h"
 
 /* Debugging tool to output generic XML dump for tree generated via catherd */
-
+#if 0
 nodehandlers catxmlhandlers;
 
 static void
@@ -33,3 +33,4 @@ cat_xml(FILE *fp, Tree *tp)
   tree_iterator(tp, xhp, catxml_node, catxml_post);
   free(xhp);
 }
+#endif

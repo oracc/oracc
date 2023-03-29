@@ -41,7 +41,7 @@ mesg_term(void)
 }
 
 void
-mesg_append(char *a)
+mesg_append(const char *a)
 {
   char *e = (char*)mesg_list->last->data, *n;
   n = malloc(strlen(e)+strlen(a)+1);
@@ -83,7 +83,7 @@ mesg_loc(Mloc *locp)
 }
 
 void
-mesg_err(Mloc *locp, char *s)
+mesg_err(Mloc *locp, const char *s)
 {
   if (s)
     {
@@ -100,7 +100,7 @@ mesg_err(Mloc *locp, char *s)
 }
 
 void
-mesg_averr(Mloc *locp, char *s, va_list ap)
+mesg_averr(Mloc *locp, const char *s, va_list ap)
 {
   char *loc, *e;
   int need;
@@ -120,7 +120,7 @@ mesg_averr(Mloc *locp, char *s, va_list ap)
 }
   
 void
-mesg_verr(Mloc *locp, char *s, ...)
+mesg_verr(Mloc *locp, const char *s, ...)
 {
   if (s)
     {

@@ -7,7 +7,7 @@
 struct catinfo;
 %%
 signs,  CI_PARENT , 1 , 0, NULL, 	  NULL, NULL
-sign,   CI_PARENT , 2 , 1, sx_p_sign, NULL, NULL
-form, 	CI_PARENT , 3 , 0, sx_p_form, NULL, NULL
-v,		CI_CHILD  , 0 , 0, sx_p_v, 	  NULL, NULL
+sign,   CI_PARENT , 2 , 1, sx_gparse, NULL, NULL
+form, 	CI_PARENT , 3 , 0, sx_gparse, NULL, NULL
+v,		CI_CHILD  , 0 , 0, sx_gparse, NULL, NULL
 end,	CI_END 	  , 0 , 0, NULL, 	  NULL, NULL
