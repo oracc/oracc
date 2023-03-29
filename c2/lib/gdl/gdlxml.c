@@ -71,6 +71,8 @@ gdl_xml_handler(Node *np, void *xhp)
   node_iterator(np->data, xhp, gdlxml_node, gdlxml_post);
 }
 
+#if 0
+
 void
 gdl_xml_node(FILE *fp, Node *np)
 {
@@ -86,3 +88,5 @@ gdl_xml_tree(FILE *fp, Tree *tp)
   tree_iterator(tp, xhp, gdlxml_node, gdlxml_post);
   free(xhp);
 }
+
+#endif
