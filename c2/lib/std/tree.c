@@ -6,6 +6,18 @@
 #include "xml.h"
 #include "rnvxml.h"
 
+struct ns_key_val {
+  const char *prefix; const char *url;
+} ns_key_val[] = {
+  { "", "" } ,
+  { "c" , "http://oracc.org/ns/cbd/1.0" } ,
+  { "g" , "http://oracc.org/ns/gdl/1.0" } ,
+  { "s" , "http://oracc.org/ns/sl/1.0" } ,
+  { "x" , "http://oracc.org/ns/xtf/1.0" } ,
+  { "m" , "http://oracc.org/ns/xmd/1.0" } ,
+  { NULL , NULL } 
+};
+
 /* For validating vs non-validating XML output register distinct
    routines in these handler arrays which are all used by
    tree_xml_node and tree_xml_post via a tree_xml call to
@@ -37,11 +49,39 @@ tree_node(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc)
 {
   Node *np = memo_new(tp->nodemem);
   np->tree = tp;
-  np->ns = ns;
   np->name = name;
   np->depth = depth;
   np->mloc = loc;
+  np->ns = ns;
+  if (!tp->ns_used[ns])
+    tp->ns_used[ns] = ns;
   return np;
+}
+
+void
+tree_ns_default(Tree *tp, nscode ns)
+{
+  tp->ns_used[0] = ns;
+}
+
+void
+tree_ns_merge(Tree *tp, nsrefs used)
+{
+  enum nscode ns;
+  for (ns = NS_NONE; ns < NS_LAST; ++ns)
+    if (used[ns] && !tp->ns_used[ns])
+      tp->ns_used[ns] = ns;
+}
+
+void
+tree_ns_print(Tree *tp, FILE *fp)
+{
+  enum nscode nsx = NS_NONE+1;
+  if (tp->ns_used[0])
+    fprintf(fp, " xmlns=\"%s\"", ns_key_val[tp->ns_used[0]].url);
+  for (; nsx < NS_LAST; ++nsx)
+    if (tp->ns_used[nsx])
+      fprintf(fp, " xmlns:%s=\"%s\"", ns_key_val[nsx].prefix, ns_key_val[nsx].url);
 }
 
 Node *
@@ -126,7 +166,13 @@ void
 treexml_o_generic(Node *np, void *user)
 {
   Xmlhelper *xhp = user;
-  fprintf(xhp->fp, "<%s>", np->name);
+  fprintf(xhp->fp, "<%s", np->name);
+
+  if (!np->rent)
+    tree_ns_print(np->tree, xhp->fp);
+
+  fputc('>', xhp->fp);
+
   if (np->text)
     fprintf(xhp->fp, "<text>%s</text>", xmlify((uccp)np->text));
 }

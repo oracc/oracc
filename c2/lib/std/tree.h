@@ -6,18 +6,20 @@
 #include <pool.h>
 #include <prop.h>
 
+enum nscode { NS_NONE=0 , NS_CBD , NS_GDL , NS_SL , NS_XTF , NS_XMD , NS_LAST };
+typedef enum nscode nscode;
+typedef nscode nsrefs[NS_LAST];
+
 struct tree {
   struct node *root;
   struct node *curr;
   Memo *nodemem;
   Memo *propmem;
   Pool *pool;
+  nsrefs ns_used;
 };
 
 typedef struct tree Tree;
-
-enum nscode { NONE , NS_CBD , NS_GDL , NS_SL , NS_XTF , NS_XMD , NS_LAST };
-typedef enum nscode nscode;
 
 struct node {
   enum nscode ns;   	/* node namespace */
@@ -72,5 +74,8 @@ extern void kids_add_node(Tree *tp, Node *np);
 extern Node *kids_rem_last(Tree *tp);
 
 extern void tree_xml(FILE *fp, Tree *tp);
+
+extern void tree_ns_default(Tree *tp, nscode ns);
+extern void tree_ns_merge(Tree *tp, nsrefs used);
 
 #endif/*TREE_H_*/

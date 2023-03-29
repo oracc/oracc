@@ -15,7 +15,7 @@ gdlparse_string(char *s)
 {
   Tree *tp = tree_init();
   (void)tree_root(tp, NS_GDL, "g:gdl", 1, NULL);
-  gdl_prop(tp->curr, 0, PG_XNS, "xmlns:g", "http://oracc.org/ns/gdl/2.0");
+  /* gdl_prop(tp->curr, 0, PG_XNS, "xmlns:g", "http://oracc.org/ns/gdl/2.0"); */
   gdl_setup_buffer(s);
   gdl_set_tree(tp);
   gdlparse();

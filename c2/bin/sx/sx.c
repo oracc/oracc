@@ -36,6 +36,7 @@ main(int argc, const char **argv)
   sxcat.f = argv[1];
   sxcat.c = cat_read(argv[1]);
   sxcat.t = cat_herd(sxcat.c, &sx_cat_config);
+  tree_ns_default(sxcat.t, NS_SL);
   tree_xml(NULL, sxcat.t);
 
   gdlparse_term();
