@@ -64,7 +64,7 @@ gdl_xml_o(Node *np, void *user)
   Xmlhelper *xhp = user;
   fprintf(xhp->fp, "<%s", np->name);
   if (!np->rent)
-    tree_ns_print(np->tree, xhp->fp);
+    tree_ns_xml_print(np->tree, xhp->fp);
   gdlxml_attr(np, user);
   fputc('>', xhp->fp);
   if (np->text)

@@ -49,13 +49,6 @@ typedef void (*nodehandler)(Node *np, void *user);
 typedef nodehandler nodehandlers[NS_LAST];
 extern void nodeh_register(nodehandlers nh, nscode c, nodehandler fnc);
 
-extern nodehandlers treexml_o_handlers;
-extern nodehandlers treexml_p_handlers;
-extern nodehandlers treexml_c_handlers;
-
-extern void treexml_o_generic(Node *np, void *user);
-extern void treexml_c_generic(Node *np, void *user);
-
 extern Tree *tree_init(void);
 extern void tree_term(Tree *tp);
 extern Node *tree_pop(Tree *tp);
@@ -80,6 +73,5 @@ extern void tree_xml(FILE *fp, Tree *tp);
 
 extern void tree_ns_default(Tree *tp, nscode ns);
 extern void tree_ns_merge(Tree *tp, nsrefs used);
-extern void tree_ns_print(Tree *tp, FILE *fp);
 
 #endif/*TREE_H_*/

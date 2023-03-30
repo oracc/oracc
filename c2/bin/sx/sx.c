@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <mesg.h>
 #include <tree.h>
+#include <xml.h>
 #include <cat.h>
 #include <gdl.h>
 

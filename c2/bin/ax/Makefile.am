@@ -4,14 +4,13 @@ noinst_PROGRAMS=ax
 
 xLDADD=\
 	../../lib/cat/libcat.la \
+	../../lib/atf/libatf.la \
 	../../lib/gdl/libgdl.la \
-	../../lib/std/libstd.la \
 	../../lib/sys/libsys.la \
 	../../lib/xml/libxml.la \
 	../../lib/xml/expat/libexpat.la \
 	../../lib/xml/rnv/librnv.la \
-	../../lib/std/libstd.la \
-	../../lib/atf/libatf.la
+	../../lib/std/libstd.la
 
 AM_CPPFLAGS=\
 	-I../../lib/include \
@@ -22,7 +21,7 @@ AM_CPPFLAGS=\
 	-I../../lib/sys \
 	-I../../lib/xml
 
-ax_SOURCES=ax.c ax_check.c
+ax_SOURCES=ax.c ax_check.c ax_parse.c
 
 ax_LDADD = $(xLDADD)
 

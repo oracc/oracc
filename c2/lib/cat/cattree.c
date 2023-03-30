@@ -98,15 +98,15 @@ cat_tree(struct catchunk *ccp, struct catconfig *cfg)
       if (*cp->text)
 	{
 	  /*struct catnode *cn = memo_new(catnode_mem);*/
-	  static char *data = NULL;
+	  static char *text = NULL;
 	  char *name = NULL;
 	  
 	  if (cattrace)
 	    fprintf(stderr, "cat_tree: depth before processing node: %d\n", tp->curr->depth);
-	  name = cfg->getname(cp, &data);
-	  if (data)
-	    while (isspace(*data))
-	      ++data;
+	  name = cfg->getname(cp, &text);
+	  if (text)
+	    while (isspace(*text))
+	      ++text;
 	  if (name && (cip = cfg->chkname(name, strlen(name))))
 	    {
 	      Node *np = NULL;
@@ -116,11 +116,11 @@ cat_tree(struct catchunk *ccp, struct catconfig *cfg)
 		case CI_PARENT:
 		  /* always make cn the last child of curr */
 		  np = tree_add(tp, cfg->ns, name, cip->depth, NULL);
-		  np->text = data;
+		  np->text = text;
 		  if (cattrace)
-		    fprintf(stderr, "cat_tree: curr=%s@%d: adding parent %s@%d; data=%s\n",
+		    fprintf(stderr, "cat_tree: curr=%s@%d: adding parent %s@%d; text=%s\n",
 			    tp->curr->name, tp->curr->depth,
-			    name, cip->depth, data);
+			    name, cip->depth, text);
 		  if (cip->depth > tp->curr->depth)
 		    tree_push(tp);
 		  else if (cip->depth < tp->curr->depth)
@@ -128,24 +128,24 @@ cat_tree(struct catchunk *ccp, struct catconfig *cfg)
 		      while (cip->depth < tp->curr->depth)
 			tree_pop(tp);
 		    }
-		  cip->parse(np, data);
+		  cip->parse(np, text);
 		  break;
 		case CI_CHILD:
 		  /* always make cn the last child of curr */
 		  np = tree_add(tp, cfg->ns, name, cip->depth, NULL);
-		  np->text = data;
+		  np->text = text;
 		  if (cattrace)
-		    fprintf(stderr, "cat_tree: curr=%s@%d: adding child %s@; data=%s\n",
+		    fprintf(stderr, "cat_tree: curr=%s@%d: adding child %s@; text=%s\n",
 			    tp->curr->name, tp->curr->depth,
-			    name, data);
-		  cip->parse(np, data);
+			    name, text);
+		  cip->parse(np, text);
 		  break;
 		case CI_END:
 		  if (cattrace)
-		    fprintf(stderr, "cat_tree: curr=%s@%d: adding end %s@; data=%s\n",
+		    fprintf(stderr, "cat_tree: curr=%s@%d: adding end %s@; text=%s\n",
 			    tp->curr->name, tp->curr->depth,
-			    name, data);
-		  cat_end(tp, data);
+			    name, text);
+		  cat_end(tp, text);
 		  break;
 		}
 	    }

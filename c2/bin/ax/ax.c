@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <mesg.h>
 #include <tree.h>
+#include <xml.h>
 #include <atf.h>
 #include <gdl.h>
 
@@ -27,22 +28,18 @@ struct catconfig ax_cat_config =
 int
 main(int argc, const char **argv)
 {
-#if 0
   mesg_init();
   gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
   nodeh_register(treexml_o_handlers, NS_XTF, treexml_o_generic);
   nodeh_register(treexml_c_handlers, NS_XTF, treexml_c_generic);
   gdlparse_init();
-#endif
   /*fprintf(stderr, "catchunk *=%lu\n", sizeof(struct catchunk *));*/
   axcat.f = argv[1];
   axcat.c = atf_read(argv[1]);
   cat_dump(axcat.c);
-#if 0
   axcat.t = cat_tree(axcat.c, &ax_cat_config);
   tree_ns_default(axcat.t, NS_SL);
   tree_xml(NULL, axcat.t);
   gdlparse_term();
-#endif
 }
