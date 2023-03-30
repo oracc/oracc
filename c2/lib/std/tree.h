@@ -75,6 +75,7 @@ extern void tree_iterator_nh(Tree *tp, void *user, nodehandlers nh_node, nodehan
 extern void kids_add_node(Tree *tp, Node *np);
 extern Node *kids_rem_last(Tree *tp);
 
+extern void tree_graft(Node *np, Tree *tp);
 extern void tree_xml(FILE *fp, Tree *tp);
 
 extern void tree_ns_default(Tree *tp, nscode ns);

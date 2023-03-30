@@ -28,6 +28,7 @@ int
 main(int argc, const char **argv)
 {
   mesg_init();
+  gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
   nodeh_register(treexml_o_handlers, NS_SL, treexml_o_generic);
   /* nodeh_register(treexml_p_handlers, NS_GDL, gdl_xml_handler); */
@@ -35,7 +36,7 @@ main(int argc, const char **argv)
   gdlparse_init();
   sxcat.f = argv[1];
   sxcat.c = cat_read(argv[1]);
-  sxcat.t = cat_herd(sxcat.c, &sx_cat_config);
+  sxcat.t = cat_tree(sxcat.c, &sx_cat_config);
   tree_ns_default(sxcat.t, NS_SL);
   tree_xml(NULL, sxcat.t);
   gdlparse_term();

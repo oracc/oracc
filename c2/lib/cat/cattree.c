@@ -84,7 +84,7 @@ cat_end(Tree *tp, char *data)
 }
 
 Tree *
-cat_herd(struct catchunk *ccp, struct catconfig *cfg)
+cat_tree(struct catchunk *ccp, struct catconfig *cfg)
 {
   struct catinfo *cip = NULL, *head_cip = NULL;
   struct catchunk *cp = NULL;
@@ -102,7 +102,7 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 	  char *name = NULL;
 	  
 	  if (cattrace)
-	    fprintf(stderr, "cat_herd: depth before processing node: %d\n", tp->curr->depth);
+	    fprintf(stderr, "cat_tree: depth before processing node: %d\n", tp->curr->depth);
 	  name = cfg->getname(cp, &data);
 	  if (data)
 	    while (isspace(*data))
@@ -118,7 +118,7 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 		  np = tree_add(tp, cfg->ns, name, cip->depth, NULL);
 		  np->text = data;
 		  if (cattrace)
-		    fprintf(stderr, "cat_herd: curr=%s@%d: adding parent %s@%d; data=%s\n",
+		    fprintf(stderr, "cat_tree: curr=%s@%d: adding parent %s@%d; data=%s\n",
 			    tp->curr->name, tp->curr->depth,
 			    name, cip->depth, data);
 		  if (cip->depth > tp->curr->depth)
@@ -135,14 +135,14 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 		  np = tree_add(tp, cfg->ns, name, cip->depth, NULL);
 		  np->text = data;
 		  if (cattrace)
-		    fprintf(stderr, "cat_herd: curr=%s@%d: adding child %s@; data=%s\n",
+		    fprintf(stderr, "cat_tree: curr=%s@%d: adding child %s@; data=%s\n",
 			    tp->curr->name, tp->curr->depth,
 			    name, data);
 		  cip->parse(np, data);
 		  break;
 		case CI_END:
 		  if (cattrace)
-		    fprintf(stderr, "cat_herd: curr=%s@%d: adding end %s@; data=%s\n",
+		    fprintf(stderr, "cat_tree: curr=%s@%d: adding end %s@; data=%s\n",
 			    tp->curr->name, tp->curr->depth,
 			    name, data);
 		  cat_end(tp, data);
@@ -154,14 +154,14 @@ cat_herd(struct catchunk *ccp, struct catconfig *cfg)
 	      /* unknown name error */
 	    }
 	  if (cattrace)
-	    fprintf(stderr, "cat_herd: depth after processing node: %d\n", tp->curr->depth);
+	    fprintf(stderr, "cat_tree: depth after processing node: %d\n", tp->curr->depth);
 	}
       else
 	{
 	  /* This is a paragraph break; can do validation of missing @end ... here */
 	  if (tp->curr->depth > 1)
 	    {
-	      fprintf(stderr, "cat_herd: unexpected blank line--only allowed between records\n");
+	      fprintf(stderr, "cat_tree: unexpected blank line--only allowed between records\n");
 	      do
 		tree_pop(tp);
 	      while (tp->curr->depth > 1);

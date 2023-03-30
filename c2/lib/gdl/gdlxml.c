@@ -4,7 +4,6 @@
 #include "gdl.h"
 #include "xml.h"
 
-/* Debugging tool to output generic XML dump for tree generated via catherd */
 static void gdl_xml_o(Node *np, void *user);
 static void gdl_xml_c(Node *np, void *user);
 

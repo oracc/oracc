@@ -63,6 +63,8 @@ struct catstate {
   int end;
 };
 
+extern struct catchunk *cat_head;
+
 extern int catparse(void); /* bison */
 
 extern void cat_chunk(int l, char *t);
@@ -72,8 +74,7 @@ extern void cat_init(void);
 extern char* cat_name(struct catchunk *cp, char **data);
 extern void cat_term(void);
 extern struct catchunk *cat_read(const char *file);
-extern Tree *cat_herd(struct catchunk *cp, struct catconfig *cfg);
-
+extern Tree *cat_tree(struct catchunk *cp, struct catconfig *cfg);
 extern struct catchunk *catyacc(void);
 
 #endif/*CAT_H_*/

@@ -1,0 +1,12 @@
+%{
+#include <stdlib.h>
+#include <string.h>
+#include <cat.h>
+#include "ax.h"
+%}
+struct catinfo;
+%%
+xtf,    		CI_PARENT , 1 , 0, NULL, NULL, NULL
+amp,    		CI_PARENT , 2 , 0, NULL, NULL, NULL
+translation,    CI_PARENT , 3 , 0, NULL, NULL, NULL
+"#default", 	CI_CHILD  , 4 , 0, NULL, NULL, NULL

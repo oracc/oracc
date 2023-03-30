@@ -8,22 +8,22 @@
 
 extern Memo *catchunk_mem;
 extern Pool *catpool;
-static struct catchunk *head = NULL;
+struct catchunk *cat_head = NULL;
 static struct catchunk *tail = NULL;
 
 struct catchunk *
 catyacc(void)
 {
   catparse();
-  return head;
+  return cat_head;
 }
 
 void
 cat_chunk(int l, char *t)
 {
   struct catchunk *c = memo_new(catchunk_mem);
-  if (!head)
-    head = tail = c;
+  if (!cat_head)
+    cat_head = tail = c;
   else
     {
       tail->next = c;

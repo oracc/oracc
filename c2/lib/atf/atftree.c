@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <pool.h>
+#include <memo.h>
+#include <tree.h>
+
+#include "atf.h"
+
+char *
+atf_name(struct catchunk *cp, char **data)
+{
+  char *n = NULL, *s = NULL;
+  
+  if (cp)
+    {
+      switch (*cp->text)
+	{
+	case '&':
+	  *data = cp->text + 1;
+	  return "amp";
+	  break;
+	case '@':
+	  return cat_name(cp, data);
+	  break;
+	case '#':
+	  s = n = cp->text;
+	  ++n;
+	  while (*s && ':' != *s)
+	    ++s;
+	  if (*s) /* should always be a : because atf.l */
+	    *s++ = '\0';
+	  while (*s && (' ' == *s || '\t' == *s))
+	    ++s;
+	  *data = s;
+	  return n;
+	  break;
+	case '$':
+	  s = cp->text + 1;
+	  while (*s && (' ' == *s || '\t' == *s))
+	    ++s;
+	  *data = s;
+	  return "dollar";
+	  break;
+	default:
+	  *data = cp->text;
+	  s = cp->text;
+	  while (*s && ' ' != *s  && '\t' != *s)
+	    ++s;
+	  switch (s[-1])
+	    {
+	    case '.':
+	      return "line";
+	      break;
+	    case ':':
+	      return "siglum";
+	      break;
+	    default:
+	      /* can't happen */
+	      fprintf(stderr, "atf_name: internal error, no '.' or ':' in passed line type\n");
+	      return "mystery";
+	      break;
+	    }
+	  break;
+	}
+    }
+  else
+    return NULL;
+}

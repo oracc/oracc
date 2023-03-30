@@ -1,6 +1,6 @@
 %option prefix="cat"
 %option outfile="cat-l.c"
-%option never-interactive noyywrap yylineno
+%option never-interactive noyywrap yylineno nounput
 
 %{
 #include <mesg.h>
@@ -26,7 +26,7 @@ static void cat_user_action(void);
 \n([ \t]*\n)+	{ return PAR; }
 ^[ \t]+.+/\n    { catlval.text=catsave(cattext); return TAB; }
 ^#.*/\n		{ catlval.text=catsave(cattext); return CMT; }
-^[^ \t\n].*\n	{ return BAD; }
+^[^ \t\n].*/\n	{ return BAD; }
 \n		{ return EOL; }
 
 %%

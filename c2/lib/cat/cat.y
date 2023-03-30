@@ -27,7 +27,8 @@ CATLTYPE catlloc;
 
 %%
 
-fields: field
+fields:   EOL
+	| field
 	| fields field
 
 field: 	line EOL
@@ -36,7 +37,7 @@ field: 	line EOL
 			  cat_chunk(catlineno-1, ""); }
 	| cont PAR	{ if (cattrace) fprintf(stderr, "PAR\n");
 			  cat_chunk(catlineno-1, ""); }
-	| BAD		{ fprintf(stderr, "%d: lines must begin with '@' or whitespace\n", catlineno); }
+	| BAD		{ fprintf(stderr, "%d: [cat] lines must begin with '@' or whitespace\n", catlineno); }
 
 line:	TOK		{ if (cattrace) fprintf(stderr, "field/EOL: %s\n", catlval.text);
    			  cat_chunk(catlineno,(char*)catlval.text);
