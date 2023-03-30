@@ -7,7 +7,7 @@ struct cat {
   const char *f;	/* filename */
   struct catchunk *c;	/* input chunks */
 #if 1
-  Tree *t;		/* tree created by cat_herd */
+  Tree *t;		/* tree created by cattree */
 #else
   struct catnode *t; 	/* tree of nodes */
 #endif
@@ -16,6 +16,7 @@ struct cat {
 struct catchunk {
   struct cat *c;
   char *text;
+  const char *file;
   int   line;
   int 	last;
   struct catchunk *next;
@@ -44,7 +45,10 @@ struct catconfig {
 							   a chunk */
   struct catinfo * (*chkname)(const char *,size_t);  	/* function to test name is known and
 							   obtain its catinfo */
+#if 0
   void (*parse)(struct catchunk *, char *data);		/* function to parse data based on name of chunk */
+#endif
+  int ignore_blanks; /* when 1 blank lines are not an error during cattree */
 };
 
 struct catinfo {
@@ -67,7 +71,7 @@ extern struct catchunk *cat_head;
 
 extern int catparse(void); /* bison */
 
-extern void cat_chunk(int l, char *t);
+extern void cat_chunk(const char *file, int l, char *t);
 extern void cat_cont(int l, char *t);
 extern void cat_dump(struct catchunk *ccp);
 extern void cat_init(void);

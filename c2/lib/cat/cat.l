@@ -11,7 +11,7 @@
 #define YY_USER_ACTION cat_user_action();
 extern Mloc catlloc;
 const char *catfile = "<stdin>";
-
+const char *currcatfile = NULL;
 int catflextrace = 0;
 
 extern Pool *catpool;

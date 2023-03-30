@@ -16,7 +16,6 @@ static Tree *ytp;
 static Node *ynp, *yrem;
 
 #define GDLLTYPE_IS_DECLARED 1
-/*typedef struct Mloc GDLLTYPE;*/
 #define GDLLTYPE Mloc
 #define yylineno gdllineno
 GDLLTYPE gdllloc;

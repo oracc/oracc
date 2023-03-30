@@ -6,20 +6,24 @@
 #include "gdl.h"
 #include "gvl.h"
 
-extern int gdltrace;
+extern const char *currgdlfile;
+extern int gdltrace, gdllineno;
 extern void gdl_wrapup_buffer(void);
 extern void gdl_validate(Tree *tp);
 
 Tree *
-gdlparse_string(char *s)
+gdlparse_string(Mloc *m, char *s)
 {
   Tree *tp = tree_init();
   (void)tree_root(tp, NS_GDL, "g:gdl", 1, NULL);
   /* gdl_prop(tp->curr, 0, PG_XNS, "xmlns:g", "http://oracc.org/ns/gdl/2.0"); */
   gdl_setup_buffer(s);
   gdl_set_tree(tp);
+  currgdlfile = m->file;
+  gdllineno = m->line;
   gdlparse();
   gdl_wrapup_buffer();
+  mesg_print(stderr);
   /* gdl_validate(tp); */
   return tp;
 }

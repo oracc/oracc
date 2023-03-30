@@ -117,6 +117,7 @@ cat_tree(struct catchunk *ccp, struct catconfig *cfg)
 		  /* always make cn the last child of curr */
 		  np = tree_add(tp, cfg->ns, name, cip->depth, NULL);
 		  np->text = text;
+		  np->mloc = mloc_file_line(cp->file, cp->line);
 		  if (cattrace)
 		    fprintf(stderr, "cat_tree: curr=%s@%d: adding parent %s@%d; text=%s\n",
 			    tp->curr->name, tp->curr->depth,
@@ -134,6 +135,7 @@ cat_tree(struct catchunk *ccp, struct catconfig *cfg)
 		  /* always make cn the last child of curr */
 		  np = tree_add(tp, cfg->ns, name, cip->depth, NULL);
 		  np->text = text;
+		  np->mloc = mloc_file_line(cp->file, cp->line);
 		  if (cattrace)
 		    fprintf(stderr, "cat_tree: curr=%s@%d: adding child %s@; text=%s\n",
 			    tp->curr->name, tp->curr->depth,
@@ -161,7 +163,8 @@ cat_tree(struct catchunk *ccp, struct catconfig *cfg)
 	  /* This is a paragraph break; can do validation of missing @end ... here */
 	  if (tp->curr->depth > 1)
 	    {
-	      fprintf(stderr, "cat_tree: unexpected blank line--only allowed between records\n");
+	      if (!cfg->ignore_blanks)
+		fprintf(stderr, "cat_tree: unexpected blank line--only allowed between records\n");
 	      do
 		tree_pop(tp);
 	      while (tp->curr->depth > 1);

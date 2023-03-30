@@ -22,7 +22,8 @@ struct catconfig sx_cat_config =
     NS_SL, 	/* namespace */
     "signs", 	/* head */
     cat_name, 	/* parser function to extract name from chunk */
-    sx_check	/* checker function to test names and get name info */
+    sx_check,	/* checker function to test names and get name info */
+    0		/* error on blank lines when processing cattree */
   };
 
 int

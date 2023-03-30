@@ -13,21 +13,26 @@ int verbose;
 int status;
 int rnvtrace;
 
+extern int atfflextrace , atftrace, cattrace;
+
 struct cat axcat;
 
 extern struct catinfo *ax_check (const char *str,size_t len);
      
 struct catconfig ax_cat_config =
   {
-    NS_SL, 	/* namespace */
+    NS_XTF, 	/* namespace */
     "xtf", 	/* head */
     atf_name, 	/* parser function to extract name from chunk */
-    ax_check	/* checker function to test names and get name info */
+    ax_check,	/* checker function to test names and get name info */
+    1		/* ignore blank lines when processing cattree */
   };
 
 int
 main(int argc, const char **argv)
 {
+  atftrace = cattrace = 0;
+  atfflextrace = 0;
   mesg_init();
   gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
@@ -37,9 +42,10 @@ main(int argc, const char **argv)
   /*fprintf(stderr, "catchunk *=%lu\n", sizeof(struct catchunk *));*/
   axcat.f = argv[1];
   axcat.c = atf_read(argv[1]);
-  cat_dump(axcat.c);
+  if (cattrace)
+    cat_dump(axcat.c);
   axcat.t = cat_tree(axcat.c, &ax_cat_config);
-  tree_ns_default(axcat.t, NS_SL);
+  tree_ns_default(axcat.t, NS_XTF);
   tree_xml(NULL, axcat.t);
   gdlparse_term();
 }

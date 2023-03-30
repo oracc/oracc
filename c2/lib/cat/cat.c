@@ -50,7 +50,7 @@ cat_dump(struct catchunk *ccp)
 {
   struct catchunk *cp;
   for (cp = ccp; cp; cp = cp->next)
-    printf("[%d]\t%s\n", cp->line, cp->text);
+    fprintf(stderr, "[%d]\t%s\n", cp->line, cp->text);
 }
 
 struct catchunk *

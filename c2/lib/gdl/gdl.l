@@ -11,6 +11,7 @@
 #define YY_USER_ACTION gdl_user_action();
 extern Mloc gdllloc;
 const char *gdlfile = "<stdin>";
+const char *currgdlfile = NULL;
 
 int gdlflextrace = 0;
 
@@ -76,7 +77,7 @@ R_LHS			{ return R_lhs; }
 	  			 	        return GRAPHEME; }
 
 "--"			{ return ENHYPHEN; }
-[-+:]     		{ return gdltext[0]; }
+[-+:.]     		{ return gdltext[0]; }
 
 [ \t]+			{ return SPACE; }
 

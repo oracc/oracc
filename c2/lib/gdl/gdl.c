@@ -17,7 +17,7 @@ Memo *gdlnode_mem;
 #endif
 
 int gdl_initted = 0;
-int gdltrace = 1;
+int gdltrace = 0;
 
 void
 gdl_init(void)

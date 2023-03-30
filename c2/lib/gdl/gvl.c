@@ -16,7 +16,7 @@
 #include "gdl.h"
 #include "gvl.h"
 
-int gvl_trace = 1;
+int gvl_trace = 0;
 int gvl_strict = 0;
 
 unsigned char *gvl_v_from_h(const unsigned char *b, const unsigned char *qsub);

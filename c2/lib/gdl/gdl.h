@@ -44,7 +44,7 @@ extern void gdl_term(void);
 
 extern void gdl_setup_buffer(char *buf);
 extern void gdl_set_tree(Tree *tp);
-extern Tree *gdlparse_string(char *s);
+extern Tree *gdlparse_string(Mloc *m, char *s);
 extern void gdlparse_init(void);
 extern void gdlparse_reset(void);
 extern void gdlparse_term(void);

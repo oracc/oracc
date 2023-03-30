@@ -8,7 +8,7 @@
 #include "cat.h"
 extern int yylex(void);
 extern void yyerror(const char *);
-extern const char *cattext;
+extern const char *currcatfile, *cattext;
 extern int catlineno, cattrace;
 
 #define CATLTYPE_IS_DECLARED 1
@@ -34,16 +34,16 @@ fields:   EOL
 field: 	line EOL
 	| cont EOL
 	| line PAR	{ if (cattrace) fprintf(stderr, "PAR\n");
-			  cat_chunk(catlineno-1, ""); }
+			  cat_chunk(currcatfile,catlineno-1, ""); }
 	| cont PAR	{ if (cattrace) fprintf(stderr, "PAR\n");
-			  cat_chunk(catlineno-1, ""); }
+			  cat_chunk(currcatfile,catlineno-1, ""); }
 	| BAD		{ fprintf(stderr, "%d: [cat] lines must begin with '@' or whitespace\n", catlineno); }
 
 line:	TOK		{ if (cattrace) fprintf(stderr, "field/EOL: %s\n", catlval.text);
-   			  cat_chunk(catlineno,(char*)catlval.text);
+   			  cat_chunk(currcatfile,catlineno,(char*)catlval.text);
  			}
 	| CMT 		{ if (cattrace) fprintf(stderr, "comment/EOL: %s\n", catlval.text);
-   			  cat_chunk(catlineno,(char*)catlval.text);
+   			  cat_chunk(currcatfile,catlineno,(char*)catlval.text);
  			}
 
 

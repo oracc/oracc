@@ -10,16 +10,18 @@ extern Memo *catchunk_mem;
 extern Pool *catpool;
 struct catchunk *cat_head = NULL;
 static struct catchunk *tail = NULL;
+extern char *catfile, *currcatfile;
 
 struct catchunk *
 catyacc(void)
 {
+  currcatfile = catfile;
   catparse();
   return cat_head;
 }
 
 void
-cat_chunk(int l, char *t)
+cat_chunk(const char *f, int l, char *t)
 {
   struct catchunk *c = memo_new(catchunk_mem);
   if (!cat_head)
@@ -29,6 +31,7 @@ cat_chunk(int l, char *t)
       tail->next = c;
       tail = c;
     }
+  tail->file = f;
   tail->line = l;
   tail->text = t;
 }
