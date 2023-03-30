@@ -48,4 +48,6 @@ main(int argc, const char **argv)
   tree_ns_default(axcat.t, NS_XTF);
   tree_xml(NULL, axcat.t);
   gdlparse_term();
+  mesg_print(stderr);
+  mesg_term();
 }

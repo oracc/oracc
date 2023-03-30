@@ -23,7 +23,6 @@ gdlparse_string(Mloc *m, char *s)
   gdllineno = m->line;
   gdlparse();
   gdl_wrapup_buffer();
-  mesg_print(stderr);
   /* gdl_validate(tp); */
   return tp;
 }
