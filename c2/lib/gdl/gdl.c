@@ -11,6 +11,8 @@
 
 Pool *gdlpool;
 
+int gdl_lexfld[128];
+
 #if 0
 Memo *gdlchunk_mem;
 Memo *gdlnode_mem;
@@ -25,6 +27,11 @@ gdl_init(void)
   if (gdl_initted++)
     return;
 
+  gdl_lexfld['#'] = LF_HASH;
+  gdl_lexfld['"'] = LF_QUOTE;
+  gdl_lexfld['*'] = LF_STAR;
+  gdl_lexfld['~'] = LF_TILDE;
+  
   gdlpool = pool_init();
 #if 0
   gdlchunk_mem = memo_init(sizeof(struct gdlchunk),1024);

@@ -5,6 +5,7 @@
 #include <xml.h>
 #include <atf.h>
 #include <gdl.h>
+#include <oraccsys.h>
 
 Mloc xo_loc;
 FILE *f_xml;
@@ -13,7 +14,10 @@ int verbose;
 int status;
 int rnvtrace;
 
-extern int atfflextrace , atftrace, cattrace;
+extern int atfflextrace , atftrace, cattrace, gdlflextrace;
+
+int check_mode = 0;
+int trace_mode = 0;
 
 struct cat axcat;
 
@@ -29,10 +33,12 @@ struct catconfig ax_cat_config =
   };
 
 int
-main(int argc, const char **argv)
+main(int argc, char **argv)
 {
-  atftrace = cattrace = 0;
-  atfflextrace = 0;
+  options(argc, argv, "ct");
+
+  atfflextrace = atftrace = cattrace = gdlflextrace = trace_mode;
+
   mesg_init();
   gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
@@ -45,9 +51,36 @@ main(int argc, const char **argv)
   if (cattrace)
     cat_dump(axcat.c);
   axcat.t = cat_tree(axcat.c, &ax_cat_config);
-  tree_ns_default(axcat.t, NS_XTF);
-  tree_xml(NULL, axcat.t);
+  if (!check_mode)
+    {
+      tree_ns_default(axcat.t, NS_XTF);
+      tree_xml(NULL, axcat.t);
+    }
   gdlparse_term();
   mesg_print(stderr);
   mesg_term();
+}
+
+int
+opts(int opt, char *arg)
+{
+  switch (opt)
+    {
+    case 'c':
+      check_mode = 1;
+      break;
+    case 't':
+      trace_mode = 1;
+      break;
+    default:
+      return 1;
+      break;
+    }
+  return 0;
+}
+
+void
+help(void)
+{
+  fprintf(stderr, "ax: read input from stdin; use -c to check only\n");
 }

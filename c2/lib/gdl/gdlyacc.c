@@ -19,8 +19,7 @@ gdlparse_string(Mloc *m, char *s)
   /* gdl_prop(tp->curr, 0, PG_XNS, "xmlns:g", "http://oracc.org/ns/gdl/2.0"); */
   gdl_setup_buffer(s);
   gdl_set_tree(tp);
-  currgdlfile = m->file;
-  gdllineno = m->line;
+  gdl_lex_init(m->file, m->line);
   gdlparse();
   gdl_wrapup_buffer();
   /* gdl_validate(tp); */
@@ -81,6 +80,14 @@ gdl_graph(Tree *ytp, const char *data)
 }
 
 Node *
+gdl_nongraph(Tree *ytp, const char *data)
+{
+  if (gdltrace)
+    fprintf(stderr, "NONGRAPH: %s\n", gdllval.text);
+  return gdl_graph_node(ytp, "g:x", data);
+}
+
+Node *
 gdl_listnum(Tree *ytp, const char *data)
 {
   if (gdltrace)
@@ -110,7 +117,15 @@ gdl_prop(Node *ynp, int ptype, int gtype, const char *k, const char *v)
   if (ynp)
     ynp->props = prop_add(ynp->tree->propmem, ynp->props, ptype, gtype, k, v);
   else
-    fprintf(stderr, "gdl_prop passed NULL ynp\n");
+    mesg_warning(currgdlfile, gdllineno, "gdl_prop passed NULL ynp");
+}
+
+Node *
+gdl_state(Tree *ytp, const char *data)
+{
+  if (gdltrace)
+    fprintf(stderr, "STATE: %s\n", gdllval.text);
+  return gdl_graph_node(ytp, "g:z", data);
 }
 
 Node *

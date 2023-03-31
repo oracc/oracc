@@ -512,6 +512,7 @@ gvl_compound(Mloc ml, Node *ynp)
 	    hash_add(curr_sl->h, cp->c10e, cp);
 	}
       ynp->user = cp;
+      ynp->text = (ccp)cp->c10e;
       if (cp->mess)
 	mesg_err(ynp->mloc, (ccp)cp->mess);
     }
@@ -523,7 +524,7 @@ gvl_simplexg(Mloc ml, Node *ynp)
   gvl_g *gp = NULL;
   unsigned const char *g = NULL;
 
-  if (!ynp || !ynp->text)
+  if (!ynp || !ynp->text || ynp->name[2] == 'x')
     return;
 
   g = (uccp)ynp->text;

@@ -141,7 +141,22 @@ mesg_warning(const char *file, int ln, const char *str)
 }
 
 void
-mesg_vwarning(const char *file, int ln, const char *str, va_list ap)
+mesg_vwarning(const char *file, int ln, const char *s, ...)
+{
+  static Mloc l;
+  l.file = (char*)file;
+  l.line = ln;
+  if (s)
+    {
+      va_list ap;
+      va_start(ap, s);
+      mesg_averr(&l, s, ap);
+      va_end(ap);
+    }
+}
+
+void
+mesg_avwarning(const char *file, int ln, const char *str, va_list ap)
 {
   static Mloc l;
   l.file = (char*)file;

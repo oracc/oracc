@@ -28,15 +28,19 @@ static void atf_user_action(void);
 
 %}
 
+LINK	("<<"|">>"|"++"|"||")
+
 %%
 
-^"&"[^\n]+/\n  			{ atflval.text=atfsave(atftext); pmatch("###amp\n"); return TOK; }
+^"&".*/\n  			{ atflval.text=atfsave(atftext); pmatch("###amp\n"); return TOK; }
 
 ^"@".*/\n  			{ atflval.text=atfsave(atftext); pmatch("###at\n"); return TOK; }
 
 ^"$".*/\n  			{ atflval.text=atfsave(atftext); pmatch("###dollar\n"); return TOK; }
 
 ^"#"[^ \t\n:]+:[ \t]+.*/\n  	{ atflval.text=atfsave(atftext); pmatch("###hash\n"); return TOK; }
+
+^{LINK}.*/\n  			{ atflval.text=atfsave(atftext); pmatch("###link\n"); return TOK; }
 
 ^[^ \t\n.:]+\.[ \t]+.*/\n 	{ atflval.text=atfsave(atftext); pmatch("###line\n"); return TOK; }
 
@@ -48,11 +52,11 @@ static void atf_user_action(void);
 
 ^[^ \t\n].*/\n			{ pmatch("###bad\n"); return BAD; }
 
-\n([ \t]*\n)+			{ pmatch("###par\n"); return PAR; }
+\n([ \t]*)+/\n			{ pmatch("###par\n"); return PAR; }
 
 \n				{ pmatch("###eol\n"); return EOL; }
 
-.				{ fprintf(stderr, "unmatched character %c\n", *atftext); }
+.				{ fprintf(stderr, "atf.l: unmatched character %c\n", *atftext); }
 
 %%
 
@@ -60,7 +64,7 @@ static void
 atf_user_action(void)
 {
   if (atfflextrace)
-    fprintf(stderr, "%s:%d: flextrace: text=::%s::\n", curratffile, atflineno, atftext);
+    fprintf(stderr, "%s:%d: atflex: text=::%s::\n", curratffile, atflineno, atftext);
 
   atflloc.file = curratffile;
   atflloc.line = yylineno;

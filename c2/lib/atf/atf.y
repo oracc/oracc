@@ -26,9 +26,15 @@ ATFLTYPE atflloc;
 
 %%
 
-fields: EOL
+fields: blank
 	| field
+	| fields blank
 	| fields field
+	;
+
+blank:  EOL
+       	| PAR
+	;
 
 field: 	line EOL
 	| cont EOL
@@ -36,7 +42,8 @@ field: 	line EOL
 			  cat_chunk(curratffile,atflineno-1, ""); }
 	| cont PAR	{ if (atftrace) fprintf(stderr, "PAR\n");
 			  cat_chunk(curratffile,atflineno-1, ""); }
-	| BAD		{ fprintf(stderr, "%d: [atf] lines must begin with '@' or whitespace\n", atflineno); }
+	| BAD		{ mesg_warning(curratffile, atflineno, "atf: lines must begin with '@' or whitespace"); }
+	;
 
 line:	TOK		{ if (atftrace) fprintf(stderr, "field/EOL: %s\n", atflval.text);
    			  cat_chunk(curratffile,atflineno,(char*)atflval.text);
@@ -47,16 +54,18 @@ line:	TOK		{ if (atftrace) fprintf(stderr, "field/EOL: %s\n", atflval.text);
 	| CMT 		{ if (atftrace) fprintf(stderr, "comment/EOL: %s\n", atflval.text);
    			  cat_chunk(curratffile,atflineno,(char*)atflval.text);
  			}
+	;
 
 cont: 	TAB		{ if (atftrace) fprintf(stderr, "field/TAB: %s\n", atflval.text);
     			  cat_cont(atflineno,(char*)atflval.text);
  			}
 	| cont TAB
+	;
 
 %%
 
 void
 atferror(const char *e)
 {
-  fprintf(stderr, "%s\n", e);
+  mesg_vwarning(curratffile, atflineno, "atf: %s\n", e);
 }

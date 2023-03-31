@@ -43,6 +43,13 @@ atf_name(struct catchunk *cp, char **data)
 	  *data = s;
 	  return "dollar";
 	  break;
+	case '>':
+	case '<':
+	case '+':
+	case '|':
+	  *data = cp->text; /* leave the link chars in the text for parsing later */
+	  return "link";
+	  break;
 	default:
 	  *data = cp->text;
 	  s = cp->text;

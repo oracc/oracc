@@ -23,6 +23,10 @@ extern void mesg_verr(Mloc *locp, const char *s, ...);
 extern void mesg_averr(Mloc *locp, const char *s, va_list ap);
 extern void mesg_print(FILE *fp);
 
+extern void mesg_warning(const char *file, int ln, const char *str);
+extern void mesg_vwarning(const char *file, int ln, const char *s, ...);
+extern void mesg_avwarning(const char *file, int ln, const char *str, va_list ap);
+
 extern void mloc_init(void);
 extern void mloc_term(void);
 extern Mloc *mloc_file_line(const char *file, int line);

@@ -10,7 +10,7 @@
 #include "gdl.h"
 extern int gdllex(void);
 extern void yyerror(const char *);
-extern const char *gdltext;
+extern const char *gdltext, *currgdlfile;
 extern int gdllineno, gdltrace;
 static Tree *ytp;
 static Node *ynp, *yrem;
@@ -23,38 +23,73 @@ GDLLTYPE gdllloc;
 
 %union { char *text; int i; }
 
-%token	<text> 	ALIGN FIELD FTYPE LANG TEXT SPACE ENHYPHEN
+%token	<text> 	FTYPE LANG TEXT SPACE ENHYPHEN ELLIPSIS
 		GRAPHEME NUMBER LISTNUM PUNCT
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
+		LF_HASH LF_QUOTE LF_STAR LF_TILDE
 
 %token <i>	'*' '!' '?' '#' '<' '>' '{' '}' '[' ']'
        	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur
 		L_uhs R_uhs L_lhs R_lhs
+		f_L_uhs f_R_uhs f_L_lhs f_R_lhs
+		f_L_ang f_R_ang f_L_cur f_R_cur f_L_sqb f_R_sqb
+       	        f_L_dbl_ang f_R_dbl_ang f_L_dbl_cur f_R_dbl_cur
 
-%start top
+%start line
 
 %%
 
-top:	  structure
-
-structure:
-	  ALIGN
-	| FIELD
-	| FIELD FTYPE
-	| line
-	;
-
 line:
-	  lineseg
-	| line lineseg
+	lineparts
+	| line lineparts
+      	;
+
+lineparts:
+	  cell
+	| typedseg
+	| plainseg
 	;
 
-lineseg:
-	  words
-	| LANG
+cell:
+	'&' anyseg
+	;
+
+anyseg:
+	typedseg
+	| plainseg
+	;
+
+typedseg:
+	field plainseg
+	;
+
+field:
+	  ','
+	| ',' FTYPE
+	| FTYPE
+	| LF_HASH
+	| LF_QUOTE
+	| LF_STAR
+	| LF_TILDE
+	;
+
+plainseg:
+	SPACE
+	| lang
+	| word
 	| comment
+	| freemeta
+	;
+
+freemeta:
+	  fstateo
+	| fstatec
+	;
+
+lang:
+	LANG
 	;
 
 comment:
@@ -62,13 +97,23 @@ comment:
 	| L_inl_cmt TEXT R_inl_cmt
 	;
 
-words:    word
-	| words SPACE word
+word:
+	  corqorsg
+	| corqorsg dwords
 	;
 
-word:
-	  scorqorsgs
-	| word delim scorqorsgs
+dwords:
+	  dword
+	| dwords dword
+	;
+
+dword:
+	  delims corqorsg
+	;
+
+delims:
+	  delim
+	| delims delim
 	;
 
 delim:
@@ -80,9 +125,11 @@ delim:
 	| '}' 						
 	| '\n'
 	| ENHYPHEN 			       		{ ynp = gdl_delim(ytp, "--"); }
+	| statec
+	| stateo
 	;
 
-scorqorsgs:  stateo corqors gflags statec
+corqorsg:  corqors maybegflags
 
 corqors:
 	  compound
@@ -90,31 +137,58 @@ corqors:
 	| valuqual
 	;
 
-gflags:	  '*'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
-	| '#'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
-	| '!'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
-	| '?'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
+maybegflags:
+	gflags
 	| /* empty */
 	;
 
+gflags:
+	  gflag
+	| gflags gflag
+	;
+
+gflag:
+	  '*'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
+	| '#'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
+	| '!'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
+	| '?'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
+	;
+
+fstateo:  
+	  f_L_ang	       				{ ynp = gdl_state(ytp, gdllval.text); }
+	| f_L_dbl_ang				       	{ ynp = gdl_state(ytp, gdllval.text); }
+	| f_L_dbl_cur			       		{ ynp = gdl_state(ytp, gdllval.text); }
+	| f_L_sqb      					{ ynp = gdl_state(ytp, gdllval.text); }
+	| f_L_uhs	       				{ ynp = gdl_state(ytp, gdllval.text); }
+	| f_L_lhs		      			{ ynp = gdl_state(ytp, gdllval.text); }
+	;
+
+fstatec:
+	  f_R_ang	       				{ ynp = gdl_state(ytp, gdllval.text); }
+	| f_R_dbl_ang			       		{ ynp = gdl_state(ytp, gdllval.text); }
+	| f_R_dbl_cur					{ ynp = gdl_state(ytp, gdllval.text); }
+	| f_R_sqb		       			{ ynp = gdl_state(ytp, gdllval.text); }
+	| f_R_uhs			       		{ ynp = gdl_state(ytp, gdllval.text); }
+	| f_R_lhs				      	{ ynp = gdl_state(ytp, gdllval.text); }
+	;
+
+
 stateo:  
-	  '<'						{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
-	| L_dbl_ang				       	{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
-	| L_dbl_cur			       		{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
-	| '['						{ gdl_prop(ynp, $1, PG_GDL_BREAK, NULL, NULL); }
-	| L_uhs						{ gdl_prop(ynp, $1, PG_GDL_BREAK, NULL, NULL); }
-	| L_lhs						{ gdl_prop(ynp, $1, PG_GDL_BREAK, NULL, NULL); }
-        | /* empty */
+	  '<'						{ ynp = gdl_state(ytp, gdllval.text); }
+	| L_dbl_ang				       	{ ynp = gdl_state(ytp, gdllval.text); }
+	| L_dbl_cur			       		{ ynp = gdl_state(ytp, gdllval.text); }
+	| '['						{ ynp = gdl_state(ytp, gdllval.text); }
+	| L_uhs						{ ynp = gdl_state(ytp, gdllval.text); }
+	| L_lhs						{ ynp = gdl_state(ytp, gdllval.text); }
 	;
 
 statec:
-	  '>'						{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
-	| R_dbl_ang			       		{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
-	| R_dbl_cur					{ gdl_prop(ynp, $1, PG_GDL_STATE, NULL, NULL); }
-	| ']'						{ gdl_prop(ynp, $1, PG_GDL_BREAK, NULL, NULL); }
-	| R_uhs						{ gdl_prop(ynp, $1, PG_GDL_BREAK, NULL, NULL); }
-	| R_lhs						{ gdl_prop(ynp, $1, PG_GDL_BREAK, NULL, NULL); }
-        | /* empty */
+	  '>'						{ ynp = gdl_state(ytp, gdllval.text); }
+	| R_dbl_ang			       		{ ynp = gdl_state(ytp, gdllval.text); }
+	| R_dbl_cur					{ ynp = gdl_state(ytp, gdllval.text); }
+	| ']'						{ ynp = gdl_state(ytp, gdllval.text); }
+	| R_uhs						{ ynp = gdl_state(ytp, gdllval.text); }
+	| R_lhs						{ ynp = gdl_state(ytp, gdllval.text); }
 	;
 
 simplexg:
@@ -126,6 +200,7 @@ s:
 	| LISTNUM					{ ynp = gdl_listnum(ytp, gdllval.text); }
 	| NUMBER					{ ynp = gdl_number(ytp, gdllval.text); }
 	| PUNCT						{ ynp = gdl_punct(ytp, gdllval.text); }
+	| ELLIPSIS					{ ynp = gdl_nongraph(ytp, gdllval.text); }
 	;
 
 compound:
@@ -145,8 +220,11 @@ cword:
         ;
 
 cgors:
-          cg | simplexg
+          sg | cg
         ;
+
+sg:
+	simplexg maybegflags;
 
 cg:       '('						{ gdl_push(ytp,"g:gp"); }
 	  cword
@@ -195,5 +273,5 @@ gdl_set_tree(Tree *tp)
 void
 gdlerror(const char *e)
 {
-  fprintf(stderr, "%s\n", e);
+  mesg_vwarning(currgdlfile, gdllineno, "gdl: %s\n", e);
 }

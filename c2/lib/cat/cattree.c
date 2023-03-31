@@ -31,9 +31,10 @@ cat_name(struct catchunk *cp, char **data)
 	}
       else
 	{
-	  char *tmp = (char*)pool_alloc((end - n) + 1, catpool);
-	  strncpy(tmp, n, n - end);
-	  tmp[n-end] = '\0';
+	  int len = end - n;
+	  char *tmp = (char*)pool_alloc(len + 1, catpool);
+	  strncpy(tmp, n, len);
+	  tmp[len] = '\0';
 	  n = tmp;
 	  *data = end;
 	}
@@ -107,53 +108,62 @@ cat_tree(struct catchunk *ccp, struct catconfig *cfg)
 	  if (text)
 	    while (isspace(*text))
 	      ++text;
-	  if (name && (cip = cfg->chkname(name, strlen(name))))
+	  if (name)
 	    {
-	      Node *np = NULL;
-
-	      switch (cip->rel)
+	      cip = cfg->chkname(name, strlen(name));
+	      if (!cip)
+		cip = cfg->chkname("#default", strlen("#default"));
+	      if (cip)
 		{
-		case CI_PARENT:
-		  /* always make cn the last child of curr */
-		  np = tree_add(tp, cfg->ns, name, cip->depth, NULL);
-		  np->text = text;
-		  np->mloc = mloc_file_line(cp->file, cp->line);
-		  if (cattrace)
-		    fprintf(stderr, "cat_tree: curr=%s@%d: adding parent %s@%d; text=%s\n",
-			    tp->curr->name, tp->curr->depth,
-			    name, cip->depth, text);
-		  if (cip->depth > tp->curr->depth)
-		    tree_push(tp);
-		  else if (cip->depth < tp->curr->depth)
+		  Node *np = NULL;
+		  switch (cip->rel)
 		    {
-		      while (cip->depth < tp->curr->depth)
-			tree_pop(tp);
+		    case CI_PARENT:
+		      /* always make cn the last child of curr */
+		      np = tree_add(tp, cfg->ns, name, cip->depth, NULL);
+		      np->text = text;
+		      np->mloc = mloc_file_line(cp->file, cp->line);
+		      if (cattrace)
+			fprintf(stderr, "cat_tree: curr=%s@%d: adding parent %s@%d; text=%s\n",
+				tp->curr->name, tp->curr->depth,
+				name, cip->depth, text);
+		      if (cip->depth > tp->curr->depth)
+			tree_push(tp);
+		      else if (cip->depth < tp->curr->depth)
+			{
+			  while (cip->depth < tp->curr->depth)
+			    tree_pop(tp);
+			}
+		      cip->parse(np, text);
+		      break;
+		    case CI_CHILD:
+		      /* always make cn the last child of curr */
+		      np = tree_add(tp, cfg->ns, name, cip->depth, NULL);
+		      np->text = text;
+		      np->mloc = mloc_file_line(cp->file, cp->line);
+		      if (cattrace)
+			fprintf(stderr, "cat_tree: curr=%s@%d: adding child %s@; text=%s\n",
+				tp->curr->name, tp->curr->depth,
+				name, text);
+		      cip->parse(np, text);
+		      break;
+		    case CI_END:
+		      if (cattrace)
+			fprintf(stderr, "cat_tree: curr=%s@%d: adding end %s@; text=%s\n",
+				tp->curr->name, tp->curr->depth,
+				name, text);
+		      cat_end(tp, text);
+		      break;
 		    }
-		  cip->parse(np, text);
-		  break;
-		case CI_CHILD:
-		  /* always make cn the last child of curr */
-		  np = tree_add(tp, cfg->ns, name, cip->depth, NULL);
-		  np->text = text;
-		  np->mloc = mloc_file_line(cp->file, cp->line);
-		  if (cattrace)
-		    fprintf(stderr, "cat_tree: curr=%s@%d: adding child %s@; text=%s\n",
-			    tp->curr->name, tp->curr->depth,
-			    name, text);
-		  cip->parse(np, text);
-		  break;
-		case CI_END:
-		  if (cattrace)
-		    fprintf(stderr, "cat_tree: curr=%s@%d: adding end %s@; text=%s\n",
-			    tp->curr->name, tp->curr->depth,
-			    name, text);
-		  cat_end(tp, text);
-		  break;
+		}
+	      else
+		{
+		  fprintf(stderr, "cat_tree: name %s not in name-check table and no #default entry found\n", name);
 		}
 	    }
 	  else
 	    {
-	      /* unknown name error */
+	      fprintf(stderr, "cat_tree: no name found in %s\n", text);
 	    }
 	  if (cattrace)
 	    fprintf(stderr, "cat_tree: depth after processing node: %d\n", tp->curr->depth);

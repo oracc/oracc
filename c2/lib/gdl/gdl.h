@@ -42,6 +42,7 @@ extern Pool *gdlpool;
 extern void gdl_init(void);
 extern void gdl_term(void);
 
+extern void gdl_lex_init(const char *file, int line);
 extern void gdl_setup_buffer(char *buf);
 extern void gdl_set_tree(Tree *tp);
 extern Tree *gdlparse_string(Mloc *m, char *s);
@@ -53,6 +54,8 @@ extern void gdlxml_setup(void);
 extern void gdl_xml_handler(Node *np, void *xhp);
 
 extern void gdl_append(Node *ynp, const char *s);
+extern Node *gdl_nongraph(Tree *ytp, const char *data);
+extern Node *gdl_state(Tree *ytp, const char *data);
 extern Node *gdl_delim(Tree *ytp, const char *data);
 extern Node *gdl_graph(Tree *ytp, const char *data);
 extern Node *gdl_punct(Tree *ytp, const char *data);

@@ -19,9 +19,14 @@ gvl_q(Node *ynp)
 
       if (gvl_q_c10e(ynp->kids->user, ynp->kids->next->user, vq))
 	{
-	  p = (ucp)pool_alloc(strlen((ccp)((gvl_g*)(ynp->kids->user))->c10e)
-			      + strlen((ccp)((gvl_g*)(ynp->kids->next->user))->sign) + 3, curr_sl->p);
-	  sprintf((char*)p, "%s(%s)", (ccp)((gvl_g*)(ynp->kids->user))->c10e, (ccp)((gvl_g*)(ynp->kids->next->user))->sign);
+	  const char *vs = (ccp)((gvl_g*)(ynp->kids->user))->c10e;
+	  const char *qs = (ccp)((gvl_g*)(ynp->kids->next->user))->sign;
+	  if (!vs)
+	    vs = ynp->kids->text;
+	  if (!qs)
+	    qs = ynp->kids->next->text;
+	  p = (ucp)pool_alloc(strlen(vs) + strlen(qs) + 3, curr_sl->p);
+	  sprintf((char*)p, "%s(%s)", vs, qs);
 	  vq->c10e = (uccp)p;
 	}
       hash_add(curr_sl->h, vq->orig, vq);

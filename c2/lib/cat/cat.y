@@ -37,7 +37,7 @@ field: 	line EOL
 			  cat_chunk(currcatfile,catlineno-1, ""); }
 	| cont PAR	{ if (cattrace) fprintf(stderr, "PAR\n");
 			  cat_chunk(currcatfile,catlineno-1, ""); }
-	| BAD		{ fprintf(stderr, "%d: [cat] lines must begin with '@' or whitespace\n", catlineno); }
+	| BAD		{ mesg_warning(currcatfile, catlineno, "cat: lines must begin with '@' or whitespace"); }
 
 line:	TOK		{ if (cattrace) fprintf(stderr, "field/EOL: %s\n", catlval.text);
    			  cat_chunk(currcatfile,catlineno,(char*)catlval.text);
@@ -57,5 +57,5 @@ cont: 	TAB		{ if (cattrace) fprintf(stderr, "field/TAB: %s\n", catlval.text);
 void
 caterror(const char *e)
 {
-  fprintf(stderr, "%s\n", e);
+  mesg_vwarning(currcatfile, catlineno, "cat: %s\n", e);
 }
