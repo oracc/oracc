@@ -54,6 +54,8 @@ GRAPHEME	[a-zA-Z\x80-\xc2\xc4-\xff]+([@~][a-z0-9]+)*
 
 "<<"			{ gconst; return L_dbl_ang; }
 ">>"			{ gconst; return R_dbl_ang; }
+"<"			{ gconst; return '<'; }
+">"			{ gconst; return '>'; }
 "<("			{ gconst; return L_ang_par; }
 ")>"			{ gconst; return R_ang_par; }
 "{{"			{ gconst; return L_dbl_cur; }
@@ -76,9 +78,9 @@ R_LHS			{ return R_lhs; }
 
 "*"|:['".:]?|\/        	{ gdllval.text=gdlsave(gdltext); return PUNCT; }
 
-[0-9]+(\/[0-9]+)?	{ gdllval.text=gdlsave(gdltext); return NUMBER; }
+[0-9]+(\/[0-9]+)?	{ GIN=1; gdllval.text=gdlsave(gdltext); return NUMBER; }
 
-[A-Z]+[0-9]+[a-z]*	{ gdllval.text=gdlsave(gdltext); return LISTNUM; }
+[A-Z]+[0-9]+[a-z]*	{ GIN=1; gdllval.text=gdlsave(gdltext); return LISTNUM; }
 
 {GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
 

@@ -74,6 +74,12 @@ gvl_s(Node *ynp)
       const unsigned char *gq = gvl_lookup(sll_tmp_key(gp->c10e,"q"));
       if (gq)
 	gp->mess = gvl_vmess("value %s must be qualified with one of %s", gp->orig, gq);
+      else if (*gp->orig == '*' && !gp->orig[1])
+	{
+	  gp->type = "p";
+	  gp->sign = (uccp)"DIŠ";
+	  gp->oid = (ccp)gvl_lookup(gp->sign);
+	}
       else
 	gp->mess = gvl_vmess("unknown value: %s. To request adding it please visit:\n\t%s", gp->orig, report);
     }
