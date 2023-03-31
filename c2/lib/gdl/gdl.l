@@ -25,13 +25,16 @@ static int GIN = 0; /* 1 if in grapheme */
 
 #define gconst gdllval.text=gdltext
 
+int term = 0;
+#define yyterminate() return (term = !term) ? END : YY_NULL
+
 %}
 
-FLAG		[#*!?]
 GRAPHEME	[a-zA-Z\x80-\xc2\xc4-\xff]+([@~][a-z0-9]+)*
 
 %s C
-%x T
+%x TC
+%x TD
 
 %%
 
@@ -78,7 +81,9 @@ R_LHS			{ return R_lhs; }
 
 "*"|:['".:]?|\/        	{ gdllval.text=gdlsave(gdltext); return PUNCT; }
 
-[0-9]+(\/[0-9]+)?	{ GIN=1; gdllval.text=gdlsave(gdltext); return NUMBER; }
+[0-9]+(\/[0-9]+)?/"("	{ GIN=1; gdllval.text=gdlsave(gdltext); return NUMBER; }
+
+[0-9]+(\/[0-9]+)?	{ GIN=1; gdllval.text=gdlsave(gdltext); return BARENUM; }
 
 [A-Z]+[0-9]+[a-z]*	{ GIN=1; gdllval.text=gdlsave(gdltext); return LISTNUM; }
 
@@ -88,27 +93,31 @@ R_LHS			{ return R_lhs; }
 
 [!?]			{ return *yytext; }
 
-["~]   			{ /*"*/ return gdl_lexfld[(int)*yytext]; }
+["~=]  			{ /*"*/ return gdl_lexfld[(int)*yytext]; }
 
 "..."			{ GIN=0; gdllval.text=gdlsave(gdltext); return ELLIPSIS; }
 "--"			{ GIN=0; return ENHYPHEN; }
 [-+:.]     		{ GIN=0; return gdltext[0]; }
 
+";"			{ return ';'; }
+
 [ \t]+			{ GIN=0; return SPACE; }
 
 \n			{ return gdltext[0]; }
 
-"($"			{ BEGIN T; return L_inl_dol; }
-<T>"$)"			{ BEGIN 0; return R_inl_dol; }
+"($"			{ BEGIN TD; return L_inl_dol; }
+<TD>"$)"	       	{ BEGIN 0; return R_inl_dol; }
 
-"(#"			{ BEGIN T; return L_inl_cmt; }
-<T>"#)"			{ BEGIN 0; return R_inl_cmt; }
+"(#"			{ BEGIN TC; return L_inl_cmt; }
+<TC>"#)"       		{ BEGIN 0; return R_inl_cmt; }
 
-<T>.+/[$#]\)   		{ gdllval.text=gdlsave(gdltext); return TEXT; }
+<TD>.+/"$)"   		{ gdllval.text=gdlsave(gdltext); return TEXT; }
+<TC>.+/"#)"   		{ gdllval.text=gdlsave(gdltext); return TEXT; }
 
 .			{ mesg_vwarning(currgdlfile, gdllineno, "gdl.l: unmatched character %c\n", *gdltext); }
 
-<<EOF>>			{ return 0; }
+<<EOF>>			{ yyterminate(); }
+
 %%
 
 int

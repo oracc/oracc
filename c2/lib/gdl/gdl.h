@@ -29,6 +29,8 @@ enum bracket {
 };
 #endif
 
+enum gdlpropvals { GDL_INFO_IMPLICIT };
+
 #if 0
 /* This may not be necessary given the emerging GDL/GVL architecture; see gvl_g in gvl.h */
 struct gdl_g {
@@ -53,7 +55,7 @@ extern void gdlparse_term(void);
 extern void gdlxml_setup(void);
 extern void gdl_xml_handler(Node *np, void *xhp);
 
-extern void gdl_remove_q_error(Mloc m);
+extern void gdl_remove_q_error(Mloc m, Node *ynp);
 extern void gdl_append(Node *ynp, const char *s);
 extern Node *gdl_nongraph(Tree *ytp, const char *data);
 extern Node *gdl_state(Tree *ytp, const char *data);
@@ -62,6 +64,7 @@ extern Node *gdl_graph(Tree *ytp, const char *data);
 extern Node *gdl_punct(Tree *ytp, const char *data);
 extern Node *gdl_listnum(Tree *ytp, const char *data);
 extern Node *gdl_number(Tree *ytp, const char *data);
+extern Node *gdl_barenum(Tree *ytp, const char *data);
 extern void gdl_prop(Node *ynp, int p, int g, const char *k, const char *v);
 
 extern Node *gdl_pop(Tree *ytp, const char *s);

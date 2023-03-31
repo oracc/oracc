@@ -1,9 +1,12 @@
 #ifndef PROP_H_
 #define PROP_H_
 
+#include <memo.h>
+
 enum propgroup
   {
    PG_NONE = 0,
+   PG_GDL_INFO,
    PG_GDL_BREAK,
    PG_GDL_FLAGS,
    PG_GDL_STATE,

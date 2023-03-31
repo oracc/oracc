@@ -2,7 +2,7 @@
 #include <string.h>
 #include "oraccsys.h"
 
-static unsigned char ret[1024];
+static unsigned char ret[4096];
 
 #define szargal_str "(šar₂{gal})"
 #define szaru_str   "(šaru)"

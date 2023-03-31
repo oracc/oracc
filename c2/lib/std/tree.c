@@ -136,7 +136,7 @@ void
 tree_graft(Node *np, Tree *tp)
 {
   if (np->kids)
-    fprintf(stderr, "tree_graft: internal error: np->kids should be NUL\n");
+    fprintf(stderr, "tree_graft: internal error: np->kids should be NULL\n");
   else
     {
       np->kids = tp->root->kids;
@@ -148,6 +148,21 @@ void
 node_iterator(Node *np, void *user, void (*nodefnc)(Node *np, void *user), void (*postfnc)(Node *np, void *user))
 {
   _do_node(np, user, nodefnc, postfnc);
+}
+
+/* Replace the contents of to node with from node, but keep the
+   linkages of the to node */
+void
+node_replace(Node *from, Node *to)
+{
+  to->ns = from->ns;
+  to->name = from->name;
+  to->text = from->text;
+  to->kids = from->kids;
+  to->props = from->props;
+  to->user = from->user;
+  /* leave other structure members because they relate to location in
+     file/tree */
 }
 
 void

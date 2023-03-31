@@ -3,6 +3,7 @@
 #include <oraccsys.h>
 
 #include "sll.h"
+#include "gdl.h"
 #include "gvl.h"
 
 void
@@ -55,4 +56,75 @@ gvl_n(Node *ynp)
 	}
     }
   ynp->user = nq;
+}
+
+void
+gvl_n_sexify(Node *ynp)
+{
+  gvl_g *nq = NULL;
+  unsigned char *p = (ucp)pool_alloc(strlen(ynp->text) + strlen("diš") + 3, curr_sl->p);
+  sprintf((char*)p, "%s(%s)", ynp->text, "diš");
+
+  if (!(nq = hash_find(curr_sl->h, p)))
+    {
+      Tree *ntp = tree_init();
+      Node *top = NULL;
+      int sexnum = atoi(ynp->text);
+
+      top = tree_root(ntp, NS_GDL, "g:gp", 1, ynp->mloc);
+
+      if (sexnum > 0)
+	{
+	  char *lnp = NULL;
+	  /* sexify the decimal number */
+	  unsigned char *snum = sexify(sexnum, "d");
+	  
+	  /* split it into a list if it is, e.g., 1(u) 2(diš) */
+	  List *sl = list_from_str((char *)snum, NULL, LIST_SINGLE);
+
+	  /* create a q-node for each element in the list */
+	  for (lnp = list_first(sl); lnp; lnp = list_next(sl))
+	    {
+	      char *n = NULL, *q = NULL;
+	      char *tmp = strdup(lnp);
+	      Node *qnp = NULL;
+	      n = q = tmp;
+	      while (*q && '(' != *q)
+		++q;
+	      if ('(' == *q)
+		{
+		  char *qt = NULL;
+		  *q++ = '\0';
+		  qt = q;
+		  while (*qt && ')' != *qt)
+		    ++qt;
+		  if (*qt)
+		    *qt = '\0';
+		}
+	      else
+		mesg_err(ynp->mloc, "internal error: sexify returned number without parens");	      
+	      gdl_push(ntp, "g:q");
+	      qnp = gdl_number(ntp, (ccp)pool_copy((uccp)n,ynp->tree->pool));
+	      qnp = qnp->rent;
+
+	      if (*q)
+		gdl_graph(ntp,(ccp)pool_copy((uccp)q,ynp->tree->pool));
+	      
+	      /* process each q-node as though it were a regular qualified number */
+	      gvl_n(qnp);
+	      gdl_pop(ntp, "g:q");
+	      free(tmp);
+	    }
+	  
+	  /* on the singleton or group set a property that this has been
+	     sexified and record the original number in the text field */
+	  gdl_prop(top, GDL_INFO_IMPLICIT, PG_GDL_INFO, NULL, NULL);
+	  top->text = (void*)ynp->text;
+	  
+	  /* update the ynp data with the sexified data */
+	  node_replace(top, ynp);
+	}
+      else
+	/* n/N */;
+    }
 }

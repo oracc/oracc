@@ -74,4 +74,6 @@ extern void tree_xml(FILE *fp, Tree *tp);
 extern void tree_ns_default(Tree *tp, nscode ns);
 extern void tree_ns_merge(Tree *tp, nsrefs used);
 
+extern void node_replace(Node *from, Node *to);
+
 #endif/*TREE_H_*/

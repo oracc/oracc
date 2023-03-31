@@ -20,21 +20,22 @@ int Q = 0;
 #define GDLLTYPE Mloc
 #define yylineno gdllineno
 GDLLTYPE gdllloc;
+
 %}
 
 %union { char *text; int i; }
 
 %token	<text> 	FTYPE LANG TEXT ENHYPHEN ELLIPSIS
-		GRAPHEME NUMBER LISTNUM PUNCT
+		GRAPHEME NUMBER BARENUM LISTNUM PUNCT
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
-		LF_HASH LF_QUOTE LF_STAR LF_TILDE
+		LF_EQUALS LF_HASH LF_QUOTE LF_STAR LF_TILDE
 
 %token <i>	'*' '!' '?' '#' '<' '>' '{' '}' '[' ']' '(' ')' CLP CRP QLP QRP
        	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur L_ang_par R_ang_par
 		L_uhs R_uhs L_lhs R_lhs
-		SPACE EOL EOFI
+		SPACE EOL END
 
 %start line
 
@@ -68,6 +69,7 @@ field:
 	  ','
 	| ',' FTYPE
 	| FTYPE
+	| LF_EQUALS
 	| LF_HASH
 	| LF_QUOTE
 	| LF_STAR
@@ -88,7 +90,7 @@ comment:
 space:
 	  SPACE
 	| EOL
-	| EOFI
+	| END
 	;
 
 transliteration:
@@ -144,6 +146,7 @@ s:
 	  GRAPHEME					{ ynp = gdl_graph(ytp, gdllval.text); }
 	| LISTNUM					{ ynp = gdl_listnum(ytp, gdllval.text); }
 	| NUMBER					{ ynp = gdl_number(ytp, gdllval.text); }
+	| BARENUM					{ ynp = gdl_barenum(ytp, gdllval.text); }
 	| PUNCT						{ ynp = gdl_punct(ytp, gdllval.text); }
 	| ELLIPSIS					{ ynp = gdl_nongraph(ytp, gdllval.text); }
 	;
@@ -165,10 +168,11 @@ cbits:
 	;
 
 cbit:
-	  simplexg
+	  s
+	| gflag
 	| cdelim
 	| CLP						{ gdl_push(ytp,"g:gp"); }
-	| CRP						{ gdl_pop(ytp,"g:gp");  }
+	| CRP	     		  			{ gdl_pop(ytp,"g:gp");  }
 	| meta
 	;
 
@@ -194,7 +198,7 @@ q:
 	QLP 						{ yrem=kids_rem_last(ytp);
 	    						  gdl_push(ytp,"g:q");
 							  kids_add_node(ytp,yrem); }
-	scgrapheme     					{ gdl_remove_q_error(@1); }
+	scgrapheme     					{ gdl_remove_q_error(@1, yrem); }
 	QRP maybegflags
 	;
 
@@ -205,6 +209,7 @@ lang:
 meta:
 	  statec
 	| stateo
+	| ';'						{ ynp = gdl_nongraph(ytp, ";"); }
 	;
 
 stateo:  

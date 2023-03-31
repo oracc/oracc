@@ -35,7 +35,13 @@ gvl_s(Node *ynp)
 	  ynp->name = "g:v";
 	}  
     }
-
+  else if ('N' == *gp->type)
+    {
+      /* This is a barenum--we need to sexify and return the result */
+      gvl_n_sexify(ynp);
+      return ynp->user;
+    }
+  
   gp->c10e = pool_copy(gvl_s_c10e(gp->orig, &c10e_err), curr_sl->p);
   
   if ((l = gvl_lookup(gp->c10e)))

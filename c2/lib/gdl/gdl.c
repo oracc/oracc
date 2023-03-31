@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <pool.h>
+#include <prop.h>
 #include <memo.h>
 #include <tree.h>
 
@@ -27,11 +28,12 @@ gdl_init(void)
   if (gdl_initted++)
     return;
 
+  gdl_lexfld['='] = LF_EQUALS;
   gdl_lexfld['#'] = LF_HASH;
   gdl_lexfld['"'] = LF_QUOTE;
   gdl_lexfld['*'] = LF_STAR;
   gdl_lexfld['~'] = LF_TILDE;
-  
+
   gdlpool = pool_init();
 #if 0
   gdlchunk_mem = memo_init(sizeof(struct gdlchunk),1024);

@@ -83,6 +83,7 @@ extern void gvl_q(Node *ynp);
 extern int gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq);
 
 extern void gvl_n(Node *ynp);
+extern void gvl_n_sexify(Node *ynp);
 
 extern unsigned char *gvl_vmess(char *s, ...);
 

@@ -332,7 +332,7 @@ gvl_validate(unsigned const char *g)
 		  int n = 0;
 		  if ((n = atoi((ccp)g)))
 		    {
-		      unsigned char *sx = sexify(n, "disz");
+		      unsigned char *sx = sexify(n, "diš");
 		      hash_add(curr_sl->h, pool_copy(sx,curr_sl->p), gp);
 		      if ((l = gvl_lookup(sx)))
 			{
@@ -524,7 +524,7 @@ gvl_simplexg(Mloc ml, Node *ynp)
   gvl_g *gp = NULL;
   unsigned const char *g = NULL;
 
-  if (!ynp || !ynp->text || ynp->name[2] == 'x')
+  if (!ynp || !ynp->text || ynp->name[2] == 'x' || !strcmp(ynp->name, "g:gp"))
     return;
 
   g = (uccp)ynp->text;
@@ -536,9 +536,14 @@ gvl_simplexg(Mloc ml, Node *ynp)
   if (!(gp = hash_find(curr_sl->h,g)))
     gp = gvl_s(ynp);
 
-  ynp->user = gp;
-  if (gp->mess)
-    mesg_err(ynp->mloc, (ccp)gp->mess);
+  /* it isn't an error for gp to be NULL because when we gvl_n_sexify
+     in gvl_s the result ynp is a g:gp and doesn't have a gp node */
+  if (gp)
+    {
+      ynp->user = gp;
+      if (gp->mess)
+	mesg_err(ynp->mloc, (ccp)gp->mess);
+    }
 }
 
 void

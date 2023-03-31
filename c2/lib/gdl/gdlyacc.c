@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <tree.h>
+#include <ctype128.h>
 #include "gdl.tab.h"
 #include "gdl.h"
 #include "gvl.h"
@@ -35,9 +36,14 @@ gdl_validate(Tree *tp)
 #endif
 
 void
-gdl_remove_q_error(Mloc m)
+gdl_remove_q_error(Mloc m, Node *ynp)
 {
-  if (mesg_remove_error(m.file, m.line, "must be qualified") && gdltrace)
+  const char *msg = NULL;
+  if (isdigit(*ynp->text))
+    msg = "unknown value";
+  else
+    msg = "must be qualified";
+  if (mesg_remove_error(m.file, m.line, msg) && gdltrace)
     mesg_err(&m, "gdl_remove_q_error succeeded");
 }
 
@@ -108,6 +114,15 @@ gdl_number(Tree *ytp, const char *data)
   if (gdltrace)
     fprintf(stderr, "NUMBER: %s\n", gdllval.text);
   return gdl_graph_node(ytp, "g:n", data);
+}
+
+/* Used when a number is not followed by a '('; need to sexify nums here */
+Node *
+gdl_barenum(Tree *ytp, const char *data)
+{
+  if (gdltrace)
+    fprintf(stderr, "BARENUM: %s\n", gdllval.text);
+  return gdl_graph_node(ytp, "g:N", data);
 }
 
 Node *
