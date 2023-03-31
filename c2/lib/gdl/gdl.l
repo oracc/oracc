@@ -58,8 +58,8 @@ GRAPHEME	[a-zA-Z\x80-\xc2\xc4-\xff]+([@~][a-z0-9]+)*
 "}}"			{ gconst; return R_dbl_cur; }
 "("			{ gconst; return yytext[0]; }
 ")"			{ gconst; return yytext[0]; }
-"["			{ gconst; return GIN ? yytext[0] : f_L_sqb; }
-"]"			{ gconst; return GIN ? yytext[0] : f_R_sqb; }
+"["			{ gconst; return yytext[0]; }
+"]"			{ gconst; return yytext[0]; }
 "{"			{ gconst; return yytext[0]; }
 "}"			{ gconst; return yytext[0]; }
 L_UHS			{ return L_uhs; }

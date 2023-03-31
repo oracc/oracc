@@ -23,7 +23,7 @@ GDLLTYPE gdllloc;
 
 %union { char *text; int i; }
 
-%token	<text> 	FTYPE LANG TEXT SPACE ENHYPHEN ELLIPSIS
+%token	<text> 	FTYPE LANG TEXT ENHYPHEN ELLIPSIS
 		GRAPHEME NUMBER LISTNUM PUNCT
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES
@@ -36,6 +36,7 @@ GDLLTYPE gdllloc;
 		f_L_uhs f_R_uhs f_L_lhs f_R_lhs
 		f_L_ang f_R_ang f_L_cur f_R_cur f_L_sqb f_R_sqb
        	        f_L_dbl_ang f_R_dbl_ang f_L_dbl_cur f_R_dbl_cur
+		SPACE EOL EOFI
 
 %start line
 
@@ -76,20 +77,9 @@ field:
 	;
 
 plainseg:
-	SPACE
-	| lang
-	| word
-	| comment
-	| freemeta
-	;
-
-freemeta:
-	  fstateo
-	| fstatec
-	;
-
-lang:
-	LANG
+	  comment
+	| space
+	| transliteration
 	;
 
 comment:
@@ -97,23 +87,17 @@ comment:
 	| L_inl_cmt TEXT R_inl_cmt
 	;
 
-word:
-	  corqorsg
-	| corqorsg dwords
+space:
+	  SPACE
+	| EOL
+	| EOFI
 	;
 
-dwords:
-	  dword
-	| dwords dword
-	;
-
-dword:
-	  delims corqorsg
-	;
-
-delims:
+transliteration:
 	  delim
-	| delims delim
+	| grapheme
+	| lang
+        | meta
 	;
 
 delim:
@@ -125,11 +109,11 @@ delim:
 	| '}' 						
 	| '\n'
 	| ENHYPHEN 			       		{ ynp = gdl_delim(ytp, "--"); }
-	| statec
-	| stateo
 	;
 
-corqorsg:  corqors maybegflags
+grapheme:
+	corqors maybegflags
+	;
 
 corqors:
 	  compound
@@ -152,43 +136,6 @@ gflag:
 	| '#'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
 	| '!'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
 	| '?'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
-	;
-
-fstateo:  
-	  f_L_ang	       				{ ynp = gdl_state(ytp, gdllval.text); }
-	| f_L_dbl_ang				       	{ ynp = gdl_state(ytp, gdllval.text); }
-	| f_L_dbl_cur			       		{ ynp = gdl_state(ytp, gdllval.text); }
-	| f_L_sqb      					{ ynp = gdl_state(ytp, gdllval.text); }
-	| f_L_uhs	       				{ ynp = gdl_state(ytp, gdllval.text); }
-	| f_L_lhs		      			{ ynp = gdl_state(ytp, gdllval.text); }
-	;
-
-fstatec:
-	  f_R_ang	       				{ ynp = gdl_state(ytp, gdllval.text); }
-	| f_R_dbl_ang			       		{ ynp = gdl_state(ytp, gdllval.text); }
-	| f_R_dbl_cur					{ ynp = gdl_state(ytp, gdllval.text); }
-	| f_R_sqb		       			{ ynp = gdl_state(ytp, gdllval.text); }
-	| f_R_uhs			       		{ ynp = gdl_state(ytp, gdllval.text); }
-	| f_R_lhs				      	{ ynp = gdl_state(ytp, gdllval.text); }
-	;
-
-
-stateo:  
-	  '<'						{ ynp = gdl_state(ytp, gdllval.text); }
-	| L_dbl_ang				       	{ ynp = gdl_state(ytp, gdllval.text); }
-	| L_dbl_cur			       		{ ynp = gdl_state(ytp, gdllval.text); }
-	| '['						{ ynp = gdl_state(ytp, gdllval.text); }
-	| L_uhs						{ ynp = gdl_state(ytp, gdllval.text); }
-	| L_lhs						{ ynp = gdl_state(ytp, gdllval.text); }
-	;
-
-statec:
-	  '>'						{ ynp = gdl_state(ytp, gdllval.text); }
-	| R_dbl_ang			       		{ ynp = gdl_state(ytp, gdllval.text); }
-	| R_dbl_cur					{ ynp = gdl_state(ytp, gdllval.text); }
-	| ']'						{ ynp = gdl_state(ytp, gdllval.text); }
-	| R_uhs						{ ynp = gdl_state(ytp, gdllval.text); }
-	| R_lhs						{ ynp = gdl_state(ytp, gdllval.text); }
 	;
 
 simplexg:
@@ -216,7 +163,7 @@ c:
 
 cword:
 	  cgors
-	| cword cdelim cgors
+	| cword cdelimm cgors
         ;
 
 cgors:
@@ -231,6 +178,11 @@ cg:       '('						{ gdl_push(ytp,"g:gp"); }
 	  ')'						{ gdl_pop(ytp,"g:gp"); }
 	;
 
+cdelimm:
+	  cdelim
+        | cdelimm cdelim
+	;
+
 cdelim:
 	  C_PERIOD					{ ynp = gdl_delim(ytp, "."); }
 	| C_ABOVE					{ ynp = gdl_delim(ytp, "&"); }
@@ -241,6 +193,7 @@ cdelim:
 	| C_TIMES					{ ynp = gdl_delim(ytp, "×"); }
 	| C_3TIMES					{ ynp = gdl_delim(ytp, "3×"); }
 	| C_4TIMES					{ ynp = gdl_delim(ytp, "4×"); }
+	| meta
 	;
 
 cors:
@@ -260,6 +213,33 @@ q:
 							  kids_add_node(ytp,yrem); }
 	cors
 	')' 						
+	;
+
+lang:
+	LANG
+	;
+
+meta:
+	  statec
+	| stateo
+	;
+
+stateo:  
+	  '<'						{ ynp = gdl_state(ytp, gdllval.text); }
+	| L_dbl_ang				       	{ ynp = gdl_state(ytp, gdllval.text); }
+	| L_dbl_cur			       		{ ynp = gdl_state(ytp, gdllval.text); }
+	| '['						{ ynp = gdl_state(ytp, gdllval.text); }
+	| L_uhs						{ ynp = gdl_state(ytp, gdllval.text); }
+	| L_lhs						{ ynp = gdl_state(ytp, gdllval.text); }
+	;
+
+statec:
+	  '>'						{ ynp = gdl_state(ytp, gdllval.text); }
+	| R_dbl_ang			       		{ ynp = gdl_state(ytp, gdllval.text); }
+	| R_dbl_cur					{ ynp = gdl_state(ytp, gdllval.text); }
+	| ']'						{ ynp = gdl_state(ytp, gdllval.text); }
+	| R_uhs						{ ynp = gdl_state(ytp, gdllval.text); }
+	| R_lhs						{ ynp = gdl_state(ytp, gdllval.text); }
 	;
 
 %%
