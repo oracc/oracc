@@ -35,6 +35,13 @@ gdl_validate(Tree *tp)
 #endif
 
 void
+gdl_remove_q_error(Mloc m)
+{
+  if (mesg_remove_error(m.file, m.line, "must be qualified") && gdltrace)
+    mesg_err(&m, "gdl_remove_q_error succeeded");
+}
+
+void
 gdlparse_init(void)
 {
   gdl_init();

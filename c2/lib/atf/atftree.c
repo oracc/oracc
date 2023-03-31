@@ -29,12 +29,19 @@ atf_name(struct catchunk *cp, char **data)
 	  ++n;
 	  while (*s && ':' != *s)
 	    ++s;
-	  if (*s) /* should always be a : because atf.l */
-	    *s++ = '\0';
-	  while (*s && (' ' == *s || '\t' == *s))
-	    ++s;
-	  *data = s;
-	  return n;
+	  if (*s && isspace(s[1])) /* ^XXX:<WHITE> is a #-protocol */
+	    {
+	      *s++ = '\0';
+	      while (*s && (' ' == *s || '\t' == *s))
+		++s;
+	      *data = s;
+	      return n;
+	    }
+	  else
+	    {
+	      *data = cp->text;
+	      return "comment";
+	    }
 	  break;
 	case '$':
 	  s = cp->text + 1;

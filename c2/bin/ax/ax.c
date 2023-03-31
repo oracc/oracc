@@ -14,7 +14,7 @@ int verbose;
 int status;
 int rnvtrace;
 
-extern int atfflextrace , atftrace, cattrace, gdlflextrace;
+extern int atfflextrace , atftrace, cattrace, gdlflextrace, gdltrace;
 
 int check_mode = 0;
 int trace_mode = 0;
@@ -37,7 +37,7 @@ main(int argc, char **argv)
 {
   options(argc, argv, "ct");
 
-  atfflextrace = atftrace = cattrace = gdlflextrace = trace_mode;
+  atfflextrace = atftrace = cattrace = gdlflextrace = gdltrace = trace_mode;
 
   mesg_init();
   gdlxml_setup();

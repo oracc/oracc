@@ -53,6 +53,7 @@ extern void gdlparse_term(void);
 extern void gdlxml_setup(void);
 extern void gdl_xml_handler(Node *np, void *xhp);
 
+extern void gdl_remove_q_error(Mloc m);
 extern void gdl_append(Node *ynp, const char *s);
 extern Node *gdl_nongraph(Tree *ytp, const char *data);
 extern Node *gdl_state(Tree *ytp, const char *data);

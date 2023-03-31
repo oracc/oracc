@@ -26,7 +26,7 @@ static char *nl(char *e);
 void
 mesg_init(void)
 {
-  mesg_list = list_create(LIST_SINGLE);
+  mesg_list = list_create(LIST_DOUBLE);
   msgpool = pool_init();
   mloc_init();
   /*warning_mesg();*/
@@ -38,6 +38,30 @@ mesg_term(void)
   list_free(mesg_list, NULL);
   pool_term(msgpool);
   mloc_term();
+}
+
+int
+mesg_remove_error(const char *file, int line, const char *str)
+{
+  List_node *lnp;
+  for (lnp = mesg_list->last; lnp; lnp = lnp->prev)
+    {
+      const char *err = lnp->data;
+      if (!strncmp(err, file, strlen(file) && ':' == err[strlen(file)]))
+	{
+	  int errnum = atoi(err + strlen(file) + 1);
+	  if (errnum == line && strstr(err, str))
+	    {
+	      list_delete(mesg_list, lnp, NULL);
+	      return 1;
+	    }
+	  else if (errnum < line)
+	    return 0;
+	}
+      else
+	return 0;
+    }
+  return 0;
 }
 
 void

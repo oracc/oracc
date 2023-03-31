@@ -27,6 +27,8 @@ extern void mesg_warning(const char *file, int ln, const char *str);
 extern void mesg_vwarning(const char *file, int ln, const char *s, ...);
 extern void mesg_avwarning(const char *file, int ln, const char *str, va_list ap);
 
+extern int mesg_remove_error(const char *file, int line, const char *str);
+
 extern void mloc_init(void);
 extern void mloc_term(void);
 extern Mloc *mloc_file_line(const char *file, int line);
@@ -52,7 +54,7 @@ extern Mloc *mloc_mloc(Mloc *arg_ml);
       else                                                              \
         {                                                               \
           (Current).line   = YYRHSLOC (Rhs, 0).line;              	\
-          (Current).file         = NULL; 				\
+          (Current).file         = YYRHSLOC (Rhs, 0).file;     		\
     }  								        \
     while (0)
 

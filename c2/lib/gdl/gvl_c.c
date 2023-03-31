@@ -69,7 +69,7 @@ gvl_c_c10e(Node *ynp)
 static void
 gvl_c_node_orig(Node * np, void *user)
 {
-  if (strcmp(np->name, "g:c"))
+  if (strcmp(np->name, "g:c") && strcmp(np->name, "g:z"))
     {
       if (np->user)
 	list_add((List*)user, (void*)((gvl_g*)(np->user))->orig);
@@ -81,7 +81,7 @@ gvl_c_node_orig(Node * np, void *user)
 static void
 gvl_c_node_c10e(Node * np, void *user)
 {
-  if (strcmp(np->name, "g:c"))
+  if (strcmp(np->name, "g:c") && strcmp(np->name, "g:z"))
     {
       if (np->user)
 	list_add((List*)user, (void*)((gvl_g*)(np->user))->sign);

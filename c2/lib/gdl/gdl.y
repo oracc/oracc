@@ -14,6 +14,7 @@ extern const char *gdltext, *currgdlfile;
 extern int gdllineno, gdltrace;
 static Tree *ytp;
 static Node *ynp, *yrem;
+int Q = 0;
 
 #define GDLLTYPE_IS_DECLARED 1
 #define GDLLTYPE Mloc
@@ -30,12 +31,9 @@ GDLLTYPE gdllloc;
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
 		LF_HASH LF_QUOTE LF_STAR LF_TILDE
 
-%token <i>	'*' '!' '?' '#' '<' '>' '{' '}' '[' ']'
-       	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur
+%token <i>	'*' '!' '?' '#' '<' '>' '{' '}' '[' ']' '(' ')' CLP CRP QLP QRP
+       	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur L_ang_par R_ang_par
 		L_uhs R_uhs L_lhs R_lhs
-		f_L_uhs f_R_uhs f_L_lhs f_R_lhs
-		f_L_ang f_R_ang f_L_cur f_R_cur f_L_sqb f_R_sqb
-       	        f_L_dbl_ang f_R_dbl_ang f_L_dbl_cur f_R_dbl_cur
 		SPACE EOL EOFI
 
 %start line
@@ -112,13 +110,13 @@ delim:
 	;
 
 grapheme:
-	corqors maybegflags
+	scgrapheme
+	| valuqual
 	;
 
-corqors:
-	  compound
-	| simplexg
-	| valuqual
+scgrapheme:
+	simplexg
+	| compound
 	;
 
 maybegflags:
@@ -139,7 +137,7 @@ gflag:
 	;
 
 simplexg:
-	  s						{ gvl_simplexg(@1, ynp); }
+	  s maybegflags	       				{ gvl_simplexg(@1, ynp); }
 	;
 
 s:
@@ -151,36 +149,27 @@ s:
 	;
 
 compound:
-	c	    				       	 { gvl_compound(@1, ytp->curr);
+	  c maybegflags         			{ gvl_compound(@1, ytp->curr);
 	  						   ynp = gdl_pop(ytp,"g:c"); }
 	;
 
 c:
 	  C_O 						{ gdl_push(ytp,"g:c"); }
-	  cword
+	  cbits
 	  C_C 						
 	  ;
 
-cword:
-	  cgors
-	| cword cdelimm cgors
-        ;
-
-cgors:
-          sg | cg
-        ;
-
-sg:
-	simplexg maybegflags;
-
-cg:       '('						{ gdl_push(ytp,"g:gp"); }
-	  cword
-	  ')'						{ gdl_pop(ytp,"g:gp"); }
+cbits:
+	  cbit
+        | cbits cbit
 	;
 
-cdelimm:
-	  cdelim
-        | cdelimm cdelim
+cbit:
+	  simplexg
+	| cdelim
+	| CLP						{ gdl_push(ytp,"g:gp"); }
+	| CRP						{ gdl_pop(ytp,"g:gp");  }
+	| meta
 	;
 
 cdelim:
@@ -193,12 +182,6 @@ cdelim:
 	| C_TIMES					{ ynp = gdl_delim(ytp, "×"); }
 	| C_3TIMES					{ ynp = gdl_delim(ytp, "3×"); }
 	| C_4TIMES					{ ynp = gdl_delim(ytp, "4×"); }
-	| meta
-	;
-
-cors:
-	  compound
-	| simplexg
 	;
 
 valuqual:
@@ -207,12 +190,12 @@ valuqual:
 	;
 
 q:
-	cors
-	'(' 						{ yrem=kids_rem_last(ytp);
+	scgrapheme
+	QLP 						{ yrem=kids_rem_last(ytp);
 	    						  gdl_push(ytp,"g:q");
 							  kids_add_node(ytp,yrem); }
-	cors
-	')' 						
+	scgrapheme     					{ gdl_remove_q_error(@1); }
+	QRP maybegflags
 	;
 
 lang:
@@ -226,20 +209,24 @@ meta:
 
 stateo:  
 	  '<'						{ ynp = gdl_state(ytp, gdllval.text); }
+	| L_ang_par				       	{ ynp = gdl_state(ytp, gdllval.text); }
 	| L_dbl_ang				       	{ ynp = gdl_state(ytp, gdllval.text); }
 	| L_dbl_cur			       		{ ynp = gdl_state(ytp, gdllval.text); }
 	| '['						{ ynp = gdl_state(ytp, gdllval.text); }
 	| L_uhs						{ ynp = gdl_state(ytp, gdllval.text); }
 	| L_lhs						{ ynp = gdl_state(ytp, gdllval.text); }
+	| '('						{ ynp = gdl_state(ytp, gdllval.text); }
 	;
 
 statec:
 	  '>'						{ ynp = gdl_state(ytp, gdllval.text); }
+	| R_ang_par				       	{ ynp = gdl_state(ytp, gdllval.text); }
 	| R_dbl_ang			       		{ ynp = gdl_state(ytp, gdllval.text); }
 	| R_dbl_cur					{ ynp = gdl_state(ytp, gdllval.text); }
 	| ']'						{ ynp = gdl_state(ytp, gdllval.text); }
 	| R_uhs						{ ynp = gdl_state(ytp, gdllval.text); }
 	| R_lhs						{ ynp = gdl_state(ytp, gdllval.text); }
+	| ')'						{ ynp = gdl_state(ytp, gdllval.text); }
 	;
 
 %%

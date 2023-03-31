@@ -20,6 +20,7 @@ extern Pool *gdlpool;
 #define gdlsave(s) (char*)pool_copy((const unsigned char*)(s),gdlpool);
 static void gdl_user_action(void);
 static int gdl_grapheme_type(void);
+static int CIN = 0; /* 1 if in compound */
 static int GIN = 0; /* 1 if in grapheme */
 
 #define gconst gdllval.text=gdltext
@@ -30,13 +31,12 @@ FLAG		[#*!?]
 GRAPHEME	[a-zA-Z\x80-\xc2\xc4-\xff]+([@~][a-z0-9]+)*
 
 %s C
-%x F
 %x T
 
 %%
 
-<C>"|"			{ BEGIN 0; return C_C; }
-"|"			{ BEGIN C; return C_O; }
+<C>"|"			{ BEGIN 0; CIN=0; return C_C; }
+"|"			{ BEGIN C; CIN=1; return C_O; }
 
 <C>"."			{ return C_PERIOD; }
 <C>"+"			{ return C_PLUS; }
@@ -54,10 +54,12 @@ GRAPHEME	[a-zA-Z\x80-\xc2\xc4-\xff]+([@~][a-z0-9]+)*
 
 "<<"			{ gconst; return L_dbl_ang; }
 ">>"			{ gconst; return R_dbl_ang; }
+"<("			{ gconst; return L_ang_par; }
+")>"			{ gconst; return R_ang_par; }
 "{{"			{ gconst; return L_dbl_cur; }
 "}}"			{ gconst; return R_dbl_cur; }
-"("			{ gconst; return yytext[0]; }
-")"			{ gconst; return yytext[0]; }
+"("			{ gconst; return CIN ? CLP : (GIN ? QLP : yytext[0]); }
+")"			{ gconst; return CIN ? CRP : (GIN ? QRP : yytext[0]); }
 "["			{ gconst; return yytext[0]; }
 "]"			{ gconst; return yytext[0]; }
 "{"			{ gconst; return yytext[0]; }
@@ -72,8 +74,7 @@ R_LHS			{ return R_lhs; }
 &			{ return '&'; }
 ![a-z]+			{ return FTYPE; }
 
-:['".:]?|\/   		{ /* " */ gdllval.text=gdlsave(gdltext); return PUNCT; }
-"*"/\(	       		{ gdllval.text=gdlsave(gdltext); return PUNCT; }
+"*"|:['".:]?|\/        	{ gdllval.text=gdlsave(gdltext); return PUNCT; }
 
 [0-9]+(\/[0-9]+)?	{ gdllval.text=gdlsave(gdltext); return NUMBER; }
 
@@ -81,15 +82,15 @@ R_LHS			{ return R_lhs; }
 
 {GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
 
-[#*]			{ return GIN ? *yytext : gdl_lexfld[(int)*yytext]; }
+"#"			{ return GIN ? *yytext : gdl_lexfld[(int)*yytext]; }
 
 [!?]			{ return *yytext; }
 
 ["~]   			{ /*"*/ return gdl_lexfld[(int)*yytext]; }
 
-"..."			{ GIN=1; gdllval.text=gdlsave(gdltext); return ELLIPSIS; }
-"--"			{ return ENHYPHEN; }
-[-+:.]     		{ return gdltext[0]; }
+"..."			{ GIN=0; gdllval.text=gdlsave(gdltext); return ELLIPSIS; }
+"--"			{ GIN=0; return ENHYPHEN; }
+[-+:.]     		{ GIN=0; return gdltext[0]; }
 
 [ \t]+			{ GIN=0; return SPACE; }
 
@@ -137,7 +138,7 @@ gdl_user_action(void)
   if (gdlflextrace)
     fprintf(stderr, "%s:%d: gdllex: text=::%s:: GIN=%d\n", gdlfile, gdllineno, gdltext, GIN);
 
-  gdllloc.file = gdlfile;
+  gdllloc.file = currgdlfile;
   gdllloc.line = yylineno;
 }
 
@@ -145,6 +146,6 @@ void
 gdl_lex_init(const char *file, int line)
 {
   GIN = 0;
-  currgdlfile = file;
+  currgdlfile = gdlfile = file;
   gdllineno = line;
 }
