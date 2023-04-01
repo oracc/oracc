@@ -33,6 +33,25 @@ struct catconfig ax_cat_config =
     0		/* blank lines are not record-separators in cattree */
   };
 
+void
+ax_input(const char *f)
+{
+  gdlparse_init();
+  axcat.f = (f ? f : "<stdin>");
+  axcat.c = atf_read(f);
+  if (cattrace)
+    cat_dump(axcat.c);
+  axcat.t = cat_tree(axcat.c, &ax_cat_config);
+  if (!check_mode)
+    {
+      tree_ns_default(axcat.t, NS_XTF);
+      tree_xml(NULL, axcat.t);
+    }
+  gdlparse_term();
+  mesg_print(stderr);
+  mesg_term();
+}
+
 int
 main(int argc, char **argv)
 {
@@ -45,21 +64,14 @@ main(int argc, char **argv)
   gvl_setup("ogsl", "ogsl");
   nodeh_register(treexml_o_handlers, NS_XTF, treexml_o_generic);
   nodeh_register(treexml_c_handlers, NS_XTF, treexml_c_generic);
-  gdlparse_init();
-  /*fprintf(stderr, "catchunk *=%lu\n", sizeof(struct catchunk *));*/
-  axcat.f = argv[1];
-  axcat.c = atf_read(argv[1]);
-  if (cattrace)
-    cat_dump(axcat.c);
-  axcat.t = cat_tree(axcat.c, &ax_cat_config);
-  if (!check_mode)
+
+  if (argv[optind])
     {
-      tree_ns_default(axcat.t, NS_XTF);
-      tree_xml(NULL, axcat.t);
+      int fnum = optind;
+      ax_input(argv[fnum++]);
     }
-  gdlparse_term();
-  mesg_print(stderr);
-  mesg_term();
+  else
+    ax_input(NULL);
 }
 
 int

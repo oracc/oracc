@@ -20,6 +20,5 @@ atfyacc(void)
 {
   curratffile = atffile;
   atfparse();
-  /*fprintf(stderr, "catchunk *=%lu\n", sizeof(struct catchunk *));*/
   return cat_head;
 }

@@ -60,6 +60,13 @@ LINK	("<<"|">>"|"++"|"||")
 
 %%
 
+void
+atf_lex_init(FILE *fp)
+{
+  YY_FLUSH_BUFFER;
+  yyin = fp;
+}
+
 static void
 atf_user_action(void)
 {

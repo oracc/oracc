@@ -26,6 +26,16 @@ atf_term(void)
 struct catchunk *
 atf_read(const char *file)
 {
+  if (file)
+    {
+      FILE *fp;
+      if (!(fp = fopen(file, "r")))
+	{
+	  fprintf(stderr, "open failed on %s\n", file);
+	  return NULL;
+	}
+      atf_lex_init(fp);
+    }
   atf_init();
   return atfyacc();
 }
