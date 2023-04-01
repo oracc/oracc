@@ -5,6 +5,7 @@
 #include "sll.h"
 #include "gvl.h"
 
+extern int gdl_corrq;
 extern int gvl_strict;
 
 static unsigned char *gvl_c_form(Node *ynp, void (*fnc)(Node *np, void *user));
@@ -38,7 +39,7 @@ gvl_c(gvl_g *cp)
 	}
       else
 	{
-	  if (!strchr((ccp)cp->orig,'X')) /* don't error on compounds with X--should be configurable */
+	  if (!gdl_corrq && !strchr((ccp)cp->orig,'X')) /* don't error on corrections or compounds with X--the latter should be configurable */
 	    {
 	      if (strcmp((ccp)cp->orig, (ccp)cp->c10e) && c10e_no_p && strcmp((ccp)cp->c10e, (ccp)c10e_no_p))
 		cp->mess = gvl_vmess("unknown compound: %s (also tried %s/%s)", cp->orig, cp->c10e, c10e_no_p);

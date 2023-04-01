@@ -30,5 +30,7 @@ typedef struct prop Prop;
 extern Prop *prop_add(Memo *propmem, Prop *p, int pt, int gt, const char *k, const char *v);
 extern Prop *prop_last(Prop *p);
 extern int prop_user_group(void);
+extern Prop*prop_find_pg(Prop *p, int ptype, int gtype);
+extern Prop*prop_find_kv(Prop *p, const char *key, const char *value);
 
 #endif/*PROP_H_*/

@@ -4,6 +4,8 @@
 #include "sll.h"
 #include "gvl.h"
 
+extern int gdl_corrq;
+
 void
 gvl_q(Node *ynp)
 {
@@ -92,12 +94,17 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
     }
   else if (q_bad)
     {
-      /* If the q is unknown, report known q for v */
-      unsigned const char *tmp2 = gvl_lookup(sll_tmp_key(vp->orig, "q"));
-      if (tmp2)
-	vq->mess = gvl_vmess("[vq]: q %s unknown: known for %s: %s%s", qp->orig, vp->orig, tmp2, QFIX);
-      else if (!strchr((ccp)qp->orig,'X'))
-	vq->mess = gvl_vmess("[vq]: q %s unknown: %s known as %s%s", qp->orig, vp->orig, vp->sign, QFIX);
+      if (!gdl_corrq)
+	{
+	  /* If the q is unknown, report known q for v */
+	  unsigned const char *tmp2 = gvl_lookup(sll_tmp_key(vp->orig, "q"));
+	  if (tmp2)
+	    vq->mess = gvl_vmess("[vq]: q %s unknown: known for %s: %s%s", qp->orig, vp->orig, tmp2, QFIX);
+	  else if (!strchr((ccp)qp->orig,'X'))
+	    vq->mess = gvl_vmess("[vq]: q %s unknown: %s known as %s%s", qp->orig, vp->orig, vp->sign, QFIX);
+	}
+      else
+	gdl_corrq = 0;
     }
   else
     {

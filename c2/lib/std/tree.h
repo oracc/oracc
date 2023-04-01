@@ -52,7 +52,7 @@ extern void nodeh_register(nodehandlers nh, nscode c, nodehandler fnc);
 extern Tree *tree_init(void);
 extern void tree_term(Tree *tp);
 extern Node *tree_pop(Tree *tp);
-extern void tree_push(Tree *tp);
+extern Node *tree_push(Tree *tp);
 extern Node *tree_add(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc);
 extern Node *tree_node(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc);
 extern Node *tree_root(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc);

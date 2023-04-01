@@ -52,7 +52,8 @@ static void
 gdlxml_parsed(gvl_g *gp, void *user)
 {
   Xmlhelper *xhp = user;
-  fprintf(xhp->fp, "<gvl_g><c10e>%s</c10e>", xmlify(gp->c10e));
+  fprintf(xhp->fp, "<gvl_g><orig>%s</orig>", xmlify(gp->orig));
+  fprintf(xhp->fp, "<c10e>%s</c10e>", xmlify(gp->c10e));
   if (gp->mess)
     fprintf(xhp->fp, "<mess>%s</mess>", xmlify(gp->mess));
   fprintf(xhp->fp, "</gvl_g>");

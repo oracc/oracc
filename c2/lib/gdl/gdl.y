@@ -13,7 +13,7 @@ extern void yyerror(const char *);
 extern const char *gdltext, *currgdlfile;
 extern int gdllineno, gdltrace;
 static Tree *ytp;
-static Node *ynp, *yrem;
+static Node *ynp, *yrem, *ycp;
 int Q = 0;
 
 #define GDLLTYPE_IS_DECLARED 1
@@ -132,10 +132,10 @@ gflags:
 	;
 
 gflag:
-	  '*'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
-	| '#'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
-	| '!'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
-	| '?'						{ gdl_prop(ynp, $1, PG_GDL_FLAGS, NULL, NULL); }
+	  '*'						{ gdl_prop(ynp, '*', PG_GDL_FLAGS, NULL, NULL); }
+	| '#'						{ gdl_prop(ynp, '#', PG_GDL_FLAGS, NULL, NULL); }
+	| '!'						{ gdl_prop(ynp, '!', PG_GDL_FLAGS, NULL, NULL); }
+	| '?'						{ gdl_prop(ynp, '?', PG_GDL_FLAGS, NULL, NULL); }
 	;
 
 simplexg:
@@ -153,13 +153,13 @@ s:
 
 compound:
 	  c maybegflags         			{ gvl_compound(@1, ytp->curr);
-	  						   ynp = gdl_pop(ytp,"g:c"); }
+	    						  ynp = gdl_pop(ytp,"g:c"); }
 	;
 
 c:
-	  C_O 						{ gdl_push(ytp,"g:c"); }
+	  C_O 						{ ycp = gdl_push(ytp,"g:c"); }
 	  cbits
-	  C_C 						
+	  C_C 						{ ynp = ycp; }
 	  ;
 
 cbits:
@@ -168,7 +168,7 @@ cbits:
 	;
 
 cbit:
-	  s
+	  s	       					{ gvl_simplexg(@1, ynp); }
 	| gflag
 	| cdelim
 	| CLP						{ gdl_push(ytp,"g:gp"); }
@@ -197,7 +197,9 @@ q:
 	scgrapheme
 	QLP 						{ yrem=kids_rem_last(ytp);
 	    						  gdl_push(ytp,"g:q");
-							  kids_add_node(ytp,yrem); }
+							  kids_add_node(ytp,yrem);
+							  gdl_corrq
+							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
 	scgrapheme     					{ gdl_remove_q_error(@1, yrem); }
 	QRP maybegflags
 	;

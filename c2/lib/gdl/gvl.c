@@ -549,7 +549,6 @@ gvl_simplexg(Mloc ml, Node *ynp)
 void
 gvl_valuqual(Mloc ml, Node *ynp)
 {
-
   if (!ynp || !ynp->kids || !ynp->kids->next)
     return;
 

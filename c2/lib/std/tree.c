@@ -102,11 +102,13 @@ tree_pop(Tree *tp)
     return NULL;
 }
 
-void
+Node *
 tree_push(Tree *tp)
 {
   if (tp->curr->last)
-    tp->curr = tp->curr->last;
+    return tp->curr = tp->curr->last;
+  else
+    return NULL;
 }
 
 static void

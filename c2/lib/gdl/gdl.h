@@ -39,6 +39,8 @@ struct gdl_g {
 };
 #endif
 
+extern int gdl_corrq;
+
 extern Pool *gdlpool;
 
 extern void gdl_init(void);
@@ -68,6 +70,6 @@ extern Node *gdl_barenum(Tree *ytp, const char *data);
 extern void gdl_prop(Node *ynp, int p, int g, const char *k, const char *v);
 
 extern Node *gdl_pop(Tree *ytp, const char *s);
-extern void gdl_push(Tree *ytp, const char *s);
+extern Node *gdl_push(Tree *ytp, const char *s);
 
 #endif /*GDL_H_*/

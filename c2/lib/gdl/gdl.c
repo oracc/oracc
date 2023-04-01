@@ -19,6 +19,9 @@ Memo *gdlchunk_mem;
 Memo *gdlnode_mem;
 #endif
 
+/* set to 1 when a vq has !, e.g., a!(BA) */
+int gdl_corrq = 0;
+
 int gdl_initted = 0;
 int gdltrace = 0;
 

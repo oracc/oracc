@@ -159,11 +159,11 @@ gdl_pop(Tree *ytp, const char *s)
   return np;
 }
 
-void
+Node *
 gdl_push(Tree *ytp, const char *s)
 {
   tree_add(ytp, NS_GDL, s, ytp->curr->depth, NULL);
-  tree_push(ytp);
+  return tree_push(ytp);
 }
 
 
