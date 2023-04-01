@@ -6,7 +6,7 @@
 void
 sx_gparse(Node *np, char *data)
 {
-  Tree *tp = gdlparse_string(data);
+  Tree *tp = gdlparse_string(np->mloc, data);
   tree_graft(np, tp);
   gdlparse_reset();
   

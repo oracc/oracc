@@ -20,22 +20,26 @@ int check_mode = 0;
 int
 main(int argc, char **argv)
 {
+  static Mloc ml;
   mesg_init();
   gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
 
   options(argc, argv, "c");
-
+  
   gdlparse_init();
   if (check_mode)
     {
       char buf[1024], *s;	  
+      ml.file = "<stdin>";
+      ml.line = 0;
       while ((s = fgets(buf, 1024, stdin)))
 	{
 	  Tree *tp = NULL;
 	  if (s[strlen(s)-1] == '\n')
 	    s[strlen(s)-1] = '\0';
-	  tp = gdlparse_string(s);
+	  ++ml.line;
+	  tp = gdlparse_string(&ml, s);
 	  mesg_print(stdout);
 	  gdlparse_reset();
 	  tree_term(tp);
@@ -43,7 +47,10 @@ main(int argc, char **argv)
     }
   else if (argv[optind])
     {
-      Tree *tp = gdlparse_string(argv[1]);
+      Tree *tp = NULL;
+      ml.file = "<argv1>";
+      ml.line = 1;
+      gdlparse_string(&ml, argv[1]);
       mesg_print(stderr);
       tree_xml(stdout, tp);
     }
