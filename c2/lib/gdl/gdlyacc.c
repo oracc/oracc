@@ -38,14 +38,11 @@ gdl_validate(Tree *tp)
 void
 gdl_remove_q_error(Mloc m, Node *ynp)
 {
-  const char *msg = NULL;
-  if (isdigit(*ynp->text))
-    msg = "unknown value";
-  else
-    msg = "must be qualified";
-  if (mesg_remove_error(m.file, m.line, msg) && gdltrace)
+  if (mesg_remove_error(m.file, m.line, "must be qualified") && gdltrace)
     mesg_err(&m, "gdl_remove_q_error succeeded");
-}
+  else if (mesg_remove_error(m.file, m.line, "unknown value") && gdltrace)
+    mesg_err(&m, "gdl_remove_q_error succeeded");
+  }
 
 void
 gdlparse_init(void)
