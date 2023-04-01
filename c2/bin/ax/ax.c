@@ -29,7 +29,8 @@ struct catconfig ax_cat_config =
     "xtf", 	/* head */
     atf_name, 	/* parser function to extract name from chunk */
     ax_check,	/* checker function to test names and get name info */
-    1		/* ignore blank lines when processing cattree */
+    1,		/* blank lines in record are not errors when processing cattree */
+    0		/* blank lines are not record-separators in cattree */
   };
 
 int

@@ -119,21 +119,19 @@ cat_tree(struct catchunk *ccp, struct catconfig *cfg)
 		  switch (cip->rel)
 		    {
 		    case CI_PARENT:
-		      /* always make cn the last child of curr */
-		      np = tree_add(tp, cfg->ns, name, cip->depth, NULL);
-		      np->text = text;
-		      np->mloc = mloc_file_line(cp->file, cp->line);
+		      /* reset curr to be the parent level above this parent */
+		      while (cip->depth <= tp->curr->depth)
+			tree_pop(tp);
 		      if (cattrace)
 			fprintf(stderr, "cat_tree: curr=%s@%d: adding parent %s@%d; text=%s\n",
 				tp->curr->name, tp->curr->depth,
 				name, cip->depth, text);
-		      if (cip->depth > tp->curr->depth)
-			tree_push(tp);
-		      else if (cip->depth < tp->curr->depth)
-			{
-			  while (cip->depth < tp->curr->depth)
-			    tree_pop(tp);
-			}
+		      /* make cn the last child of curr */
+		      np = tree_add(tp, cfg->ns, name, cip->depth, NULL);
+		      np->text = text;
+		      np->mloc = mloc_file_line(cp->file, cp->line);
+		      /* and make this parent the parent of following children */
+		      tree_push(tp);
 		      cip->parse(np, text);
 		      break;
 		    case CI_CHILD:
@@ -175,9 +173,12 @@ cat_tree(struct catchunk *ccp, struct catconfig *cfg)
 	    {
 	      if (!cfg->ignore_blanks)
 		fprintf(stderr, "cat_tree: unexpected blank line--only allowed between records\n");
-	      do
-		tree_pop(tp);
-	      while (tp->curr->depth > 1);
+	      if (cfg->par_is_rs)
+		{
+		  do
+		    tree_pop(tp);
+		  while (tp->curr->depth > 1);
+		}
 	    }
 	}
     }

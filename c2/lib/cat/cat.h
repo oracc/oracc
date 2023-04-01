@@ -48,7 +48,8 @@ struct catconfig {
 #if 0
   void (*parse)(struct catchunk *, char *data);		/* function to parse data based on name of chunk */
 #endif
-  int ignore_blanks; /* when 1 blank lines are not an error during cattree */
+  int ignore_blanks; 	/* when 1 blank lines are not an error during cattree */
+  int par_is_rs;	/* blank line is record separator */
 };
 
 struct catinfo {
