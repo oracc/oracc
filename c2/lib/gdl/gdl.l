@@ -156,7 +156,7 @@ gdl_user_action(void)
 void
 gdl_lex_init(const char *file, int line)
 {
-  GIN = 0;
+  CIN = GIN = 0;
   currgdlfile = gdlfile = file;
   gdllineno = line;
 }
