@@ -5,11 +5,13 @@
 
 %{
 #include <stdio.h>
+#include <string.h>
 #include "atf.h"
 extern int yylex(void);
 extern void yyerror(const char *);
 extern const char *atftext, *curratffile;
 extern int atflineno, atftrace;
+extern int gdl_unicode;
 
 #define ATFLTYPE_IS_DECLARED 1
 #define ATFLTYPE Mloc
@@ -20,7 +22,7 @@ ATFLTYPE atflloc;
 
 %union { char *text; int i; }
 
-%token	<text> TOK TAB EOL PAR CMT BAD LINE SIGLUM HASHTOK
+%token	<text> TOK TAB EOL PAR CMT BAD LINE SIGLUM
 
 %start fields
 
@@ -46,9 +48,7 @@ field: 	line EOL
 	;
 
 line:	TOK		{ if (atftrace) fprintf(stderr, "field/EOL: %s\n", atflval.text);
-   			  cat_chunk(curratffile,atflineno,(char*)atflval.text);
- 			}
-	| HASHTOK      	{ if (atftrace) fprintf(stderr, "hash/EOL: %s\n", atflval.text);
+   			  if (!strncmp(atflval.text,"#atf:",strlen("#atf:")) && strstr(atflval.text,"unicode")) { gdl_unicode=1; }
    			  cat_chunk(curratffile,atflineno,(char*)atflval.text);
  			}
 	| CMT 		{ if (atftrace) fprintf(stderr, "comment/EOL: %s\n", atflval.text);

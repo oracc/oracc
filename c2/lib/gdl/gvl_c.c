@@ -17,7 +17,17 @@ void
 gvl_c(gvl_g *cp)
 {
   unsigned const char *l = NULL;
-  if ((l=gvl_lookup(cp->c10e)))
+  if ((l=gvl_lookup(cp->orig)))
+    {
+      /* The original form trumps the c10e form because there are some
+	 challenges to building the c10e form with absolute
+	 accuracy. So, if cp->orig is a known compound we reset
+	 cp->c10e as well */
+      cp->oid = (ccp)l;
+      cp->sign = gvl_lookup(sll_tmp_key(l,""));
+      cp->c10e = cp->orig;
+    }
+  else if ((l=gvl_lookup(cp->c10e)))
     {
       cp->oid = (ccp)l;
       cp->sign = gvl_lookup(sll_tmp_key(l,""));
@@ -68,7 +78,7 @@ gvl_c_c10e(Node *ynp)
 }
 
 static void
-gvl_c_node_orig(Node * np, void *user)
+gvl_c_node_orig(Node *np, void *user)
 {
   if (strcmp(np->name, "g:c") && strcmp(np->name, "g:z"))
     {
@@ -76,11 +86,13 @@ gvl_c_node_orig(Node * np, void *user)
 	list_add((List*)user, (void*)((gvl_g*)(np->user))->orig);
       else if (np->text)
 	list_add((List*)user, (void*)np->text);
+      else if (!strcmp(np->name, "g:gp"))
+	list_add((List*)user, "(");
     }
 }
 
 static void
-gvl_c_node_c10e(Node * np, void *user)
+gvl_c_node_c10e(Node *np, void *user)
 {
   if (strcmp(np->name, "g:c") && strcmp(np->name, "g:z"))
     {
@@ -88,20 +100,35 @@ gvl_c_node_c10e(Node * np, void *user)
 	list_add((List*)user, (void*)((gvl_g*)(np->user))->sign);
       else if (np->text)
 	list_add((List*)user, (void*)np->text);
+      else if (!strcmp(np->name, "g:gp"))
+	list_add((List*)user, "(");
     }
+}
+
+static void
+gvl_c_node_gp_c(Node *np, void *user)
+{
+  if (!strcmp(np->name, "g:gp"))
+    list_add((List*)user, ")");
 }
 
 static unsigned char *
 gvl_c_form(Node *ynp, void (*fnc)(Node *np, void *user))
 {
   List *lp = list_create(LIST_SINGLE);
-  unsigned char *s = NULL, *ret = NULL;
-  list_add(lp, "|");
-  node_iterator(ynp, lp, fnc, NULL);
-  list_add(lp, "|");
-  s = list_concat(lp);
-  ret = pool_copy(s, curr_sl->p);
-  free(s);
+  unsigned char *p = NULL, *s = NULL, *ret = NULL, *t = NULL;
+  node_iterator(ynp, lp, fnc, gvl_c_node_gp_c);
+  p = s = list_concat(lp);
+  ret = t = pool_alloc(strlen((ccp)s)+3, curr_sl->p);
+  *t++ = '|';
+  while (*s)
+    if ('|' == *s)
+      ++s;
+    else
+      *t++ = *s++;
+  *t++ = '|';
+  *t = '\0';
+  free(p);
   free(lp);
   return ret;
 }

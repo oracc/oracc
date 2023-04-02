@@ -61,10 +61,11 @@ LINK	("<<"|">>"|"++"|"||")
 %%
 
 void
-atf_lex_init(FILE *fp)
+atf_lex_init(FILE *fp, const char *file)
 {
   YY_FLUSH_BUFFER;
   yyrestart(fp);
+  atffile = curratffile = file;
 }
 
 static void

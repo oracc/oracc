@@ -15,13 +15,14 @@ const char *gdlfile = "<stdin>";
 const char *currgdlfile = NULL;
 extern int gdl_lexfld[];
 extern int curr_lang;
+extern int gdl_unicode;
 int gdlflextrace = 0;
 
 extern Pool *gdlpool;
 #define gdlsave(s) (char*)pool_copy((const unsigned char*)(s),gdlpool);
 static void gdl_user_action(void);
 static int gdl_grapheme_type(void);
-static int CIN = 0; /* 1 if in compound */
+static int CIN = 0; /* 1 if in compound */ /* update: this is probably no longer necessary */
 static int GIN = 0; /* 1 if in grapheme */
 static int QIN = 0; /* non-zero if in a(BA) qualifier */
 
@@ -45,6 +46,8 @@ GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+([@~][a-z0-9]+)*
 "|"/[ \t]	       	{ /*"*/ return gdl_lexfld[(int)*yytext]; }
 "|"			{ BEGIN C; CIN=1; return C_O; }
 
+[=^][aeiuAEIU]		{ if (gdl_unicode) { mesg_vwarning(currgdlfile,gdllineno,"non-Unicode accent codes %s",gdltext); }}
+
 <C>"."			{ return C_PERIOD; }
 <C>"+"			{ return C_PLUS; }
 <C>":"			{ return C_COLON; }
@@ -54,8 +57,8 @@ GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+([@~][a-z0-9]+)*
 <C>"4\xc3\x97"		{ return C_4TIMES; }
 <C>"3\xc3\x97"		{ return C_3TIMES; }
 <C>"\xc3\x97"	       	{ return C_TIMES; }
-<C>"("			{ return '('; }
-<C>")"			{ return ')'; }
+<C>"("			{ return CLP; }
+<C>")"			{ return CRP; }
 
 "\xc3\x97"	       	{ return C_TIMES; }
 
@@ -67,8 +70,8 @@ GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+([@~][a-z0-9]+)*
 ">>"			{ gconst; return R_dbl_ang; }
 "<"			{ gconst; return '<'; }
 ">"			{ gconst; return '>'; }
-"("			{ gconst; return CIN ? CLP : (GIN ? QLP : yytext[0]); }
-")"			{ gconst; return CIN ? CRP : (QIN ? QRP : yytext[0]); }
+"("			{ gconst; return GIN ? QLP : yytext[0]; }
+")"			{ gconst; return QIN ? QRP : yytext[0]; }
 "["			{ gconst; return yytext[0]; }
 "]"			{ gconst; return yytext[0]; }
 "{"			{ gconst; return yytext[0]; }
@@ -151,7 +154,7 @@ static void
 gdl_user_action(void)
 {
   if (gdlflextrace)
-    fprintf(stderr, "%s:%d: gdllex: text=::%s:: GIN=%d\n", gdlfile, gdllineno, gdltext, GIN);
+    fprintf(stderr, "%s:%d: gdllex: text=::%s:: GIN=%d; CIN=%d\n", gdlfile, gdllineno, gdltext, GIN, CIN);
 
   gdllloc.file = currgdlfile;
   gdllloc.line = yylineno;

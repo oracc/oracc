@@ -10,11 +10,13 @@
 #include "atf.tab.h"
 
 int atftrace = 1;
+extern int gdl_unicode;
 
 void
 atf_init(void)
 {
   cat_init();
+  gdl_unicode = 0;
 }
 
 void
@@ -34,7 +36,7 @@ atf_read(const char *file)
 	  fprintf(stderr, "open failed on %s\n", file);
 	  return NULL;
 	}
-      atf_lex_init(fp);
+      atf_lex_init(fp, file);
     }
   atf_init();
   return atfyacc();

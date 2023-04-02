@@ -14,7 +14,8 @@ extern const char *gdltext, *currgdlfile;
 extern int gdllineno, gdltrace;
 static Tree *ytp;
 static Node *ynp, *yrem, *ycp;
-int Q = 0;
+/*int Q = 0;*/
+int gdl_unicode = 0;
 
 #define GDLLTYPE_IS_DECLARED 1
 #define GDLLTYPE Mloc
