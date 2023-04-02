@@ -30,7 +30,7 @@ int term = 0;
 
 %}
 
-GRAPHEME	[a-zA-Z\x80-\xc2\xc4-\xff]+([@~][a-z0-9]+)*
+GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+([@~][a-z0-9]+)*
 
 %s C
 %x TC
@@ -38,7 +38,9 @@ GRAPHEME	[a-zA-Z\x80-\xc2\xc4-\xff]+([@~][a-z0-9]+)*
 
 %%
 
+<C>"|"/[ \t]   		{ BEGIN 0; CIN=0; return C_C; }
 <C>"|"			{ BEGIN 0; CIN=0; return C_C; }
+"|"/[ \t]	       	{ /*"*/ return gdl_lexfld[(int)*yytext]; }
 "|"			{ BEGIN C; CIN=1; return C_O; }
 
 <C>"."			{ return C_PERIOD; }
@@ -55,14 +57,14 @@ GRAPHEME	[a-zA-Z\x80-\xc2\xc4-\xff]+([@~][a-z0-9]+)*
 
 "\xc3\x97"	       	{ return C_TIMES; }
 
-"<<"			{ gconst; return L_dbl_ang; }
-">>"			{ gconst; return R_dbl_ang; }
-"<"			{ gconst; return '<'; }
-">"			{ gconst; return '>'; }
 "<("			{ gconst; return L_ang_par; }
 ")>"			{ gconst; return R_ang_par; }
 "{{"			{ gconst; return L_dbl_cur; }
 "}}"			{ gconst; return R_dbl_cur; }
+"<<"			{ gconst; return L_dbl_ang; }
+">>"			{ gconst; return R_dbl_ang; }
+"<"			{ gconst; return '<'; }
+">"			{ gconst; return '>'; }
 "("			{ gconst; return CIN ? CLP : (GIN ? QLP : yytext[0]); }
 ")"			{ gconst; return CIN ? CRP : (GIN ? QRP : yytext[0]); }
 "["			{ gconst; return yytext[0]; }
@@ -79,7 +81,7 @@ R_LHS			{ return R_lhs; }
 &			{ return '&'; }
 ![a-z]+			{ return FTYPE; }
 
-"*"|:['".:]?|\/        	{ gdllval.text=gdlsave(gdltext); return PUNCT; }
+"*"|:['".:]?|\/        	{ GIN=1; gdllval.text=gdlsave(gdltext); return PUNCT; }
 
 [0-9]+(\/[0-9]+)?/"("	{ GIN=1; gdllval.text=gdlsave(gdltext); return NUMBER; }
 
@@ -93,7 +95,7 @@ R_LHS			{ return R_lhs; }
 
 [!?]			{ return *yytext; }
 
-["~=]  			{ /*"*/ return gdl_lexfld[(int)*yytext]; }
+["~=@^]        		{ /*"*/ return gdl_lexfld[(int)*yytext]; }
 
 "..."			{ GIN=0; gdllval.text=gdlsave(gdltext); return ELLIPSIS; }
 "--"			{ GIN=0; return ENHYPHEN; }

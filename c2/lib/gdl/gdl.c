@@ -31,11 +31,12 @@ gdl_init(void)
   if (gdl_initted++)
     return;
 
+  gdl_lexfld['@'] = LF_AT;
   gdl_lexfld['='] = LF_EQUALS;
   gdl_lexfld['#'] = LF_HASH;
   gdl_lexfld['"'] = LF_QUOTE;
-  gdl_lexfld['*'] = LF_STAR;
   gdl_lexfld['~'] = LF_TILDE;
+  gdl_lexfld['|'] = LF_VBAR;
 
   gdlpool = pool_init();
 #if 0

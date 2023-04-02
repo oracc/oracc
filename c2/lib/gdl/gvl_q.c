@@ -21,12 +21,22 @@ gvl_q(Node *ynp)
 
       if (gvl_q_c10e(ynp->kids->user, ynp->kids->next->user, vq))
 	{
-	  const char *vs = (ccp)((gvl_g*)(ynp->kids->user))->c10e;
-	  const char *qs = (ccp)((gvl_g*)(ynp->kids->next->user))->sign;
+	  const char *vs = NULL;
+	  const char *qs = NULL;
+	  if (ynp->kids->user)
+	    vs = (ccp)((gvl_g*)(ynp->kids->user))->c10e;
+	  else
+	    vs = ynp->kids->text;
+	  if (ynp->kids->next->user)
+	    qs = (ccp)((gvl_g*)(ynp->kids->next->user))->sign;
+	  else
+	    qs = ynp->kids->next->text;
+	  
 	  if (!vs)
 	    vs = ynp->kids->text;
 	  if (!qs)
 	    qs = ynp->kids->next->text;
+
 	  p = (ucp)pool_alloc(strlen(vs) + strlen(qs) + 3, curr_sl->p);
 	  sprintf((char*)p, "%s(%s)", vs, qs);
 	  vq->c10e = (uccp)p;
@@ -174,6 +184,19 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 		      else
 			vq->mess = gvl_vmess("[vq] %s(%s): %s is %s%s",
 					     vp->orig, qp->orig, vp->orig, vp->sign, QFIX);
+		    }
+		  else if ('p' == *vp->type)
+		    {
+		      /* We retain a quirk of the original ATF
+			 specification which is that '*' is a wildcard
+			 punctuation; it defaults to DIŠ, but if
+			 qualified then the qualifier takes
+			 precedence.  No error here because it's
+			 allowable for v and q to be different
+			 signs */
+		      if ('*' != *vp->orig)
+			vq->mess = gvl_vmess("[vq] %s(%s): mismatched punctuation qualifier",
+					     vp->orig, qp->orig);
 		    }
 #if 1
 		  else

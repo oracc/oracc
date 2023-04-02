@@ -30,7 +30,7 @@ GDLLTYPE gdllloc;
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
-		LF_EQUALS LF_HASH LF_QUOTE LF_STAR LF_TILDE
+		LF_AT LF_CARET LF_EQUALS LF_HASH LF_QUOTE LF_TILDE LF_VBAR
 
 %token <i>	'*' '!' '?' '#' '<' '>' '{' '}' '[' ']' '(' ')' CLP CRP QLP QRP
        	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur L_ang_par R_ang_par
@@ -69,11 +69,13 @@ field:
 	  ','
 	| ',' FTYPE
 	| FTYPE
+	| LF_AT
+	| LF_CARET
 	| LF_EQUALS
 	| LF_HASH
 	| LF_QUOTE
-	| LF_STAR
 	| LF_TILDE
+	| LF_VBAR
 	;
 
 plainseg:
