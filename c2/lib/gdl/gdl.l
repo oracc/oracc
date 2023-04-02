@@ -14,6 +14,7 @@ extern Mloc gdllloc;
 const char *gdlfile = "<stdin>";
 const char *currgdlfile = NULL;
 extern int gdl_lexfld[];
+extern int curr_lang;
 int gdlflextrace = 0;
 
 extern Pool *gdlpool;
@@ -22,6 +23,7 @@ static void gdl_user_action(void);
 static int gdl_grapheme_type(void);
 static int CIN = 0; /* 1 if in compound */
 static int GIN = 0; /* 1 if in grapheme */
+static int QIN = 0; /* non-zero if in a(BA) qualifier */
 
 #define gconst gdllval.text=gdltext
 
@@ -66,7 +68,7 @@ GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+([@~][a-z0-9]+)*
 "<"			{ gconst; return '<'; }
 ">"			{ gconst; return '>'; }
 "("			{ gconst; return CIN ? CLP : (GIN ? QLP : yytext[0]); }
-")"			{ gconst; return CIN ? CRP : (GIN ? QRP : yytext[0]); }
+")"			{ gconst; return CIN ? CRP : (QIN ? QRP : yytext[0]); }
 "["			{ gconst; return yytext[0]; }
 "]"			{ gconst; return yytext[0]; }
 "{"			{ gconst; return yytext[0]; }
@@ -161,4 +163,18 @@ gdl_lex_init(const char *file, int line)
   CIN = GIN = 0;
   currgdlfile = gdlfile = file;
   gdllineno = line;
+  curr_lang = 's';
+}
+
+void
+gdl_decr_qin(void)
+{
+  if (--QIN < 0)
+    QIN = 0;
+}
+
+void
+gdl_incr_qin(void)
+{
+  ++QIN;
 }

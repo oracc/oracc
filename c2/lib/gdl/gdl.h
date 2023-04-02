@@ -40,6 +40,7 @@ struct gdl_g {
 #endif
 
 extern int gdl_corrq;
+extern int curr_lang;
 
 extern Pool *gdlpool;
 
@@ -63,6 +64,7 @@ extern Node *gdl_nongraph(Tree *ytp, const char *data);
 extern Node *gdl_state(Tree *ytp, const char *data);
 extern Node *gdl_delim(Tree *ytp, const char *data);
 extern Node *gdl_graph(Tree *ytp, const char *data);
+extern Node *gdl_lang(Tree *ytp, const char *data);
 extern Node *gdl_punct(Tree *ytp, const char *data);
 extern Node *gdl_listnum(Tree *ytp, const char *data);
 extern Node *gdl_number(Tree *ytp, const char *data);
@@ -71,5 +73,8 @@ extern void gdl_prop(Node *ynp, int p, int g, const char *k, const char *v);
 
 extern Node *gdl_pop(Tree *ytp, const char *s);
 extern Node *gdl_push(Tree *ytp, const char *s);
+
+extern void gdl_incr_qin(void);
+extern void gdl_decr_qin(void);
 
 #endif /*GDL_H_*/

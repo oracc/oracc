@@ -11,6 +11,7 @@ extern const char *currgdlfile;
 extern int gdltrace, gdllineno;
 extern void gdl_wrapup_buffer(void);
 extern void gdl_validate(Tree *tp);
+int curr_lang = 's';
 
 Tree *
 gdlparse_string(Mloc *m, char *s)
@@ -85,7 +86,7 @@ Node *
 gdl_graph(Tree *ytp, const char *data)
 {
   if (gdltrace)
-    fprintf(stderr, "GRAPH: %s\n", gdllval.text);
+    fprintf(stderr, "GRAPH: %s\n", data);
   return gdl_graph_node(ytp, "g:g", data);
 }
 
@@ -93,7 +94,7 @@ Node *
 gdl_nongraph(Tree *ytp, const char *data)
 {
   if (gdltrace)
-    fprintf(stderr, "NONGRAPH: %s\n", gdllval.text);
+    fprintf(stderr, "NONGRAPH: %s\n", data);
   return gdl_graph_node(ytp, "g:x", data);
 }
 
@@ -101,7 +102,7 @@ Node *
 gdl_listnum(Tree *ytp, const char *data)
 {
   if (gdltrace)
-    fprintf(stderr, "LISTNUM: %s\n", gdllval.text);
+    fprintf(stderr, "LISTNUM: %s\n", data);
   return gdl_graph_node(ytp, "g:l", data);
 }
 
@@ -109,7 +110,7 @@ Node *
 gdl_number(Tree *ytp, const char *data)
 {
   if (gdltrace)
-    fprintf(stderr, "NUMBER: %s\n", gdllval.text);
+    fprintf(stderr, "NUMBER: %s\n", data);
   return gdl_graph_node(ytp, "g:n", data);
 }
 
@@ -118,7 +119,7 @@ Node *
 gdl_barenum(Tree *ytp, const char *data)
 {
   if (gdltrace)
-    fprintf(stderr, "BARENUM: %s\n", gdllval.text);
+    fprintf(stderr, "BARENUM: %s\n", data);
   return gdl_graph_node(ytp, "g:N", data);
 }
 
@@ -126,7 +127,7 @@ Node *
 gdl_punct(Tree *ytp, const char *data)
 {
   if (gdltrace)
-    fprintf(stderr, "PUNCT: %s\n", gdllval.text);
+    fprintf(stderr, "PUNCT: %s\n", data);
   return gdl_graph_node(ytp, "g:p", data);
 }
 
@@ -143,7 +144,19 @@ Node *
 gdl_state(Tree *ytp, const char *data)
 {
   if (gdltrace)
-    fprintf(stderr, "STATE: %s\n", gdllval.text);
+    fprintf(stderr, "STATE: %s\n", data);
+  return gdl_graph_node(ytp, "g:z", data);
+}
+
+Node *
+gdl_lang(Tree *ytp, const char *data)
+{
+  if (gdltrace)
+    fprintf(stderr, "LANG: %s\n", data);
+  if (strstr(data, "/n"))
+    curr_lang = 'n';
+  else
+    curr_lang = data[1];
   return gdl_graph_node(ytp, "g:z", data);
 }
 
@@ -162,7 +175,6 @@ gdl_push(Tree *ytp, const char *s)
   tree_add(ytp, NS_GDL, s, ytp->curr->depth, NULL);
   return tree_push(ytp);
 }
-
 
 #if 0
 /* After refactoring the parser this became redundant but I'm keeping it around in case I ever want it again */

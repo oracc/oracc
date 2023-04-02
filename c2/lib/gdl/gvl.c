@@ -524,7 +524,7 @@ gvl_simplexg(Mloc ml, Node *ynp)
   gvl_g *gp = NULL;
   unsigned const char *g = NULL;
 
-  if (!ynp || !ynp->text || ynp->name[2] == 'x' || !strcmp(ynp->name, "g:gp"))
+  if (!ynp || !ynp->text || ynp->name[2] == 'x' || !strcmp(ynp->name, "g:gp") || curr_lang == 'n')
     return;
 
   g = (uccp)ynp->text;

@@ -34,7 +34,7 @@ GDLLTYPE gdllloc;
 
 %token <i>	'*' '!' '?' '#' '<' '>' '{' '}' '[' ']' '(' ')' CLP CRP QLP QRP
        	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur L_ang_par R_ang_par
-		L_uhs R_uhs L_lhs R_lhs
+		L_uhs R_uhs L_lhs R_lhs 
 		SPACE EOL END
 
 %start line
@@ -200,14 +200,15 @@ q:
 	QLP 						{ yrem=kids_rem_last(ytp);
 	    						  gdl_push(ytp,"g:q");
 							  kids_add_node(ytp,yrem);
+							  gdl_incr_qin();
 							  gdl_corrq
 							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
 	scgrapheme     					{ gdl_remove_q_error(@1, yrem); }
-	QRP maybegflags
+	QRP maybegflags					{ gdl_decr_qin(); }
 	;
 
 lang:
-	LANG
+	  LANG						{ ynp = gdl_lang(ytp, gdllval.text); }
 	;
 
 meta:
