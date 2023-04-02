@@ -81,5 +81,6 @@ extern void cat_term(void);
 extern struct catchunk *cat_read(const char *file);
 extern Tree *cat_tree(struct catchunk *cp, struct catconfig *cfg);
 extern struct catchunk *catyacc(void);
+extern void cat_reset_head(void);
 
 #endif/*CAT_H_*/

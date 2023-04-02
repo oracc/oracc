@@ -52,3 +52,9 @@ cat_cont(int l, char *t)
       tail->last = l;
     }
 }
+
+void
+cat_reset_head(void)
+{
+  cat_head = tail = NULL;
+}

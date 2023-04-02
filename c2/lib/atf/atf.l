@@ -64,7 +64,7 @@ void
 atf_lex_init(FILE *fp)
 {
   YY_FLUSH_BUFFER;
-  yyin = fp;
+  yyrestart(fp);
 }
 
 static void

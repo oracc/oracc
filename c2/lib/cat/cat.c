@@ -15,20 +15,14 @@ Memo *catchunk_mem;
 int cat_initted = 0;
 int cattrace = 1;
 
-static struct catchunk *head = NULL;
-static struct catchunk *tail = NULL;
-
 void
 cat_init(void)
 {
   if (cat_initted++)
-    {
-      head = tail = NULL;
-      return;
-    }
+    return;
   catchunk_mem = memo_init(sizeof(struct catchunk),1024);
   catpool = pool_init();
-  head = tail;
+  cat_reset_head();
 }
 
 void
@@ -40,7 +34,6 @@ cat_term(void)
       pool_term(catpool);
       catchunk_mem = NULL;
       catpool = NULL;
-      head = tail = NULL;
       cat_initted = 0;
     }
 }

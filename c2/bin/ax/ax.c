@@ -36,6 +36,7 @@ struct catconfig ax_cat_config =
 void
 ax_input(const char *f)
 {
+  mesg_init();
   gdlparse_init();
   axcat.f = (f ? f : "<stdin>");
   axcat.c = atf_read(f);
@@ -47,6 +48,7 @@ ax_input(const char *f)
       tree_ns_default(axcat.t, NS_XTF);
       tree_xml(NULL, axcat.t);
     }
+  atf_term();
   gdlparse_term();
   mesg_print(stderr);
   mesg_term();
@@ -55,11 +57,11 @@ ax_input(const char *f)
 int
 main(int argc, char **argv)
 {
+  static int multifile = 0;
   options(argc, argv, "ct");
 
   atfflextrace = atftrace = cattrace = gdlflextrace = gdltrace = trace_mode;
 
-  mesg_init();
   gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
   nodeh_register(treexml_o_handlers, NS_XTF, treexml_o_generic);
@@ -68,7 +70,13 @@ main(int argc, char **argv)
   if (argv[optind])
     {
       int fnum = optind;
-      ax_input(argv[fnum++]);
+      multifile = argv[fnum] && argv[fnum+1];
+      if (multifile)
+	printf("<xtf-multi>");
+      while (argv[fnum])
+	ax_input(argv[fnum++]);
+      if (multifile)
+	printf("</xtf-multi>");
     }
   else
     ax_input(NULL);

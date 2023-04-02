@@ -112,17 +112,17 @@ delim:
 	;
 
 grapheme:
-	scgrapheme
+	  scgrapheme
 	| valuqual
 	;
 
 scgrapheme:
-	simplexg
+	  simplexg
 	| compound
 	;
 
 maybegflags:
-	gflags
+	  gflags
 	| /* empty */
 	;
 
