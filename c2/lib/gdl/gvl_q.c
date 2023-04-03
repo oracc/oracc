@@ -58,13 +58,15 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
     {
       if (vp->mess && !strstr((ccp)vp->mess, "must be qualified"))
 	v_bad = 1;
+      else if (!vp->oid)
+	v_bad = 1;
     }
   else
     return -1;
 
   if (qp)
     {
-      if (!qp->sign)
+      if (!qp->sign || !qp->oid)
 	q_bad = 1;
       else if (strcmp((ccp)qp->orig, (ccp)qp->sign))
 	{

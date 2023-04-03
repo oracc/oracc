@@ -28,11 +28,12 @@ static void atf_user_action(void);
 
 %}
 
+BOM	("\xfe\xff")?
 LINK	("<<"|">>"|"++"|"||")
 
 %%
 
-^"&".*/\n  			{ atflval.text=atfsave(atftext); pmatch("###amp\n"); return TOK; }
+^{BOM}"&".*/\n         		{ atflval.text=atfsave(atftext); pmatch("###amp\n"); return TOK; }
 
 ^"@".*/\n  			{ atflval.text=atfsave(atftext); pmatch("###at\n"); return TOK; }
 
@@ -42,7 +43,7 @@ LINK	("<<"|">>"|"++"|"||")
 
 ^{LINK}.*/\n  			{ atflval.text=atfsave(atftext); pmatch("###link\n"); return TOK; }
 
-^[^ \t\n.:]+\.[ \t]+.*/\n 	{ atflval.text=atfsave(atftext); pmatch("###line\n"); return TOK; }
+^[^ \t\n.:]+\.([ \t]+.*)?/\n 	{ atflval.text=atfsave(atftext); pmatch("###line\n"); return TOK; }
 
 ^[^ \t\n.:]+:[ \t]+.*/\n 	{ atflval.text=atfsave(atftext); pmatch("###siglum\n"); return TOK; }
 
@@ -66,6 +67,7 @@ atf_lex_init(FILE *fp, const char *file)
   YY_FLUSH_BUFFER;
   yyrestart(fp);
   atffile = curratffile = file;
+  atflineno = 1;
 }
 
 static void

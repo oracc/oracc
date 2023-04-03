@@ -34,6 +34,7 @@ int term = 0;
 %}
 
 GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+([@~][a-z0-9]+)*
+LISTNUM		[A-Z]+[0-9]+[a-z]*([@~][a-z0-9]+)*
 
 %s C
 %x TC
@@ -92,7 +93,7 @@ R_LHS			{ return R_lhs; }
 
 [0-9]+(\/[0-9]+)?	{ GIN=1; gdllval.text=gdlsave(gdltext); return BARENUM; }
 
-[A-Z]+[0-9]+[a-z]*	{ GIN=1; gdllval.text=gdlsave(gdltext); return LISTNUM; }
+{LISTNUM}		{ GIN=1; gdllval.text=gdlsave(gdltext); return LISTNUM; }
 
 {GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
 
@@ -100,7 +101,7 @@ R_LHS			{ return R_lhs; }
 
 [!?]			{ return *yytext; }
 
-["~=@^]        		{ /*"*/ return gdl_lexfld[(int)*yytext]; }
+["~=@^]/[ \t]          	{ /*"*/ return gdl_lexfld[(int)*yytext]; }
 
 "..."			{ GIN=0; gdllval.text=gdlsave(gdltext); return ELLIPSIS; }
 "--"			{ GIN=0; return ENHYPHEN; }
