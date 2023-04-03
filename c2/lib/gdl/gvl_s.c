@@ -8,6 +8,7 @@
 
 extern int gvl_strict;
 extern int gvl_trace;
+extern int curr_lang;
 
 static const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalues/";
 
@@ -41,6 +42,9 @@ gvl_s(Node *ynp)
       gvl_n_sexify(ynp);
       return ynp->user;
     }
+
+  if ('a' != curr_lang && 's' != curr_lang)
+    return gp;
   
   gp->c10e = pool_copy(gvl_s_c10e(gp->orig, &c10e_err), curr_sl->p);
   

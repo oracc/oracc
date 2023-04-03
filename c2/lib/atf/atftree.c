@@ -25,11 +25,11 @@ atf_name(struct catchunk *cp, char **data)
 	  return cat_name(cp, data);
 	  break;
 	case '#':
-	  s = n = cp->text;
-	  ++n;
-	  while (*s && ':' != *s)
+	  n = cp->text;
+	  s = ++n;
+	  while (*s && !isspace(*s) && ':' != *s)
 	    ++s;
-	  if (*s && isspace(s[1])) /* ^XXX:<WHITE> is a #-protocol */
+	  if (':' == *s && isspace(s[1])) /* ^XXX:<WHITE> is a #-protocol */
 	    {
 	      *s++ = '\0';
 	      while (*s && (' ' == *s || '\t' == *s))

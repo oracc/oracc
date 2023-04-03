@@ -48,7 +48,7 @@ field: 	line EOL
 	;
 
 line:	TOK		{ if (atftrace) fprintf(stderr, "field/EOL: %s\n", atflval.text);
-   			  if (!strncmp(atflval.text,"#atf:",strlen("#atf:")) && strstr(atflval.text,"unicode")) { gdl_unicode=1; }
+   			  if (!strncmp(atflval.text,"#atf:",strlen("#atf:"))) { atf_protocol(atflval.text); }
    			  cat_chunk(curratffile,atflineno,(char*)atflval.text);
  			}
 	| CMT 		{ if (atftrace) fprintf(stderr, "comment/EOL: %s\n", atflval.text);

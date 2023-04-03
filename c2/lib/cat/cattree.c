@@ -104,12 +104,22 @@ cat_tree(struct catchunk *ccp, struct catconfig *cfg)
 	  
 	  if (cattrace)
 	    fprintf(stderr, "cat_tree: depth before processing node: %d\n", tp->curr->depth);
+
 	  name = cfg->getname(cp, &text);
 	  if (text)
 	    while (isspace(*text))
 	      ++text;
 	  if (name)
 	    {
+	      unsigned char *postname = (unsigned char *)name;
+	      while (isalnum(*postname))
+		++postname;
+	      if (*postname)
+		{
+		  unsigned char *tmp = pool_copy(postname, catpool);
+		  *postname = '\0';
+		  postname = tmp;
+		}
 	      cip = cfg->chkname(name, strlen(name));
 	      if (!cip)
 		cip = cfg->chkname("#default", strlen("#default"));

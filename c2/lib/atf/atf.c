@@ -25,6 +25,23 @@ atf_term(void)
   cat_term();
 }
 
+void
+atf_protocol(const char *p)
+{
+  const char *p2 = NULL;
+  extern int curr_lang;
+  
+  if (strstr(p, "unicode"))
+    gdl_unicode = 1;
+  if ((p2 = strstr(p, "lang")))
+    {
+      p2 += 5;
+      while (isspace(*p2))
+	++p2;
+      curr_lang = *p2;
+    }
+}
+
 struct catchunk *
 atf_read(const char *file)
 {

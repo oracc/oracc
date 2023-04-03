@@ -50,6 +50,8 @@ struct catconfig {
 #endif
   int ignore_blanks; 	/* when 1 blank lines are not an error during cattree */
   int par_is_rs;	/* blank line is record separator */
+  const char *pre_chars; /* characters allowed before an @-tag */
+  const char *post_chars;/* characters allowed after an @-tag */
 };
 
 struct catinfo {

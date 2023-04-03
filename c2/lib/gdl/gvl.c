@@ -19,6 +19,8 @@
 int gvl_trace = 0;
 int gvl_strict = 0;
 
+extern int curr_lang;
+
 unsigned char *gvl_v_from_h(const unsigned char *b, const unsigned char *qsub);
 unsigned char *gvl_val_base(const unsigned char *v);
 
@@ -498,6 +500,7 @@ gvl_compound(Mloc ml, Node *ynp)
     {
       gvl_g *cp = NULL;
       unsigned char *c_orig = gvl_c_orig(ynp);
+
       if (!(cp = hash_find(curr_sl->h, c_orig)))
 	{
 	  cp = memo_new(curr_sl->m);
@@ -524,7 +527,7 @@ gvl_simplexg(Mloc ml, Node *ynp)
   gvl_g *gp = NULL;
   unsigned const char *g = NULL;
 
-  if (!ynp || !ynp->text || ynp->name[2] == 'x' || !strcmp(ynp->name, "g:gp") || curr_lang == 'n')
+  if (!ynp || !ynp->text || ynp->name[2] == 'x' || !strcmp(ynp->name, "g:gp") || 'n' == curr_lang)
     return;
 
   g = (uccp)ynp->text;
