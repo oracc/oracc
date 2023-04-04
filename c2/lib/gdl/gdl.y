@@ -27,7 +27,7 @@ GDLLTYPE gdllloc;
 %union { char *text; int i; }
 
 %token	<text> 	FTYPE LANG TEXT ENHYPHEN ELLIPSIS
-		GRAPHEME NUMBER BARENUM LISTNUM PUNCT
+		GRAPHEME NUMBER BARENUM LISTNUM PUNCT MOD
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
@@ -177,6 +177,7 @@ cbit:
 	| CLP						{ gdl_push(ytp,"g:gp"); }
 	| CRP	     		  			{ gdl_pop(ytp,"g:gp");  }
 	| meta
+	| mod
 	;
 
 cdelim:
@@ -205,7 +206,14 @@ q:
 							  gdl_corrq
 							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
 	scgrapheme     					{ gdl_remove_q_error(@1, yrem); }
-	QRP maybegflags					{ gdl_decr_qin(); }
+	QRP qmaybemodflags		      		{ gdl_decr_qin(); }
+	;
+
+qmaybemodflags:
+	  gflags
+	| mods
+	| mods gflags
+	| /* empty */
 	;
 
 lang:
@@ -216,6 +224,15 @@ meta:
 	  statec
 	| stateo
 	| ';'						{ ynp = gdl_nongraph(ytp, ";"); }
+	;
+
+mods:
+	  mod
+	| mods mod
+        ;
+
+mod:
+	  MOD						{ ynp = gdl_graph(ytp, gdllval.text); }
 	;
 
 stateo:  

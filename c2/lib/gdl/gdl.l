@@ -35,6 +35,7 @@ int term = 0;
 
 GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+([@~][a-z0-9]+)*
 LISTNUM		[A-Z]+[0-9]+[a-z]*([@~][a-z0-9]+)*
+MOD		([@~][a-z0-9]+)*
 
 %s C
 %x TC
@@ -96,6 +97,8 @@ R_LHS			{ return R_lhs; }
 {LISTNUM}		{ GIN=1; gdllval.text=gdlsave(gdltext); return LISTNUM; }
 
 {GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
+
+{MOD}			{ GIN=1; gdllval.text=gdlsave(gdltext); return MOD; }
 
 "#"			{ return GIN ? *yytext : gdl_lexfld[(int)*yytext]; }
 
