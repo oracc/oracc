@@ -12,8 +12,10 @@ use lib "$ENV{'ORACC'}/lib";
 use ORACC::ATF::Unicode;
 
 my $lem_only = 0;
+my $uni_proto = 0;
 GetOptions(
     lem=>\$lem_only,
+    uni=>\$uni_proto,
     );
 
 while (<>) {
@@ -25,9 +27,11 @@ while (<>) {
 #	1 while $u =~ s/([^a-zA-ZšŠṣṢṭṬŋŊḫḪ₀-₉])([₀-₉]+\()/updig($1,$2)/e;
 #	1 while $u =~ s/(^|[-\s])([₀-₉]+\()/updig($1,$2)/e;
 #	warn "$u\n";
-	1 while $u =~ s#([₁₂₃₄₅]/[0-9])#updig('',$1)#e;
+	1 while $u =~ s#([^a-zŋṣšṭA-ZŊṢŠṬ][₁₂₃₄₅₆₇₈₉₀]+(?:/[0-9]|\(|\]|⸣|[\#*?!]|>))#updig('',$1)#e;
+	1 while $u =~ s#([[⸢][₁₂₃₄₅₆₇₈₉₀]+)#updig('',$1)#e;
 	1 while $u =~ s#(LAK|REŠ)([₀-₉])#updig($1,$2)#e;
 	1 while $u =~ s/REŠ([0-9])/REC$1/;
+	1 while $u =~ s/([a-zŋšṣṭ])×\(/$1ₓ(/;
 	print "$lnum$u", "\n";
     } elsif (s/^(\#lem:\s+)//) {
 	print $1;
@@ -45,6 +49,9 @@ while (<>) {
 	print "\n";
     } else {
 	print;
+	if (/^#project/) {
+	    print "#atf: use unicode\n" if $uni_proto;
+	}
     }
 }
 

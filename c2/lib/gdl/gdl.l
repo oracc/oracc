@@ -37,6 +37,11 @@ GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+([@~][a-z0-9]+)*
 LISTNUM		[A-Z]+[0-9]+[a-z]*([@~][a-z0-9]+)*
 MOD		([@~][a-z0-9]+)*
 
+L_UHS		"\xe2\xb8\xa2"
+R_UHS		"\xe2\xb8\xa3"
+L_LHS		"\xe2\xb8\xa4"
+R_LHS		"\xe2\xb8\xa5"
+
 %s C
 %x TC
 %x TD
@@ -78,10 +83,10 @@ MOD		([@~][a-z0-9]+)*
 "]"			{ gconst; return yytext[0]; }
 "{"			{ gconst; return yytext[0]; }
 "}"			{ gconst; return yytext[0]; }
-L_UHS			{ return L_uhs; }
-R_UHS			{ return R_uhs; }
-L_LHS			{ return L_lhs; }
-R_LHS			{ return R_lhs; }
+{L_UHS}			{ return L_uhs; }
+{R_UHS}			{ return R_uhs; }
+{L_LHS}			{ return L_lhs; }
+{R_LHS}			{ return R_lhs; }
 
 %[-a-z0-9]+		{ gdllval.text=gdlsave(gdltext); return LANG; }
 ,			{ return ','; }
