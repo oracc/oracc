@@ -27,7 +27,7 @@ static int GIN = 0; /* 1 if in grapheme */
 static int QIN = 0; /* non-zero if in a(BA) qualifier */
 
 #define gconst gdllval.text=gdltext
-
+#define gsave  gdllval.text=gdlsave(gdltext)
 int term = 0;
 #define yyterminate() return (term = !term) ? END : YY_NULL
 
@@ -83,27 +83,27 @@ R_LHS		"\xe2\xb8\xa5"
 "]"			{ gconst; return yytext[0]; }
 "{"			{ gconst; return yytext[0]; }
 "}"			{ gconst; return yytext[0]; }
-{L_UHS}			{ return L_uhs; }
-{R_UHS}			{ return R_uhs; }
-{L_LHS}			{ return L_lhs; }
-{R_LHS}			{ return R_lhs; }
+{L_UHS}			{ gsave; return L_uhs; }
+{R_UHS}			{ gsave; return R_uhs; }
+{L_LHS}			{ gsave; return L_lhs; }
+{R_LHS}			{ gsave; return R_lhs; }
 
-%[-a-z0-9]+		{ gdllval.text=gdlsave(gdltext); return LANG; }
+%[-a-z0-9]+		{ gsave; return LANG; }
 ,			{ return ','; }
 &			{ return '&'; }
 ![a-z]+			{ return FTYPE; }
 
-"*"|:['".:]?|\/        	{ GIN=1; gdllval.text=gdlsave(gdltext); return PUNCT; }
+"*"|:['".:]?|\/        	{ GIN=1; gsave; return PUNCT; }
 
-[0-9]+(\/[0-9]+)?/"("	{ GIN=1; gdllval.text=gdlsave(gdltext); return NUMBER; }
+[0-9]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
 
-[0-9]+(\/[0-9]+)?	{ GIN=1; gdllval.text=gdlsave(gdltext); return BARENUM; }
+[0-9]+(\/[0-9]+)?	{ GIN=1; gsave; return BARENUM; }
 
-{LISTNUM}		{ GIN=1; gdllval.text=gdlsave(gdltext); return LISTNUM; }
+{LISTNUM}		{ GIN=1; gsave; return LISTNUM; }
 
 {GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
 
-{MOD}			{ GIN=1; gdllval.text=gdlsave(gdltext); return MOD; }
+{MOD}			{ GIN=1; gsave; return MOD; }
 
 "#"			{ return GIN ? *yytext : gdl_lexfld[(int)*yytext]; }
 
@@ -111,7 +111,7 @@ R_LHS		"\xe2\xb8\xa5"
 
 ["~=@^]/[ \t]          	{ /*"*/ return gdl_lexfld[(int)*yytext]; }
 
-"..."			{ GIN=0; gdllval.text=gdlsave(gdltext); return ELLIPSIS; }
+"..."			{ GIN=0; gsave; return ELLIPSIS; }
 "--"			{ GIN=0; return ENHYPHEN; }
 [-+:.]     		{ GIN=0; return gdltext[0]; }
 
@@ -127,8 +127,8 @@ R_LHS		"\xe2\xb8\xa5"
 "(#"			{ BEGIN TC; return L_inl_cmt; }
 <TC>"#)"       		{ BEGIN 0; return R_inl_cmt; }
 
-<TD>.+/"$)"   		{ gdllval.text=gdlsave(gdltext); return TEXT; }
-<TC>.+/"#)"   		{ gdllval.text=gdlsave(gdltext); return TEXT; }
+<TD>.+/"$)"   		{ gsave; return TEXT; }
+<TC>.+/"#)"   		{ gsave; return TEXT; }
 
 .			{ mesg_vwarning(currgdlfile, gdllineno, "gdl.l: unmatched character %c\n", *gdltext); }
 
@@ -139,7 +139,7 @@ R_LHS		"\xe2\xb8\xa5"
 int
 gdl_grapheme_type(void)
 {
-  gdllval.text=gdlsave(gdltext);
+  gsave;
   if (strlen(gdllval.text) == 1
       && ('n' == *gdllval.text || 'N' == *gdllval.text))
     return NUMBER;
