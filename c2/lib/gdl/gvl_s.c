@@ -34,7 +34,7 @@ gvl_s(Node *ynp)
 	{
 	  gp->type = "v";
 	  ynp->name = "g:v";
-	}  
+	}
     }
   else if ('N' == *gp->type)
     {
@@ -70,7 +70,10 @@ gvl_s(Node *ynp)
 	  if (gvl_strict)
 	    gp->mess = gvl_vmess("pseudo-signname %s must be qualifed by one of %s",gp->orig,l);
 	}
-      else if ((l = gvl_lookup(sll_tmp_key(gp->c10e,"l"))))
+    }
+  else if ('l' == *gp->type)
+    {
+      if ((l = gvl_lookup(sll_tmp_key(gp->c10e,"l"))))
 	{
 	  gp->type = "l";
 	  gp->oid = (ccp)l;

@@ -120,6 +120,11 @@ gvl_n_sexify(Node *ynp)
 	     sexified and record the original number in the text field */
 	  gdl_prop(top, GDL_INFO_IMPLICIT, PG_GDL_INFO, NULL, NULL);
 	  top->text = (void*)ynp->text;
+
+	  /* transfer any other properties from the original node to
+	     the g:gp; this ensures that in '1!' the '!' is raised to
+	     the top level */
+	  prop_merge(top->props, ynp->props);
 	  
 	  /* update the ynp data with the sexified data */
 	  node_replace(top, ynp);

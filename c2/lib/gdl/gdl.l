@@ -43,6 +43,7 @@ L_LHS		"\xe2\xb8\xa4"
 R_LHS		"\xe2\xb8\xa5"
 
 %s C
+%s Q
 %x TC
 %x TD
 
@@ -70,7 +71,11 @@ R_LHS		"\xe2\xb8\xa5"
 "\xc3\x97"	       	{ return C_TIMES; }
 
 "<("			{ gconst; return L_ang_par; }
+
+<Q>")"/">"	       	{ gconst; return QRP; }
+
 ")>"			{ gconst; return R_ang_par; }
+
 "{{"			{ gconst; return L_dbl_cur; }
 "}}"			{ gconst; return R_dbl_cur; }
 "<<"			{ gconst; return L_dbl_ang; }
@@ -89,11 +94,12 @@ R_LHS		"\xe2\xb8\xa5"
 {R_LHS}			{ gsave; return R_lhs; }
 
 %[-a-z0-9]+		{ gsave; return LANG; }
+_			{ gsave; return LANG_FLIP; }
 ,			{ return ','; }
 &			{ return '&'; }
 ![a-z]+			{ return FTYPE; }
 
-"*"|:['".:]?|\/        	{ GIN=1; gsave; return PUNCT; }
+("*"|:['".:]?|\/)/[\]>#*!? \t\n(]	{ GIN=1; gsave; return PUNCT; }
 
 [0-9]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
 
@@ -172,7 +178,7 @@ gdl_user_action(void)
 void
 gdl_lex_init(const char *file, int line)
 {
-  CIN = GIN = 0;
+  CIN = GIN = QIN = 0;
   currgdlfile = gdlfile = file;
   gdllineno = line;
   curr_lang = 's';
@@ -181,12 +187,16 @@ gdl_lex_init(const char *file, int line)
 void
 gdl_decr_qin(void)
 {
-  if (--QIN < 0)
-    QIN = 0;
+  if (--QIN <= 0)
+   {
+     QIN = 0;
+     BEGIN 0;
+   }
 }
 
 void
 gdl_incr_qin(void)
 {
   ++QIN;
+  BEGIN Q;
 }

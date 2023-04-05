@@ -35,7 +35,7 @@ GDLLTYPE gdllloc;
 
 %token <i>	'*' '!' '?' '#' '<' '>' '{' '}' '[' ']' '(' ')' CLP CRP QLP QRP
        	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur L_ang_par R_ang_par
-		L_uhs R_uhs L_lhs R_lhs 
+		L_uhs R_uhs L_lhs R_lhs LANG_FLIP
 		SPACE EOL END
 
 %start line
@@ -192,6 +192,11 @@ cdelim:
 	| C_4TIMES					{ ynp = gdl_delim(ytp, "4×"); }
 	;
 
+scgraphemeorvq:
+	  scgrapheme
+	| valuqual
+	;
+
 valuqual:
 	q	    				       	 { gvl_valuqual(@1, ytp->curr);
 	  						   ynp = gdl_pop(ytp,"g:q"); }
@@ -205,7 +210,7 @@ q:
 							  gdl_incr_qin();
 							  gdl_corrq
 							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
-	scgrapheme     					{ gdl_remove_q_error(@1, yrem); }
+	scgraphemeorvq  	       			{ gdl_remove_q_error(@1, yrem); }
 	QRP qmaybemodflags		      		{ gdl_decr_qin(); }
 	;
 
@@ -218,6 +223,7 @@ qmaybemodflags:
 
 lang:
 	  LANG						{ ynp = gdl_lang(ytp, gdllval.text); }
+	| LANG_FLIP
 	;
 
 meta:

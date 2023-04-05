@@ -10,16 +10,35 @@ void
 gvl_q(Node *ynp)
 {
   gvl_g *vq = NULL;
-  unsigned char *p = (ucp)pool_alloc(strlen(ynp->kids->text) + strlen(ynp->kids->next->text) + 3, curr_sl->p);
-  sprintf((char*)p, "%s(%s)", ynp->kids->text, ynp->kids->next->text);
+  unsigned char *p = NULL;
+  unsigned const char *vo = NULL, *qo = NULL;
 
-  if (!(vq = hash_find(curr_sl->h, p)))
+  if (!(vo = (uccp)ynp->kids->text))
+    if (ynp->kids->user)
+      {
+	if (!(vo = ((gvl_g*)(ynp->kids->user))->c10e))
+	  vo = ((gvl_g*)(ynp->kids->user))->orig;
+      }
+  if (!(qo = (uccp)ynp->kids->next->text))
+    if (ynp->kids->next->user)
+      {
+	if (!(qo = ((gvl_g*)(ynp->kids->next->user))->c10e))
+	  qo = ((gvl_g*)(ynp->kids->next->user))->orig;
+      }  
+
+  if (vo && qo)
+    {
+      p = (ucp)pool_alloc(strlen((ccp)vo) + strlen((ccp)qo) + 3, curr_sl->p);
+      sprintf((char*)p, "%s(%s)", (ccp)vo, (ccp)qo);
+    }
+
+  if (p && !(vq = hash_find(curr_sl->h, p)))
     {
       vq = memo_new(curr_sl->m);
       vq->type = "q";
       vq->orig = (uccp)p;
 
-      if (gvl_q_c10e(ynp->kids->user, ynp->kids->next->user, vq))
+      if (gvl_q_c10e(ynp->kids->user, ynp->kids->next->user, vq) > 0)
 	{
 	  const char *vs = NULL;
 	  const char *qs = NULL;
@@ -35,15 +54,36 @@ gvl_q(Node *ynp)
 	  if (!vs)
 	    vs = ynp->kids->text;
 	  if (!qs)
-	    qs = ynp->kids->next->text;
+	    {
+	      /* This could be q node used as a nested q, e.g., kisimₓ(|DAG.KISIM₅×LU|(LAK721)) */
+	      if ('q' == ynp->kids->next->name[2])
+		qs = ynp->kids->next->kids->text;
+	      else
+		qs = ynp->kids->next->text;
+	    }
 
 	  p = (ucp)pool_alloc(strlen(vs) + strlen(qs) + 3, curr_sl->p);
 	  sprintf((char*)p, "%s(%s)", vs, qs);
 	  vq->c10e = (uccp)p;
 	}
-      hash_add(curr_sl->h, vq->orig, vq);
-      if (strcmp((ccp)vq->orig, (ccp)vq->c10e))
-	hash_add(curr_sl->h, vq->c10e, vq);
+      else
+	{
+	  vq->orig = vo ? vo : qo;
+	  vq->mess = gvl_vmess("%s failed canonicalization", vq->orig);
+	}
+
+      if (vq->orig)
+	{
+	  hash_add(curr_sl->h, vq->orig, vq);
+	  if (vq->c10e && strcmp((ccp)vq->orig, (ccp)vq->c10e))
+	    hash_add(curr_sl->h, vq->c10e, vq);
+	}
+    }
+  else
+    {
+      vq = memo_new(curr_sl->m);
+      vq->orig = (uccp)ynp->text;
+      vq->mess = gvl_vmess("%s unable to attempt canonicalization", ynp->text);
     }
   ynp->user = vq;
 }

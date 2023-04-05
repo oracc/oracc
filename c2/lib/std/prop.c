@@ -31,6 +31,18 @@ prop_last(Prop *p)
   return p;
 }
 
+/* This is a lazy version; should really avoid adding duplicates */
+void
+prop_merge(Prop *into, Prop *from)
+{
+  Prop *l;
+  if (into && from)
+    {
+      l = prop_last(into);
+      l->next = from;
+    }
+}
+
 int
 prop_user_group(void)
 {
