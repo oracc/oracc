@@ -460,6 +460,7 @@ gclean(unsigned char *g)
   return b;
 }
 
+#ifndef GVL_MODE
 static int
 is_mixed(const unsigned char *g)
 {
@@ -493,6 +494,7 @@ is_mixed(const unsigned char *g)
     }
   return 0;
 }
+#endif
 
 static char *
 sname_to_check(const unsigned char *sn)
@@ -678,6 +680,7 @@ gparse(register unsigned char *g, enum t_type type)
 			  nodots = NULL;
 		      }
 		  }
+#ifndef GVL_MODE
 		if (!ok && (!mixed_case_ok || !is_mixed(g)))
 		  {
 		    if (!ok && !gdl_bootstrap)
@@ -694,6 +697,7 @@ gparse(register unsigned char *g, enum t_type type)
 		      }
 		  }
 		else
+#endif
 		  {
 		    if (g_ok)
 		      g_ok = pool_copy(g_ok);
