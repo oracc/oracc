@@ -192,25 +192,20 @@ cdelim:
 	| C_4TIMES					{ ynp = gdl_delim(ytp, "4×"); }
 	;
 
-scgraphemeorvq:
-	  scgrapheme
-	| valuqual
-	;
-
 valuqual:
 	q	    				       	 { gvl_valuqual(@1, ytp->curr);
 	  						   ynp = gdl_pop(ytp,"g:q"); }
 	;
 
 q:
-	scgrapheme
+	grapheme
 	QLP 						{ yrem=kids_rem_last(ytp);
 	    						  gdl_push(ytp,"g:q");
 							  kids_add_node(ytp,yrem);
 							  gdl_incr_qin();
 							  gdl_corrq
 							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
-	scgraphemeorvq  	       			{ gdl_remove_q_error(@1, yrem); }
+	grapheme 	 	       			{ gdl_remove_q_error(@1, yrem); }
 	QRP qmaybemodflags		      		{ gdl_decr_qin(); }
 	;
 
