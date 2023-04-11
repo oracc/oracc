@@ -7,8 +7,10 @@ libatf_la_SOURCES = atf.tab.c atf-l.c atfyacc.c atftree.c atf.c
 YACC=bison
 
 AM_CPPFLAGS=\
+	-I../../lib/include \
 	-I../../lib/cat \
 	-I../../lib/std \
+	-I../../lib/sys \
 	-I../../lib/xml
 
 atf.tab.c atf.tab.h: atf.y atf.l

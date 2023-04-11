@@ -28,7 +28,7 @@ slurp(const char *caller, const char *fname, ssize_t *fsizep)
       fprintf(stderr,"%s: %s: empty file\n",caller,fname);
       return NULL;
     }
-  if (NULL == (ftext = malloc(fsize+1)))
+  if (NULL == (ftext = malloc(fsize+3)))
     {
       fprintf(stderr,"%s: %s: couldn't malloc %d bytes\n",
               caller,fname,(int)fsize);
@@ -41,7 +41,13 @@ slurp(const char *caller, const char *fname, ssize_t *fsizep)
       ssize_t ret = read(fdesc,ftext,fsize);
       close(fdesc);
       if (ret == fsize)
-        ftext[fsize] = '\0';
+	{
+	  /* always ensure a final \n and two NULs in case this will
+	     be flex scanned */
+	  ftext[fsize++] = '\n';
+	  ftext[fsize] = '\0';
+	  ftext[fsize+1] = '\0';
+	}
       else
         {
           fprintf(stderr,"%s: read %d bytes failed\n",caller,(int)fsize);

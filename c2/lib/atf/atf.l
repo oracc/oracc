@@ -3,6 +3,7 @@
 %option never-interactive noyywrap yylineno nounput
 
 %{
+#include <oraccsys.h>
 #include <mesg.h>
 #include <pool.h>
 
@@ -47,7 +48,7 @@ LINK	("<<"|">>"|"++"|"||")
 
 ^[^ \t\n.:]+:[ \t]+.*/\n 	{ atflval.text=atfsave(atftext); pmatch("###siglum\n"); return TOK; }
 
-^\#.*/\n       			{ atflval.text=atfsave(atftext); pmatch("###comment\n"); return CMT; }
+^\#.*/\n   			{ atflval.text=atfsave(atftext); pmatch("###comment\n"); return CMT; }
 
 ^[ \t]+.+/\n    		{ atflval.text=atfsave(atftext); pmatch("###tab\n"); return TAB; }
 
@@ -57,17 +58,27 @@ LINK	("<<"|">>"|"++"|"||")
 
 \n				{ pmatch("###eol\n"); return EOL; }
 
-.				{ fprintf(stderr, "atf.l: unmatched character %c\n", *atftext); }
+.				{ mesg_vwarning(curratffile, atflineno,
+						"atf.l: unmatched character %c\n", *atftext); }
 
 %%
 
 void
 atf_lex_init(FILE *fp, const char *file)
 {
+#if 1
+  static ssize_t fsize;
+  char *buf = (char*)slurp("atf", file, &fsize);
+#else
   YY_FLUSH_BUFFER;
   yyrestart(fp);
+#endif
   atffile = curratffile = file;
   atflineno = 1;
+#if 1
+  /* slurp adds \n\0\0 but only counts \n in the returned fsize */
+  atf_scan_buffer(buf,fsize+2);
+#endif
 }
 
 static void
