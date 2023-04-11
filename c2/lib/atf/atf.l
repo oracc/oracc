@@ -29,12 +29,17 @@ static void atf_user_action(void);
 
 %}
 
-BOM	("\xfe\xff")?
+BOM1	("\xef\xbb\xbf")
+BOM2	("\xfe\xff")
 LINK	("<<"|">>"|"++"|"||")
 
 %%
 
-^{BOM}"&".*/\n         		{ atflval.text=atfsave(atftext); pmatch("###amp\n"); return TOK; }
+^{BOM1}"&".*/\n         	{ atflval.text=atfsave(atftext+3); pmatch("###amp\n"); return TOK; }
+
+^{BOM2}"&".*/\n         	{ atflval.text=atfsave(atftext+2); pmatch("###amp\n"); return TOK; }
+
+^"&".*/\n         		{ atflval.text=atfsave(atftext); pmatch("###amp\n"); return TOK; }
 
 ^"@".*/\n  			{ atflval.text=atfsave(atftext); pmatch("###at\n"); return TOK; }
 

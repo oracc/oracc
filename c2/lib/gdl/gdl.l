@@ -31,16 +31,26 @@ static int QIN = 0; /* non-zero if in a(BA) qualifier */
 int term = 0;
 #define yyterminate() return (term = !term) ? END : YY_NULL
 
+/* Simple stack for nesting of compounds and valuquals */
+#define CVQ_MAX 6
+static int cvq_stack[CVQ_MAX] = { 0, 0, 0, 0, 0, 0 };
+static int cvq_top = -1;
+static int cvq_pop(void);
+static int cvq_push(int);
+
 %}
 
 GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+([@~][a-z0-9]+)*
-LISTNUM		[A-Z]+[0-9]+[a-z]*([@~][a-z0-9]+)*
+G		([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2[^\xb8]|\xe2\xb8[^\xa2-\xa5])
+B		("["|"]"|\xe2\xb8[\xa2-\xa5])
 MOD		([@~][a-z0-9]+)*
 
 L_UHS		"\xe2\xb8\xa2"
 R_UHS		"\xe2\xb8\xa3"
 L_LHS		"\xe2\xb8\xa4"
 R_LHS		"\xe2\xb8\xa5"
+
+LISTNUM		[A-Z]+[0-9]+[a-z]*([@~][a-z0-9]+)*
 
 %s C
 %s Q
@@ -49,30 +59,33 @@ R_LHS		"\xe2\xb8\xa5"
 
 %%
 
-<C>"|"/[ \t]   		{ BEGIN 0; CIN=0; return C_C; }
-<C>"|"			{ BEGIN 0; CIN=0; return C_C; }
+<C>"|"/[ \t]   		{ BEGIN cvq_pop(); CIN=0; return C_C; }
+<C>"|"			{ BEGIN cvq_pop(); CIN=0; return C_C; }
 "|"/[ \t]	       	{ /*"*/ return gdl_lexfld[(int)*yytext]; }
-"|"			{ BEGIN C; CIN=1; return C_O; }
+"|"			{ BEGIN cvq_push(C); GIN=0; CIN=1; return C_O; }
 
-[=^][aeiuAEIU]		{ if (gdl_unicode) { mesg_vwarning(currgdlfile,gdllineno,"non-Unicode accent codes %s",gdltext); }}
+[=^][aeiuAEIU]		{ if (gdl_unicode) { mesg_vwarning(currgdlfile,gdllineno,
+						"non-Unicode accent codes %s",gdltext); }}
 
-<C>"."			{ return C_PERIOD; }
-<C>"+"			{ return C_PLUS; }
-<C>":"			{ return C_COLON; }
-<C>"&"			{ return C_ABOVE; }
-<C>"%"			{ return C_CROSSING; }
-<C>@/[^a-z0-9]		{ return C_OPPOSING; }
-<C>"4\xc3\x97"		{ return C_4TIMES; }
-<C>"3\xc3\x97"		{ return C_3TIMES; }
-<C>"\xc3\x97"	       	{ return C_TIMES; }
-<C>"("			{ return CLP; }
+<C>"."			{ GIN=0; return C_PERIOD; }
+<C>"+"			{ GIN=0; return C_PLUS; }
+<C>":"/"("	       	{ GIN=0; return C_COLON; }
+<C>":"			{ GIN=0; return C_COLON; }
+<C>"&"			{ GIN=0; return C_ABOVE; }
+<C>"%"			{ GIN=0; return C_CROSSING; }
+<C>@/[^a-z0-9]		{ GIN=0; return C_OPPOSING; }
+<C>"4\xc3\x97"		{ GIN=0; return C_4TIMES; }
+<C>"3\xc3\x97"		{ GIN=0; return C_3TIMES; }
+<C>"\xc3\x97"	       	{ GIN=0; return C_TIMES; }
+<C>"("			{ return GIN ? QLP : CLP; }
 <C>")"			{ return CRP; }
 
 "\xc3\x97"	       	{ return C_TIMES; }
 
 "<("			{ gconst; return L_ang_par; }
 
-<Q>")"/">"	       	{ gconst; return QRP; }
+<Q>")"/">"	       	{ return QRP; }
+<Q>")"			{ return QRP; }
 
 ")>"			{ gconst; return R_ang_par; }
 
@@ -107,6 +120,8 @@ _			{ gsave; return LANG_FLIP; }
 
 {LISTNUM}		{ GIN=1; gsave; return LISTNUM; }
 
+({G}({G}|{B})*({G}|{MOD}+))	{ GIN=1; return gdl_grapheme_type(); }
+
 {GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
 
 {MOD}			{ GIN=1; gsave; return MOD; }
@@ -122,6 +137,7 @@ _			{ gsave; return LANG_FLIP; }
 [-+:.]     		{ GIN=0; return gdltext[0]; }
 
 ";"			{ return ';'; }
+"/"			{ return '/'; }
 
 [ \t]+			{ GIN=0; return SPACE; }
 
@@ -169,7 +185,8 @@ static void
 gdl_user_action(void)
 {
   if (gdlflextrace)
-    fprintf(stderr, "%s:%d: gdllex: text=::%s:: GIN=%d; CIN=%d\n", gdlfile, gdllineno, gdltext, GIN, CIN);
+    fprintf(stderr, "%s:%d: gdllex: YY_START=%d; text=::%s:: GIN=%d; CIN=%d\n",
+		  gdlfile, gdllineno, YY_START, gdltext, GIN, CIN);
 
   gdllloc.file = currgdlfile;
   gdllloc.line = yylineno;
@@ -179,6 +196,7 @@ void
 gdl_lex_init(const char *file, int line)
 {
   CIN = GIN = QIN = 0;
+  cvq_top = -1;
   currgdlfile = gdlfile = file;
   gdllineno = line;
   curr_lang = 's';
@@ -187,16 +205,43 @@ gdl_lex_init(const char *file, int line)
 void
 gdl_decr_qin(void)
 {
-  if (--QIN <= 0)
-   {
-     QIN = 0;
-     BEGIN 0;
-   }
+  if (--QIN < 0)
+    { /* underflow condition */
+      QIN = 0;
+    }
+  else
+    {
+      BEGIN cvq_pop();
+    }
+  if (gdlflextrace)
+    fprintf(stderr, "gdl_decr_qin: QIN=%d; new state=%d\n", QIN, YY_START);
 }
 
 void
 gdl_incr_qin(void)
 {
   ++QIN;
-  BEGIN Q;
+  BEGIN cvq_push(Q);
+  if (gdlflextrace)
+    fprintf(stderr, "gdl_incr_qin: QIN=%d; new state=%d\n", QIN, YY_START);
+}
+
+int
+cvq_push(int s)
+{
+  if (++cvq_top < CVQ_MAX)
+    return cvq_stack[cvq_top] = s;
+  else
+    fprintf(stderr, "cvq_push: cvq stack overflow (CVQ_MAX=%d)\n", CVQ_MAX);
+  return 0;
+}
+
+int
+cvq_pop(void)
+{
+  if (cvq_top >= 0)
+    return cvq_stack[--cvq_top];
+  else
+    fprintf(stderr, "cvq_pop: cvq stack underflow\n");
+   return 0;
 }

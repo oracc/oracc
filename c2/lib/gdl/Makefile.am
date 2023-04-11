@@ -14,7 +14,7 @@ AM_CPPFLAGS=\
 	-I../../lib/xml
 
 gdl.tab.c gdl.tab.h: gdl.y gdl.l
-	${YACC} -vd gdl.y
+	${YACC} -vdt gdl.y
 
 gdl-l.c: gdl.l gdl.tab.h
 	flex -B -DYY_NO_INPUT gdl.l

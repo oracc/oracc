@@ -42,11 +42,17 @@ slurp(const char *caller, const char *fname, ssize_t *fsizep)
       close(fdesc);
       if (ret == fsize)
 	{
+#if 0
+	  if (ftext[fsize-1] != '\n')
+	    fprintf(stderr, "%s: %s: no newline at end of file\n");
+	  ftext[fsize] = '\0';
+#else
 	  /* always ensure a final \n and two NULs in case this will
 	     be flex scanned */
 	  ftext[fsize++] = '\n';
 	  ftext[fsize] = '\0';
 	  ftext[fsize+1] = '\0';
+#endif
 	}
       else
         {

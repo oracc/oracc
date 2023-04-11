@@ -101,6 +101,7 @@ transliteration:
 	| grapheme
 	| lang
         | meta
+	| alternative
 	;
 
 delim:
@@ -113,6 +114,11 @@ delim:
 	| '\n'
 	| ENHYPHEN 			       		{ ynp = gdl_delim(ytp, "--"); }
 	;
+
+alternative:
+	  grapheme '/' grapheme
+	  | alternative '/' grapheme
+	  ;
 
 grapheme:
 	  scgrapheme
@@ -176,6 +182,14 @@ cbit:
 	| cdelim
 	| CLP						{ gdl_push(ytp,"g:gp"); }
 	| CRP	     		  			{ gdl_pop(ytp,"g:gp");  }
+	| QLP 						{ yrem=kids_rem_last(ytp);
+	    						  gdl_push(ytp,"g:q");
+							  kids_add_node(ytp,yrem);
+							  gdl_remove_q_error(@1, yrem);
+  							  gdl_incr_qin();
+							  gdl_corrq
+							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
+	| QRP				      		{ gdl_decr_qin(); }
 	| meta
 	| mod
 	;

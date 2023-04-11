@@ -13,8 +13,6 @@
 #include <pool.h>
 #include "cat.h"
 
-extern char *atffile, *curratffile;
-
 struct catchunk *
 atfyacc(void)
 {

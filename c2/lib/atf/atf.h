@@ -3,6 +3,9 @@
 
 #include "cat.h"
 
+extern int atflineno;
+extern const char *atffile, *curratffile;
+
 extern int atfparse(void); /* bison */
 extern char *atf_name(struct catchunk *cp, char **data);
 extern struct catchunk *atf_read(const char *);

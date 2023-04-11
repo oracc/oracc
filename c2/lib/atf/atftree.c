@@ -72,7 +72,8 @@ atf_name(struct catchunk *cp, char **data)
 	      break;
 	    default:
 	      /* can't happen */
-	      fprintf(stderr, "atf_name: internal error, no '.' or ':' in passed line type\n");
+	      fprintf(stderr, "%s:%d: atf_name: internal error, no '.' or ':' in passed line type\n",
+		      curratffile, atflineno);
 	      return "mystery";
 	      break;
 	    }
