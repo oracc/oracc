@@ -4,6 +4,8 @@
 #include "sll.h"
 #include "gvl.h"
 
+extern const char *currgdlfile;
+extern int gdllineno;
 extern int gdl_corrq;
 
 void
@@ -246,7 +248,7 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 #if 1
 		  else
 		    {
-		      fprintf(stderr, "gvl: [vq] unhandled case for input %s(%s)\n",
+		      mesg_vwarning(currgdlfile, gdllineno, "gvl: [vq] unhandled case for input %s(%s)\n",
 			      vp->orig, qp->orig);
 		    }
 #else

@@ -76,31 +76,30 @@ atf_name(struct catchunk *cp, char **data)
 	    }
 	  break;
 	default:
-	  *data = cp->text;
-	  s = cp->text;
-	  while (*s && ' ' != *s  && '\t' != *s)
-	    ++s;
-	  switch (s[-1])
+	  if (intrans)
 	    {
-	    case '.':
-	      return "line";
-	      break;
-	    case ':':
-	      return "siglum";
-	      break;
-	    default:
-	      if (intrans)
+	      *data = cp->text;
+	      return "#trans";
+	    }
+	  else
+	    {
+	      *data = cp->text;
+	      s = cp->text;
+	      while (*s && ' ' != *s  && '\t' != *s)
+		++s;
+	      switch (s[-1])
 		{
-		  *data = cp->text;
-		  return "#trans";
-		}
-	      else
-		{
+		case '.':
+		  return "line";
+		  break;
+		case ':':
+		  return "siglum";
+		  break;
+		default:
 		  fprintf(stderr, "%s:%d: atf_name: internal error, no '.' or ':' in passed line type\n",
 			  curratffile, atflineno);
 		  return "mystery";
 		}
-	      break;
 	    }
 	  break;
 	}

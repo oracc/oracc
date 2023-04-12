@@ -9,10 +9,16 @@
 void
 gvl_n(Node *ynp)
 {
+  Node *nnp = ynp;
   gvl_g *nq = NULL;
   unsigned const char *l = NULL;
-  unsigned char *p = (ucp)pool_alloc(strlen(ynp->kids->text) + strlen(ynp->kids->next->text) + 3, curr_sl->p);
-  sprintf((char*)p, "%s(%s)", ynp->kids->text, ynp->kids->next->text);
+  unsigned char *p = NULL;
+
+  if (!nnp->kids->text && nnp->kids->kids->text)
+    nnp = nnp->kids;
+  
+  p = (ucp)pool_alloc(strlen(nnp->kids->text) + strlen(nnp->kids->next->text) + 3, curr_sl->p);
+  sprintf((char*)p, "%s(%s)", nnp->kids->text, nnp->kids->next->text);
 
   if (!(nq = hash_find(curr_sl->h, p)))
     {

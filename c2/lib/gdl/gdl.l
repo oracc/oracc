@@ -33,13 +33,15 @@ static int QIN = 0; /* non-zero if in a(BA) qualifier */
 int term = 0;
 #define yyterminate() return (term = !term) ? END : YY_NULL
 
+static void gdl_closers(void);
+
 /* Simple stack for nesting of compounds and valuquals */
 #define CVQ_MAX 6
 static int cvq_stack[CVQ_MAX] = { 0, 0, 0, 0, 0, 0 };
 static int cvq_top = -1;
 static int cvq_pop(void);
 static int cvq_push(int);
-
+static void cvq_reset(void);
 %}
 
 GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+([@~][a-z0-9]+)*
@@ -81,6 +83,8 @@ LISTNUM		[A-Z]+[0-9]+[a-z]*([@~][a-z0-9]+)*
 <C>"\xc3\x97"	       	{ GIN=0; return C_TIMES; }
 <C>"("			{ return GIN ? QLP : CLP; }
 <C>")"			{ return CRP; }
+<C>[ \t]+	       	{ CIN=GIN=0; mesg_vwarning(currgdlfile,gdllineno,"missing '|' in compound");
+			  cvq_reset(); }
 
 "\xc3\x97"	       	{ return C_TIMES; }
 
@@ -88,25 +92,27 @@ LISTNUM		[A-Z]+[0-9]+[a-z]*([@~][a-z0-9]+)*
 
 <Q>")"/">"	       	{ return QRP; }
 <Q>")"			{ return QRP; }
+<Q>[ \t]+	       	{ QIN=GIN=0; mesg_vwarning(currgdlfile,gdllineno,"missing ')' in qv");
+			  cvq_reset(); }
 
 ")>"			{ gconst; return R_ang_par; }
 
-"{{"			{ gconst; return L_dbl_cur; }
-"}}"			{ gconst; return R_dbl_cur; }
-"<<"			{ gconst; return L_dbl_ang; }
-">>"			{ gconst; return R_dbl_ang; }
-"<"			{ gconst; return '<'; }
-">"			{ gconst; return '>'; }
-"("			{ gconst; return GIN ? QLP : yytext[0]; }
-")"			{ gconst; return QIN ? QRP : yytext[0]; }
-"["			{ gconst; return yytext[0]; }
-"]"			{ gconst; return yytext[0]; }
-"{"			{ gconst; return yytext[0]; }
-"}"			{ gconst; return yytext[0]; }
-{L_UHS}			{ gsave; return L_uhs; }
-{R_UHS}			{ gsave; return R_uhs; }
-{L_LHS}			{ gsave; return L_lhs; }
-{R_LHS}			{ gsave; return R_lhs; }
+"{{"			{ gconst; GIN=0; return L_dbl_cur; }
+"}}"			{ gconst; GIN=0; return R_dbl_cur; }
+"<<"			{ gconst; GIN=0; return L_dbl_ang; }
+">>"			{ gconst; GIN=0; return R_dbl_ang; }
+"<"			{ gconst; GIN=0; return '<'; }
+">"			{ gconst; GIN=0; return '>'; }
+"("			{ gconst; if (GIN) { GIN=0; return QLP; } else { return yytext[0]; } }
+")"			{ gconst; GIN=0; return yytext[0]; }
+"["			{ gconst; GIN=0; return yytext[0]; }
+"]"			{ gconst; GIN=0; return yytext[0]; }
+"{"			{ gconst; GIN=0; return yytext[0]; }
+"}"			{ gconst; GIN=0; return yytext[0]; }
+{L_UHS}			{ gsave; GIN=0; return L_uhs; }
+{R_UHS}			{ gsave; GIN=0; return R_uhs; }
+{L_LHS}			{ gsave; GIN=0; return L_lhs; }
+{R_LHS}			{ gsave; GIN=0; return R_lhs; }
 
 %[-a-z0-9]+		{ gsave; return LANG; }
 _			{ gsave; return LANG_FLIP; }
@@ -130,7 +136,7 @@ _			{ gsave; return LANG_FLIP; }
 
 "#"			{ return GIN ? *yytext : gdl_lexfld[(int)*yytext]; }
 
-[!?]			{ return *yytext; }
+[!?*]			{ return *yytext; }
 
 ["~=@^]/[ \t]          	{ /*"*/ return gdl_lexfld[(int)*yytext]; }
 
@@ -143,7 +149,7 @@ _			{ gsave; return LANG_FLIP; }
 
 [ \t]+			{ GIN=0; return SPACE; }
 
-\n			{ return gdltext[0]; }
+\n			{ gdl_closers(); return gdltext[0]; }
 
 "($"			{ BEGIN TD; return L_inl_dol; }
 <TD>"$)"	       	{ BEGIN 0; return R_inl_dol; }
@@ -156,9 +162,20 @@ _			{ gsave; return LANG_FLIP; }
 
 .			{ mesg_vwarning(currgdlfile, gdllineno, "gdl.l: unmatched character %c\n", *gdltext); }
 
-<<EOF>>			{ yyterminate(); }
+<<EOF>>			{ gdl_closers(); yyterminate(); }
 
 %%
+
+static void
+gdl_closers(void)
+{
+  if (CIN)
+    mesg_vwarning(currgdlfile,gdllineno,"missing '|' in compound (discovered at end of line)");
+  else if (QIN)
+    mesg_vwarning(currgdlfile,gdllineno,"missing ')' in qv (discovered at end of line)");
+  GIN=CIN=QIN=0;
+  cvq_reset();
+}
 
 int
 gdl_grapheme_type(void)
@@ -218,6 +235,7 @@ gdl_decr_qin(void)
   if (--QIN < 0)
     { /* underflow condition */
       QIN = 0;
+      BEGIN 0;
     }
   else
     {
@@ -240,9 +258,12 @@ int
 cvq_push(int s)
 {
   if (++cvq_top < CVQ_MAX)
-    return cvq_stack[cvq_top] = s;
+    {
+      cvq_stack[cvq_top] = YY_START;
+      return s;
+    }
   else
-    fprintf(stderr, "cvq_push: cvq stack overflow (CVQ_MAX=%d)\n", CVQ_MAX);
+    fprintf(stderr, "%s:%d: cvq_push: cvq stack overflow (CVQ_MAX=%d)\n", currgdlfile, gdllineno, CVQ_MAX);
   return 0;
 }
 
@@ -250,8 +271,15 @@ int
 cvq_pop(void)
 {
   if (cvq_top >= 0)
-    return cvq_stack[--cvq_top];
+    return cvq_stack[cvq_top--];
   else
-    fprintf(stderr, "cvq_pop: cvq stack underflow\n");
+    fprintf(stderr, "%s:%d: cvq_pop: cvq stack underflow\n", currgdlfile, gdllineno);
    return 0;
+}
+
+void
+cvq_reset(void)
+{
+  cvq_top = -1;
+  BEGIN 0;
 }

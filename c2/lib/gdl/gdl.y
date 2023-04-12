@@ -220,7 +220,7 @@ q:
 							  gdl_corrq
 							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
 	grapheme 	 	       			{ gdl_remove_q_error(@1, yrem); }
-	QRP qmaybemodflags		      		{ gdl_decr_qin(); }
+	QRP { gdl_decr_qin(); } qmaybemodflags		      		
 	;
 
 qmaybemodflags:
