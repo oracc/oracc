@@ -17,6 +17,7 @@ extern int gdl_lexfld[];
 extern int curr_lang;
 extern int gdl_unicode;
 int gdlflextrace = 0;
+int g_literal_flag = 0;
 
 extern Pool *gdlpool;
 #define gdlsave(s) (char*)pool_copy((const unsigned char*)(s),gdlpool);
@@ -28,6 +29,7 @@ static int QIN = 0; /* non-zero if in a(BA) qualifier */
 
 #define gconst gdllval.text=gdltext
 #define gsave  gdllval.text=gdlsave(gdltext)
+#define gsaveg(garg)  gdllval.text=gdlsave((garg))
 int term = 0;
 #define yyterminate() return (term = !term) ? END : YY_NULL
 
@@ -112,7 +114,7 @@ _			{ gsave; return LANG_FLIP; }
 &			{ return '&'; }
 ![a-z]+			{ return FTYPE; }
 
-("*"|:['".:]?|\/)/[\]>#*!? \t\n(]	{ GIN=1; gsave; return PUNCT; }
+("*"|:['".:]?|\/)/[\]>#*!? \t\n(]	{ /*"*/ GIN=1; gsave; return PUNCT; }
 
 [0-9]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
 
@@ -120,9 +122,9 @@ _			{ gsave; return LANG_FLIP; }
 
 {LISTNUM}		{ GIN=1; gsave; return LISTNUM; }
 
-({G}({G}|{B})*({G}|{MOD}+))	{ GIN=1; return gdl_grapheme_type(); }
+("$"?{G}({G}|{B})*({G}|{MOD}+))	{ GIN=1; return gdl_grapheme_type(); }
 
-{GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
+"$"?{GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
 
 {MOD}			{ GIN=1; gsave; return MOD; }
 
@@ -161,9 +163,17 @@ _			{ gsave; return LANG_FLIP; }
 int
 gdl_grapheme_type(void)
 {
-  gsave;
-  if (strlen(gdllval.text) == 1
-      && ('n' == *gdllval.text || 'N' == *gdllval.text))
+  char *g = gdltext;
+  if ('$' == *g)
+    {
+      ++g;
+      g_literal_flag = 1;
+    }
+
+  gsaveg(g);
+
+  if (strlen(g) == 1
+      && ('n' == *g || 'N' == *g))
     return NUMBER;
   else
     return GRAPHEME;

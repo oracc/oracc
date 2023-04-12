@@ -13,6 +13,9 @@ gvl_q(Node *ynp)
   unsigned char *p = NULL;
   unsigned const char *vo = NULL, *qo = NULL;
 
+  if (gdl_corrq)
+    ynp->name = "g:corr";
+  
   if (!(vo = (uccp)ynp->kids->text))
     if (ynp->kids->user)
       {
@@ -72,7 +75,7 @@ gvl_q(Node *ynp)
 	  vq->mess = gvl_vmess("%s failed canonicalization", vq->orig);
 	}
 
-      if (vq->orig)
+      if (vq->orig && vq->c10e) /* don't hash if failed canonicalization */
 	{
 	  hash_add(curr_sl->h, vq->orig, vq);
 	  if (vq->c10e && strcmp((ccp)vq->orig, (ccp)vq->c10e))

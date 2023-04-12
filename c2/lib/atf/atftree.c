@@ -11,6 +11,7 @@
 char *
 atf_name(struct catchunk *cp, char **data)
 {
+  static int intrans = 0;
   char *n = NULL, *s = NULL;
   
   if (cp)
@@ -19,9 +20,12 @@ atf_name(struct catchunk *cp, char **data)
 	{
 	case '&':
 	  *data = cp->text + 1;
+	  intrans = 0;
 	  return "amp";
 	  break;
 	case '@':
+	  if (!intrans)
+	    intrans = !strncmp(cp->text+1, "translation", strlen("translation"));
 	  return cat_name(cp, data);
 	  break;
 	case '#':
@@ -57,6 +61,20 @@ atf_name(struct catchunk *cp, char **data)
 	  *data = cp->text; /* leave the link chars in the text for parsing later */
 	  return "link";
 	  break;
+	case '=':
+	  n = cp->text + 2;
+	  while (isspace(*n))
+	    ++n;
+	  *data = n;
+	  switch (cp->text[1])
+	    {
+	    case '=':
+	      return "equiv";
+	    default:
+	      fprintf(stderr, "unhandled = start\n");
+	      return "mystery";
+	    }
+	  break;
 	default:
 	  *data = cp->text;
 	  s = cp->text;
@@ -71,10 +89,17 @@ atf_name(struct catchunk *cp, char **data)
 	      return "siglum";
 	      break;
 	    default:
-	      /* can't happen */
-	      fprintf(stderr, "%s:%d: atf_name: internal error, no '.' or ':' in passed line type\n",
-		      curratffile, atflineno);
-	      return "mystery";
+	      if (intrans)
+		{
+		  *data = cp->text;
+		  return "#trans";
+		}
+	      else
+		{
+		  fprintf(stderr, "%s:%d: atf_name: internal error, no '.' or ':' in passed line type\n",
+			  curratffile, atflineno);
+		  return "mystery";
+		}
 	      break;
 	    }
 	  break;

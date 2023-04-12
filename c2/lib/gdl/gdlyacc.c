@@ -85,9 +85,19 @@ gdl_graph_node(Tree *ytp, const char *name, const char *data)
 Node *
 gdl_graph(Tree *ytp, const char *data)
 {
+  extern int g_literal_flag;
+  Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "GRAPH: %s\n", data);
-  return gdl_graph_node(ytp, "g:g", data);
+  ret = gdl_graph_node(ytp, "g:g", data);
+  if (g_literal_flag)
+    {
+      /* FIXME: this should be more efficient; maybe have separate
+	 flex pats that call different gdl_graph funcs */
+      gdl_prop(ret, '$', PG_GDL_FLAGS, NULL, NULL);
+      g_literal_flag = 0;
+    }
+  return ret;
 }
 
 Node *

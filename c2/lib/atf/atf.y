@@ -22,7 +22,7 @@ ATFLTYPE atflloc;
 
 %union { char *text; int i; }
 
-%token	<text> TOK TAB EOL PAR CMT BAD LINE SIGLUM
+%token	<text> TOK TRANS TAB EOL PAR CMT BAD LINE SIGLUM
 
 %start fields
 
@@ -52,6 +52,9 @@ line:	TOK		{ if (atftrace) fprintf(stderr, "field/EOL: %s\n", atflval.text);
    			  cat_chunk(curratffile,atflineno,(char*)atflval.text);
  			}
 	| CMT 		{ if (atftrace) fprintf(stderr, "comment/EOL: %s\n", atflval.text);
+   			  cat_chunk(curratffile,atflineno,(char*)atflval.text);
+ 			}
+	| TRANS        	{ if (atftrace) fprintf(stderr, "trans/EOL: %s\n", atflval.text);
    			  cat_chunk(curratffile,atflineno,(char*)atflval.text);
  			}
 	;

@@ -17,7 +17,7 @@ const char *curratffile = NULL;
 int atfflextrace = 0;
 
 extern Pool *catpool;
-#define atfsave(s) (char*)pool_copy((const unsigned char*)(s),catpool);
+#define atfpool(s) (char*)pool_copy((const unsigned char*)(s),catpool);
 static void atf_user_action(void);
 
 /* #if 1 to print every matched rule */
@@ -27,35 +27,45 @@ static void atf_user_action(void);
 #define pmatch(m)
 #endif
 
+#define atfsave atflval.text=atfpool(atftext)
+
 %}
 
-BOM1	("\xef\xbb\xbf")
+BOM3	("\xef\xbb\xbf")
 BOM2	("\xfe\xff")
 LINK	("<<"|">>"|"++"|"||")
 
+%s T
+
 %%
 
-^{BOM1}"&".*/\n         	{ atflval.text=atfsave(atftext+3); pmatch("###amp\n"); return TOK; }
+^{BOM3}"&".*/\n         	{ atflval.text=atfpool(atftext+3); pmatch("###amp\n"); return TOK; }
 
-^{BOM2}"&".*/\n         	{ atflval.text=atfsave(atftext+2); pmatch("###amp\n"); return TOK; }
+^{BOM2}"&".*/\n         	{ atflval.text=atfpool(atftext+2); pmatch("###amp\n"); return TOK; }
 
-^"&".*/\n         		{ atflval.text=atfsave(atftext); pmatch("###amp\n"); return TOK; }
+^"&".*/\n         		{ BEGIN 0; atfsave; pmatch("###amp\n"); return TOK; }
 
-^"@".*/\n  			{ atflval.text=atfsave(atftext); pmatch("###at\n"); return TOK; }
+^"@"translation.*/\n		{ BEGIN T; atfsave; pmatch("###translation\n"); return TOK; }
 
-^"$".*/\n  			{ atflval.text=atfsave(atftext); pmatch("###dollar\n"); return TOK; }
+^"@".*/\n  			{ atfsave; pmatch("###at\n"); return TOK; }
 
-^"#"[^ \t\n:]+:[ \t]+.*/\n  	{ atflval.text=atfsave(atftext); pmatch("###hash\n"); return TOK; }
+^"$".*/\n  			{ atfsave; pmatch("###dollar\n"); return TOK; }
 
-^{LINK}.*/\n  			{ atflval.text=atfsave(atftext); pmatch("###link\n"); return TOK; }
+^"#"[^ \t\n:]+:[ \t]+.*/\n  	{ atfsave; pmatch("###hash\n"); return TOK; }
 
-^[^ \t\n.:]+\.([ \t]+.*)?/\n 	{ atflval.text=atfsave(atftext); pmatch("###line\n"); return TOK; }
+^{LINK}.*/\n  			{ atfsave; pmatch("###link\n"); return TOK; }
 
-^[^ \t\n.:]+:[ \t]+.*/\n 	{ atflval.text=atfsave(atftext); pmatch("###siglum\n"); return TOK; }
+^[^ \t\n.:]+\.([ \t]+.*)?/\n 	{ atfsave; pmatch("###line\n"); return TOK; }
 
-^\#.*/\n   			{ atflval.text=atfsave(atftext); pmatch("###comment\n"); return CMT; }
+^[^ \t\n.:]+:[ \t]+.*/\n 	{ atfsave; pmatch("###siglum\n"); return TOK; }
 
-^[ \t]+.+/\n    		{ atflval.text=atfsave(atftext); pmatch("###tab\n"); return TAB; }
+^==.*/\n 			{ atfsave; pmatch("###equiv\n"); return TOK; }
+
+^\#.*/\n   			{ atfsave; pmatch("###comment\n"); return CMT; }
+
+^[ \t]+.+/\n    		{ atfsave; pmatch("###tab\n"); return TAB; }
+
+<T>^[^ \t\n].*/\n		{ atfsave; pmatch("###bad\n"); return TRANS; }
 
 ^[^ \t\n].*/\n			{ pmatch("###bad\n"); return BAD; }
 
