@@ -15,6 +15,8 @@ gvl_q(Node *ynp)
   unsigned char *p = NULL;
   unsigned const char *vo = NULL, *qo = NULL;
 
+  gdl_corrq = (prop_find_pg(ynp->kids->props,'!',PG_GDL_FLAGS)!=NULL);
+
   if (gdl_corrq)
     ynp->name = "g:corr";
   
@@ -84,7 +86,7 @@ gvl_q(Node *ynp)
 	    hash_add(curr_sl->h, vq->c10e, vq);
 	}
     }
-  else
+  else if (!p)
     {
       vq = memo_new(curr_sl->m);
       vq->orig = (uccp)ynp->text;
@@ -243,6 +245,12 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 			 signs */
 		      if ('*' != *vp->orig)
 			vq->mess = gvl_vmess("[vq] %s(%s): mismatched punctuation qualifier",
+					     vp->orig, qp->orig);
+		    }
+		  else if ('n' == *vp->type)
+		    {
+		      if (!gdl_corrq)
+			vq->mess = gvl_vmess("[vq] %s(%s): mismatched number qualifier",
 					     vp->orig, qp->orig);
 		    }
 #if 1

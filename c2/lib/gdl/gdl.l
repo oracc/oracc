@@ -56,6 +56,8 @@ R_LHS		"\xe2\xb8\xa5"
 
 LISTNUM		[A-Z]+[0-9]+[a-z]*([@~][a-z0-9]+)*
 
+NOTEMARK	"^"[0-9]+"^"
+
 %s C
 %s Q
 %x TC
@@ -114,13 +116,15 @@ LISTNUM		[A-Z]+[0-9]+[a-z]*([@~][a-z0-9]+)*
 {L_LHS}			{ gsave; GIN=0; return L_lhs; }
 {R_LHS}			{ gsave; GIN=0; return R_lhs; }
 
-%[-a-z0-9]+		{ gsave; return LANG; }
+%[-a-z0-9]+("/"[gn])?		{ gsave; return LANG; }
 _			{ gsave; return LANG_FLIP; }
 ,			{ return ','; }
 &			{ return '&'; }
 ![a-z]+			{ return FTYPE; }
 
-("*"|:['".:]?|\/)/[\]>#*!? \t\n(]	{ /*"*/ GIN=1; gsave; return PUNCT; }
+{NOTEMARK}		{ gsave; return NOTEMARK; }
+
+("*"|:['".:]?)/[\]>#*!? \t\n(]	{ /*"*/ GIN=1; gsave; return PUNCT; }
 
 [0-9]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
 
@@ -144,8 +148,8 @@ _			{ gsave; return LANG_FLIP; }
 "--"			{ GIN=0; return ENHYPHEN; }
 [-+:.]     		{ GIN=0; return gdltext[0]; }
 
-";"			{ return ';'; }
-"/"			{ return '/'; }
+";"			{ return INDENT; }
+"/"			{ return NEWLINE; }
 
 [ \t]+			{ GIN=0; return SPACE; }
 

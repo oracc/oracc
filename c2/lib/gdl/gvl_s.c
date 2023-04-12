@@ -36,7 +36,7 @@ gvl_s(Node *ynp)
 	  ynp->name = "g:v";
 	}
     }
-  else if ('N' == *gp->type)
+  else if ('B' == *gp->type)
     {
       /* This is a barenum--we need to sexify and return the result */
       gvl_n_sexify(ynp);

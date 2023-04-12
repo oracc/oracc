@@ -121,7 +121,7 @@ gdl_number(Tree *ytp, const char *data)
 {
   if (gdltrace)
     fprintf(stderr, "NUMBER: %s\n", data);
-  return gdl_graph_node(ytp, "g:n", data);
+  return gdl_graph_node(ytp, "g:N", data);
 }
 
 /* Used when a number is not followed by a '('; need to sexify nums here */
@@ -130,7 +130,7 @@ gdl_barenum(Tree *ytp, const char *data)
 {
   if (gdltrace)
     fprintf(stderr, "BARENUM: %s\n", data);
-  return gdl_graph_node(ytp, "g:N", data);
+  return gdl_graph_node(ytp, "g:B", data);
 }
 
 Node *

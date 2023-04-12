@@ -26,8 +26,8 @@ GDLLTYPE gdllloc;
 
 %union { char *text; int i; }
 
-%token	<text> 	FTYPE LANG TEXT ENHYPHEN ELLIPSIS
-		GRAPHEME NUMBER BARENUM LISTNUM PUNCT MOD
+%token	<text> 	FTYPE LANG TEXT ENHYPHEN ELLIPSIS NOTEMARK
+		GRAPHEME NUMBER BARENUM LISTNUM PUNCT MOD INDENT NEWLINE
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
@@ -239,7 +239,9 @@ lang:
 meta:
 	  statec
 	| stateo
-	| ';'						{ ynp = gdl_nongraph(ytp, ";"); }
+	| INDENT       					{ ynp = gdl_nongraph(ytp, ";"); }
+	| NEWLINE	       				{ ynp = gdl_nongraph(ytp, ";"); }
+	| NOTEMARK
 	;
 
 mods:

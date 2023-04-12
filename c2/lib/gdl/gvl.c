@@ -562,7 +562,7 @@ gvl_valuqual(Mloc ml, Node *ynp)
 
   if ('q' == ynp->name[2])
     {
-      if ('n' == ynp->kids->name[2])
+      if ('N' == ynp->kids->name[2])
 	gvl_n(ynp);
       else
 	gvl_q(ynp);

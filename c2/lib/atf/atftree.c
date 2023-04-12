@@ -8,6 +8,9 @@
 
 #include "atf.h"
 
+extern const char *curratffile;
+extern int atftrace, atflineno;
+
 char *
 atf_name(struct catchunk *cp, char **data)
 {
@@ -70,8 +73,10 @@ atf_name(struct catchunk *cp, char **data)
 	    {
 	    case '=':
 	      return "equiv";
+	    case ':':
+	      return "order";
 	    default:
-	      fprintf(stderr, "unhandled = start\n");
+	      mesg_vwarning(curratffile, atflineno, "unhandled = start '%c'\n", cp->text[1]);
 	      return "mystery";
 	    }
 	  break;

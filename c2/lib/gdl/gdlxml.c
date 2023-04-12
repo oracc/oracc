@@ -70,6 +70,20 @@ gdl_xml_o(Node *np, void *user)
   fputc('>', xhp->fp);
   if (np->text)
     fprintf(xhp->fp, "<text>%s</text>", xmlify((uccp)np->text));
+  if (np->props)
+    {
+      Prop *p = np->props;
+      fprintf(xhp->fp, "<props>");
+      while (p)
+	{
+	  fprintf(xhp->fp, "<prop p=\"%d\" g=\"%d\"", p->p, p->g);
+	  if (p->k)
+	    fprintf(xhp->fp, " k=\"%s\" v=\"%s\"", p->k, xmlify((uccp)p->v));
+	  fprintf(xhp->fp, "/>");
+	  p = p->next;
+	}
+      fprintf(xhp->fp, "</props>");
+    }
   if (np->user)
     gdlxml_parsed((gvl_g*)np->user, user);
 }
