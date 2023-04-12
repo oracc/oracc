@@ -208,8 +208,9 @@ cdelim:
 
 valuqual:
 	q	    				       	 { gvl_valuqual(@1, ytp->curr);
-	  						   ynp = gdl_pop(ytp,"g:q"); }
-	;
+	  						   ynp = ytp->curr; }
+	qmaybemodflags					 { ynp = gdl_pop(ytp,"g:q"); }
+        ;
 
 q:
 	grapheme
@@ -220,7 +221,7 @@ q:
 							  gdl_corrq
 							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
 	grapheme 	 	       			{ gdl_remove_q_error(@1, yrem); }
-	QRP { gdl_decr_qin(); } qmaybemodflags		      		
+	QRP { gdl_decr_qin(); }		      		
 	;
 
 qmaybemodflags:
