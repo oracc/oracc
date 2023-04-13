@@ -124,7 +124,7 @@ _			{ gsave; return LANG_FLIP; }
 
 {NOTEMARK}		{ gsave; return NOTEMARK; }
 
-("*"|:['".:]?)/[\]>#*!? \t\n(]	{ /*"*/ GIN=1; gsave; return PUNCT; }
+("*"|:['".:]?)/[\]>#*!? \t\n()]	{ /*"*/ GIN=1; gsave; return PUNCT; }
 
 [0-9]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
 
@@ -143,6 +143,7 @@ _			{ gsave; return LANG_FLIP; }
 [!?*]			{ return *yytext; }
 
 ["~=@^]/[ \t]          	{ /*"*/ return gdl_lexfld[(int)*yytext]; }
+
 
 "..."			{ GIN=0; gsave; return ELLIPSIS; }
 "--"			{ GIN=0; return ENHYPHEN; }

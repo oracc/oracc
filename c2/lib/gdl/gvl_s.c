@@ -43,7 +43,7 @@ gvl_s(Node *ynp)
       return ynp->user;
     }
 
-  if ('a' != curr_lang && 's' != curr_lang)
+  if ('a' != curr_lang && 's' != curr_lang && (curr_lang < '0' || curr_lang > '9'))
     return gp;
   
   gp->c10e = pool_copy(gvl_s_c10e(gp->orig, &c10e_err), curr_sl->p);

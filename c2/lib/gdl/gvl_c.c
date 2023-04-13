@@ -97,7 +97,12 @@ gvl_c_node_c10e(Node *np, void *user)
   if (strcmp(np->name, "g:c") && strcmp(np->name, "g:z"))
     {
       if (np->user)
-	list_add((List*)user, (void*)((gvl_g*)(np->user))->sign);
+	{
+	  if (((gvl_g*)(np->user))->sign)
+	    list_add((List*)user, (void*)((gvl_g*)(np->user))->sign);
+	  else
+	    list_add((List*)user, (void*)((gvl_g*)(np->user))->orig);
+	}
       else if (np->text)
 	list_add((List*)user, (void*)np->text);
       else if (!strcmp(np->name, "g:gp"))

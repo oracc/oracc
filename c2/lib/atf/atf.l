@@ -55,9 +55,9 @@ LINK	("<<"|">>"|"++"|"||")
 
 ^{LINK}.*/\n  			{ atfsave; pmatch("###link\n"); return TOK; }
 
-^[^ \t\n.:]+\.+([ \t]+.*)?/\n 	{ atfsave; pmatch("###line\n"); return TOK; }
+^[^ \t\n]+\.([ \t]+.*)?/\n 	{ atfsave; pmatch("###line\n"); return TOK; }
 
-^[^ \t\n.:]+:+[ \t]+.*/\n 	{ atfsave; pmatch("###siglum\n"); return TOK; }
+^[^ \t\n]+:([ \t]+.*)/\n 	{ atfsave; pmatch("###siglum\n"); return TOK; }
 
 ^==.*/\n 			{ atfsave; pmatch("###equiv\n"); return TOK; }
 

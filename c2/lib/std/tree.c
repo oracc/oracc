@@ -99,7 +99,13 @@ tree_pop(Tree *tp)
   if (tp->curr->rent)
     return tp->curr = tp->curr->rent;
   else
-    return NULL;
+    {
+      if (tp->curr->mloc)
+	mesg_vwarning(tp->curr->mloc->file, tp->curr->mloc->line, "internal error: attempt to pop node with no parent\n");
+      else
+	fprintf(stderr, "internal error in tree_pop\n");
+      return tp->curr;
+    }
 }
 
 Node *
