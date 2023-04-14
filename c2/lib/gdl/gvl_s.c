@@ -51,7 +51,7 @@ gvl_s(Node *ynp)
       /* best case: g is a known sign or value */
       gp->oid = (ccp)l;
       gp->sign = gvl_lookup(sll_tmp_key(l,""));
-      gp->c10e = gp->sign;
+      gp->c10e = gp->orig;
     }
   else if ('s' == *gp->type)
     {
@@ -80,7 +80,8 @@ gvl_s(Node *ynp)
 	{
 	  gp->type = "l";
 	  gp->oid = (ccp)l;
-	  gp->c10e = gp->sign = gvl_lookup(sll_tmp_key(l,""));
+	  gp->sign = gvl_lookup(sll_tmp_key(l,""));
+	  gp->c10e = gp->orig;
 	}
       else
 	gp->mess = gvl_vmess("unknown signlist name: %s", gp->orig);

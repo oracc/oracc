@@ -24,6 +24,15 @@ gdl_unlegacy(Node *np)
   int suppress_case_check = 0;
   unsigned const char *g = (uccp)np->text;
 
+  /* While this is only called from gdl on 's' nodes, np can only have
+     kids if it is a sign+mod in which case the sign has already been
+     through gdl_unlegacy */
+  if (np->kids && np->kids->props && prop_find_kv(np->kids->props, "legacy", NULL))
+    {
+      np->text = np->kids->text;
+      return;
+    }
+  
   err = 0;
   
   if ((w = utf2wcs(g, &len)))

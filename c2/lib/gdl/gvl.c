@@ -525,7 +525,7 @@ void
 gvl_simplexg(Mloc ml, Node *ynp)
 {
   gvl_g *gp = NULL;
-  unsigned const char *g = NULL;
+  unsigned const char *g = NULL, *m_orig = NULL;
 
   if (!ynp || !ynp->text || ynp->name[2] == 'x' || !strcmp(ynp->name, "g:gp") || 'n' == curr_lang)
     return;
@@ -536,13 +536,67 @@ gvl_simplexg(Mloc ml, Node *ynp)
   if (gvl_trace)
     fprintf(stderr, "gvl_simplexg: called with g=%s\n", g);
 
+  /* a sign with mods has a copy of the sign and the mods as kids.
+     Process the child version of the sign, build the full form and
+     make that the current node's text, then process the top-level
+     sign+mods combo.
+
+     To preserve original input in the case of GANA₂@t, which is c10ed
+     to GAN₂@t, we rebuild both the original and c10e forms and reset
+     top-level gp->orig to the built orig
+   */
+  if (ynp->kids)
+    {
+      List *op = list_create(LIST_SINGLE), *cp = list_create(LIST_SINGLE);
+      Node *np = NULL;
+      unsigned char *s = NULL;
+      gvl_simplexg(ml,ynp->kids);
+      for (np = ynp->kids; np; np = np->next)
+	{
+	  if (np->user && ((gvl_g*)np->user)->c10e)
+	    {
+	      list_add(op, (void*)((gvl_g*)np->user)->orig);
+	      list_add(cp, (void*)((gvl_g*)np->user)->c10e);
+	    }
+	  else
+	    {
+	      if (np->name[2] == 'm')
+		{
+		  list_add(op, "@");
+		  list_add(cp, "@");
+		}
+	      else if (np->name[2] == 'a')
+		{
+		  list_add(op, "~");
+		  list_add(cp, "~");
+		}
+	      if (np->name[2] != 'f')
+		{
+		  list_add(op, (void*)np->text);
+		  list_add(cp, (void*)np->text);
+		}
+	    }
+	}
+      s = list_concat(cp);
+      ynp->text = (ccp)pool_copy(s,curr_sl->p);
+      s = list_concat(op);
+      m_orig = pool_copy(s,curr_sl->p);
+      list_free(cp, NULL);
+      list_free(op, NULL);
+    }
+
   if (!(gp = hash_find(curr_sl->h,g)))
     gp = gvl_s(ynp);
-
+  
   /* it isn't an error for gp to be NULL because when we gvl_n_sexify
      in gvl_s the result ynp is a g:gp and doesn't have a gp node */
   if (gp)
     {
+      if (m_orig)
+	{
+	  ynp->text = (ccp)m_orig;
+	  gp->orig = m_orig;
+	}
       ynp->user = gp;
       if (gp->mess)
 	mesg_err(ynp->mloc, (ccp)gp->mess);

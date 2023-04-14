@@ -134,6 +134,6 @@ gvl_c_form(Node *ynp, void (*fnc)(Node *np, void *user))
   *t++ = '|';
   *t = '\0';
   free(p);
-  free(lp);
+  list_free(lp, NULL);
   return ret;
 }

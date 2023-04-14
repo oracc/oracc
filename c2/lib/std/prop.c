@@ -72,14 +72,15 @@ prop_find_pg(Prop *p, int ptype, int gtype)
   return NULL;
 }
 
+/* Caller can use value==NULL to match key only */
 Prop*
 prop_find_kv(Prop *p, const char *key, const char *value)
 {
-  if (!key || !value)
+  if (!key)
     return NULL;
   while (p)
     {
-      if (p->k && p->v && !strcmp(p->k, key) && !strcmp(p->v, value))
+      if (p->k && p->v && !strcmp(p->k, key) && (NULL == value || !strcmp(p->v, value)))
 	return p;
       p = p->next;
     }

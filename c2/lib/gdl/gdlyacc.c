@@ -8,7 +8,7 @@
 #include "gvl.h"
 
 extern const char *currgdlfile;
-extern int gdltrace, gdllineno;
+extern int gdltrace, gdllineno, gdl_legacy;
 extern void gdl_wrapup_buffer(void);
 extern void gdl_validate(Tree *tp);
 int curr_lang = 's';
@@ -243,6 +243,15 @@ gdl_mod(Tree *ytp, const char *data)
   if (gdltrace)    
     fprintf(stderr, "gt: MOD: %s\n", data);
   (void)tree_push(ytp);
+  if (!ytp->curr->kids)
+    {
+      np = tree_add(ytp, NS_GDL, ytp->curr->name, ytp->curr->depth+1, NULL);
+      np->text = (ccp)pool_copy((uccp)ytp->curr->text,gdlpool);
+      /* This is done in a Bison rule which this node-copy won't be
+	 processed by so we have to unlegacy here */
+      if (gdl_legacy)
+	gdl_unlegacy(np);
+    }
   np = tree_add(ytp, NS_GDL, n, ytp->curr->depth+1, NULL);
   np->text = (ccp)pool_copy((uccp)data,gdlpool);
   tree_pop(ytp);
