@@ -15,7 +15,7 @@ const char *gdlfile = "<stdin>";
 const char *currgdlfile = NULL;
 extern int gdl_lexfld[];
 extern int curr_lang;
-extern int gdl_unicode;
+extern int gdl_legacy, gdl_unicode;
 int gdlflextrace = 0;
 int g_literal_flag = 0;
 
@@ -133,9 +133,10 @@ _			{ gsave; return LANG_FLIP; }
 
 {LISTNUM}		{ GIN=1; gsave; return LISTNUM; }
 
-"$"?{G}({G}|{B})*{G}	{ GIN=1; return gdl_grapheme_type(); }
-"$"?{G}({G}|{B})*/{MOD}	{ GIN=1; return gdl_grapheme_type(); }
-"$"?{GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
+"$"/{G}			{ g_literal_flag = 1; }
+{G}+{L}({G}|{B})*{G}	{ GIN=1; g_legacy_flag=1; return gdl_grapheme_type(); }
+{G}({G}|{B})*/{MOD}	{ GIN=1; return gdl_grapheme_type(); }
+{GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
 
 {MOD}			{ GIN=1; gsave; return MOD; }
 
@@ -187,12 +188,6 @@ int
 gdl_grapheme_type(void)
 {
   char *g = gdltext;
-  if ('$' == *g)
-    {
-      ++g;
-      g_literal_flag = 1;
-    }
-
   gsaveg(g);
 
   if (strlen(g) == 1

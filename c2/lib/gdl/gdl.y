@@ -15,6 +15,7 @@ extern int gdllineno, gdltrace;
 static Tree *ytp;
 static Node *ynp, *yrem, *ycp;
 /*int Q = 0;*/
+int gdl_legacy = 0;
 int gdl_unicode = 0;
 
 #define GDLLTYPE_IS_DECLARED 1
@@ -163,7 +164,8 @@ gflag:
 	;
 
 simplexg:
-	  s maybegflags	       				{ gvl_simplexg(@1, ynp); }
+	  s maybegflags	       			       	{ if (g_legacy_flag) gdl_legacy(ynp);
+	    			  			  gvl_simplexg(@1, ynp); }
 	;
 
 s:

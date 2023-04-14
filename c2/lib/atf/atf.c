@@ -10,13 +10,13 @@
 #include "atf.tab.h"
 
 int atftrace = 1;
-extern int gdl_unicode;
+extern int gdl_legacy, gdl_unicode;
 
 void
 atf_init(void)
 {
   cat_init();
-  gdl_unicode = 0;
+  gdl_legacy = gdl_unicode = 0;
 }
 
 void
@@ -33,6 +33,8 @@ atf_protocol(const char *p)
   
   if (strstr(p, "unicode"))
     gdl_unicode = 1;
+  else if (strstr(p, "legacy"))
+    gdl_legacy = 1;
   if ((p2 = strstr(p, "lang")))
     {
       p2 += 5;
