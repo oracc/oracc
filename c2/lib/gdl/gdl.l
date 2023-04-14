@@ -134,7 +134,7 @@ _			{ gsave; return LANG_FLIP; }
 {LISTNUM}		{ GIN=1; gsave; return LISTNUM; }
 
 "$"/{G}			{ g_literal_flag = 1; }
-{G}+{L}({G}|{B})*{G}	{ GIN=1; g_legacy_flag=1; return gdl_grapheme_type(); }
+{G}({G}|{B})*{G}	{ GIN=1; return gdl_grapheme_type(); }
 {G}({G}|{B})*/{MOD}	{ GIN=1; return gdl_grapheme_type(); }
 {GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
 

@@ -77,8 +77,17 @@ extern Node *gdl_punct(Tree *ytp, const char *data);
 extern Node *gdl_listnum(Tree *ytp, const char *data);
 extern Node *gdl_number(Tree *ytp, const char *data);
 extern Node *gdl_barenum(Tree *ytp, const char *data);
-
+extern void gdl_unlegacy(Node *np);
 extern void gdl_incr_qin(void);
 extern void gdl_decr_qin(void);
+
+extern wchar_t *g_wlc(wchar_t *w);
+extern wchar_t *g_wuc(wchar_t *w);
+extern unsigned char *g_lc(unsigned const char *g);
+extern unsigned char *g_uc(unsigned const char *g);
+extern unsigned char *base_of(const unsigned char *v);
+extern const char *sub_of(int i);
+extern wchar_t subdig_of(wchar_t w);
+extern wchar_t vowel_of(wchar_t w);
 
 #endif /*GDL_H_*/

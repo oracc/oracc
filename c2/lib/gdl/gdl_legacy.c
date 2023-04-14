@@ -7,21 +7,24 @@
 #include "gvl.h"
 #include "unidef.h"
 
-/* if [, ], or half brackets are detected this routine stores the
-   value of np->text in a property named 'legacy' and replaces
-   np->text with a cleaned version without the brackets. This means
-   that GVL never sees legacy bracketed data */
+#define G_C10E_MIXED_CASE 0x02
+#define G_C10E_FINAL_SUBX 0x04
+
+/* if gdl_legacy is set (normally via #atf: use legacy) this routine
+   stores the value of np->text in a property named 'legacy' and
+   replaces np->text with a cleaned version without the brackets. This
+   means that GVL never sees legacy bracketed data */
 void
-gdl_legacy(Node *np)
+gdl_unlegacy(Node *np)
 {
+  static int err;
   wchar_t *w;
   size_t len;
   int i;
   int suppress_case_check = 0;
-  unsigned const char *g = np->text;
-  extern int gdl_legacy_flag;
+  unsigned const char *g = (uccp)np->text;
 
-  gdl_legacy_flag = 0;
+  err = 0;
   
   if ((w = utf2wcs(g, &len)))
     {
@@ -138,7 +141,7 @@ gdl_legacy(Node *np)
 	      /* This block may be unnecessary with GVL */
 	      x[xlen++] = w[i];
 	      if ('(' != w[i+1])
-		*err |= G_C10E_FINAL_SUBX;
+		err |= G_C10E_FINAL_SUBX;
 	      break;
 	    default:
 	      if (iswalpha(w[i]) && !suppress_case_check)
@@ -160,7 +163,7 @@ gdl_legacy(Node *np)
       if (found_l && found_u && !suppress_case_check)
 	{
 	  /* size_t i; */
-	  *err |= G_C10E_MIXED_CASE;
+	  err |= G_C10E_MIXED_CASE;
 #if 0
 	  /* this may not be worth the problems it causes */
 	  if (found_l > found_u)
@@ -174,10 +177,10 @@ gdl_legacy(Node *np)
       ret = wcs2utf(x,xlen);
       free(x);
       
-      if (strcmp(np->text, ret))
+      if (strcmp(np->text, (ccp)ret))
 	{
-	  prop_node_add(ynp, GP_LEGACY, PG_GDL_INFO, "legacy", np->text);
-	  np->text = pool_copy(ret, np->tree->pool);
+	  prop_node_add(np, GP_TRACKING, PG_GDL_INFO, "legacy", np->text);
+	  np->text = (ccp)pool_copy(ret, np->tree->pool);
 	}
     }
 

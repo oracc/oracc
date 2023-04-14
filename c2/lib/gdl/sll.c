@@ -9,6 +9,7 @@
 #include <oraccsys.h>
 #include <pool.h>
 #include "sll.h"
+#include "gdl.h"
 #include "gvl.h"
 
 #define ccp const char *

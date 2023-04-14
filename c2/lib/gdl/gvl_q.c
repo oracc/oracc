@@ -2,6 +2,7 @@
 #include <tree.h>
 
 #include "sll.h"
+#include "gdl.h"
 #include "gvl.h"
 
 extern const char *currgdlfile;

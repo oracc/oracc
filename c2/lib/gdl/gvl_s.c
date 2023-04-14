@@ -16,7 +16,6 @@ static const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalu
 gvl_g *
 gvl_s(Node *ynp)
 {
-  static int c10e_err = 0;
   gvl_g *gp = NULL;
   unsigned const char *l = NULL;
 
@@ -56,41 +55,45 @@ gvl_s(Node *ynp)
     }
   else if ('s' == *gp->type)
     {
-      unsigned const char *c10e = gvl_s_c10e(gp->orig);
+      const unsigned char *lg = NULL, *l = NULL;
+      unsigned const char *c10e = NULL;
+      if ((lg = utf_lcase(gp->orig)))
+	c10e = gvl_s_c10e(lg);
       if (c10e)
 	{
-	  gp->oid = gvl_lookup(c10e);
+	  gp->oid = (ccp)gvl_lookup(c10e);
 	  gp->c10e = gp->sign = c10e;
 	  if (gvl_strict)
 	    gp->mess = gvl_vmess("pseudo-signname %s should be %s", gp->orig, gp->sign);
 	}
-      else if ((l = gvl_lookup(sll_tmp_key(lg,"q"))))
+      else if (lg && (l = gvl_lookup(sll_tmp_key(lg, "q"))))
 	{
-	  gp->sign = l;
-	  if (gvl_strict)
-	    gp->mess = gvl_vmess("pseudo-signname %s must be qualifed by one of %s",gp->orig,l);
+	  gp->c10e = gp->sign = l; /* we should really set gp->sign to, say, #q and store l in a prop */
+	  gp->mess = gvl_vmess("pseudo-signname %s must be qualifed by one of %s",gp->orig,l);
 	}
+      else
+	gp->mess = gvl_vmess("unknown sign name: %s", gp->orig);
     }
   else if ('l' == *gp->type)
     {
-      if ((l = gvl_lookup(sll_tmp_key(gp->c10e,"l"))))
+      if ((l = gvl_lookup(sll_tmp_key(gp->orig,"l"))))
 	{
 	  gp->type = "l";
 	  gp->oid = (ccp)l;
 	  gp->c10e = gp->sign = gvl_lookup(sll_tmp_key(l,""));
 	}
       else
-	gp->mess = gvl_vmess("unknown sign name: %s", gp->orig);
+	gp->mess = gvl_vmess("unknown signlist name: %s", gp->orig);
     }
   else
     {
-      const unsigned char *gq = gvl_lookup(sll_tmp_key(gp->c10e,"q"));
+      const unsigned char *gq = gvl_lookup(sll_tmp_key(gp->orig,"q"));
       if (gq)
 	gp->mess = gvl_vmess("value %s must be qualified with one of %s", gp->orig, gq);
       else if (*gp->orig == '*' && !gp->orig[1])
 	{
 	  gp->type = "p";
-	  gp->sign = (uccp)"DIŠ";
+	  gp->c10e = gp->sign = (uccp)"DIŠ";
 	  gp->oid = (ccp)gvl_lookup(gp->sign);
 	}
       else
@@ -100,14 +103,11 @@ gvl_s(Node *ynp)
   return gp;
 }
 
-#define G_C10E_MIXED_CASE 0x02
-#define G_C10E_FINAL_SUBX 0x04
-
-unsigned char *
+unsigned const char *
 gvl_s_c10e(unsigned const char *orig)
 {
-  const unsigned char *lg = utf_lcase(orig);
-  if ((l = gvl_lookup(lg)))
+  unsigned const char *l;
+  if ((l = gvl_lookup(orig)))
     return gvl_lookup(sll_tmp_key(l,""));
   else
     return NULL;

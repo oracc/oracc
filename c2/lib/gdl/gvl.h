@@ -59,16 +59,7 @@ extern unsigned const char *gvl_cuneify(unsigned const char *g);
 extern unsigned const char *gvl_cuneify_gv(gvl_g *gp);
 extern unsigned const char *gvl_ucode(gvl_g *gp);
 
-extern unsigned char *gvl_s_c10e(const unsigned char *g, int *err);
-
-extern wchar_t *g_wlc(wchar_t *w);
-extern wchar_t *g_wuc(wchar_t *w);
-extern unsigned char *g_lc(unsigned const char *g);
-extern unsigned char *g_uc(unsigned const char *g);
-extern unsigned char *base_of(const unsigned char *v);
-extern const char *sub_of(int i);
-extern wchar_t subdig_of(wchar_t w);
-extern wchar_t vowel_of(wchar_t w);
+extern unsigned const char *gvl_s_c10e(const unsigned char *g);
 
 extern int gvl_v_isupper(unsigned const char *v);
 

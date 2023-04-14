@@ -164,7 +164,7 @@ gflag:
 	;
 
 simplexg:
-	  s maybegflags	       			       	{ if (g_legacy_flag) gdl_legacy(ynp);
+	  s maybegflags	       			       	{ if (gdl_legacy) gdl_unlegacy(ynp);
 	    			  			  gvl_simplexg(@1, ynp); }
 	;
 
