@@ -952,6 +952,10 @@ gvl_validate(unsigned const char *g)
 			gp->mess = gvl_vmess("unknown sexified fraction %s [< %s]", qnum, g);
 		      free(qnum);
 		    }
+		  else if (!strcmp((ccp)g, "00"))
+		    {
+		      gp->sign = (uccp)"00";
+		    }
 		  else
 		    gp->mess = gvl_vmess("unable to sexify non-numeric %s", g);
 		}

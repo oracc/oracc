@@ -44,10 +44,10 @@ static int cvq_push(int);
 static void cvq_reset(void);
 %}
 
-GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+([@~][a-z0-9]+)*
+GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+
 G		([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2[^\xb8]|\xe2\xb8[^\xa2-\xa5])
 B		("["|"]"|\xe2\xb8[\xa2-\xa5])
-MOD		([@~][a-z0-9]+)*
+MOD		[@~\\][a-z0-9]+
 
 L_UHS		"\xe2\xb8\xa2"
 R_UHS		"\xe2\xb8\xa3"
@@ -119,8 +119,9 @@ NOTEMARK	"^"[0-9]+"^"
 %[-a-z0-9]+("/"[gn])?		{ gsave; return LANG; }
 _			{ gsave; return LANG_FLIP; }
 ,			{ return ','; }
+&[0-9]+			{ gsave; return CELLSPAN; }
 &			{ return '&'; }
-![a-z]+			{ return FTYPE; }
+![a-z]+			{ gsave; return FTYPE; }
 
 {NOTEMARK}		{ gsave; return NOTEMARK; }
 
@@ -132,17 +133,17 @@ _			{ gsave; return LANG_FLIP; }
 
 {LISTNUM}		{ GIN=1; gsave; return LISTNUM; }
 
-("$"?{G}({G}|{B})*({G}|{MOD}+))	{ GIN=1; return gdl_grapheme_type(); }
-
+"$"?{G}({G}|{B})*{G}	{ GIN=1; return gdl_grapheme_type(); }
+"$"?{G}({G}|{B})*/{MOD}	{ GIN=1; return gdl_grapheme_type(); }
 "$"?{GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
 
 {MOD}			{ GIN=1; gsave; return MOD; }
 
-"#"			{ return GIN ? *yytext : gdl_lexfld[(int)*yytext]; }
+"#"			{ gsave; return GIN ? *yytext : gdl_lexfld[(int)*yytext]; }
 
 [!?*]			{ return *yytext; }
 
-["~=@^]/[ \t]          	{ /*"*/ return gdl_lexfld[(int)*yytext]; }
+["~=@^]/[ \t\n]        	{ /*"*/ gsave; return gdl_lexfld[(int)*yytext]; }
 
 
 "..."			{ GIN=0; gsave; return ELLIPSIS; }
@@ -152,7 +153,7 @@ _			{ gsave; return LANG_FLIP; }
 ";"			{ return INDENT; }
 "/"			{ return NEWLINE; }
 
-[ \t]+			{ GIN=0; return SPACE; }
+[ \t]+			{ GIN=0; gsave; return SPACE; }
 
 \n			{ gdl_closers(); return gdltext[0]; }
 

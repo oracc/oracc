@@ -7,6 +7,7 @@ Prop *
 prop_add(Memo *propmem, Prop *p, int ptype, int gtype, const char *key, const char *value)
 {
   Prop *newprop = memo_new(propmem);
+  Prop *ret = p;
   p = prop_last(p);
   if (p)
     {
@@ -14,12 +15,12 @@ prop_add(Memo *propmem, Prop *p, int ptype, int gtype, const char *key, const ch
       p = p->next;
     }
   else
-    p = newprop;
+    ret = p = newprop;
   p->p = ptype;
   p->g = gtype;
   p->k = key;
   p->v = value;
-  return p;
+  return ret;
 }
 
 Prop*

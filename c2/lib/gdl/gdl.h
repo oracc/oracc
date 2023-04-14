@@ -29,7 +29,7 @@ enum bracket {
 };
 #endif
 
-enum gdlpropvals { GDL_INFO_IMPLICIT };
+enum gdlpropvals { GDL_ATTRIBUTE, GDL_INFO_IMPLICIT };
 
 #if 0
 /* This may not be necessary given the emerging GDL/GVL architecture; see gvl_g in gvl.h */
@@ -58,21 +58,25 @@ extern void gdlparse_term(void);
 extern void gdlxml_setup(void);
 extern void gdl_xml_handler(Node *np, void *xhp);
 
+extern Node *gdl_pop(Tree *ytp, const char *s);
+extern Node *gdl_push(Tree *ytp, const char *s);
+extern void gdl_prop(Node *ynp, int p, int g, const char *k, const char *v);
 extern void gdl_remove_q_error(Mloc m, Node *ynp);
-extern void gdl_append(Node *ynp, const char *s);
+
 extern Node *gdl_nongraph(Tree *ytp, const char *data);
 extern Node *gdl_state(Tree *ytp, const char *data);
+extern void gdl_cell(Tree *ytp, const char *span);
 extern Node *gdl_delim(Tree *ytp, const char *data);
+extern void gdl_field(Tree *ytp, const char *ftype);
 extern Node *gdl_graph(Tree *ytp, const char *data);
 extern Node *gdl_lang(Tree *ytp, const char *data);
+extern const char *gdl_lexfld_name(const char *lftok);
+extern void gdl_lexfld_init(void);
+extern void gdl_mod(Tree *ytp, const char *data);
 extern Node *gdl_punct(Tree *ytp, const char *data);
 extern Node *gdl_listnum(Tree *ytp, const char *data);
 extern Node *gdl_number(Tree *ytp, const char *data);
 extern Node *gdl_barenum(Tree *ytp, const char *data);
-extern void gdl_prop(Node *ynp, int p, int g, const char *k, const char *v);
-
-extern Node *gdl_pop(Tree *ytp, const char *s);
-extern Node *gdl_push(Tree *ytp, const char *s);
 
 extern void gdl_incr_qin(void);
 extern void gdl_decr_qin(void);

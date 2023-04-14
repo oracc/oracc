@@ -26,17 +26,19 @@ GDLLTYPE gdllloc;
 
 %union { char *text; int i; }
 
-%token	<text> 	FTYPE LANG TEXT ENHYPHEN ELLIPSIS NOTEMARK
+%token	<text> 	FTYPE LANG TEXT ENHYPHEN ELLIPSIS NOTEMARK CELLSPAN
 		GRAPHEME NUMBER BARENUM LISTNUM PUNCT MOD INDENT NEWLINE
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
-		LF_AT LF_CARET LF_EQUALS LF_HASH LF_QUOTE LF_TILDE LF_VBAR
+		',' LF_AT LF_CARET LF_EQUALS LF_HASH LF_QUOTE LF_TILDE LF_VBAR
 
 %token <i>	'*' '!' '?' '#' '<' '>' '{' '}' '[' ']' '(' ')' CLP CRP QLP QRP
        	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur L_ang_par R_ang_par
 		L_uhs R_uhs L_lhs R_lhs LANG_FLIP
 		SPACE EOL END
+
+%nterm <text> 	field lexfld
 
 %start line
 
@@ -54,9 +56,14 @@ lineparts:
 	;
 
 cell:
-	'&' anyseg
+	cellspec anyseg
 	;
 
+cellspec:
+	'&'					{ gdl_cell(ytp,"1"); }
+	| CELLSPAN				{ gdl_cell(ytp,$1); }
+	;				
+					
 anyseg:
 	typedseg
 	| plainseg
@@ -67,10 +74,14 @@ typedseg:
 	;
 
 field:
-	  ','
-	| ',' FTYPE
-	| FTYPE
-	| LF_AT
+	  ','					    { gdl_field(ytp,"default"); }
+	| ',' FTYPE				    { gdl_field(ytp,$2); }
+	| FTYPE					    { gdl_field(ytp,$1); }
+        | lexfld				    { gdl_field(ytp,gdl_lexfld_name($1)); }
+        ;
+
+lexfld:
+	  LF_AT
 	| LF_CARET
 	| LF_EQUALS
 	| LF_HASH
@@ -91,7 +102,9 @@ comment:
 	;
 
 space:
-	  SPACE
+	  SPACE						{ ynp = gdl_delim(ytp, " ");
+	    						  gdl_prop(ynp, GDL_ATTRIBUTE, PG_GDL_INFO,
+								   "literal", gdllval.text); }
 	| EOL
 	| END
 	;
@@ -132,6 +145,8 @@ scgrapheme:
 
 maybegflags:
 	  gflags
+	| mods
+	| mods gflags
 	| /* empty */
 	;
 
@@ -250,7 +265,7 @@ mods:
         ;
 
 mod:
-	  MOD						{ ynp = gdl_graph(ytp, gdllval.text); }
+	  MOD						{ gdl_mod(ytp, gdllval.text); }
 	;
 
 stateo:  

@@ -68,12 +68,17 @@ extern void tree_iterator_nh(Tree *tp, void *user, nodehandlers nh_node, nodehan
 extern void kids_add_node(Tree *tp, Node *np);
 extern Node *kids_rem_last(Tree *tp);
 
+extern void tree_curr(Node *np);
 extern void tree_graft(Node *np, Tree *tp);
 extern void tree_xml(FILE *fp, Tree *tp);
 
 extern void tree_ns_default(Tree *tp, nscode ns);
 extern void tree_ns_merge(Tree *tp, nsrefs used);
 
+extern Node *node_ancestor(Node *np, const char *name);
+extern Node *node_ancestor_or_self(Node *np, const char *name);
+extern Node *node_insert(Node *rent, Node *nkid);
+extern Node *node_last(Node *np);
 extern void node_replace(Node *from, Node *to);
 
 #endif/*TREE_H_*/

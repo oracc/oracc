@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "pool.h"
 #include "memo.h"
 #include "tree.h"
@@ -51,6 +52,18 @@ tree_ns_merge(Tree *tp, nsrefs used)
       tp->ns_used[ns] = ns;
 }
 
+/* Make np the parent to which new nodes will be added as kids */
+void
+tree_curr(Node *np)
+{
+  Tree *tp = np->tree;
+  tp->curr = np;
+  if (np->kids)
+    tp->curr->last = node_last(np->kids);
+  else
+    tp->curr->last = NULL;
+}
+
 Node *
 tree_root(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc)
 {
@@ -66,18 +79,15 @@ tree_add(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc)
 
   if (tp)
     {
-      /* the case tp->curr->last == NULL indicates that tp->curr->kids
-	 is a graft from another tree */
+      np = tree_node(tp, ns, name, depth, loc);
       if (tp->curr && tp->curr->kids && tp->curr->last)
 	{
-	  np = tree_node(tp, ns, name, depth, loc);
 	  np->rent = tp->curr->last->rent;
 	  tp->curr->last->next = np;
 	  tp->curr->last = np;
 	}
       else
 	{
-	  np = tree_node(tp, ns, name, depth, loc);
 	  if (!tp->curr)
 	    {
 	      tp->curr = tp->root = np;
@@ -152,10 +162,55 @@ tree_graft(Node *np, Tree *tp)
     }
 }
 
+Node *
+node_ancestor(Node *np, const char *name)
+{
+  for (np = np->rent; np; np = np->rent)
+    {
+      if (!strcmp(np->name, name))
+	return np;
+    }
+  return NULL;
+}
+
+Node *
+node_ancestor_or_self(Node *np, const char *name)
+{
+  for (; np; np = np->rent)
+    {
+      if (!strcmp(np->name, name))
+	return np;
+    }
+  return NULL;
+}
+
+/* Insert nkid as the new kid of rent and move all the existing kids
+   of rent to be kids of nkid */
+Node *
+node_insert(Node *rent, Node *nkid)
+{
+  Node *np;
+  for (np = rent->kids; np; np = np->next)
+    np->rent = nkid;
+  nkid->kids = rent->kids;
+  nkid->rent = rent;
+  rent->kids = nkid;
+  return nkid;
+}
+
 void
 node_iterator(Node *np, void *user, void (*nodefnc)(Node *np, void *user), void (*postfnc)(Node *np, void *user))
 {
   _do_node(np, user, nodefnc, postfnc);
+}
+
+Node *
+node_last(Node *np)
+{
+  if (np)
+    while (np->next)
+      np = np->next;
+  return np;
 }
 
 /* Replace the contents of to node with from node, but keep the

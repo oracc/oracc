@@ -60,7 +60,7 @@ gvl_s(Node *ynp)
       if ((l = gvl_lookup(lg)))
 	{
 	  gp->oid = (ccp)l;
-	  gp->sign = gvl_lookup(sll_tmp_key(l,""));
+	  gp->c10e = gp->sign = gvl_lookup(sll_tmp_key(l,""));
 	  if (gvl_strict)
 	    gp->mess = gvl_vmess("pseudo-signname %s should be %s", gp->orig, gp->sign);
 	}
@@ -77,7 +77,7 @@ gvl_s(Node *ynp)
 	{
 	  gp->type = "l";
 	  gp->oid = (ccp)l;
-	  gp->sign = gvl_lookup(sll_tmp_key(l,""));
+	  gp->c10e = gp->sign = gvl_lookup(sll_tmp_key(l,""));
 	}
       else
 	gp->mess = gvl_vmess("unknown sign name: %s", gp->orig);

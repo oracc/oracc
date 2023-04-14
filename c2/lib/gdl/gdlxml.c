@@ -76,7 +76,7 @@ gdl_xml_o(Node *np, void *user)
       fprintf(xhp->fp, "<props>");
       while (p)
 	{
-	  fprintf(xhp->fp, "<prop p=\"%d\" g=\"%d\"", p->p, p->g);
+	  fprintf(xhp->fp, "<prop g=\"%d\" p=\"%d\"", p->g, p->p);
 	  if (p->k)
 	    fprintf(xhp->fp, " k=\"%s\" v=\"%s\"", p->k, xmlify((uccp)p->v));
 	  fprintf(xhp->fp, "/>");
