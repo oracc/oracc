@@ -23,6 +23,15 @@ prop_add(Memo *propmem, Prop *p, int ptype, int gtype, const char *key, const ch
   return ret;
 }
 
+void
+prop_node_add(struct node *np, int ptype, int gtype, const char *key, const char *value)
+{
+  if (np->props)
+    (void)prop_add(np->tree->propmem, np->props, ptype, gtype, key, value);
+  else
+    np->props = prop_add(np->tree->propmem, np->props, ptype, gtype, key, value);
+}
+
 Prop*
 prop_last(Prop *p)
 {

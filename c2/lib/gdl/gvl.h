@@ -10,10 +10,12 @@ struct gvl_g {
 				a vq this is the vq as passed */
   unsigned const char *c10e; /* canonicalized grapheme; for use in
 				orthographic forms (note: does not
-				include aliasing) */
+				include aliasing); when there are mods
+				this is the c10e'd-sign+mods, e.g., GAN₂@t */
   unsigned const char *accn; /* grapheme passed through accnum--lazily done */
   const char *oid;  	     /* OID for sign */
-  unsigned const char *sign; /* sign name for OID; for a vq this is the canonical vq */
+  unsigned const char *sign; /* sign name for OID; for a vq this is the canonical vq;
+			        when there are mods this is the sign+mods, e.g., GAN₂@t y*/
   unsigned const char *utf8; /* UTF8 value for OID */
   unsigned const char *uhex; /* HEX value for OID */
   unsigned const char *mess; /* NULL if OK; if bad this is the error message for the grapheme */

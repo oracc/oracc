@@ -20,6 +20,7 @@ struct tree {
 };
 
 typedef struct tree Tree;
+struct prop;
 
 struct node {
   enum nscode ns;   	/* node namespace */
@@ -30,15 +31,12 @@ struct node {
 			   tree */
   int depth;		/* nesting depth of node; may be -1 if not
 			   used by caller */
-#if 0
-  struct node *data; /* parsed data which is an island off of the current tree */
-#endif
   struct node *rent; 	/* parent */
   struct node *kids; 	/* children */
   struct node *last; 	/* last sibling, i.e., where we are adding sibs */
   struct node *next; 	/* next sibling */
   Tree *tree;
-  Prop *props;
+  struct prop *props;
   Mloc *mloc;
   void *user;		/* data dependent on node prefix/prefix:name combination */
 };

@@ -2,6 +2,7 @@
 #define PROP_H_
 
 #include <memo.h>
+#include <tree.h>
 
 enum propgroup
   {
@@ -10,6 +11,7 @@ enum propgroup
    PG_GDL_BREAK,
    PG_GDL_FLAGS,
    PG_GDL_STATE,
+   PG_GVL_INFO,
    PG_XML,
    PG_XNS,
    PG_LAST
@@ -26,10 +28,12 @@ struct prop {
 };
 
 typedef struct prop Prop;
+struct node;
 
 extern Prop *prop_add(Memo *propmem, Prop *p, int pt, int gt, const char *k, const char *v);
 extern Prop *prop_last(Prop *p);
 extern void prop_merge(Prop *into, Prop *from);
+extern void prop_node_add(struct node *np, int ptype, int gtype, const char *key, const char *value);
 extern int prop_user_group(void);
 extern Prop*prop_find_pg(Prop *p, int ptype, int gtype);
 extern Prop*prop_find_kv(Prop *p, const char *key, const char *value);

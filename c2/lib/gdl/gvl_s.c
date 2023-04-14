@@ -3,6 +3,7 @@
 #include <memo.h>
 #include <pool.h>
 #include <oraccsys.h>
+#include "gdl.h"
 #include "gvl.h"
 #include "unidef.h"
 
@@ -47,6 +48,8 @@ gvl_s(Node *ynp)
     return gp;
   
   gp->c10e = pool_copy(gvl_s_c10e(gp->orig, &c10e_err), curr_sl->p);
+  if (strcmp((ccp)gp->orig, (ccp)gp->c10e))
+    prop_node_add(ynp, GP_TRACKING, PG_GVL_INFO, "c10e", (ccp)gp->c10e);
   
   if ((l = gvl_lookup(gp->c10e)))
     {

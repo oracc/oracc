@@ -103,7 +103,7 @@ comment:
 
 space:
 	  SPACE						{ ynp = gdl_delim(ytp, " ");
-	    						  gdl_prop(ynp, GDL_ATTRIBUTE, PG_GDL_INFO,
+	    						  gdl_prop(ynp, GP_ATTRIBUTE, PG_GDL_INFO,
 								   "literal", gdllval.text); }
 	| EOL
 	| END

@@ -127,8 +127,8 @@ gdl_cell(Tree *ytp, const char *span)
   if (!(ancestor = node_ancestor_or_self(ytp->curr, "g:cell")))
     {
       cp = tree_node(ytp, NS_GDL, "g:cell", ytp->root->depth+1, NULL);
-      gdl_prop(cp, GDL_INFO_IMPLICIT, PG_GDL_INFO, NULL, NULL);
-      gdl_prop(cp, GDL_ATTRIBUTE, PG_GDL_INFO, "span", "1");
+      gdl_prop(cp, GP_IMPLICIT, PG_GDL_INFO, NULL, NULL);
+      gdl_prop(cp, GP_ATTRIBUTE, PG_GDL_INFO, "span", "1");
       /* NB: This assumes GDL parser will never be embedded in another grammar */
       (void)node_insert(ytp->root, cp);
       tree_curr(ytp->root);
@@ -136,7 +136,7 @@ gdl_cell(Tree *ytp, const char *span)
   else
     tree_curr(ancestor->rent);
   cp = tree_add(ytp, NS_GDL, "g:cell", ytp->root->depth+1, NULL);
-  gdl_prop(cp, GDL_ATTRIBUTE, PG_GDL_INFO, "span", (ccp)pool_copy((uccp)span, ytp->pool));
+  gdl_prop(cp, GP_ATTRIBUTE, PG_GDL_INFO, "span", (ccp)pool_copy((uccp)span, ytp->pool));
   tree_curr(cp);
 }
 
@@ -167,8 +167,8 @@ gdl_field(Tree *ytp, const char *ftype)
       Node *cellp = node_ancestor_or_self(ytp->curr, "g:cell");
       
       fp = tree_node(ytp, NS_GDL, "g:field", ytp->root->depth+1, NULL);
-      gdl_prop(fp, GDL_INFO_IMPLICIT, PG_GDL_INFO, NULL, NULL);
-      gdl_prop(fp, GDL_ATTRIBUTE, PG_GDL_INFO, "field", "default");
+      gdl_prop(fp, GP_IMPLICIT, PG_GDL_INFO, NULL, NULL);
+      gdl_prop(fp, GP_ATTRIBUTE, PG_GDL_INFO, "field", "default");
 
       /* NB: This assumes GDL parser will never be embedded in another grammar */
       if (!cellp)
@@ -179,7 +179,7 @@ gdl_field(Tree *ytp, const char *ftype)
   else
     tree_curr(ancestor->rent);
   fp = tree_add(ytp, NS_GDL, "g:field", ytp->root->depth+1, NULL);
-  gdl_prop(fp, GDL_ATTRIBUTE, PG_GDL_INFO, "field", (ccp)pool_copy((uccp)ftype, ytp->pool));
+  gdl_prop(fp, GP_ATTRIBUTE, PG_GDL_INFO, "field", (ccp)pool_copy((uccp)ftype, ytp->pool));
   tree_curr(fp);
 }
 

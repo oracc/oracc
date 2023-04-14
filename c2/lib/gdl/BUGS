@@ -4,5 +4,3 @@
 + need to concatenate mods kids of v, s and gp in c and validate result
 
 |A.A)| does not error on unexpected )
-
-gvl_s text/c10e/sign doesn't preserve the result of c10e when sign != c10e; need a 'cleaned' attr vel sim

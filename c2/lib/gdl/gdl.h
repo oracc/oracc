@@ -29,7 +29,7 @@ enum bracket {
 };
 #endif
 
-enum gdlpropvals { GDL_ATTRIBUTE, GDL_INFO_IMPLICIT };
+enum gdlpropvals { GP_ATTRIBUTE, GP_IMPLICIT, GP_TRACKING };
 
 #if 0
 /* This may not be necessary given the emerging GDL/GVL architecture; see gvl_g in gvl.h */
