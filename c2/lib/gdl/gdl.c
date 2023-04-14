@@ -24,6 +24,8 @@ gdl_init(void)
   if (gdl_initted++)
     return;
 
+  gdl_balance_init();
+
   gdl_lexfld_init();
   
   gdlpool = pool_init();
@@ -37,5 +39,6 @@ gdl_term(void)
       pool_term(gdlpool);
       gdlpool = NULL;
       gdl_initted = 0;
+      gdl_balance_term();
     }
 }

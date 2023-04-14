@@ -64,7 +64,7 @@ extern void gdl_prop(Node *ynp, int p, int g, const char *k, const char *v);
 extern void gdl_remove_q_error(Mloc m, Node *ynp);
 
 extern Node *gdl_nongraph(Tree *ytp, const char *data);
-extern Node *gdl_state(Tree *ytp, const char *data);
+extern Node *gdl_state(Mloc mlp, Tree *ytp, int tok, const char *data);
 extern void gdl_cell(Tree *ytp, const char *span);
 extern Node *gdl_delim(Tree *ytp, const char *data);
 extern void gdl_field(Tree *ytp, const char *ftype);
@@ -80,6 +80,10 @@ extern Node *gdl_barenum(Tree *ytp, const char *data);
 extern void gdl_unlegacy(Node *np);
 extern void gdl_incr_qin(void);
 extern void gdl_decr_qin(void);
+extern void gdl_balance(Mloc mlp, int tok, const char *str);
+extern void gdl_balance_init(void);
+extern void gdl_balance_term(void);
+extern void gdl_balance_flush(Mloc mlp);
 
 extern wchar_t *g_wlc(wchar_t *w);
 extern wchar_t *g_wuc(wchar_t *w);

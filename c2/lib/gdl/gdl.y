@@ -106,8 +106,8 @@ space:
 	  SPACE						{ ynp = gdl_delim(ytp, " ");
 	    						  gdl_prop(ynp, GP_ATTRIBUTE, PG_GDL_INFO,
 								   "literal", gdllval.text); }
-	| EOL
-	| END
+	| EOL						{ gdl_balance_flush(@1); }
+	| END						{ gdl_balance_flush(@1); }
 	;
 
 transliteration:
@@ -271,25 +271,25 @@ mod:
 	;
 
 stateo:  
-	  '<'						{ ynp = gdl_state(ytp, gdllval.text); }
-	| L_ang_par				       	{ ynp = gdl_state(ytp, gdllval.text); }
-	| L_dbl_ang				       	{ ynp = gdl_state(ytp, gdllval.text); }
-	| L_dbl_cur			       		{ ynp = gdl_state(ytp, gdllval.text); }
-	| '['						{ ynp = gdl_state(ytp, gdllval.text); }
-	| L_uhs						{ ynp = gdl_state(ytp, gdllval.text); }
-	| L_lhs						{ ynp = gdl_state(ytp, gdllval.text); }
-	| '('						{ ynp = gdl_state(ytp, gdllval.text); }
+	  '<'						{ ynp = gdl_state(@1, ytp, '<', gdllval.text); }
+	| L_ang_par				       	{ ynp = gdl_state(@1, ytp, L_ang_par, gdllval.text); }
+	| L_dbl_ang				       	{ ynp = gdl_state(@1, ytp, L_dbl_ang, gdllval.text); }
+	| L_dbl_cur			       		{ ynp = gdl_state(@1, ytp, L_dbl_cur, gdllval.text); }
+	| '['						{ ynp = gdl_state(@1, ytp, '[', gdllval.text); }
+	| L_uhs						{ ynp = gdl_state(@1, ytp, L_uhs, gdllval.text); }
+	| L_lhs						{ ynp = gdl_state(@1, ytp, L_lhs, gdllval.text); }
+	| '('						{ ynp = gdl_state(@1, ytp, '(', gdllval.text); }
 	;
 
 statec:
-	  '>'						{ ynp = gdl_state(ytp, gdllval.text); }
-	| R_ang_par				       	{ ynp = gdl_state(ytp, gdllval.text); }
-	| R_dbl_ang			       		{ ynp = gdl_state(ytp, gdllval.text); }
-	| R_dbl_cur					{ ynp = gdl_state(ytp, gdllval.text); }
-	| ']'						{ ynp = gdl_state(ytp, gdllval.text); }
-	| R_uhs						{ ynp = gdl_state(ytp, gdllval.text); }
-	| R_lhs						{ ynp = gdl_state(ytp, gdllval.text); }
-	| ')'						{ ynp = gdl_state(ytp, gdllval.text); }
+	  '>'						{ ynp = gdl_state(@1, ytp, '>', gdllval.text); }
+	| R_ang_par				       	{ ynp = gdl_state(@1, ytp, R_ang_par, gdllval.text); }
+	| R_dbl_ang			       		{ ynp = gdl_state(@1, ytp, R_dbl_ang, gdllval.text); }
+	| R_dbl_cur					{ ynp = gdl_state(@1, ytp, R_dbl_cur, gdllval.text); }
+	| ']'						{ ynp = gdl_state(@1, ytp, ']', gdllval.text); }
+	| R_uhs						{ ynp = gdl_state(@1, ytp, R_uhs, gdllval.text); }
+	| R_lhs						{ ynp = gdl_state(@1, ytp, R_lhs, gdllval.text); }
+	| ')'						{ ynp = gdl_state(@1, ytp, ')', gdllval.text); }
 	;
 
 %%
