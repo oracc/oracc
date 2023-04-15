@@ -11,6 +11,7 @@ static int o_c_map[] =
     L_uhs,     	R_uhs,
     L_lhs,     	R_lhs,
     '(',	')',
+    CLP, 	CRP,
     -1
   };
 
@@ -32,6 +33,8 @@ static struct s_o_c { int tok; const char *str; } s_o_c_map[] =
     { R_lhs, "]#" },
     { '(', "(" },
     { ')', ")" },
+    { CLP , "(" },
+    { CRP , ")" },
     { -1 , NULL }
   };
 
@@ -113,9 +116,11 @@ gdl_balance_push(int tok)
   o_c_stack[o_c_top] = tok;
 }
 
-void
+/* return 0 on OK; 1 on error */
+int
 gdl_balance(Mloc mlp, int tok)
 {
+  int ret = 0;
   /* if it's a closer, check the stack for a match */
   if (o_of_c[tok])
     {
@@ -124,12 +129,14 @@ gdl_balance(Mloc mlp, int tok)
 	{
 	  /* nothing on the stack, superfluous closer */
 	  mesg_verr(&mlp, "unopened closer '%s'", s_of_oc[tok]);
+	  ret = 1;
 	}
       else if (p != o_of_c[tok])
 	{
 	  /* mismatched opener/closer */
 	  mesg_verr(&mlp, "mismatched brackets: found closer '%s' but expected '%s'",
 		    s_of_oc[tok], s_of_oc[c_of_o[p]]);
+	  ret = 1;
 	}
       else
 	(void)gdl_balance_pop();
@@ -139,6 +146,7 @@ gdl_balance(Mloc mlp, int tok)
       /* for openers push the new opener on the stack */
       gdl_balance_push(tok);
     }
+  return ret;
 }
 
 void

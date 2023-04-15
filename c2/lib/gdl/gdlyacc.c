@@ -286,6 +286,6 @@ gdl_state(Mloc mlp, Tree *ytp, int tok, const char *data)
 {
   if (gdltrace)
     fprintf(stderr, "gt: STATE: %d=%s\n", tok, data);
-  gdl_balance(mlp, tok, data);
+  (void)gdl_balance(mlp, tok, data);
   return gdl_graph_node(ytp, "g:z", data);
 }

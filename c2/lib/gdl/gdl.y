@@ -123,8 +123,8 @@ delim:
         | '-' 						{ ynp = gdl_delim(ytp, "-"); }
 	| '+' 						{ ynp = gdl_delim(ytp, "+"); }
 	| ':' 						{ ynp = gdl_delim(ytp, ":"); }
-	| '{' 						
-	| '}' 						
+	| '{'	      					{ gdl_balance(@1,'{',"{"); gdl_push(ytp,"g:det"); }
+	| '}' 	 		  			{ if (!gdl_balance(@1,'{',"}")) gdl_pop(ytp,"g:det");  }
 	| '\n'
 	| ENHYPHEN 			       		{ ynp = gdl_delim(ytp, "--"); }
 	;
@@ -197,8 +197,8 @@ cbit:
 	  s	       					{ gvl_simplexg(@1, ynp); }
 	| gflag
 	| cdelim
-	| CLP						{ gdl_push(ytp,"g:gp"); }
-	| CRP	     		  			{ gdl_pop(ytp,"g:gp");  }
+	| CLP						{ gdl_balance(@1,CLP,"("); gdl_push(ytp,"g:gp"); }
+	| CRP	     		  			{ if (!gdl_balance(@1,CRP,")")) gdl_pop(ytp,"g:gp");  }
 	| QLP 						{ yrem=kids_rem_last(ytp);
 	    						  gdl_push(ytp,"g:q");
 							  kids_add_node(ytp,yrem);

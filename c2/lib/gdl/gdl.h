@@ -80,7 +80,7 @@ extern Node *gdl_barenum(Tree *ytp, const char *data);
 extern void gdl_unlegacy(Node *np);
 extern void gdl_incr_qin(void);
 extern void gdl_decr_qin(void);
-extern void gdl_balance(Mloc mlp, int tok, const char *str);
+extern int gdl_balance(Mloc mlp, int tok, const char *str);
 extern void gdl_balance_init(void);
 extern void gdl_balance_term(void);
 extern void gdl_balance_flush(Mloc mlp);
