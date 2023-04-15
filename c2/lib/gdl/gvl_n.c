@@ -135,6 +135,12 @@ gvl_n_sexify(Node *ynp)
 	  /* update the ynp data with the sexified data */
 	  node_replace(top, ynp);
 	}
+      else if (!strcmp(ynp->text, "00"))
+	{
+	  ynp->name = "g:n";
+	  /* for now leave this as a node with no gvl_g because 00
+	     isn't a grapheme but it is a number */
+	}      
       else
 	/* n/N */;
     }
