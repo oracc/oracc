@@ -10,6 +10,7 @@ enum propgroup
    PG_GDL_INFO,
    PG_GDL_BREAK,
    PG_GDL_FLAGS,
+   PG_GDL_GROUP,
    PG_GDL_STATE,
    PG_GVL_INFO,
    PG_XML,

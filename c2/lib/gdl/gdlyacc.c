@@ -55,6 +55,12 @@ gdlparse_term(void)
  *
  ***********************************************************************/
 
+void
+gdl_gp_type(Tree *ytp, enum gdlpropvals p)
+{
+  gdl_prop(ytp->curr, p, PG_GDL_GROUP, NULL, NULL);
+}
+
 static Node *
 gdl_graph_node(Tree *ytp, const char *name, const char *data)
 {

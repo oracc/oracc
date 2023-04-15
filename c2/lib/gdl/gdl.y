@@ -34,9 +34,10 @@ GDLLTYPE gdllloc;
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
 		',' LF_AT LF_CARET LF_EQUALS LF_HASH LF_QUOTE LF_TILDE LF_VBAR
 
-%token <i>	'*' '!' '?' '#' '<' '>' '{' '}' '[' ']' '(' ')' CLP CRP QLP QRP
+%token <i>	'*' '!' '?' '#' '<' '>' '[' ']' '(' ')' CLP CRP QLP QRP
        	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur L_ang_par R_ang_par
 		L_uhs R_uhs L_lhs R_lhs LANG_FLIP
+		 '{' DET_SEME DET_PHON '}'
 		SPACE EOL END
 
 %nterm <text> 	field lexfld
@@ -123,7 +124,15 @@ delim:
         | '-' 						{ ynp = gdl_delim(ytp, "-"); }
 	| '+' 						{ ynp = gdl_delim(ytp, "+"); }
 	| ':' 						{ ynp = gdl_delim(ytp, ":"); }
-	| '{'	      					{ gdl_balance(@1,'{',"{"); gdl_push(ytp,"g:det"); }
+	| '{'	      					{ gdl_balance(@1,'{',"{");
+	    						  gdl_push(ytp,"g:det"); 
+	  						  gdl_gp_type(ytp,GP_DET_SEMI);}
+	| DET_SEME    					{ gdl_balance(@1,'{',"{");
+	    						  gdl_push(ytp,"g:det");
+	  						  gdl_gp_type(ytp,GP_DET_SEME); }
+	| DET_PHON      	      			{ gdl_balance(@1,'{',"{");
+	    						  gdl_push(ytp,"g:det"); 
+	  						  gdl_gp_type(ytp,GP_DET_PHON); }
 	| '}' 	 		  			{ if (!gdl_balance(@1,'{',"}")) gdl_pop(ytp,"g:det");  }
 	| '\n'
 	| ENHYPHEN 			       		{ ynp = gdl_delim(ytp, "--"); }

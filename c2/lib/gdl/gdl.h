@@ -29,7 +29,10 @@ enum bracket {
 };
 #endif
 
-enum gdlpropvals { GP_ATTRIBUTE, GP_IMPLICIT, GP_TRACKING };
+enum gdlpropvals { GP_ATTRIBUTE, GP_IMPLICIT, GP_TRACKING,
+		   GP_DET_SEME , GP_DET_SEMI, GP_DET_PHON,
+		   GP_SEXIFY
+};
 
 #if 0
 /* This may not be necessary given the emerging GDL/GVL architecture; see gvl_g in gvl.h */
@@ -84,7 +87,7 @@ extern int gdl_balance(Mloc mlp, int tok, const char *str);
 extern void gdl_balance_init(void);
 extern void gdl_balance_term(void);
 extern void gdl_balance_flush(Mloc mlp);
-
+extern void gdl_gp_type(Tree *ytp, enum gdlpropvals p);
 extern wchar_t *g_wlc(wchar_t *w);
 extern wchar_t *g_wuc(wchar_t *w);
 extern unsigned char *g_lc(unsigned const char *g);

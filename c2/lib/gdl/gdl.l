@@ -110,6 +110,8 @@ NOTEMARK	"^"[0-9]+"^"
 "["			{ gconst; GIN=0; return yytext[0]; }
 "]"			{ gconst; GIN=0; return yytext[0]; }
 "{"			{ gconst; GIN=0; return yytext[0]; }
+"{+"			{ gconst; GIN=0; return DET_PHON; }
+"{-"			{ gconst; GIN=0; return DET_SEME; }
 "}"			{ gconst; GIN=0; return yytext[0]; }
 {L_UHS}			{ gsave; GIN=0; return L_uhs; }
 {R_UHS}			{ gsave; GIN=0; return R_uhs; }
