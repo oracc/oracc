@@ -319,9 +319,11 @@ gdl_state_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gpt
 Node *
 gdl_state_c(Mloc mlp, Tree *ytp, int tok, const char *data)
 {
+  Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "gt: STATE/c: %d=%s\n", tok, data);
+  ret =  gdl_graph_node(ytp, "g:z", data);
   if (!gdl_balance(mlp, tok, data))
     gdl_pop(ytp, data);
-  return gdl_graph_node(ytp, "g:z", data);
+  return ret;
 }
