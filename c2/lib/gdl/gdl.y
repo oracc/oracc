@@ -107,8 +107,9 @@ comment:
 space:
 	  SPACE						{ ynp = gdl_delim(ytp, " ");
 	    						  gdl_prop(ynp, GP_ATTRIBUTE, PG_GDL_INFO,
-								   "literal", gdllval.text); }
-	| EOL						{ gdl_balance_flush(@1); }
+								   "literal", gdllval.text);
+							  /*gdl_balance_ws(@1);*/ }
+	| '\n'						{ gdl_balance_flush(@1); }
 	| END						{ gdl_balance_flush(@1); }
 	;
 
@@ -135,12 +136,11 @@ delim:
 	    						  gdl_push(ytp,"g:det"); 
 	  						  gdl_gp_type(ytp,GP_DET_PHON); }
 	| '}' 	 		  			{ if (!gdl_balance(@1,'{',"}")) gdl_pop(ytp,"g:det");  }
-	| '\n'
 	| ENHYPHEN 			       		{ ynp = gdl_delim(ytp, "--"); }
 	;
 
 alternative:
-	  grapheme '/' grapheme
+	  grapheme '/' grapheme				/*TODO; what about GDL 1.0 [+:]-groups?*/
 	  | alternative '/' grapheme
 	  ;
 
@@ -214,6 +214,7 @@ cbit:
 							  kids_add_node(ytp,yrem);
 							  gdl_remove_q_error(@1, yrem);
   							  gdl_incr_qin();
+							  /* IS GDL_CORRQ NECESSARY NOW? */
 							  gdl_corrq
 							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
 	| QRP				      		{ gdl_decr_qin(); }
@@ -245,6 +246,7 @@ q:
 	    						  gdl_push(ytp,"g:q");
 							  kids_add_node(ytp,yrem);
 							  gdl_incr_qin();
+							  /* IS GDL_CORRQ NECESSARY NOW? */
 							  gdl_corrq
 							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
 	grapheme 	 	       			{ gdl_remove_q_error(@1, yrem); }
@@ -260,7 +262,7 @@ qmaybemodflags:
 
 lang:
 	  LANG						{ ynp = gdl_lang(ytp, gdllval.text); }
-	| LANG_FLIP
+	| LANG_FLIP					/*TODO; ALSO #atf: lang akk _%s_ vel sim*/
 	;
 
 meta:
@@ -271,8 +273,8 @@ meta:
 	| statec
 	| stateo
 	| INDENT       					{ ynp = gdl_nongraph(ytp, ";"); }
-	| NEWLINE	       				{ ynp = gdl_nongraph(ytp, ";"); }
-	| NOTEMARK
+	| NEWLINE	       				{ ynp = gdl_nongraph(ytp, "//"); }
+	| NOTEMARK					/*TODO*/
 	;
 
 mods:
