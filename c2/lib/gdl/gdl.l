@@ -44,8 +44,8 @@ static int cvq_push(int);
 static void cvq_reset(void);
 %}
 
-GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xff]|\xc3[^\x97])+
-G		([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2[^\xb8]|\xe2\xb8[^\xa2-\xa5])
+GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2\xb8[^\xa2-\xa5]|\xe2[^\xb8])+
+G		([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2\xb8[^\xa2-\xa5]|\xe2[^\xb8])
 B		("["|"]"|\xe2\xb8[\xa2-\xa5])
 MOD		[@~\\][a-z0-9]+
 
@@ -113,6 +113,7 @@ NOTEMARK	"^"[0-9]+"^"
 "{+"			{ gconst; GIN=0; return DET_PHON; }
 "{-"			{ gconst; GIN=0; return DET_SEME; }
 "}"			{ gconst; GIN=0; return yytext[0]; }
+
 {L_UHS}			{ gsave; GIN=0; return L_uhs; }
 {R_UHS}			{ gsave; GIN=0; return R_uhs; }
 {L_LHS}			{ gsave; GIN=0; return L_lhs; }

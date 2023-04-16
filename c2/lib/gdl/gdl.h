@@ -72,6 +72,8 @@ extern void gdl_remove_q_error(Mloc m, Node *ynp);
 extern Node *gdl_nongraph(Tree *ytp, const char *data);
 extern Node *gdl_break_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gptype);
 extern Node *gdl_break_c(Mloc mlp, Tree *ytp, int tok, const char *data);
+extern Node *gdl_gloss_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gptype);
+extern Node *gdl_gloss_c(Mloc mlp, Tree *ytp, int tok, const char *data);
 extern Node *gdl_state_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gptype);
 extern Node *gdl_state_c(Mloc mlp, Tree *ytp, int tok, const char *data);
 extern void gdl_cell(Tree *ytp, const char *span);

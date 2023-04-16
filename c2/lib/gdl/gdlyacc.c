@@ -61,6 +61,12 @@ gdl_gp_type(Tree *ytp, enum gdlpropvals p)
   gdl_prop(ytp->curr, p, PG_GDL_GROUP, NULL, NULL);
 }
 
+void
+gdl_node_type(Node *np, enum gdlpropvals p)
+{
+  gdl_prop(np, p, PG_GDL_GROUP, NULL, NULL);
+}
+
 static Node *
 gdl_graph_node(Tree *ytp, const char *name, const char *data)
 {
@@ -195,7 +201,7 @@ gdl_graph(Tree *ytp, const char *data)
   extern int g_literal_flag;
   Node *ret = NULL;
   if (gdltrace)
-    fprintf(stderr, "gt: LGRAPH: %s\n", data);
+    fprintf(stderr, "gt: GRAPH: %s\n", data);
   ret = gdl_graph_node(ytp, "g:g", data);
   if (g_literal_flag)
     {
@@ -290,10 +296,13 @@ gdl_punct(Tree *ytp, const char *data)
 Node *
 gdl_break_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gptype)
 {
+  Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "gt: BREAK/o: %d=%s\n", tok, data);
   (void)gdl_balance(mlp, tok, data);
-  return gdl_graph_node(ytp, "g:z", data);
+  ret = gdl_graph_node(ytp, "g:z", data);
+  gdl_node_type(ret,gptype);
+  return ret;
 }
 
 Node *
@@ -306,14 +315,38 @@ gdl_break_c(Mloc mlp, Tree *ytp, int tok, const char *data)
 }
 
 Node *
+gdl_gloss_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gptype)
+{
+  if (gdltrace)
+    fprintf(stderr, "gt: GLOSS/o: %d=%s\n", tok, data);
+  (void)gdl_balance(mlp, tok, data);
+  gdl_push(ytp, "g:glo");
+  gdl_gp_type(ytp,gptype);
+  return gdl_graph_node(ytp, "g:z", data);
+}
+
+Node *
+gdl_gloss_c(Mloc mlp, Tree *ytp, int tok, const char *data)
+{
+  Node *ret = NULL;
+  if (gdltrace)
+    fprintf(stderr, "gt: GLOSS/c: %d=%s\n", tok, data);
+  ret =  gdl_graph_node(ytp, "g:z", data);
+  if (!gdl_balance(mlp, tok, data))
+    gdl_pop(ytp, data);
+  return ret;
+}
+Node *
 gdl_state_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gptype)
 {
+  Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "gt: STATE/o: %d=%s\n", tok, data);
   (void)gdl_balance(mlp, tok, data);
-  gdl_push(ytp, "g:gp");
-  gdl_gp_type(ytp,gptype);
-  return gdl_graph_node(ytp, "g:z", data);
+  /*gdl_push(ytp, "g:gp");*/
+  ret = gdl_graph_node(ytp, "g:z", data);
+  gdl_node_type(ret,gptype);
+  return ret;
 }
 
 Node *
@@ -323,7 +356,11 @@ gdl_state_c(Mloc mlp, Tree *ytp, int tok, const char *data)
   if (gdltrace)
     fprintf(stderr, "gt: STATE/c: %d=%s\n", tok, data);
   ret =  gdl_graph_node(ytp, "g:z", data);
+#if 1
+  (void)gdl_balance(mlp, tok, data);
+#else
   if (!gdl_balance(mlp, tok, data))
     gdl_pop(ytp, data);
+#endif
   return ret;
 }

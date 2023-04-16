@@ -126,7 +126,7 @@ delim:
 	| '+' 						{ ynp = gdl_delim(ytp, "+"); }
 	| ':' 						{ ynp = gdl_delim(ytp, ":"); }
 	| '{'	      					{ gdl_balance(@1,'{',"{");
-	    						  gdl_push(ytp,"g:det"); 
+	    						  gdl_push(ytp,"g:det");
 	  						  gdl_gp_type(ytp,GP_DET_SEMI);}
 	| DET_SEME    					{ gdl_balance(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det");
@@ -297,15 +297,15 @@ breakc:
 	;
 
 glosso:
-	  L_cur_par		       	{ ynp = gdl_state_o(@1, ytp, L_cur_par, gdllval.text, GP_GLOSS_DOCGLO); }
-	| L_dbl_cur			{ ynp = gdl_state_o(@1, ytp, L_dbl_cur, gdllval.text, GP_GLOSS_LING); }
-	| L_ang_par_s		       	{ ynp = gdl_state_o(@1, ytp, L_ang_par, gdllval.text, GP_GLOSS_SURRO); }
+	  L_cur_par		       	{ ynp = gdl_gloss_o(@1, ytp, L_cur_par, gdllval.text, GP_GLOSS_DOCGLO); }
+	| L_dbl_cur			{ ynp = gdl_gloss_o(@1, ytp, L_dbl_cur, gdllval.text, GP_GLOSS_LING); }
+	| L_ang_par_s		       	{ ynp = gdl_gloss_o(@1, ytp, L_ang_par, gdllval.text, GP_GLOSS_SURRO); }
 	;
 
 glossc:
-	  R_cur_par		       	{ ynp = gdl_state_c(@1, ytp, R_cur_par, gdllval.text); }
-	| R_dbl_cur			{ ynp = gdl_state_c(@1, ytp, R_dbl_cur, gdllval.text); }
-	| R_ang_par_s		       	{ ynp = gdl_state_c(@1, ytp, R_ang_par, gdllval.text); }
+	  R_cur_par		       	{ ynp = gdl_gloss_c(@1, ytp, R_cur_par, gdllval.text); }
+	| R_dbl_cur			{ ynp = gdl_gloss_c(@1, ytp, R_dbl_cur, gdllval.text); }
+	| R_ang_par_s		       	{ ynp = gdl_gloss_c(@1, ytp, R_ang_par, gdllval.text); }
 	;
 
 stateo:  
