@@ -5,6 +5,7 @@
 static int o_c_map[] = 
   { '<',	'>',
     L_ang_par,	R_ang_par,
+    L_cur_par,	R_cur_par,
     L_dbl_ang,	R_dbl_ang,
     L_dbl_cur,	R_dbl_cur,
     '[',       	']',
@@ -21,6 +22,8 @@ static struct s_o_c { int tok; const char *str; } s_o_c_map[] =
     { '>', ">" },
     { L_ang_par, "<(" },
     { R_ang_par, ")>" },
+    { L_cur_par, "{(" },
+    { R_cur_par, ")}" },
     { L_dbl_ang, "<<" },
     { R_dbl_ang, ">>" },
     { L_dbl_cur, "{{" },

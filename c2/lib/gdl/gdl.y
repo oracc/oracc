@@ -35,7 +35,8 @@ GDLLTYPE gdllloc;
 		',' LF_AT LF_CARET LF_EQUALS LF_HASH LF_QUOTE LF_TILDE LF_VBAR
 
 %token <i>	'*' '!' '?' '#' '<' '>' '[' ']' '(' ')' CLP CRP QLP QRP
-       	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur L_ang_par R_ang_par
+       	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur
+		L_ang_par R_ang_par L_ang_par_s R_ang_par_s L_cur_par R_cur_par
 		L_uhs R_uhs L_lhs R_lhs LANG_FLIP
 		 '{' DET_SEME DET_PHON '}'
 		SPACE EOL END
@@ -263,7 +264,11 @@ lang:
 	;
 
 meta:
-	  statec
+	  breakc
+	| breako
+	| glossc
+	| glosso
+	| statec
 	| stateo
 	| INDENT       					{ ynp = gdl_nongraph(ytp, ";"); }
 	| NEWLINE	       				{ ynp = gdl_nongraph(ytp, ";"); }
@@ -279,28 +284,43 @@ mod:
 	  MOD						{ gdl_mod(ytp, gdllval.text); }
 	;
 
+breako:
+	  '['				{ ynp = gdl_break_o(@1, ytp, '[', gdllval.text, GP_BREAK_FULL); }
+	| L_uhs				{ ynp = gdl_break_o(@1, ytp, L_uhs, gdllval.text, GP_BREAK_PART); }
+	| L_lhs				{ ynp = gdl_break_o(@1, ytp, L_lhs, gdllval.text, GP_BREAK_PART); }
+	;
+
+breakc:
+	  ']'				{ ynp = gdl_break_c(@1, ytp, ']', gdllval.text); }
+	| R_uhs				{ ynp = gdl_break_c(@1, ytp, R_uhs, gdllval.text); }
+	| R_lhs				{ ynp = gdl_break_c(@1, ytp, R_lhs, gdllval.text); }
+	;
+
+glosso:
+	  L_cur_par		       	{ ynp = gdl_state_o(@1, ytp, L_cur_par, gdllval.text, GP_GLOSS_DOCGLO); }
+	| L_dbl_cur			{ ynp = gdl_state_o(@1, ytp, L_dbl_cur, gdllval.text, GP_GLOSS_LING); }
+	| L_ang_par_s		       	{ ynp = gdl_state_o(@1, ytp, L_ang_par, gdllval.text, GP_GLOSS_SURRO); }
+	;
+
+glossc:
+	  R_cur_par		       	{ ynp = gdl_state_c(@1, ytp, R_cur_par, gdllval.text); }
+	| R_dbl_cur			{ ynp = gdl_state_c(@1, ytp, R_dbl_cur, gdllval.text); }
+	| R_ang_par_s		       	{ ynp = gdl_state_c(@1, ytp, R_ang_par, gdllval.text); }
+	;
+
 stateo:  
-	  '<'						{ ynp = gdl_state(@1, ytp, '<', gdllval.text); }
-	| L_ang_par				       	{ ynp = gdl_state(@1, ytp, L_ang_par, gdllval.text); }
-	| L_dbl_ang				       	{ ynp = gdl_state(@1, ytp, L_dbl_ang, gdllval.text); }
-	| L_dbl_cur			       		{ ynp = gdl_state(@1, ytp, L_dbl_cur, gdllval.text); }
-	| '['						{ ynp = gdl_state(@1, ytp, '[', gdllval.text); }
-	| L_uhs						{ ynp = gdl_state(@1, ytp, L_uhs, gdllval.text); }
-	| L_lhs						{ ynp = gdl_state(@1, ytp, L_lhs, gdllval.text); }
-	| '('						{ ynp = gdl_state(@1, ytp, '(', gdllval.text); }
+	  '<'				{ ynp = gdl_state_o(@1, ytp, '<', gdllval.text, GP_STATE_IMPLIED); }
+	| '('				{ ynp = gdl_state_o(@1, ytp, '(', gdllval.text, GP_STATE_MAYBE); }
+	| L_ang_par		       	{ ynp = gdl_state_o(@1, ytp, L_ang_par, gdllval.text, GP_STATE_SUPPLIED); }
+	| L_dbl_ang		       	{ ynp = gdl_state_o(@1, ytp, L_dbl_ang, gdllval.text, GP_STATE_EXCISED); }
 	;
 
 statec:
-	  '>'						{ ynp = gdl_state(@1, ytp, '>', gdllval.text); }
-	| R_ang_par				       	{ ynp = gdl_state(@1, ytp, R_ang_par, gdllval.text); }
-	| R_dbl_ang			       		{ ynp = gdl_state(@1, ytp, R_dbl_ang, gdllval.text); }
-	| R_dbl_cur					{ ynp = gdl_state(@1, ytp, R_dbl_cur, gdllval.text); }
-	| ']'						{ ynp = gdl_state(@1, ytp, ']', gdllval.text); }
-	| R_uhs						{ ynp = gdl_state(@1, ytp, R_uhs, gdllval.text); }
-	| R_lhs						{ ynp = gdl_state(@1, ytp, R_lhs, gdllval.text); }
-	| ')'						{ ynp = gdl_state(@1, ytp, ')', gdllval.text); }
+	  '>'				{ ynp = gdl_state_c(@1, ytp, '>', gdllval.text); }
+	| ')'				{ ynp = gdl_state_c(@1, ytp, ')', gdllval.text); }
+	| R_ang_par		       	{ ynp = gdl_state_c(@1, ytp, R_ang_par, gdllval.text); }
+	| R_dbl_ang			{ ynp = gdl_state_c(@1, ytp, R_dbl_ang, gdllval.text); }
 	;
-
 %%
 
 void

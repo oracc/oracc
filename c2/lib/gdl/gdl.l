@@ -127,7 +127,7 @@ _			{ gsave; return LANG_FLIP; }
 
 {NOTEMARK}		{ gsave; return NOTEMARK; }
 
-("*"|:['".:]?)/[\]>#*!? \t\n()]	{ /*"*/ GIN=1; gsave; return PUNCT; }
+("*"|:['".:]?|"/")/[\]>#*!? \t\n()]	{ /*"*/ GIN=1; gsave; return PUNCT; }
 
 [0-9]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
 
@@ -154,7 +154,7 @@ _			{ gsave; return LANG_FLIP; }
 [-+:.]     		{ GIN=0; return gdltext[0]; }
 
 ";"			{ return INDENT; }
-"/"			{ return NEWLINE; }
+"//"			{ return NEWLINE; }
 
 [ \t]+			{ GIN=0; gsave; return SPACE; }
 
