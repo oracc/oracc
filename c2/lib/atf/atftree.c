@@ -84,7 +84,7 @@ atf_name(struct catchunk *cp, char **data)
 	  if (intrans)
 	    {
 	      *data = cp->text;
-	      return "#trans";
+	      return "_trans";
 	    }
 	  else
 	    {

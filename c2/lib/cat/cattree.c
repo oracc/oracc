@@ -112,8 +112,8 @@ cat_tree(struct catchunk *ccp, struct catconfig *cfg)
 	  if (name)
 	    {
 	      unsigned char *postname = (unsigned char *)name;
-	      /* We use #trans for an internal name that can't clash with @trans */
-	      while ('#' == *postname || isalnum(*postname))
+	      /* We use _trans for an internal name that can't clash with @trans */
+	      while ('_' == *postname || isalnum(*postname))
 		++postname;
 	      if (*postname)
 		{
