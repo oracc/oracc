@@ -126,16 +126,16 @@ delim:
         | '-' 						{ ynp = gdl_delim(ytp, "-"); }
 	| '+' 						{ ynp = gdl_delim(ytp, "+"); }
 	| ':' 						{ ynp = gdl_delim(ytp, ":"); }
-	| '{'	      					{ gdl_balance(@1,'{',"{");
+	| '{'	      					{ gdl_balance_state(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det");
 	  						  gdl_gp_type(ytp,GP_DET_SEMI);}
-	| DET_SEME    					{ gdl_balance(@1,'{',"{");
+	| DET_SEME    					{ gdl_balance_state(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det");
 	  						  gdl_gp_type(ytp,GP_DET_SEME); }
-	| DET_PHON      	      			{ gdl_balance(@1,'{',"{");
+	| DET_PHON      	      			{ gdl_balance_state(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det"); 
 	  						  gdl_gp_type(ytp,GP_DET_PHON); }
-	| '}' 	 		  			{ if (!gdl_balance(@1,'{',"}")) gdl_pop(ytp,"g:det");  }
+	| '}' 	 		  			{ if (!gdl_balance_state(@1,'}',"}")) gdl_pop(ytp,"g:det");  }
 	| ENHYPHEN 			       		{ ynp = gdl_delim(ytp, "--"); }
 	;
 
@@ -204,11 +204,13 @@ cbits:
 	;
 
 cbit:
-	  s	       					{ gvl_simplexg(@1, ynp); }
+	  s	       			       	{ gvl_simplexg(@1, ynp); }
 	| gflag
 	| cdelim
-	| CLP						{ gdl_balance(@1,CLP,"("); gdl_push(ytp,"g:gp"); }
-	| CRP	     		  			{ if (!gdl_balance(@1,CRP,")")) gdl_pop(ytp,"g:gp");  }
+	| CLP			       		{ gdl_balance_state(@1,CLP,"(");
+	    					  gdl_push(ytp,"g:gp"); }
+	| CRP	     			    	{ if (!gdl_balance_state(@1,CRP,")"))
+	      					    gdl_pop(ytp,"g:gp");  }
 	| QLP 						{ yrem=kids_rem_last(ytp);
 	    						  gdl_push(ytp,"g:q");
 							  kids_add_node(ytp,yrem);

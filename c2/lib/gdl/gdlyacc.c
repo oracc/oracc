@@ -299,7 +299,7 @@ gdl_break_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gpt
   Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "gt: BREAK/o: %d=%s\n", tok, data);
-  (void)gdl_balance(mlp, tok, data);
+  (void)gdl_balance_break(mlp, tok, data);
   ret = gdl_graph_node(ytp, "g:z", data);
   gdl_node_type(ret,gptype);
   return ret;
@@ -310,7 +310,7 @@ gdl_break_c(Mloc mlp, Tree *ytp, int tok, const char *data)
 {
   if (gdltrace)
     fprintf(stderr, "gt: BREAK/c: %d=%s\n", tok, data);
-  (void)gdl_balance(mlp, tok, data);
+  (void)gdl_balance_break(mlp, tok, data);
   return gdl_graph_node(ytp, "g:z", data);
 }
 
@@ -319,7 +319,7 @@ gdl_gloss_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gpt
 {
   if (gdltrace)
     fprintf(stderr, "gt: GLOSS/o: %d=%s\n", tok, data);
-  (void)gdl_balance(mlp, tok, data);
+  (void)gdl_balance_state(mlp, tok, data);
   gdl_push(ytp, "g:glo");
   gdl_gp_type(ytp,gptype);
   return gdl_graph_node(ytp, "g:z", data);
@@ -332,7 +332,7 @@ gdl_gloss_c(Mloc mlp, Tree *ytp, int tok, const char *data)
   if (gdltrace)
     fprintf(stderr, "gt: GLOSS/c: %d=%s\n", tok, data);
   ret =  gdl_graph_node(ytp, "g:z", data);
-  if (!gdl_balance(mlp, tok, data))
+  if (!gdl_balance_state(mlp, tok, data))
     gdl_pop(ytp, data);
   return ret;
 }
@@ -342,7 +342,7 @@ gdl_state_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gpt
   Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "gt: STATE/o: %d=%s\n", tok, data);
-  (void)gdl_balance(mlp, tok, data);
+  (void)gdl_balance_state(mlp, tok, data);
   /*gdl_push(ytp, "g:gp");*/
   ret = gdl_graph_node(ytp, "g:z", data);
   gdl_node_type(ret,gptype);
@@ -357,7 +357,7 @@ gdl_state_c(Mloc mlp, Tree *ytp, int tok, const char *data)
     fprintf(stderr, "gt: STATE/c: %d=%s\n", tok, data);
   ret =  gdl_graph_node(ytp, "g:z", data);
 #if 1
-  (void)gdl_balance(mlp, tok, data);
+  (void)gdl_balance_state(mlp, tok, data);
 #else
   if (!gdl_balance(mlp, tok, data))
     gdl_pop(ytp, data);
