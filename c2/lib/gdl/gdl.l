@@ -90,15 +90,13 @@ NOTEMARK	"^"[0-9]+"^"
 
 "\xc3\x97"	       	{ return C_TIMES; }
 
-"<("			{ gconst; return L_ang_par; }
-
-<Q>")"/">"	       	{ return QRP; }
+<Q>")"/[}>]	       	{ return QRP; }
 <Q>")"			{ return QRP; }
 <Q>[ \t]+	       	{ QIN=GIN=0; mesg_vwarning(currgdlfile,gdllineno,"missing ')' in qv");
 			  cvq_reset(); }
 
-")>"			{ gconst; return R_ang_par; }
-
+"<("			{ gconst; GIN=0; return L_ang_par; }
+")>"			{ gconst; GIN=0; return R_ang_par; }
 "{{"			{ gconst; GIN=0; return L_dbl_cur; }
 "}}"			{ gconst; GIN=0; return R_dbl_cur; }
 "{("			{ gconst; GIN=0; return L_cur_par; }
@@ -155,6 +153,8 @@ _			{ gsave; return LANG_FLIP; }
 "..."			{ GIN=0; gsave; return ELLIPSIS; }
 "--"			{ GIN=0; return ENHYPHEN; }
 [-+:.]     		{ GIN=0; return gdltext[0]; }
+
+"/"/{G}			{ return '/'; }
 
 ";"			{ return INDENT; }
 "//"			{ return NEWLINE; }
