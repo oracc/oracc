@@ -174,9 +174,9 @@ gflag:
 	;
 
 simplexg:
-	  s maybegflags	       			       	{ if (gdl_legacy) gdl_unlegacy(ynp);
-							  ynp->mloc = mloc_mloc(&@1);
-           					          if (ynp->kids) gdl_mod_wrap(ynp, 1);
+	  s maybegflags	       			       	{ ynp->mloc = mloc_mloc(&@1);
+           					          if (gdl_legacy) gdl_unlegacy(ynp);
+							  if (ynp->kids) gdl_mod_wrap(ynp, 1);
 	    			  			  gvl_simplexg(ynp); }
 	;
 

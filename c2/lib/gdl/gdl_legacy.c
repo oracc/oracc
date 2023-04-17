@@ -5,6 +5,7 @@
 #include <oraccsys.h>
 #include "gdl.h"
 #include "gvl.h"
+#include "gdl.tab.h"
 #include "unidef.h"
 
 #define G_C10E_MIXED_CASE 0x02
@@ -76,15 +77,27 @@ gdl_unlegacy(Node *np)
 	      if (0 == i)
 		x[xlen++] = '*';
 	      break;
+	    case '[':
+	      gdl_balance_break(*np->mloc, '[', "[");
+	      break;
+	    case ']':
+	      gdl_balance_break(*np->mloc, ']', "]");
+	      break;
+	    case U_ulhsq:
+	      gdl_balance_break(*np->mloc, L_uhs, NULL);
+	      break;
+	    case U_urhsq:
+	      gdl_balance_break(*np->mloc, R_uhs, NULL);
+	      break;
+	    case U_llhsq:
+	      gdl_balance_break(*np->mloc, L_lhs, NULL);
+	      break;
+	    case U_lrhsq:
+	      gdl_balance_break(*np->mloc, R_lhs, NULL);
+	      break;
 	    case '#':
 	    case '?':
 	    case '!':
-	    case '[':
-	    case ']':
-	    case U_ulhsq:
-	    case U_urhsq:
-	    case U_llhsq:
-	    case U_lrhsq:
 	    case U_cdot:
 	    case U_degree:
 	      /* delete these */
