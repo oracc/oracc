@@ -218,8 +218,8 @@ static void
 gdl_user_action(void)
 {
   if (gdlflextrace)
-    fprintf(stderr, "%s:%d: gdllex: YY_START=%d; text=::%s:: GIN=%d; CIN=%d\n",
-		  gdlfile, gdllineno, YY_START, gdltext, GIN, CIN);
+    fprintf(stderr, "%s:%d: gdllex: YY_START=%d; text=::%s:: GIN=%d; CIN=%d; QIN=%d\n",
+		  gdlfile, gdllineno, YY_START, gdltext, GIN, CIN, QIN);
 
   gdllloc.file = currgdlfile;
   gdllloc.line = yylineno;
