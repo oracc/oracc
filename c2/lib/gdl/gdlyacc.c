@@ -231,45 +231,6 @@ gdl_listnum(Tree *ytp, const char *data)
   return gdl_graph_node(ytp, "g:l", data);
 }
 
-/* Mod nodes attached to the current grapheme ynp */
-void
-gdl_mod(Tree *ytp, const char *data)
-{
-  Node *np = NULL;
-  const char *n = NULL;
-  switch (*data++)
-    {
-    case '@':
-      n = "g:m";
-      break;
-    case '~':
-      n = "g:a";
-      break;
-    case '\\':
-      n = "g:f";
-      break;
-    default:
-      fprintf(stderr, "gdl_mod: internal error: unknown mod %s\n", data-1);
-      break;
-    }
-  if (gdltrace)    
-    fprintf(stderr, "gt: MOD: %s\n", data);
-  (void)tree_push(ytp);
-  if (!ytp->curr->kids)
-    {
-      np = tree_add(ytp, NS_GDL, ytp->curr->name, ytp->curr->depth+1, NULL);
-      np->text = (ccp)pool_copy((uccp)ytp->curr->text,gdlpool);
-      /*np->name = "g:b";*/
-      /* This is done in a Bison rule which this node-copy won't be
-	 processed by so we have to unlegacy here */
-      if (gdl_legacy)
-	gdl_unlegacy(np);
-    }
-  np = tree_add(ytp, NS_GDL, n, ytp->curr->depth+1, NULL);
-  np->text = (ccp)pool_copy((uccp)data,gdlpool);
-  tree_pop(ytp);
-}
-
 Node *
 gdl_nongraph(Tree *ytp, const char *data)
 {

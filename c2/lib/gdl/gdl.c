@@ -27,6 +27,8 @@ gdl_init(void)
   gdl_balance_init();
 
   gdl_lexfld_init();
+
+  gdl_modq_init();
   
   gdlpool = pool_init();
 }
@@ -40,5 +42,6 @@ gdl_term(void)
       gdlpool = NULL;
       gdl_initted = 0;
       gdl_balance_term();
+      gdl_modq_term();
     }
 }

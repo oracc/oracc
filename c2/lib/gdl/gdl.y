@@ -175,7 +175,9 @@ gflag:
 
 simplexg:
 	  s maybegflags	       			       	{ if (gdl_legacy) gdl_unlegacy(ynp);
-	    			  			  gvl_simplexg(@1, ynp); }
+							  ynp->mloc = mloc_mloc(&@1);
+           					          if (ynp->kids) gdl_mod_wrap(ynp, 1);
+	    			  			  gvl_simplexg(ynp); }
 	;
 
 s:
@@ -188,7 +190,9 @@ s:
 	;
 
 compound:
-	  c maybegflags         			{ gvl_compound(@1, ytp->curr);
+	  c maybegflags         			{ ynp->mloc = mloc_mloc(&@1);
+	    						  gdl_modq_flush();
+							  gvl_compound(ytp->curr);
 	    						  ynp = gdl_pop(ytp,"g:c"); }
 	;
 
@@ -204,13 +208,14 @@ cbits:
 	;
 
 cbit:
-	  s	       			       	{ gvl_simplexg(@1, ynp); }
+	s	       			       		{ ynp->mloc = mloc_mloc(&@1);
+	  						  gvl_simplexg(ynp); }
 	| gflag
 	| cdelim
-	| CLP			       		{ gdl_balance_state(@1,CLP,"(");
-	    					  gdl_push(ytp,"g:gp"); }
-	| CRP	     			    	{ if (!gdl_balance_state(@1,CRP,")"))
-	      					    gdl_pop(ytp,"g:gp");  }
+	| CLP			       			{ gdl_balance_state(@1,CLP,"(");
+	    					  	  gdl_push(ytp,"g:gp"); }
+	| CRP	     			    		{ if (!gdl_balance_state(@1,CRP,")"))
+	      					    	   gdl_pop(ytp,"g:gp");  }
 	| QLP 						{ yrem=kids_rem_last(ytp);
 	    						  gdl_push(ytp,"g:q");
 							  kids_add_node(ytp,yrem);
@@ -221,7 +226,7 @@ cbit:
 							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
 	| QRP				      		{ gdl_decr_qin(); }
 	| meta
-	| mod					{ /* TODO: gvl_simplexg's base+mods processing needs to happen at the end of mods */ }
+	| mod						{ gdl_modq_add(ynp); };
 	;
 
 cdelim:
@@ -237,7 +242,8 @@ cdelim:
 	;
 
 valuqual:
-	q	    				       	 { gvl_valuqual(@1, ytp->curr);
+	q	    				       	 { ynp->mloc = mloc_mloc(&@1);
+	  						   gvl_valuqual(ytp->curr);
 	  						   ynp = ytp->curr; }
 	qmaybemodflags					 { ynp = gdl_pop(ytp,"g:q"); }
         ;
