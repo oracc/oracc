@@ -555,6 +555,7 @@ gvl_simplexg(Mloc ml, Node *ynp)
 	{
 	  if (np->user && ((gvl_g*)np->user)->c10e)
 	    {
+	      np->name = "g:b";
 	      list_add(op, (void*)((gvl_g*)np->user)->orig);
 	      list_add(cp, (void*)((gvl_g*)np->user)->c10e);
 	    }

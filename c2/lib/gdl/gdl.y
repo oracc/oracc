@@ -221,7 +221,7 @@ cbit:
 							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
 	| QRP				      		{ gdl_decr_qin(); }
 	| meta
-	| mod
+	| mod					{ /* TODO: gvl_simplexg's base+mods processing needs to happen at the end of mods */ }
 	;
 
 cdelim:
