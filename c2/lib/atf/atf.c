@@ -10,13 +10,16 @@
 #include "atf.tab.h"
 
 int atftrace = 1;
-extern int gdl_legacy, gdl_unicode;
+extern int gdl_legacy, gdl_lexical, gdl_unicode;
+
+char *curr_pqx;
+int curr_pqx_line;
 
 void
 atf_init(void)
 {
   cat_init();
-  gdl_legacy = gdl_unicode = 0;
+  gdl_legacy = gdl_lexical = gdl_unicode = 0;
 }
 
 void
@@ -35,6 +38,8 @@ atf_protocol(const char *p)
     gdl_unicode = 1;
   else if (strstr(p, "legacy"))
     gdl_legacy = 1;
+  else if (strstr(p, "lexical"))
+    gdl_lexical = 1;
   if ((p2 = strstr(p, "lang")))
     {
       p2 += 5;

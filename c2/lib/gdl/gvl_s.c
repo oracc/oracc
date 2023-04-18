@@ -72,7 +72,10 @@ gvl_s(Node *ynp)
 	  gp->mess = gvl_vmess("pseudo-signname %s must be qualifed by one of %s",gp->orig,l);
 	}
       else
-	gp->mess = gvl_vmess("unknown sign name: %s", gp->orig);
+	{
+	  if (!gdl_legacy_check(ynp, gp->orig))
+	    gp->mess = gvl_vmess("unknown sign name: %s", gp->orig);
+	}
     }
   else if ('l' == *gp->type)
     {
@@ -84,7 +87,11 @@ gvl_s(Node *ynp)
 	  gp->c10e = gp->orig;
 	}
       else
-	gp->mess = gvl_vmess("unknown signlist name: %s", gp->orig);
+	{
+	  if (!gdl_legacy_check(ynp, gp->orig))
+	    gp->mess = gvl_vmess("unknown signlist name: %s", gp->orig);
+	}
+
     }
   else
     {
@@ -98,7 +105,10 @@ gvl_s(Node *ynp)
 	  gp->oid = (ccp)gvl_lookup(gp->sign);
 	}
       else
-	gp->mess = gvl_vmess("unknown value: %s. To request adding it please visit:\n\t%s", gp->orig, report);
+	{
+	  if (!gdl_legacy_check(ynp, gp->orig))
+	    gp->mess = gvl_vmess("unknown value: %s. To request adding it please visit:\n\t%s", gp->orig, report);
+	}
     }
 
   return gp;

@@ -198,7 +198,7 @@ gdl_field(Tree *ytp, const char *ftype)
 Node *
 gdl_graph(Tree *ytp, const char *data)
 {
-  extern int g_literal_flag;
+  extern int g_literal_flag, g_logoforce_flag;
   Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "gt: GRAPH: %s\n", data);
@@ -207,6 +207,11 @@ gdl_graph(Tree *ytp, const char *data)
     {
       gdl_prop(ret, '$', PG_GDL_FLAGS, NULL, NULL);
       g_literal_flag = 0;
+    }
+  else if (g_logoforce_flag)
+    {
+      gdl_prop(ret, '~', PG_GDL_FLAGS, NULL, NULL);
+      g_logoforce_flag = 0;
     }
   return ret;
 }

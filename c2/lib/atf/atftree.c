@@ -8,6 +8,8 @@
 
 #include "atf.h"
 
+extern char *curr_pqx;
+extern int curr_pqx_line;
 extern const char *curratffile;
 extern int atftrace, atflineno;
 
@@ -19,10 +21,21 @@ atf_name(struct catchunk *cp, char **data)
   
   if (cp)
     {
+      char *pqx = NULL;
       switch (*cp->text)
 	{
 	case '&':
-	  *data = cp->text + 1;
+	  *data = pqx = cp->text + 1;
+	  if ('P' == *pqx || 'Q' == *pqx || 'X' == *pqx)
+	    {
+	      char pqxbuf[10], *p = pqxbuf;
+	      *p++ = *pqx++;
+	      while (isdigit(*pqx) && (p - pqxbuf) < 8)
+		*p++ = *pqx++;
+	      *p = '\0';
+	      curr_pqx = strdup(pqxbuf); /*FIXME*/
+	      curr_pqx_line = cp->line;
+	    }
 	  intrans = 0;
 	  return "amp";
 	  break;

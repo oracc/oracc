@@ -90,6 +90,8 @@ extern Node *gdl_listnum(Tree *ytp, const char *data);
 extern Node *gdl_number(Tree *ytp, const char *data);
 extern Node *gdl_barenum(Tree *ytp, const char *data);
 extern void gdl_unlegacy(Node *np);
+extern unsigned char *gdl_unlegacy_str(Mloc *mloc, unsigned const char *gp);
+extern int gdl_legacy_check(Node *, unsigned const char *gp);
 extern void gdl_incr_qin(void);
 extern void gdl_decr_qin(void);
 extern int gdl_balance_break(Mloc mlp, int tok, const char *str);

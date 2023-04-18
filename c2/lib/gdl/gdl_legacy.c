@@ -11,31 +11,20 @@
 #define G_C10E_MIXED_CASE 0x02
 #define G_C10E_FINAL_SUBX 0x04
 
-/* if gdl_legacy is set (normally via #atf: use legacy) this routine
-   stores the value of np->text in a property named 'legacy' and
-   replaces np->text with a cleaned version without the brackets. This
-   means that GVL never sees legacy bracketed data */
-void
-gdl_unlegacy(Node *np)
+static Hash *legacy_reported_h = NULL;
+extern const char *curr_pqx;
+extern int curr_pqx_line;
+
+unsigned char *
+gdl_unlegacy_str(Mloc *mlp, unsigned const char *g)
 {
-  static int err;
+  unsigned char *ret = NULL;
   wchar_t *w;
   size_t len;
   int i;
   int suppress_case_check = 0;
-  unsigned const char *g = (uccp)np->text;
+  static int err;
 
-  /* While this is only called from gdl on 's' nodes, np can only have
-     kids if it is a sign+mod in which case the sign has already been
-     through gdl_unlegacy */
-  if (np->kids && np->kids->props && prop_find_kv(np->kids->props, "legacy", NULL))
-    {
-      np->text = np->kids->text;
-      return;
-    }
-  
-  err = 0;
-  
   if ((w = utf2wcs(g, &len)))
     {
       wchar_t *x = malloc(3*len*sizeof(wchar_t));
@@ -43,7 +32,6 @@ gdl_unlegacy(Node *np)
       size_t xlen = 0;
       int found_l = 0;
       int found_u = 0;
-      unsigned char *ret;
       
       for (i = 0; i < len; ++i)
 	{
@@ -78,22 +66,22 @@ gdl_unlegacy(Node *np)
 		x[xlen++] = '*';
 	      break;
 	    case '[':
-	      gdl_balance_break(*np->mloc, '[', "[");
+	      gdl_balance_break(*mlp, '[', "[");
 	      break;
 	    case ']':
-	      gdl_balance_break(*np->mloc, ']', "]");
+	      gdl_balance_break(*mlp, ']', "]");
 	      break;
 	    case U_ulhsq:
-	      gdl_balance_break(*np->mloc, L_uhs, NULL);
+	      gdl_balance_break(*mlp, L_uhs, NULL);
 	      break;
 	    case U_urhsq:
-	      gdl_balance_break(*np->mloc, R_uhs, NULL);
+	      gdl_balance_break(*mlp, R_uhs, NULL);
 	      break;
 	    case U_llhsq:
-	      gdl_balance_break(*np->mloc, L_lhs, NULL);
+	      gdl_balance_break(*mlp, L_lhs, NULL);
 	      break;
 	    case U_lrhsq:
-	      gdl_balance_break(*np->mloc, R_lhs, NULL);
+	      gdl_balance_break(*mlp, R_lhs, NULL);
 	      break;
 	    case '#':
 	    case '?':
@@ -198,15 +186,72 @@ gdl_unlegacy(Node *np)
 	}
       ret = wcs2utf(x,xlen);
       free(x);
-      
-      if (strcmp(np->text, (ccp)ret))
-	{
-	  prop_node_add(np, GP_TRACKING, PG_GDL_INFO, "legacy", np->text);
-	  np->text = (ccp)pool_copy(ret, np->tree->pool);
-	}
+    }
+  return ret;
+}
+
+/* if gdl_legacy is set (normally via #atf: use legacy) this routine
+   stores the value of np->text in a property named 'legacy' and
+   replaces np->text with a cleaned version without the brackets. This
+   means that GVL never sees legacy bracketed data */
+void
+gdl_unlegacy(Node *np)
+{
+  unsigned char *res = NULL;
+  
+  /* While this is only called from gdl on 's' nodes, np can only have
+     kids if it is a sign+mod in which case the sign has already been
+     through gdl_unlegacy */
+  if (np->kids && np->kids->props && prop_find_kv(np->kids->props, "legacy", NULL))
+    {
+      np->text = np->kids->text;
+      return;
     }
 
+  res = gdl_unlegacy_str(np->mloc, (uccp)np->text);
+  
+  if (strcmp(np->text, (ccp)res))
+    {
+      prop_node_add(np, GP_TRACKING, PG_GDL_INFO, "legacy", np->text);
+      np->text = (ccp)pool_copy(res, np->tree->pool);
+    }
 }
+
+int
+gdl_legacy_check(Node *ynp, unsigned const char *t)
+{
+  int need_legacy = 0;
+  if (ynp == NULL && t == NULL && legacy_reported_h)
+    {
+      hash_free(legacy_reported_h, NULL);
+      legacy_reported_h = NULL;
+      return 0;
+    }
+
+  if (!legacy_reported_h)
+    legacy_reported_h = hash_create(1);
+  
+  if (curr_pqx)
+    {
+      if (!hash_find(legacy_reported_h, (uccp)curr_pqx))
+	{
+	  unsigned char *res = gdl_unlegacy_str(ynp->mloc, t);
+	  if (strcmp((ccp)res, (ccp)t))
+	    {
+	      Mloc m = *ynp->mloc;
+	      m.line = curr_pqx_line;
+	      mesg_verr(&m, "Text %s needs '#atf: use legacy'", curr_pqx);
+	      hash_add(legacy_reported_h, (uccp)curr_pqx, "");
+	      need_legacy = 1;
+	    }
+	}
+      else
+	need_legacy = 1;
+    }
+  return need_legacy;
+}
+
+/****************************** UTILITY ROUTINES **********************************/
 
 unsigned char *
 base_of(const unsigned char *v)

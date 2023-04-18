@@ -16,6 +16,7 @@ static Tree *ytp;
 static Node *ynp, *yrem, *ycp;
 /*int Q = 0;*/
 int gdl_legacy = 0;
+int gdl_lexical = 0;
 int gdl_unicode = 0;
 
 #define GDLLTYPE_IS_DECLARED 1

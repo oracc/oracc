@@ -3,7 +3,8 @@
 #include "gdl.tab.h"
 
 int gdl_lexfld[128];
-
+extern const char *currgdlfile;
+extern int gdllineno;
 void
 gdl_lexfld_init(void)
 {
@@ -45,8 +46,8 @@ gdl_lexfld_name(const char *lftok)
       fld = "!cs"; /* contained sign */
       break;
     default:
-      /* can't happen */
-      fprintf(stderr, "gdl_lexfld_name: internal error: field '%c' unknown; returning 'default'\n", *lftok);
+      fprintf(stderr, "%s:%d: internal gdl_lexfld_name error: field '%c' unknown; returning 'default'\n",
+	      currgdlfile, gdllineno, *lftok);
       fld = "default";
       break;
 #else

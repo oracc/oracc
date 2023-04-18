@@ -15,9 +15,9 @@ const char *gdlfile = "<stdin>";
 const char *currgdlfile = NULL;
 extern int gdl_lexfld[];
 extern int curr_lang;
-extern int gdl_legacy, gdl_unicode;
+extern int gdl_legacy, gdl_lexical, gdl_unicode;
 int gdlflextrace = 0;
-int g_literal_flag = 0;
+int g_literal_flag = 0, g_logoforce_flag = 0;
 
 extern Pool *gdlpool;
 #define gdlsave(s) (char*)pool_copy((const unsigned char*)(s),gdlpool);
@@ -26,6 +26,7 @@ static int gdl_grapheme_type(void);
 static int CIN = 0; /* 1 if in compound */ /* update: this is probably no longer necessary */
 static int GIN = 0; /* 1 if in grapheme */
 static int QIN = 0; /* non-zero if in a(BA) qualifier */
+static int SIN = 0; /* left context is space */
 
 #define gconst gdllval.text=gdltext
 #define gsave  gdllval.text=gdlsave(gdltext)
@@ -60,6 +61,7 @@ NOTEMARK	"^"[0-9]+"^"
 
 %s C
 %s Q
+%s S
 %x TC
 %x TD
 
@@ -67,7 +69,7 @@ NOTEMARK	"^"[0-9]+"^"
 
 <C>"|"/[ \t]   		{ BEGIN cvq_pop(); CIN=0; return C_C; }
 <C>"|"			{ BEGIN cvq_pop(); CIN=0; return C_C; }
-"|"/[ \t]	       	{ /*"*/ return gdl_lexfld[(int)*yytext]; }
+"|"/[ \t]	       	{ /*"*/ gsave; return gdl_lexfld[(int)*yytext]; }
 "|"			{ BEGIN cvq_push(C); GIN=0; CIN=1; return C_O; }
 
 [=^][aeiuAEIU]		{ if (gdl_unicode) { mesg_vwarning(currgdlfile,gdllineno,
@@ -103,10 +105,10 @@ NOTEMARK	"^"[0-9]+"^"
 ")}"			{ gconst; GIN=0; return R_cur_par; }
 "<<"			{ gconst; GIN=0; return L_dbl_ang; }
 ">>"			{ gconst; GIN=0; return R_dbl_ang; }
-"<"			{ gconst; GIN=0; return '<'; }
-">"			{ gconst; GIN=0; return '>'; }
 "("			{ gconst; if (GIN) { GIN=0; return QLP; } else { return yytext[0]; } }
 ")"			{ gconst; GIN=0; return yytext[0]; }
+"<"			{ gconst; GIN=0; return '<'; }
+">"			{ gconst; GIN=0; return '>'; }
 "["			{ gconst; GIN=0; return yytext[0]; }
 "]"			{ gconst; GIN=0; return yytext[0]; }
 "{"			{ gconst; GIN=0; return yytext[0]; }
@@ -136,19 +138,21 @@ _			{ gsave; return LANG_FLIP; }
 
 {LISTNUM}		{ GIN=1; gsave; return LISTNUM; }
 
-"$"/{G}			{ g_literal_flag = 1; }
 {G}({G}|{B})*{G}	{ GIN=1; return gdl_grapheme_type(); }
 {G}({G}|{B})*/{MOD}	{ GIN=1; return gdl_grapheme_type(); }
 {GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
 
 {MOD}			{ GIN=1; gsave; return MOD; }
 
-"#"			{ gsave; return GIN ? *yytext : gdl_lexfld[(int)*yytext]; }
-
-[!?*]			{ return *yytext; }
-
-["~=@^]/[ \t\n]        	{ /*"*/ gsave; return gdl_lexfld[(int)*yytext]; }
-
+[#"=@^]/{G} 		{ gsave;
+			  if (gdl_lexical) {
+		       	    mesg_vwarning(currgdlfile, gdllineno,
+			  	       	  "no space after %c field\n", *yytext);
+			    return gdl_lexfld[(int)*yytext]; }
+			  else { return *yytext; } }
+^[#"~=@^]	       	{ gsave; return gdl_lexfld[(int)*yytext]; }
+[#"~=@^]   		{ gsave; if (SIN) { SIN=0; return gdl_lexfld[(int)*yytext]; } else { return *yytext; } }
+[#!?*]			{ gsave; return *yytext; }
 
 "..."			{ GIN=0; gsave; return ELLIPSIS; }
 "--"			{ GIN=0; return ENHYPHEN; }
@@ -156,9 +160,17 @@ _			{ gsave; return LANG_FLIP; }
 
 "/"/{G}			{ return '/'; }
 
+~~/{G}			{ g_logoforce_flag = 1; }
+"~"/{G}			{ if (gdl_lexical) { gsave; mesg_vwarning(currgdlfile, gdllineno,
+			   "no space after ~ field; use ~~ for logogram force with atf: use lexical\n");
+			    return gdl_lexfld[(int)*yytext];
+			   } else { g_logoforce_flag = 1; } }
+"$"/{G}			{ g_literal_flag = 1; }
+
 ";"			{ return INDENT; }
 "//"			{ return NEWLINE; }
 
+[ \t]+/[#"~=@^]	       	{ GIN=0; SIN=1; gsave; return SPACE; }
 [ \t]+			{ GIN=0; gsave; return SPACE; }
 
 \n			{ gdl_closers(); return gdltext[0]; }
@@ -218,10 +230,22 @@ static void
 gdl_user_action(void)
 {
   if (gdlflextrace)
-    fprintf(stderr, "%s:%d: gdllex: YY_START=%d; text=::%s:: GIN=%d; CIN=%d; QIN=%d\n",
-		  gdlfile, gdllineno, YY_START, gdltext, GIN, CIN, QIN);
+    fprintf(stderr, "%s:%d: gdllex: YY_START=%d; text=::%s:: GIN=%d; CIN=%d; QIN=%d; SIN=%d\n",
+		  gdlfile, gdllineno, YY_START, gdltext, GIN, CIN, QIN, SIN);
 
-  gdllloc.file = currgdlfile;
+#if 1
+ /*  SIN=0; */
+#else
+  if (SIN)
+    {
+      BEGIN cvq_push(S);
+      SIN=0;
+    }
+  else
+    BEGIN cvq_pop();
+#endif
+
+gdllloc.file = currgdlfile;
   gdllloc.line = yylineno;
 }
 
