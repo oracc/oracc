@@ -428,7 +428,7 @@ unsigned char *
 g_uc(unsigned const char *g)
 {
   wchar_t *w;
-  size_t len;  
+  size_t len;
   if ((w = utf2wcs(g, &len)))
     {
       w = g_wuc(w);

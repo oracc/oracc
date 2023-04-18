@@ -1,11 +1,11 @@
 include ../../../oracc-am-rules.txt
 
-noinst_PROGRAMS=ax
+bin_PROGRAMS=ax
 
 xLDADD=\
 	../../lib/cat/libcat.la \
-	../../lib/atf/libatf.la \
 	../../lib/gdl/libgdl.la \
+	../../lib/atf/libatf.la \
 	../../lib/sys/libsys.la \
 	../../lib/xml/libxml.la \
 	../../lib/xml/expat/libexpat.la \
