@@ -208,13 +208,16 @@ gdl_unlegacy(Node *np)
       return;
     }
 
-  res = gdl_unlegacy_str(np->mloc, (uccp)np->text);
-  
-  if (strcmp(np->text, (ccp)res))
+  if ((res = gdl_unlegacy_str(np->mloc, (uccp)np->text)))
     {
-      prop_node_add(np, GP_TRACKING, PG_GDL_INFO, "legacy", np->text);
-      np->text = (ccp)pool_copy(res, np->tree->pool);
+      if (strcmp(np->text, (ccp)res))
+	{
+	  prop_node_add(np, GP_TRACKING, PG_GDL_INFO, "legacy", np->text);
+	  np->text = (ccp)pool_copy(res, np->tree->pool);
+	}
     }
+  else
+    mesg_verr(np->mloc, "gdl_unlegacy failed to convert %s\n", np->text);
 }
 
 int

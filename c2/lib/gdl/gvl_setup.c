@@ -22,8 +22,12 @@ gvl_setup(const char *project, const char *name)
 {
   gvl_i *ret = NULL;
   Hash *h = NULL;
+  const char *l = NULL;
 
-  setlocale(LC_ALL,ORACC_LOCALE);
+  if (!(l = setlocale(LC_ALL,ORACC_LOCALE)))
+    if (!(l = setlocale(LC_ALL, "en_US.UTF-8")))
+      if (!(l = setlocale(LC_ALL, "C")))
+        fprintf(stderr, "gvl_setup: failed to setlocale to '%s', 'UTF-8', or 'C'\n", ORACC_LOCALE);
   
   if ((h = sll_init(project, name)))
     {

@@ -293,7 +293,8 @@ mods:
         ;
 
 mod:
-	  MOD						{ gdl_mod(ytp, gdllval.text); }
+	  MOD						{ ynp->mloc = mloc_mloc(&@1);
+	  						  gdl_mod(ytp, gdllval.text); }
 	;
 
 breako:

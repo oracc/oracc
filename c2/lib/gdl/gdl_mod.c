@@ -34,6 +34,7 @@ gdl_mod(Tree *ytp, const char *data)
     {
       np = tree_add(ytp, NS_GDL, ytp->curr->name, ytp->curr->depth+1, NULL);
       np->text = (ccp)pool_copy((uccp)ytp->curr->text,gdlpool);
+      np->mloc = np->rent->mloc;
       /*np->name = "g:b";*/
       /* This is done in a Bison rule which this node-copy won't be
 	 processed by so we have to unlegacy here */
@@ -42,6 +43,7 @@ gdl_mod(Tree *ytp, const char *data)
     }
   np = tree_add(ytp, NS_GDL, n, ytp->curr->depth+1, NULL);
   np->text = (ccp)pool_copy((uccp)data,gdlpool);
+  np->mloc = np->rent->mloc;
   tree_pop(ytp);
 }
 
@@ -95,7 +97,6 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
   ynp->text = (ccp)pool_copy(s,curr_sl->p);
   if (!(gp = hash_find(curr_sl->h,(uccp)ynp->text)))
     {
-      unsigned const char *l = NULL;
       ynp->user = gp = memo_new(curr_sl->m);
       gp->c10e = (uccp)ynp->text;
       gp->type = ynp->name + 2;
