@@ -221,6 +221,10 @@ int
 gdl_legacy_check(Node *ynp, unsigned const char *t)
 {
   int need_legacy = 0;
+
+  if (gdl_legacy)
+    return 0;
+  
   if (ynp == NULL && t == NULL && legacy_reported_h)
     {
       hash_free(legacy_reported_h, NULL);

@@ -210,7 +210,8 @@ cbits:
 
 cbit:
 	s	       			       		{ ynp->mloc = mloc_mloc(&@1);
-	  						  gvl_simplexg(ynp); }
+	  						  if (gdl_legacy) gdl_unlegacy(ynp);
+							  gvl_simplexg(ynp); }
 	| gflag
 	| cdelim
 	| CLP			       			{ gdl_balance_state(@1,CLP,"(");

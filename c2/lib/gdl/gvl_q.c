@@ -13,14 +13,15 @@ void
 gvl_q(Node *ynp)
 {
   gvl_g *vq = NULL;
-  unsigned char *p = NULL;
+  unsigned char *o = NULL, *p = NULL;
   unsigned const char *vo = NULL, *qo = NULL;
 
   gdl_corrq = (prop_find_pg(ynp->kids->props,'!',PG_GDL_FLAGS)!=NULL);
 
   if (gdl_corrq)
     ynp->name = "g:corr";
-  
+
+  /* This builds a c10e version of vq */
   if (!(vo = (uccp)ynp->kids->text))
     if (ynp->kids->user)
       {
@@ -44,7 +45,22 @@ gvl_q(Node *ynp)
     {
       vq = memo_new(curr_sl->m);
       vq->type = "q";
-      vq->orig = (uccp)p;
+
+      /* This builds an orig version of vq */
+      if (ynp->kids->user)
+	vo = ((gvl_g*)(ynp->kids->user))->orig;
+      else
+	vo = (uccp)ynp->kids->text;
+      if (ynp->kids->next->user)
+	qo = ((gvl_g*)(ynp->kids->next->user))->orig;
+      else
+	qo = (uccp)ynp->kids->next->text;
+      if (vo && qo)
+	{
+	  o = (ucp)pool_alloc(strlen((ccp)vo) + strlen((ccp)qo) + 3, curr_sl->p);
+	  sprintf((char*)o, "%s(%s)", (ccp)vo, (ccp)qo);
+	}
+      vq->orig = (uccp)o;
 
       if (gvl_q_c10e(ynp->kids->user, ynp->kids->next->user, vq) > 0)
 	{
