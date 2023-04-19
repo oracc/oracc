@@ -79,7 +79,7 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
 {
   List *op = NULL, *cp = NULL;
   Node *np = NULL;
-  unsigned char *s = NULL;
+  unsigned char *o = NULL, *c = NULL;
   gvl_g*gp = NULL;
 
   if (NULL == ynp->kids)
@@ -117,18 +117,22 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
 	    }
 	}
     }
-  s = list_concat(cp);
-  ynp->text = (ccp)pool_copy(s,curr_sl->p);
-  if (!(gp = hash_find(curr_sl->h,(uccp)ynp->text)))
+  c = list_concat(cp);
+  o = list_concat(op);
+  if (!(gp = hash_find(curr_sl->h,(uccp)c))
+      && !(gp = hash_find(curr_sl->h,(uccp)o)))
     {
       ynp->user = gp = memo_new(curr_sl->m);
-      gp->c10e = (uccp)ynp->text;
       gp->type = ynp->name + 2;
-      s = list_concat(op);
-      if (strcmp((ccp)s, ynp->text))
-	((gvl_g*)ynp->user)->orig = pool_copy(s,curr_sl->p);
+      ((gvl_g*)ynp->user)->c10e = pool_copy(c,curr_sl->p);
+      if (strcmp((ccp)c, (ccp)o))
+	((gvl_g*)ynp->user)->orig = pool_copy(o,curr_sl->p);
       else
-	((gvl_g*)ynp->user)->orig = (uccp)ynp->text;
+	((gvl_g*)ynp->user)->orig = ((gvl_g*)ynp->user)->c10e;
+      if (gvl_lookup(c))
+	ynp->text = (ccp)((gvl_g*)ynp->user)->c10e;
+      else
+	ynp->text = (ccp)((gvl_g*)ynp->user)->orig;
       /* need to review hash_add throughout */
     }
   list_free(cp, NULL);
