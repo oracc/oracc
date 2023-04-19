@@ -202,7 +202,7 @@ gdl_graph(Tree *ytp, const char *data)
   const char *gname = NULL;
   Node *ret = NULL;
 
-  if ('R' == ytp->curr->kids->name[2])
+  if (ytp->curr->kids && 'R' == ytp->curr->kids->name[2])
     gname = "g:N";
   else
     gname = "g:g";

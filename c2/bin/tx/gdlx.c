@@ -9,6 +9,8 @@
 
 /* test harness for gvl/gdl libraries */
 
+static Mloc ml;
+
 Mloc xo_loc;
 FILE *f_xml;
 const char *file;
@@ -17,7 +19,11 @@ int status;
 int rnvtrace;
 
 int check_mode = 0;
+const char *fname = NULL;
 int identity_mode = 0;
+int wrapper = 0;
+
+FILE *fp;
 
 static void
 test_identity(char *s, Tree *t)
@@ -35,52 +41,72 @@ test_identity(char *s, Tree *t)
     printf("%s\t%s\n", s, res);
 }
 
+void
+do_one(char *s)
+{
+  Tree *tp = NULL;
+  if (s[strlen(s)-1] == '\n')
+    s[strlen(s)-1] = '\0';
+  ++ml.line;
+  mesg_init();
+  tp = gdlparse_string(&ml, s);
+  mesg_print(stderr);
+  if (identity_mode)
+    test_identity(s, tp);
+  else if (!check_mode)
+    tree_xml(stdout, tp);
+  gdlparse_reset();
+  tree_term(tp);
+}
+
+void
+do_many(const char *fn)
+{
+  if ('-' == *fn)
+    {
+      fp = stdin;
+      ml.file = "<stdin>";
+      ml.line = 1;
+    }
+  else
+    fp = fopen(fn, "r");
+  if (fp)
+    {
+      char buf[1024], *s;
+      ml.file = fn;
+      ml.line = 1;
+      if (wrapper)
+	printf("<gdlx>");
+      while ((s = fgets(buf, 1024, fp)))
+	do_one(s);
+      if (wrapper)
+	printf("</gdlx>");
+    }
+  else
+    fprintf(stderr, "gdlx: file %s can't be read\n", fn);
+}
+
 int
 main(int argc, char **argv)
 {
-  static Mloc ml;
-  mesg_init();
+  options(argc, argv, "cf:iw");
+  
   gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
-
-  options(argc, argv, "ci");
-  
   gdlparse_init();
-  if (check_mode || identity_mode)
+
+  if (argv[optind])
     {
-      char buf[1024], *s;	  
-      ml.file = "<stdin>";
-      ml.line = 0;
-      while ((s = fgets(buf, 1024, stdin)))
-	{
-	  Tree *tp = NULL;
-	  if (s[strlen(s)-1] == '\n')
-	    s[strlen(s)-1] = '\0';
-	  ++ml.line;
-	  tp = gdlparse_string(&ml, s);
-	  if (check_mode)
-	    mesg_print(stdout);
-	  else
-	    test_identity(s, tp);
-	  gdlparse_reset();
-	  tree_term(tp);
-	}
-    }
-  else if (argv[optind])
-    {
-      Tree *tp = NULL;
       ml.file = "<argv1>";
       ml.line = 1;
-      tp = gdlparse_string(&ml, argv[1]);
-      mesg_print(stderr);
-      tree_xml(stdout, tp);
+      do_one(argv[optind]);
     }
+  else if (fname)
+    do_many(fname);
   else
-    {
-      help();
-    }
+    do_many("-");
+
   gdlparse_term();
-      
   return 0;
 }
 
@@ -92,8 +118,14 @@ opts(int opt, char *arg)
     case 'c':
       check_mode = 1;
       break;
+    case 'f':
+      fname = optarg;
+      break;
     case 'i':
       identity_mode = 1;
+      break;
+    case 'w':
+      wrapper = 1;
       break;
     default:
       return 1;

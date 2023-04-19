@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <ctype.h>
 #include <mesg.h>
 #include <list.h>
 #include <tree.h>
@@ -12,24 +13,35 @@ gdl_mod(Tree *ytp, const char *data)
 {
   Node *np = NULL;
   const char *n = NULL;
+  int mpushed = 0;
+
+  if (strcmp(ytp->curr->last->name, "g:gp")
+      && 'M' != ytp->curr->last->name[2]
+      && 'A' != ytp->curr->last->name[2])
+    mpushed = 1;
+
   switch (*data++)
     {
     case '@':
-      n = "g:m";
+      n = mpushed ? "g:m" : "g:M";
       break;
     case '~':
-      n = "g:a";
+      n = mpushed ? "g:a" : "g:A";
       break;
     case '\\':
-      n = "g:f";
+      n = mpushed ? "g:f" : "g:F";
       break;
     default:
       fprintf(stderr, "gdl_mod: internal error: unknown mod %s\n", data-1);
       break;
     }
+
   if (gdltrace)    
     fprintf(stderr, "gt: MOD: %s\n", data);
-  (void)tree_push(ytp);
+
+  if (mpushed)
+    (void)tree_push(ytp);
+    
   if (!ytp->curr->kids)
     {
       np = tree_add(ytp, NS_GDL, ytp->curr->name, ytp->curr->depth+1, NULL);
@@ -44,7 +56,9 @@ gdl_mod(Tree *ytp, const char *data)
   np = tree_add(ytp, NS_GDL, n, ytp->curr->depth+1, NULL);
   np->text = (ccp)pool_copy((uccp)data,gdlpool);
   np->mloc = np->rent->mloc;
-  tree_pop(ytp);
+
+  if (mpushed)
+    tree_pop(ytp);
 }
 
 /* A sign with mods has a copy of the sign in a g:b(ase) node and the
@@ -54,15 +68,25 @@ gdl_mod(Tree *ytp, const char *data)
 
    To preserve original input in the case of GANA₂@t, which is c10ed
    to GAN₂@t, we rebuild both the original and c10e forms and reset
-   top-level gp->orig to the built orig
+   top-level gp->orig to the built orig.
+
+   For |(LAK079&LAK079)@g| the mod has been added to the group not
+   LAK079. In this case ynp->kids is NULL and we return without
+   further processing.
 */
 void
 gdl_mod_wrap(Node *ynp, int sub_simplexg)
 {
-  List *op = list_create(LIST_SINGLE), *cp = list_create(LIST_SINGLE);
+  List *op = NULL, *cp = NULL;
   Node *np = NULL;
   unsigned char *s = NULL;
   gvl_g*gp = NULL;
+
+  if (NULL == ynp->kids)
+    return;
+
+  op = list_create(LIST_SINGLE);
+  cp = list_create(LIST_SINGLE);
 
   gvl_simplexg(ynp->kids);
   
@@ -76,17 +100,17 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
 	}
       else
 	{
-	  if (np->name[2] == 'm')
+	  if (np->name[2] == 'm' || np->name[2] == 'M')
 	    {
 	      list_add(op, "@");
 	      list_add(cp, "@");
 	    }
-	  else if (np->name[2] == 'a')
+	  else if (np->name[2] == 'a' || np->name[2] == 'A')
 	    {
 	      list_add(op, "~");
 	      list_add(cp, "~");
 	    }
-	  if (np->name[2] != 'f')
+	  if (np->name[2] != 'f' || np->name[2] == 'F')
 	    {
 	      list_add(op, (void*)np->text);
 	      list_add(cp, (void*)np->text);

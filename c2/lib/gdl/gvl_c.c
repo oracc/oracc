@@ -77,6 +77,39 @@ gvl_c_c10e(Node *ynp)
   return gvl_c_form(ynp, gvl_c_node_c10e);
 }
 
+/* lc should be 0 on first pass and 1 on final pass */
+
+static void
+gvl_c_node_text(List *lp, Node *np, int lc)
+{
+  switch (np->name[2])
+    {
+    case 'M':
+      if (lc)
+	np->name = "g:m";
+    case 'm':
+      list_add(lp, "@");
+      list_add(lp, (void*)np->text);
+      break;
+    case 'A':
+      if (lc)
+	np->name = "g:a";
+    case 'a':
+      list_add(lp, "~");
+      list_add(lp, (void*)np->text);
+      break;
+    case 'F':
+      if (lc)
+	np->name = "g:f";
+    case 'f':
+      /* graphetic forms are not added here */
+      break;
+    default:
+      list_add(lp, (void*)np->text);
+      break;
+    }
+}
+
 static void
 gvl_c_node_orig(Node *np, void *user)
 {
@@ -85,7 +118,7 @@ gvl_c_node_orig(Node *np, void *user)
       if (np->user)
 	list_add((List*)user, (void*)((gvl_g*)(np->user))->orig);
       else if (np->text)
-	list_add((List*)user, (void*)np->text);
+	gvl_c_node_text(user, np, 0);
       else if (!strcmp(np->name, "g:gp"))
 	list_add((List*)user, "(");
     }
@@ -107,7 +140,12 @@ gvl_c_node_c10e(Node *np, void *user)
 	    list_add((List*)user, (void*)gp->orig);
 	}
       else if (np->text)
-	list_add((List*)user, (void*)np->text);
+	{
+	  if (':' == *np->text)
+	    list_add((List*)user, ".");
+	  else
+	    gvl_c_node_text(user, np, 1);
+	}
       else if (!strcmp(np->name, "g:gp"))
 	list_add((List*)user, "(");
     }

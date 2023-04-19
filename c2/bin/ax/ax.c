@@ -73,11 +73,11 @@ main(int argc, char **argv)
     {
       int fnum = optind;
       multifile = argv[fnum] && argv[fnum+1];
-      if (multifile)
+      if (multifile && !check_mode)
 	printf("<xtf-multi>");
       while (argv[fnum])
 	ax_input(argv[fnum++]);
-      if (multifile)
+      if (multifile && !check_mode)
 	printf("</xtf-multi>");
     }
   else
