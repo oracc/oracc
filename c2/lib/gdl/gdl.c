@@ -12,6 +12,12 @@
 
 Pool *gdlpool;
 
+/* These only get set when reading ATF but they are used in GDL
+   messages so they are declared here which means that programs using
+   GDL but not ATF don't have to pull in the whole ATF library */
+char *curr_pqx = NULL;
+int curr_pqx_line = 0;
+
 /* set to 1 when a vq has !, e.g., a!(BA) */
 int gdl_corrq = 0;
 

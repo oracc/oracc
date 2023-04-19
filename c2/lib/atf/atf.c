@@ -12,9 +12,6 @@
 int atftrace = 1;
 extern int gdl_legacy, gdl_lexical, gdl_unicode;
 
-char *curr_pqx;
-int curr_pqx_line;
-
 void
 atf_init(void)
 {

@@ -199,10 +199,18 @@ Node *
 gdl_graph(Tree *ytp, const char *data)
 {
   extern int g_literal_flag, g_logoforce_flag;
+  const char *gname = NULL;
   Node *ret = NULL;
+
+  if ('R' == ytp->curr->kids->name[2])
+    gname = "g:N";
+  else
+    gname = "g:g";
+  
   if (gdltrace)
-    fprintf(stderr, "gt: GRAPH: %s\n", data);
-  ret = gdl_graph_node(ytp, "g:g", data);
+    fprintf(stderr, "gt: GRAPH[%s]: %s\n", gname, data);
+
+  ret = gdl_graph_node(ytp, gname, data);
   if (g_literal_flag)
     {
       gdl_prop(ret, '$', PG_GDL_FLAGS, NULL, NULL);
@@ -244,12 +252,13 @@ gdl_nongraph(Tree *ytp, const char *data)
   return gdl_graph_node(ytp, "g:x", data);
 }
 
+/* This is triggered by [0-9]/( so we know its a repetition number */
 Node *
 gdl_number(Tree *ytp, const char *data)
 {
   if (gdltrace)
     fprintf(stderr, "gt: NUMBER: %s\n", data);
-  return gdl_graph_node(ytp, "g:N", data);
+  return gdl_graph_node(ytp, "g:R", data);
 }
 
 Node *

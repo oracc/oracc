@@ -53,7 +53,7 @@ gvl_s(Node *ynp)
       gp->sign = gvl_lookup(sll_tmp_key(l,""));
       gp->c10e = gp->orig;
     }
-  else if ('s' == *gp->type)
+  else if ('s' == *gp->type || 'N' == *gp->type)
     {
       const unsigned char *lg = NULL, *l = NULL;
       unsigned const char *c10e = NULL;
@@ -62,8 +62,11 @@ gvl_s(Node *ynp)
       if (c10e)
 	{
 	  gp->oid = (ccp)gvl_lookup(c10e);
-	  gp->c10e = gp->sign = c10e;
-	  if (gvl_strict)
+	  if ('N' == *gp->type)
+	    gp->c10e = gp->orig;
+	  else
+	    gp->c10e = gp->sign = c10e;
+	  if (gvl_strict && 'N' != *gp->type)
 	    gp->mess = gvl_vmess("pseudo-signname %s should be %s", gp->orig, gp->sign);
 	}
       else if (lg && (l = gvl_lookup(sll_tmp_key(lg, "q"))))

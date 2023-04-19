@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <oraccsys.h>
+#include <tree.h>
 
 #include "gdl.h"
 #include "gvl.h"
@@ -16,6 +17,23 @@ int status;
 int rnvtrace;
 
 int check_mode = 0;
+int identity_mode = 0;
+
+static void
+test_identity(char *s, Tree *t)
+{
+  const char *res = NULL;
+  if (t->root && t->root->kids)
+    {
+      if (t->root->kids->text)
+	res = t->root->kids->text;
+      else
+	printf("%s\t(null)\n", s);
+    }
+
+  if (res && strcmp(s, res))
+    printf("%s\t%s\n", s, res);
+}
 
 int
 main(int argc, char **argv)
@@ -25,10 +43,10 @@ main(int argc, char **argv)
   gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
 
-  options(argc, argv, "c");
+  options(argc, argv, "ci");
   
   gdlparse_init();
-  if (check_mode)
+  if (check_mode || identity_mode)
     {
       char buf[1024], *s;	  
       ml.file = "<stdin>";
@@ -40,7 +58,10 @@ main(int argc, char **argv)
 	    s[strlen(s)-1] = '\0';
 	  ++ml.line;
 	  tp = gdlparse_string(&ml, s);
-	  mesg_print(stdout);
+	  if (check_mode)
+	    mesg_print(stdout);
+	  else
+	    test_identity(s, tp);
 	  gdlparse_reset();
 	  tree_term(tp);
 	}
@@ -50,7 +71,7 @@ main(int argc, char **argv)
       Tree *tp = NULL;
       ml.file = "<argv1>";
       ml.line = 1;
-      gdlparse_string(&ml, argv[1]);
+      tp = gdlparse_string(&ml, argv[1]);
       mesg_print(stderr);
       tree_xml(stdout, tp);
     }
@@ -71,6 +92,9 @@ opts(int opt, char *arg)
     case 'c':
       check_mode = 1;
       break;
+    case 'i':
+      identity_mode = 1;
+      break;
     default:
       return 1;
       break;
@@ -81,5 +105,5 @@ opts(int opt, char *arg)
 void
 help(void)
 {
-  fprintf(stderr, "gdlx: give grapheme on command line or use -c and read lines from stdin\n");
+  fprintf(stderr, "gdlx: give grapheme on command line or use -c / -i and read lines from stdin\n");
 }

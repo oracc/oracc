@@ -563,7 +563,7 @@ gvl_valuqual(Node *ynp)
 
   if ('q' == ynp->name[2])
     {
-      if ('N' == ynp->kids->name[2])
+      if ('R' == ynp->kids->name[2])
 	gvl_n(ynp);
       else
 	gvl_q(ynp);

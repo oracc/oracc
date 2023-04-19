@@ -27,6 +27,7 @@ gvl_n(Node *ynp)
       ynp->name = "g:n";
       nq->c10e = nq->orig = (uccp)p; /* no c10e for numbers yet */
       ynp->kids->name = "g:r";
+      ynp->kids->next->name = ((sll_has_sign_indicator((uccp)ynp->kids->next->text) ? "g:s" : "g:v"));
       hash_add(curr_sl->h, nq->orig, nq);
       if ((l = gvl_lookup(p)))
 	{
@@ -61,6 +62,7 @@ gvl_n(Node *ynp)
 	    }
 	}
     }
+  ynp->text = (ccp)nq->c10e;
   ynp->user = nq;
 }
 
