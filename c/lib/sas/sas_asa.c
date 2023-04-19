@@ -256,6 +256,8 @@ sas_asa_load(const char *fname)
 			  hash_add(sip->nodumb,xstrdup(tmp),&one);
 			  free(tmp);
 			}
+		      else if ('+' == *cand) /* A new thing after dumb/smart merge the incomers from dumb are marked with + */
+			++cand;
 		      if ((candlist = hash_find(sip->cand,cand)))
 			list_add(candlist, ap);
 		      else

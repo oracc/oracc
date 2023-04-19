@@ -4,11 +4,15 @@
 void
 atf_init(void)
 {
-  char *locret = setlocale(LC_ALL,ORACC_LOCALE);
-  if (locret)
+  char *l = setlocale(LC_ALL,ORACC_LOCALE);
+
+  if (!(l = setlocale(LC_ALL,ORACC_LOCALE)))
+    if (!(l = setlocale(LC_ALL, "en_US.UTF-8")))
+      if (!(l = setlocale(LC_ALL, "C")))
+        fprintf(stderr, "ox: failed to setlocale to '%s', 'UTF-8', or 'C'\n", ORACC_LOCALE);
+
+  if (l)
     atf2utf_init();
-  else
-    fprintf(stderr, "ox: failed to set LOCALE to %s; stop.", LOCALE);
 }
 
 void
