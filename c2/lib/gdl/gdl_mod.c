@@ -15,7 +15,12 @@ gdl_mod(Tree *ytp, const char *data)
   const char *n = NULL;
   int mpushed = 0;
 
+  /* if we have )@c we need to add to the extant parent and not push;
+     this may also need to test for g:q nodes but it may be that all
+     g:q nodes that exhibit this behaviour are actually g:n nodes and
+     get converted to g:n before gdl_mod is called in this context */
   if (strcmp(ytp->curr->last->name, "g:gp")
+      && strcmp(ytp->curr->name, "g:n")
       && 'M' != ytp->curr->last->name[2]
       && 'A' != ytp->curr->last->name[2])
     mpushed = 1;
@@ -174,4 +179,65 @@ gdl_modq_add(Node *np)
 {
   list_add(modq, np);
 }
- 
+
+void
+gdl_mod_wrap_q(Node *np)
+{
+  List *mp = list_create(LIST_SINGLE);
+  const char *res = "";
+  Node *tmp;
+  
+  for (tmp = np->kids; tmp; tmp = tmp->next)
+    {
+      if (tmp->name[2] == 'm' || tmp->name[2] == 'M')
+	{
+	  tmp->name = "g:m";
+	  list_add(mp, "@");
+	  list_add(mp, (void*)tmp->text);
+	}
+      else if (tmp->name[2] == 'a' || tmp->name[2] == 'A')
+	{
+	  tmp->name = "g:a";
+	  list_add(mp, "~");
+	  list_add(mp, (void*)tmp->text);
+	}
+      else if (tmp->name[2] != 'f' || tmp->name[2] == 'F')
+	{
+	  tmp->name = "g:f";
+	  /* ignore graphetics */
+	}
+      else
+	{
+	  /* only cat mod nodes */
+	}
+    }  
+  if (list_len(mp))
+    res = (ccp)list_concat(mp);
+
+  list_free(mp, NULL);
+  if (res && *res)
+    {
+      unsigned char *o = NULL, *c = NULL;
+      if (np->user)
+	{
+	  o = pool_alloc(strlen((ccp)((gvl_g*)np->user)->orig) + strlen(res) + 1, gdlpool);
+	  sprintf((char*)o, "%s%s", (ccp)((gvl_g*)np->user)->orig, (ccp)res);
+	  if (((gvl_g*)np->user)->c10e)
+	    {
+	      c = pool_alloc(strlen((ccp)((gvl_g*)np->user)->c10e) + strlen(res) + 1, gdlpool);
+	      sprintf((char*)c, "%s%s", ((gvl_g*)np->user)->orig, res);
+	    }
+	  if (c && gvl_lookup(c))
+	    {
+	      np->text = (ccp)c;
+	      ((gvl_g*)np->user)->c10e = c;
+	      ((gvl_g*)np->user)->orig = o;
+	    }
+	  else
+	    {
+	      np->text = (ccp)o;
+	      ((gvl_g*)np->user)->orig = ((gvl_g*)np->user)->c10e = o;
+	    }
+	}  
+    }
+}

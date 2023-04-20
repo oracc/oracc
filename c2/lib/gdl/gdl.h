@@ -109,10 +109,12 @@ extern const char *sub_of(int i);
 extern wchar_t subdig_of(wchar_t w);
 extern wchar_t vowel_of(wchar_t w);
 
+extern const char *gdl_mod_cat(Node *np);
 extern void gdl_modq_add(Node *np);
 extern void gdl_modq_flush(void);
 extern void gdl_modq_init(void);
 extern void gdl_modq_term(void);
 extern void gdl_mod_wrap(Node *np, int sub_simplexg);
+extern void gdl_mod_wrap_q(Node *np);
 
 #endif /*GDL_H_*/

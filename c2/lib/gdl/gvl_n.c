@@ -13,12 +13,21 @@ gvl_n(Node *ynp)
   gvl_g *nq = NULL;
   unsigned const char *l = NULL;
   unsigned char *p = NULL;
+  const char *num_mods = "";
 
-  if (!nnp->kids->text && nnp->kids->kids->text)
+  if (!nnp->kids->text && nnp->kids->next->text)
     nnp = nnp->kids;
+
+#if 0
+  /* Does the n have mods? */
+  if (nnp->kids->kids->next)
+    num_mods = (ccp)gdl_mod_cat(nnp->kids->next);
+#endif
   
-  p = (ucp)pool_alloc(strlen(nnp->kids->text) + strlen(nnp->kids->next->text) + 3, curr_sl->p);
-  sprintf((char*)p, "%s(%s)", nnp->kids->text, nnp->kids->next->text);
+  p = (ucp)pool_alloc(strlen(nnp->kids->text) + strlen(nnp->kids->next->text) + strlen(num_mods) + 3, curr_sl->p);
+  sprintf((char*)p, "%s(%s)%s", nnp->kids->text, nnp->kids->next->text, num_mods);
+  if (*num_mods)
+    free((void*)num_mods);
 
   if (!(nq = hash_find(curr_sl->h, p)))
     {

@@ -247,7 +247,7 @@ valuqual:
 	q	    				       	 { ynp->mloc = mloc_mloc(&@1);
 	  						   gvl_valuqual(ytp->curr);
 	  						   ynp = ytp->curr; }
-	qmaybemodflags					 { gdl_modq_flush();
+	qmaybemodflags					 { gdl_mod_wrap_q(ynp);
 							   ynp = gdl_pop(ytp,"g:q"); }
         ;
 
