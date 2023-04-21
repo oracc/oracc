@@ -142,6 +142,32 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
     }
   list_free(cp, NULL);
   list_free(op, NULL);
+
+  /* For valuqal type q gdl_mod_wrap_q attaches the mods to the top
+     level; if gdl_mod_wrap is being called on a sign that is a child
+     of g:n we need to update the top-level here */
+  if (ynp->rent->name[2] == 'n')
+    {
+      gvl_g *rg = ynp->rent->user;
+      gvl_g *gg = ynp->user;
+      const char *r = ynp->rent->kids->text;
+      o = pool_alloc(strlen(r) + strlen((ccp)gg->orig) + 3, curr_sl->p);
+      sprintf((char*)o, "%s(%s)", r, gg->orig);
+      c = pool_alloc(strlen(r) + strlen((ccp)gg->c10e) + 3, curr_sl->p);
+      sprintf((char*)c, "%s(%s)", r, gg->orig);
+      rg->orig = o;
+      if (gvl_lookup(c))
+	{
+	  ynp->rent->text = (ccp)c;
+	  rg->c10e = c;
+	}
+      else
+	{
+	  rg->mess = gvl_vmess("unknown sign name: %s", rg->orig);
+	  ynp->rent->text = (ccp)o;
+	  rg->c10e = o;
+	}
+    }
 }
 
 void
