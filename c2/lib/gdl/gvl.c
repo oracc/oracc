@@ -553,19 +553,19 @@ gvl_simplexg(Node *ynp)
 }
 
 void
-gvl_valuqual(Node *ynp)
+gvl_valuqual(Node *vqnp)
 {
-  if (!ynp || !ynp->kids || !ynp->kids->next)
+  if (!vqnp || !vqnp->kids || !vqnp->kids->next)
     return;
 
   if (gvl_trace)
     fprintf(stderr, "gvl_valuqual: called\n");
 
-  if ('q' == ynp->name[2])
+  if ('q' == vqnp->name[2])
     {
-      if ('R' == ynp->kids->name[2])
-	gvl_n(ynp);
+      if ('R' == vqnp->kids->name[2])
+	gvl_n(vqnp);
       else
-	gvl_q(ynp);
+	gvl_q(vqnp);
     }
 }

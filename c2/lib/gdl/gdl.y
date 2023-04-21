@@ -193,7 +193,7 @@ s:
 compound:
 	  c maybegflags         			{ ynp->mloc = mloc_mloc(&@1);
 	    						  gdl_modq_flush();
-							  gvl_compound(ytp->curr);
+							  gvl_compound(ycp);
 	    						  ynp = gdl_pop(ytp,"g:c"); }
 	;
 
@@ -225,8 +225,12 @@ cbit:
   							  gdl_incr_qin();
 							  /* IS GDL_CORRQ NECESSARY NOW? */
 							  gdl_corrq
-							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
-	| QRP				      		{ gdl_decr_qin(); }
+							    = (prop_find_pg(yrem->props,'!',
+									    PG_GDL_FLAGS)!=NULL);}
+	| QRP				      		{ gdl_decr_qin();
+	  						  ynp->mloc = mloc_mloc(&@1);
+	  						  gvl_valuqual(ytp->curr);
+							}
 	| meta
 	| mod						{ gdl_modq_add(ynp); };
 	;

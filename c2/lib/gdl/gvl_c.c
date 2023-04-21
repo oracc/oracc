@@ -113,7 +113,9 @@ gvl_c_node_text(List *lp, Node *np, int lc)
 static void
 gvl_c_node_orig(Node *np, void *user)
 {
-  if (strlen(np->name) != 3 || !strchr("abcfmz", np->name[2]))
+  if ((strlen(np->name) == 3 || strlen(np->name) == 4)
+      && !strchr("abcfmz", np->name[2])
+      && 'n' != np->rent->name[2])
     {
       if (np->user)
 	list_add((List*)user, (void*)((gvl_g*)(np->user))->orig);
@@ -127,7 +129,9 @@ gvl_c_node_orig(Node *np, void *user)
 static void
 gvl_c_node_c10e(Node *np, void *user)
 {
-  if (strlen(np->name) != 3 || !strchr("abcfmz", np->name[2]))
+  if ((strlen(np->name) == 3 || strlen(np->name) == 4)
+      && !strchr("abcfmz", np->name[2])
+      && 'n' != np->rent->name[2])
     {
       if (np->user)
 	{
