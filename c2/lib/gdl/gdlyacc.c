@@ -108,6 +108,8 @@ gdl_remove_q_error(Mloc m, Node *ynp)
     mesg_err(&m, "gdl_remove_q_error succeeded");
   else if (mesg_remove_error(m.file, m.line, "unknown value") && gdltrace)
     mesg_err(&m, "gdl_remove_q_error succeeded");
+  else if (mesg_remove_error(m.file, m.line, "unknown sign") && gdltrace)
+    mesg_err(&m, "gdl_remove_q_error succeeded");
 }
 
 /***********************************************************************

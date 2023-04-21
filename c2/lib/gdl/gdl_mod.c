@@ -227,7 +227,7 @@ gdl_mod_wrap_q(Node *np)
 	  list_add(mp, "~");
 	  list_add(mp, (void*)tmp->text);
 	}
-      else if (tmp->name[2] != 'f' || tmp->name[2] == 'F')
+      else if (tmp->name[2] == 'f' || tmp->name[2] == 'F')
 	{
 	  tmp->name = "g:f";
 	  /* ignore graphetics */
