@@ -1,11 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <locale.h>
 #include <mesg.h>
 #include <tree.h>
 #include <xml.h>
 #include <asl.h>
 #include <gdl.h>
 #include <oraccsys.h>
+#include <oracclocale.h>
 
 Mloc xo_loc;
 FILE *f_xml;
@@ -21,7 +23,13 @@ int
 main(int argc, char * const*argv)
 {
   Tree *tp = NULL;
+  const char *l = NULL;
 
+  if (!(l = setlocale(LC_ALL,ORACC_LOCALE)))
+    if (!(l = setlocale(LC_ALL, "en_US.UTF-8")))
+      if (!(l = setlocale(LC_ALL, "C")))
+        fprintf(stderr, "gvl_setup: failed to setlocale to '%s', 'UTF-8', or 'C'\n", ORACC_LOCALE);
+  
   options(argc, argv, "ct");
   aslflextrace = asltrace = trace_mode;
 
@@ -30,7 +38,9 @@ main(int argc, char * const*argv)
   nodeh_register(treexml_c_handlers, NS_SL, treexml_c_generic);
   asl_init();
   tp = aslyacc();
-  tree_xml(NULL, tp);
+  mesg_print(stderr);
+  if (tp)
+    tree_xml(NULL, tp);
   asl_term();
 }
 

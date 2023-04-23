@@ -24,9 +24,10 @@ ASLLTYPE asllloc;
 %union { char *text; int i; }
 
 %token	<text>  TOK TRANS TAB EOL PAR CMT BAD LINE SIGLUM
-		SIGN NOSIGN FORM VAR GNAME GVALUE GBAD
-		V NOV VCMT VREF
+		SIGN NOSIGN FORM NOFORM VAR GNAME GVALUE GBAD
+		V NOV QRYV VCMT VREF LIST LISTNUM
 		INOTE TEXT END EBAD EFORM ESIGN
+		UCODE UPHASE UNAME
 
 %start fields
 
@@ -46,7 +47,7 @@ field: 	line EOL
 	| cont EOL
 	| line PAR	{ if (asltrace) fprintf(stderr, "PAR\n"); }
 	| cont PAR	{ if (asltrace) fprintf(stderr, "PAR\n"); }
-	| BAD		{ mesg_warning(curraslfile, asllineno, "asl: lines must begin with '@' or whitespace"); }
+	| error EOL	{ yyerrok; }
 	;
 
 line:	atcmd		{ if (asltrace) fprintf(stderr, "atcmd/EOL: %s\n", asllval.text); }
@@ -56,16 +57,21 @@ line:	atcmd		{ if (asltrace) fprintf(stderr, "atcmd/EOL: %s\n", asllval.text); }
 atcmd:
 	  atsign
 	| atnosign
-	| atv
-	| atnov
+	| atlist
+	| atvv
 	| atform
 	| atinote
+	| atunicode
 	| atend
         ;
 
 atsign:
 	  SIGN GNAME	{ fprintf(stderr, "sv: %s\n", $2); }
 	| SIGN GBAD
+	;
+
+atlist:
+	  LIST LISTNUM	{ fprintf(stderr, "sv: [list] %s\n", $2); }
 	;
 
 atnosign:
@@ -77,6 +83,11 @@ atform:
 	  FORM VAR GNAME
 	| FORM VAR GBAD
 	;
+
+atvv:
+ 	  atv
+	| atnov
+	| atqryv
 
 atv:
 	  V GVALUE vref
@@ -90,6 +101,11 @@ atnov:
 	| NOV GBAD
 	;
 
+atqryv:
+	  QRYV GVALUE
+	| QRYV GBAD
+	;
+
 vref:
 	  VREF
 	| /* empty */
@@ -101,9 +117,26 @@ atend:
 	| END EBAD
 	;
 
-atinote:
+atunicode:
+	  atucode
+	| atuname
+	| atuphase
+	;
 
-	  INOTE
+atucode:
+	  UCODE
+	;
+
+atuname:
+	  UNAME
+	;
+
+atuphase:
+	  UPHASE
+	;
+
+atinote:
+	  INOTE	TEXT
         ;
 
 cont: 	TAB		{ if (asltrace) fprintf(stderr, "field/TAB: %s\n", asllval.text); }
