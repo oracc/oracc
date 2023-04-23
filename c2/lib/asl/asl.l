@@ -31,26 +31,12 @@ static void asl_user_action(void);
 
 %}
 
-%x E
-%x T
+GRAPHEME 	([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2\xb8[^\xa2-\xa5]|\xe2[^\xb8])+
+
+%s E
+%s T
 
 %%
-
-^"@" 	 			{ aslsave; pmatch("###at\n"); return asl_at_check(asllval.text); }
-
-{NAME}				{ aslsave; return NAME; }
-
-{VALUE}				{ aslsave; return VALUE; }
-
-"~"[^ \t\n]+			{ aslsave; return VAR; }
-
-"#"[^ \t\n]+			{ aslsave; return VCMT; }
-
-"[".*/\n	       		{ aslsave; return REFO; }
-
-^[ \t]+.+/\n    		{ aslsave; pmatch("###tab\n"); return TAB; }
-
-<T>^[^ \t\n].*/\n		{ aslsave; pmatch("###bad\n"); return TRANS; }
 
 <E>"sign"			{ aslsave; pmatch("###EFORM\n"); return ESIGN; }
 
@@ -58,11 +44,27 @@ static void asl_user_action(void);
 
 <E>.+/\n			{ aslsave; pmatch("###EBAD\n"); return EBAD; }
 
+<T>^[ \t]+.+/\n    		{ aslsave; pmatch("###TEXTCONT\n"); return TAB; }
+
+<T>^[^ \t\n@].*/\n	       	{ aslsave; pmatch("###TEXTBAD\n"); return TEXT; }
+
+<T>.*\n				{ aslsave; pmatch("###TEXT\n"); return TEXT; }
+
+^[ \t]+.+/\n    		{ aslsave; pmatch("###tab\n"); return TAB; }
+
+^"@" 	 			{ BEGIN 0; aslsave; pmatch("###at\n"); return asl_at_check(asllval.text); }
+
+{GRAPHEME}	       		{ aslsave; return asl_grapheme(asllval.text); }
+
+"~"[^ \t\n]+			{ aslsave; return VAR; }
+
+"#"[^ \t\n]+			{ aslsave; return VCMT; }
+
+"[".*/\n	       		{ aslsave; return VREF; }
+
 ^[^ \t\n].*/\n			{ pmatch("###bad\n"); return BAD; }
 
-<T>.*\n				{ pmatch("###TEXT\n" }; BEGIN 0; return TEXT; }
-
-\n([ \t]*)+/\n			{ pmatch("###par\n"); return PAR; }
+\n([ \t]*)+/\n			{ BEGIN 0; pmatch("###par\n"); return PAR; }
 
 \n				{ pmatch("###eol\n"); return EOL; }
 

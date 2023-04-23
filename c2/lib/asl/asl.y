@@ -6,6 +6,7 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include <mesg.h>
 #include "asl.h"
 extern int yylex(void);
 extern void yyerror(const char *);
@@ -23,7 +24,9 @@ ASLLTYPE asllloc;
 %union { char *text; int i; }
 
 %token	<text>  TOK TRANS TAB EOL PAR CMT BAD LINE SIGLUM
-		SIGN NOSIGN FORM V NOV INOTE ENDS ENDF TEXT
+		SIGN NOSIGN FORM VAR GNAME GVALUE GBAD
+		V NOV VCMT VREF
+		INOTE TEXT END EBAD EFORM ESIGN
 
 %start fields
 
@@ -41,23 +44,13 @@ blank:  EOL
 
 field: 	line EOL
 	| cont EOL
-	| line PAR	{ if (asltrace) fprintf(stderr, "PAR\n");
-			  cat_chunk(curraslfile,asllineno-1, ""); }
-	| cont PAR	{ if (asltrace) fprintf(stderr, "PAR\n");
-			  cat_chunk(curraslfile,asllineno-1, ""); }
+	| line PAR	{ if (asltrace) fprintf(stderr, "PAR\n"); }
+	| cont PAR	{ if (asltrace) fprintf(stderr, "PAR\n"); }
 	| BAD		{ mesg_warning(curraslfile, asllineno, "asl: lines must begin with '@' or whitespace"); }
 	;
 
-line:	atcmd		{ if (asltrace) fprintf(stderr, "field/EOL: %s\n", asllval.text);
-   			  if (!strncmp(asllval.text,"#asl:",strlen("#asl:"))) { asl_protocol(asllval.text); }
-   			  cat_chunk(curraslfile,asllineno,(char*)asllval.text);
- 			}
-	| CMT 		{ if (asltrace) fprintf(stderr, "comment/EOL: %s\n", asllval.text);
-   			  cat_chunk(curraslfile,asllineno,(char*)asllval.text);
- 			}
-	| TRANS        	{ if (asltrace) fprintf(stderr, "trans/EOL: %s\n", asllval.text);
-   			  cat_chunk(curraslfile,asllineno,(char*)asllval.text);
- 			}
+line:	atcmd		{ if (asltrace) fprintf(stderr, "field/EOL: %s\n", asllval.text); }
+	| CMT 		{ if (asltrace) fprintf(stderr, "comment/EOL: %s\n", asllval.text); }
 	;
 
 atcmd:
@@ -65,41 +58,55 @@ atcmd:
 	| atnosign
 	| atv
 	| atnov
-	| form
-	| inote
-	| end
+	| atform
+	| atinote
+	| atend
         ;
 
 atsign:
-	  SIGN NAME
+	  SIGN GNAME
+	| SIGN GBAD
 	;
 
-atnosign;
-	  NOSIGN NAME
+atnosign:
+	  NOSIGN GNAME
+	| NOSIGN GBAD
 	;
 
 atform:
-	  FORM VAR NAME
+	  FORM VAR GNAME
+	| FORM VAR GBAD
 	;
 
-atv
-	  V VALUE
+atv:
+	  V GVALUE vref
+	| V VCMT GVALUE vref
+	| V GBAD vref
+	| V VCMT GBAD vref
 	;
 
-end:
-	  END FORM
-	| END SIGN
-	| END BAD
+atnov:
+	  NOV GVALUE
+	| NOV GBAD
 	;
 
-inote:
+vref:
+	  VREF
+	| /* empty */
+	;
+
+atend:
+	  END EFORM
+	| END ESIGN
+	| END EBAD
+	;
+
+atinote:
 
 	  INOTE
         ;
 
-cont: 	TAB		{ if (asltrace) fprintf(stderr, "field/TAB: %s\n", asllval.text);
-    			  cat_cont(asllineno,(char*)asllval.text);
- 			}
+cont: 	TAB		{ if (asltrace) fprintf(stderr, "field/TAB: %s\n", asllval.text); }
 	| cont TAB
 	;
 
