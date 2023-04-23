@@ -34,10 +34,10 @@ static void asl_user_action(void);
 
 %}
 
-COMPOUND	"|"([a-zA-Z\x80-\xff]|[@().%&])+"|"
-GRAPHEME 	([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2\xb8[^\xa2-\xa5]|\xe2[^\xb8]|[@])+
-LISTNUM		([A-Z]+[0-9]+[ab]?)
-
+COMPOUND	"|"([a-zA-Z\x80-\xff]|[@().%&+()0-9])+"|"
+GRAPHEME 	([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2\xb8[^\xa2-\xa5]|\xe2[^\xb8])+([@~][a-z]+)*
+LISTNUM		([A-Z]+[0-9]+[()Aa-z]*)([@~][a-z+])*
+MOD		([@~][a-z]+)*
 %s E
 %s T
 
@@ -59,6 +59,7 @@ LISTNUM		([A-Z]+[0-9]+[ab]?)
 
 ^@end/[ \t].*\n        	       	{ atcmd(END,E); }
 ^@sign/[ \t]       		{ atcmd(SIGN,0); }
+^@pname/[ \t]       		{ atcmd(PNAME,0); }
 ^@nosign/[ \t]     		{ atcmd(NOSIGN,0); }
 ^@list/[ \t]       		{ atcmd(LIST,0); }
 ^@form/[ \t]	       		{ atcmd(FORM,0); }
@@ -68,16 +69,39 @@ LISTNUM		([A-Z]+[0-9]+[ab]?)
 ^@v-/[ \t]	       		{ atcmd(NOV,0); }
 ^@v"?"/[ \t]	       		{ atcmd(QRYV,0); }
 ^@inote/[ \t]	       		{ atcmd(INOTE,T); }
+^@lit/[ \t]	       		{ atcmd(LIT,T); }
+^@note/[ \t]	       		{ atcmd(NOTE,T); }
 ^@ucode[ \t]+.*/\n		{ atcmd(UCODE,0); }
 ^@uname[ \t]+.*/\n		{ atcmd(UNAME,0); }
+^@unote/[ \t]	       		{ atcmd(UNOTE,T); }
 ^@uphase[ \t]+.*/\n		{ atcmd(UPHASE,0); }
 
 ^@[a-z]+         		{ BEGIN 0; mesg_vwarning(curraslfile, asllineno,
 							"[asl] malformed or unknown @-line: %s\n", asltext); }
 
+[^ \t]+"[...]"[^ \t\n]+[ \t]*/n { aslsave; return ATF; }
+[^ \t]+"[...]"[ \t]*/n       	{ aslsave; return ATF; }
+"[...]"[^ \t\n]+ 	      	{ aslsave; return ATF; }
+"[...]"[ \t]*/n       		{ aslsave; return ATF; }
+
+{GRAPHEME}"("{GRAPHEME}")"{MOD} { aslsave; return asl_grapheme(asllval.text); }
+
+{GRAPHEME}"?"			{ aslsave; return GVALUEQ; }
+
+"{"{GRAPHEME}"}"{GRAPHEME}    	{ aslsave; return ATF; }
+
+{GRAPHEME}("-"{GRAPHEME})+	{ aslsave; return ATF; }
+
 {GRAPHEME}|{COMPOUND}          	{ aslsave; return asl_grapheme(asllval.text); }
 
+
+{LISTNUM}"?"   	 	      	{ aslsave; return LISTNUMQ; }
+
 {LISTNUM}   	 	      	{ aslsave; return LISTNUM; }
+
+"%"[-a-z0-9]+			{ aslsave; return LANG; }
+
+"?"				{ aslsave; return GVALUE; }
 
 "~"[^ \t\n]+			{ aslsave; return VAR; }
 

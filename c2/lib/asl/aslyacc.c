@@ -23,5 +23,5 @@ asl_grapheme(const char *gp)
       return GNAME;
     else
       ++gp;
-  return GNAME;
+  return GVALUE;
 }
