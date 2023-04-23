@@ -3,6 +3,8 @@
 #define POOL_BLOCK_SIZE        (8192*8)
 #define POOL_OWN_BLOCK_CUTOFF 	128
 
+#include <stdlib.h>
+
 struct pool
 {
   struct pool_block *rover;

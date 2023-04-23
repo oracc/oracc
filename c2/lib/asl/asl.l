@@ -6,6 +6,7 @@
 #include <oraccsys.h>
 #include <mesg.h>
 #include <pool.h>
+#include "asl.h"
 
 #define ASLLTYPE Mloc
 #include "asl.tab.h"
@@ -16,22 +17,23 @@ const char *curraslfile = NULL;
 
 int aslflextrace = 0;
 
-extern Pool *catpool;
-#define aslpool(s) (char*)pool_copy((const unsigned char*)(s),catpool);
+extern Pool *aslpool;
+#define xaslpool(s) (char*)pool_copy((const unsigned char*)(s),aslpool);
 static void asl_user_action(void);
 
 /* #if 1 to print every matched rule */
-#if 0
+#if 1
 #define pmatch(m) fprintf(stderr, (m))
 #else
 #define pmatch(m)
 #endif
 
-#define aslsave asllval.text=aslpool(asltext)
+#define aslsave asllval.text=xaslpool(asltext)
 
 %}
 
-GRAPHEME 	([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2\xb8[^\xa2-\xa5]|\xe2[^\xb8])+
+COMPOUND	"|"([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|[@().%&])+"|"
+GRAPHEME 	([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|[@])+
 
 %s E
 %s T
@@ -52,9 +54,9 @@ GRAPHEME 	([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2\xb8[^\xa2-\xa5]|
 
 ^[ \t]+.+/\n    		{ aslsave; pmatch("###tab\n"); return TAB; }
 
-^"@" 	 			{ BEGIN 0; aslsave; pmatch("###at\n"); return asl_at_check(asllval.text); }
+^"@"[a-z]+/[ \t\n]    	       	{ BEGIN 0; aslsave; pmatch("###at\n"); return asl_at_check(asllval.text); }
 
-{GRAPHEME}	       		{ aslsave; return asl_grapheme(asllval.text); }
+{GRAPHEME}|{COMPOUND}          	{ aslsave; return asl_grapheme(asllval.text); }
 
 "~"[^ \t\n]+			{ aslsave; return VAR; }
 
@@ -62,7 +64,7 @@ GRAPHEME 	([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2\xb8[^\xa2-\xa5]|
 
 "[".*/\n	       		{ aslsave; return VREF; }
 
-^[^ \t\n].*/\n			{ pmatch("###bad\n"); return BAD; }
+^[^ \t\n@].*/\n			{ pmatch("###bad\n"); return BAD; }
 
 \n([ \t]*)+/\n			{ BEGIN 0; pmatch("###par\n"); return PAR; }
 

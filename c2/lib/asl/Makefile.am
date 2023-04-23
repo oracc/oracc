@@ -2,9 +2,9 @@ include ../../../oracc-am-rules.txt
 
 noinst_LTLIBRARIES=libasl.la
 
-libasl_la_SOURCES = asl.tab.c asl-l.c
+libasl_la_SOURCES = asl.tab.c asl-l.c aslyacc.c asl.c
 
-# aslyacc.c asltree.c asl.c
+# asltree.c
 
 YACC=bison
 

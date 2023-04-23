@@ -49,7 +49,7 @@ field: 	line EOL
 	| BAD		{ mesg_warning(curraslfile, asllineno, "asl: lines must begin with '@' or whitespace"); }
 	;
 
-line:	atcmd		{ if (asltrace) fprintf(stderr, "field/EOL: %s\n", asllval.text); }
+line:	atcmd		{ if (asltrace) fprintf(stderr, "atcmd/EOL: %s\n", asllval.text); }
 	| CMT 		{ if (asltrace) fprintf(stderr, "comment/EOL: %s\n", asllval.text); }
 	;
 
@@ -64,7 +64,7 @@ atcmd:
         ;
 
 atsign:
-	  SIGN GNAME
+	  SIGN GNAME	{ fprintf(stderr, "sv: %s\n", $2); }
 	| SIGN GBAD
 	;
 
