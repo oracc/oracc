@@ -1,1 +1,1 @@
-SUBDIRS=ax sx tx
+SUBDIRS=ax sx tx xx

@@ -121,6 +121,8 @@ typedef unsigned char Uchar;
 #endif
 
 #ifdef Oracc
+#define Uchar unsigned char
+#define Boolean int
 #include "collate.h"
 #endif
 
@@ -1003,9 +1005,13 @@ TREEPTR p;
         TREEPTR pv, pw;
  
         if (p != NULL)
-                while ((pv = p->parent) != NULL)
-                        if ((pw = pv->parent) == NULL)  srotate(p,pv);
-                        else                            drotate(p,pv,pw);
+	  {
+	    while ((pv = p->parent) != NULL)
+	      {
+		if ((pw = pv->parent) == NULL)  srotate(p,pv);
+		else                            drotate(p,pv,pw);
+	      }
+	  }
         return p;
 }
  
