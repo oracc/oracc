@@ -18,6 +18,7 @@ int asltrace,rnvtrace;
 
 int check_mode = 0;
 int trace_mode = 0;
+extern int asl_flex_debug;
 
 int
 main(int argc, char * const*argv)
@@ -25,13 +26,16 @@ main(int argc, char * const*argv)
   Tree *tp = NULL;
   const char *l = NULL;
 
+  asl_flex_debug = 0;
+  
   if (!(l = setlocale(LC_ALL,ORACC_LOCALE)))
     if (!(l = setlocale(LC_ALL, "en_US.UTF-8")))
       if (!(l = setlocale(LC_ALL, "C")))
         fprintf(stderr, "gvl_setup: failed to setlocale to '%s', 'UTF-8', or 'C'\n", ORACC_LOCALE);
   
   options(argc, argv, "ct");
-  aslflextrace = asltrace = trace_mode;
+  fprintf(stderr, "sx trace_mode = %d\n", trace_mode);
+  aslflextrace = asltrace = asl_flex_debug = trace_mode;
 
   mesg_init();
   nodeh_register(treexml_o_handlers, NS_SL, treexml_o_generic);

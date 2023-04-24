@@ -28,7 +28,7 @@ ASLLTYPE asllloc;
 		GBAD ATF LANG
 		V NOV QRYV ATFV VCMT VREF LIST LISTNUM LISTNUMQ
 		INOTE LIT NOTE TEXT END EBAD EFORM ESIGN
-		UCODE UPHASE UNAME UNOTE
+		UCHAR UCODE UPHASE UNAME UNOTE
 
 %start fields
 
@@ -88,7 +88,7 @@ atnosign:
 	;
 
 atform:
-	  FORM VAR GNAME
+	  FORM VAR GNAME vref
 	| FORM VAR LISTNUM
 	| FORM VAR GBAD
 	;
@@ -101,7 +101,9 @@ atvv:
 
 atv:
 	  V lang GVALUE vref
-	| V ATF vref
+	| V lang GVALUEQ vref
+	| V lang ATF vref
+	| V VCMT ATF vref
 	| V VCMT GVALUE vref
 	| V VCMT GVALUEQ vref
 	| V GBAD vref
@@ -109,7 +111,8 @@ atv:
 	;
 
 atnov:
-	  NOV GVALUE
+	  NOV ATF vref
+	| NOV GVALUE vref
 	| NOV GBAD
 	;
 
@@ -120,6 +123,7 @@ atatfv:
 
 atqryv:
 	  QRYV GVALUE vref
+	| QRYV ATF vref
 	| QRYV GBAD
 	;
 
@@ -135,10 +139,15 @@ atend:
 	;
 
 atunicode:
-	  atucode
+	  atuchar
+	| atucode
 	| atuname
 	| atunote
 	| atuphase
+	;
+
+atuchar:
+	  UCHAR
 	;
 
 atucode:

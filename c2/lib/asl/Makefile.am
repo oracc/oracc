@@ -19,6 +19,6 @@ asl.tab.c asl.tab.h: asl.y asl.l
 	${YACC} -vd asl.y
 
 asl-l.c: asl.l asl.tab.h
-	flex -B -DYY_NO_INPUT asl.l
+	flex -d -B -DYY_NO_INPUT asl.l
 
 asl-l.o: asl-l.c

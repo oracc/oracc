@@ -34,10 +34,17 @@ static void asl_user_action(void);
 
 %}
 
-COMPOUND	"|"([a-zA-Z\x80-\xff]|[@().%&+()0-9])+"|"
-GRAPHEME 	([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2\xb8[^\xa2-\xa5]|\xe2[^\xb8])+([@~][a-z]+)*
-LISTNUM		([A-Z]+[0-9]+[()Aa-z]*)([@~][a-z+])*
-MOD		([@~][a-z]+)*
+S		\xe2\xb8[^\xa2-\xa5]
+G		([a-zA-Z'\x80-\xc2\xc4-\xe1\xe3-\xff]|{S}|\xc3[^\x97]|\xe2[^\xb8])+
+M		([@~][a-z]+)*
+COMPOUND	"|"([a-zA-Z\x80-\xff]|[@~().%&+()0-9])+"|"
+GRAPHEME 	({G}{M})|"15"
+PHONGRAPH	"/"{G}"/"
+LISTNUM		([A-Z]+[0-9]+[()A-Z0-9a-z_'+*/]*){M}
+NUMGRAPH	[0-9](\/[0-9])?\({GRAPHEME}\){M}
+FRACTION	[0-9]\/[0-9]
+PUNCT		("*"|:['".:]?|"/")
+
 %s E
 %s T
 
@@ -71,6 +78,7 @@ MOD		([@~][a-z]+)*
 ^@inote/[ \t]	       		{ atcmd(INOTE,T); }
 ^@lit/[ \t]	       		{ atcmd(LIT,T); }
 ^@note/[ \t]	       		{ atcmd(NOTE,T); }
+^@uchar[ \t]+.*/\n		{ atcmd(UCHAR,0); }
 ^@ucode[ \t]+.*/\n		{ atcmd(UCODE,0); }
 ^@uname[ \t]+.*/\n		{ atcmd(UNAME,0); }
 ^@unote/[ \t]	       		{ atcmd(UNOTE,T); }
@@ -79,27 +87,30 @@ MOD		([@~][a-z]+)*
 ^@[a-z]+         		{ BEGIN 0; mesg_vwarning(curraslfile, asllineno,
 							"[asl] malformed or unknown @-line: %s\n", asltext); }
 
-[^ \t]+"[...]"[^ \t\n]+[ \t]*/n { aslsave; return ATF; }
-[^ \t]+"[...]"[ \t]*/n       	{ aslsave; return ATF; }
-"[...]"[^ \t\n]+ 	      	{ aslsave; return ATF; }
-"[...]"[ \t]*/n       		{ aslsave; return ATF; }
 
-{GRAPHEME}"("{GRAPHEME}")"{MOD} { aslsave; return asl_grapheme(asllval.text); }
+{NUMGRAPH}			{ aslsave; return asl_grapheme(asllval.text); }
+
+{FRACTION}			{ aslsave; return GVALUE; }
 
 {GRAPHEME}"?"			{ aslsave; return GVALUEQ; }
 
-"{"{GRAPHEME}"}"{GRAPHEME}    	{ aslsave; return ATF; }
-
-{GRAPHEME}("-"{GRAPHEME})+	{ aslsave; return ATF; }
-
 {GRAPHEME}|{COMPOUND}          	{ aslsave; return asl_grapheme(asllval.text); }
-
 
 {LISTNUM}"?"   	 	      	{ aslsave; return LISTNUMQ; }
 
 {LISTNUM}   	 	      	{ aslsave; return LISTNUM; }
 
-"%"[-a-z0-9]+			{ aslsave; return LANG; }
+{PHONGRAPH}	       		{ aslsave; return GVALUE; }
+
+{PUNCT}				{ aslsave; return GVALUE; }
+
+[^ \t]+"[...]"[^ \t\n]+[ \t]*/\n { aslsave; return ATF; }
+[^ \t]+"[...]"[ \t]*/\n       	{ aslsave; return ATF; }
+"[...]"[^ \t\n]*[ \t]*/\n 	{ aslsave; return ATF; }
+[^-_ \t]+[-_][^ \t\n]+		{ aslsave; return ATF; }
+[^{} \t]*[{}][^ \t\n]*/\n      	{ aslsave; return ATF; }
+
+"%"[-a-z0-9]+("/n")?   		{ aslsave; return LANG; }
 
 "?"				{ aslsave; return GVALUE; }
 
@@ -127,8 +138,10 @@ MOD		([@~][a-z]+)*
 static void
 asl_user_action(void)
 {
+#if 0
   if (aslflextrace)
     fprintf(stderr, "%s:%d: asllex: text=::%s::\n", curraslfile, asllineno, asltext);
+#endif
 
   asllloc.file = curraslfile;
   asllloc.line = yylineno;
