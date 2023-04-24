@@ -36,7 +36,6 @@ main(int argc, char * const*argv)
         fprintf(stderr, "gvl_setup: failed to setlocale to '%s', 'UTF-8', or 'C'\n", ORACC_LOCALE);
   
   options(argc, argv, "crt");
-  fprintf(stderr, "sx trace_mode = %d\n", trace_mode);
   aslflextrace = asltrace = asl_flex_debug = trace_mode;
 
   mesg_init();

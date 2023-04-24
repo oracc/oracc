@@ -1,3 +1,4 @@
+𒑱
 10(N01)
 10(N14)
 10(N14@f)
@@ -9,8 +10,12 @@
 1/3(diš)
 1/3(diš@c)
 1/3(diš@c)@v
+1/4
 1/4(iku)
 1/4(iku@c)
+15
+1/6
+1/8
 1/8(iku)
 1/8(iku@c)
 1(aš)
@@ -773,7 +778,6 @@ abₓ
 |AB×X|
 abzu
 abzu₂
-/ad/
 ad
 AD
 ad₂
@@ -1013,7 +1017,6 @@ alimₓ
 |AL×KAD₃|
 |AL×KI|
 alla
-/allura/
 almu
 almu₂
 alpu
@@ -1997,6 +2000,7 @@ buzur₂
 buzur₃
 buzur₄
 buzur₅
+d
 da
 DA
 da₁₀
@@ -2099,7 +2103,6 @@ dam₀
 dam₂
 dam₃
 dama
-/damal/
 damal
 damiqₓ
 damu
@@ -2305,7 +2308,6 @@ dim₈
 dim₉
 dima
 dima₂
-/dimer/
 dimer
 |DIM×EŠ|
 DIM@g
@@ -2875,7 +2877,6 @@ enem
 |EN%EN|
 |EN@EN|
 |EN%EN.IM%IM|
-/eneŋ/
 |EN×GAN₂|
 |EN×GAN₂@t|
 engar
@@ -3298,6 +3299,15 @@ eʾ₃
 eʾella
 eʾi
 eʾu
+f
+F₁
+F₂
+F₃
+F₃@c
+F₄
+F₄@c
+F₅
+F₆
 ga
 GA
 ga₁₄
@@ -6848,6 +6858,7 @@ luṭ
 lutu
 luṭu
 luₓ
+m
 ma
 MA
 ma₁₀
@@ -7432,7 +7443,6 @@ mut
 muṭ
 mut₂
 muthum
-/mutin/
 |MU.UŠ.TUG₂.PI|
 muwa
 muwati
@@ -7643,7 +7653,6 @@ nerah
 nergal
 nergalₓ
 nerigal
-/nerim/
 |NE.RU|
 nes
 NE@s
@@ -8213,7 +8222,6 @@ nuzzi
 ŋen
 ŋepar
 ŋer₁₅
-/ŋereš/
 ŋereš₂
 ŋeš
 ŋeš₂
@@ -8353,7 +8361,16 @@ nuzzi
 ŋušur
 ŋušur₂
 ŋušurₓ
+o
+O
 ON
+oo
+OO
+P₁
+P₂
+P₃
+P₄
+P₅
 pa
 PA
 pa₁₀
@@ -8745,6 +8762,7 @@ qit
 qit₂
 qit₃
 qu
+qû
 qu₂
 qu₃
 qu₅
@@ -10299,7 +10317,6 @@ sit₂
 šiti
 šitim
 šitim₂
-/šitlam/
 ṣītu
 siu
 siₓ
@@ -10670,7 +10687,6 @@ SUMAŠ@g
 |SUMAŠ.ME|
 šumati
 |SUM×DIŠ|
-/šumdum/
 |ŠU.ME.EREN|
 šumgamme
 |ŠU.MIN|
@@ -10692,7 +10708,6 @@ sumugₓ
 šumugₓ
 sumukan
 sumun
-/šumun/
 šumun
 sumun₂
 sumuna₂
@@ -11145,7 +11160,6 @@ teš
 tes₂
 teš₂
 tešbi
-/tešlug/
 tešlug
 teššela
 teššeru
@@ -12450,6 +12464,16 @@ wu₄
 wuk
 wuš
 wuₓ
+x
+X
+X₁
+X₂
+X₃
+X₄
+X₅
+X₆
+X₇
+xₓ
 ya
 ya₁₀
 ya₃
@@ -12613,7 +12637,6 @@ zeb₃
 zeh₂
 zehₓ
 zel
-/zeŋ/
 zer
 zer₃
 zermušku
@@ -12800,6 +12823,7 @@ zuₓ
 |ZU&ZU.SAR|
 |ZU&ZU.ŠE|
 |ZU&ZU.ŠE.SAR|
+ʾ
 ʾa
 ʾa₃
 ʾa₄

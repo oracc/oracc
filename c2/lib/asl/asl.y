@@ -26,7 +26,7 @@ int asl_raw_tokens = 1;
 %union { char *text; int i; }
 
 %token	<text>  TOK TRANS TAB EOL PAR CMT BAD LINE SIGLUM
-		SIGN NOSIGN PNAME FORM NOFORM VAR GNAME GVALUE GVALUEQ
+		SIGN NOSIGN PNAME FORM NOFORM VAR GNAME GVALUE GVALUEQ GVALUEX
 		GBAD ATF LANG
 		V NOV QRYV ATFV VCMT VREF LIST LISTNUM LISTNUMQ
 		INOTE LIT NOTE TEXT END EBAD EFORM ESIGN
@@ -103,6 +103,7 @@ atvv:
 atv:
 	  V lang gvalue vref
 	| V lang GVALUEQ vref
+	| V lang GVALUEX vref
 	| V lang ATF vref
 	| V VCMT ATF vref
 	| V VCMT gvalue vref
@@ -114,6 +115,7 @@ atv:
 atnov:
 	  NOV ATF vref
 	| NOV GVALUE vref
+	| NOV GVALUEX vref
 	| NOV GBAD
 	;
 

@@ -103,9 +103,9 @@ PUNCT		("*"|:['".:]?|"/")
 
 {LISTNUM}   	 	      	{ aslsave; return LISTNUM; }
 
-{PHONGRAPH}	       		{ aslsave; return GVALUE; }
+{PHONGRAPH}	       		{ aslsave; return GVALUEX; }
 
-{PUNCT}				{ aslsave; return GVALUE; }
+{PUNCT}				{ aslsave; return GVALUEX; }
 
 [^ \t]+"[...]"[^ \t\n]+[ \t]*/\n { aslsave; return ATF; }
 [^ \t]+"[...]"[ \t]*/\n       	{ aslsave; return ATF; }
@@ -115,7 +115,7 @@ PUNCT		("*"|:['".:]?|"/")
 
 "%"[-a-z0-9]+("/n")?   		{ aslsave; return LANG; }
 
-"?"				{ aslsave; return GVALUE; }
+"?"				{ aslsave; return GVALUEX; }
 
 "~"[^ \t\n]+			{ aslsave; return VAR; }
 

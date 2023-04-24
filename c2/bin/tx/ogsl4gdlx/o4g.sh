@@ -6,5 +6,5 @@
 #./ogsl-cc.plx ogsl.tab >ogsl-test.txt
 ## The preceding two lines can now be replaced by
 paste ogsl.lst ogsl.pat >ogsl-r.tab
-../../xx/concord -sfwcl* <ogsl-r.tab | cut -d' ' -f2
+../../xx/concord -sfwcl* <ogsl-r.tab | cut -d' ' -f2 >ogsl-test.txt
 ../gdlx -i -f ogsl-test.txt
