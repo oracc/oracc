@@ -177,7 +177,6 @@ aš@c@v
 |IM.DUN.DUN₃@g@g|
 |A₂.ZA.MUŠ₃@g|
 |A₂.UD.DU|
-|IM.DUN3@g@g.DUN|
 |A.LAK648×A|
 |AN.LAK397|
 |ŠE.NINDA₂@180×ZA|
@@ -188,6 +187,7 @@ aš@c@v
 |GIŠ.NE@s.GA.MES|
 |UZ₃.IGI@g.IGI@g|
 |A.LU₂@s.NA|
+|IM.DUN₃@g@g.DUN|
 |ŠU₂.DUN₃@g@g@s|
 |GAL.DUN₃@g@g|
 |A₂.MUŠ₃@g|

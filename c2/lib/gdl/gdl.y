@@ -230,6 +230,7 @@ cbit:
 	| QRP				      		{ gdl_decr_qin();
 	  						  ynp->mloc = mloc_mloc(&@1);
 	  						  gvl_valuqual(ytp->curr);
+							  ynp = gdl_pop(ytp,"g:q");
 							}
 	| meta
 	| mod						{ gdl_modq_add(ynp); };
