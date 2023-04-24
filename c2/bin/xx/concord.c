@@ -170,7 +170,7 @@ int _STAKMEM=512;               /* MIN STACK IN SBRK BEFORE REFUSING ALLOC */
 #define ALLOCSIZE 125
 #define LINESIZE 79
 #define NUMSIZE 12      /* reasonable, since numbers are longs */
-#define SNUMSIZE 31
+#define SNUMSIZE 63
 #define IEFOFF 0
 #define IEFINCBUILD 1
 #define IEFINCSKIP (-1)

@@ -16,6 +16,8 @@ int verbose;
 int status;
 int asltrace,rnvtrace;
 
+extern int asl_raw_tokens; /* ask asl to produce list of @sign/@form/@v tokens */
+
 int check_mode = 0;
 int trace_mode = 0;
 extern int asl_flex_debug;
@@ -33,7 +35,7 @@ main(int argc, char * const*argv)
       if (!(l = setlocale(LC_ALL, "C")))
         fprintf(stderr, "gvl_setup: failed to setlocale to '%s', 'UTF-8', or 'C'\n", ORACC_LOCALE);
   
-  options(argc, argv, "ct");
+  options(argc, argv, "crt");
   fprintf(stderr, "sx trace_mode = %d\n", trace_mode);
   aslflextrace = asltrace = asl_flex_debug = trace_mode;
 
@@ -55,6 +57,9 @@ opts(int opt, char *arg)
     {
     case 'c':
       check_mode = 1;
+      break;
+    case 'r':
+      asl_raw_tokens = 1;
       break;
     case 't':
       trace_mode = 1;

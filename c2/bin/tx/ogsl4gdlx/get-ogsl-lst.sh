@@ -1,6 +1,2 @@
 #!/bin/sh
-grep '^@\(sign\|form\|v\)' /home/oracc/ogsl/00lib/ogsl.asl \
-    | sed 's/^.*[ \t]//' \
-    | grep '[aeiuAEIU]' \
-    | grep -F -v '[' | grep -F -v ']' | grep -v '[-_{.ₓ!?]' | grep -v "'" | grep -v ^/ \
-    | sort -u >ogsl.lst
+../../sx/sx -r <../../sx/ogsl.asl | grep -i '[aeiun]' | sort -u >ogsl.lst

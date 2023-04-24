@@ -16,6 +16,7 @@ const char *aslfile = "<stdin>";
 const char *curraslfile = NULL;
 
 int aslflextrace = 0;
+int fake_flag = 0;
 
 extern Pool *aslpool;
 #define xaslpool(s) (char*)pool_copy((const unsigned char*)(s),aslpool);
@@ -36,12 +37,13 @@ static void asl_user_action(void);
 
 S		\xe2\xb8[^\xa2-\xa5]
 G		([a-zA-Z'\x80-\xc2\xc4-\xe1\xe3-\xff]|{S}|\xc3[^\x97]|\xe2[^\xb8])+
-M		([@~][a-z]+)*
+M		([@~]([a-z]+|90|180|270))*
+N		(N[0-9]+)
 COMPOUND	"|"([a-zA-Z\x80-\xff]|[@~().%&+()0-9])+"|"
-GRAPHEME 	({G}{M})|"15"
+GRAPHEME 	((({G}|{N}){M})|"15")
 PHONGRAPH	"/"{G}"/"
-LISTNUM		([A-Z]+[0-9]+[()A-Z0-9a-z_'+*/]*){M}
-NUMGRAPH	[0-9](\/[0-9])?\({GRAPHEME}\){M}
+LISTNUM		([A-Z]+[0-9]+[()A-Z0-9a-z_'"+*/]*){M}
+NUMGRAPH	[0-9]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}
 FRACTION	[0-9]\/[0-9]
 PUNCT		("*"|:['".:]?|"/")
 
@@ -50,11 +52,11 @@ PUNCT		("*"|:['".:]?|"/")
 
 %%
 
-<E>"sign"			{ atcmd(ESIGN,0); }
+<E>"sign"			{ fake_flag = 0; atcmd(ESIGN,0); }
 
-<E>"form"			{ atcmd(EFORM,0); }
+<E>"form"			{ fake_flag = 0; atcmd(EFORM,0); }
 
-<E>[^ \t]			{ aslsave; fprintf(stderr, "###EBAD %s\n", asltext); return EBAD; }
+<E>[^ \t]			{ fake_flag = 0; aslsave; fprintf(stderr, "###EBAD %s\n", asltext); return EBAD; }
 
 <T>^[ \t]+.+/\n    		{ BEGIN 0; aslsave; pmatch("###TEXTCONT\n"); return TAB; }
 
@@ -77,12 +79,13 @@ PUNCT		("*"|:['".:]?|"/")
 ^@v"?"/[ \t]	       		{ atcmd(QRYV,0); }
 ^@inote/[ \t]	       		{ atcmd(INOTE,T); }
 ^@lit/[ \t]	       		{ atcmd(LIT,T); }
-^@note/[ \t]	       		{ atcmd(NOTE,T); }
+^@note/[ \t]*       		{ atcmd(NOTE,T); }
 ^@uchar[ \t]+.*/\n		{ atcmd(UCHAR,0); }
 ^@ucode[ \t]+.*/\n		{ atcmd(UCODE,0); }
 ^@uname[ \t]+.*/\n		{ atcmd(UNAME,0); }
 ^@unote/[ \t]	       		{ atcmd(UNOTE,T); }
 ^@uphase[ \t]+.*/\n		{ atcmd(UPHASE,0); }
+^@fake[ \t]+1[ \t]*/\n		{ fake_flag = 1; }
 
 ^@[a-z]+         		{ BEGIN 0; mesg_vwarning(curraslfile, asllineno,
 							"[asl] malformed or unknown @-line: %s\n", asltext); }

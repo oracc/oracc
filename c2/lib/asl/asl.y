@@ -19,6 +19,8 @@ extern int gdl_unicode;
 #define yylineno asllineno
 ASLLTYPE asllloc;
 
+int asl_raw_tokens = 1;
+ 
 %}
 
 %union { char *text; int i; }
@@ -68,8 +70,8 @@ atcmd:
         ;
 
 atsign:
-	  SIGN GNAME	{ fprintf(stderr, "sv: %s\n", $2); }
-	| SIGN LISTNUM	{ fprintf(stderr, "sv: [list] %s\n", $2); }
+	  SIGN gname	
+	| SIGN LISTNUM 
 	| SIGN GBAD
 	;
 
@@ -78,8 +80,8 @@ atpname:
 	;
 
 atlist:
-	  LIST LISTNUM	{ fprintf(stderr, "sv: [list] %s\n", $2); }
-	| LIST LISTNUMQ	{ fprintf(stderr, "sv: [list?] %s\n", $2); }
+	  LIST LISTNUM	{ }
+	| LIST LISTNUMQ	{ }
 	;
 
 atnosign:
@@ -88,23 +90,22 @@ atnosign:
 	;
 
 atform:
-	  FORM VAR GNAME vref
+	  FORM VAR gname vref
 	| FORM VAR LISTNUM
 	| FORM VAR GBAD
 	;
 
 atvv:
  	  atv
-	| atatfv
 	| atnov
 	| atqryv
 
 atv:
-	  V lang GVALUE vref
+	  V lang gvalue vref
 	| V lang GVALUEQ vref
 	| V lang ATF vref
 	| V VCMT ATF vref
-	| V VCMT GVALUE vref
+	| V VCMT gvalue vref
 	| V VCMT GVALUEQ vref
 	| V GBAD vref
 	| V VCMT GBAD vref
@@ -116,15 +117,18 @@ atnov:
 	| NOV GBAD
 	;
 
-atatfv:
-	  ATFV GVALUE
-	| ATFV GBAD
-	;
-
 atqryv:
 	  QRYV GVALUE vref
 	| QRYV ATF vref
 	| QRYV GBAD
+	;
+
+gname:
+	  GNAME			{ if (asl_raw_tokens) fprintf(stdout, "%s\n", $1); }
+	;
+
+gvalue:
+	  GVALUE 		{ if (asl_raw_tokens) fprintf(stdout, "%s\n", $1); }
 	;
 
 vref:
