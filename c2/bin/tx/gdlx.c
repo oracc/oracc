@@ -18,9 +18,12 @@ int verbose;
 int status;
 int rnvtrace;
 
+extern int gdl_flex_debug, gdldebug;
+
 int check_mode = 0;
 const char *fname = NULL;
 int identity_mode = 0;
+int trace_mode = 0;
 int wrapper = 0;
 
 FILE *fp;
@@ -89,7 +92,11 @@ do_many(const char *fn)
 int
 main(int argc, char **argv)
 {
-  options(argc, argv, "cf:iw");
+  gdl_flex_debug = gdldebug = 0;
+  
+  options(argc, argv, "cf:itw");
+
+  gdl_flex_debug = gdldebug = trace_mode;
   
   gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
@@ -123,6 +130,9 @@ opts(int opt, char *arg)
       break;
     case 'i':
       identity_mode = 1;
+      break;
+    case 't':
+      trace_mode = 1;
       break;
     case 'w':
       wrapper = 1;

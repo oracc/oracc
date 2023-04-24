@@ -45,17 +45,21 @@ static int cvq_push(int);
 static void cvq_reset(void);
 %}
 
-GRAPHEME	([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2\xb8[^\xa2-\xa5]|\xe2[^\xb8])+
-G		([a-zA-Z\x80-\xc2\xc4-\xe1\xe3-\xff]|\xc3[^\x97]|\xe2\xb8[^\xa2-\xa5]|\xe2[^\xb8])
 B		("["|"]"|\xe2\xb8[\xa2-\xa5])
-MOD		[@~\\][a-z0-9]+
+S		\xe2\xb8[^\xa2-\xa5]
+G		([a-zA-Z'\x80-\xc2\xc4-\xe1\xe3-\xff]|{S}|\xc3[^\x97]|\xe2[^\xb8])+
+M		([@~\\]([a-z]+|90|180|270))*
+N		(N[0-9]+)
+GRAPHEME 	((({G}|{N}){M})|"15")
+LISTNUM		([A-Z]+[0-9]+[A-Z0-9a-z_'"+*/]*){M}
+NUMGRAPH	[0-9]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}
+FRACTION	[0-9]\/[0-9]
+PUNCT		("*"|:['".:]?|"/")
 
 L_UHS		"\xe2\xb8\xa2"
 R_UHS		"\xe2\xb8\xa3"
 L_LHS		"\xe2\xb8\xa4"
 R_LHS		"\xe2\xb8\xa5"
-
-LISTNUM		[A-Z]+[0-9]+[a-z]*([@~][a-z0-9]+)*
 
 NOTEMARK	"^"[0-9]+"^"
 
@@ -81,7 +85,7 @@ NOTEMARK	"^"[0-9]+"^"
 <C>":"			{ GIN=0; return C_COLON; }
 <C>"&"			{ GIN=0; return C_ABOVE; }
 <C>"%"			{ GIN=0; return C_CROSSING; }
-<C>@/[^a-z0-9]		{ GIN=0; return C_OPPOSING; }
+<C>@/[^a-z0-9]+		{ GIN=0; return C_OPPOSING; }
 <C>"4\xc3\x97"		{ GIN=0; return C_4TIMES; }
 <C>"3\xc3\x97"		{ GIN=0; return C_3TIMES; }
 <C>"\xc3\x97"	       	{ GIN=0; return C_TIMES; }
@@ -139,10 +143,10 @@ _			{ gsave; return LANG_FLIP; }
 {LISTNUM}		{ GIN=1; gsave; return LISTNUM; }
 
 {G}({G}|{B})*{G}	{ GIN=1; return gdl_grapheme_type(); }
-{G}({G}|{B})*/{MOD}	{ GIN=1; return gdl_grapheme_type(); }
+{G}({G}|{B})*/{M}	{ GIN=1; return gdl_grapheme_type(); }
 {GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
 
-{MOD}			{ GIN=1; gsave; return MOD; }
+{M}			{ GIN=1; gsave; return MOD; }
 
 [#"=@^]/{G} 		{ gsave;
 			  if (gdl_lexical) {

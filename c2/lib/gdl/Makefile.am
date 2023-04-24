@@ -18,6 +18,6 @@ gdl.tab.c gdl.tab.h: gdl.y gdl.l
 	${YACC} -vdt gdl.y
 
 gdl-l.c: gdl.l gdl.tab.h
-	flex -B -DYY_NO_INPUT gdl.l
+	flex -d -B -DYY_NO_INPUT gdl.l
 
 gdl-l.o: gdl-l.c

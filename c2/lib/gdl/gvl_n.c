@@ -20,14 +20,16 @@ gvl_n(Node *ynp)
   p = (ucp)pool_alloc(strlen(nnp->kids->text) + strlen(nnp->kids->next->text) + 3, curr_sl->p);
   sprintf((char*)p, "%s(%s)", nnp->kids->text, nnp->kids->next->text);
 
+  /* make sure these are all fixed even if the num is in the hash */
+  ynp->name = "g:n";
+  ynp->kids->name = "g:r";
+  ynp->kids->next->name = ((sll_has_sign_indicator((uccp)ynp->kids->next->text) ? "g:s" : "g:v"));
+
   if (!(nq = hash_find(curr_sl->h, p)))
     {
       nq = memo_new(curr_sl->m);
       nq->type = "n";
-      ynp->name = "g:n";
       nq->c10e = nq->orig = (uccp)p; /* no c10e for numbers yet */
-      ynp->kids->name = "g:r";
-      ynp->kids->next->name = ((sll_has_sign_indicator((uccp)ynp->kids->next->text) ? "g:s" : "g:v"));
       hash_add(curr_sl->h, nq->orig, nq);
       if ((l = gvl_lookup(p)))
 	{
