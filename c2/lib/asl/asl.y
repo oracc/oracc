@@ -20,6 +20,7 @@ extern int gdl_unicode;
 ASLLTYPE asllloc;
 
 int asl_raw_tokens = 1;
+int nosign = 0;
  
 %}
 
@@ -58,7 +59,7 @@ line:	atcmd		{ if (asltrace) fprintf(stderr, "atcmd/EOL: %s\n", asllval.text); }
 	;
 
 atcmd:
-	  atsign
+	  atsign	{ nosign = 0; }
 	| atnosign
 	| atpname
 	| atlist
@@ -126,11 +127,11 @@ atqryv:
 	;
 
 gname:
-	  GNAME			{ if (asl_raw_tokens) fprintf(stdout, "%s\n", $1); }
+	  GNAME			{ if (asl_raw_tokens && !nosign) fprintf(stdout, "%s\n", $1); }
 	;
 
 gvalue:
-	  GVALUE 		{ if (asl_raw_tokens) fprintf(stdout, "%s\n", $1); }
+	  GVALUE 		{ if (asl_raw_tokens && !nosign) fprintf(stdout, "%s\n", $1); }
 	;
 
 vref:

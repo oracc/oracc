@@ -134,7 +134,7 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
 	((gvl_g*)ynp->user)->orig = pool_copy(o,curr_sl->p);
       else
 	((gvl_g*)ynp->user)->orig = ((gvl_g*)ynp->user)->c10e;
-      if (gvl_lookup(c))
+      if (gvl_lookup(c) && !gdl_orig_mode)
 	ynp->text = (ccp)((gvl_g*)ynp->user)->c10e;
       else
 	ynp->text = (ccp)((gvl_g*)ynp->user)->orig;
@@ -161,7 +161,10 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
       ng->orig = o;
       if (gvl_lookup(c))
 	{
-	  ynp->rent->text = (ccp)c;
+	  if (gdl_orig_mode)
+	    ynp->rent->text = (ccp)o;
+	  else	    
+	    ynp->rent->text = (ccp)c;
 	  ng->c10e = c;
 	}
       else
@@ -262,7 +265,10 @@ gdl_mod_wrap_q(Node *np)
 
 	  if (c && gvl_lookup(c))
 	    {
-	      np->text = (ccp)c;
+	      if (gdl_orig_mode)
+		np->text = (ccp)o;
+	      else
+		np->text = (ccp)c;
 	      ng->c10e = c;
 	      ng->orig = o;
 	      np->user = ng;

@@ -47,7 +47,7 @@ struct gdl_g {
 
 extern int gdl_corrq;
 extern int curr_lang;
-extern int gdltrace, gdl_legacy;
+extern int gdltrace, gdl_legacy, gdl_orig_mode;
 
 extern Pool *gdlpool;
 

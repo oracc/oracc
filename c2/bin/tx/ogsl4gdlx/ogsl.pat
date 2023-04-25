@@ -108,7 +108,6 @@
 1/1(a@a)
 1/1(a@a)@a
 1(a)
-1(A)
 1(a@a)
 1(A@a)
 1(|A@a|)
@@ -846,7 +845,6 @@ a
 a
 a
 a
-|A.A|
 a
 a
 a
@@ -886,7 +884,6 @@ a
 a
 a
 |A.A|
-|A|
 a
 a
 |A.A.A|
@@ -944,7 +941,6 @@ a
 |A.A|
 a
 a
-A
 a
 a
 a
@@ -1640,7 +1636,6 @@ a
 a
 a
 a
-a
 a@a
 a@a
 A@a
@@ -2045,7 +2040,6 @@ a
 |A.A.A|
 |A@a|
 |A.A|
-|A.A|
 |A.A(A.A)|
 |A.A|
 |A.A|
@@ -2428,7 +2422,6 @@ a
 |A.A|
 a
 a
-|A.A|
 a
 a
 a
@@ -3440,7 +3433,6 @@ a
 a
 a
 a
-A@1
 a
 A
 a
@@ -3603,6 +3595,8 @@ A
 a
 A
 |A.A|
+A@a
+A@a@a
 A@a
 |A%A|
 |A&A|
@@ -3862,7 +3856,6 @@ a
 a
 a
 a
-A@a
 a
 a
 a
@@ -3951,7 +3944,6 @@ a
 a
 a
 a
-|A|
 a
 A
 a
@@ -3974,7 +3966,6 @@ a
 a
 a
 a
-|A.A.A|
 a
 a
 a
@@ -4019,7 +4010,6 @@ a
 a
 a
 |A.A.A.A|
-|A.A.A.A.A|
 a
 a
 |A.A|
@@ -4217,11 +4207,9 @@ a
 |A.A.A.A.A|
 |A.A.A.A|
 |A.A.A.A@1|
-|A.A.A.A@1.A|
 |A.A.A.A.A|
 |A.A.A.A.A|
 |A.A.A.A.A.A|
-|A.A.A.A.A|
 |A.A.A.A.A.A|
 |A.A.A.A|
 |A.A.A.A.A|
@@ -4394,7 +4382,6 @@ a
 a
 a
 a
-|A|
 a
 |A|
 a
@@ -4917,11 +4904,8 @@ a
 a
 a
 a@a
-A@a
 a@a@a
-A@a@a
 a@a
-A@a
 a
 a
 A
@@ -5029,7 +5013,6 @@ a
 |A%A|
 |A&A|
 |A@A|
-|A.A.A.A|
 a
 A
 a
@@ -5312,7 +5295,6 @@ a
 |A(A.A)|
 |A(A.A)|
 |A(A.A)|
-|A.A.A.A|
 |A|
 |A|
 |A(A.A)|
@@ -5322,7 +5304,6 @@ a
 |A|
 |A|
 |A|
-|A.A.A.A.A.A@a.A.A|
 a
 |A.A|
 |A|
@@ -5804,7 +5785,6 @@ a
 a
 a
 a
-|A.A|
 |A.A.A.A|
 |A.A@a|
 a
@@ -6060,7 +6040,6 @@ a
 a
 a
 a
-A
 a
 a
 a
@@ -6262,7 +6241,6 @@ A
 |A@a.A|
 |A|
 |A(A.A)|
-|A(A.A.A)|
 |A(A.A)|
 |A|
 |A|
@@ -6291,7 +6269,6 @@ A
 |A|
 |A(A.A)|
 |A(A.A.A)|
-|A(A@a.A)|
 |A(A@a.A.A)|
 |A|
 |A|
@@ -6456,7 +6433,6 @@ a
 A@a
 |A.A|
 |A.A|
-|A|
 a
 a
 a
@@ -6981,7 +6957,6 @@ a
 a
 a
 a
-|A.A|
 a
 a
 a
@@ -7178,7 +7153,6 @@ a
 a
 a
 a
-|A.A|
 a
 a
 a
@@ -7462,6 +7436,7 @@ A1@a
 A1
 A1@a
 A1
+A1
 A1@a
 A1@a
 A1
@@ -7494,7 +7469,6 @@ A1
 a
 A
 a
-A
 |A.A|
 |A.A|
 a
@@ -7845,7 +7819,6 @@ A@1
 |A(A.A.A)|
 |A.A.A|
 |A(A.A)|
-|A(A.A)|
 |A(A.A.A)|
 |A(A.A@a)|
 |A(A.A@a.A@a)|
@@ -8085,7 +8058,6 @@ a
 |A.A|
 |A.A|
 |(A.A)&(A.A)|
-|A.A|
 |(A.A)&(A.A)|
 |A.A|
 |A.A|
@@ -8484,7 +8456,6 @@ a
 |A.A.A|
 a
 |A.A.A.A|
-|A.A|
 |A.A.1A|
 |A.A.A|
 |(A.A)&(A.A)|
@@ -9287,7 +9258,6 @@ a
 |A.A|
 |A.A|
 |A.A(A&A)|
-|A.A|
 a
 a
 a
@@ -10273,7 +10243,6 @@ a
 A@a
 a
 a
-|A.A|
 a
 a
 a
@@ -10485,7 +10454,6 @@ A@a
 |A.A.A|
 |A.A.A.A|
 |A&A.A|
-a
 a
 a
 a
@@ -12356,7 +12324,6 @@ a
 a
 |A.A|
 a
-A
 a
 a
 a
@@ -12737,7 +12704,6 @@ a
 |A%A|
 |A&A|
 |A&A.A|
-|A&A.A|
 |A&A.A.A|
 |A&A.A|
 |A&A.A|
@@ -12768,7 +12734,6 @@ a
 a
 a
 A
-a
 a
 a
 a

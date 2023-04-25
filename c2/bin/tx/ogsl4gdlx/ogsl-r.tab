@@ -108,7 +108,6 @@
 2/3(diš@c)	1/1(a@a)
 2/3(diš@c)@v	1/1(a@a)@a
 2(aš)	1(a)
-2(AŠ)	1(A)
 2(aš@c)	1(a@a)
 2(AŠ@c)	1(A@a)
 2(|AŠ×DIŠ@t|)	1(|A@a|)
@@ -846,7 +845,6 @@ agam	a
 aganₓ	a
 agar₂	a
 agar₃	a
-|A.GAR₃|	|A.A|
 agar₄	a
 agar₅	a
 agar₆	a
@@ -886,7 +884,6 @@ ah₅	a
 ah₆	a
 aha	a
 |A.HA|	|A.A|
-|A×HA|	|A|
 aha₂	a
 aha₃	a
 |A.HA.A|	|A.A.A|
@@ -944,7 +941,6 @@ aktum₂	a
 |A.KUŠU₂|	|A.A|
 akₓ	a
 al	a
-AL	A
 al₂	a
 al₅	a
 al₆	a
@@ -1635,7 +1631,6 @@ balaₓ	a
 baliha	a
 balla	a
 balla₂	a
-ballatu	a
 ballaₓ	a
 bamen	a
 bamin	a
@@ -2043,9 +2038,8 @@ dag₅	a
 dagal	a
 dagala	a
 |DAG.E₂.NUN|	|A.A.A|
-|DA×GEŠ@t|	|A@a|
+|DA×GIŠ@t|	|A@a|
 |DAG.KISIM₅|	|A.A|
-|DAG.KISIM₅×AMAR|	|A.A|
 |DAG.KISIM₅×(A.MAŠ)|	|A.A(A.A)|
 |DAG.KISIM₅×BALAG|	|A.A|
 |DAG.KISIM₅×BI|	|A.A|
@@ -2428,7 +2422,6 @@ dubba	a
 |DUB.NAGAR|	|A.A|
 dubsig	a
 dubsik	a
-|DUB.TI|	|A.A|
 dubu	a
 dubu₂	a
 dubul	a
@@ -3440,7 +3433,6 @@ ga₇	a
 gab	a
 gab₂	a
 gab₃	a
-GAB@90	A@1
 gaba	a
 GABA	A
 gaba₂	a
@@ -3603,6 +3595,8 @@ GAN	A
 gan₂	a
 GAN₂	A
 |GAN₂.BU|	|A.A|
+GAN₂@c	A@a
+GAN₂@c@v	A@a@a
 GAN₂@g	A@a
 |GAN₂%GAN₂|	|A%A|
 |GAN₂&GAN₂|	|A&A|
@@ -3862,7 +3856,6 @@ gešpa	a
 gešpu	a
 gešpu₂	a
 geššir	a
-GEŠ@t	A@a
 gešta	a
 geštae	a
 geštaeₓ	a
@@ -3951,7 +3944,6 @@ gidlam₄	a
 gidri	a
 gidru	a
 gidₓ	a
-|GI×E|	|A|
 gig	a
 GIG	A
 gig₂	a
@@ -3974,7 +3966,6 @@ giguru	a
 giguru₂	a
 giguru₃	a
 giguruₓ	a
-|GI.KID.MAH|	|A.A.A|
 gikki	a
 gil	a
 gil₂	a
@@ -4019,7 +4010,6 @@ gina	a
 gina₂	a
 gina₃	a
 |GI.NA.AB.TUM|	|A.A.A.A|
-|GI.NA.AB.U.GUD|	|A.A.A.A.A|
 ginan	a
 ginaₓ	a
 |GI.NE|	|A.A|
@@ -4217,11 +4207,9 @@ gištug₂	a
 |GIŠ.TUG₂.PI.A.SILA₃|	|A.A.A.A.A|
 |GIŠ.TUG₂.PI.NI|	|A.A.A.A|
 |GIŠ.TUG₂.PI.NU₁₁@90|	|A.A.A.A@1|
-|GIŠ.TUG₂.PI.NU₁₁@90.SILA₃|	|A.A.A.A@1.A|
 |GIŠ.TUG₂.PI.NU₁₁.SILA₃|	|A.A.A.A.A|
 |GIŠ.TUG₂.PI.SILA₃.A|	|A.A.A.A.A|
 |GIŠ.TUG₂.PI.ŠIR.TAR.GAR₃|	|A.A.A.A.A.A|
-|GIŠ.TUG₂.PI.TE.A|	|A.A.A.A.A|
 |GIŠ.TUG₂.PI.TE.A.DU|	|A.A.A.A.A.A|
 |GIŠ.TUG₂.TE.A|	|A.A.A.A|
 |GIŠ.TUG₂.TE.A.DU|	|A.A.A.A.A|
@@ -4394,7 +4382,6 @@ gum₄	a
 gumgum	a
 gumgumšu	a
 gumle	a
-|GUM×ŠE|	|A|
 gumu	a
 |GUM×X|	|A|
 gun	a
@@ -4917,11 +4904,8 @@ ik	a
 iku	a
 iku₂	a
 iku@c	a@a
-IKU@c	A@a
 iku@c@v	a@a@a
-IKU@c@v	A@a@a
 iku@t	a@a
-IKU@t	A@a
 ikuₓ	a
 il	a
 IL	A
@@ -5029,7 +5013,6 @@ imi₂	a
 |IM%IM|	|A%A|
 |IM&IM|	|A&A|
 |IM@IM|	|A@A|
-|IM.IM.KAD₃IM.KAD₃A|	|A.A.A.A|
 imin	a
 IMIN	A
 imin₂	a
@@ -5312,7 +5295,6 @@ ka₉	a
 |KA×(AD.KU₃)|	|A(A.A)|
 |KA×(A.LA₂)|	|A(A.A)|
 |KA×(A.ME)|	|A(A.A)|
-|KA.AN.NI.SI|	|A.A.A.A|
 |KA×AŠ|	|A|
 |KA×AŠ₂|	|A|
 |KA×(A.X)|	|A(A.A)|
@@ -5322,7 +5304,6 @@ kab₂	a
 |KA×BAD|	|A|
 |KA×BAL|	|A|
 |KA×BALAG|	|A|
-|KA.BALAG.GA₂.TE.A.DU@s.ZA.NA|	|A.A.A.A.A.A@a.A.A|
 kabar	a
 |KA.BAR|	|A.A|
 |KA×BAR|	|A|
@@ -5804,7 +5785,6 @@ kinda₂	a
 kindagal	a
 kindagal₂	a
 kindaŋal	a
-|KI.NE|	|A.A|
 |KI.NE.AN.MUŠ₃|	|A.A.A.A|
 |KI.NE@s|	|A.A@a|
 kingal	a
@@ -6060,7 +6040,6 @@ kum₃	a
 kum₄	a
 kumₓ	a
 kun	a
-KUN	A
 kun₂	a
 kun₃	a
 kun₄	a
@@ -6262,7 +6241,6 @@ LAGAB	A
 |LAGAB×IGI@g.ME|	|A@a.A|
 |LAGAB×IM|	|A|
 |LAGAB×(IM.HA)|	|A(A.A)|
-|LAGAB×(IM.IM.ŠU₂LU)|	|A(A.A.A)|
 |LAGAB×(IM.LU)|	|A(A.A)|
 |LAGAB×KI|	|A|
 |LAGAB×KIN|	|A|
@@ -6291,7 +6269,6 @@ LAGAB	A
 |LAGAB×ŠITA₂|	|A|
 |LAGAB×(ŠITA.GIŠ)|	|A(A.A)|
 |LAGAB×(ŠITA.GIŠ.ERIN₂)|	|A(A.A.A)|
-|LAGAB×(ŠITA@t.GIŠ)|	|A(A@a.A)|
 |LAGAB×(ŠITA@t.GIŠ.ERIN₂)|	|A(A@a.A.A)|
 |LAGAB×ŠU|	|A|
 |LAGAB×ŠU₂|	|A|
@@ -6456,7 +6433,6 @@ lallal	a
 LAL@r	A@a
 |LAL.SAR|	|A.A|
 |LAL.TUG₂|	|A.A|
-|LALₓ×DU|	|A|
 lalʾu	a
 lalʾu₂	a
 lalʾu₃	a
@@ -6981,7 +6957,6 @@ maškim₃	a
 maškimₓ	a
 maškum	a
 mašmin	a
-|MAŠ.PA|	|A.A|
 massa	a
 massa₂	a
 maššam	a
@@ -7178,7 +7153,6 @@ miṭu₂	a
 mitum	a
 mitum₂	a
 miₓ	a
-|MI.ZA₇|	|A.A|
 mizal	a
 mizeg	a
 mizem	a
@@ -7461,6 +7435,7 @@ N01@c	A1@a
 N01@f	A1@a
 N04	A1
 N04@f	A1@a
+N06	A1
 N08	A1
 N08@c	A1@a
 N08@f	A1@a
@@ -7494,7 +7469,6 @@ N8	A1
 na	a
 NA	A
 na₂	a
-NA₂	A
 |NA₂.HU|	|A.A|
 |NA₂.X|	|A.A|
 na₃	a
@@ -7845,7 +7819,6 @@ NINDA₂@180	A@1
 |NINDA₂×(ŠE.A.AN)|	|A(A.A.A)|
 |NINDA₂×ŠE.A.AN|	|A.A.A|
 |NINDA₂×(ŠE.AN)|	|A(A.A)|
-|NINDA₂×(ŠE.AŠ)|	|A(A.A)|
 |NINDA₂×(ŠE.AŠ.AŠ)|	|A(A.A.A)|
 |NINDA₂×(ŠE.AŠ@c)|	|A(A.A@a)|
 |NINDA₂×(ŠE.AŠ@c.AŠ@c)|	|A(A.A@a.A@a)|
@@ -8085,7 +8058,6 @@ nungi₃	a
 |NUN.LAGAR×GAR|	|A.A|
 |NUN.LAGAR×MAŠ|	|A.A|
 |(NUN.LAGAR)&(NUN.LAGAR)|	|(A.A)&(A.A)|
-|NUN.LAGAR×SAL|	|A.A|
 |(NUN.LAGAR×SAL)&(NUN.LAGAR×SAL)|	|(A.A)&(A.A)|
 |NUN.LAGAR×UŠ|	|A.A|
 |NUN.ME|	|A.A|
@@ -8484,7 +8456,6 @@ papadₓ	a
 |PAP.NE.GIŠ|	|A.A.A|
 papnun	a
 |PAP.NUN.ME.EZEN|	|A.A.A.A|
-|PAP.PAP|	|A.A|
 |PAP.PAP.4×IDIM|	|A.A.1A|
 |PAP.PAP.LU₃|	|A.A.A|
 |(PAP.PAP)&(PAP.PAP)|	|(A.A)&(A.A)|
@@ -9287,7 +9258,6 @@ salim	a
 |SAL.LA|	|A.A|
 |SAL.LAGAB|	|A.A|
 |SAL.LAGAB×(GUD&GUD)|	|A.A(A&A)|
-|SAL.LAGAR|	|A.A|
 šallam	a
 šallam₂	a
 šallur	a
@@ -10273,7 +10243,6 @@ sirsir	a
 ŠIR@t	A@a
 siru	a
 širu	a
-|ŠIR.UD|	|A.A|
 sirum	a
 širum	a
 širₓ	a
@@ -10486,7 +10455,6 @@ SUD@g	A@a
 |SUD.ŠE.NUN.EŠ₂|	|A.A.A.A|
 |SUD&SUD.AB|	|A&A.A|
 šudu₃	a
-šudug	a
 šudul	a
 šudul₂	a
 šudul₃	a
@@ -12356,7 +12324,6 @@ utua₂	a
 utug	a
 |U.TUG₂|	|A.A|
 utugₓ	a
-UTUKI	A
 uṭuku	a
 utul	a
 utul₁₀	a
@@ -12736,7 +12703,6 @@ zizanu	a
 zizi	a
 |ZI%ZI|	|A%A|
 |ZI&ZI|	|A&A|
-|ZI&ZI.A|	|A&A.A|
 |ZI&ZI.EŠ₂|	|A&A.A|
 |ZI&ZI.EŠ₂.ŠE|	|A&A.A.A|
 |ZI&ZI.LAGAB|	|A&A.A|
@@ -12776,7 +12742,6 @@ zug₂	a
 zug₃	a
 zug₄	a
 zugud	a
-zugudₓ	a
 zuguz	a
 zugₓ	a
 zuh	a

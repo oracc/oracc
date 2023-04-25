@@ -24,6 +24,10 @@ int gdl_corrq = 0;
 int gdl_initted = 0;
 int gdltrace = 0;
 
+/* If this is non-zero we use orig graphemes in reconstituting
+   compounds rather than c10e */
+int gdl_orig_mode = 0;
+
 void
 gdl_init(void)
 {

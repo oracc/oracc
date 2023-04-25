@@ -18,7 +18,7 @@ int verbose;
 int status;
 int rnvtrace;
 
-extern int gdl_flex_debug, gdldebug;
+extern int gdl_flex_debug, gdldebug, gdl_orig_mode;
 
 int check_mode = 0;
 const char *fname = NULL;
@@ -61,8 +61,8 @@ do_one(char *s)
       List *tmp = list_create(LIST_SINGLE);
       unsigned const char *msg = NULL;
       for (msg = list_first(mp); msg; msg = list_next(mp))
-	if (!strstr(msg, "qualified"))
-	  list_add(tmp, msg);
+	if (!strstr((ccp)msg, "qualified") && !strstr((ccp)msg, "unknown"))
+	  list_add(tmp, (void*)msg);
       if (list_len(tmp))
 	mesg_print2(stderr, tmp);
     }
@@ -107,7 +107,7 @@ main(int argc, char **argv)
 {
   gdl_flex_debug = gdldebug = 0;
   
-  options(argc, argv, "cf:itw");
+  options(argc, argv, "cf:iotw");
 
   gdl_flex_debug = gdldebug = trace_mode;
   
@@ -143,6 +143,9 @@ opts(int opt, char *arg)
       break;
     case 'i':
       identity_mode = 1;
+      break;
+    case 'o':
+      gdl_orig_mode = 1;
       break;
     case 't':
       trace_mode = 1;

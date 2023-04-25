@@ -64,7 +64,10 @@ gvl_n(Node *ynp)
 	    }
 	}
     }
-  ynp->text = (ccp)nq->c10e;
+  if (gdl_orig_mode)
+    ynp->text = (ccp)nq->orig;
+  else
+    ynp->text = (ccp)nq->c10e;
   ynp->user = nq;
 }
 
