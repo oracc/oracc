@@ -48,12 +48,25 @@ void
 do_one(char *s)
 {
   Tree *tp = NULL;
+  List *mp = NULL;
   if (s[strlen(s)-1] == '\n')
     s[strlen(s)-1] = '\0';
   ++ml.line;
   mesg_init();
   tp = gdlparse_string(&ml, s);
-  mesg_print(stderr);
+  
+  mp = mesg_retrieve();
+  if (mp && list_len(mp))
+    {
+      List *tmp = list_create(LIST_SINGLE);
+      unsigned const char *msg = NULL;
+      for (msg = list_first(mp); msg; msg = list_next(mp))
+	if (!strstr(msg, "qualified"))
+	  list_add(tmp, msg);
+      if (list_len(tmp))
+	mesg_print2(stderr, tmp);
+    }
+
   if (identity_mode)
     test_identity(s, tp);
   else if (!check_mode)

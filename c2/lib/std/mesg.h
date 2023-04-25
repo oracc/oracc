@@ -2,6 +2,7 @@
 #define MESG_H_
 
 #include <stdio.h>
+#include <list.h>
 
 struct Mloc
 {
@@ -22,6 +23,8 @@ extern void mesg_err(Mloc *locp, const char *s);
 extern void mesg_verr(Mloc *locp, const char *s, ...);
 extern void mesg_averr(Mloc *locp, const char *s, va_list ap);
 extern void mesg_print(FILE *fp);
+extern void mesg_print2(FILE *fp, List *mlist);
+extern List *mesg_retrieve(void);
 
 extern void mesg_warning(const char *file, int ln, const char *str);
 extern void mesg_vwarning(const char *file, int ln, const char *s, ...);

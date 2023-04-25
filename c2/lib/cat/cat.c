@@ -39,10 +39,10 @@ cat_term(void)
 }
 
 void
-cat_dump(struct catchunk *ccp)
+cat_dump(struct catchunk *chunkp)
 {
   struct catchunk *cp;
-  for (cp = ccp; cp; cp = cp->next)
+  for (cp = chunkp; cp; cp = cp->next)
     fprintf(stderr, "[%d]\t%s\n", cp->line, cp->text);
 }
 

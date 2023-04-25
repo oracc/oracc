@@ -85,7 +85,7 @@ cat_end(Tree *tp, char *data)
 }
 
 Tree *
-cat_tree(struct catchunk *ccp, struct catconfig *cfg)
+cat_tree(struct catchunk *chunkp, struct catconfig *cfg)
 {
   struct catinfo *cip = NULL, *head_cip = NULL;
   struct catchunk *cp = NULL;
@@ -94,7 +94,7 @@ cat_tree(struct catchunk *ccp, struct catconfig *cfg)
   head_cip = cfg->chkname(cfg->head, strlen(cfg->head));
   tree_root(tp, cfg->ns, cfg->head, head_cip->depth, NULL);
   
-  for (cp = ccp; cp; cp = cp->next)
+  for (cp = chunkp; cp; cp = cp->next)
     {
       if (*cp->text)
 	{

@@ -48,11 +48,11 @@ static void cvq_reset(void);
 B		("["|"]"|\xe2\xb8[\xa2-\xa5])
 S		\xe2\xb8[^\xa2-\xa5]
 G		([a-zA-Z'\x80-\xc2\xc4-\xe1\xe3-\xff]|{S}|\xc3[^\x97]|\xe2[^\xb8])+
-M		([@~\\]([a-z]+|90|180|270))*
-N		(N[0-9]+)
-GRAPHEME 	((({G}|{N}){M})|"15")
-LISTNUM		([A-Z]+[0-9]+[A-Z0-9a-z_'"+*/]*){M}
-NUMGRAPH	[0-9]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}
+M		([@~\\]([a-z]+|90|180|270))
+N		(N[0-9][0-9]?)
+GRAPHEME 	((({G}|{N}))|"15")
+LISTNUM		([A-Z][A-Z]+[0-9]+[A-Z0-9a-z_'"+*/]*)
+NUMGRAPH	[0-9]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\)
 FRACTION	[0-9]\/[0-9]
 PUNCT		("*"|:['".:]?|"/")
 
@@ -140,13 +140,13 @@ _			{ gsave; return LANG_FLIP; }
 
 [0-9]+(\/[0-9]+)?	{ GIN=1; gsave; return BARENUM; }
 
-{LISTNUM}		{ GIN=1; gsave; return LISTNUM; }
-
 {G}({G}|{B})*{G}	{ GIN=1; return gdl_grapheme_type(); }
 {G}({G}|{B})*/{M}	{ GIN=1; return gdl_grapheme_type(); }
 {GRAPHEME} 		{ GIN=1; return gdl_grapheme_type(); }
 
 {M}			{ GIN=1; gsave; return MOD; }
+
+{LISTNUM}		{ GIN=1; gsave; return LISTNUM; }
 
 [#"=@^]/{G} 		{ gsave;
 			  if (gdl_lexical) {

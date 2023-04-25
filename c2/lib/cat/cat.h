@@ -76,12 +76,12 @@ extern int catparse(void); /* bison */
 
 extern void cat_chunk(const char *file, int l, char *t);
 extern void cat_cont(int l, char *t);
-extern void cat_dump(struct catchunk *ccp);
+extern void cat_dump(struct catchunk *chunkp);
 extern void cat_init(void);
-extern char* cat_name(struct catchunk *cp, char **data);
+extern char* cat_name(struct catchunk *chunkp, char **data);
 extern void cat_term(void);
 extern struct catchunk *cat_read(const char *file);
-extern Tree *cat_tree(struct catchunk *cp, struct catconfig *cfg);
+extern Tree *cat_tree(struct catchunk *chunkp, struct catconfig *cfg);
 extern struct catchunk *catyacc(void);
 extern void cat_reset_head(void);
 

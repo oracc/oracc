@@ -148,25 +148,29 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
      of g:n we need to update the top-level here */
   if (ynp->rent->name[2] == 'n')
     {
-      gvl_g *rg = ynp->rent->user;
+      gvl_g *ng = memo_new(curr_sl->m); /* update in a new gvl_g */
+      /*gvl_g *rg = ynp->rent->user;*/
       gvl_g *gg = ynp->user;
+
       const char *r = ynp->rent->kids->text;
       o = pool_alloc(strlen(r) + strlen((ccp)gg->orig) + 3, curr_sl->p);
       sprintf((char*)o, "%s(%s)", r, gg->orig);
       c = pool_alloc(strlen(r) + strlen((ccp)gg->c10e) + 3, curr_sl->p);
       sprintf((char*)c, "%s(%s)", r, gg->orig);
-      rg->orig = o;
+
+      ng->orig = o;
       if (gvl_lookup(c))
 	{
 	  ynp->rent->text = (ccp)c;
-	  rg->c10e = c;
+	  ng->c10e = c;
 	}
       else
 	{
-	  rg->mess = gvl_vmess("unknown sign name: %s", rg->orig);
+	  ng->mess = gvl_vmess("unknown sign name: %s", ng->orig);
 	  ynp->rent->text = (ccp)o;
-	  rg->c10e = o;
+	  ng->c10e = o;
 	}
+      ynp->rent->user = ng;
     }
 }
 
@@ -246,23 +250,33 @@ gdl_mod_wrap_q(Node *np)
       unsigned char *o = NULL, *c = NULL;
       if (np->user)
 	{
+	  gvl_g *ng = memo_new(curr_sl->m); /* update in a new gvl_g */
 	  o = pool_alloc(strlen((ccp)((gvl_g*)np->user)->orig) + strlen(res) + 1, gdlpool);
 	  sprintf((char*)o, "%s%s", (ccp)((gvl_g*)np->user)->orig, (ccp)res);
+
 	  if (((gvl_g*)np->user)->c10e)
 	    {
 	      c = pool_alloc(strlen((ccp)((gvl_g*)np->user)->c10e) + strlen(res) + 1, gdlpool);
 	      sprintf((char*)c, "%s%s", ((gvl_g*)np->user)->orig, res);
 	    }
+
 	  if (c && gvl_lookup(c))
 	    {
 	      np->text = (ccp)c;
+	      ng->c10e = c;
+	      ng->orig = o;
+	      np->user = ng;
+#if 0	      
 	      ((gvl_g*)np->user)->c10e = c;
 	      ((gvl_g*)np->user)->orig = o;
+#endif
 	    }
 	  else
 	    {
 	      np->text = (ccp)o;
-	      ((gvl_g*)np->user)->orig = ((gvl_g*)np->user)->c10e = o;
+	      ng->orig = ng->c10e = o;
+	      np->user = ng;
+	      /*((gvl_g*)np->user)->orig = ((gvl_g*)np->user)->c10e = o; */
 	    }
 	}  
     }

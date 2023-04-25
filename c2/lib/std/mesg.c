@@ -26,8 +26,10 @@ static char *nl(char *e);
 void
 mesg_init(void)
 {
-  mesg_list = list_create(LIST_DOUBLE);
-  msgpool = pool_init();
+  if (!mesg_list)
+    mesg_list = list_create(LIST_DOUBLE);
+  if (!msgpool)
+    msgpool = pool_init();
   mloc_init();
   /*warning_mesg();*/
 }
@@ -35,8 +37,16 @@ mesg_init(void)
 void
 mesg_term(void)
 {
-  list_free(mesg_list, NULL);
-  pool_term(msgpool);
+  if (mesg_list)
+    {
+      list_free(mesg_list, NULL);
+      mesg_list = NULL;
+    }
+  if (msgpool)
+    {
+      pool_term(msgpool);
+      msgpool = NULL;
+    }
   mloc_term();
 }
 
@@ -188,15 +198,30 @@ mesg_avwarning(const char *file, int ln, const char *str, va_list ap)
   mesg_averr(&l,(char*)str,ap);
 }
 
+List *
+mesg_retrieve(void)
+{
+  List *ret = mesg_list;
+  mesg_list = NULL;
+  return ret;
+}
+ 
 void
 mesg_print(FILE *fp)
 {
-  if (mesg_list && list_len(mesg_list))
+  mesg_print2(fp, mesg_list);
+  mesg_list = NULL;
+}
+
+void
+mesg_print2(FILE *fp, List *mlist)
+{
+  if (mlist && list_len(mlist))
     {
       if (0) /* unsorted messages */
 	{
 	  List_node *lp;
-	  for (lp = mesg_list->first; lp; lp = lp->next)
+	  for (lp = mlist->first; lp; lp = lp->next)
 	    {
 	      fputs((char*)lp->data, fp);
 	    }
@@ -205,13 +230,13 @@ mesg_print(FILE *fp)
 	{
 	  char **mp = NULL;
 	  int i;
-	  mp = (char**)list2array(mesg_list);
-	  qsort(mp, list_len(mesg_list), sizeof(char*), msg_cmp);
+	  mp = (char**)list2array(mlist);
+	  qsort(mp, list_len(mlist), sizeof(char*), msg_cmp);
 	  for (i = 0; mp[i]; ++i)
 	    fputs(mp[i], fp);
 	}
-      list_free(mesg_list, NULL);
-      mesg_list = NULL;
+      list_free(mlist, NULL);
+      mlist = NULL;
     }
 }
 
@@ -246,14 +271,18 @@ static Memo *mloc_mem = NULL;
 void
 mloc_init(void)
 {
-  mloc_mem = memo_init(1024, sizeof(Mloc));
+  if (!mloc_mem)
+    mloc_mem = memo_init(1024, sizeof(Mloc));
 }
 
 void
 mloc_term(void)
 {
-  memo_term(mloc_mem);
-  mloc_mem = NULL;
+  if (mloc_mem)
+    {
+      memo_term(mloc_mem);
+      mloc_mem = NULL;
+    }
 }
 
 Mloc *
