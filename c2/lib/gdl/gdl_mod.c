@@ -8,7 +8,7 @@
 static List *modq;
 
 /* Mod nodes attached to the current grapheme ynp */
-void
+Node *
 gdl_mod(Tree *ytp, const char *data)
 {
   Node *np = NULL;
@@ -64,6 +64,9 @@ gdl_mod(Tree *ytp, const char *data)
 
   if (mpushed)
     tree_pop(ytp);
+
+  /* return the node that wraps the mod */
+  return np;
 }
 
 /* A sign with mods has a copy of the sign in a g:b(ase) node and the
@@ -97,11 +100,14 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
   
   for (np = ynp->kids; np; np = np->next)
     {
-      if (np->user && ((gvl_g*)np->user)->c10e)
+      if (np->user && ((gvl_g*)np->user)->orig)
 	{
 	  np->name = "g:b";
 	  list_add(op, (void*)((gvl_g*)np->user)->orig);
-	  list_add(cp, (void*)((gvl_g*)np->user)->c10e);
+	  if (!gdl_orig_mode && ((gvl_g*)np->user)->c10e)
+	    list_add(cp, (void*)((gvl_g*)np->user)->c10e);
+	  else
+	    list_add(cp, (void*)((gvl_g*)np->user)->orig);
 	}
       else
 	{
@@ -190,12 +196,18 @@ gdl_modq_flush(void)
   Node *curr = NULL;
   for (curr = list_first(modq); curr; curr = list_next(modq))
     {
-      if (curr != last)
+      /* don't process if the parent of mods is a g:c because the mods
+	 are already in the right place */
+      if ('c' != curr->name[2])
 	{
-	  /*unsigned const char *m_orig = NULL;*/
-	  last = curr;
-	  /*m_orig = */ (void)gdl_mod_wrap(curr, 0);
-	  /* depending on result of code review possibly reset curr->orig <--m_orig here */
+	  if (curr != last)
+	    {
+	      last = curr;
+	      if ('n' == curr->rent->name[2])
+		gdl_mod_wrap_q(curr->rent);
+	      else if ('c' != curr->rent->name[2] && strcmp(curr->rent->name, "g:gp"))
+		(void)gdl_mod_wrap(curr->rent, 0);
+	    }
 	}
     }
   list_reset(modq);

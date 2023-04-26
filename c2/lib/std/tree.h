@@ -35,6 +35,7 @@ struct node {
   struct node *kids; 	/* children */
   struct node *last; 	/* last sibling, i.e., where we are adding sibs */
   struct node *next; 	/* next sibling */
+  struct node *prev; 	/* previous sibling */
   Tree *tree;
   struct prop *props;
   Mloc *mloc;

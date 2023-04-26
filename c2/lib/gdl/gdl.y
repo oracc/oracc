@@ -13,7 +13,7 @@ extern void yyerror(const char *);
 extern const char *gdltext, *currgdlfile;
 extern int gdllineno, gdltrace;
 static Tree *ytp;
-static Node *ynp, *yrem, *ycp;
+static Node *ynp, *yrem, *ycp, *mnp;
 /*int Q = 0;*/
 int gdl_legacy = 0;
 int gdl_lexical = 0;
@@ -233,7 +233,7 @@ cbit:
 							  ynp = gdl_pop(ytp,"g:q");
 							}
 	| meta
-	| mod						{ gdl_modq_add(ynp); };
+	| mod						{ gdl_modq_add(mnp); mnp = NULL; };
 	;
 
 cdelim:
@@ -300,15 +300,7 @@ mods:
 
 mod:
 	  MOD						{ ynp->mloc = mloc_mloc(&@1);
-	  						  gdl_mod(ytp, gdllval.text); }
-	;
-
-qmods:    qmod
-	| qmods qmod
-	;
-
-qmod:
-	  MOD						{ gdl_modq_add(ytp->curr); };
+	  						  mnp = gdl_mod(ytp, gdllval.text); }
 	;
 
 breako:

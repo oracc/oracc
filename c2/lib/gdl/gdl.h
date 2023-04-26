@@ -84,7 +84,7 @@ extern Node *gdl_graph(Tree *ytp, const char *data);
 extern Node *gdl_lang(Tree *ytp, const char *data);
 extern const char *gdl_lexfld_name(const char *lftok);
 extern void gdl_lexfld_init(void);
-extern void gdl_mod(Tree *ytp, const char *data);
+extern Node *gdl_mod(Tree *ytp, const char *data);
 extern Node *gdl_punct(Tree *ytp, const char *data);
 extern Node *gdl_listnum(Tree *ytp, const char *data);
 extern Node *gdl_number(Tree *ytp, const char *data);

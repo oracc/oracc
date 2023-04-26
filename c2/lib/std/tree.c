@@ -83,7 +83,8 @@ tree_add(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc)
       if (tp->curr && tp->curr->kids && tp->curr->last)
 	{
 	  np->rent = tp->curr->last->rent;
-	  tp->curr->last->next = np;
+	  np->prev = tp->curr->last;
+	  tp->curr->last->next = np;  
 	  tp->curr->last = np;
 	}
       else
