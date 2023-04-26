@@ -27,7 +27,7 @@ gvl_c(gvl_g *cp)
       cp->sign = gvl_lookup(sll_tmp_key(l,""));
       cp->c10e = cp->orig;
     }
-  else if ((l=gvl_lookup(cp->c10e)))
+  else if (cp->c10e && (l=gvl_lookup(cp->c10e)))
     {
       cp->oid = (ccp)l;
       cp->sign = gvl_lookup(sll_tmp_key(l,""));

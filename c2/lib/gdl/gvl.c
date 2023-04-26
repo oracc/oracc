@@ -18,6 +18,7 @@
 
 int gvl_trace = 0;
 int gvl_strict = 0;
+int c_delim_sentinel = 0;
 
 extern int curr_lang;
 
@@ -211,6 +212,8 @@ gvl_compound(Node *ynp)
     {
       gvl_g *cp = NULL;
       unsigned char *c_orig = gvl_c_orig(ynp);
+      if (!c_delim_sentinel)
+	mesg_verr(ynp->mloc, "unnecessary pipes on '%s'", c_orig);
 
       if (!(cp = hash_find(curr_sl->h, c_orig)))
 	{
