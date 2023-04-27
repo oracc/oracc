@@ -922,11 +922,13 @@ gparse(register unsigned char *g, enum t_type type)
 		}
 	      if (!ok)
 		{
+#ifndef GVL_MODE		  
 		  const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalues/";
 		  vwarning("%s: unknown sign-name grapheme. To request adding it please visit:\n\t%s",g,report);
 		  exit_status = 1;
 		  --status;
 		  bad_grapheme = 1;
+#endif
 		}
 	      else
 		{

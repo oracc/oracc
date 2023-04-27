@@ -277,12 +277,24 @@ gvl_valuqual(Node *vqnp)
 
   if (gvl_trace)
     fprintf(stderr, "gvl_valuqual: called\n");
-
+  
   if ('q' == vqnp->name[2])
     {
+      vqnp->mloc = vqnp->kids->mloc;
+      
       if ('R' == vqnp->kids->name[2])
 	gvl_n(vqnp);
       else
 	gvl_q(vqnp);
+
+      if (vqnp->user)
+	{
+	  if (((gvl_g*)vqnp->user)->mess)
+	    mesg_err(vqnp->mloc, (ccp)((gvl_g*)(vqnp->user))->mess);
+	}
+      else	
+	{
+	  mesg_verr(vqnp->mloc, "failed to create grapheme structure from '%s'", vqnp->text);
+	}
     }
 }

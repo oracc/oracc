@@ -58,8 +58,10 @@ int
 main(int argc, char **argv)
 {
   static int multifile = 0;
-  extern int gdldebug; /* yydebug in gdl.y */
+  extern int gdl_flex_debug, gdldebug; /* yydebug in gdl.y */
   
+  gdl_flex_debug = gdldebug = 0;
+
   options(argc, argv, "ct");
 
   atfflextrace = atftrace = cattrace = gdlflextrace = gdltrace = gdldebug = trace_mode;

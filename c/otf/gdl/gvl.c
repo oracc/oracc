@@ -1006,7 +1006,7 @@ gvl_validate(unsigned const char *g)
 		{
 		  gp->sign = l;
 		  if (gvl_strict)
-		    gp->mess = gvl_vmess("pseudo-signname %s must be qualifed by one of %s",g,l);
+		    gp->mess = gvl_vmess("pseudo-signname %s must be qualified by one of %s",g,l);
 		}
 	      else
 		{
