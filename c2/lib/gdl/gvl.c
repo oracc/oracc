@@ -287,14 +287,17 @@ gvl_valuqual(Node *vqnp)
       else
 	gvl_q(vqnp);
 
-      if (vqnp->user)
+      if (strcmp(vqnp->name, "g:corr"))
 	{
-	  if (((gvl_g*)vqnp->user)->mess)
-	    mesg_err(vqnp->mloc, (ccp)((gvl_g*)(vqnp->user))->mess);
-	}
-      else	
-	{
-	  mesg_verr(vqnp->mloc, "failed to create grapheme structure from '%s'", vqnp->text);
+	  if (vqnp->user)
+	    {
+	      if (((gvl_g*)vqnp->user)->mess)
+		mesg_err(vqnp->mloc, (ccp)((gvl_g*)(vqnp->user))->mess);
+	    }
+	  else	
+	    {
+	      mesg_verr(vqnp->mloc, "failed to create grapheme structure from '%s'", vqnp->text);
+	    }
 	}
     }
 }

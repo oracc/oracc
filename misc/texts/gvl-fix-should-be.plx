@@ -19,7 +19,10 @@ while (<>) {
     if (/(.*?):(.*?):.*?\(gvl\)\s+(\S+): should be (\S+)\s*$/) {
 	my($file,$line,$bad,$good) = ($1,$2,$3,$4);
 	fix_in_atf($file,$line,$bad,$good);
-    }    
+    } elsif (/<=/ && /(.*?):(.*?): (\S+): should be (\S+) /) {
+	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
+	fix_in_atf($file,$line,$alt,$pri);
+    }
 }
 close_and_dump() if $curr_file;
 

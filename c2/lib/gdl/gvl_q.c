@@ -19,7 +19,12 @@ gvl_q(Node *ynp)
   gdl_corrq = (prop_find_pg(ynp->kids->props,'!',PG_GDL_FLAGS)!=NULL);
 
   if (gdl_corrq)
-    ynp->name = "g:corr";
+    {
+      ynp->name = "g:corr";
+      /* the child nodes should have been processed already, so we
+	 just don't build a gvl_g node for a corr */
+      return;
+    }
 
   /* This builds a c10e version of vq */
   if (!(vo = (uccp)ynp->kids->text))

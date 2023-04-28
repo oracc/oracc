@@ -72,7 +72,7 @@ gvl_s(Node *ynp)
       else if (lg && (l = gvl_lookup(sll_tmp_key(lg, "q"))))
 	{
 	  gp->c10e = gp->sign = l; /* we should really set gp->sign to, say, #q and store l in a prop */
-	  gp->mess = gvl_vmess("pseudo-signname %s must be qualifed by one of %s",gp->orig,l);
+	  gp->mess = gvl_vmess("pseudo-signname %s must be qualified by one of %s",gp->orig,l);
 	}
       else
 	{

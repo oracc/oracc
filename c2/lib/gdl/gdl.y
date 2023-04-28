@@ -226,9 +226,9 @@ cbit:
 							  gdl_remove_q_error(@1, yrem);
   							  gdl_incr_qin();
 							  /* IS GDL_CORRQ NECESSARY NOW? */
-							  gdl_corrq
+							  /* gdl_corrq
 							    = (prop_find_pg(yrem->props,'!',
-									    PG_GDL_FLAGS)!=NULL);}
+							        PG_GDL_FLAGS)!=NULL); */}
 	| QRP				      		{ gdl_decr_qin();
 	  						  ynp->mloc = mloc_mloc(&@1);
 	  						  gvl_valuqual(ytp->curr);
@@ -265,8 +265,8 @@ q:
 							  kids_add_node(ytp,yrem);
 							  gdl_incr_qin();
 							  /* IS GDL_CORRQ NECESSARY NOW? */
-							  gdl_corrq
-							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);}
+							  /*gdl_corrq
+							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);*/ }
 	grapheme 	 	       			{ gdl_remove_q_error(@1, yrem); }
 	QRP { gdl_decr_qin(); }		      		
 	;
