@@ -1,0 +1,87 @@
+namespace g = "http://oracc.org/ns/gdl/1.0"
+g.meta = 
+  break? , status.flags? , status.spans? , 
+  paleography.attr? , linguistic.attr? , proximity.attr? ,
+  opener? , closer? , hsqb_o?, hsqb_c? , emhyph? ,
+  varnum? , sign_attr? , utf8? , delim? ,
+  attribute xml:id { xsd:ID }? ,
+  breakStart? , breakEnd? ,
+  damageStart? , damageEnd? ,
+  surroStart? , surroEnd? ,
+  statusStart? , statusEnd? ,
+  accented?
+
+accented = attribute g:accented { text }
+breakStart = attribute g:breakStart { "1" }
+breakEnd = attribute g:breakEnd { xsd:IDREF }
+damageStart = attribute g:damageStart { "1" }
+damageEnd = attribute g:damageEnd { xsd:IDREF }
+surroStart = attribute g:surroStart { "1" }
+surroEnd = attribute g:surroEnd { xsd:IDREF }
+statusStart = attribute g:statusStart { "1" }
+statusEnd = attribute g:statusEnd { xsd:IDREF }
+
+break = attribute g:break  { "damaged" | "missing" }
+opener = attribute g:o     { text }
+closer = attribute g:c     { text }
+hsqb_o = attribute g:ho    { "1" }
+hsqb_c = attribute g:hc    { "1" }
+emhyph = attribute g:em    { "1" }
+sign_attr = attribute g:sign  { text }
+utf8   = attribute g:utf8  { text }
+delim  = attribute g:delim { text }
+varnum = (
+  attribute g:varo { text }? , 
+  attribute g:vari { text }? ,  
+  attribute g:varc { text }?
+)
+
+status.flags =
+  attribute g:collated { xsd:boolean } ? ,
+  attribute g:queried  { xsd:boolean } ? ,
+  attribute g:remarked { xsd:boolean } ? ,
+  attribute g:uflag1 { xsd:boolean } ? ,
+  attribute g:uflag2 { xsd:boolean } ? ,
+  attribute g:uflag3 { xsd:boolean } ? ,
+  attribute g:uflag4 { xsd:boolean } ? 
+
+gloss = det | glo
+pos = attribute g:pos { "pre" | "post" | "free" }
+#det = element g:d { pos , dtyp , delim? , emhyph? , notemark? , surroStart? , g.meta ,
+#                    (dingir | mister | word.content*)}
+det = element g:d { pos , dtyp , delim? , emhyph? , surroStart? , g.meta ,
+                    (word.content*)}
+dtyp= attribute g:role { "phonetic" | "semantic" }
+glo = element g:gloss { attribute g:type { "lang" | "text" } , surroEnd? , delim? , pos , words }
+
+status.spans =
+  attribute g:status {
+    "ok" | "erased" | "excised" | "implied" | "maybe" | "supplied" | "some"
+  }
+
+paleography.attr =
+  attribute g:script      { xsd:NCName }
+
+linguistic.attr =
+  attribute xml:lang      { xsd:language } ? ,
+#  attribute g:rws         { "emegir" | "emesal" | "udgalnun" }? ,
+  (attribute g:role       { "sign" | "ideo" | "num" | "syll" }
+  | (attribute g:role     { "logo" } ,
+     attribute g:logolang { xsd:language }))
+
+proximity.attr = 
+  attribute g:prox { xsd:integer }
+
+nongrapheme = 
+  element g:x {
+    ( attribute g:type { "disambig" | "empty" | "linebreak" | "newline" | "user" | "dollar" | "comment" }
+    | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" | "word-linefrom" } 
+        , status.spans , opener? , closer? , break? )),
+    delim? , text? , varnum? ,
+    attribute xml:id { xsd:ID }? ,
+    breakStart? , breakEnd? ,
+    damageStart? , damageEnd? , emhyph? ,
+    surroStart? , surroEnd? ,
+    statusStart? , statusEnd? ,
+    status.flags?
+    }

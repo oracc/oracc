@@ -1,0 +1,3 @@
+include "grapheme.rnc"
+include "graphmeta.rnc"
+include "words.rnc"
