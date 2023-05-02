@@ -13,9 +13,22 @@ tree_xml_rnv_node(Node *np, void *user)
   if (treexml_o_handlers[np->ns])
     {
       (treexml_o_handlers[np->ns])(np, &rnvd);
-      /* print open tag */
-      if (rnvd.ns)
-	tree_ns_xml_print(np->tree, xhp->fp);
+      if (validating)
+	{
+	  rnvval_ea(rnvd.tag , rnvd.ratts);
+	  if (rnvd.chardata)
+	    rnvval_ch(rnvd.chardata);
+	}
+      if (printing)
+	{
+	  fprintf(xhp, "<%s", rnvd.tag);
+	  if (rnvd.ns)
+	    tree_ns_xml_print(np->tree, xhp->fp);
+	  if (rnvd.ratts)
+	    xml_attr(rnvd.ratts->atts, xhp->fp);
+	  if (rnvd.chardata)
+	    fputs(rnvd.chardata, xhp);
+	}
     }
 }
 
@@ -26,10 +39,10 @@ tree_xml_rnv_post(Node *np, void *user)
   if (treexml_c_handlers[np->ns])
     {
       (treexml_c_handlers[np->ns])(np, &rnvd);
-      if (rnvd.has_content)
-	/* print close tag */
-      else
-	/* print short form */
+      if (validating)
+	rnvval_ee(rnvd.tag);
+      if (printing)
+	fprintf(xhp, "</%s>", rnvd.tag);
     }
 }
 

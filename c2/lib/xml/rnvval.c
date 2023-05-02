@@ -82,14 +82,6 @@ rnvval_term()
 }
 
 void
-rnvval_ch(const char *ch)
-{
-  if (rnvtrace)
-    fprintf(stderr, "rnv-ch: ::%s::\n", ch);
-  rnv_characters(NULL, ch, strlen(ch));
-}
-
-void
 rnvval_free_atts(struct rnvval_atts *ratts)
 {
   free(ratts->atts);
@@ -97,6 +89,10 @@ rnvval_free_atts(struct rnvval_atts *ratts)
   free(ratts);
 }
 
+/* Attributes are passed to rnv validation in an rnvval_atts
+   structure.  This routine creates an rnvval_atts structure from a
+   lengthed list of char * where even numbered (from 0) are names and
+   odd numbered are values */
 struct rnvval_atts *
 rnvval_aa_qatts(char **atts, int natts)
 {
@@ -113,6 +109,9 @@ rnvval_aa_qatts(char **atts, int natts)
   return ratts;
 }
 
+/* This function creates an rnvval_atts structure from a
+   NULL-terminated list of char * which are alternating name/value
+   pairs */
 struct rnvval_atts *
 rnvval_aa(const char *pname, ...)
 {
@@ -159,6 +158,9 @@ rnvval_aa(const char *pname, ...)
   return ratts;
 }
 
+/* rnvval_ea (element-attributes), rnvval_ee (end-element) , and
+   rnvval_ch (characters) are the wrapper functions used for passing
+   XML data to the rnv validator */
 void
 rnvval_ea(const char *pname, struct rnvval_atts *ratts)
 {
@@ -171,7 +173,8 @@ rnvval_ea(const char *pname, struct rnvval_atts *ratts)
     }
   if (rnvtrace)
     fprintf(stderr, "rnv-ea: %s\n", qname);
-  rnv_start_element(NULL,(char*)pool_copy((ucp)qname, rnv_pool),ratts ? ratts->qatts : (const char**)qatts);
+  rnv_start_element(NULL,(char*)pool_copy((ucp)qname, rnv_pool),
+		    ratts ? ratts->qatts : (const char**)qatts);
 }
 
 void
@@ -184,4 +187,12 @@ rnvval_ee(const char *pname)
 	fprintf(stderr, "rnv-ee: %s\n", qname);
       rnv_end_element(NULL,(char*)pool_copy((ucp)qname,rnv_pool));
     }
+}
+
+void
+rnvval_ch(const char *ch)
+{
+  if (rnvtrace)
+    fprintf(stderr, "rnv-ch: ::%s::\n", ch);
+  rnv_characters(NULL, ch, strlen(ch));
 }

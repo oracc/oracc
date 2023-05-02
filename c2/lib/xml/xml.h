@@ -22,5 +22,7 @@ extern void treexml_c_generic(Node *np, void *user);
 extern void tree_ns_xml_print(Tree *tp, FILE *fp);
 extern Xmlhelper *xmlh_init(FILE *fp);
 extern const unsigned char *xmlify(const unsigned char *);
+extern void xml_attr(const char **atts, FILE *fp);
+
 
 #endif /* XML_H_ */

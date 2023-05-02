@@ -45,7 +45,7 @@ gdlxml_ns(Node *np, void *user)
 #endif
 
 static void
-gdlxml_attr(Node *np, void *user)
+gdlxml_xml_props(Node *np, void *user)
 {
   Prop *p = np->props;
   while (p)
@@ -74,7 +74,7 @@ gdl_xml_o(Node *np, void *user)
   fprintf(xhp->fp, "<%s", np->name);
   if (!np->rent)
     tree_ns_xml_print(np->tree, xhp->fp);
-  gdlxml_attr(np, user);
+  gdlxml_xml_props(np, user);
   fputc('>', xhp->fp);
   if (np->text)
     fprintf(xhp->fp, "<text>%s</text>", xmlify((uccp)np->text));
@@ -110,7 +110,7 @@ gdl_xml_rnv_o(Node *np, void *user)
   rp->tag = gdl_xml_tag(np->name);
   if (!np->rent)
     rp->ns = 1;
-  rp->attr = gdlxml_rnv_attr(np, user);
+  rp->ratts = gdlxml_rnv_attr(np, user);
   if (np->text)
     rp->chardata = np->text
 }
@@ -119,7 +119,5 @@ static void
 gdl_xml_rnv_c(Node *np, void *user)
 {
   struct rnvdata *rp = user;
-  rp->tag = pop(gdl_xml_tags);
-  rp->has_content = XXX;
+  rp->tag = gdl_xml_tag(np->name);
 }
-

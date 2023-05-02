@@ -1,0 +1,6 @@
+Note that *.c and *.h are derived files which are require both java,
+trang, and a perl script to create.  For this reason they are also
+stored in the repo so that installations do not need to rebuild them.
+The sources for the built files are the *.rnc files in this directory
+and these rarely change.  At some point they will be formally fixed
+and it will no longer be necessary to derive *.c and *.h.

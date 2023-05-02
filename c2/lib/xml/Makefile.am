@@ -4,7 +4,8 @@ SUBDIRS=expat rnv
 
 AM_CPPFLAGS=\
 	-I../include \
-	-I../std
+	-I../std \
+	-I../sys
 
 noinst_LTLIBRARIES=libxml.la
 

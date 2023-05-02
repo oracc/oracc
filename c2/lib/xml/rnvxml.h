@@ -8,8 +8,7 @@
 struct rnvdata {
   const char *tag;
   const char *chardata;
-  struct rnvval_atts atts;
-  int has_children;
+  struct rnvval_atts ratts;
   int ns;
 };
 
