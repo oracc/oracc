@@ -10,6 +10,7 @@ struct rnvdata {
   const char *chardata;
   struct rnvval_atts atts;
   int has_children;
+  int ns;
 };
 
 extern void rnvxml_init_err(void);

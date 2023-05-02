@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <oraccsys.h>
 #include "rnvif.h"
 #include "xmlify.h"
 #include "hash.h"
@@ -26,27 +27,38 @@ static Hash *rnv_qanames = NULL;
 
 static Pool *rnv_pool;
 
+static char *
+rncfile_path(const char *r)
+{
+  char *p = malloc(strlen(oracc_builds())+strlen("/lib/rnc/")+strlen(r)+5);
+  sprintf(p, "%s/lib/rnc/%s.rnc", oracc_builds(), r);
+  return p;
+}
+
 void
 rnvval_init_err(void (*eh)(int erno,va_list ap))
 {
   rnl_set_verror_handler(eh);
   rnv_set_verror_handler(eh);
 }
+
 void
 rnvval_init(struct xnn_data *xdp, char *rncfile)
 {
   int i;
-
-  if (!access(rncfile, R_OK)) /*!xaccess(rncfile, R_OK, 0)*/
+  char *p = rncfile_path(rncfile);
+  
+  if (!access(p, R_OK)) /*!xaccess(rncfile, R_OK, 0)*/
     {
       if (verbose)
-	fprintf(stderr, "rnvval_init: using rnc schema %s\n", rncfile);
-      rnc_start = rnl_fn(rncfile);
+	fprintf(stderr, "rnvval_init: using rnc schema %s\n", p);
+      rnc_start = rnl_fn(p);
       status = !rnc_start;
     }
   else
     {
-      fprintf(stderr, "rnvval_fn: no such schema %s\n", rncfile);
+      fprintf(stderr, "rnvval_fn: no such schema %s\n", p);
+      return;
     }
 
   rnv_qnames = hash_create(1024);

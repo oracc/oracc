@@ -15,6 +15,14 @@ gdlxml_setup(void)
   nodeh_register(treexml_c_handlers, NS_GDL, gdl_xml_c);
 }
 
+void
+gdlxml_rnv_setup(void)
+{
+  nodeh_register(treexml_o_handlers, NS_GDL, gdl_xml_rnv_o);
+  nodeh_register(treexml_p_handlers, NS_GDL, NULL);
+  nodeh_register(treexml_c_handlers, NS_GDL, gdl_xml_rnv_c);
+}
+
 static void
 gdlxml_keqv(const char *k, const char *v, void *user)
 {
@@ -95,29 +103,23 @@ gdl_xml_c(Node *np, void *user)
   fprintf(xhp->fp, "</%s>", np->name);
 }
 
-#if 0
-void
-gdl_xml_handler(Node *np, void *xhp)
+static void
+gdl_xml_rnv_o(Node *np, void *user)
 {
-  node_iterator(np->data, xhp, gdl_xml_o, gdl_xml_c);
-}
-#endif
-
-#if 0
-void
-gdl_xml_node(FILE *fp, Node *np)
-{
-  Xmlhelper *xhp = xmlh_init(fp ? fp : stdout);
-  node_iterator(np, xhp, gdlxml_node, gdlxml_post);
-  free(xhp);
+  struct rnvdata *rp = user;
+  rp->tag = gdl_xml_tag(np->name);
+  if (!np->rent)
+    rp->ns = 1;
+  rp->attr = gdlxml_rnv_attr(np, user);
+  if (np->text)
+    rp->chardata = np->text
 }
 
-void
-gdl_xml_tree(FILE *fp, Tree *tp)
+static void
+gdl_xml_rnv_c(Node *np, void *user)
 {
-  Xmlhelper *xhp = xmlh_init(fp ? fp : stdout);
-  tree_iterator(tp, xhp, gdlxml_node, gdlxml_post);
-  free(xhp);
+  struct rnvdata *rp = user;
+  rp->tag = pop(gdl_xml_tags);
+  rp->has_content = XXX;
 }
 
-#endif

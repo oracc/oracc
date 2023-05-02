@@ -23,7 +23,9 @@ extern int gdl_flex_debug, gdldebug, gdl_orig_mode;
 int check_mode = 0;
 const char *fname = NULL;
 int identity_mode = 0;
+int ns_output = 0;
 int trace_mode = 0;
+int validate = 0;
 int wrapper = 0;
 
 FILE *fp;
@@ -70,7 +72,12 @@ do_one(char *s)
   if (identity_mode)
     test_identity(s, tp);
   else if (!check_mode)
-    tree_xml(stdout, tp);
+    {
+      if (ns_output)
+	tree_xml_rnv(stdout, xnn_gdl_data, "gdl");
+      else
+	tree_xml(stdout, tp);
+    }
   gdlparse_reset();
   tree_term(tp);
 }
@@ -107,7 +114,7 @@ main(int argc, char **argv)
 {
   gdl_flex_debug = gdldebug = 0;
   
-  options(argc, argv, "cf:iotw");
+  options(argc, argv, "cf:iontvw");
 
   gdl_flex_debug = gdldebug = trace_mode;
   
@@ -144,11 +151,17 @@ opts(int opt, char *arg)
     case 'i':
       identity_mode = 1;
       break;
+    case 'n':
+      ns_output = 1;
+      break;
     case 'o':
       gdl_orig_mode = 1;
       break;
     case 't':
       trace_mode = 1;
+      break;
+    case 'v':
+      validate = 1;
       break;
     case 'w':
       wrapper = 1;

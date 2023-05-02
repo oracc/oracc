@@ -8,12 +8,14 @@ static struct rnvdata rnvd;
 
 static void
 tree_xml_rnv_node(Node *np, void *user)
-{
+{  
   Xmlhelper *xhp = user;
   if (treexml_o_handlers[np->ns])
     {
       (treexml_o_handlers[np->ns])(np, &rnvd);
-      
+      /* print open tag */
+      if (rnvd.ns)
+	tree_ns_xml_print(np->tree, xhp->fp);
     }
 }
 
@@ -24,6 +26,10 @@ tree_xml_rnv_post(Node *np, void *user)
   if (treexml_c_handlers[np->ns])
     {
       (treexml_c_handlers[np->ns])(np, &rnvd);
+      if (rnvd.has_content)
+	/* print close tag */
+      else
+	/* print short form */
     }
 }
 
