@@ -1,7 +1,7 @@
 default namespace = "http://oracc.org/ns/xtf/1.0"
 namespace note = "http://oracc.org/ns/note/1.0"
 include "gdl-lib.rnc"
-include "xtr.rnc"
+include "xtr-lib.rnc"
 start = xtf | doctype
 xtf = element xtf { proto.outer? , doctype }
 doctype = score | translation | transliteration | composite | atf

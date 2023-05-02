@@ -55,6 +55,7 @@ while (<IN>) {
 	process_attr($1);
     } elsif (/^element=(.*)$/) {
 	process_elem($1);
+    } elsif (/datatypeLibrary/) {
     } else {
 	warn("$0: unprocessed line: $_\n");
     }
