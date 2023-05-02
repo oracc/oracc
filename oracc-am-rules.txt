@@ -29,7 +29,7 @@ install-exec-local:
 	$(top_srcdir)/oracc-pm.sh $(DESTDIR)$(prefix) $(top_srcdir)
 	$(top_srcdir)/maybe-install-cgi-bin.sh
 
-SUFFIXES=.g .c .o .xnn .rnc
+SUFFIXES=.g .c .o .xnn .rnc .rng
 
 # .lst .g .c .o
 

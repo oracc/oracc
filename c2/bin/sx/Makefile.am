@@ -18,7 +18,7 @@ AM_CPPFLAGS=\
 	-I../../lib/sys \
 	-I../../lib/xml 
 
-sx_SOURCES=sx.c
+sx_SOURCES=sx.c sl.c
 
 sx_LDADD = $(xLDADD)
 

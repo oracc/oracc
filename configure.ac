@@ -241,6 +241,7 @@ AC_CONFIG_FILES([Makefile
 	doc/ns/xtf/1.0/Makefile
 	doc/ns/xse/1.0/Makefile
 	c2/Makefile
+	c2/ns/Makefile
 	c2/lib/Makefile
 	c2/lib/sys/Makefile
 	c2/lib/std/Makefile
