@@ -301,7 +301,7 @@ sll_try_h(const char *oid, unsigned const char *g)
 	      p2 = malloc(strlen((char*)p) + 1);
 	      strcpy((char*)p2,(char*)p);
 	    }
-	  if ((p_slash = (ucp)strchr((ccp)p,'/')))
+	  if ((p_slash = (ucp)strchr((ccp)p2,'/')))
 	    {
 	      p = free1 = sll_v_from_h((uccp)b, (uccp)p_slash+1);
 	      if (!p)

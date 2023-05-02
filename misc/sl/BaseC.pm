@@ -33,6 +33,8 @@ my $sl_pid = 0;
 my %reported = ();
 my $silent = 0;
 
+my $tlitsplit_orig = '';
+
 sub
 check {
     tlit_sig(@_);
@@ -347,15 +349,19 @@ protect1 {
 sub
 protect2 {
     my $tmp = shift;
-    $tmp =~ tr/()+/\000\001\003/;
+    $tmp =~ tr/()+/\000\001\002/;
     $tmp;
 }
 
+##
 ## WARNING: HACKERY -- we quietly make |A+BA| the same as |A.BA| with this tr///
+##
+## Update: testing without the hack ...
+##
 sub
 protect3 {
     my $tmp = shift;
-    $tmp =~ tr/.+/\003\003/;
+    $tmp =~ tr/.+/\003\002/;
     "|".$tmp."|";
 }
 
@@ -383,7 +389,7 @@ sub deepsplit {
 		my $q = $d;
 		$q =~ tr/\000\001\002\003/()+./;
 #		warn "BaseC q-checking $q\n";
-		qualcheck($q);
+##		qualcheck($q); ## disabled because gvl even in ox handles this and ngvl will handle it better again
 	    }
 	    $d =~ s/^[a-zšŋṣṭḫ].*?\((.*?)\)$/$1/;
 	}
@@ -424,6 +430,7 @@ tlitsplit {
     $tlit = remove_lang($tlit);
     
     my $orig = $tlit;
+    $tlitsplit_orig = $tlit;
 
 #    my $c10ed = c10e_tlit($tlit);
 #

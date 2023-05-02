@@ -73,6 +73,7 @@ gvl_s(Node *ynp)
 	{
 	  gp->c10e = gp->sign = l; /* we should really set gp->sign to, say, #q and store l in a prop */
 	  gp->mess = gvl_vmess("pseudo-signname %s must be qualified by one of %s",gp->orig,l);
+	  gp->oid = ""; /* use empty string to mean value is known but not resolved yet */
 	}
       else
 	{
@@ -100,7 +101,10 @@ gvl_s(Node *ynp)
     {
       const unsigned char *gq = gvl_lookup(sll_tmp_key(gp->orig,"q"));
       if (gq)
-	gp->mess = gvl_vmess("value %s must be qualified with one of %s", gp->orig, gq);
+	{
+	  gp->mess = gvl_vmess("value %s must be qualified with one of %s", gp->orig, gq);
+	  gp->oid = ""; /* use empty string to mean value is known but not resolved yet */
+	}
       else if (*gp->orig == '*' && !gp->orig[1])
 	{
 	  gp->type = "p";

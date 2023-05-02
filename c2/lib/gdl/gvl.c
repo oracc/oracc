@@ -225,12 +225,17 @@ gvl_compound(Node *ynp)
 	  gvl_c(cp);
 	  
 	  hash_add(curr_sl->h, cp->orig, cp);
+#if 0
+	  /*UPDATE: it's always an error to hash c10e in this way
+	    because after finding |MUL.BAR| input |3×AN.BAR| gets
+	    treated as |MUL.BAR| */
 	  /* In gdl_orig_mode it's an error to make the c10e version
 	     map to the orig version; if |GIŠ₃&GIŠ₃| comes before
 	     |UŠ&UŠ| then |UŠ&UŠ| wrongly maps to |GIŠ₃&GIŠ₃|.
 	   */
 	  if (!gdl_orig_mode && strcmp((ccp)cp->orig, (ccp)cp->c10e))
 	    hash_add(curr_sl->h, cp->c10e, cp);
+#endif
 	}
       ynp->user = cp;
       if (gdl_orig_mode)

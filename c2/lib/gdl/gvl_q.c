@@ -4,6 +4,7 @@
 #include "sll.h"
 #include "gdl.h"
 #include "gvl.h"
+#include "unidef.h"
 
 extern const char *currgdlfile;
 extern int gdllineno;
@@ -21,7 +22,7 @@ gvl_q(Node *ynp)
   if (gdl_corrq)
     {
       ynp->name = "g:corr";
-      /* the child nodes should have been processed already, so we
+      /* the child nodes have been processed already, so we
 	 just don't build a gvl_g node for a corr */
       return;
     }
@@ -127,7 +128,7 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
     {
       if (vp->mess && !strstr((ccp)vp->mess, "must be qualified"))
 	v_bad = 1;
-      else if (!vp->oid)
+      else if (!vp->oid && !strstr((ccp)vp->orig, U_s_x_u8str))
 	v_bad = 1;
     }
   else
@@ -207,7 +208,7 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
       else if ('s' == *vp->type || 'c' == *vp->type)
 	{
 	  /* This is a qualified uppercase value like TA@g(LAK654a) */
-	  if (strcmp(vp->oid, qp->oid))
+	  if (vp->oid && qp->oid && strcmp(vp->oid, qp->oid))
 	    {
 	      unsigned const char *parents = gvl_lookup(sll_tmp_key((uccp)qp->oid,"parents"));
 	      if (parents)
@@ -223,6 +224,19 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 	      else
 		vq->mess = gvl_vmess("[vq] %s(%s): value and qualifier are different signs (%s vs %s)%s",
 				     vp->orig, qp->orig, vp->sign, qp->sign, QFIX);
+	    }
+	  else
+	    {
+	      if (qp->oid)
+		{
+		  vq->oid = qp->oid;
+		  vq->sign = qp->sign;
+		}
+	      else
+		{
+		  vq->mess = gvl_vmess("[vq] %s(%s): failed to set OID on qualified sign%s",
+				       vp->orig, qp->orig, QFIX);
+		}
 	    }
 	}
       else

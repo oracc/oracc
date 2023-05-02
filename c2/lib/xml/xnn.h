@@ -1,5 +1,5 @@
-#ifndef _XNN_H
-#define _XNN_H
+#ifndef XNN_H_
+#define XNN_H_
 
 struct xnn_xname
 {
@@ -25,4 +25,4 @@ struct xnn_data {
   struct xnn_nstab *nstab;
 };
 
-#endif/*_XNN_H*/
+#endif/*XNN_H_*/

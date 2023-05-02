@@ -3020,6 +3020,14 @@ signify(const unsigned char *utf)
 
   if (!utf)
     return NULL;
+
+#ifdef GVL_MODE
+  {
+    gvl_g *gp = gvl_validate(utf);
+    if (gp)
+      return gp->sign;
+  }
+#endif
   
   if (psl_is_value(utf))
     return psl_get_sname(utf);

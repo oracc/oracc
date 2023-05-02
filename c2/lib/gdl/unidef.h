@@ -70,4 +70,7 @@
 #define U_urhsq 0x2e23
 #define U_llhsq 0x2e24
 #define U_lrhsq 0x2e25
+
+#define U_s_x_u8str "\xE2\x82\x93"
+
 #endif/*UNIDEF_H_*/

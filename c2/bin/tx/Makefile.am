@@ -8,7 +8,6 @@ xLDADD=\
 	../../lib/std/libstd.la \
 	../../lib/sys/libsys.la \
 	../../lib/xml/libxml.la \
-	../../lib/gdl/libgdl.la \
 	../../lib/xml/rnv/librnv.la \
 	../../ns/libns.la
 

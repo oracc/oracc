@@ -12,11 +12,13 @@ my $check = 0;
 my $gdlme_output = 0;
 my $project = 'ogsl';
 my $proof = '';
+my $stdout = 0;
 
 GetOptions(
     c=>\$check,
     g=>\$gdlme_output,
     "p:s"=>\$project,
+    s=>\$stdout, 
     );
 
 # NO: use -p arg now
@@ -62,7 +64,7 @@ my %sign_ids = (); sign_ids();
 
 open(SL,$asl) || die "sl-xml.plx: can't read signlist `$asl'\n";
 
-unless ($check) {
+unless ($check || $stdout) {
     my $xl = $asl;
     $xl =~ s#00lib#02xml# || $xl =~ s#01bld/csl.d#02xml#;
     $xl =~ s/\.a?sl$/-sl.xml/;
@@ -209,58 +211,62 @@ while (<SL>) {
 	    }
 	    pi_line() unless $check;
 	    print "<list n=\"$xn\"$name/>" unless $check;
-	} elsif (/^\@form\s+(\S+)\s+(\S+)(?:\s+\S+\s+(\S+))?$/) {
-	    if ($in_form) {
-		warn "$asl:$.: missing `\@end form'\n";
-		$in_form = 0;
-	    } else {
-		my ($n,$v,$u) = ($2,$1,$3);
-		my $formname = $curr_form = $n;
-		#$actual_forms{$formname} = $.;
-
-		%fvb = ();
-		
-		v_sign($formname);
-		
-		if (${$v{'#forms'}}{$curr_form}) {
-		    warn "$asl:$.: duplicate form $curr_form\n";
+	} elsif (/^\@form/) {
+	    if (/^\@form\s+(\S+)\s+(\S+)(?:\s+\S+\s+(\S+))?$/) {
+		if ($in_form) {
+		    warn "$asl:$.: missing `\@end form'\n";
+		    $in_form = 0;
 		} else {
-		    ++${$v{'#forms'}}{$curr_form};
-		}
-		$n = xmlify($n);
-		$v = xmlify($v);
-		my $uattr = "";
-		$uattr = " utf8=\"$u\"" if $u;
-		my $ref = '';
-		# if the form is also a sign, make ref point to the sign, otherwise use xml:id here
-		## if ($sign_ids{'sl',$formname}) {
-		if ($at_signs{$formname}) {
-		    $ref = sprintf(" ref=\"%s\"", $sign_ids{'sl',$formname});
-		} else {
-		    $ref = sprintf(" xml:id=\"%s\"", $sign_ids{'sl',$formname});
-		    ++$at_signs{$formname}; # prevent duplicate xml:id
-		}
-		pi_line() unless $check;
-		my $vv = $v; $vv =~ s/^~//;
-		if ($slv_form_vars{$vv}++) {
-		    warn "$asl:$.: duplicate var code $vv\n";
-		    continue;
-		}
-		print "<form n=\"$n\" var=\"$v\" varid=\"$sid.$vv\"$uattr$ref><name g:me=\"1\">$n</name>" unless $check;
-		$in_form = 1;
-		if ($sortcodes{$n}) {
-		    print "<sort" unless $check;
-		    foreach my $c (@{$sortcodes{$n}}) {
-			$c =~ s/^(.*?)=(.*?)$/ $1="$2"/;
-			$c =~ s/\"\"/\"/g;
-			print $c unless $check;
+		    my ($n,$v,$u) = ($2,$1,$3);
+		    my $formname = $curr_form = $n;
+		    #$actual_forms{$formname} = $.;
+		    
+		    %fvb = ();
+		    
+		    v_sign($formname);
+		    
+		    if (${$v{'#forms'}}{$curr_form}) {
+			warn "$asl:$.: duplicate form $curr_form\n";
+		    } else {
+			++${$v{'#forms'}}{$curr_form};
 		    }
-		    print '/>' unless $check;
+		    $n = xmlify($n);
+		    $v = xmlify($v);
+		    my $uattr = "";
+		    $uattr = " utf8=\"$u\"" if $u;
+		    my $ref = '';
+		    # if the form is also a sign, make ref point to the sign, otherwise use xml:id here
+		    ## if ($sign_ids{'sl',$formname}) {
+		    if ($at_signs{$formname}) {
+			$ref = sprintf(" ref=\"%s\"", $sign_ids{'sl',$formname});
+		    } else {
+			$ref = sprintf(" xml:id=\"%s\"", $sign_ids{'sl',$formname});
+			++$at_signs{$formname}; # prevent duplicate xml:id
+		    }
+		    pi_line() unless $check;
+		    my $vv = $v; $vv =~ s/^~//;
+		    if ($slv_form_vars{$vv}++) {
+			warn "$asl:$.: duplicate var code $vv\n";
+			continue;
+		    }
+		    print "<form n=\"$n\" var=\"$v\" varid=\"$sid.$vv\"$uattr$ref><name g:me=\"1\">$n</name>" unless $check;
+		    $in_form = 1;
+		    if ($sortcodes{$n}) {
+			print "<sort" unless $check;
+			foreach my $c (@{$sortcodes{$n}}) {
+			    $c =~ s/^(.*?)=(.*?)$/ $1="$2"/;
+			    $c =~ s/\"\"/\"/g;
+			    print $c unless $check;
+			}
+			print '/>' unless $check;
+		    }
+		    unless ($check) {
+			print "<proof>$proof</proof>" if $proof;
+		    }
+		    $proof = '';
 		}
-		unless ($check) {
-		    print "<proof>$proof</proof>" if $proof;
-		}
-		$proof = '';
+	    } else {
+		warn "$asl:$.: bad \@form\n";
 	    }
 	} elsif (s/^\@v(\??)(-?)[\t\s]+//) {
 	    form_check();
@@ -460,8 +466,8 @@ close(SL);
 
 unless ($check) {
     print '</signlist>';
-    close(XL);
-    unless ($gdlme_output) {
+    close(XL) unless $stdout;
+    unless ($gdlme_output || $stdout) {
 	if ($project eq 'ogsl') {
 	    system 'rm', '-f', '02xml/ogsl.xml';
 	    system 'ln', '-sf', "$ENV{'ORACC_BUILDS'}/ogsl/02xml/ogsl-sl.xml", '02xml/ogsl.xml';
@@ -594,7 +600,9 @@ form_check {
 
 sub
 form_inherited_values {
-    my @iv = grep !/ₓ$/, keys %{$v{'#signv'}};
+    # x-values need to be inherited as well; this is separate from the fact that they must be qualified
+    #    my @iv = grep !/ₓ$/, keys %{$v{'#signv'}};
+    my @iv = keys %{$v{'#signv'}};
     my @ivok = ();
     foreach my $iv (@iv) {
 	my $ivb = $iv; $ivb =~ s/[₀-₉ₓ⁻⁺]+$//;
