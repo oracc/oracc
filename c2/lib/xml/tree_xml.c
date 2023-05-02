@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <tree.h>
 #include "xml.h"
-#include "rnvxml.h"
 
 struct ns_key_val {
   const char *prefix; const char *url;
@@ -16,10 +15,6 @@ struct ns_key_val {
   { NULL , NULL } 
 };
 
-/* For validating vs non-validating XML output register distinct
-   routines in these handler arrays which are all used by
-   tree_xml_node and tree_xml_post via a tree_xml call to
-   tree_iterator */
 nodehandlers treexml_o_handlers;
 nodehandlers treexml_p_handlers;
 nodehandlers treexml_c_handlers;
@@ -91,11 +86,3 @@ tree_xml(FILE *fp, Tree *tp)
   free(xhp);
 }
 
-void
-tree_xml_rnv(FILE *fp, Tree *tp, struct xnn_data *xdp, const char *rncbase)
-{
-  Xmlhelper *xhp = xmlh_init(fp ? fp : stdout);
-  rnvxml_init(tp, xdp, rncbase);
-  tree_iterator(tp, xhp, tree_xml_node, tree_xml_post);
-  free(xhp);
-}

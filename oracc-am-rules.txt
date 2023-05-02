@@ -8,6 +8,7 @@ cgidatadir    = $(prefix)/www/cgi-bin
 charmapdir    = $(prefix)/lib/charmap
 configdir     = $(prefix)/lib/config
 cssdir        = $(prefix)/www/css
+rncdatadir        = $(prefix)/lib/rnc
 datadir       = $(prefix)/lib/data
 emacsdatadir  = $(prefix)/lib/emacs
 espdatadir    = $(prefix)/lib/esp

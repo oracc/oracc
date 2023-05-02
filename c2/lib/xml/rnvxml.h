@@ -5,6 +5,13 @@
 #include "xnn.h"
 #include "rnvval.h"
 
+struct rnvdata {
+  const char *tag;
+  const char *chardata;
+  struct rnvval_atts atts;
+  int has_children;
+};
+
 extern void rnvxml_init_err(void);
 extern void rnvxml_init(Tree *tp, struct xnn_data *xdp, const char *rncbase);
 extern void rnvxml_term(Tree *tp);
