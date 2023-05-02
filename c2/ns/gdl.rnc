@@ -1,3 +1,6 @@
-include "grapheme.rnc"
-include "graphmeta.rnc"
-include "words.rnc"
+namespace g = "http://oracc.org/ns/gdl/1.0"
+start = gx
+include "gdl-lib.rnc"
+gx = element g:gdl { grapheme+ }
+noteref = empty
+noteauto = empty

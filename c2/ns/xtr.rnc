@@ -1,0 +1,150 @@
+namespace xtr = "http://oracc.org/ns/xtr/1.0"
+namespace xh  = "http://www.w3.org/1999/xhtml"
+
+translation =
+  element xtr:translation {
+    id,
+    attribute ref      { xsd:NMTOKEN },
+    attribute n        { text },
+    attribute project  { text },
+    attribute xml:lang { xsd:NMTOKEN },
+    attribute dir      { xsd:NMTOKEN }?,
+    attribute xtr:code { xsd:NMTOKEN },
+    attribute xtr:type { 
+      "interlinear" | "parallel" | "labeled" | "unitary" 
+    },
+    attribute xtr:cols { xsd:nonNegativeInteger }?,
+    (trans-unit | trans-note | trans-dollar | trans-comment | h)*,
+    map?
+  }
+
+id  = attribute xml:id { xsd:ID }
+cid = attribute xtr:cid { xsd:IDREF }
+ctr = attribute class { "tr" }
+
+trans-comment =
+  element xh:p {
+    attribute class { "tr-comment" },
+    htext*
+  }
+
+trans-dollar =
+  element xh:p {
+    attribute class { "dollar" },
+    silent?,
+    (standalone
+     | (ref | refs | (unit,refs?))),
+    new-labels? ,
+    htext* ,
+    innerp*
+  }
+
+trans-note = 
+  element xh:div {
+    attribute class { "note" },
+    id,
+    noteauto?,
+    element xh:p { ctr , xtr-notemark , htext } ,
+    (element xh:p { ctr , htext } 
+     | trans-comment)*
+  }
+
+trans-unit = 
+  element xh:p {
+    id,
+    cid?,
+    ctr,
+    xtr-label, se-label,
+    (ref | refs | (unit,refs?)),
+    new-labels? ,
+    overlap? ,
+    spanall? ,
+    (innerp+ | htext)
+  }
+
+h = h1 | h2 | h3
+h1 = element xh:h1 { h-model }
+h2 = element xh:h2 { h-model }
+h3 = element xh:h3 { h-model }
+
+h-model = (id? , ctr , ( ref | hdr-ref)? , new-labels? , htext)
+
+innerp = element xh:innerp { htext | (comment, text) }
+htext = (text | trword | trcell | foreign | literal | xtr-notelink 
+         | supplied | uncertain | rspan | bspan | ispan | sign
+	 | bispan | smaller | sc | gdlspan | sup | lab | cun 
+	 | xtr-notelink | xtr-notemark)*
+
+trword    = element xh:span { attribute class      { "w" },  
+			      attribute xtr:lem    { text }?,
+			      attribute xtr:disamb { text }?,
+			      attribute xtr:form   { text }?,
+			      id,
+			      (text | rspan | bspan | ispan | bispan | smaller | sc | sup | lab)* }
+
+trcell	  = element xh:span { attribute class { "cell" }, attribute dir { "rtl" }?,
+			      attribute xtr:span { xsd:nonNegativeInteger }?,
+			      htext }
+comment   = attribute class { "tr-comment" }
+foreign   = element xh:span { attribute class { "foreign" },  htext }
+literal   = element xh:span { attribute class { "literal" },  htext }
+supplied  = element xh:span { attribute class { "supplied" }, htext }
+uncertain = element xh:span { attribute class { "uncertain" },htext }
+rspan     = element xh:span { attribute class { "r" },        htext }
+bspan     = element xh:span { attribute class { "b" },        htext }
+ispan     = element xh:span { attribute class { "i" },        htext }
+bispan    = element xh:span { attribute class { "bi" },       htext }
+gdlspan   = element xh:span { attribute class { "gdl" },      l.inner }
+lab       = element xh:span { attribute class { "lab" },      htext }
+sc        = element xh:span { attribute class { "sc" },       htext }
+sign      = element xh:span { attribute class { "sign" },     htext }
+smaller   = element xh:span { attribute class { "smaller" },  htext }
+sup       = element xh:span { attribute class { "sup" | "up" },      htext }
+cun       = element xh:span { attribute class { "cun" },      htext }
+
+xtr-notelink = 
+  element xh:span {
+    attribute class { "notelink" },
+    noteref,
+    noteauto?,
+    text
+  }
+
+xtr-notemark = 
+  element xh:span {
+    attribute class { "notemark" },
+    text
+  }
+
+ref       = attribute xtr:ref     { xsd:IDREF }
+hdr-ref   = attribute xtr:hdr-ref { xsd:IDREF }
+refs      = start-ref , end-ref , all-refs? , new-labels? , rows
+start-ref = attribute xtr:sref    { xsd:IDREF  }
+end-ref   = attribute xtr:eref    { xsd:IDREF  }
+all-refs  = attribute xtr:refs    { xsd:IDREFS }
+uref      = attribute xtr:uref    { xsd:IDREF  }
+nrefs     = attribute xtr:nrefs   { xsd:IDREFS }
+rows 	  = attribute xtr:rows    { xsd:integer }
+overlap   = attribute xtr:overlap { xsd:boolean }
+silent    = attribute xtr:silent  { "1" }
+spanall   = attribute xtr:spanall { "1" }
+standalone= attribute xtr:standalone { "1" }
+xtr-label = (attribute xtr:label { text },
+             attribute xtr:rend-label { text }?)
+se-label = attribute xtr:se_label { text }
+unit  = attribute xtr:unit  { text }
+
+new-labels = 
+	(attribute xtr:lab-start-lnum  { text },
+	 attribute xtr:lab-end-lnum    { text } ?,
+	 attribute xtr:lab-start-label { text },
+	 attribute xtr:lab-end-label   { text } ?
+	)
+
+map =
+  element xtr:map {
+    element xtr:l2t {
+      attribute lid { xsd:IDREF },
+      attribute tid { xsd:IDREF }
+    }*
+  }

@@ -1,4 +1,0 @@
-namespace gx = "http://oracc.org/ns/gdl-example/1.0"
-start = gx
-include "gdl.rnc"
-gx = element gx:gdl { grapheme+ }
