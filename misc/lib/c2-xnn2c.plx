@@ -65,10 +65,10 @@ close(IN);
 @a = sort keys %a;
 @e = sort keys %e;
 
-open(H,">${prefix}.h");
+open(H,">ns-${prefix}.h");
 print H <<H;
-#ifndef ${PREFIX}_H_
-#define ${PREFIX}_H_
+#ifndef NS_${PREFIX}_H_
+#define NS_${PREFIX}_H_
 enum ${prefix}_a_type
 {
 H
@@ -103,8 +103,9 @@ extern struct xnn_attr ${prefix}_abases[];
 extern struct xnn_nstab ${prefix}_nstab[];
 extern struct xnn_xname ${prefix}_anames[];
 extern struct xnn_xname ${prefix}_enames[];
+extern struct xnn_data ${prefix}_data;
 
-#endif /*${PREFIX}H_*/
+#endif /*NS_${PREFIX}H_*/
 H
 close(H);
 
@@ -114,7 +115,7 @@ print C <<C;
 #define NULL (char *)0
 #endif
 #include "xnn.h"
-#include "${prefix}.h"
+#include "ns-${prefix}.h"
 struct xnn_nstab ${prefix}_nstab[] = {
 C
 if ($ns) {

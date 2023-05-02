@@ -8,3 +8,6 @@ libns_la_SOURCES=asl.c gdl.c xtf.c
 
 AM_CPPFLAGS=\
 	-I../lib/xml
+
+cleanch:
+	rm -f *.c *.h

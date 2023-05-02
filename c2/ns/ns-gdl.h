@@ -1,18 +1,23 @@
-#ifndef GDL_H_
-#define GDL_H_
+#ifndef NS_GDL_H_
+#define NS_GDL_H_
 enum gdl_a_type
 {
   gdl_n__,
   gdl_n_g,
   gdl_n_n,
+  gdl_n_sl,
   gdl_n_syn,
   gdl_n_xh,
   gdl_n_xml,
   gdl_n_xtr,
   gdl_a_base,
+  gdl_a_bau,
   gdl_a_class,
+  gdl_a_comment,
   gdl_a_contrefs,
+  gdl_a_deprecated,
   gdl_a_dir,
+  gdl_a_elles,
   gdl_a_form,
   gdl_a_fwhost,
   gdl_a_g_accented,
@@ -53,17 +58,35 @@ enum gdl_a_type
   gdl_a_guide,
   gdl_a_headform,
   gdl_a_headref,
+  gdl_a_hex,
+  gdl_a_hzl,
+  gdl_a_id,
+  gdl_a_kw,
+  gdl_a_kwu,
+  gdl_a_lak,
+  gdl_a_lang,
   gdl_a_lemma,
   gdl_a_lid,
   gdl_a_morph,
+  gdl_a_mzl,
   gdl_a_n,
   gdl_a_n_num,
+  gdl_a_name,
   gdl_a_norm,
+  gdl_a_o,
+  gdl_a_obzl,
+  gdl_a_ogsl,
+  gdl_a_p,
   gdl_a_pos,
   gdl_a_project,
+  gdl_a_qm,
+  gdl_a_qn,
+  gdl_a_rec,
   gdl_a_ref,
+  gdl_a_rsp,
   gdl_a_sense,
   gdl_a_sexified,
+  gdl_a_sllha,
   gdl_a_swc_final,
   gdl_a_syn_brk_after,
   gdl_a_syn_brk_before,
@@ -71,6 +94,10 @@ enum gdl_a_type
   gdl_a_syn_ub_before,
   gdl_a_tid,
   gdl_a_type,
+  gdl_a_uncertain,
+  gdl_a_utf8,
+  gdl_a_var,
+  gdl_a_varid,
   gdl_a_xml_id,
   gdl_a_xml_lang,
   gdl_a_xtr_cid,
@@ -101,6 +128,7 @@ enum gdl_a_type
   gdl_a_xtr_type,
   gdl_a_xtr_unit,
   gdl_a_xtr_uref,
+  gdl_a_zatu,
   gdl_a_enum_top
 };
 
@@ -133,6 +161,24 @@ enum gdl_e_type
   gdl_e_n_s,
   gdl_e_n_w,
   gdl_e_n_word_group,
+  gdl_e_sl_form,
+  gdl_e_sl_inherited,
+  gdl_e_sl_inote,
+  gdl_e_sl_iv,
+  gdl_e_sl_list,
+  gdl_e_sl_note,
+  gdl_e_sl_pname,
+  gdl_e_sl_proof,
+  gdl_e_sl_q,
+  gdl_e_sl_qs,
+  gdl_e_sl_sign,
+  gdl_e_sl_signlist,
+  gdl_e_sl_sort,
+  gdl_e_sl_uname,
+  gdl_e_sl_unote,
+  gdl_e_sl_uphase,
+  gdl_e_sl_utf8,
+  gdl_e_sl_v,
   gdl_e_xh_div,
   gdl_e_xh_h1,
   gdl_e_xh_h2,
@@ -150,5 +196,6 @@ extern struct xnn_attr gdl_abases[];
 extern struct xnn_nstab gdl_nstab[];
 extern struct xnn_xname gdl_anames[];
 extern struct xnn_xname gdl_enames[];
+extern struct xnn_data gdl_data;
 
-#endif /*GDLH_*/
+#endif /*NS_GDLH_*/

@@ -3,9 +3,11 @@
 #include <string.h>
 #include <oraccsys.h>
 #include <tree.h>
-
-#include "gdl.h"
-#include "gvl.h"
+#include <xml.h>
+#include <xnn.h>
+#include <ns-gdl.h>
+#include <gdl.h>
+#include <gvl.h>
 
 /* test harness for gvl/gdl libraries */
 
@@ -74,7 +76,7 @@ do_one(char *s)
   else if (!check_mode)
     {
       if (ns_output)
-	tree_xml_rnv(stdout, xnn_gdl_data, "gdl");
+	tree_xml_rnv(stdout, tp, &gdl_data, "gdl");
       else
 	tree_xml(stdout, tp);
     }

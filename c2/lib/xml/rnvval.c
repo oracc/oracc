@@ -72,7 +72,7 @@ rnvval_init(struct xnn_data *xdp, char *rncfile)
 }
 
 void
-rnvval_term()
+rnvval_term(void)
 {
   hash_free(rnv_qnames, NULL);
   rnv_qnames = NULL;

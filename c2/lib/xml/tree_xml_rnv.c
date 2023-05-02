@@ -5,6 +5,7 @@
 #include "rnvxml.h"
 
 static struct rnvdata rnvd;
+int xml_printing, xml_validating;
 
 static void
 tree_xml_rnv_node(Node *np, void *user)
@@ -13,21 +14,21 @@ tree_xml_rnv_node(Node *np, void *user)
   if (treexml_o_handlers[np->ns])
     {
       (treexml_o_handlers[np->ns])(np, &rnvd);
-      if (validating)
+      if (xml_validating)
 	{
 	  rnvval_ea(rnvd.tag , rnvd.ratts);
 	  if (rnvd.chardata)
 	    rnvval_ch(rnvd.chardata);
 	}
-      if (printing)
+      if (xml_printing)
 	{
-	  fprintf(xhp, "<%s", rnvd.tag);
+	  fprintf(xhp->fp, "<%s", rnvd.tag);
 	  if (rnvd.ns)
 	    tree_ns_xml_print(np->tree, xhp->fp);
 	  if (rnvd.ratts)
 	    xml_attr(rnvd.ratts->atts, xhp->fp);
 	  if (rnvd.chardata)
-	    fputs(rnvd.chardata, xhp);
+	    fputs(rnvd.chardata, xhp->fp);
 	}
     }
 }
@@ -39,10 +40,10 @@ tree_xml_rnv_post(Node *np, void *user)
   if (treexml_c_handlers[np->ns])
     {
       (treexml_c_handlers[np->ns])(np, &rnvd);
-      if (validating)
+      if (xml_validating)
 	rnvval_ee(rnvd.tag);
-      if (printing)
-	fprintf(xhp, "</%s>", rnvd.tag);
+      if (xml_printing)
+	fprintf(xhp->fp, "</%s>", rnvd.tag);
     }
 }
 

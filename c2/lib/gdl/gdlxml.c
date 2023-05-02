@@ -3,9 +3,12 @@
 #include "tree.h"
 #include "gdl.h"
 #include "xml.h"
+#include "rnvxml.h"
 
 static void gdl_xml_o(Node *np, void *user);
 static void gdl_xml_c(Node *np, void *user);
+static void gdl_xml_rnv_o(Node *np, void *user);
+static void gdl_xml_rnv_c(Node *np, void *user);
 
 void
 gdlxml_setup(void)
@@ -103,6 +106,18 @@ gdl_xml_c(Node *np, void *user)
   fprintf(xhp->fp, "</%s>", np->name);
 }
 
+static const char *
+gdl_xml_tag(const char *nodename)
+{
+  return nodename;
+}
+
+struct rnvval_atts *
+gdl_xml_ratts(Node *np, void *user)
+{
+  return NULL;
+}
+
 static void
 gdl_xml_rnv_o(Node *np, void *user)
 {
@@ -110,9 +125,9 @@ gdl_xml_rnv_o(Node *np, void *user)
   rp->tag = gdl_xml_tag(np->name);
   if (!np->rent)
     rp->ns = 1;
-  rp->ratts = gdlxml_rnv_attr(np, user);
+  rp->ratts = gdl_xml_ratts(np, user);
   if (np->text)
-    rp->chardata = np->text
+    rp->chardata = np->text;
 }
 
 static void

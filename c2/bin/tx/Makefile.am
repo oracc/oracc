@@ -8,7 +8,9 @@ xLDADD=\
 	../../lib/std/libstd.la \
 	../../lib/sys/libsys.la \
 	../../lib/xml/libxml.la \
-	../../lib/xml/rnv/librnv.la
+	../../lib/gdl/libgdl.la \
+	../../lib/xml/rnv/librnv.la \
+	../../ns/libns.la
 
 AM_CPPFLAGS=\
 	-I../../lib/include \
@@ -16,7 +18,8 @@ AM_CPPFLAGS=\
 	-I../../lib/std \
 	-I../../lib/sys \
 	-I../../lib/xml \
-	-I../../lib/cat
+	-I../../lib/cat \
+	-I../../ns
 
 catx_SOURCES=catx.c
 
