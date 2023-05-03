@@ -16,7 +16,7 @@ else
     in=$2
 fi
 
-xetex=`which xetex`
+xetex=`locate xetex | grep xetex$ | grep /bin/`
 if [ "$xetex" == "" ]; then
     echo "$0: xetex not yet installed"
     TeXLive=missing-texlive
