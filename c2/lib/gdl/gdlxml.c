@@ -118,16 +118,46 @@ gdl_xml_ratts(Node *np, void *user)
   return NULL;
 }
 
+static unsigned const char *
+gdl_xml_ch_orig(Node *np)
+{
+  if (np->name[2] == 's' || np->name[2] == 'v')
+    {
+      if (np->user)
+	return ((gvl_g*)(np->user))->orig;
+      else
+	return (uccp)np->text;
+    }
+  return NULL;
+}
+
+static unsigned const char *
+gdl_xml_ch_c10e(Node *np)
+{
+  if (np->name[2] == 's' || np->name[2] == 'v')
+    {
+      if (np->user)
+	return ((gvl_g*)(np->user))->c10e;
+      else
+	return (uccp)np->text;
+    }
+  return NULL;
+}
+
 static void
 gdl_xml_rnv_o(Node *np, void *user)
 {
   struct rnvdata *rp = user;
   rp->tag = gdl_xml_tag(np->name);
+  if (gdl_orig_mode)
+    rp->chardata = gdl_xml_ch_orig(np);
+  else
+    rp->chardata = gdl_xml_ch_c10e(np);
+    
   if (!np->rent)
     rp->ns = 1;
+
   rp->ratts = gdl_xml_ratts(np, user);
-  if (np->text)
-    rp->chardata = np->text;
 }
 
 static void
