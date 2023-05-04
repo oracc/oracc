@@ -269,8 +269,10 @@ span.cm { }
 span.qt { border-bottom: 1px dotted #000; }
 span.zz { }
 
-span.transprint { background-color: black; color: white; padding-left: 5px; padding-right: 5px; }
-span.transprint a { color: white; }
+.transprint { background-color: black; color: white; padding-left: 5px; padding-right: 5px; }
+.transprint a { background-color: black; color: white; }
+.transprint a:link[href] { background-color: black; color: white; }
+.transprint a:visited { background-color: black; color: white; }
 
 /* .obf p.icount { margin: 0px; text-align: left;} */
 

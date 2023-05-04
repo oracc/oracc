@@ -24,6 +24,7 @@ extern int gdl_flex_debug, gdldebug, gdl_orig_mode;
 
 int check_mode = 0;
 const char *fname = NULL;
+int gdl_c10e_mode = 1;
 int identity_mode = 0;
 int ns_output = 0;
 int trace_mode = 0;
@@ -161,6 +162,9 @@ opts(int opt, char *arg)
       break;
     case 't':
       trace_mode = 1;
+      break;
+    case 'u': /* uptranslate to canonicalized version */
+      gdl_c10e_mode = 1;
       break;
     case 'v':
       validate = 1;
