@@ -1,3 +1,5 @@
+SUBDIRS=j2x
+
 include ../../../oracc-am-rules.txt
 
 bin_PROGRAMS=concord

@@ -249,6 +249,7 @@ AC_CONFIG_FILES([Makefile
 	c2/lib/asl/Makefile
 	c2/lib/atf/Makefile
 	c2/lib/gdl/Makefile
+	c2/lib/jsn/Makefile
 	c2/lib/xml/Makefile
 	c2/lib/xml/expat/Makefile
 	c2/lib/xml/rnv/Makefile
@@ -257,5 +258,6 @@ AC_CONFIG_FILES([Makefile
 	c2/bin/sx/Makefile
 	c2/bin/tx/Makefile
 	c2/bin/xx/Makefile
+	c2/bin/xx/j2x/Makefile
 ])
 AC_OUTPUT

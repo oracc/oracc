@@ -1,0 +1,405 @@
+{
+  "_id": "K.6573",
+  "accession": " ",
+  "fincke": " ",
+  "publication": " ",
+  "subcollection": " ",
+  "description": "Fragment of a clay tablet, 1 line of inscription. Neo-Assyrian.",
+  "length": {
+    "value": 2.54,
+    "note": " "
+  },
+  "width": {
+    "value": 1.27,
+    "note": " "
+  },
+  "thickness": {},
+  "collection": "Kuyunjik",
+  "script": {
+    "period": "Neo-Assyrian",
+    "periodModifier": "None",
+    "uncertain": false,
+    "sortKey": 14
+  },
+  "date": " ",
+  "folios": [],
+  "record": [
+    {
+      "user": "Heinrich",
+      "type": "Transliteration",
+      "date": "2020-03-24T08:37:09.525625"
+    }
+  ],
+  "museum": "The British Museum",
+  "text": {
+    "numberOfLines": 2,
+    "parser_version": "6.1.0",
+    "lines": [
+      {
+        "prefix": "@",
+        "surface_label": {
+          "text": " ",
+          "abbreviation": "o",
+          "status": [],
+          "surface": "OBVERSE"
+        },
+        "displayValue": "obverse",
+        "content": [
+          {
+            "value": "obverse",
+            "cleanValue": "obverse",
+            "erasure": "NONE",
+            "enclosureType": [],
+            "type": "ValueToken"
+          }
+        ],
+        "type": "SurfaceAtLine"
+      },
+      {
+        "prefix": "1.",
+        "lineNumber": {
+          "prefixModifier": null,
+          "number": 1,
+          "hasPrime": false,
+          "suffixModifier": null,
+          "type": "LineNumber"
+        },
+        "content": [
+          {
+            "cleanValue": "%es",
+            "value": "%es",
+            "normalized": false,
+            "language": "EMESAL",
+            "erasure": "NONE",
+            "enclosureType": [],
+            "type": "LanguageShift"
+          },
+          {
+            "cleanValue": "a₂",
+            "hasVariantAlignment": false,
+            "value": "a₂",
+            "parts": [
+              {
+                "cleanValue": "a₂",
+                "value": "a₂",
+                "nameParts": [
+                  {
+                    "value": "a",
+                    "cleanValue": "a",
+                    "erasure": "NONE",
+                    "enclosureType": [],
+                    "type": "ValueToken"
+                  }
+                ],
+                "modifiers": [],
+                "name": "a",
+                "sign": null,
+                "erasure": "NONE",
+                "subIndex": 2,
+                "flags": [],
+                "enclosureType": [],
+                "type": "Reading"
+              }
+            ],
+            "language": "EMESAL",
+            "normalized": false,
+            "alignable": false,
+            "uniqueLemma": [],
+            "lemmatizable": false,
+            "erasure": "NONE",
+            "enclosureType": [],
+            "type": "Word"
+          },
+          {
+            "cleanValue": "e₃-ni",
+            "hasVariantAlignment": false,
+            "value": "e₃-ni",
+            "parts": [
+              {
+                "cleanValue": "e₃",
+                "value": "e₃",
+                "nameParts": [
+                  {
+                    "value": "e",
+                    "cleanValue": "e",
+                    "erasure": "NONE",
+                    "enclosureType": [],
+                    "type": "ValueToken"
+                  }
+                ],
+                "modifiers": [],
+                "name": "e",
+                "sign": null,
+                "erasure": "NONE",
+                "subIndex": 3,
+                "flags": [],
+                "enclosureType": [],
+                "type": "Reading"
+              },
+              {
+                "cleanValue": "-",
+                "value": "-",
+                "enclosureType": [],
+                "erasure": "NONE",
+                "type": "Joiner"
+              },
+              {
+                "cleanValue": "ni",
+                "value": "ni",
+                "nameParts": [
+                  {
+                    "value": "ni",
+                    "cleanValue": "ni",
+                    "erasure": "NONE",
+                    "enclosureType": [],
+                    "type": "ValueToken"
+                  }
+                ],
+                "modifiers": [],
+                "name": "ni",
+                "sign": null,
+                "erasure": "NONE",
+                "subIndex": 1,
+                "flags": [],
+                "enclosureType": [],
+                "type": "Reading"
+              }
+            ],
+            "language": "EMESAL",
+            "normalized": false,
+            "alignable": false,
+            "uniqueLemma": [],
+            "lemmatizable": false,
+            "erasure": "NONE",
+            "enclosureType": [],
+            "type": "Word"
+          },
+          {
+            "cleanValue": "uru₂",
+            "hasVariantAlignment": false,
+            "value": "uru₂?#",
+            "parts": [
+              {
+                "cleanValue": "uru₂",
+                "value": "uru₂?#",
+                "nameParts": [
+                  {
+                    "value": "uru",
+                    "cleanValue": "uru",
+                    "erasure": "NONE",
+                    "enclosureType": [],
+                    "type": "ValueToken"
+                  }
+                ],
+                "modifiers": [],
+                "name": "uru",
+                "sign": null,
+                "erasure": "NONE",
+                "subIndex": 2,
+                "flags": [
+                  "?",
+                  "#"
+                ],
+                "enclosureType": [],
+                "type": "Reading"
+              }
+            ],
+            "language": "EMESAL",
+            "normalized": false,
+            "alignable": false,
+            "uniqueLemma": [],
+            "lemmatizable": false,
+            "erasure": "NONE",
+            "enclosureType": [],
+            "type": "Word"
+          },
+          {
+            "cleanValue": "...",
+            "hasVariantAlignment": false,
+            "value": "[...]",
+            "parts": [
+              {
+                "cleanValue": " ",
+                "value": "[",
+                "side": "LEFT",
+                "erasure": "NONE",
+                "enclosureType": [],
+                "type": "BrokenAway"
+              },
+              {
+                "value": "...",
+                "cleanValue": "...",
+                "erasure": "NONE",
+                "enclosureType": [
+                  "BROKEN_AWAY"
+                ],
+                "type": "UnknownNumberOfSigns"
+              },
+              {
+                "cleanValue": " ",
+                "value": "]",
+                "side": "RIGHT",
+                "erasure": "NONE",
+                "enclosureType": [
+                  "BROKEN_AWAY"
+                ],
+                "type": "BrokenAway"
+              }
+            ],
+            "language": "EMESAL",
+            "normalized": false,
+            "alignable": false,
+            "uniqueLemma": [],
+            "lemmatizable": false,
+            "erasure": "NONE",
+            "enclosureType": [],
+            "type": "Word"
+          }
+        ],
+        "type": "TextLine"
+      },
+      {
+        "prefix": "2.",
+        "lineNumber": {
+          "prefixModifier": null,
+          "number": 2,
+          "hasPrime": false,
+          "suffixModifier": null,
+          "type": "LineNumber"
+        },
+        "content": [
+          {
+            "value": "($___$)",
+            "cleanValue": "($___$)",
+            "erasure": "NONE",
+            "enclosureType": [],
+            "type": "Tabulation"
+          },
+          {
+            "cleanValue": "x",
+            "hasVariantAlignment": false,
+            "value": "x",
+            "parts": [
+              {
+                "cleanValue": "x",
+                "value": "x",
+                "erasure": "NONE",
+                "flags": [],
+                "enclosureType": [],
+                "type": "UnclearSign"
+              }
+            ],
+            "language": "AKKADIAN",
+            "normalized": false,
+            "alignable": false,
+            "uniqueLemma": [],
+            "lemmatizable": false,
+            "erasure": "NONE",
+            "enclosureType": [],
+            "type": "Word"
+          },
+          {
+            "cleanValue": "x",
+            "hasVariantAlignment": false,
+            "value": "x",
+            "parts": [
+              {
+                "cleanValue": "x",
+                "value": "x",
+                "erasure": "NONE",
+                "flags": [],
+                "enclosureType": [],
+                "type": "UnclearSign"
+              }
+            ],
+            "language": "AKKADIAN",
+            "normalized": false,
+            "alignable": false,
+            "uniqueLemma": [],
+            "lemmatizable": false,
+            "erasure": "NONE",
+            "enclosureType": [],
+            "type": "Word"
+          },
+          {
+            "cleanValue": "...",
+            "hasVariantAlignment": false,
+            "value": "[...]",
+            "parts": [
+              {
+                "cleanValue": " ",
+                "value": "[",
+                "side": "LEFT",
+                "erasure": "NONE",
+                "enclosureType": [],
+                "type": "BrokenAway"
+              },
+              {
+                "value": "...",
+                "cleanValue": "...",
+                "erasure": "NONE",
+                "enclosureType": [
+                  "BROKEN_AWAY"
+                ],
+                "type": "UnknownNumberOfSigns"
+              },
+              {
+                "cleanValue": " ",
+                "value": "]",
+                "side": "RIGHT",
+                "erasure": "NONE",
+                "enclosureType": [
+                  "BROKEN_AWAY"
+                ],
+                "type": "BrokenAway"
+              }
+            ],
+            "language": "AKKADIAN",
+            "normalized": false,
+            "alignable": false,
+            "uniqueLemma": [],
+            "lemmatizable": false,
+            "erasure": "NONE",
+            "enclosureType": [],
+            "type": "Word"
+          }
+        ],
+        "type": "TextLine"
+      }
+    ]
+  },
+  "references": [
+    {
+      "id": "BorgerKat",
+      "type": "DISCUSSION",
+      "pages": " ",
+      "notes": "(Cat. p1950.)",
+      "linesCited": []
+    }
+  ],
+  "uncuratedReferences": [],
+  "signs": "ABZ334 ABZ381 ABZ206 ABZ231 ABZ43nX X",
+  "genreLegacy": " ",
+  "museumNumber": {
+    "prefix": "K",
+    "number": "6573",
+    "suffix": " "
+  },
+  "lineToVec": [
+    [
+      1,
+      1
+    ]
+  ],
+  "legacyJoins": [],
+  "editedInOraccProject": " ",
+  "legacyScript": "NA",
+  "externalNumbers": {
+    "cdliNumber": "P396645",
+    "bmIdNumber": "W_K-6573",
+    "archibabNumber": " ",
+    "bdtnsNumber": " ",
+    "urOnlineNumber": " "
+  },
+  "_sortKey": 6828
+}

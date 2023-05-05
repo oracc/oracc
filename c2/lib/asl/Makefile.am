@@ -1,10 +1,8 @@
 include ../../../oracc-am-rules.txt
 
-noinst_LTLIBRARIES=libasl.la
+noinst_LTLIBRARIES=libjsn.la
 
-libasl_la_SOURCES = asl.tab.c asl-l.c aslyacc.c asl.c
-
-# asltree.c
+libjsn_la_SOURCES = jsn.tab.c jsn-l.c
 
 YACC=bison
 
@@ -15,10 +13,10 @@ AM_CPPFLAGS=\
 	-I../../lib/sys \
 	-I../../lib/xml
 
-asl.tab.c asl.tab.h: asl.y asl.l
-	${YACC} -vd asl.y
+jsn.tab.c jsn.tab.h: jsn.y jsn.l
+	${YACC} -vd jsn.y
 
-asl-l.c: asl.l asl.tab.h
-	flex -d -B -DYY_NO_INPUT asl.l
+jsn-l.c: jsn.l jsn.tab.h
+	flex -d -B -DYY_NO_INPUT jsn.l
 
-asl-l.o: asl-l.c
+jsn-l.o: jsn-l.c
