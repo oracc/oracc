@@ -2,7 +2,7 @@
 #define LANG_H_
 
 #include "hash.h"
-
+#undef C
 #define C(x) x,
 #define T_MODES  C(m_graphemic)C(m_normalized)C(m_morphology)C(m_alphabetic)
 enum t_modes { T_MODES modes_top };

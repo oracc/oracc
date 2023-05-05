@@ -265,6 +265,7 @@
 	</xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:text>. </xsl:text>
     <xsl:apply-templates/>
   </text:p>
 </xsl:template>
