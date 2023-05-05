@@ -18,6 +18,14 @@ struct nonx_token
   int pl_flag;
 };
 
+struct nonx_link
+{
+  const char *pre;
+  const char *url;
+  const char *text;
+  const char *post;
+};
+
 struct nonx
 {
   int strict;
@@ -29,6 +37,7 @@ struct nonx
   struct nonx_token* extent;
   struct nonx_token* scope;
   struct nonx_token* state;
+  struct nonx_link * link;
 };
 
 extern struct nonx*parse_nonx(unsigned char *l);

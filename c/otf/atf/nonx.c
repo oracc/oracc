@@ -12,6 +12,53 @@ int no_strict_dollar;
 
 extern const char *textid;
 
+struct nonx_link *
+nonx_link(unsigned char *l)
+{
+  struct nonx_link nlp = calloc(1,sizeof(struct nonx_link));
+  
+  /* Format is:
+
+     $ (Some pre-text http://bla.com[[link-display-text]] some post-text)
+
+  */
+  char *end = NULL;
+  while (isspace(*l))
+    ++l;
+  nlp->pre = (const char *)l;
+  end = http;
+  while (isspace(end[-1]))
+    --end;
+  if (isspace(*end))
+    {
+      *end = '\0';
+      nlp->url = http;
+      l = (unsigned char *)http;
+      if ((http = strstr((char *)l, "[[")))
+	{
+	  end = strstr(http, "]]");
+	  if (end)
+	    {
+	      *http = '\0';
+	      nlp->text = http + 2;
+	      *end++ = '\0';
+	      ++end;
+	      while (isspace(*end))
+		++end;
+	      nlp->post = end;
+	    }
+	  else
+	    warning("link without closing ']]'");
+	}
+      else
+	warning("link without contained text opener '[['");
+    }
+  else if (http > nlp->pre)
+    warning("link must have space before 'http'");
+
+  return nlp;
+}
+
 static int
 last_tok(unsigned char *end)
 {
@@ -30,7 +77,7 @@ struct nonx*
 parse_nonx(unsigned char *l)
 {
   static struct nonx nx;
-  unsigned char *parenc = NULL;
+  /*unsigned char *parenc = NULL; */
   int unknown_toks = 0;
 
   memset(&nx,'\0',sizeof(struct nonx));
@@ -46,6 +93,8 @@ parse_nonx(unsigned char *l)
   if ('(' == *l)
     {
       register unsigned char *end = l+xxstrlen(l);
+      char *http = NULL;
+      
       nx.strict = 0;
       ++l;
       while (isspace(end[-1]))
@@ -53,7 +102,7 @@ parse_nonx(unsigned char *l)
       if (')' == end[-1])
 	{
 	  *--end = '\0';
-	  parenc = end;
+	  /*parenc = end;*/
 	}
       else
 	{
@@ -99,6 +148,11 @@ parse_nonx(unsigned char *l)
 		warning("image comment without '=' part");
 	      return NULL;
 	    }
+	}
+      else if ((http = strstr((const char *)l, "http")))
+	{
+	  nx.link = nonx_link(l);
+	  return &nx;
 	}
     }
   else
