@@ -1,17 +1,17 @@
 {
   "_id": "K.6573",
-  "accession": " ",
-  "fincke": " ",
-  "publication": " ",
-  "subcollection": " ",
+  "accession": "",
+  "fincke": "",
+  "publication": "",
+  "subcollection": "",
   "description": "Fragment of a clay tablet, 1 line of inscription. Neo-Assyrian.",
   "length": {
     "value": 2.54,
-    "note": " "
+    "note": ""
   },
   "width": {
     "value": 1.27,
-    "note": " "
+    "note": ""
   },
   "thickness": {},
   "collection": "Kuyunjik",
@@ -21,7 +21,7 @@
     "uncertain": false,
     "sortKey": 14
   },
-  "date": " ",
+  "date": "",
   "folios": [],
   "record": [
     {
@@ -38,7 +38,7 @@
       {
         "prefix": "@",
         "surface_label": {
-          "text": " ",
+          "text": "",
           "abbreviation": "o",
           "status": [],
           "surface": "OBVERSE"
@@ -219,7 +219,7 @@
             "value": "[...]",
             "parts": [
               {
-                "cleanValue": " ",
+                "cleanValue": "",
                 "value": "[",
                 "side": "LEFT",
                 "erasure": "NONE",
@@ -236,7 +236,7 @@
                 "type": "UnknownNumberOfSigns"
               },
               {
-                "cleanValue": " ",
+                "cleanValue": "",
                 "value": "]",
                 "side": "RIGHT",
                 "erasure": "NONE",
@@ -327,7 +327,7 @@
             "value": "[...]",
             "parts": [
               {
-                "cleanValue": " ",
+                "cleanValue": "",
                 "value": "[",
                 "side": "LEFT",
                 "erasure": "NONE",
@@ -344,7 +344,7 @@
                 "type": "UnknownNumberOfSigns"
               },
               {
-                "cleanValue": " ",
+                "cleanValue": "",
                 "value": "]",
                 "side": "RIGHT",
                 "erasure": "NONE",
@@ -372,18 +372,18 @@
     {
       "id": "BorgerKat",
       "type": "DISCUSSION",
-      "pages": " ",
+      "pages": "",
       "notes": "(Cat. p1950.)",
       "linesCited": []
     }
   ],
   "uncuratedReferences": [],
   "signs": "ABZ334 ABZ381 ABZ206 ABZ231 ABZ43nX X",
-  "genreLegacy": " ",
+  "genreLegacy": "",
   "museumNumber": {
     "prefix": "K",
     "number": "6573",
-    "suffix": " "
+    "suffix": ""
   },
   "lineToVec": [
     [
@@ -392,14 +392,14 @@
     ]
   ],
   "legacyJoins": [],
-  "editedInOraccProject": " ",
+  "editedInOraccProject": "",
   "legacyScript": "NA",
   "externalNumbers": {
     "cdliNumber": "P396645",
     "bmIdNumber": "W_K-6573",
-    "archibabNumber": " ",
-    "bdtnsNumber": " ",
-    "urOnlineNumber": " "
+    "archibabNumber": "",
+    "bdtnsNumber": "",
+    "urOnlineNumber": ""
   },
   "_sortKey": 6828
 }

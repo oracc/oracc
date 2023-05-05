@@ -5,7 +5,7 @@
 #define jxc(x) printf("</%s>",x)
 #define jxn(x) printf("<n>%s</n>",x)
 #define jxo(x) printf("<%s>",x)
-#define jxs(x) printf("%s",x)
+#define jxs(x) printf("<s>%s</s>",x)
 
 extern int yylex(void);
 extern void yyerror(const char *);
@@ -27,11 +27,11 @@ json:
 value:
 	object
 	| array
-	| string
-	| NUMBER	{ printf("%s", $1); }
-	| TRUE		{ printf("true"); }
-	| FALSE		{ printf("false"); }
-	| NUL		{ printf("null"); }
+	| string	{ printf("<v>%s</v>", $1); }
+	| NUMBER	{ printf("<v>%s</v>", $1); }
+	| TRUE		{ printf("<v>true</v>"); }
+	| FALSE		{ printf("<v>false</v>"); }
+	| NUL		{ printf("<v>null</v>"); }
 	;
 
 object:
@@ -49,7 +49,7 @@ members:
 	;
 
 member:
-	string { jxn($1); }
+	string { jxo("m"); jxn($1); }
 	':' 	 
 	element 	 { jxc("m"); }
 	;
@@ -73,9 +73,8 @@ element:
 	;
 
 string:
-	  EMPTY_STRING 	     { }
-	| '"' '"' 	     { }
-	| '"' CHARACTERS '"' { jxs($2); }
+	  EMPTY_STRING 	     { $$=""; }
+	| '"' CHARACTERS '"' { $$=$2; }
 	;
 
 %%

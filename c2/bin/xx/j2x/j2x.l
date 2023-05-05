@@ -1,6 +1,8 @@
 %option never-interactive yylineno nounput noyywrap
 
 %{
+#include <stdlib.h>
+#include <string.h>
 #include "j2x.tab.h"
 %}
 
@@ -15,16 +17,16 @@ exponent	([eE][-+]?[0-9]+)
 
 ws		[ \n\r\t]+
 
-%x s
+%x S
 
 %%
 
 "\"\""		{ return EMPTY_STRING; }
-"\""		{ BEGIN(s); return '"'; }
-<s>{characters} { return CHARACTERS; }
-<s>"\""		{ BEGIN(0); return '"'; }
+"\""		{ BEGIN(S); return '"'; }
+<S>{characters} { yylval.s = strdup(yytext); return CHARACTERS; }
+<S>"\""		{ BEGIN(0); return '"'; }
 
-{number}	{ return NUMBER; }
+{number}	{ yylval.s = strdup(yytext); return NUMBER; }
 
 "["|"]"|"{"|"}"|":"|"," { return *yytext; }
 
