@@ -20,7 +20,7 @@ int
 main(int argc, char **argv)
 {
   struct f2 *f2p = malloc(sizeof(struct f2));
-  char buf[4096];
+  char buf[BUFSIZ];
   int line = 0;
   char *file = NULL;
   atf_init();

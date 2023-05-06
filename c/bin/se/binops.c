@@ -26,7 +26,7 @@ typedef struct Field_range_info Field_range_info;
 #define WORD 		3
 #define GRAPHEME 	4
 #define LAST_FIELD	5
-Field_range_info ranges[LAST_FIELD];
+extern Field_range_info ranges[LAST_FIELD];
 
 extern const char *se_toks_names[];
 typedef struct Datum (*Boolfunc)(struct Datum*,struct Datum*);

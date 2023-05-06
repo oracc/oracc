@@ -30,6 +30,7 @@ extern int use_legacy;
 extern int use_unicode;
 const char *project;
 static int stdin_input = 0;
+const char *input_file = NULL;
 
 char *gdl_file = NULL;
 int gdl_file_len = 0;

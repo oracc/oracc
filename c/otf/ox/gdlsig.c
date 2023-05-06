@@ -12,6 +12,7 @@
 #include "npool.h"
 #include "globals.h"
 
+const char *input_file = NULL;
 const char *outfile = NULL;
 FILE *outfp = NULL;
 extern int backslash_is_formvar;

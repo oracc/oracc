@@ -30,7 +30,7 @@ extern char *strdup(const char *);
 
 int l2 = 1;
 
-const char *textid;
+extern const char *textid;
 extern FILE *f_log;
 FILE *f_mangletab = NULL;
 

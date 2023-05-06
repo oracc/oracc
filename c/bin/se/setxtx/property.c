@@ -8,7 +8,7 @@
 #include "index.h"
 #include "property.h"
 
-Two_bytes curr_properties;
+extern Two_bytes curr_properties;
 
 static void push_property (Two_bytes prop);
 static Two_bytes pop_property (void);

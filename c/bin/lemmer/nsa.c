@@ -29,11 +29,11 @@ extern int printres;
 int shadow_lem;
 int verbose = 0;
 int use_unicode = 0;
-extern const char *input_file;
+const char *input_file;
 static struct nsa_context *context;
 
-const char *phase;
-FILE *f_log;
+extern const char *phase;
+/*FILE *f_log;*/
 
 static void
 my_nsa_xml_input(struct nsa_context *cp, const char *infile)

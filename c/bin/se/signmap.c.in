@@ -6,7 +6,7 @@
 
 extern char *strdup(const char *);
 
-Hash_table *signmap;
+extern Hash_table *signmap;
 static char *curr_name;
 static Dbi_index *dp;
 

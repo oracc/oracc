@@ -32,7 +32,8 @@ const char *outfile = NULL;
 const char *arg_index = NULL;
 const char *project = NULL;
 const char *return_index = NULL;
-FILE*out_f = NULL, *f_log, *f_err;
+FILE*out_f = NULL,  *f_err;
+extern FILE *f_log;
 enum result_granularity res_gran = g_not_set, best_res_gran = g_not_set;
 static struct Datum result;
 enum vid_proj vid_display_proj;
@@ -44,7 +45,9 @@ FILE *f_mangletab = NULL;
 
 extern const char *se_curr_project, *curr_index, *cbd_lang;
 
-const char *curr_project, *textid;
+const char *curr_project;
+
+extern const char *textid;
 
 extern struct expr_rules *ret_type_rules;
 extern struct Datum evaluate(struct token *toks, int fcode, int lmask,
@@ -890,5 +893,5 @@ help ()
   printf("  -v = verbose operation\n");
 }
 
-const char *file; /* for libatf */
-int lnum; /* for libatf */
+extern const char *file; /* for libatf */
+extern int lnum; /* for libatf */

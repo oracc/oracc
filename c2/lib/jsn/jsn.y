@@ -1,5 +1,23 @@
+%{
 
-%tokens NUMBER TRUE FALSE NULL CHARACTERS WS
+#include <stdio.h>
+
+#define jxc(x) printf("</%s>",x)
+#define jxn(x) printf("<n>%s</n>",x)
+#define jxo(x) printf("<%s>",x)
+#define jxs(x) printf("<s>%s</s>",x)
+
+extern int yylex(void);
+extern void yyerror(const char *);
+static void vstr(const char *);
+
+%}
+
+%union { char *s; int i; }
+%token <i> TRUE FALSE NUL EMPTY_STRING
+%token <s> CHARACTERS NUMBER
+
+%type <s> string member
 
 %start json
 
@@ -11,16 +29,20 @@ json:
 value:
 	object
 	| array
-	| string
-	| NUMBER
-	| TRUE
-	| FALSE
-	| NULL
+	| string	{ vstr($1); }
+	| NUMBER	{ printf("<v>%s</v>", $1); }
+	| TRUE		{ printf("<v>true</v>"); }
+	| FALSE		{ printf("<v>false</v>"); }
+	| NUL		{ printf("<v>null</v>"); }
 	;
 
 object:
-	'{' ws '}'
-	| '{' members '}'
+	'{' 	{ jxo("o"); }
+	'}' 	{ jxc("o"); }
+	|
+	'{' 	{ jxo("o"); }
+	 members
+	'}' 	{ jxc("o"); }
 	;
 
 members:
@@ -29,12 +51,18 @@ members:
 	;
 
 member:
-	ws string ws ':' element
+	string { jxo("m"); jxn($1); }
+	':' 	 
+	element 	 { jxc("m"); }
 	;
 
 array:
-	'[' ws ']'
-	| '[' elements ']'
+	'[' 		 { jxo("a"); }
+	']' 		 { jxc("a"); }
+	|
+	'[' 		 { jxo("a"); }
+	elements
+	']' 		 { jxc("a"); }
 	;
 
 elements:
@@ -43,13 +71,60 @@ elements:
 	;
 
 element:
-	ws value ws
+	value
 	;
 
 string:
-	'"' CHARACTERS '"'
+	  EMPTY_STRING 	     { $$=""; }
+	| '"' CHARACTERS '"' { $$=$2; }
 	;
 
-ws:	WS
-	| /* empty */
-	;
+%%
+
+void
+vstr(const char *s)
+{
+#undef puts
+#define puts(s) fputs((s),stdout)
+  puts("<v>");
+  while (*s)
+    {
+      if (*s > 127)
+	putchar(*s);
+      else
+	switch (*s)
+	  {
+	  case '\\':
+	    ++s;
+	    if ('"' == *s)
+	      puts("&quot;");
+	    else
+	      putchar(*s);
+	    break;
+	  case '\'':
+	    puts("&apos;");
+	    break;
+	  case '<':
+	    puts("&lt;");
+	    break;
+	  case '>':
+	    puts("&gt;");
+	    break;
+	  case '&':
+	    puts("&amp;");
+	    break;
+	  default:
+	    putchar(*s);
+	    break;
+	  }
+      ++s;
+    }
+  puts("</v>");
+}
+
+void
+yyerror(const char *e)
+{
+  extern int yylineno;
+  fprintf(stderr, "jsn: %s at line %d\n", e, yylineno);
+}

@@ -24,6 +24,8 @@
 #include "f2.h"
 #include "sigs.h"
 
+Hash_table *signmap;
+
 int l2 = 1;
 /* This is unpleasant; declared only because we have to invoke sig_context_init() which pulls in the sigs library */
 int lem_autolem = 0;
@@ -347,7 +349,7 @@ startElement_gdl(void *userData, const char *name, const char **atts)
     {
     case 'w':
       {
-	static char qualified_id[128];
+	static char qualified_id[1208];
 	const char *sig = NULL;
 
 	if (l2)
@@ -545,7 +547,7 @@ startLemIndex(void *userData, const char *name, const char **atts)
 	  if (sig && *sig)
 	    {
 	      struct f2 *f2 = mb_new(f2_mem);
-	      static char qualified_id[128];
+	      static char qualified_id[1208];
 	      char *tmp = malloc(strlen(sig)+16);
 	      ++curr_lemma_id;
 

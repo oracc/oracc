@@ -24,8 +24,8 @@
 #define xcalloc calloc
 #define xmalloc malloc
 
-int ods_cols, ods_mode; /* for bad architecture of libgdl */
-
+/*int ods_cols, ods_mode; */ /* for bad architecture of libgdl */
+const char *input_file = NULL;
 const char *project = NULL;
 
 List *outer; /* list of struct OUTER's */

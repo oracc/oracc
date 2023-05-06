@@ -55,12 +55,12 @@ static int role_logo = 0;
 extern char loc_project_buf[];
 
 extern const char *curr_project, *curr_index, *proxies_arg;
-Four_bytes curr_line;
+extern Four_bytes curr_line;
 
-struct location8 l8;
+extern struct location8 l8;
 
-Two_bytes curr_properties;
-int curr_text_id, curr_unit_id, curr_word_id;
+extern Two_bytes curr_properties;
+extern int curr_text_id, curr_unit_id, curr_word_id;
 
 extern int indexing;
 extern int quiet;

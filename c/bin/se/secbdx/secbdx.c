@@ -21,6 +21,8 @@
 extern char *strdup(const char *);
 #endif
 
+Hash_table *signmap = NULL;
+
 int l2 = 1;
 int swc_flag = 0;
 
@@ -471,7 +473,8 @@ main(int argc, char **argv)
 
 /********************************************************************/
 
-const char *prog = "secbdx", *textid;
+const char *prog = "secbdx";
+extern const char *textid;
 int major_version = 5, minor_version = 0, verbose;
 const char *usage_string = "[-{acgps}] <input>";
 

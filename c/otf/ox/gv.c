@@ -22,7 +22,7 @@ static int utf8 = 0;
 static int uhex = 0;
 
 extern const char *file;
-
+const char *input_file = NULL;
 static int tsv = 1;
 
 int sparse_lem = 0;
@@ -129,7 +129,7 @@ main(int argc, char **argv)
 }
 
 const char *prog = "gv";
-int major_version = 1, minor_version = 0, verbose;
+int major_version = 1, minor_version = 0;
 const char *usage_string = "PROJECT SLDB_NAME KEY";
 int opts(int argc, char *arg)
 {

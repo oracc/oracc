@@ -1,25 +1,39 @@
+%option never-interactive yylineno nounput noyywrap
 
-%x s
+%{
+#include <stdlib.h>
+#include <string.h>
+#include "jsn.tab.h"
+%}
 
 characters	({character}|{escape})*
 character 	[\x20\x21\x23-\x5b\x5d-\xff]
-escape		"\\"([\\/bfnrt]\|[0-9a-fA-F]{4})
+escape		"\\"([\\/bfnrt"]|[0-9a-fA-F]{4})
 
 number		({integer}{fraction}?{exponent}?)
-integer		(-?[0-9|[1-9][0-9]+)
+integer		(-?([0-9]|[1-9][0-9]+))
 fraction	("."[0-9]+)
 exponent	([eE][-+]?[0-9]+)
 
-ws		[ \t\r\n]+
+ws		[ \n\r\t]+
 
-"\""		{ BEGIN(s); return '"'; }
-<s>{characters} { yysave(yytext); return CHARACTERS; }
-<s>'"'		{ BEGIN(0); return '"'; }
+%x S
 
-"["|"]"|"{"|"}" { return *yytext; }
+%%
+
+"\"\""		{ return EMPTY_STRING; }
+"\""		{ BEGIN(S); return '"'; }
+<S>{characters} { yylval.s = strdup(yytext); return CHARACTERS; }
+<S>"\""		{ BEGIN(0); return '"'; }
+
+{number}	{ yylval.s = strdup(yytext); return NUMBER; }
+
+"["|"]"|"{"|"}"|":"|"," { return *yytext; }
 
 {ws}		{ }
 
 "false"		{ return FALSE; }
-"null"		{ return NULL; }
+"null"		{ return NUL; }
 "true"		{ return TRUE; }
+
+%%

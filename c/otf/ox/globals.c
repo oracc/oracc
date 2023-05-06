@@ -41,8 +41,8 @@ unsigned char idbuf[MAX_IDBUF_LEN];
 char *odsods_fn = NULL, *odslem_fn = NULL, *odsatf_fn = NULL;
 char *autolemfile = NULL;
 const char *errmsg_fn = NULL;
-const char *prog;
-const char *textid;
+/*const char *prog;*/
+/*const char *textid;*/
 const char *fallback_project = NULL;
 
 FILE *f_bad;

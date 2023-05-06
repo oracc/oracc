@@ -15,11 +15,11 @@ const char *config_file;
 const char *out_file;
 const char *project;
 const char *sig_file;
-const char *textid;
+extern const char *textid;
 const char *xcl_file;
 /*const char *xcl_project;*/
 
-FILE*f_log;
+/*FILE*f_log;*/
 FILE*outfp = NULL;
 
 int bootstrap_mode = 0;

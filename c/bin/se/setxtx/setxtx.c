@@ -20,6 +20,8 @@
 
 #include <sys/unistd.h>
 
+Hash_table *signmap = NULL;
+
 int swc_flag = 0;
 int l2 = 1;
 
@@ -136,6 +138,7 @@ loc_project(const char **atts)
 void
 startElement(void *userData, const char *name, const char **atts)
 {
+  static char qualified_id[1200];
   /*  flush_graphemes(name[3], EVENT_BEGIN); */
   switch (*name)
     {
@@ -186,7 +189,6 @@ startElement(void *userData, const char *name, const char **atts)
 	{
 	  if (!strcmp("g:swc",name))
 	    {
-	      static char qualified_id[128];
 	      const char *headref = findAttr(atts,"headref");
 	      pos_props(pos(atts));
 	      sprintf(qualified_id, "%s:%s", loc_project_buf, headref);
@@ -197,7 +199,6 @@ startElement(void *userData, const char *name, const char **atts)
     case 'n':
       if (!strcmp("n:w",name))
 	{
-	  static char qualified_id[128];
 	  const unsigned char *n = NULL;
 	  pos_props(pos(atts));
 	  sprintf(qualified_id, "%s:%s", loc_project_buf, xml_id(atts));

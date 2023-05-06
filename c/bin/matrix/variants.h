@@ -16,7 +16,7 @@ struct VARIANT
 
 typedef struct VARIANT Variant;
 
-List *variants_list;
+extern List *variants_list;
 extern List * vars_assq1 (Variant *vp);
 extern List * vars_assq2 (Variant *vp);
 extern Variant * vars_assq3 (Variant *vp);

@@ -7,7 +7,6 @@ int checkpoints = 0;
 int label = 0;
 int printres = 0;
 static char *curr_label;
-const char *input_file;
 static struct nsa_result *nsa_line(struct nsa_context *cp, char *l);
 
 static const char *

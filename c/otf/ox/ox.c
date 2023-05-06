@@ -62,7 +62,7 @@ const char *automatic_styles = NULL,
 
 char project_base[_MAX_PATH];
 
-const char *output_dir;
+/*const char *output_dir;*/
 List *cdt_master_list, *cdt_meta_list, *cdt_styles_list;
 
 #define xstr(s) str(s)
@@ -71,10 +71,10 @@ List *cdt_master_list, *cdt_meta_list, *cdt_styles_list;
 const char*atffile = NULL;
 FILE*f_atf = NULL;
 const char *badfile = NULL;
-FILE*f_bad = NULL;
+/*FILE*f_bad = NULL;*/
 const char *formsfile = NULL;
 const char *goodfile = NULL;
-FILE*f_good = NULL;
+/*FILE*f_good = NULL;*/
 const char *graphemesfile = NULL;
 /*FILE*f_graphemes = NULL;*/
 const char *lemmafile = NULL;
@@ -87,38 +87,38 @@ FILE*f_rnc = NULL;
 const char *xmlfile = NULL;
 /*FILE*f_xml = NULL;*/
 const char *unlemmfile = NULL;
-FILE *f_unlemm;
+/*FILE *f_unlemm;*/
 
 const char *inputs_from_file = NULL;
 
-int bootstrap_mode = 0;
+/*int bootstrap_mode = 0;*/
 /*int check_lem = 0;*/
-int check_links = 0;
-int check_only = 0;
-int do_cdl = 0;
-int force = 0;
-int harvest_notices = 0;
-int lem_autolem = 0;
-int lem_forms_raw = 0;
+/*int check_links = 0;*/
+/*int check_only = 0;*/
+/*int do_cdl = 0;*/
+/*int force = 0;*/
+/*int harvest_notices = 0;*/
+/*int lem_autolem = 0;*/
+/*int lem_forms_raw = 0;*/
 int lem_standalone = 0;
 int lem_system = 1;
-int named_ents = 0;
-int no_xcl_map = 0;
+/*int named_ents = 0;*/
+/*int no_xcl_map = 0;*/
 int non_xtf_output = 0;
 /*int no_pi = 0;*/
 int one_big_file = 1; /* per-file outputs not supported yet */
 
-int perform_dsa = 0;
+/*int perform_dsa = 0;*/
 /*N.B.: it is wrong for callers to check perform_lem for anything
   but serialization; various checking and annotation routines require
   the lemmatization subsystems even when perform_lem == 0, so callers
   should always use need_lemm rather than perform_lem
  */
-int perform_lem = 0;
-int perform_nsa = 0;
+/*int perform_lem = 0;*/
+/*int perform_nsa = 0;*/
 int process_detchars = 0;
 int psu = 0;
-int check_pnames = 0;
+/*int check_pnames = 0;*/
 int shadow_lem = 0;
 int with_noform = 0;
 
@@ -128,15 +128,15 @@ int psa_props = 0;
 
 const char *project = "";
 const char *arg_project = NULL;
-const char *xcl_project = NULL;
+/*const char *xcl_project = NULL;*/
 extern const char *system_project;
 
 /*int show_toks = 0;*/
 /*int sparse_lem = 0;*/
 
-int validate = 1;
+/*int validate = 1;*/
 extern int verbose;
-int warn_unlemmatized = 0;
+/*int warn_unlemmatized = 0;*/
 
 /*char sparse_lem_fields[32];*/
 

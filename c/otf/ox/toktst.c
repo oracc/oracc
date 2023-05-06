@@ -5,6 +5,7 @@
 #include "initterm.h"
 
 extern const char *file;
+const char *input_file = NULL;
 const char *project;
 #if 0
 static void

@@ -15,6 +15,7 @@
 #include <tree.h>
 
 extern FILE *f_log;
+const char *input_file;
 const char *project;
 static char *db = NULL, *name = NULL;
 static char *key;
@@ -248,7 +249,8 @@ main(int argc, char **argv)
 }
 
 const char *prog = "sl";
-int major_version = 1, minor_version = 0, verbose;
+int major_version = 1, minor_version = 0;
+extern int verbose;
 const char *usage_string = "PROJECT SLDB_NAME KEY";
 int opts(int argc, char *arg)
 {

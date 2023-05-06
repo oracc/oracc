@@ -15,14 +15,14 @@ extern const char *textid;
 struct nonx_link *
 nonx_link(unsigned char *l)
 {
-  struct nonx_link nlp = calloc(1,sizeof(struct nonx_link));
+  char *end = NULL, *http = NULL;
+  struct nonx_link *nlp = calloc(1,sizeof(struct nonx_link));
   
   /* Format is:
 
      $ (Some pre-text http://bla.com[[link-display-text]] some post-text)
 
   */
-  char *end = NULL;
   while (isspace(*l))
     ++l;
   nlp->pre = (const char *)l;
