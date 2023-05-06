@@ -84,6 +84,8 @@ string:
 void
 vstr(const char *s)
 {
+#undef puts
+#define puts(s) fputs((s),stdout)
   puts("<v>");
   while (*s)
     {
