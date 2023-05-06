@@ -4,7 +4,9 @@ include ../../../../oracc-am-rules.txt
 
 # libasl_la_SOURCES = asl.tab.c asl-l.c aslyacc.c asl.c
 
-bin_PROGRAMS=j2x j2x.sh
+bin_PROGRAMS=j2x
+
+bin_SCRIPTS=j2x.sh
 
 scriptdata_DATA=j2x-uptag.xsl
 

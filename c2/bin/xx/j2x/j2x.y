@@ -9,6 +9,8 @@
 
 extern int yylex(void);
 extern void yyerror(const char *);
+static void vstr(const char *);
+
 %}
 
 %union { char *s; int i; }
@@ -27,7 +29,7 @@ json:
 value:
 	object
 	| array
-	| string	{ printf("<v>%s</v>", $1); }
+	| string	{ vstr($1); }
 	| NUMBER	{ printf("<v>%s</v>", $1); }
 	| TRUE		{ printf("<v>true</v>"); }
 	| FALSE		{ printf("<v>false</v>"); }
@@ -78,6 +80,45 @@ string:
 	;
 
 %%
+
+void
+vstr(const char *s)
+{
+  puts("<v>");
+  while (*s)
+    {
+      if (*s > 127)
+	putchar(*s);
+      else
+	switch (*s)
+	  {
+	  case '\\':
+	    ++s;
+	    if ('"' == *s)
+	      puts("&quot;");
+	    else
+	      putchar(*s);
+	    break;
+	  case '\'':
+	    puts("&apos;");
+	    break;
+	  case '<':
+	    puts("&lt;");
+	    break;
+	  case '>':
+	    puts("&gt;");
+	    break;
+	  case '&':
+	    puts("&amp;");
+	    break;
+	  default:
+	    putchar(*s);
+	    break;
+	  }
+      ++s;
+    }
+  puts("</v>");
+}
 
 void
 yyerror(const char *e)
