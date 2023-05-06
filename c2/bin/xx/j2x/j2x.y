@@ -125,5 +125,6 @@ vstr(const char *s)
 void
 yyerror(const char *e)
 {
-  fprintf(stderr, "j2x: %s\n", e);
+  extern int yylineno;
+  fprintf(stderr, "j2x: %s at line %d\n", e, yylineno);
 }

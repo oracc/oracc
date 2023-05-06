@@ -8,7 +8,7 @@
 
 characters	({character}|{escape})*
 character 	[\x20\x21\x23-\x5b\x5d-\xff]
-escape		"\\"([\\/bfnrt]\|[0-9a-fA-F]{4})
+escape		"\\"([\\/bfnrt]|[0-9a-fA-F]{4})
 
 number		({integer}{fraction}?{exponent}?)
 integer		(-?([0-9]|[1-9][0-9]+))
