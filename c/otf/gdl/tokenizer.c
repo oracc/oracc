@@ -1935,9 +1935,9 @@ tokenize(register unsigned char *l,unsigned char *e)
 		    {
 		      int lastg = tokindex-1;
 		      (void)lang_push(curr_lang);
-		      while (tokens[lastg]->class != text && lastg >= 0)
+		      while (tokens[lastg] && tokens[lastg]->class != text && lastg >= 0)
 			--lastg;
-		      if (tokens[lastg]->class == text)
+		      if (tokens[lastg] && tokens[lastg]->class == text)
 			{
 #if 1
 			  memmove(&tokens[lastg+1], &tokens[lastg], (tokindex-lastg) * sizeof(struct token*));
