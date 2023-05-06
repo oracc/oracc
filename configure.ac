@@ -89,6 +89,7 @@ dnl 	   oracc-hyperestraier/estconfig
 
 AC_CONFIG_FILES([Makefile 
 	   oracc-hyperestraier/Makefile
+	   oracc-hyperestraier/estraier/Makefile
 	   oracc-hyperestraier/qdbm/Makefile
 	   c/Makefile
 	   c/bin/Makefile

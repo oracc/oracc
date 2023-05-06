@@ -32,4 +32,5 @@ apt-get -y --autoremove upgrade \
     msort \
     libxmlrpc-core-c3-dev \
     zip \
-    cpanminus
+    cpanminus \
+    plocate
