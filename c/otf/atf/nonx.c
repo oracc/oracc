@@ -7,15 +7,30 @@
 #include "cdf.h"
 #include "pool.h"
 #include "warning.h"
+#include "tree.h"
 
 int no_strict_dollar;
 
 extern const char *textid;
 
-struct nonx_link *
-nonx_link(unsigned char *l)
+void
+nonx_link_data(struct nonx_link *nonxp, struct node *tmp)
 {
-  char *end = NULL, *http = NULL;
+  if (nonxp->pre)
+    appendChild(tmp,textNode((unsigned const char *)nonxp->pre));
+  appendChild(tmp,rawTextNode((unsigned const char *)" <xh:a href=\""));
+  appendChild(tmp,textNode((unsigned const char *)nonxp->url));
+  appendChild(tmp,rawTextNode((unsigned const char *)"\">"));
+  appendChild(tmp,textNode((unsigned const char *)nonxp->text));
+  appendChild(tmp,rawTextNode((unsigned const char *)"</xh:a> "));
+  if (nonxp->post)
+    appendChild(tmp,textNode((unsigned const char *)nonxp->post));
+}
+
+struct nonx_link *
+nonx_link(unsigned char *l, char *http)
+{
+  char *end = NULL;
   struct nonx_link *nlp = calloc(1,sizeof(struct nonx_link));
   
   /* Format is:
@@ -151,7 +166,7 @@ parse_nonx(unsigned char *l)
 	}
       else if ((http = strstr((const char *)l, "http")))
 	{
-	  nx.link = nonx_link(l);
+	  nx.link = nonx_link(l, http);
 	  return &nx;
 	}
     }

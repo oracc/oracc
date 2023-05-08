@@ -791,9 +791,16 @@ $ start of reverse missing
 			  nonx_attach = COLUMN;
 			}
 		    }
-		  if (*nonxp->flags)
-		    appendAttr(tmp,attr(a_flags,ucc(nonxp->flags)));
-		  appendChild(tmp,textNode(*s == '(' ? (s+1) : s));
+		  if (nonxp->link)
+		    {
+		      nonx_link_data(nonxp->link, tmp);
+		    }
+		  else
+		    {
+		      if (*nonxp->flags)
+			appendAttr(tmp,attr(a_flags,ucc(nonxp->flags)));
+		      appendChild(tmp,textNode(*s == '(' ? (s+1) : s));
+		    }
 		  if (doctype == e_composite)
 		    current = c_attach_point();
 		  else if (current->level != nonx_attach)

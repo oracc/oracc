@@ -15,6 +15,8 @@ ox_SOURCES = \
 xLDADD = \
 	../gdl/libgdl.la \
 	../atf/libatf.la \
+	../gdl/libgdl.la \
+	../atf/libatf.la \
 	../lib/libcdf.la \
 	../chr/libchr.la \
 	../lng/liblng.la \
@@ -73,9 +75,10 @@ gv_SOURCES=gv.c \
 	@top_srcdir@/c/otf/ox/globals.c
 
 gv_LDADD= \
-	@top_srcdir@/c/otf/chr/libchr.la \
+	@top_srcdir@/c/otf/gdl/libgdl.la \
 	@top_srcdir@/c/otf/atf/libatf.la \
 	@top_srcdir@/c/otf/gdl/libgdl.la \
+	@top_srcdir@/c/otf/atf/libatf.la \
 	@top_srcdir@/c/otf/chr/libchr.la \
 	@top_srcdir@/c/otf/lib/libcdf.la \
 	@top_srcdir@/c/otf/lng/liblng.la \

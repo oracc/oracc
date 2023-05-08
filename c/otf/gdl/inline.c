@@ -16,6 +16,7 @@
 #include "splitwords.h"
 #include "block.h"
 #include "note.h"
+#include "nonx.h"
 
 #define CHECKFORMS 0
 
@@ -952,6 +953,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
   int logo_word = 0;
   int pending_varo = 0, varo_tok = -1;
   enum t_type group_flag = notoken;
+  char *http = NULL;
   
   atpt = NULL;
   in_hash = logoline = 0;
@@ -2232,7 +2234,10 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  appendAttr(np,attr(a_g_o,ucc(cued_opener)));
 		  *cued_opener = '\0';
 		}
-	      appendChild(np,textNode(((unsigned char*)(tp->data))+1));
+	      if ((http = strstr((char*)tp->data, "http")))
+		nonx_link_data(nonx_link(((unsigned char*)(tp->data))+1, http), np);
+	      else
+		appendChild(np,textNode(((unsigned char*)(tp->data))+1));
 	      if (!strcmp((((char*)(tp->data))+1), "DUMMY"))
 		setAttr(parent,a_silent,(unsigned char *)"1");
 	      if (atpt /*group_node*/)

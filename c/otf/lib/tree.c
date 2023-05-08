@@ -1023,6 +1023,15 @@ textNode(const unsigned char *data)
 }
 
 struct node *
+rawTextNode(const unsigned char *data)
+{
+  struct node *t = newnode();
+  t->type = "t";
+  t->data = data;
+  return t;
+}
+
+struct node *
 gtextNode(const unsigned char *data)
 {
   struct node *t = gnewnode();

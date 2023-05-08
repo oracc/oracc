@@ -75,6 +75,7 @@ void setName(struct node *elem, enum e_type e);
 struct node *textElem(enum e_type e, struct node *parent, 
 		      int lnum, enum block_levels b, unsigned char *data);
 struct node *textNode(const unsigned char *data);
+struct node *rawTextNode(const unsigned char *data);
 struct node *gtextElem(enum e_type e, struct node *parent, 
 		      int lnum, enum block_levels b, const unsigned char *data);
 struct node *gtextNode(const unsigned char *data);
