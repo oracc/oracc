@@ -34,7 +34,7 @@ mv -f odtpictures.lst odt
  # odtTeX=$ORACC_BUILDS/rinap/00lib/project-odtTeX.xsl
  >&2 echo pdf-driver.sh: creating $texname output using $odtTeX
  xsltproc -xinclude $odtTeX content.xml >$texname
- >&2 echo ORACC=${ORACC}
+ >&2 echo ORACC=${ORACC} texname=${texname} cwd=`pwd`
  oracctex $texname
  if [ -r $texpdfname ]; then
      mv $texpdfname ../$pdfname
