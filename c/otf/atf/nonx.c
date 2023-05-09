@@ -37,6 +37,8 @@ nonx_link(unsigned char *l, char *http)
 
      $ (Some pre-text http://bla.com[[link-display-text]] some post-text)
 
+     If the [[]] is empty the URL is displayed as the link text.
+
   */
   while (isspace(*l))
     ++l;
@@ -56,8 +58,16 @@ nonx_link(unsigned char *l, char *http)
 	    {
 	      *http = '\0';
 	      nlp->text = http + 2;
-	      *end++ = '\0';
-	      ++end;
+	      if (nlp->text == end)
+		{
+		  nlp->text = nlp->url;
+		  end += 2;
+		}
+	      else
+		{
+		  *end++ = '\0';
+		  ++end;
+		}
 	      while (isspace(*end))
 		++end;
 	      nlp->post = end;
