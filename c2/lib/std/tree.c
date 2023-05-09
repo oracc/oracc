@@ -12,6 +12,7 @@ tree_init(void)
   tp->nodemem = memo_init(sizeof(Node), 1024);
   tp->pool = pool_init();
   tp->propmem = memo_init(sizeof(Prop), 1024);
+  tp->kevamem = memo_init(sizeof(Keva), 1024);
   return tp;
 }
 

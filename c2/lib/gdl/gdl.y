@@ -66,8 +66,8 @@ cell:
 	;
 
 cellspec:
-	'&'					{ gdl_cell(ytp,"1"); }
-	| CELLSPAN				{ gdl_cell(ytp,$1); }
+	'&'					    { gdl_cell(ytp,"1"); }
+	| CELLSPAN				    { gdl_cell(ytp,$1); }
 	;				
 					
 anyseg:
@@ -131,14 +131,29 @@ delim:
 	| ':' 						{ ynp = gdl_delim(ytp, ":"); }
 	| '{'	      					{ gdl_balance_state(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det");
-	  						  gdl_gp_type(ytp,GP_DET_SEMI);}
+	  						  gst.det = SB_OP;
+	  						  gst.d_sem_i = 1;
+							  /*gdl_gp_type(ytp,GP_DET_SEMI);*/}
 	| DET_SEME    					{ gdl_balance_state(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det");
-	  						  gdl_gp_type(ytp,GP_DET_SEME); }
+	  						  gst.d_sem_e = 1;
+	  						  gst.det = SB_OP;
+	  						  gst.d_sem_e = 1;
+	  						  /*gdl_gp_type(ytp,GP_DET_SEME);*/}
 	| DET_PHON      	      			{ gdl_balance_state(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det"); 
-	  						  gdl_gp_type(ytp,GP_DET_PHON); }
-	| '}' 	 		  			{ if (!gdl_balance_state(@1,'}',"}")) gdl_pop(ytp,"g:det");  }
+	  						  gst.det = SB_OP;
+	  						  gst.d_phon = 1;
+	  						  /*gdl_gp_type(ytp,GP_DET_PHON);*/}
+	| '}' 	 		  			{ if (!gdl_balance_state(@1,'}',"}"))
+	      						    gdl_pop(ytp,"g:det");
+	     						    /* set pst->det = SB_CL; lgp is last
+							       node with g content or equivalent, i.e.,
+							       where the closer state must be set */
+	    						    gdl_update_closers(lgp, '}');
+	    						    gst.det = SB_NO;
+							    gst.d_sem_i = gst.d_sem_e = gst.d_phon = 0;
+	  						  }
 	| ENHYPHEN 			       		{ ynp = gdl_delim(ytp, "--"); }
 	;
 
@@ -170,10 +185,18 @@ gflags:
 	;
 
 gflag:
+#if 1
+	  '*'						{ gdl_update_flags(lgp, '*'); }
+	| '#'						{ gdl_update_flags(lgp, '#'); }
+	| '!'						{ gdl_update_flags(lgp, '!'); }
+	| '?'						{ gdl_update_flags(lgp, '?'); }
+	| PLUS_FLAG    					{ gdl_update_flags(lgp, '+'); }
+#else
 	  '*'						{ gdl_prop(ynp, '*', PG_GDL_FLAGS, NULL, NULL); }
 	| '#'						{ gdl_prop(ynp, '#', PG_GDL_FLAGS, NULL, NULL); }
 	| '!'						{ gdl_prop(ynp, '!', PG_GDL_FLAGS, NULL, NULL); }
 	| '?'						{ gdl_prop(ynp, '?', PG_GDL_FLAGS, NULL, NULL); }
+#endif
 	;
 
 simplexg:
@@ -201,9 +224,9 @@ compound:
 
 c:
 	C_O 						{ ycp = gdl_push(ytp,"g:c"); c_delim_sentinel = 0; }
-	  cbits
-	  C_C 						{ ynp = ycp; }
-	  ;
+	cbits
+	C_C 						{ ynp = ycp; }
+        ;
 
 cbits:
 	  cbit
@@ -225,10 +248,7 @@ cbit:
 							  kids_add_node(ytp,yrem);
 							  gdl_remove_q_error(@1, yrem);
   							  gdl_incr_qin();
-							  /* IS GDL_CORRQ NECESSARY NOW? */
-							  /* gdl_corrq
-							    = (prop_find_pg(yrem->props,'!',
-							        PG_GDL_FLAGS)!=NULL); */}
+							}
 	| QRP				      		{ gdl_decr_qin();
 	  						  ynp->mloc = mloc_mloc(&@1);
 	  						  gvl_valuqual(ytp->curr);
@@ -263,10 +283,7 @@ q:
 	QLP 						{ yrem=kids_rem_last(ytp);
 	    						  gdl_push(ytp,"g:q");
 							  kids_add_node(ytp,yrem);
-							  gdl_incr_qin();
-							  /* IS GDL_CORRQ NECESSARY NOW? */
-							  /*gdl_corrq
-							    = (prop_find_pg(yrem->props,'!',PG_GDL_FLAGS)!=NULL);*/ }
+							  gdl_incr_qin(); }
 	grapheme 	 	       			{ gdl_remove_q_error(@1, yrem); }
 	QRP { gdl_decr_qin(); }		      		
 	;

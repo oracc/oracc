@@ -15,6 +15,7 @@ struct tree {
   struct node *curr;
   Memo *nodemem;
   Memo *propmem;
+  Memo *kevamem;
   Pool *pool;
   nsrefs ns_used;
 };

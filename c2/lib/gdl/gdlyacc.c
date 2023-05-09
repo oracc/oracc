@@ -4,6 +4,7 @@
 #include <tree.h>
 #include <ctype128.h>
 #include "gdl.tab.h"
+#include "gdlstate.h"
 #include "gdl.h"
 #include "gvl.h"
 
@@ -12,6 +13,8 @@ extern int gdltrace, gdllineno, gdl_legacy;
 extern void gdl_wrapup_buffer(void);
 extern void gdl_validate(Tree *tp);
 int curr_lang = 's';
+
+struct gdlstate ggs;
 
 /***********************************************************************
  *
@@ -58,13 +61,13 @@ gdlparse_term(void)
 void
 gdl_gp_type(Tree *ytp, enum gdlpropvals p)
 {
-  gdl_prop(ytp->curr, p, PG_GDL_GROUP, NULL, NULL);
+  gdl_prop(ytp->curr, p, PG_GDL_GROUP);
 }
 
 void
 gdl_node_type(Node *np, enum gdlpropvals p)
 {
-  gdl_prop(np, p, PG_GDL_GROUP, NULL, NULL);
+  gdl_prop(np, p, PG_GDL_GROUP);
 }
 
 static Node *
@@ -93,10 +96,19 @@ gdl_push(Tree *ytp, const char *s)
 }
 
 void
-gdl_prop(Node *ynp, int ptype, int gtype, const char *k, const char *v)
+gdl_prop(Node *ynp, int ptype, int gtype)
 {
   if (ynp)
-    ynp->props = prop_add(ynp->tree->propmem, ynp->props, ptype, gtype, k, v);
+    ynp->props = prop_add(ynp->tree->propmem, ynp->props, ptype, gtype);
+  else
+    mesg_warning(currgdlfile, gdllineno, "gdl_prop passed NULL ynp");
+}
+
+void
+gdl_prop_kv(Node *ynp, int ptype, int gtype, const char *k, const char *v)
+{
+  if (ynp)
+    ynp->props = prop_node_add(ynp, ptype, gtype, k, v);
   else
     mesg_warning(currgdlfile, gdllineno, "gdl_prop passed NULL ynp");
 }
@@ -181,8 +193,8 @@ gdl_field(Tree *ytp, const char *ftype)
       Node *cellp = node_ancestor_or_self(ytp->curr, "g:cell");
       
       fp = tree_node(ytp, NS_GDL, "g:field", ytp->root->depth+1, NULL);
-      gdl_prop(fp, GP_IMPLICIT, PG_GDL_INFO, NULL, NULL);
-      gdl_prop(fp, GP_ATTRIBUTE, PG_GDL_INFO, "field", "default");
+      gdl_prop(fp, GP_IMPLICIT, PG_GDL_INFO);
+      gdl_prop_kv(fp, GP_ATTRIBUTE, PG_GDL_INFO, "field", "default");
 
       /* NB: This assumes GDL parser will never be embedded in another grammar */
       if (!cellp)
@@ -193,7 +205,7 @@ gdl_field(Tree *ytp, const char *ftype)
   else
     tree_curr(ancestor->rent);
   fp = tree_add(ytp, NS_GDL, "g:field", ytp->root->depth+1, NULL);
-  gdl_prop(fp, GP_ATTRIBUTE, PG_GDL_INFO, "field", (ccp)pool_copy((uccp)ftype, ytp->pool));
+  gdl_prop_kv(fp, GP_ATTRIBUTE, PG_GDL_INFO, "field", (ccp)pool_copy((uccp)ftype, ytp->pool));
   tree_curr(fp);
 }
 
@@ -215,12 +227,12 @@ gdl_graph(Tree *ytp, const char *data)
   ret = gdl_graph_node(ytp, gname, data);
   if (g_literal_flag)
     {
-      gdl_prop(ret, '$', PG_GDL_FLAGS, NULL, NULL);
+      gdl_prop(ret, '$', PG_GDL_FLAGS);
       g_literal_flag = 0;
     }
   else if (g_logoforce_flag)
     {
-      gdl_prop(ret, '~', PG_GDL_FLAGS, NULL, NULL);
+      gdl_prop(ret, '~', PG_GDL_FLAGS);
       g_logoforce_flag = 0;
     }
   return ret;
@@ -279,6 +291,16 @@ gdl_break_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gpt
     fprintf(stderr, "gt: BREAK/o: %d=%s\n", tok, data);
   (void)gdl_balance_break(mlp, tok, data);
   ret = gdl_graph_node(ytp, "g:z", data);
+  switch (tok)
+    {
+    case '[':
+      gst.lost = SB_OP;
+      break;
+    case L_uhs:
+    case L_lhs:
+      gst.damaged = SB_OP;
+      break;
+    }
   gdl_node_type(ret,gptype);
   return ret;
 }
@@ -289,6 +311,17 @@ gdl_break_c(Mloc mlp, Tree *ytp, int tok, const char *data)
   if (gdltrace)
     fprintf(stderr, "gt: BREAK/c: %d=%s\n", tok, data);
   (void)gdl_balance_break(mlp, tok, data);
+  gdl_update_closers(lgp, tok);
+  switch (tok)
+    {
+    case ']':
+      gst.lost = SB_NO;
+      break;
+    case R_uhs:
+    case R_lhs:
+      gst.damaged = SB_NO;
+      break;
+    }  
   return gdl_graph_node(ytp, "g:z", data);
 }
 
@@ -300,6 +333,18 @@ gdl_gloss_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gpt
   (void)gdl_balance_state(mlp, tok, data);
   gdl_push(ytp, "g:glo");
   gdl_gp_type(ytp,gptype);
+  switch (tok)
+    {
+    case L_cur_par:
+      gst.glodoc = SB_OP;
+      break;
+    case L_dbl_cur:
+      gst.glolin = SB_OP;
+      break;
+    case L_ang_par_s:
+      gst.implied = SB_OP; /* something more needed here because this is MIN<(ba)> surro */
+      break;
+    }  
   return gdl_graph_node(ytp, "g:z", data);
 }
 
@@ -312,6 +357,19 @@ gdl_gloss_c(Mloc mlp, Tree *ytp, int tok, const char *data)
   ret =  gdl_graph_node(ytp, "g:z", data);
   if (!gdl_balance_state(mlp, tok, data))
     gdl_pop(ytp, data);
+  gdl_update_closers(lgp, tok);
+  switch (tok)
+    {
+    case R_cur_par:
+      gst.glodoc = SB_NO;
+      break;
+    case R_dbl_cur:
+      gst.glolin = SB_NO;
+      break;
+    case R_ang_par_s:
+      gst.implied = SB_NO; /* something more needed here because this is MIN<(ba)> surro */
+      break;
+    }  
   return ret;
 }
 Node *
@@ -324,6 +382,30 @@ gdl_state_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gpt
   /*gdl_push(ytp, "g:gp");*/
   ret = gdl_graph_node(ytp, "g:z", data);
   gdl_node_type(ret,gptype);
+  switch (tok)
+    {
+    case '<':
+      gst.supplied = SB_OP;
+      break;
+    case '(':
+      gst.maybe = SB_OP;
+      break;
+    case L_ang_par:
+      gst.implied = SB_OP;
+      break;
+    case L_dbl_ang:
+      gst.excised = SB_OP;
+      break;
+    case L_dbl_par:
+      gst.erased = SB_OP;
+      break;
+    case L_dbl_par_c:
+      gst.cancelled = SB_OP;
+      break;
+    case eras_canc_pivot:
+      gst.superposed = SB_OP;
+      break;
+    }  
   return ret;
 }
 
@@ -336,9 +418,108 @@ gdl_state_c(Mloc mlp, Tree *ytp, int tok, const char *data)
   ret =  gdl_graph_node(ytp, "g:z", data);
 #if 1
   (void)gdl_balance_state(mlp, tok, data);
+  gdl_update_closers(lgp, tok);
+  switch (tok)
+    {
+    case R_cur_par:
+      gst.glodoc = SB_NO;
+      break;
+    case R_dbl_cur:
+      gst.glolin = SB_NO;
+      break;
+    case R_ang_par_s:
+      gst.implied = SB_NO; /* something more needed here because this is MIN<(ba)> surro */
+      break;
+    case '>':
+      gst.supplied = SB_NO;
+      break;
+    case ')':
+      gst.maybe = SB_NO;
+      break;
+    case R_ang_par:
+      gst.implied = SB_NO;
+      break;
+    case R_dbl_ang:
+      gst.excised = SB_NO;
+      break;
+    case R_dbl_par:
+      gst.erased = SB_NO;
+      break;
+    case R_dbl_par_c:
+      gst.cancelled = SB_NO;
+      break;
+    }  
 #else
   if (!gdl_balance(mlp, tok, data))
     gdl_pop(ytp, data);
 #endif
   return ret;
+}
+
+void
+gdl_update_flags(Node *np, int tok)
+{
+  switch (tok)
+    {
+    case '*':
+      np->props->u.s->f_star = 1;
+      break;
+    case '!':
+      np->props->u.s->f_bang = 1;
+      break;
+    case '?':
+      np->props->u.s->f_query = 1;
+      break;
+    case '#':
+      np->props->u.s->f_hash = 1;
+      break;
+    case FLAG_PLUS:
+      np->props->u.s->f_plus = 1;
+      break;
+    case UFLAG1:
+      np->props->u.s->f_uf1 = 1;
+      break;
+    case UFLAG2:
+      np->props->u.s->f_uf2 = 1;
+      break;
+    case UFLAG3:
+      np->props->u.s->f_uf3 = 1;
+      break;
+    case UFLAG4:
+      np->props->u.s->f_uf4 = 1;
+      break;
+    }
+}
+
+void
+gdl_update_closers(Node *np, int tok)
+{
+  switch (tok)
+    {
+    case ']':
+      np->props->u.s->lost = SB_CL;
+      break;
+    case R_uhs:
+    case R_lhs:
+      np->props->u.s->damaged = SB_CL;
+      break;
+    case '>':
+      np->props->u.s->supplied = SB_CL;
+      break;
+    case ')':
+      np->props->u.s->maybe = SB_CL;
+      break;
+    case R_ang_par:
+      np->props->u.s->implied = SB_CL;
+      break;
+    case R_dbl_ang:
+      np->props->u.s->excised = SB_CL;
+      break;
+    case R_dbl_par:
+      np->props->u.s->erased = SB_CL;
+      break;
+    case R_dbl_par_c:
+      np->props->u.s->cancelled = SB_CL;
+      break;
+    }
 }
