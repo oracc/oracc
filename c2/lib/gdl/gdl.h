@@ -67,7 +67,8 @@ extern void gdl_xml_handler(Node *np, void *xhp);
 
 extern Node *gdl_pop(Tree *ytp, const char *s);
 extern Node *gdl_push(Tree *ytp, const char *s);
-extern void gdl_prop(Node *ynp, int p, int g, const char *k, const char *v);
+extern void gdl_prop(Node *ynp, int p, int g);
+extern void gdl_prop_kv(Node *ynp, int p, int g, const char *k, const char *v);
 extern void gdl_remove_q_error(Mloc m, Node *ynp);
 
 extern Node *gdl_nongraph(Tree *ytp, const char *data);
@@ -116,5 +117,8 @@ extern void gdl_modq_init(void);
 extern void gdl_modq_term(void);
 extern void gdl_mod_wrap(Node *np, int sub_simplexg);
 extern void gdl_mod_wrap_q(Node *np);
+
+extern void gdl_update_closers(Node *np, int tok);
+extern void gdl_update_flags(Node *np, int tok);
 
 #endif /*GDL_H_*/

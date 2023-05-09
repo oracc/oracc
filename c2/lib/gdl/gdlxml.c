@@ -54,7 +54,7 @@ gdlxml_xml_props(Node *np, void *user)
   while (p)
     {
       if (p->g == PG_XML)
-	gdlxml_keqv(p->k,p->v,user);
+	gdlxml_keqv(p->u.k->k,p->u.k->v,user);
       p = p->next;
     }
 }
@@ -88,8 +88,8 @@ gdl_xml_o(Node *np, void *user)
       while (p)
 	{
 	  fprintf(xhp->fp, "<prop g=\"%d\" p=\"%d\"", p->g, p->p);
-	  if (p->k)
-	    fprintf(xhp->fp, " k=\"%s\" v=\"%s\"", p->k, xmlify((uccp)p->v));
+	  if (p->u.k)
+	    fprintf(xhp->fp, " k=\"%s\" v=\"%s\"", p->u.k->k, xmlify((uccp)p->u.k->v));
 	  fprintf(xhp->fp, "/>");
 	  p = p->next;
 	}

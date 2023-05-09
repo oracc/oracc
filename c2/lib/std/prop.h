@@ -1,6 +1,7 @@
 #ifndef PROP_H_
 #define PROP_H_
 
+#include <keva.h>
 #include <memo.h>
 #include <tree.h>
 
@@ -27,11 +28,11 @@ struct prop
   int g;    		/* group type for easy filtering; some
 			   predefined in enum propgroup, some user
 			   defined at runtime hence 'int' */
-  union u {
-    struct kv *k;
+  union {
+    Keva *k;
     struct gdlstate s;
     void *v;
-  };
+  } u;
 
   struct prop *next;
 };
@@ -39,9 +40,10 @@ struct prop
 typedef struct prop Prop;
 struct node;
 
-extern struct kv*prop_key(Memo *propkvmem, const char *k, const char *v);
-
-extern Prop *prop_add(Memo *propmem, Prop *p, int pt, int gt, const char *k, const char *v);
+extern Prop *prop_add(Memo *propmem, Prop *p, int ptype, int gtype);
+extern Prop *prop_add_kv(Memo *propmem, Memo *kevamem, Prop *p, int ptype, int gtype,
+			 const char *key, const char *value);
+extern Prop *prop_add_v(Memo *propmem, Prop *p, int ptype, int gtype, void *vp);  
 extern Prop *prop_last(Prop *p);
 extern void prop_merge(Prop *into, Prop *from);
 extern void prop_node_add(struct node *np, int ptype, int gtype, const char *key, const char *value);

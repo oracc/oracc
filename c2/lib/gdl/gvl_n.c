@@ -131,7 +131,7 @@ gvl_n_sexify(Node *ynp)
 	  
 	  /* on the singleton or group set a property that this has been
 	     sexified and record the original number in the text field */
-	  gdl_prop(top, GP_IMPLICIT, PG_GDL_INFO, NULL, NULL);
+	  gdl_prop(top, GP_IMPLICIT, PG_GDL_INFO);
 	  top->text = (void*)ynp->text;
 
 	  /* transfer any other properties from the original node to

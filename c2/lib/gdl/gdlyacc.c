@@ -14,7 +14,8 @@ extern void gdl_wrapup_buffer(void);
 extern void gdl_validate(Tree *tp);
 int curr_lang = 's';
 
-struct gdlstate ggs;
+struct gdlstate gst; /* global gdl state */
+Node *lgp = NULL;   /* last grapheme node pointer */
 
 /***********************************************************************
  *
@@ -108,7 +109,7 @@ void
 gdl_prop_kv(Node *ynp, int ptype, int gtype, const char *k, const char *v)
 {
   if (ynp)
-    ynp->props = prop_node_add(ynp, ptype, gtype, k, v);
+    prop_node_add(ynp, ptype, gtype, k, v);
   else
     mesg_warning(currgdlfile, gdllineno, "gdl_prop passed NULL ynp");
 }
@@ -153,8 +154,8 @@ gdl_cell(Tree *ytp, const char *span)
   if (!(ancestor = node_ancestor_or_self(ytp->curr, "g:cell")))
     {
       cp = tree_node(ytp, NS_GDL, "g:cell", ytp->root->depth+1, NULL);
-      gdl_prop(cp, GP_IMPLICIT, PG_GDL_INFO, NULL, NULL);
-      gdl_prop(cp, GP_ATTRIBUTE, PG_GDL_INFO, "span", "1");
+      gdl_prop(cp, GP_IMPLICIT, PG_GDL_INFO);
+      gdl_prop_kv(cp, GP_ATTRIBUTE, PG_GDL_INFO, "span", "1");
       /* NB: This assumes GDL parser will never be embedded in another grammar */
       (void)node_insert(ytp->root, cp);
       tree_curr(ytp->root);
@@ -162,7 +163,7 @@ gdl_cell(Tree *ytp, const char *span)
   else
     tree_curr(ancestor->rent);
   cp = tree_add(ytp, NS_GDL, "g:cell", ytp->root->depth+1, NULL);
-  gdl_prop(cp, GP_ATTRIBUTE, PG_GDL_INFO, "span", (ccp)pool_copy((uccp)span, ytp->pool));
+  gdl_prop_kv(cp, GP_ATTRIBUTE, PG_GDL_INFO, "span", (ccp)pool_copy((uccp)span, ytp->pool));
   tree_curr(cp);
 }
 
@@ -462,31 +463,31 @@ gdl_update_flags(Node *np, int tok)
   switch (tok)
     {
     case '*':
-      np->props->u.s->f_star = 1;
+      np->props->u.s.f_star = 1;
       break;
     case '!':
-      np->props->u.s->f_bang = 1;
+      np->props->u.s.f_bang = 1;
       break;
     case '?':
-      np->props->u.s->f_query = 1;
+      np->props->u.s.f_query = 1;
       break;
     case '#':
-      np->props->u.s->f_hash = 1;
+      np->props->u.s.f_hash = 1;
       break;
-    case FLAG_PLUS:
-      np->props->u.s->f_plus = 1;
+    case PLUS_FLAG:
+      np->props->u.s.f_plus = 1;
       break;
     case UFLAG1:
-      np->props->u.s->f_uf1 = 1;
+      np->props->u.s.f_uf1 = 1;
       break;
     case UFLAG2:
-      np->props->u.s->f_uf2 = 1;
+      np->props->u.s.f_uf2 = 1;
       break;
     case UFLAG3:
-      np->props->u.s->f_uf3 = 1;
+      np->props->u.s.f_uf3 = 1;
       break;
     case UFLAG4:
-      np->props->u.s->f_uf4 = 1;
+      np->props->u.s.f_uf4 = 1;
       break;
     }
 }
@@ -497,29 +498,29 @@ gdl_update_closers(Node *np, int tok)
   switch (tok)
     {
     case ']':
-      np->props->u.s->lost = SB_CL;
+      np->props->u.s.lost = SB_CL;
       break;
     case R_uhs:
     case R_lhs:
-      np->props->u.s->damaged = SB_CL;
+      np->props->u.s.damaged = SB_CL;
       break;
     case '>':
-      np->props->u.s->supplied = SB_CL;
+      np->props->u.s.supplied = SB_CL;
       break;
     case ')':
-      np->props->u.s->maybe = SB_CL;
+      np->props->u.s.maybe = SB_CL;
       break;
     case R_ang_par:
-      np->props->u.s->implied = SB_CL;
+      np->props->u.s.implied = SB_CL;
       break;
     case R_dbl_ang:
-      np->props->u.s->excised = SB_CL;
+      np->props->u.s.excised = SB_CL;
       break;
     case R_dbl_par:
-      np->props->u.s->erased = SB_CL;
+      np->props->u.s.erased = SB_CL;
       break;
     case R_dbl_par_c:
-      np->props->u.s->cancelled = SB_CL;
+      np->props->u.s.cancelled = SB_CL;
       break;
     }
 }

@@ -25,9 +25,7 @@ struct gdlstate
   gs_bracket lost:2;          	/* [ ]    	*/
   gs_bracket maybe:2;         	/* ( )    	*/
 
-  gs_bracket det_sem_i:2;	/* { } 		*/
-  gs_bracket det_sem_e:2;	/* {- } 	*/
-  gs_bracket det_phon:2;	/* {+ } 	*/
+  gs_bracket det:2;		/* { } 		*/
   gs_bracket supplied:2;      	/* < >    	*/
   gs_bracket excised:2;       	/* << >>  	*/
   gs_bracket implied:2;       	/* <( )>  	*/
@@ -56,7 +54,8 @@ struct gdlstate
 
   gs_boolean g_logo:1;		/* logographic use of grapheme */
   gs_boolean g_caps:1;		/* grapheme is has undetermined reading */
-  gs_boolean g_force:1;		/* force char ~ for g_logo and $ for g_caps was used in input */
+  gs_boolean g_force:1;		/* force char ~ for g_logo and $ for g_caps 
+				   was used in input */
 
   gs_stream stream:4;        	/* lang or meta stream */
   uint lang:8;          	/* current language */

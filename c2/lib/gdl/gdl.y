@@ -12,6 +12,10 @@ extern int gdllex(void);
 extern void yyerror(const char *);
 extern const char *gdltext, *currgdlfile;
 extern int gdllineno, gdltrace;
+
+extern struct gdlstate gst; 	/* global gdl state */
+extern Node *lgp;   		/* last grapheme node pointer */
+
 static Tree *ytp;
 static Node *ynp, *yrem, *ycp, *mnp;
 /*int Q = 0;*/
@@ -39,10 +43,11 @@ GDLLTYPE gdllloc;
 
 %token <i>	'*' '!' '?' '#' '<' '>' '[' ']' '(' ')' CLP CRP QLP QRP
        	        L_dbl_ang R_dbl_ang L_dbl_cur R_dbl_cur
+		L_dbl_par R_dbl_par L_dbl_par_c R_dbl_par_c eras_canc_pivot
 		L_ang_par R_ang_par L_ang_par_s R_ang_par_s L_cur_par R_cur_par
 		L_uhs R_uhs L_lhs R_lhs LANG_FLIP
 		 '{' DET_SEME DET_PHON '}'
-		SPACE EOL END
+		PLUS_FLAG UFLAG1 UFLAG2 UFLAG3 UFLAG4 SPACE EOL END
 
 %nterm <text> 	field lexfld
 
@@ -109,8 +114,8 @@ comment:
 
 space:
 	  SPACE						{ ynp = gdl_delim(ytp, " ");
-	    						  gdl_prop(ynp, GP_ATTRIBUTE, PG_GDL_INFO,
-								   "literal", gdllval.text);
+	    						  gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO,
+								      "literal", gdllval.text);
 							  /*gdl_balance_ws(@1);*/ }
 	| '\n'						{ gdl_balance_flush(@1); }
 	| END						{ gdl_balance_flush(@1); }
@@ -185,18 +190,11 @@ gflags:
 	;
 
 gflag:
-#if 1
 	  '*'						{ gdl_update_flags(lgp, '*'); }
 	| '#'						{ gdl_update_flags(lgp, '#'); }
 	| '!'						{ gdl_update_flags(lgp, '!'); }
 	| '?'						{ gdl_update_flags(lgp, '?'); }
 	| PLUS_FLAG    					{ gdl_update_flags(lgp, '+'); }
-#else
-	  '*'						{ gdl_prop(ynp, '*', PG_GDL_FLAGS, NULL, NULL); }
-	| '#'						{ gdl_prop(ynp, '#', PG_GDL_FLAGS, NULL, NULL); }
-	| '!'						{ gdl_prop(ynp, '!', PG_GDL_FLAGS, NULL, NULL); }
-	| '?'						{ gdl_prop(ynp, '?', PG_GDL_FLAGS, NULL, NULL); }
-#endif
 	;
 
 simplexg:

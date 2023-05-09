@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <memo.h>
+#include <keva.h>
 #include <prop.h>
 
 struct gdlstate
@@ -8,21 +9,22 @@ prop_state(Node *np)
 {
   if (np->props)
     {
-      if (np->props->gtype != PU_GDLSTATE)
+      if (np->props->g != PU_GDLSTATE)
 	{
-	  Prop p = memo_new(np->tp->propmem);
-	  p->gtype = PU_GDLSTATE;
+	  Prop *p = memo_new(np->tree->propmem);
+	  p->g = PU_GDLSTATE;
 	  p->next = np->props;
 	  np->props = p;
 	}
     }
   else
     {
+      Prop *p = memo_new(np->tree->propmem);
       p->next = np->props;
-      np->props = memo_new(np->tp->propmem);
-      np->props->gtype = PU_GDLSTATE;
+      np->props = memo_new(np->tree->propmem);
+      np->props->g = PU_GDLSTATE;
     }
-  return np->props->u.g;
+  return np->props->u.s;
 }
 
 Prop *
@@ -92,10 +94,10 @@ prop_node_add(struct node *np, int ptype, int gtype, const char *key, const char
       if (value)
 	p = prop_add_kv(np->tree->propmem, np->tree->kevamem, np->props, ptype, gtype, key, value);
       else
-	p = prop_add_kv(np->tree->propmem, np->props, ptype, gtype, (void*)key);
+	p = prop_add_v(np->tree->propmem, np->props, ptype, gtype, (void*)key);
     }
   else
-    p = prop-add(np->tree->propmem, np->props, ptype, gtype);
+    p = prop_add(np->tree->propmem, np->props, ptype, gtype);
 
   if (!np->props)
     np->props = p;
