@@ -4,7 +4,7 @@
 #include <keva.h>
 #include <prop.h>
 
-struct gdlstate
+struct gdlstate *
 prop_state(Node *np)
 {
   if (np->props)
@@ -24,7 +24,7 @@ prop_state(Node *np)
       np->props = memo_new(np->tree->propmem);
       np->props->g = PU_GDLSTATE;
     }
-  return np->props->u.s;
+  return &np->props->u.s;
 }
 
 Prop *

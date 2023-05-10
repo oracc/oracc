@@ -75,6 +75,18 @@ static Node *
 gdl_graph_node(Tree *ytp, const char *name, const char *data)
 {
   Node *np = NULL;
+  struct gdlstate *st = NULL;
+  np = tree_add(ytp, NS_GDL, name, ytp->curr->depth, NULL);
+  np->text = (ccp)pool_copy((uccp)data,gdlpool);
+  lgp = np;
+  *(prop_state(np)) = gst;
+  return np;
+}
+
+static Node *
+gdl_meta_node(Tree *ytp, const char *name, const char *data)
+{
+  Node *np = NULL;
   np = tree_add(ytp, NS_GDL, name, ytp->curr->depth, NULL);
   np->text = (ccp)pool_copy((uccp)data,gdlpool);
   return np;
@@ -248,7 +260,7 @@ gdl_lang(Tree *ytp, const char *data)
     curr_lang = 'n';
   else
     curr_lang = data[1];
-  return gdl_graph_node(ytp, "g:z", data);
+  return gdl_meta_node(ytp, "g:z", data);
 }
 
 Node *
@@ -291,7 +303,7 @@ gdl_break_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gpt
   if (gdltrace)
     fprintf(stderr, "gt: BREAK/o: %d=%s\n", tok, data);
   (void)gdl_balance_break(mlp, tok, data);
-  ret = gdl_graph_node(ytp, "g:z", data);
+  ret = gdl_meta_node(ytp, "g:z", data);
   switch (tok)
     {
     case '[':
@@ -323,7 +335,7 @@ gdl_break_c(Mloc mlp, Tree *ytp, int tok, const char *data)
       gst.damaged = SB_NO;
       break;
     }  
-  return gdl_graph_node(ytp, "g:z", data);
+  return gdl_meta_node(ytp, "g:z", data);
 }
 
 Node *
@@ -346,7 +358,7 @@ gdl_gloss_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gpt
       gst.implied = SB_OP; /* something more needed here because this is MIN<(ba)> surro */
       break;
     }  
-  return gdl_graph_node(ytp, "g:z", data);
+  return gdl_meta_node(ytp, "g:z", data);
 }
 
 Node *
@@ -355,7 +367,7 @@ gdl_gloss_c(Mloc mlp, Tree *ytp, int tok, const char *data)
   Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "gt: GLOSS/c: %d=%s\n", tok, data);
-  ret =  gdl_graph_node(ytp, "g:z", data);
+  ret =  gdl_meta_node(ytp, "g:z", data);
   if (!gdl_balance_state(mlp, tok, data))
     gdl_pop(ytp, data);
   gdl_update_closers(lgp, tok);
@@ -381,7 +393,7 @@ gdl_state_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gpt
     fprintf(stderr, "gt: STATE/o: %d=%s\n", tok, data);
   (void)gdl_balance_state(mlp, tok, data);
   /*gdl_push(ytp, "g:gp");*/
-  ret = gdl_graph_node(ytp, "g:z", data);
+  ret = gdl_meta_node(ytp, "g:z", data);
   gdl_node_type(ret,gptype);
   switch (tok)
     {
@@ -416,7 +428,7 @@ gdl_state_c(Mloc mlp, Tree *ytp, int tok, const char *data)
   Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "gt: STATE/c: %d=%s\n", tok, data);
-  ret =  gdl_graph_node(ytp, "g:z", data);
+  ret =  gdl_meta_node(ytp, "g:z", data);
 #if 1
   (void)gdl_balance_state(mlp, tok, data);
   gdl_update_closers(lgp, tok);
