@@ -5,7 +5,7 @@
 #include <prop.h>
 
 struct gdlstate *
-prop_state(Node *np)
+prop_state(Node *np, struct gdlstate *sp)
 {
   if (np->props)
     {
@@ -24,6 +24,8 @@ prop_state(Node *np)
       np->props = memo_new(np->tree->propmem);
       np->props->g = PU_GDLSTATE;
     }
+  if (sp)
+    np->props->u.s = *sp;
   return &np->props->u.s;
 }
 

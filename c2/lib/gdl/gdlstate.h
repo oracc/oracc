@@ -58,9 +58,12 @@ struct gdlstate
 				   was used in input */
 
   gs_stream stream:4;        	/* lang or meta stream */
-  uint lang:8;          	/* current language */
-  uint script:6;        	/* current script */
+  unsigned int lang:8;          	/* current language */
+  unsigned int script:6;        	/* current script */
   gs_mode mode:2;          	/* current transliteration mode--logosyllabic, alphabetic, morphology */
 };
+
+extern void gdlstate_rawxml(FILE *fp, struct gdlstate *sp);
+
 
 #endif/*GDLSTATE_H_*/

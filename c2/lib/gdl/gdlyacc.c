@@ -75,11 +75,10 @@ static Node *
 gdl_graph_node(Tree *ytp, const char *name, const char *data)
 {
   Node *np = NULL;
-  struct gdlstate *st = NULL;
   np = tree_add(ytp, NS_GDL, name, ytp->curr->depth, NULL);
   np->text = (ccp)pool_copy((uccp)data,gdlpool);
   lgp = np;
-  *(prop_state(np)) = gst;
+  prop_state(np, &gst);
   return np;
 }
 
@@ -240,12 +239,18 @@ gdl_graph(Tree *ytp, const char *data)
   ret = gdl_graph_node(ytp, gname, data);
   if (g_literal_flag)
     {
-      gdl_prop(ret, '$', PG_GDL_FLAGS);
+      /*gdl_prop(ret, '$', PG_GDL_FLAGS);*/
+      struct gdlstate *sp = prop_state(ret, NULL);
+      sp->g_force = 1;
+      sp->g_caps = 1;
       g_literal_flag = 0;
     }
   else if (g_logoforce_flag)
     {
-      gdl_prop(ret, '~', PG_GDL_FLAGS);
+      struct gdlstate *sp = prop_state(ret, NULL);
+      sp->g_force = 1;
+      sp->g_logo = 1;
+      /*gdl_prop(ret, '~', PG_GDL_FLAGS);*/
       g_logoforce_flag = 0;
     }
   return ret;

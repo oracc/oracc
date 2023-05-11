@@ -87,10 +87,22 @@ gdl_xml_o(Node *np, void *user)
       fprintf(xhp->fp, "<props>");
       while (p)
 	{
-	  fprintf(xhp->fp, "<prop g=\"%d\" p=\"%d\"", p->g, p->p);
-	  if (p->u.k)
-	    fprintf(xhp->fp, " k=\"%s\" v=\"%s\"", p->u.k->k, xmlify((uccp)p->u.k->v));
-	  fprintf(xhp->fp, "/>");
+	  if (p->g == PU_GDLSTATE)
+	    {
+	      fprintf(xhp->fp, "<gdlstate");
+	      gdlstate_rawxml(xhp->fp, &p->u.s);
+	      fputs("/>",xhp->fp);
+	    }
+	  else
+	    {
+	      fprintf(xhp->fp, "<prop g=\"%d\" p=\"%d\"", p->g, p->p);
+	      if (p->g < PU_VOIDSTAR)
+		{
+		  if (p->u.k)
+		    fprintf(xhp->fp, " k=\"%s\" v=\"%s\"", p->u.k->k, xmlify((uccp)p->u.k->v));
+		}
+	      fprintf(xhp->fp, "/>");
+	    }
 	  p = p->next;
 	}
       fprintf(xhp->fp, "</props>");
