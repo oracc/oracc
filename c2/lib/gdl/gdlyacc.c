@@ -65,11 +65,13 @@ gdl_gp_type(Tree *ytp, enum gdlpropvals p)
   gdl_prop(ytp->curr, p, PG_GDL_GROUP);
 }
 
+#if 0
 void
 gdl_node_type(Node *np, enum gdlpropvals p)
 {
   gdl_prop(np, p, PG_GDL_GROUP);
 }
+#endif
 
 static Node *
 gdl_graph_node(Tree *ytp, const char *name, const char *data)
@@ -319,7 +321,7 @@ gdl_break_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gpt
       gst.damaged = SB_OP;
       break;
     }
-  gdl_node_type(ret,gptype);
+  /*gdl_node_type(ret,gptype);*/
   return ret;
 }
 
@@ -399,7 +401,7 @@ gdl_state_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gpt
   (void)gdl_balance_state(mlp, tok, data);
   /*gdl_push(ytp, "g:gp");*/
   ret = gdl_meta_node(ytp, "g:z", data);
-  gdl_node_type(ret,gptype);
+  /*gdl_node_type(ret,gptype);*/
   switch (tok)
     {
     case '<':

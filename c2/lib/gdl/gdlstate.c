@@ -10,5 +10,9 @@ gdlstate_rawxml(FILE *fp, struct gdlstate *sp)
     {
       if (sp->f_star)
 	fprintf(fp, " flags=\"*\"");
+      if (sp->lost == SB_OP)
+	fprintf(fp, " o=\"[\"");
+      else if (sp->lost == SB_CL)
+	fprintf(fp, " c=\"]\"");
     }
 }
