@@ -13,7 +13,7 @@ extern void yyerror(const char *);
 extern const char *gdltext, *currgdlfile;
 extern int gdllineno, gdltrace;
 
-extern struct gdlstate gst; 	/* global gdl state */
+extern gdlstate_t gst; 	/* global gdl state */
 extern Node *lgp;   		/* last grapheme node pointer */
 
 static Tree *ytp;
@@ -136,28 +136,26 @@ delim:
 	| ':' 						{ ynp = gdl_delim(ytp, ":"); }
 	| '{'	      					{ gdl_balance_state(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det");
-	  						  gst.det = SB_OP;
-	  						  gst.d_sem_i = 1;
+	  						  gs_on(gs_det|gs_det_o);
+	  						  gs_on(gs_g_semd_i);
 							  /*gdl_gp_type(ytp,GP_DET_SEMI);*/}
 	| DET_SEME    					{ gdl_balance_state(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det");
-	  						  gst.d_sem_e = 1;
-	  						  gst.det = SB_OP;
-	  						  gst.d_sem_e = 1;
+	  						  gs_on(gs_det|gs_det_o);
+	  						  gs_on(gs_g_semd_e);
 	  						  /*gdl_gp_type(ytp,GP_DET_SEME);*/}
 	| DET_PHON      	      			{ gdl_balance_state(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det"); 
-	  						  gst.det = SB_OP;
-	  						  gst.d_phon = 1;
+	  						  gs_on(gs_det|gs_det_o);
+	  						  gs_on(gs_g_phond);
 	  						  /*gdl_gp_type(ytp,GP_DET_PHON);*/}
 	| '}' 	 		  			{ if (!gdl_balance_state(@1,'}',"}"))
 	      						    gdl_pop(ytp,"g:det");
 	     						    /* set pst->det = SB_CL; lgp is last
 							       node with g content or equivalent, i.e.,
 							       where the closer state must be set */
-	    						    gdl_update_closers(lgp, '}');
-	    						    gst.det = SB_NO;
-							    gst.d_sem_i = gst.d_sem_e = gst.d_phon = 0;
+	    						    gdl_update_state(lgp, gs_det_c);
+							    gs_no(gs_det|gs_g_semd_e|gs_g_semd_i|gs_g_phond);
 	  						  }
 	| ENHYPHEN 			       		{ ynp = gdl_delim(ytp, "--"); }
 	;
@@ -190,11 +188,11 @@ gflags:
 	;
 
 gflag:
-	  '*'						{ gdl_update_flags(lgp, '*'); }
-	| '#'						{ gdl_update_flags(lgp, '#'); }
-	| '!'						{ gdl_update_flags(lgp, '!'); }
-	| '?'						{ gdl_update_flags(lgp, '?'); }
-	| PLUS_FLAG    					{ gdl_update_flags(lgp, '+'); }
+	  '*'						{ gdl_update_state(lgp, gs_f_star); }
+	| '#'						{ gdl_update_state(lgp, gs_f_hash); }
+	| '!'						{ gdl_update_state(lgp, gs_f_bang); }
+	| '?'						{ gdl_update_state(lgp, gs_f_query); }
+	| PLUS_FLAG    					{ gdl_update_state(lgp, gs_f_plus); }
 	;
 
 simplexg:
@@ -321,41 +319,41 @@ mod:
 	;
 
 breako:
-	  '['				{ ynp = gdl_break_o(@1, ytp, '[', gdllval.text, GP_BREAK_FULL); }
-	| L_uhs				{ ynp = gdl_break_o(@1, ytp, L_uhs, gdllval.text, GP_BREAK_PART); }
-	| L_lhs				{ ynp = gdl_break_o(@1, ytp, L_lhs, gdllval.text, GP_BREAK_PART); }
+	  '['				{ ynp = gdl_break_o(@1, ytp, '[', gs_lost_o, gdllval.text); }
+	| L_uhs				{ ynp = gdl_break_o(@1, ytp, L_uhs, gs_damaged_o, gdllval.text); }
+	| L_lhs				{ ynp = gdl_break_o(@1, ytp, L_lhs, gs_damaged_o, gdllval.text); }
 	;
 
 breakc:
-	  ']'				{ ynp = gdl_break_c(@1, ytp, ']', gdllval.text); }
-	| R_uhs				{ ynp = gdl_break_c(@1, ytp, R_uhs, gdllval.text); }
-	| R_lhs				{ ynp = gdl_break_c(@1, ytp, R_lhs, gdllval.text); }
+	  ']'				{ ynp = gdl_break_c(@1, ytp, ']', gs_lost_c, gdllval.text); }
+	| R_uhs				{ ynp = gdl_break_c(@1, ytp, R_uhs, gs_damaged_c, gdllval.text); }
+	| R_lhs				{ ynp = gdl_break_c(@1, ytp, R_lhs, gs_damaged_c, gdllval.text); }
 	;
 
 glosso:
-	  L_cur_par		       	{ ynp = gdl_gloss_o(@1, ytp, L_cur_par, gdllval.text, GP_GLOSS_DOCGLO); }
-	| L_dbl_cur			{ ynp = gdl_gloss_o(@1, ytp, L_dbl_cur, gdllval.text, GP_GLOSS_LING); }
-	| L_ang_par_s		       	{ ynp = gdl_gloss_o(@1, ytp, L_ang_par, gdllval.text, GP_GLOSS_SURRO); }
+	  L_cur_par		       	{ ynp = gdl_gloss_o(@1, ytp, L_cur_par, gs_glodoc_o, gdllval.text); }
+	| L_dbl_cur			{ ynp = gdl_gloss_o(@1, ytp, L_dbl_cur, gs_glolin_c, gdllval.text); }
+	| L_ang_par_s		       	{ ynp = gdl_gloss_o(@1, ytp, L_ang_par, gs_surro_o, gdllval.text); }
 	;
 
 glossc:
-	  R_cur_par		       	{ ynp = gdl_gloss_c(@1, ytp, R_cur_par, gdllval.text); }
-	| R_dbl_cur			{ ynp = gdl_gloss_c(@1, ytp, R_dbl_cur, gdllval.text); }
-	| R_ang_par_s		       	{ ynp = gdl_gloss_c(@1, ytp, R_ang_par, gdllval.text); }
+	  R_cur_par		       	{ ynp = gdl_gloss_c(@1, ytp, R_cur_par, gs_glodoc_c, gdllval.text); }
+	| R_dbl_cur			{ ynp = gdl_gloss_c(@1, ytp, R_dbl_cur, gs_glolin_c, gdllval.text); }
+	| R_ang_par_s		       	{ ynp = gdl_gloss_c(@1, ytp, R_ang_par, gs_surro_c, gdllval.text); }
 	;
 
 stateo:  
-	  '<'				{ ynp = gdl_state_o(@1, ytp, '<', gdllval.text, GP_STATE_IMPLIED); }
-	| '('				{ ynp = gdl_state_o(@1, ytp, '(', gdllval.text, GP_STATE_MAYBE); }
-	| L_ang_par		       	{ ynp = gdl_state_o(@1, ytp, L_ang_par, gdllval.text, GP_STATE_SUPPLIED); }
-	| L_dbl_ang		       	{ ynp = gdl_state_o(@1, ytp, L_dbl_ang, gdllval.text, GP_STATE_EXCISED); }
+	  '<'				{ ynp = gdl_state_o(@1, ytp, '<', gs_supplied_o, gdllval.text); }
+	| '('				{ ynp = gdl_state_o(@1, ytp, '(', gs_maybe_o, gdllval.text); }
+	| L_ang_par		       	{ ynp = gdl_state_o(@1, ytp, L_ang_par, gs_implied_o, gdllval.text); }
+	| L_dbl_ang		       	{ ynp = gdl_state_o(@1, ytp, L_dbl_ang, gs_excised_o, gdllval.text); }
 	;
 
 statec:
-	  '>'				{ ynp = gdl_state_c(@1, ytp, '>', gdllval.text); }
-	| ')'				{ ynp = gdl_state_c(@1, ytp, ')', gdllval.text); }
-	| R_ang_par		       	{ ynp = gdl_state_c(@1, ytp, R_ang_par, gdllval.text); }
-	| R_dbl_ang			{ ynp = gdl_state_c(@1, ytp, R_dbl_ang, gdllval.text); }
+	  '>'				{ ynp = gdl_state_c(@1, ytp, '>', gs_supplied_c, gdllval.text); }
+	| ')'				{ ynp = gdl_state_c(@1, ytp, ')', gs_maybe_c, gdllval.text); }
+	| R_ang_par		       	{ ynp = gdl_state_c(@1, ytp, R_ang_par, gs_implied_c, gdllval.text); }
+	| R_dbl_ang			{ ynp = gdl_state_c(@1, ytp, R_dbl_ang, gs_excised_c, gdllval.text); }
 	;
 %%
 

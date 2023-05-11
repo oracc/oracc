@@ -72,12 +72,12 @@ extern void gdl_prop_kv(Node *ynp, int p, int g, const char *k, const char *v);
 extern void gdl_remove_q_error(Mloc m, Node *ynp);
 
 extern Node *gdl_nongraph(Tree *ytp, const char *data);
-extern Node *gdl_break_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gptype);
-extern Node *gdl_break_c(Mloc mlp, Tree *ytp, int tok, const char *data);
-extern Node *gdl_gloss_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gptype);
-extern Node *gdl_gloss_c(Mloc mlp, Tree *ytp, int tok, const char *data);
-extern Node *gdl_state_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gptype);
-extern Node *gdl_state_c(Mloc mlp, Tree *ytp, int tok, const char *data);
+extern Node *gdl_break_o(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data);
+extern Node *gdl_break_c(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data);
+extern Node *gdl_gloss_o(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data);
+extern Node *gdl_gloss_c(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data);
+extern Node *gdl_state_o(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data);
+extern Node *gdl_state_c(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data);
 extern void gdl_cell(Tree *ytp, const char *span);
 extern Node *gdl_delim(Tree *ytp, const char *data);
 extern void gdl_field(Tree *ytp, const char *ftype);
@@ -118,7 +118,6 @@ extern void gdl_modq_term(void);
 extern void gdl_mod_wrap(Node *np, int sub_simplexg);
 extern void gdl_mod_wrap_q(Node *np);
 
-extern void gdl_update_closers(Node *np, int tok);
-extern void gdl_update_flags(Node *np, int tok);
+extern void gdl_update_state(Node *np, gdlstate_t gs_tok);
 
 #endif /*GDL_H_*/

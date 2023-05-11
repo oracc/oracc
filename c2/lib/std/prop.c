@@ -4,8 +4,8 @@
 #include <keva.h>
 #include <prop.h>
 
-struct gdlstate *
-prop_state(Node *np, struct gdlstate *sp)
+gdlstate_t *
+prop_state(Node *np, gdlstate_t *sp)
 {
   if (np->props)
     {
@@ -19,8 +19,6 @@ prop_state(Node *np, struct gdlstate *sp)
     }
   else
     {
-      Prop *p = memo_new(np->tree->propmem);
-      p->next = np->props;
       np->props = memo_new(np->tree->propmem);
       np->props->g = PU_GDLSTATE;
     }

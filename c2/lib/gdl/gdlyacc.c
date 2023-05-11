@@ -14,7 +14,7 @@ extern void gdl_wrapup_buffer(void);
 extern void gdl_validate(Tree *tp);
 int curr_lang = 's';
 
-struct gdlstate gst; /* global gdl state */
+gdlstate_t gst; /* global gdl state */
 Node *lgp = NULL;   /* last grapheme node pointer */
 
 /***********************************************************************
@@ -241,18 +241,12 @@ gdl_graph(Tree *ytp, const char *data)
   ret = gdl_graph_node(ytp, gname, data);
   if (g_literal_flag)
     {
-      /*gdl_prop(ret, '$', PG_GDL_FLAGS);*/
-      struct gdlstate *sp = prop_state(ret, NULL);
-      sp->g_force = 1;
-      sp->g_caps = 1;
+      gdl_update_state(ret, gs_force|gs_g_undefined);
       g_literal_flag = 0;
     }
   else if (g_logoforce_flag)
     {
-      struct gdlstate *sp = prop_state(ret, NULL);
-      sp->g_force = 1;
-      sp->g_logo = 1;
-      /*gdl_prop(ret, '~', PG_GDL_FLAGS);*/
+      gdl_update_state(ret, gs_force|gs_g_flogo1);
       g_logoforce_flag = 0;
     }
   return ret;
@@ -304,72 +298,40 @@ gdl_punct(Tree *ytp, const char *data)
 }
 
 Node *
-gdl_break_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gptype)
+gdl_break_o(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data)
 {
   Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "gt: BREAK/o: %d=%s\n", tok, data);
   (void)gdl_balance_break(mlp, tok, data);
   ret = gdl_meta_node(ytp, "g:z", data);
-  switch (tok)
-    {
-    case '[':
-      gst.lost = SB_OP;
-      break;
-    case L_uhs:
-    case L_lhs:
-      gst.damaged = SB_OP;
-      break;
-    }
-  /*gdl_node_type(ret,gptype);*/
+  gs_on(gs_tok);
   return ret;
 }
 
 Node *
-gdl_break_c(Mloc mlp, Tree *ytp, int tok, const char *data)
+gdl_break_c(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data)
 {
   if (gdltrace)
     fprintf(stderr, "gt: BREAK/c: %d=%s\n", tok, data);
   (void)gdl_balance_break(mlp, tok, data);
-  gdl_update_closers(lgp, tok);
-  switch (tok)
-    {
-    case ']':
-      gst.lost = SB_NO;
-      break;
-    case R_uhs:
-    case R_lhs:
-      gst.damaged = SB_NO;
-      break;
-    }  
+  gdl_update_state(lgp, gs_tok);
   return gdl_meta_node(ytp, "g:z", data);
 }
 
 Node *
-gdl_gloss_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gptype)
+gdl_gloss_o(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data)
 {
   if (gdltrace)
     fprintf(stderr, "gt: GLOSS/o: %d=%s\n", tok, data);
   (void)gdl_balance_state(mlp, tok, data);
   gdl_push(ytp, "g:glo");
-  gdl_gp_type(ytp,gptype);
-  switch (tok)
-    {
-    case L_cur_par:
-      gst.glodoc = SB_OP;
-      break;
-    case L_dbl_cur:
-      gst.glolin = SB_OP;
-      break;
-    case L_ang_par_s:
-      gst.implied = SB_OP; /* something more needed here because this is MIN<(ba)> surro */
-      break;
-    }  
+  gs_on(gs_tok);
   return gdl_meta_node(ytp, "g:z", data);
 }
 
 Node *
-gdl_gloss_c(Mloc mlp, Tree *ytp, int tok, const char *data)
+gdl_gloss_c(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data)
 {
   Node *ret = NULL;
   if (gdltrace)
@@ -377,169 +339,35 @@ gdl_gloss_c(Mloc mlp, Tree *ytp, int tok, const char *data)
   ret =  gdl_meta_node(ytp, "g:z", data);
   if (!gdl_balance_state(mlp, tok, data))
     gdl_pop(ytp, data);
-  gdl_update_closers(lgp, tok);
-  switch (tok)
-    {
-    case R_cur_par:
-      gst.glodoc = SB_NO;
-      break;
-    case R_dbl_cur:
-      gst.glolin = SB_NO;
-      break;
-    case R_ang_par_s:
-      gst.implied = SB_NO; /* something more needed here because this is MIN<(ba)> surro */
-      break;
-    }  
+  gdl_update_state(lgp, gs_tok);
   return ret;
 }
 Node *
-gdl_state_o(Mloc mlp, Tree *ytp, int tok, const char *data, enum gdlpropvals gptype)
+gdl_state_o(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data)
 {
   Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "gt: STATE/o: %d=%s\n", tok, data);
   (void)gdl_balance_state(mlp, tok, data);
-  /*gdl_push(ytp, "g:gp");*/
   ret = gdl_meta_node(ytp, "g:z", data);
-  /*gdl_node_type(ret,gptype);*/
-  switch (tok)
-    {
-    case '<':
-      gst.supplied = SB_OP;
-      break;
-    case '(':
-      gst.maybe = SB_OP;
-      break;
-    case L_ang_par:
-      gst.implied = SB_OP;
-      break;
-    case L_dbl_ang:
-      gst.excised = SB_OP;
-      break;
-    case L_dbl_par:
-      gst.erased = SB_OP;
-      break;
-    case L_dbl_par_c:
-      gst.cancelled = SB_OP;
-      break;
-    case eras_canc_pivot:
-      gst.superposed = SB_OP;
-      break;
-    }  
+  gs_on(gs_tok);
   return ret;
 }
 
 Node *
-gdl_state_c(Mloc mlp, Tree *ytp, int tok, const char *data)
+gdl_state_c(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data)
 {
   Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "gt: STATE/c: %d=%s\n", tok, data);
   ret =  gdl_meta_node(ytp, "g:z", data);
-#if 1
   (void)gdl_balance_state(mlp, tok, data);
-  gdl_update_closers(lgp, tok);
-  switch (tok)
-    {
-    case R_cur_par:
-      gst.glodoc = SB_NO;
-      break;
-    case R_dbl_cur:
-      gst.glolin = SB_NO;
-      break;
-    case R_ang_par_s:
-      gst.implied = SB_NO; /* something more needed here because this is MIN<(ba)> surro */
-      break;
-    case '>':
-      gst.supplied = SB_NO;
-      break;
-    case ')':
-      gst.maybe = SB_NO;
-      break;
-    case R_ang_par:
-      gst.implied = SB_NO;
-      break;
-    case R_dbl_ang:
-      gst.excised = SB_NO;
-      break;
-    case R_dbl_par:
-      gst.erased = SB_NO;
-      break;
-    case R_dbl_par_c:
-      gst.cancelled = SB_NO;
-      break;
-    }  
-#else
-  if (!gdl_balance(mlp, tok, data))
-    gdl_pop(ytp, data);
-#endif
+  gdl_update_state(lgp, gs_tok);
   return ret;
 }
 
 void
-gdl_update_flags(Node *np, int tok)
+gdl_update_state(Node *np, gdlstate_t gs_tok)
 {
-  switch (tok)
-    {
-    case '*':
-      np->props->u.s.f_star = 1;
-      break;
-    case '!':
-      np->props->u.s.f_bang = 1;
-      break;
-    case '?':
-      np->props->u.s.f_query = 1;
-      break;
-    case '#':
-      np->props->u.s.f_hash = 1;
-      break;
-    case PLUS_FLAG:
-      np->props->u.s.f_plus = 1;
-      break;
-    case UFLAG1:
-      np->props->u.s.f_uf1 = 1;
-      break;
-    case UFLAG2:
-      np->props->u.s.f_uf2 = 1;
-      break;
-    case UFLAG3:
-      np->props->u.s.f_uf3 = 1;
-      break;
-    case UFLAG4:
-      np->props->u.s.f_uf4 = 1;
-      break;
-    }
-}
-
-void
-gdl_update_closers(Node *np, int tok)
-{
-  switch (tok)
-    {
-    case ']':
-      np->props->u.s.lost = SB_CL;
-      break;
-    case R_uhs:
-    case R_lhs:
-      np->props->u.s.damaged = SB_CL;
-      break;
-    case '>':
-      np->props->u.s.supplied = SB_CL;
-      break;
-    case ')':
-      np->props->u.s.maybe = SB_CL;
-      break;
-    case R_ang_par:
-      np->props->u.s.implied = SB_CL;
-      break;
-    case R_dbl_ang:
-      np->props->u.s.excised = SB_CL;
-      break;
-    case R_dbl_par:
-      np->props->u.s.erased = SB_CL;
-      break;
-    case R_dbl_par_c:
-      np->props->u.s.cancelled = SB_CL;
-      break;
-    }
+  bit_set(np->props->u.s, gs_tok);
 }

@@ -30,7 +30,7 @@ struct prop
 			   defined at runtime hence 'int' */
   union {
     Keva *k;
-    struct gdlstate s;
+    gdlstate_t s;
     void *v;
   } u;
 
@@ -40,7 +40,7 @@ struct prop
 typedef struct prop Prop;
 struct node;
 
-extern struct gdlstate *prop_state(struct node *np, struct gdlstate *sp);
+extern gdlstate_t *prop_state(struct node *np, gdlstate_t *sp);
 extern Prop *prop_add(Memo *propmem, Prop *p, int ptype, int gtype);
 extern Prop *prop_add_kv(Memo *propmem, Memo *kevamem, Prop *p, int ptype, int gtype,
 			 const char *key, const char *value);

@@ -90,7 +90,7 @@ gdl_xml_o(Node *np, void *user)
 	  if (p->g == PU_GDLSTATE)
 	    {
 	      fprintf(xhp->fp, "<gdlstate");
-	      gdlstate_rawxml(xhp->fp, &p->u.s);
+	      gdlstate_rawxml(xhp->fp, p->u.s);
 	      fputs("/>",xhp->fp);
 	    }
 	  else
