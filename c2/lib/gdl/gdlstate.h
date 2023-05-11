@@ -84,7 +84,7 @@ extern void gdlstate_rawxml(FILE *fp, gdlstate_t sp);
 			  
 #include <bits.h>
 
-#define gs_is(x) (bit_get(gst,(x)))
+#define gs_is(s,x) (bit_get((s),(x)))
 #define gs_on(x) (bit_set(gst,(x)))
 #define gs_no(x) (bit_off(gst,(x)))
 
