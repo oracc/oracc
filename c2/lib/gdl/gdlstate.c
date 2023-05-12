@@ -8,11 +8,11 @@ gdlstate_t gs_order_f[] = { gs_f_query, gs_f_bang, gs_f_star, gs_f_hash,
 
 gdlstate_t gs_order_o[] = { gs_damaged_o, gs_lost_o, gs_maybe_o, gs_det_o, gs_supplied_o,
 			    gs_excised_o, gs_implied_o, gs_erased_o, gs_cancelled_o,
-			    gs_superposed_o, gs_glolin_o, gs_glodoc_o, gs_surro_o };
+			    gs_superposed_o, gs_glolin_o, gs_glodoc_o, gs_surro_o, gs_group_o };
 
 gdlstate_t gs_order_c[] = { gs_damaged_c, gs_lost_c, gs_maybe_c, gs_det_c, gs_supplied_c,
 			    gs_excised_c, gs_implied_c, gs_erased_c, gs_cancelled_c,
-			    gs_superposed_c, gs_glolin_c, gs_glodoc_c, gs_surro_c };
+			    gs_superposed_c, gs_glolin_c, gs_glodoc_c, gs_surro_c, gs_group_c };
 
 #define NFLAGS (sizeof(gs_order_f)/sizeof(gdlstate_t))
 #define NBRACK (sizeof(gs_order_o)/sizeof(gdlstate_t))
@@ -22,8 +22,8 @@ static char brackobuf[NBRACK*2];
 static char brackcbuf[NBRACK*2];
 
 const char *gs_str_f[NFLAGS] = { "?", "!", "*", "#", "f1", "f2", "f3", "f4", "+" };
-const char *gs_str_o[NBRACK] = { "[#", "[", "(", "{", "<", "<<", "<(", "((", "((-", "//", "{{", "{(", "<(" };
-const char *gs_str_c[NBRACK] = { "#]", "]", ")", "}", ">", ">>", ")>", "))", "))",  "))", "}}", ")}", ")>" };
+const char *gs_str_o[NBRACK] = { "[#", "[", "(", "{", "<", "<<", "<(", "((", "((-", "//", "{{", "{(", "<(", ")" };
+const char *gs_str_c[NBRACK] = { "#]", "]", ")", "}", ">", ">>", ")>", "))", "))",  "))", "}}", ")}", ")>", ")" };
 
 void
 gsraw_flags(gdlstate_t sp)
