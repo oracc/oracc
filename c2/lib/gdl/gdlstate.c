@@ -21,48 +21,9 @@ static char flagbuf[NFLAGS/2 + (NFLAGS*3) + 1];
 static char brackobuf[NBRACK*2];
 static char brackcbuf[NBRACK*2];
 
-static const char *
-gs_flagstr(gdlstate_t s)
-{
-  switch (s)
-    {
-    case gs_f_star:
-      return "*";
-    case gs_f_bang:
-      return "!";
-    case gs_f_query:
-      return "?";
-    case gs_f_hash:
-      return "#";
-    }
-  return NULL;
-}
-
-static const char *
-gs_brackostr(gdlstate_t s)
-{
-  switch (s)
-    {
-    case gs_supplied_o:
-      return "<";
-    case gs_lost_o:
-      return "[";
-    }
-  return NULL;
-}
-
-static const char *
-gs_brackcstr(gdlstate_t s)
-{
-  switch (s)
-    {
-    case gs_supplied_c:
-      return ">";
-    case gs_lost_c:
-      return "]";
-    }
-  return NULL;
-}
+const char *gs_str_f[NFLAGS] = { "?", "!", "*", "#", "f1", "f2", "f3", "f4", "+" };
+const char *gs_str_o[NBRACK] = { "[#", "[", "(", "{", "<", "<<", "<(", "((", "((-", "//", "{{", "{(", "<(" };
+const char *gs_str_c[NBRACK] = { "#]", "]", ")", "}", ">", ">>", ")>", "))", "))",  "))", "}}", ")}", ")>" };
 
 void
 gsraw_flags(gdlstate_t sp)
@@ -71,7 +32,7 @@ gsraw_flags(gdlstate_t sp)
   *flagbuf = '\0';
   for (i = 0; i < NFLAGS; ++i)
     if (gs_is(sp,gs_order_f[i]))
-      strcat(flagbuf, gs_flagstr(gs_order_f[i]));
+      strcat(flagbuf, gs_str_f[i]);
 }
 
 void
@@ -81,7 +42,7 @@ gsraw_bracko(gdlstate_t sp)
   *brackobuf = '\0';
   for (i = 0; i < NBRACK; ++i)
     if (gs_is(sp,gs_order_o[i]))
-      strcat(brackobuf, gs_brackostr(gs_order_o[i]));
+      strcat(brackobuf, gs_str_o[i]);
 }
 
 void
@@ -91,7 +52,7 @@ gsraw_brackc(gdlstate_t sp)
   *brackcbuf = '\0';
   for (i = NBRACK-1; i >= 0; --i)
     if (gs_is(sp,gs_order_c[i]))
-      strcat(brackcbuf, gs_brackcstr(gs_order_c[i]));
+      strcat(brackcbuf, gs_str_c[i]);
 }
 
 /* Simple routine to dump out gdlstate when printing raw XML, i.e.,
