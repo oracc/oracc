@@ -134,7 +134,11 @@ _			{ gsave; return LANG_FLIP; }
 
 {NOTEMARK}		{ gsave; return NOTEMARK; }
 
-("*"|:['".:]?|"/")/[\]>#*!? \t\n()]	{ /*"*/ GIN=1; gsave; return PUNCT; }
+[!?]			{ gsave; return *yytext; }
+^[#"~=@^]	       	{ gsave; return gdl_lexfld[(int)*yytext]; }
+[#"~=@^]   		{ gsave; if (SIN) { SIN=0; return gdl_lexfld[(int)*yytext]; } else { return *yytext; } }
+"*"			{ /*"*/ gsave; if (GIN) { return(*yytext); } else { GIN=1; return(PUNCT); } }
+(:['".:]?|"/")/[\]>#*!? \t\n()]	{ /*"*/ GIN=1; gsave; return PUNCT; }
 
 [0-9]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
 
@@ -154,9 +158,6 @@ _			{ gsave; return LANG_FLIP; }
 			  	       	  "no space after %c field\n", *yytext);
 			    return gdl_lexfld[(int)*yytext]; }
 			  else { return *yytext; } }
-^[#"~=@^]	       	{ gsave; return gdl_lexfld[(int)*yytext]; }
-[#"~=@^]   		{ gsave; if (SIN) { SIN=0; return gdl_lexfld[(int)*yytext]; } else { return *yytext; } }
-[#!?*]			{ gsave; return *yytext; }
 
 "..."			{ GIN=0; gsave; return ELLIPSIS; }
 "--"			{ GIN=0; return ENHYPHEN; }
