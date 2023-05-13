@@ -319,15 +319,30 @@ gdl_break_c(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data)
   return gdl_meta_node(ytp, "g:z", data);
 }
 
+/* If data is /{{[0-9]+:/ the digits are a stream code */
 Node *
 gdl_gloss_o(Mloc mlp, Tree *ytp, int tok, gdlstate_t gs_tok, const char *data)
 {
+  int stream = -1;
+  Node *ret = NULL;
   if (gdltrace)
     fprintf(stderr, "gt: GLOSS/o: %d=%s\n", tok, data);
+  if (tok == L_cur_par && data[2])
+    {
+      stream = atoi(data+2);
+      if (stream <= 0 || stream > 99)
+	{
+	  mesg_vwarning(currgdlfile, gdllineno, "stream out of range in '%s'", data);
+	  stream = -1;
+	}
+      data = "{{";
+    }
   (void)gdl_balance_state(mlp, tok, data);
   gdl_push(ytp, "g:glo");
   gs_on(gs_tok);
-  return gdl_meta_node(ytp, "g:z", data);
+  ret = gdl_meta_node(ytp, "g:z", data);
+  prop_node_add(ret, GP_STREAM, PG_GDL_STATE, (void*)(uintptr_t)stream, NULL);
+  return ret;
 }
 
 Node *

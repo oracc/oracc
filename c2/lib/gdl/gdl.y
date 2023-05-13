@@ -332,7 +332,7 @@ breakc:
 
 glosso:
 	  L_cur_par		       	{ ynp = gdl_gloss_o(@1, ytp, L_cur_par, gs_glodoc_o, gdllval.text); }
-	| L_dbl_cur			{ ynp = gdl_gloss_o(@1, ytp, L_dbl_cur, gs_glolin_c, gdllval.text); }
+	| L_dbl_cur			{ ynp = gdl_gloss_o(@1, ytp, L_dbl_cur, gs_glolin_o, gdllval.text); }
 	| L_ang_par_s		       	{ ynp = gdl_gloss_o(@1, ytp, L_ang_par, gs_surro_o, gdllval.text); }
 	;
 
