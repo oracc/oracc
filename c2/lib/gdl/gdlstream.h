@@ -14,7 +14,8 @@
  *
  * In #atf: use bilingual the second language is S1; use bilingual
  * should support giving a sequence of languages which will each be a
- * stream in order to handle multilingual texts.
+ * stream in order to handle multilingual texts. S2 .. S5 are reserved
+ * for additional multilingual streams, e.g., sum:akk:xhu lex texts
  *
  * In #atf: use lexical each field is its own stream, with S0 and S1
  * being the primary term and primary translation fields.
@@ -25,19 +26,24 @@
  * {{ ... }}: if a language-switch comes after {{ switch to the
  * 		language stream, often S1.
  *            if no language switch the gloss is taken as a variant
- *		gloss, S3
+ *		gloss, S6
  *	      if /{{[0-9]+:/ switch to the numbered stream; S0 is
  *		invalid in this context.
  *
- * {( ... )}: switch to S4 = document-oriented gloss. These include
+ * {( ... )}: switch to S7 = document-oriented gloss. These include
  * 10-marks and hepi notes.
  *
  * Predefined streams:
  *
  *  S0 base
- *  S1 bilingual
- *  S2 variant gloss
- *  S3 document-oriented comment
+ *  S1 bilingual1
+ *  S2 bilingual2
+ *  S3 bilingual3
+ *  S4 bilingual4
+ *  S5 bilingual5
+ *  S6 variant gloss
+ *  S7 document-oriented comment
+ &  S8 curly gloss
  *
  * Note that ATF also has a discourse chunk mechanism which is a layer
  * between the document and streams. A year-formula, for example, is a

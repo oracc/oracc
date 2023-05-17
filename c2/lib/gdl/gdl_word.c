@@ -52,17 +52,43 @@ gdl_wordify(Node *container)
 	  if (/*space*/)
 	    {
 	      /* end word in current stream */
-	      endword(stream);
+	      gdl_endword(stream);
 	    }
-	  else if (/* {( or {{ */)
+	  else if (/* {( */)
 	    {
-	      
+	      gdl_stream_push();
+	      gdl_stream_set(GDL_S7);
 	    }
-	  else if (/* language switch */)
+	  else if (/* }) */)
 	    {
-	      
+	      gdl_stream_pop();
 	    }
-	  addword(np, stream);
+	  else if (/* {{ */)
+	    {
+	      int sprop = -1;
+	      gdl_stream_push();
+	      if ((sprop = /* has_stream_prop */))
+		gdl_stream_set(sprop);
+	      else
+		gdl_stream_set(GDL_S8);
+	    }
+	  else if (/* }} */)
+	    {
+	      gdl_stream_pop();
+	    }	  
+	  else if (/* language switch */ && gdl_bilingual)
+	    {
+	      if (gdl_bilingual)
+		{
+		  gdl_stream_push();
+		  gdl_stream_set(gdl_stream_of(lang));
+		}
+	      else
+		gdl_wordtok(np);
+	    }
+	  else
+	    gdl_wordtok(np);
+	  gdl_addword(np, stream);
 	}
     }
 }

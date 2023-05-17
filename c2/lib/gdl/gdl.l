@@ -15,7 +15,7 @@ const char *gdlfile = "<stdin>";
 const char *currgdlfile = NULL;
 extern int gdl_lexfld[];
 extern int curr_lang;
-extern int gdl_legacy, gdl_lexical, gdl_unicode;
+extern int gdl_bilingual, gdl_legacy, gdl_lexical, gdl_unicode;
 int gdlflextrace = 0;
 int g_literal_flag = 0, g_logoforce_flag = 0;
 

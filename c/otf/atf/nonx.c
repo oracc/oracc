@@ -76,7 +76,24 @@ nonx_link(unsigned char *l, char *http)
 	    warning("link without closing ']]'");
 	}
       else
-	warning("link without contained text opener '[['");
+	{
+	  end = (char*)l;
+	  while (*end && !isspace(*end))
+	    ++end;
+	  if (end[-1] == '[' || end[-1] == ']')
+	    warning("malformed link ends with [ or ]; use [[...]] or a space after the URL");
+	  else
+	    {
+	      nlp->text = nlp->url;
+	      if (isspace(*end))
+		{
+		  while (isspace(*end))
+		    ++end;
+		  if (*end)
+		    nlp->post = end;
+		}
+	    }
+	}
     }
   else if (http > nlp->pre)
     warning("link must have space before 'http'");

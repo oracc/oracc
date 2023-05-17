@@ -70,9 +70,9 @@
 #define gs_surro_c	0x0400000000000000
 #define gs_group_o	0x0800000000000000
 #define gs_group_c	0x1000000000000000
-#define gs_reserved4	0x2000000000000000
-#define gs_reserved5	0x4000000000000000
-#define gs_reserved6	0x8000000000000000
+#define gs_reserved1	0x2000000000000000
+#define gs_reserved2	0x4000000000000000
+#define gs_reserved3	0x8000000000000000
 
 typedef unsigned long gdlstate_t;
 

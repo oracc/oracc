@@ -19,6 +19,7 @@ extern Node *lgp;   		/* last grapheme node pointer */
 static Tree *ytp;
 static Node *ynp, *yrem, *ycp, *mnp;
 /*int Q = 0;*/
+int gdl_bilingual = 0;
 int gdl_legacy = 0;
 int gdl_lexical = 0;
 int gdl_unicode = 0;
@@ -46,7 +47,7 @@ GDLLTYPE gdllloc;
 		L_dbl_par R_dbl_par L_dbl_par_c R_dbl_par_c eras_canc_pivot
 		L_ang_par R_ang_par L_ang_par_s R_ang_par_s L_cur_par R_cur_par
 		L_uhs R_uhs L_lhs R_lhs LANG_FLIP
-		 '{' DET_SEME DET_PHON '}'
+		'{' DET_SEME DET_PHON '}'
 		PLUS_FLAG UFLAG1 UFLAG2 UFLAG3 UFLAG4 SPACE EOL END
 
 %nterm <text> 	field lexfld
@@ -71,8 +72,8 @@ cell:
 	;
 
 cellspec:
-	'&'					    { gdl_cell(ytp,"1"); }
-	| CELLSPAN				    { gdl_cell(ytp,$1); }
+	'&'					    	{ gdl_cell(ytp,"1"); }
+	| CELLSPAN				    	{ gdl_cell(ytp,$1); }
 	;				
 					
 anyseg:
@@ -85,10 +86,10 @@ typedseg:
 	;
 
 field:
-	  ','					    { gdl_field(ytp,"default"); }
-	| ',' FTYPE				    { gdl_field(ytp,$2); }
-	| FTYPE					    { gdl_field(ytp,$1); }
-        | lexfld				    { gdl_field(ytp,gdl_lexfld_name($1)); }
+	  ','					    	{ gdl_field(ytp,"default"); }
+	| ',' FTYPE				    	{ gdl_field(ytp,$2); }
+	| FTYPE					    	{ gdl_field(ytp,$1); }
+        | lexfld				    	{ gdl_field(ytp,gdl_lexfld_name($1)); }
         ;
 
 lexfld:
@@ -115,8 +116,7 @@ comment:
 space:
 	  SPACE						{ ynp = gdl_delim(ytp, " ");
 	    						  gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO,
-								      "literal", gdllval.text);
-							  /*gdl_balance_ws(@1);*/ }
+								      "literal", gdllval.text); }
 	| '\n'						{ gdl_balance_flush(@1); }
 	| END						{ gdl_balance_flush(@1); }
 	;
@@ -137,18 +137,15 @@ delim:
 	| '{'	      					{ gdl_balance_state(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det");
 	  						  gs_on(gs_det|gs_det_o);
-	  						  gs_on(gs_g_semd_i);
-							  /*gdl_gp_type(ytp,GP_DET_SEMI);*/}
+	  						  gs_on(gs_g_semd_i); }
 	| DET_SEME    					{ gdl_balance_state(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det");
 	  						  gs_on(gs_det|gs_det_o);
-	  						  gs_on(gs_g_semd_e);
-	  						  /*gdl_gp_type(ytp,GP_DET_SEME);*/}
+	  						  gs_on(gs_g_semd_e); }
 	| DET_PHON      	      			{ gdl_balance_state(@1,'{',"{");
 	    						  gdl_push(ytp,"g:det"); 
 	  						  gs_on(gs_det|gs_det_o);
-	  						  gs_on(gs_g_phond);
-	  						  /*gdl_gp_type(ytp,GP_DET_PHON);*/}
+	  						  gs_on(gs_g_phond); }
 	| '}' 	 		  			{ if (!gdl_balance_state(@1,'}',"}"))
 	      						    gdl_pop(ytp,"g:det");
 	     						    /* set pst->det = SB_CL; lgp is last
@@ -161,7 +158,7 @@ delim:
 	;
 
 alternative:
-	  grapheme '/' grapheme				/*TODO; what about GDL 1.0 [+:]-groups?*/
+	    grapheme '/' grapheme			/*TODO; what about GDL 1.0 [+:]-groups?*/
 	  | alternative '/' grapheme
 	  ;
 

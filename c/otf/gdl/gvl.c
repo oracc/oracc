@@ -567,7 +567,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
     {
       /* If the v is unknown, check if the base is known for q under a different index, else report known v for q */
       int qv_bad = gvl_try_h(gp, vp, qp, q_fixed, mess);
-      if (qv_bad)
+      if (qv_bad && !strchr((ccp)gp->text, 'X'))
 	{
 	  unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key((uccp)qp->oid, "values"));
 	  if (tmp2)
@@ -578,12 +578,15 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
     }
   else if (q_bad)
     {
-      /* If the q is unknown, report known q for v */
-      unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key(vp->text, "q"));
-      if (tmp2)
-	*mess = gvl_vmess("[vq] %s: q %s unknown: known for %s: %s%s", gp->text, q, vp->text, tmp2, QFIX);
-      else if (!strchr((ccp)q,'X'))
-	*mess = gvl_vmess("[vq] %s: q %s unknown: %s known as %s%s", gp->text, q, vp->text, vp->sign, QFIX);
+      if (!strchr((ccp)gp->text, 'X'))
+	{
+	  /* If the q is unknown, report known q for v */      
+	  unsigned const char *tmp2 = gvl_lookup(gvl_tmp_key(vp->text, "q"));
+	  if (tmp2)
+	    *mess = gvl_vmess("[vq] %s: q %s unknown: known for %s: %s%s", gp->text, q, vp->text, tmp2, QFIX);
+	  else if (!strchr((ccp)q,'X'))
+	    *mess = gvl_vmess("[vq] %s: q %s unknown: %s known as %s%s", gp->text, q, vp->text, vp->sign, QFIX);
+	}
     }
   else
     {
@@ -642,11 +645,14 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
 		     report known q for v */
 		  if ('v' == *vp->type)
 		    {
-		      unsigned const char *q_for_v = gvl_lookup(gvl_tmp_key(v, "q"));
-		      if (q_for_v)
-			*mess = gvl_vmess("[vq] %s: unknown. Known for %s: %s%s", gp->text, vp->text, q_for_v, QFIX);
-		      else
-			*mess = gvl_vmess("[vq] %s: %s is %s%s", gp->text, vp->text, vp->sign, QFIX);
+		      if (!strchr((ccp)gp->text, 'X'))
+			{
+			  unsigned const char *q_for_v = gvl_lookup(gvl_tmp_key(v, "q"));
+			  if (q_for_v)
+			    *mess = gvl_vmess("[vq] %s: unknown. Known for %s: %s%s", gp->text, vp->text, q_for_v, QFIX);
+			  else
+			    *mess = gvl_vmess("[vq] %s: %s is %s%s", gp->text, vp->text, vp->sign, QFIX);
+			}
 		    }
 #if 1
 		  else
