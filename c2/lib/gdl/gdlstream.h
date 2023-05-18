@@ -51,4 +51,7 @@
  *
  */
 
+enum gdlstream_e { GDL_S0 , GDL_S1 , GDL_S2 , GDL_S3 , GDL_S4 , GDL_S5 ,
+		   GDL_S6 , GDL_S7 , GDL_S8 , GDL_S9 }; 
+
 #endif/*GDLSTREAM_H_*/

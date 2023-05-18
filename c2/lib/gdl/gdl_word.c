@@ -3,11 +3,44 @@
 #include <tree.h>
 #include <prop.h>
 #include <memo.h>
+#include "gdlstream.h"
 #include "gdl_word.h"
 
 #define STREAMS_MAX	20
 
+extern int gdl_bilingual;
+
+int curr_stream = -1;
+
 Node *streams[STREAMS_MAX];
+
+static void
+gdl_endword(int stream)
+{
+}
+
+static Node *
+gdl_wordtok(Node *tok, Node *wrd)
+{
+  return wrd;
+}
+
+static void
+gdl_stream_push()
+{
+  /* save curr_stream to stack */
+}
+
+static int
+gdl_stream_pop()
+{
+  return 0;
+}
+
+static void gdl_stream_set(int stream)
+{
+  curr_stream = stream;
+}
 
 /* The argument should be a Node * which is a container for the lowest
  * level of tokens at the line/cell/field level in the tree; wordify
@@ -42,53 +75,57 @@ Node *streams[STREAMS_MAX];
 void
 gdl_wordify(Node *container)
 {
-  Node *np = NULL;
+  Node *np = NULL, *wnp = NULL;
   int stream = -1;
   
   if (container && container->kids)
     {
       for (np = container->kids; np; np = np->next)
 	{
-	  if (/*space*/)
+	  if (np->name[2] == 'd' && np->text[0] == ' ' /*space*/)
 	    {
 	      /* end word in current stream */
-	      gdl_endword(stream);
+	      if (wnp)
+		{
+		  gdl_endword(stream);
+		  /*gdl_addword(np, stream);*/
+		  wnp = NULL;
+		}
 	    }
-	  else if (/* {( */)
+	  else if (0 /* {( */)
 	    {
 	      gdl_stream_push();
 	      gdl_stream_set(GDL_S7);
 	    }
-	  else if (/* }) */)
+	  else if (0 /* }) */)
 	    {
 	      gdl_stream_pop();
 	    }
-	  else if (/* {{ */)
+	  else if (0 /* {{ */)
 	    {
 	      int sprop = -1;
 	      gdl_stream_push();
-	      if ((sprop = /* has_stream_prop */))
+	      if ((sprop = 0 /* has_stream_prop */))
 		gdl_stream_set(sprop);
 	      else
 		gdl_stream_set(GDL_S8);
 	    }
-	  else if (/* }} */)
+	  else if (0 /* }} */)
 	    {
 	      gdl_stream_pop();
 	    }	  
-	  else if (/* language switch */ && gdl_bilingual)
+	  else if (0 /* language switch */ && gdl_bilingual)
 	    {
 	      if (gdl_bilingual)
 		{
 		  gdl_stream_push();
-		  gdl_stream_set(gdl_stream_of(lang));
+		  /*gdl_stream_set(gdl_stream_of(lang));*/
 		}
 	      else
-		gdl_wordtok(np);
+		gdl_wordtok(np, wnp);
 	    }
 	  else
-	    gdl_wordtok(np);
-	  gdl_addword(np, stream);
+	    wnp = gdl_wordtok(np, wnp);
 	}
     }
 }
