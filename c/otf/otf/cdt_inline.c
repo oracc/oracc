@@ -86,7 +86,7 @@ cdt_inline(struct cdt_node *np, struct cdt_node *parent, unsigned char *p)
 		    {
 		      char *buf = malloc(strlen((char*)start)+6);
 		      strcpy(buf,"%");
-		      strcat(buf,span-name);
+		      strcat(buf,span->name);
 		      strcat(buf," ");
 		      strcat(buf,(char*)start);
 		      span->name = "gdl";

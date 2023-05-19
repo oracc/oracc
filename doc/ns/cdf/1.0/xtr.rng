@@ -229,6 +229,7 @@
         <ref name="ispan"/>
         <ref name="sign"/>
         <ref name="bispan"/>
+        <ref name="bibspan"/>
         <ref name="smaller"/>
         <ref name="sc"/>
         <ref name="gdlspan"/>
@@ -262,6 +263,7 @@
           <ref name="bspan"/>
           <ref name="ispan"/>
           <ref name="bispan"/>
+          <ref name="bibspan"/>
           <ref name="smaller"/>
           <ref name="sc"/>
           <ref name="sup"/>
@@ -353,6 +355,14 @@
     <element name="xh:span">
       <attribute name="class">
         <value>bi</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="bibspan">
+    <element name="xh:span">
+      <attribute name="class">
+        <value>bib</value>
       </attribute>
       <ref name="htext"/>
     </element>
