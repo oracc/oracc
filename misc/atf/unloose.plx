@@ -6,8 +6,9 @@ my $atf = shift @ARGV;
 die unless $log && $log =~ /\.log$/ && $atf =~ /\.atf$/;
 open(L, $log) || die;
 while (<L>) {
-    if (/:(\d+): \$-line meets strict/) {
-	++$sdoll{$1};
+    if (/:(\d+):/) {
+	my $ln = $1;
+	++$sdoll{$ln} if /\$-line meets strict/;
     }
 }
 close L;

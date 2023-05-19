@@ -27,6 +27,9 @@ unless ($project) {
 }
 warn "$0: working in $project\n" if $verbose;
 binmode STDOUT, ':utf8';
+if ($fields) {
+    print join("\t", @fields), "\n";
+}
 while (<>) {
     chomp;
     $project = $1 if s/^(.*?)://;

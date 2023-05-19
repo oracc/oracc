@@ -82,10 +82,12 @@ cdt_inline(struct cdt_node *np, struct cdt_node *parent, unsigned char *p)
 		  list_add(np->children, span = cdt_span_node(np,name,local_lnum));
 		  if (!strcmp(span->name,"gdl"))
 		    gdl_reader(span,start);
-		  else if (!strcmp(span->name,"akk"))
+		  else if (!strcmp(span->name,"akk") || !strcmp(span->name,"sux") || !strcmp(span->name,"es"))
 		    {
 		      char *buf = malloc(strlen((char*)start)+6);
-		      strcpy(buf,"%akk ");
+		      strcpy(buf,"%");
+		      strcat(buf,span-name);
+		      strcat(buf," ");
 		      strcat(buf,(char*)start);
 		      span->name = "gdl";
 		      gdl_reader(span,(unsigned char*)buf);

@@ -177,7 +177,7 @@ h-model = (id? , ctr , ( ref | hdr-ref)? , new-labels? , htext)
 innerp = element xh:innerp { htext | (comment, text) }
 htext = (text | trword | trcell | foreign | literal | xtr-notelink 
          | supplied | uncertain | rspan | bspan | ispan | sign
-	 | bispan | smaller | sc | gdlspan | sup | lab | cun 
+	 | bispan | bibspan | smaller | sc | gdlspan | sup | lab | cun
 	 | xtr-notelink | xtr-notemark)*
 
 trword    = element xh:span { attribute class      { "w" },  
@@ -185,7 +185,7 @@ trword    = element xh:span { attribute class      { "w" },
 			      attribute xtr:disamb { text }?,
 			      attribute xtr:form   { text }?,
 			      id,
-			      (text | rspan | bspan | ispan | bispan | smaller | sc | sup | lab)* }
+			      (text | rspan | bspan | ispan | bispan | bibspan | smaller | sc | sup | lab)* }
 
 trcell	  = element xh:span { attribute class { "cell" }, attribute dir { "rtl" }?,
 			      attribute xtr:span { xsd:nonNegativeInteger }?,
@@ -199,6 +199,7 @@ rspan     = element xh:span { attribute class { "r" },        htext }
 bspan     = element xh:span { attribute class { "b" },        htext }
 ispan     = element xh:span { attribute class { "i" },        htext }
 bispan    = element xh:span { attribute class { "bi" },       htext }
+bibspan   = element xh:span { attribute class { "bib" },      htext }
 gdlspan   = element xh:span { attribute class { "gdl" },      l.inner }
 lab       = element xh:span { attribute class { "lab" },      htext }
 sc        = element xh:span { attribute class { "sc" },       htext }
