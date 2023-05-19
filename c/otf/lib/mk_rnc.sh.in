@@ -2,9 +2,9 @@
 B=@top_srcdir@/misc/xdf
 C=`pwd`
 (cd $B ; make)
-(cd @top_srcdir@/doc/ns/gdl/1.0 ; perl ../$B/xdfmanager.plx -rnc gdl.xdf)
-(cd @top_srcdir@/doc/ns/xtr/1.0 ; perl ../$B/xdfmanager.plx -rnc xtr.xdf)
-(cd @top_srcdir@/doc/ns/xtf/1.0 ; perl ../$B/xdfmanager.plx -rnc xtf.xdf)
-(cd @top_srcdir@/doc/ns/cdf/1.0 ; perl ../$B/xdfmanager.plx -rnc cdf.xdf)
-(cd @top_srcdir@/doc/ns/cdf/1.0 ; perl $C/mk_cdfrnc_c.plx >$C/cdf_rnc.c)
+(cd @top_srcdir@/doc/ns/gdl/1.0 ; /usr/bin/perl ../$B/xdfmanager.plx -rnc gdl.xdf)
+(cd @top_srcdir@/doc/ns/xtr/1.0 ; /usr/bin/perl ../$B/xdfmanager.plx -rnc xtr.xdf)
+(cd @top_srcdir@/doc/ns/xtf/1.0 ; /usr/bin/perl ../$B/xdfmanager.plx -rnc xtf.xdf)
+(cd @top_srcdir@/doc/ns/cdf/1.0 ; /usr/bin/perl ../$B/xdfmanager.plx -rnc cdf.xdf)
+(cd @top_srcdir@/doc/ns/cdf/1.0 ; /usr/bin/perl $C/mk_cdfrnc_c.plx >$C/cdf_rnc.c)
 perl ./mk_xmlnames.plx
