@@ -93,7 +93,7 @@ gvl_vmess(char *s, ...)
 static int
 gnr(const char *g)
 {
-  return ((*g == 'n' || *g == 'N') && (g[1]=='(' || g[1]=='+')) ? '1' : 0;
+  return ((*g == 'n' || *g == 'N') && (g[1]=='(' || g[1]=='+' || g[1]=='/')) ? '1' : 0;
 }
 
 static const char *

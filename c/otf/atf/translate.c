@@ -1830,7 +1830,20 @@ trans_inter(unsigned char **lines)
 	  while (*t && *t != ':')
 	    ++t;
 	  if (*t)
-	    *t++ = '\0';
+	    {
+	      unsigned char *lp = NULL;
+	      *t++ = '\0';
+	      lp = itrans->lang;
+	      while (*lp)
+		{
+		  if (!islower(*lp) && '-' != *lp)
+		    {
+		      warning("#tr.<lang>: has non-language content");
+		      break;
+		    }
+		  ++lp;
+		}
+	    }
 	  else
 	    {
 	      warning("#tr.<lang> doesn't end with colon");
