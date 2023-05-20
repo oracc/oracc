@@ -649,6 +649,7 @@ sub v_sign {
     my $c = shift;
     my $t = $c;
     return if $c eq '15'; # horrid OGSL hack needed for eCUT
+
     $t =~ s/^\|(.*?)\@(\1)\|$// && return;
     1 while $t =~ s/(BAU|ELLES|LAK|RSP)\d\d\d[a-z]+//;
     1 while $t =~ s/\@[cdfhgklrstnvz]// || $t =~ s/\@[0-9]+// || $t =~ s/~[a-z]//;
@@ -660,6 +661,8 @@ sub v_sign {
     if ($c =~ /^[0-9]/) {
 	$t =~ tr/()//d;
     }
+
+    $t =~ s/\(\)//;
     
     warn "$asl:$.: sign name $c has bad characters $t\n" if length $t;
     warn "$asl:$.: sign name $c has no uppercase indicator\n" unless hasupperi($c);
@@ -675,6 +678,9 @@ sub v_value {
 	$t =~ tr/()//d;
     }
     $t =~ s/^(:|:"|:\.|::|𒑱)$//;
+
+    $t =~ s/\(\)//;
+
     warn "$asl:$.: value $c has bad characters $t\n" if length $t;
     warn "$asl:$.: value $c has uppercase indicator\n" if hasupperi($c);
 }

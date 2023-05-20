@@ -15,7 +15,10 @@ use Fcntl;
 use NDBM_File;
 
 # Sign names that frustrate the parser
-my %exceptions = ('|(4×ZA)×KUR|'=>'ŋeštae');
+my %exceptions = (
+    '|(4×ZA)×KUR|'=>'ŋeštae',
+    '|DIŠ+NUN.LAGAR|'=>'immal',
+    );
 
 $ORACC::SL::report_all = 0;
 @ORACC::SL::BaseC::last_tlit = '';

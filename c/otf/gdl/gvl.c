@@ -607,7 +607,7 @@ gvl_q_c10e(gvl_g *gp, unsigned char **mess)
       else if ('s' == *vp->type || 'c' == *vp->type)
 	{
 	  /* This is a qualified uppercase value like TA@g(LAK654a) */
-	  if (strcmp(vp->oid, qp->oid))
+	  if (vp->oid && qp->oid && strcmp(vp->oid, qp->oid))
 	    {
 	      unsigned const char *parents = gvl_lookup(gvl_tmp_key((uccp)qp->oid,"parents"));
 	      if (parents)
