@@ -489,10 +489,13 @@ gvl_try_h(gvl_g *gp, gvl_g *vp, gvl_g *qp, unsigned char *q_fixed, unsigned char
 	     just print the qp-sign with no parens */
 	  if (p)
 	    {
-	      if (gvl_v_isupper(gp->text) && !strcmp((ccp)(p=g_uc(p)), (ccp)qp->sign))
-		*mess = gvl_vmess("%s: should be %s%s", gp->text, qp->sign, QFIX);
-	      else if (strcmp((ccp)vp->text,(ccp)p) || (ccp)q_fixed)
-		*mess = gvl_vmess("%s: should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
+	      if (gvl_strict)
+		{
+		  if (gvl_v_isupper(gp->text) && !strcmp((ccp)(p=g_uc(p)), (ccp)qp->sign))
+		    *mess = gvl_vmess("%s: should be %s%s", gp->text, qp->sign, QFIX);
+		  else if ((strcmp((ccp)vp->text,(ccp)p) || (ccp)q_fixed))
+		    *mess = gvl_vmess("%s: should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
+		}1
 	    }
 	  qv_bad = 0;
 	  /*ret = 1;*/ /* ok because deterministically resolved */

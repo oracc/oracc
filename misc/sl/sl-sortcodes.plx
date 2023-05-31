@@ -14,9 +14,16 @@ my %formlists = ();
 my %sortkeys = ();
 
 foreach my $s (@signlist) {
-    if ($s =~ m/^\@form\s+~[a-z]+(?!\s)/) {
-	warn "sl-sortcodes.plx: malformed \@form '$s'; autofixing ...\n";
-	$s =~ s/^(\@form\s+~[a-z]+)(?![ \t])/$1 /;
+    if ($s =~ m/^\@form\s+~[a-z]+/) {
+	my $t = $s;
+	my $u = $s;
+	$t =~ s/^\@form\s+~[a-z]+//;
+	$u =~ s/(^\@form\s+~[a-z]+).*$/$1/;
+	if ($t !~ /^\s/) {
+	    my $x = "$t $u";
+	    warn "sl-sortcodes.plx: malformed \@form '$s'; autofixing to '$x'\n";
+	    $s = $x;
+	}
     }
     if ($s =~ /^\@sign\s+(\S+)/) {
 	$currsign = $1;
