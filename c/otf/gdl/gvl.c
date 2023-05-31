@@ -495,7 +495,7 @@ gvl_try_h(gvl_g *gp, gvl_g *vp, gvl_g *qp, unsigned char *q_fixed, unsigned char
 		    *mess = gvl_vmess("%s: should be %s%s", gp->text, qp->sign, QFIX);
 		  else if ((strcmp((ccp)vp->text,(ccp)p) || (ccp)q_fixed))
 		    *mess = gvl_vmess("%s: should be %s(%s)%s", gp->text, p, qp->sign, QFIX);
-		}1
+		}
 	    }
 	  qv_bad = 0;
 	  /*ret = 1;*/ /* ok because deterministically resolved */
