@@ -240,8 +240,12 @@ while (<SL>) {
 		    if ($at_signs{$formname}) {
 			$ref = sprintf(" ref=\"%s\"", $sign_ids{'sl',$formname});
 		    } else {
-			$ref = sprintf(" xml:id=\"%s\"", $sign_ids{'sl',$formname});
-			++$at_signs{$formname}; # prevent duplicate xml:id
+			if ($sign_ids{'sl',$formname}) {
+			    $ref = sprintf(" xml:id=\"%s\"", $sign_ids{'sl',$formname});
+			    ++$at_signs{$formname}; # prevent duplicate xml:id
+			} else {
+			    $ref = '';
+			}
 		    }
 		    pi_line() unless $check;
 		    my $vv = $v; $vv =~ s/^~//;
