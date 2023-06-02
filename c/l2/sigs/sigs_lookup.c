@@ -570,6 +570,11 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	    }
 	}
 
+      if (nfinds > 1 && lem_autolem)
+	{
+	  nfinds = 1;
+	}
+      
       if (nfinds)
 	{
 	  setup_ilem_finds(xcp->sigs, ifp, sigs_found, nfinds);

@@ -236,6 +236,13 @@ sas_asa_load(const char *fname)
 		{
 		  *s++ = '\0';
 		  ap = &sip->alias_mem[sip->alias_used++];
+		  if ('=' == *head)
+		    {
+		      ap->global = 1;
+		      ++head;
+		    }
+		  else
+		    ap->global = 0;
 		  ap->head = head;
 		  ap->constraints = NULL;
 		  while (*s && *s != '\n')

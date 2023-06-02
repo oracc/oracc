@@ -248,17 +248,22 @@ alias(struct sas_info *sip, struct sas_map *maps, int mapindex,
     {
       struct sas_constraint *cp;
       int ok = 0, any_of = 0, one_of = 0;
-      if (!ap->constraints || !cf) /* when no CF we do dumb aliasing */
+      if (!cf)
 	{
-	  char *tmp = malloc(strlen((char*)maps[mapindex].v)
-			     + strlen((char*)ap->head) + 2), *nodumb = NULL;
-	  sprintf(tmp, "%s>%s", maps[mapindex].v, ap->head);
-	  nodumb = hash_find(sip->nodumb, (unsigned char*)tmp);
-	  free(tmp);
-	  if (nodumb)
-	    return maps[mapindex].v;
+	  if (!ap->constraints || ap->global)
+	    {
+	      char *tmp = malloc(strlen((char*)maps[mapindex].v)
+				 + strlen((char*)ap->head) + 2), *nodumb = NULL;
+	      sprintf(tmp, "%s>%s", maps[mapindex].v, ap->head);
+	      nodumb = hash_find(sip->nodumb, (unsigned char*)tmp);
+	      free(tmp);
+	      if (nodumb)
+		return maps[mapindex].v;
+	      else
+		return ap->head;
+	    }
 	  else
-	    return ap->head;
+	    return maps[mapindex].v;
 	}
       for (any_of = one_of = 0, cp = list_first(ap->constraints); 
 	   cp; 

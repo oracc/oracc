@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict; use open ':utf8';
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+binmode $DB::OUT, ':utf8' if $DB::OUT;
 use lib '@@ORACC@@/lib';
 use ORACC::XMD::Fields;
 use ORACC::Expand2;
@@ -9,6 +11,7 @@ my $fields = 0; # use -fields to output field names in row 1
 my $project = '';
 my $verbose = 0;
 my @default_fields = qw/designation museum_no excavation_no accession_no primary_publication publication_history genre subgenre period/;
+
 GetOptions(
     'bare'=>\$bare,
     'fields'=>\$fields,
@@ -17,17 +20,14 @@ GetOptions(
     );
 my @fields = @ARGV; @fields = @default_fields unless $#fields >= 0;
 
-if ($fields && !$bare) {
-    print join("\t", 'id_text', @fields), "\n";
-}
-
 @ARGV = ();
 unless ($project) {
     $project = `oraccopt` if -r '02xml/config.xml';
 }
 warn "$0: working in $project\n" if $verbose;
-binmode STDOUT, ':utf8';
+
 if ($fields) {
+    print "id_text\t" unless $bare;
     print join("\t", @fields), "\n";
 }
 while (<>) {

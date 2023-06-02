@@ -32,6 +32,7 @@ struct sas_alias
 {
   const unsigned char *head;
   List *constraints;
+  int global;
 };
 
 struct sas_constraint
