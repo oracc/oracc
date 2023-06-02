@@ -20,7 +20,7 @@ bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
 	newext oraccopt pqunion sigfixer sigmap signiary xmlnl \
 	xmlns xmlsplit utf8v xalias xfrag filesize listdir \
 	xns xisdb wid2err rootnode wid2lem xis2json linksets \
-	xtfsigs oxg pllcfg
+	xtfsigs oxg pllcfg sas
 
 #pqoutline pqsort xml2json
 
@@ -87,6 +87,11 @@ unittable_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 xalias_SOURCES=xalias.c
 xalias_LDADD = @top_srcdir@/c/l2/libl2.la \
+	@top_srcdir@/c/otf/gdl/libgdl.la \
+	@top_srcdir@/c/lib/liboracc.la
+
+sas_SOURCES=sas.c
+sas_LDADD = @top_srcdir@/c/l2/libl2.la \
 	@top_srcdir@/c/otf/gdl/libgdl.la \
 	@top_srcdir@/c/lib/liboracc.la
 
