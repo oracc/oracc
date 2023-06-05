@@ -60,7 +60,6 @@ oraccopt_LDADD = @top_srcdir@/c/lib/liboracc.la
 oxg_SOURCES=oxg.c
 oxg_LDADD = @top_srcdir@/c/lib/liboracc.la
 
-
 pllcfg_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 #pqoutline_SOURCES=pqoutline.c otlenum.h

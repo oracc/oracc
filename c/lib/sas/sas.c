@@ -240,6 +240,8 @@ alias(struct sas_info *sip, struct sas_map *maps, int mapindex,
 {
   List *candlist;
   struct sas_alias *ap;
+  const unsigned char *global_head = NULL;
+  
   if (!sip || !maps[mapindex].v 
       || !sip->cand || !(candlist = hash_find(sip->cand,maps[mapindex].v)))
     return maps[mapindex].v;
@@ -248,43 +250,43 @@ alias(struct sas_info *sip, struct sas_map *maps, int mapindex,
     {
       struct sas_constraint *cp;
       int ok = 0, any_of = 0, one_of = 0;
-      if (!cf)
+      if (ap->constraints)
 	{
-	  if (!ap->constraints || ap->global)
+	  for (any_of = one_of = 0, cp = list_first(ap->constraints); 
+	       cp; 
+	       cp = list_next(ap->constraints))
+	    {
+	      if (satisfies_constraint(cp,maps,mapindex,cf,gw,pos))
+		{
+		  ++ok;
+		  if (cp->type == sc_cons_lem && !cp->u.l.neg)
+		    ++one_of;
+		}
+	      else if (cp->type != sc_cons_lem || cp->u.l.neg)
+		break;
+	      else if (cp->type == sc_cons_lem && !cp->u.l.neg)
+		++any_of;
+	    }
+	  if (ok && (!any_of || one_of) && ok + any_of == list_len(ap->constraints))
+	    return ap->head;
+	  else
 	    {
 	      char *tmp = malloc(strlen((char*)maps[mapindex].v)
 				 + strlen((char*)ap->head) + 2), *nodumb = NULL;
 	      sprintf(tmp, "%s>%s", maps[mapindex].v, ap->head);
 	      nodumb = hash_find(sip->nodumb, (unsigned char*)tmp);
 	      free(tmp);
-	      if (nodumb)
-		return maps[mapindex].v;
-	      else
-		return ap->head;
+	      if (!nodumb)
+		global_head = ap->head;
 	    }
-	  else
-	    return maps[mapindex].v;
 	}
-      for (any_of = one_of = 0, cp = list_first(ap->constraints); 
-	   cp; 
-	   cp = list_next(ap->constraints))
-	{
-	  if (satisfies_constraint(cp,maps,mapindex,cf,gw,pos))
-	    {
-	      ++ok;
-	      if (cp->type == sc_cons_lem && !cp->u.l.neg)
-		++one_of;
-	    }
-	  else if (cp->type != sc_cons_lem || cp->u.l.neg)
-	    break;
-	  else if (cp->type == sc_cons_lem && !cp->u.l.neg)
-	    ++any_of;
-	}
-      if (ok && (!any_of || one_of) && ok + any_of == list_len(ap->constraints))
-	return ap->head;
+      else
+	global_head = ap->head;
     }
-
-  return maps[mapindex].v;
+  if (global_head)
+    return global_head;
+  else
+    return maps[mapindex].v;
 }
 
 static int
@@ -295,10 +297,13 @@ satisfies_constraint(struct sas_constraint *cp,
 {
   if (cp->type == sc_cons_lem)
     {
-      int res = 
-	!xstrcmp(cf,cp->u.l.cf) 
-	&& (!gw || !xstrcmp(gw,cp->u.l.gw))
-	&& (!pos || !xstrcmp(pos,cp->u.l.pos));
+      int res = 0;
+      if (cf)
+	{
+	  res = !xstrcmp(cf,cp->u.l.cf) 
+	    && (!gw || !cp->u.l.gw || !*cp->u.l.gw || !xstrcmp(gw,cp->u.l.gw))
+	    && (!pos || !cp->u.l.pos || !*cp->u.l.pos || !xstrcmp(pos,cp->u.l.pos));
+	}
       return cp->u.l.neg ? !res : res;
     }
   else
