@@ -8,7 +8,9 @@
  * node--if there is no text that can be formatted in the word node it
  * is renamed as a nonword.
  *
- * 
+ * When the tree is built all words have at least one segment; when
+ * serialized words with only one segment may have the segment
+ * container omitted depending on the output mode.
  */ 
 
 enum wordtype_e { GW_UNIT , GW_SEG_INITIAL, GW_SEG_MEDIAL, GW_SEG_FINAL };
@@ -17,9 +19,9 @@ enum wordtype_e { GW_UNIT , GW_SEG_INITIAL, GW_SEG_MEDIAL, GW_SEG_FINAL };
 struct gdlword
 {
   enum wordtype_e wordtype;
-  int stream;
-  int lang;
-  int script;
+  short lang;
+  char script;
+  char stream;
   unsigned char *form;  /* canonicalized/aliased form */
   unsigned char *oform; /* original form */
   struct node *prevseg;

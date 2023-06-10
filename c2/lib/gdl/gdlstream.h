@@ -4,8 +4,19 @@
 /* Every word in GDL is part of a stream with some streams being
  * predefined and others able to be defined by users.
  *
- * The basic stream is S0, and is the stream for the language defined
+ * The basic stream is S1, and is the stream for the language defined
  * in #atf: lang LANGUAGE. If there is not #atf: lang this is Sumerian.
+ *
+ * User definitions of streams have the form:
+ *
+ * #atf: stream SN <token>
+ *
+ * or
+ *
+ * #atf: stream SN-N <token>
+ *
+ * Where <token> is a short, one-word, descriptive token; for SN
+ * <token> will usually be a language code.
  *
  * A language shift does not necessarily change the stream: if the
  * language is a logogram language (e.g., %s or %a in Hittite context)
@@ -30,25 +41,50 @@
  *	      if /{{[0-9]+:/ switch to the numbered stream; S0 is
  *		invalid in this context.
  *
- * {( ... )}: switch to S7 = document-oriented gloss. These include
- * 10-marks and hepi notes.
+ * {( ... )}: switch to SN-8 = stream-oriented gloss (requires
+ * language shift) or S0-9 = document-oriented gloss.
  *
- * Predefined streams:
+ * Predefined streams: NEW::this is stream_lang
  *
- *  S0 base
- *  S1 bilingual1
- *  S2 bilingual2
- *  S3 bilingual3
- *  S4 bilingual4
- *  S5 bilingual5
- *  S6 variant gloss
- *  S7 document-oriented comment
- &  S8 curly gloss
+ *  S0 language-neutral (cuneiform writing system)
+ *  S1 language1
+ *  S2 language2
+ *  S3 language3
+ *  S4 language4
+ *  S5 language5
+ *  S6 user-language1
+ *  S7 user-language1
+ *  S8 user-language1
+ *  S9 user-language1
+ *
+ * S0 is intended for use in sign-list texts.
+ *
+ * NEW::this is stream_mode (or maybe stream_reln (relation) would be better?)
+ * 
+ * Streams also have substream tags, which consist of a hyphen plus
+ * digit, e.g., S1-1.  The substream annotates or complements the main
+ * stream in some way, often as a gloss:
+ *
+ *  SN-0 unmarked stream
+ *  SN-1 variant gloss (by definition a bifurcation of the same stream);
+ *       lex main column; lex equivalences implemented using other S-langs.
+ *  SN-2 lex sign value (S0-2); or user-defined (SN-2 where N >= 1)
+ *  SN-3 lex sign pronunciation (S0-3) or user-defined
+ *  SN-4 lex sign "G" (S0-4) or user defined
+ *  SN-5 lex sign name (S0-5) or user defined
+ *  SN-5 lex word/phrase (i.e., equivalent in same language as SN-1)
+ *  SN-6 lex contained sign
+ *  SN-7 reserved
+ *  SN-8 stream-oriented gloss, e.g., he2-pi
+ *  SN-9 document-oriented gloss, e.g., 10-marks
  *
  * Note that ATF also has a discourse chunk mechanism which is a layer
  * between the document and streams. A year-formula, for example, is a
  * discourse feature with its own S0, not a separate stream.
  *
+ * Streams can be stored in integers as small as a char; for a
+ * variable S, the main stream is given by S/10; the substream is
+ * given by S%10.
  */
 
 enum gdlstream_e { GDL_S0 , GDL_S1 , GDL_S2 , GDL_S3 , GDL_S4 , GDL_S5 ,

@@ -3,6 +3,7 @@
 #include <tree.h>
 #include <prop.h>
 #include <memo.h>
+#include <stck.h>
 #include "gdlstream.h"
 #include "gdl_word.h"
 
@@ -10,9 +11,31 @@
 
 extern int gdl_bilingual;
 
-int curr_stream = -1;
+int stream_lang = -1;
+int stream_mode = -1;
 
 Node *streams[STREAMS_MAX];
+
+Stck *stream_stck = NULL;
+
+#define gdl_c_stream_lang(c) ((c)>>16)
+#define gdl_c_stream_mode(c) ((c)&0xffff)
+
+unsigned int
+gdl_stream_combine(void)
+{
+  unsigned int ui = 0;
+  ui = (stream_lang)<<16;
+  ui += stream_mode;
+  return ui;
+}
+
+void
+gdl_stream_split(unsigned int c)
+{
+  stream_lang = gdl_c_stream_lang(c);
+  stream_mode = gdl_c_stream_mode(c);
+}
 
 static void
 gdl_endword(int stream)
@@ -25,21 +48,10 @@ gdl_wordtok(Node *tok, Node *wrd)
   return wrd;
 }
 
-static void
-gdl_stream_push()
+static void gdl_stream_set(int stream, int substream)
 {
-  /* save curr_stream to stack */
-}
-
-static int
-gdl_stream_pop()
-{
-  return 0;
-}
-
-static void gdl_stream_set(int stream)
-{
-  curr_stream = stream;
+  stream_lang = stream;
+  stream_mode = substream;
 }
 
 /* The argument should be a Node * which is a container for the lowest
@@ -94,31 +106,31 @@ gdl_wordify(Node *container)
 	    }
 	  else if (0 /* {( */)
 	    {
-	      gdl_stream_push();
-	      gdl_stream_set(GDL_S7);
+	      stck_push(stream_stck, gdl_stream_combine());
+	      gdl_stream_set(stream_lang, GDL_S7);
 	    }
 	  else if (0 /* }) */)
 	    {
-	      gdl_stream_pop();
+	      gdl_stream_split(stck_pop(stream_stck));
 	    }
 	  else if (0 /* {{ */)
 	    {
 	      int sprop = -1;
-	      gdl_stream_push();
+	      stck_push(stream_stck, gdl_stream_combine());
 	      if ((sprop = 0 /* has_stream_prop */))
-		gdl_stream_set(sprop);
+		gdl_stream_set(sprop, -1);
 	      else
-		gdl_stream_set(GDL_S8);
+		gdl_stream_set(stream_lang, GDL_S8);
 	    }
 	  else if (0 /* }} */)
 	    {
-	      gdl_stream_pop();
-	    }	  
+	      gdl_stream_split(stck_pop(stream_stck));
+	    }
 	  else if (0 /* language switch */ && gdl_bilingual)
 	    {
 	      if (gdl_bilingual)
 		{
-		  gdl_stream_push();
+		  stck_push(stream_stck, gdl_stream_combine());
 		  /*gdl_stream_set(gdl_stream_of(lang));*/
 		}
 	      else
