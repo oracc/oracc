@@ -2115,6 +2115,36 @@ extra_init_hash {
 	    }
 	}
     }
+    my @tsv = (<00lib/cat.d/*.tsv>);
+    foreach my $tsv (@tsv) {
+	my @rows = `cat $tsv`; chomp @rows;
+
+	my $r1 = shift @rows;
+	if ($r1 !~ /^id_composite|id_text$/) {
+	    warn "$tsv: first row must be field names and first field name must be id_composite or id_text\n";
+	    next;
+	}
+
+	my @fldnames = split(/\t/, $r1);
+	my $fid = shift @fldnames;
+	foreach my $f (@fldnames) {
+	    ++$catd_fields{$f};
+	}
+	foreach my $r (@rows) {
+	    my @flds = split(/\t/, $r);
+	    my $xid = shift @flds;
+	    my %tmp = ();
+	    @tmp{@fldnames} = @flds;
+	}
+	if ($catd{$xid}) {
+	    my %c = %${$catd{$xid}};
+	    foreach my $k (keys %c) {
+		$tmp{$k} = $c{$k} unless $tmp{$k};
+	    }	    
+	}
+	${$catd{$xid}} = { %tmp };
+    }
+    
     if ($catd_debug) {
 	print CATDUMP "++++++catd_fields\n";
 	print CATDUMP Dumper \%catd_fields;

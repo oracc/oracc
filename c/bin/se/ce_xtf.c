@@ -364,7 +364,7 @@ prefix(const char *name)
       const char *vbar = strchr(name, '|');
       if (vbar)
 	{
-	  if (!strstr(name, "xhtml"))
+	  if (!strstr(name, "xhtml") && !strstr(name, "XML/1998"))
 	    fprintf(stderr, "ce_xtf: non-Oracc namespace in %s\n", name);
 	  return vbar+1;
 	}
@@ -679,7 +679,9 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
 	      || !strcmp(localName, "composite")
 	      || !strcmp(localName, "score"))
 	    {
-	      strcpy(text_name, findAttr(atts, "n"));
+	      strcpy(text_name, findAttr(atts, "textname"));
+	      if (!*text_name)
+		strcpy(text_name, findAttr(atts, "n"));
 	      strcpy(text_id, xml_id(atts));
 	      strcpy(text_project, findAttr(atts, "project"));
 	    }

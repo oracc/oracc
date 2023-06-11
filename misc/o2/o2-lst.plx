@@ -230,8 +230,10 @@ proxy_lists {
 	    # if the proxy has a ':' we want it for its atf:
 	    # if it has no catalogue, default it to the source project
 	    my($p_atf_proj,$p_id,$p_cat_proj) = ();
+	    my $explicit_cat = 0;
 	    if ($p =~ /^(.*?):(.*?)\@(.*)$/) { # blms:P123456@blms
 		($p_atf_proj,$p_id,$p_cat_proj) = ($1,$2,$3);
+		$explicit_cat = 1;
 	    } elsif ($p =~ /^(.*?):(.*?)$/) { # blms:P123456
 		($p_atf_proj,$p_id,$p_cat_proj) = ($1,$2,$1);
 		$p .= "\@$p_cat_proj";
@@ -251,7 +253,7 @@ proxy_lists {
 		print PA "$p_atf_proj:$p_id\n";
 	    }
 
-	    if ($p_cat_proj && $p_cat_proj ne $project) {
+	    if ($explicit_cat && $p_cat_proj ne $project) {
 		if ($host_cat{$p_id}) {
 		    warn "$proxy_lst:$lnum: ignoring proxy of $p_atf_proj:$p_id because $project CAT already has it\n";
 		} elsif ($px_seen{$p_id}++) {
