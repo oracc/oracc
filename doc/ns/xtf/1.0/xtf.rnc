@@ -179,7 +179,7 @@ hdr = element h {
 milestone = m | m.discourse
 
 m = element m { 
-  attribute type { "division" | "locator" },
+  attribute type { "division" | "locator" | "textname" },
   attribute subtype { text }?,
   attribute n { text }?,
   text

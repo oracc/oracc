@@ -872,6 +872,12 @@ milestone in the middle of a line then you can split the line into two
 1b. {iti}AB U₄ 1-KAM₂
 2. MU 1.39@v-KAM₂ {m}an-ti-ʾi-ku-su LUGAL 
 </pre>
+
+<p>The <code class="cookbook">textname</code> milestone allows the textname used in 
+context-engine reference labels to be set in the text: useful for tablets which 
+have multiple texts on them.  The value of the textname is used verbatim instead 
+of the textname catalogue field or the textname given in the and-line.</p>
+
 </div>
 
 <d:rnc>
@@ -885,7 +891,7 @@ hdr = element h {
 milestone = m | m.discourse
 
 m = element m { 
-  attribute type { "division" | "locator" },
+  attribute type { "division" | "locator" | "textname" },
   attribute subtype { text }?,
   attribute n { text }?,
   text

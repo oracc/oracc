@@ -25,7 +25,7 @@ unsigned char *buf = NULL;
 int buf_len = 0;
 
 char curr_label[1024], label[1024], last_label[1024], 
-  text_name[1024], text_id[128], text_project[1024];
+  text_name[1024], text_id[128], text_project[1024], text_desc[1024];
 
 const char *ce_l_tag = NULL;
 const char *content_tago = "content";
@@ -610,8 +610,21 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
   if (is_xtf(name) 
       && (!strcmp(&name[strlen(name)-2], "|l") 
 	  || !strcmp(&name[strlen(name)-3], "|lg")
-	  || !strcmp(&name[strlen(name)-2], "|v")))
-    strcpy(curr_label,findAttr(atts,"label"));
+	  || !strcmp(&name[strlen(name)-2], "|v")
+	  || !strcmp(&name[strlen(name)-2], "|m")
+	  ))
+    {
+      if ('m' == name[strlen(name)-1])
+	{
+	  const char *mtype = findAttr(atts, "type");
+	  if (!strcmp((const char *)mtype, "textname"))
+	    strcpy(text_name, findAttr(atts, "n"));
+	  if (!strcmp((const char*)mtype, "textdesc"))
+	    strcpy(text_desc, findAttr(atts, "n"));
+	}
+      else
+	strcpy(curr_label,findAttr(atts,"label"));
+    }
 
   if (xid && *xid && hash_find(xtf_start, (unsigned char *)xid))
     {
@@ -726,9 +739,14 @@ eH_sub(const char *name)
       fprintf(ce_out_fp, "<ce:label>%s: ",
 	      (const char *)xmlify((const unsigned char*)text_name)
 	      );
-      fprintf(ce_out_fp, "%s</ce:label></ce:data>", 
+      fprintf(ce_out_fp, "%s",
 	      (const char *)xmlify((const unsigned char*)label)
 	      );
+      if (*text_desc)
+	fprintf(ce_out_fp, " (%s)",
+		(const char *)xmlify((const unsigned char*)text_desc)
+		);
+      fputs("</ce:label></ce:data>", ce_out_fp);
       *last_label = '\0';
       *label = '\0';
       echoing = 0;

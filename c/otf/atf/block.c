@@ -2264,6 +2264,18 @@ milestone(unsigned char *l,struct block_token*bp)
 	      update_mlabel(e_surface,l);
 	    }
 	}
+      else if (!xstrcmp("textdesc",type))
+	{
+	  type = uc("textname");
+	  if (!strcmp((const char*)sub_n, "-"))
+	    *sub_n = '\0';
+	  m_div_n = sub_n;
+	}
+      else if (!xstrcmp("textname",type))
+	{
+	  type = uc("textname");
+	  m_div_n = sub_n;
+	}
     }
   else
     {
