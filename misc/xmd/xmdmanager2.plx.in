@@ -2120,7 +2120,7 @@ extra_init_hash {
 	my @rows = `cat $tsv`; chomp @rows;
 
 	my $r1 = shift @rows;
-	if ($r1 !~ /^id_composite|id_text$/) {
+	if ($r1 !~ /^id_composite|id_text\t/) {
 	    warn "$tsv: first row must be field names and first field name must be id_composite or id_text\n";
 	    next;
 	}
@@ -2135,14 +2135,14 @@ extra_init_hash {
 	    my $xid = shift @flds;
 	    my %tmp = ();
 	    @tmp{@fldnames} = @flds;
+	    if ($catd{$xid}) {
+		my %c = %${$catd{$xid}};
+		foreach my $k (keys %c) {
+		    $tmp{$k} = $c{$k} unless $tmp{$k};
+		}	    
+	    }
+	    ${$catd{$xid}} = { %tmp };
 	}
-	if ($catd{$xid}) {
-	    my %c = %${$catd{$xid}};
-	    foreach my $k (keys %c) {
-		$tmp{$k} = $c{$k} unless $tmp{$k};
-	    }	    
-	}
-	${$catd{$xid}} = { %tmp };
     }
     
     if ($catd_debug) {
