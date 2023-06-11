@@ -72,6 +72,7 @@ transliteration =
     attribute n        { text },
     attribute hand     { text }?,
     attribute xml:lang { xsd:NMTOKEN },
+    textdesc?,
     textname?,
     project?,
     implicit?,
@@ -83,6 +84,7 @@ n.attr = attribute n { text }
 n.attr.lc = attribute n { xsd:string { pattern="[a-z]" }}
 haslinks = attribute haslinks { xsd:boolean }
 maxcells = attribute cols { xsd:nonNegativeInteger }
+textdesc = attribute textdesc { text }
 textname = attribute textname { text }
 project = attribute project { xsd:string { pattern="[a-z][a-z0-9/]+" } }
 

@@ -126,6 +126,7 @@ struct xname anames[] =
   { "syn:ub-before", "http://oracc.org/ns/syntax/1.0:ub-before" },
   { "targ-id", "targ-id" },
   { "targ-n", "targ-n" },
+  { "textdesc", "textdesc" },
   { "textname", "textname" },
   { "tid", "tid" },
   { "to", "to" },
@@ -313,6 +314,7 @@ struct attr abases[] =
   { { anames[144].qname,NULL } , { anames[144].pname,NULL } },
   { { anames[145].qname,NULL } , { anames[145].pname,NULL } },
   { { anames[146].qname,NULL } , { anames[146].pname,NULL } },
+  { { anames[147].qname,NULL } , { anames[147].pname,NULL } },
 };
 struct xname enames[] =
 {

@@ -119,6 +119,7 @@ enum a_type
   a_syn_ub_before,
   a_targ_id,
   a_targ_n,
+  a_textdesc,
   a_textname,
   a_tid,
   a_to,

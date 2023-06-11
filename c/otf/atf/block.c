@@ -2266,14 +2266,14 @@ milestone(unsigned char *l,struct block_token*bp)
 	}
       else if (!xstrcmp("textdesc",type))
 	{
-	  type = uc("textname");
+	  type = uc("textdesc");
 	  if (!strcmp((const char*)sub_n, "-"))
 	    *sub_n = '\0';
 	  m_div_n = sub_n;
 	}
       else if (!xstrcmp("textname",type))
 	{
-	  type = uc("textname");
+	  type = uc("textdesc");
 	  m_div_n = sub_n;
 	}
     }

@@ -11,6 +11,7 @@
 #include <list.h>
 #include <runexpat.h>
 #include <loadfile.h>
+#include <xpd2.h>
 #include <npool.h>
 #include "selib.h"
 #include "xmlutil.h"
@@ -34,6 +35,7 @@ const char *content_tagc = "content";
 FILE *ce_out_fp = NULL;
 struct npool *xtf_pool;
 unsigned char *pending_heading = NULL;
+int ce_use_colon_sep = 0;
 int kwic_select_pending = 0;
 int kwic_pivot_pending = 0;
 int kwic_select_is_end = 0;
@@ -736,14 +738,15 @@ eH_sub(const char *name)
       fprintf(ce_out_fp, "</ce:%s>", content_tagc);
       if (*last_label && cetype == KU_UNIT) /* we must be in unit context */
 	sprintf(label+strlen(label), " - %s", last_label);
-      fprintf(ce_out_fp, "<ce:label>%s: ",
-	      (const char *)xmlify((const unsigned char*)text_name)
+      fprintf(ce_out_fp, "<ce:label>%s%s ",
+	      (const char *)xmlify((const unsigned char*)text_name),
+	      /*ce_use_colon_sep ? ":" : ""*/ ""
 	      );
       fprintf(ce_out_fp, "%s",
 	      (const char *)xmlify((const unsigned char*)label)
 	      );
       if (*text_desc)
-	fprintf(ce_out_fp, " (%s)",
+	fprintf(ce_out_fp, " [%s]",
 		(const char *)xmlify((const unsigned char*)text_desc)
 		);
       fputs("</ce:label></ce:data>", ce_out_fp);
@@ -833,6 +836,7 @@ ce_xtf_term(void)
 int
 main(int argc, char * const*argv)
 {
+  struct xpd *cfg = NULL;
   exit_on_error = TRUE;
 
   init_wm_names();
@@ -860,6 +864,7 @@ main(int argc, char * const*argv)
   else if (xml_output)
     fputs("<ce:ce xmlns:ce=\"http://oracc.org/ns/ce/1.0\">",
 	  ce_out_fp);
+
   if (xtf_context)
     {
       if (cetype == KU_KWIC)
@@ -878,6 +883,11 @@ main(int argc, char * const*argv)
       else
 	{
 	  ce_xtf_init();
+#if 0
+	  cfg = xpd_init(project, xtf_pool);
+	  if (!strcmp(xpd_option(cfg, "ce-use-colon-sep"), "no"))
+	    ce_use_colon_sep = 0;
+#endif
 	  ce_ids(EOF);
 	  runexpatNS(i_list, list2charstarstar(files), ce_xtf_sH, ce_xtf_eH, "|");
 	  ce_xtf_term();
