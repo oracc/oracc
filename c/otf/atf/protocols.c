@@ -38,6 +38,7 @@ const char *const scope_names[] = { T_SCOPES };
 enum t_scope protocol_state = s_global;
 
 extern const unsigned char *default_ftype;
+extern int atf_needs_xmd;
 extern int has_links;
 extern int lem_extended;
 extern int lem_props_yes;
@@ -707,6 +708,7 @@ project_handler(struct run_context *run, struct node *parent, enum t_scope scope
   cuneify_init(run->proj->xpd);
 
   lem_simplify_opt = xpd_option(run->proj->xpd,"lem-simplify");
+  atf_needs_xmd = xpd_option(run->proj->xpd, "atf-needs-cat");
   if (lem_simplify_opt && !strcmp(lem_simplify_opt, "yes"))
     lem_simplify = 1;
   lem_props_opt = xpd_option(run->proj->xpd,"lem-props");

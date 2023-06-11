@@ -16,6 +16,7 @@ FILE *f_xml = NULL;
 
 const char *arg_trans_default_lang = NULL;
 int arg_use_unicode = 0;
+int atf_needs_xmd = 0;
 int cbd_lem_sigs = 0;
 int check_lem = 0;
 int dump_sigs = 0;
