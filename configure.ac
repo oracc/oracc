@@ -247,6 +247,7 @@ AC_CONFIG_FILES([Makefile
 	c2/lib/sys/Makefile
 	c2/lib/std/Makefile
 	c2/lib/cat/Makefile
+	c2/lib/cbd/Makefile
 	c2/lib/asl/Makefile
 	c2/lib/atf/Makefile
 	c2/lib/gdl/Makefile
