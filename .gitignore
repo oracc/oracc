@@ -690,6 +690,11 @@ misc/p3/p3-social.xsl
 
 c/otf/lng/lang_core.c
 
-c/otf/lng/lang_core.c
+c2/otf/lng/lang_core.c
+
+c2/lib/lng/lang_atf.c
+c2/lib/lng/lang_core.c
+c2/lib/lng/lang_mode.c
+c2/lib/lng/langrtl.c
 
 c/otf/chr/charsets.c
