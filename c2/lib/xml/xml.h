@@ -26,6 +26,7 @@ extern void tree_ns_xml_print(Tree *tp, FILE *fp);
 extern Xmlhelper *xmlh_init(FILE *fp);
 extern const unsigned char *xmlify(const unsigned char *);
 extern void xml_attr(const char **atts, FILE *fp);
+extern void node_xml(FILE *fp, Node *np);
 extern void tree_xml(FILE *fp, Tree *tp);
 extern void tree_xml_rnv(FILE *fp, Tree *tp, struct xnn_data *xdp, const char *rncbase);
 

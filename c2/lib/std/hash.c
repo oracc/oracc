@@ -122,7 +122,6 @@ const unsigned char *
 hash_exists(Hash *htab, const unsigned char *key)
 {
   static Hash_element *ret = NULL;
-  int ok = 0;
   if ((ret = _hash_lookup(htab, key, NULL)))
     return ret->key;
   return NULL;

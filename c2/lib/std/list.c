@@ -20,7 +20,29 @@ list_concat(List *l)
   s = malloc(len+1);
   *s = '\0';
   for (n = list_first(l); n; n = list_next(l))
-    strcat((char*)s,(char*)n);
+    {
+      strcat((char*)s,(char*)n);
+    }
+  return s;
+}
+
+unsigned char *
+list_join(List *l, const char *j)
+{
+  unsigned char *s = NULL;
+  int len = 0;
+  unsigned char *n;
+  for (n = list_first(l); n; n = list_next(l))
+    len += (strlen((const char *)n) + strlen(j));
+  s = malloc(len+1);
+  *s = '\0';
+  for (n = list_first(l); n; n = list_next(l))
+    {
+      strcat((char*)s,(char*)n);
+      if (list_more(l))
+	strcat((char*)s, j);
+    }
+  
   return s;
 }
 

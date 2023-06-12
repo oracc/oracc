@@ -39,10 +39,12 @@ struct List_hdr
 typedef struct List_hdr List;
 
 #define list_last(lp)     ((lp)->last ? (lp)->last->data : NULL)
+#define list_more(lp)	  ((lp)->rover != (lp)->last)
 #define list_has_next(lp) ((lp)->rover->next)
 #define list_unnext(lp)   (lp->rover && (lp->rover=lp->rover->prev))
 
 extern unsigned char *list_concat(List *l);
+extern unsigned char *list_join(List *l, const char *j);
 extern List * list_create (List_types_e);
 extern void list_add (List *, void *);
 extern List * list_append(List*lp1,List*lp2);

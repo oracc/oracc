@@ -15,11 +15,14 @@ struct gvl_g {
   unsigned const char *accn; /* grapheme passed through accnum--lazily done */
   const char *oid;  	     /* OID for sign */
   unsigned const char *sign; /* sign name for OID; for a vq this is the canonical vq;
-			        when there are mods this is the sign+mods, e.g., GAN₂@t y*/
+			        when there are mods this is the sign+mods, e.g., GAN₂@t*/
   unsigned const char *utf8; /* UTF8 value for OID */
   unsigned const char *uhex; /* HEX value for OID */
   unsigned const char *mess; /* NULL if OK; if bad this is the error message for the grapheme */
   int status; 		     /* 0 for exactly right; 1 for required canonicalization; -1 on error */
+  Node *deep;		     /* if orig is not a compound but sign is
+				a compound this is the parse of sign
+				when deep_parse = 1 */
 };
 
 typedef struct gvl_g gvl_g;

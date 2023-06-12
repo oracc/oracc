@@ -51,7 +51,13 @@ struct xpd *
 xpd_init(const char *project, struct npool *pool)
 {
   static char buf[64];
-  struct xpd *xp = calloc(1,sizeof(struct xpd));
+  struct xpd *xp = NULL;
+
+  if (!project || !*project)
+    return NULL;
+  
+  xp = calloc(1,sizeof(struct xpd));
+  
   if (*project == '.') 
     /* can't use 00lib because of config inheriting */
     sprintf(buf,"%s/02xml/%s",project,configname);

@@ -118,6 +118,8 @@ extern void gdl_modq_term(void);
 extern void gdl_mod_wrap(Node *np, int sub_simplexg);
 extern void gdl_mod_wrap_q(Node *np);
 
+extern const char *gdlsig(Tree*tp);
+extern void gdlsig_node(Node *np, void *user);
 extern void gdl_update_state(Node *np, gdlstate_t gs_tok);
 
 #endif /*GDL_H_*/

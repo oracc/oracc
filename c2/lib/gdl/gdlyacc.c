@@ -14,6 +14,8 @@ extern void gdl_wrapup_buffer(void);
 extern void gdl_validate(Tree *tp);
 int curr_lang = 's';
 
+int deep_parse = 1;
+
 gdlstate_t gst; /* global gdl state */
 Node *lgp = NULL;   /* last grapheme node pointer */
 
@@ -22,6 +24,27 @@ Node *lgp = NULL;   /* last grapheme node pointer */
  * Functions for running gdl.y
  *
  ***********************************************************************/
+
+void
+gdlparse_deep(Node *np, void *mptr)
+{
+  if (np->user)
+    {
+      gvl_g *gp = np->user;
+      if (gp->orig && '|' != *gp->orig && gp->sign && '|' == *gp->sign)
+	{
+	  Tree *tp = tree_init();
+	  Mloc *m = mptr;
+	  (void)tree_root(tp, NS_GDL, "g:gdl", 1, NULL);
+	  gdl_setup_buffer((char*)pool_copy((ucp)gp->sign, gdlpool));
+	  gdl_set_tree(tp);
+	  gdl_lex_init(m->file, m->line);
+	  gdlparse();
+	  gdl_wrapup_buffer();
+	  gp->deep = tp->root->kids;
+	}
+    }
+}
 
 Tree *
 gdlparse_string(Mloc *m, char *s)
@@ -33,6 +56,8 @@ gdlparse_string(Mloc *m, char *s)
   gdl_lex_init(m->file, m->line);
   gdlparse();
   gdl_wrapup_buffer();
+  if (deep_parse)
+    tree_iterator(tp, m, gdlparse_deep, NULL);
   return tp;
 }
 

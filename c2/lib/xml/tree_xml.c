@@ -86,3 +86,10 @@ tree_xml(FILE *fp, Tree *tp)
   free(xhp);
 }
 
+void
+node_xml(FILE *fp, Node *np)
+{
+  Xmlhelper *xhp = xmlh_init(fp ? fp : stdout);
+  node_iterator(np, xhp, tree_xml_node, tree_xml_post);
+  free(xhp);
+}

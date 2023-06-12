@@ -883,10 +883,15 @@ main(int argc, char * const*argv)
       else
 	{
 	  ce_xtf_init();
-#if 0
+
+#if 0	  
 	  cfg = xpd_init(project, xtf_pool);
-	  if (!strcmp(xpd_option(cfg, "ce-use-colon-sep"), "no"))
-	    ce_use_colon_sep = 0;
+	  if (cfg)
+	    {
+	      const char *cucs = xpd_option(cfg, "ce-use-colon-sep");
+	      if (cucs && !strcmp(cucs, "no"))
+		ce_use_colon_sep = 0;
+	    }
 #endif
 	  ce_ids(EOF);
 	  runexpatNS(i_list, list2charstarstar(files), ce_xtf_sH, ce_xtf_eH, "|");

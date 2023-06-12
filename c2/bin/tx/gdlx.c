@@ -23,10 +23,12 @@ int rnvtrace;
 extern int gdl_flex_debug, gdldebug, gdl_orig_mode;
 
 int check_mode = 0;
+extern int deep_sig;
 const char *fname = NULL;
 int gdl_c10e_mode = 1;
 int identity_mode = 0;
 int ns_output = 0;
+int signatures = 0;
 int trace_mode = 0;
 int validate = 0;
 int wrapper = 0;
@@ -76,7 +78,12 @@ do_one(char *s)
     test_identity(s, tp);
   else if (!check_mode)
     {
-      if (ns_output)
+      if (signatures)
+	{
+	  const char *sig = gdlsig(tp);
+	  fprintf(stdout, "%s\t%s\n", s, sig);
+	}
+      else if (ns_output)
 	tree_xml_rnv(stdout, tp, &gdl_data, "gdl");
       else
 	tree_xml(stdout, tp);
@@ -117,7 +124,7 @@ main(int argc, char **argv)
 {
   gdl_flex_debug = gdldebug = 0;
   
-  options(argc, argv, "cf:iontvw");
+  options(argc, argv, "cdf:ionstvw");
 
   gdl_flex_debug = gdldebug = trace_mode;
   
@@ -148,6 +155,9 @@ opts(int opt, char *arg)
     case 'c':
       check_mode = 1;
       break;
+    case 'd':
+      deep_sig = 1;
+      break;
     case 'f':
       fname = optarg;
       break;
@@ -159,6 +169,9 @@ opts(int opt, char *arg)
       break;
     case 'o':
       gdl_orig_mode = 1;
+      break;
+    case 's':
+      signatures = 1;
       break;
     case 't':
       trace_mode = 1;
