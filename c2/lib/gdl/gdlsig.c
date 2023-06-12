@@ -16,6 +16,8 @@ gdlsig_addoid(Node *np, List *lp)
       gvl_g *gp = np->user;
       if (deep_sig && gp->deep)
 	gdlsig_descend(gp->deep, lp);
+      else if (deep_sig && !strcmp(np->name, "g:c"))
+	gdlsig_descend(np, lp);
       else if (gp->oid)
 	list_add(lp, (char*)gp->oid);
       else
