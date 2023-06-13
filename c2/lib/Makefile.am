@@ -1,1 +1,1 @@
-SUBDIRS=sys std asl atf cat cbd gdl jsn xml
+SUBDIRS=sys std asl atf cat cbd gdl jsn lng xml

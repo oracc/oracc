@@ -1,16 +1,9 @@
 #include <sys/unistd.h>
 #include <ctype128.h>
-#include "sas.h"
-#include "fname.h"
-#include "npool.h"
-#include "skl.h"
-#include "warning.h"
-#include "charsets.h"
-#include "run.h"
-#include "proj_context.h"
-#include "lang.h"
+#include "pool.h"
+#include "mesg.h"
+#include "lng.h"
 #include "xpd2.h"
-#include "xli.h"
 
 struct lang_context *global_lang = NULL;
 struct lang_context *text_lang = NULL;
@@ -44,7 +37,7 @@ load_signs(struct lang_context *lp)
       if (lp->snames || lp->values)
 	{
 	  sprintf(buf,"%s/csl-%s",lp->owner->name,lp->tag->lang);
-	  lp->signlist = (char *)npool_copy((unsigned char *)buf,
+	  lp->signlist = (char *)pool_copy((unsigned char *)buf,
 					    lp->owner->owner->pool);
 	}
       if (verbose)
@@ -158,7 +151,7 @@ lang_switch(struct lang_context *curr, const char *tag, int *taglenp,
 	  if (!(lp = lang_load(curr ? curr->owner : NULL, lt)))
 	    {
 	      lp = curr;
-	      vwarning2(file,lnum,"%s: unknown core language in language switch",tag);
+	      mesg_vwarning(file,lnum,"%s: unknown core language in language switch",tag);
 	    }
 	  else
 	    {

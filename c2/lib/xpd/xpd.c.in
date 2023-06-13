@@ -1,0 +1,189 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/unistd.h>
+#include <ctype128.h>
+#include "loadfile.h"
+#include "pool.h"
+#include "runexpat.h"
+#include "fname.h"
+#include "hash.h"
+#include "xpd2.h"
+#include "mesg.h"
+
+extern int verbose;
+
+static const char *configname = "config.xml";
+
+static void xpds_load(struct xpd *, const char *);
+
+const char *
+xpd_option(struct xpd *xp, const char *name)
+{
+  if (xp)
+    return hash_find(xp->opts, (const unsigned char *)name);
+  else
+    return NULL;
+}
+
+/* return a space-separated list of projects to search for
+   sigs for the arg lang */
+const char *
+xpd_lang(struct xpd *xp, const char *lang)
+{
+  if (xp)
+    return hash_find(xp->lang, (const unsigned char *)lang);
+  else
+    return NULL;
+}
+
+int
+xpd_option_int(struct xpd *xp, const char *name)
+{
+  const char *var = hash_find(xp->opts, (const unsigned char *)name);
+  if (var)
+    return atoi(var);
+  else
+    return 0;
+}
+
+struct xpd *
+xpd_init(const char *project, Pool *pool)
+{
+  static char buf[64];
+  struct xpd *xp = NULL;
+
+  if (!project || !*project)
+    return NULL;
+  
+  xp = calloc(1,sizeof(struct xpd));
+  
+  if (*project == '.') 
+    /* can't use 00lib because of config inheriting */
+    sprintf(buf,"%s/02xml/%s",project,configname);
+  else
+    sprintf(buf,"%s/xml/%s/%s",oracc_home(),project,configname);
+  xp->project = (const char *)pool_copy((unsigned char *)project,pool);
+  xp->file = (const char *)pool_copy((unsigned char *)buf,pool);
+  xp->pool = pool;
+  xp->opts = hash_create(20);
+  xp->lang = hash_create(20);
+  if (!access(buf, R_OK))
+    {
+      xpds_load(xp,buf);
+      if (verbose)
+	vnotice("xpd_init: loaded %s",buf);
+    }
+  else if (strcmp(project, "oracc"))
+    vwarning("xpd_init: %s not found or not readable", buf);
+  else
+    {
+      if (verbose)
+	vnotice("xpd_init: working with default project 'oracc'");
+    }
+  
+  return xp;
+}
+
+/* N.B.: Do not free xpd->pool here as it is passed into 
+   xpd_init from elsewhere and will be freed by caller */
+void
+xpd_term(struct xpd *xp)
+{
+  if (xp)
+    {
+      hash_free(xp->opts,NULL);
+      hash_free(xp->lang,NULL);
+      free(xp);
+    }
+}
+
+static const char *xpd_ns = "http://oracc.org/ns/xpd/1.0";
+#define xpd_offset (strlen(xpd_ns))
+
+static void
+xpd_sH(struct xpd *xp, const char *name, const char **atts)
+{
+  if (!strncmp(name,xpd_ns,xpd_offset))
+    {
+      const char *lname = name + xpd_offset;
+      if (*lname == ':')
+	{
+	  ++lname;
+	  if (!strcmp(lname,"option"))
+	    {
+	      unsigned const char *optname = (unsigned char *)findAttr(atts,"name");
+	      if ('%' == *optname)
+		hash_add(xp->lang,
+			 pool_copy(++optname,xp->pool),
+			 pool_copy((unsigned char *)findAttr(atts,"value"),xp->pool));
+	      else
+		hash_add(xp->opts,
+			 pool_copy(optname,xp->pool),
+			 pool_copy((unsigned char *)findAttr(atts,"value"),xp->pool));
+	    }
+	  else if (!strcmp(lname,"project"))
+	    {
+	      hash_add(xp->opts,
+		       pool_copy((unsigned char *)"project",xp->pool),
+		       pool_copy((unsigned char *)findAttr(atts, "n"),xp->pool));
+	    }
+	}
+    }
+}
+
+static void
+xpd_eH(struct xpd *xp, const char *name)
+{
+  char *colon = strrchr(name, ':');
+  if (colon && strcmp(colon, ":option") && strcmp(colon, ":project"))
+    {
+      char *t = (char *)charData_retrieve(), *end;
+      unsigned char *n = pool_copy((unsigned char *)(colon+1),xp->pool);
+      while (isspace(*t))
+	++t;
+      end = t + strlen(t);
+      while (end > t && isspace(end[-1]))
+	--end;
+      *end = '\0';
+      hash_add(xp->opts,
+	       n,
+	       pool_copy((unsigned char *)t,xp->pool));      
+    }
+  charData_discard();
+}
+
+static void
+xpds_load(struct xpd *xp, const char *fname)
+{
+  const char *fns[2];
+  fns[0] = fname;
+  fns[1] = NULL;
+  runexpatNSuD(i_list, fns, (XML_StartElementHandler)xpd_sH, (XML_EndElementHandler)xpd_eH, ":", xp);
+}
+
+void
+xpd_echo(const char *xpd_project, FILE *fp)
+{
+  char tmp[_MAX_PATH], *text;
+  size_t nbytes;
+  (void)sprintf(tmp,"@@ORACC@@/xml/%s/%s", xpd_project, configname);
+  text = (char*)loadfile((unsigned char *)tmp, &nbytes);
+  if (text)
+    {
+      char *xml_decl;
+      if ((xml_decl = strstr(text, "<?xml")) && isspace(xml_decl[5]))
+	{
+	  if ((text = strstr(text, "?>")))
+	    while (isspace(text[1]))
+	      ++text;
+	}
+      fputs(text,fp);
+    }
+}
+
+void
+xpd_set_configname(const char *cfgname)
+{
+  configname = cfgname;
+}

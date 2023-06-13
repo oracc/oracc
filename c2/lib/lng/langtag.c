@@ -1,19 +1,19 @@
 #include <stdlib.h>
 #include <ctype128.h>
-#include "lang.h"
-#include "npool.h"
+#include "lng.h"
+#include "pool.h"
 #include "hash.h"
-#include "warning.h"
+#include "mesg.h"
 
 const char *fwhost = NULL;
 
 struct lang_tag *default_langtag;
 
-static Hash_table *langtag_hash;
-static Hash_table *texttag_hash = NULL;
-static Hash_table *noscript_hash = NULL;
+static Hash *langtag_hash;
+static Hash *texttag_hash = NULL;
+static Hash *noscript_hash = NULL;
 static char *texttag_buf = NULL;
-static struct npool *langtag_pool;
+static Pool *langtag_pool;
 static void langtag_error(const char *file, int lnum, 
 			  const char *tag, const char *mess);
 static const char *langtag_atf(const char *atf,
@@ -69,7 +69,7 @@ valid_x(const char *s)
 void
 langtag_init(void)
 {
-  langtag_pool = npool_init();
+  langtag_pool = pool_init();
   langtag_hash = hash_create(1);
   default_langtag = langtag_create(NULL,"sux",NULL,NULL,0);
   noscript_hash = hash_create(1);
@@ -79,7 +79,7 @@ langtag_init(void)
 void
 langtag_term(void)
 {
-  npool_term(langtag_pool);
+  pool_term(langtag_pool);
   if (langtag_hash)
     {
       hash_free(langtag_hash, hash_xfree);
@@ -140,7 +140,7 @@ tag_no_script(const char *tag)
 	--script;
       if (script > tmp && '-' == script[-1])
 	script[-1] = '\0';
-      hash_add(noscript_hash, npool_copy(tag,langtag_pool), (ret = npool_copy(tmp,langtag_pool)));
+      hash_add(noscript_hash, pool_copy(tag,langtag_pool), (ret = pool_copy(tmp,langtag_pool)));
       free(tmp);
       return ret;
     }
@@ -186,9 +186,9 @@ langtag_parse(const char *tag, const char *file, int lnum)
   else
     {
       tmp = calloc(1,sizeof(struct lang_tag));
-      tagcopy = (char*)npool_copy((unsigned char *)tag, langtag_pool);
+      tagcopy = (char*)pool_copy((unsigned char *)tag, langtag_pool);
     }
-  tmp->tag = (char *)npool_copy((unsigned char *)tag, langtag_pool);
+  tmp->tag = (char *)pool_copy((unsigned char *)tag, langtag_pool);
   tmp->lang = s = tagcopy;
   while (*s && '-' != *s)
     ++s;
@@ -253,7 +253,7 @@ langtag_error(const char *file, int lnum, const char *tag, const char *mess)
 {
 #if 1
   if (file && *file)
-    vwarning2(file, lnum, "%s: %s\n", tag, mess);
+    mesg_vwarning(file, lnum, "%s: %s\n", tag, mess);
   else
     vwarning("%s: %s\n", tag, mess);
 #else
@@ -307,7 +307,7 @@ langtag_compose(struct lang_tag *def, const char *lang,
     sprintf(buf+strlen(buf),"-%s",x);
   else if (def->x)
     sprintf(buf+strlen(buf),"-%s",def->x);
-  return (char *)npool_copy((unsigned char *)buf,langtag_pool);
+  return (char *)pool_copy((unsigned char *)buf,langtag_pool);
 }
 
 struct lang_tag *

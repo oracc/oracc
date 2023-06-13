@@ -1,4 +1,4 @@
 #ifndef LANGMODE_H_
 #define LANGMODE_H_
-#include "lang.h"
+#include "lng.h"
 #endif/*LANGMODE_H_*/

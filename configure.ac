@@ -252,6 +252,7 @@ AC_CONFIG_FILES([Makefile
 	c2/lib/atf/Makefile
 	c2/lib/gdl/Makefile
 	c2/lib/jsn/Makefile
+	c2/lib/lng/Makefile
 	c2/lib/xml/Makefile
 	c2/lib/xml/expat/Makefile
 	c2/lib/xml/rnv/Makefile

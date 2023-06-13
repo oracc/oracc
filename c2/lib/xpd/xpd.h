@@ -1,0 +1,22 @@
+#ifndef XPD_H_
+#define XPD_H_
+
+#include "hash.h"
+struct xpd
+{
+  const char *project;
+  const char *file;
+  Pool *pool;
+  Hash *opts; /* general options */
+  Hash *lang; /* lang-options for lemmer */
+};
+
+extern const char*xpd_option(struct xpd *, const char*);
+extern const char*xpd_lang(struct xpd *, const char*);
+extern int xpd_option_int(struct xpd *, const char*);
+extern struct xpd *xpd_init(const char *project, Pool *pool);
+extern void xpd_term(struct xpd *);
+extern void xpd_echo(const char *xpd_proj,FILE *fp);
+extern void xpd_set_configname(const char *cfgname);
+
+#endif/*XPD_H_*/

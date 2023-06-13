@@ -1,16 +1,9 @@
 #include <sys/unistd.h>
 #include <ctype128.h>
-#include "sas.h"
-#include "fname.h"
-#include "npool.h"
-#include "skl.h"
-#include "warning.h"
-#include "charsets.h"
-#include "run.h"
-#include "proj_context.h"
-#include "lang.h"
+#include "pool.h"
+#include "mesg.h"
+#include "lng.h"
 #include "xpd2.h"
-#include "xli.h"
 
 struct lang_context *global_lang = NULL;
 struct lang_context *text_lang = NULL;
