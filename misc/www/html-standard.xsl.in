@@ -59,6 +59,34 @@
 	<xsl:text> </xsl:text>
       </script>
       <xsl:if test="not(document('@@ORACC@@/lib/data/usermode.xml')/*/text() = 'single')">
+	<xsl:choose>
+	  <xsl:when test="starts-with('@@ORACC_HOST@@', 'oracc.')"> <!-- http version -->
+<!-- Google tag (gtag.js) -->
+<script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-GWWQE4JWW6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GWWQE4JWW6');
+
+</script>
+	  </xsl:when>
+	  <xsl:otherwise> <!-- https version -->
+<!-- Google tag (gtag.js) -->
+<script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-0QKC3P5HJ1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0QKC3P5HJ1');
+
+</script>
+	  </xsl:otherwise>
+	</xsl:choose>
+	<!--
+	    OLD UA NOT USED AFTER 2023-07-01
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -72,6 +100,7 @@
   })();
 
 </script>
+	-->
       </xsl:if>
     </head>
     <body>

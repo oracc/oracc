@@ -575,6 +575,11 @@ run_form_maker {
     open(T,$t);
     while (<T>) {
 	if (m#^\@\@ga\@\@#) {
+	    if ($p{'referer'} && $p{'referer'} =~ /^http:/) {
+		print `cat @@ORACC@@/www/ga4-tag-http.txt`;
+	    } else {
+		print `cat @@ORACC@@/www/ga4-tag-https.txt`;
+	    }
 	} elsif (/\@\@outlines\@\@/) {
 	    print `cat @@ORACC@@/xml/$p{'project'}/outline-sorter.xml`;
 	} elsif (/\@\@translations\@\@/) {
