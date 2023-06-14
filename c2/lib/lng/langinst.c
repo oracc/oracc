@@ -3,7 +3,7 @@
 #include "pool.h"
 #include "mesg.h"
 #include "lng.h"
-#include "xpd2.h"
+/*#include "xpd2.h"*/
 
 struct lang_context *global_lang = NULL;
 struct lang_context *text_lang = NULL;
@@ -14,6 +14,7 @@ extern int verbose;
 
 static List *langmem;
 
+#if 0
 static int
 find_project_csl(const char *proj,const char*lang)
 {
@@ -29,44 +30,20 @@ load_signs(struct lang_context *lp)
      if there is one, use it: */
   if (lp->owner && lp->owner->name && find_project_csl(lp->owner->name,lp->tag->lang))
     {
-#if 0
-      char buf[16];
-      sprintf(buf,"csl-%s",lp->tag->lang);
-      lp->snames = skl_load(lp->owner->name,buf,"simple","signs");
-      lp->values = skl_load(lp->owner->name,buf,"simple","values");
-      if (lp->snames || lp->values)
-	{
-	  sprintf(buf,"%s/csl-%s",lp->owner->name,lp->tag->lang);
-	  lp->signlist = (char *)pool_copy((unsigned char *)buf,
-					    lp->owner->owner->pool);
-	}
-      if (verbose)
-	{
-	  const char *slstat = "failed";
-	  if (lp->snames || lp->values)
-	    slstat = "succeded";
-	  fprintf(stderr,"project signlist for %s, lang %s load %s\n",
-		  lp->owner->name, lp->tag->lang, slstat);
-	}
-#endif
     }
   /* if not, then if the signlist member is "#" we are using the 
      built-in sign list */
   else if (!strcmp(lp->script,"020"))
     {
-#if 1
       lp->signlist = "#";
       lp->snames = lp->values = NULL;
-#else
-      lp->snames = skl_load(lp->owner->name,lp->signlist,"simple","signs");
-      lp->values = skl_load(lp->owner->name,lp->signlist,"simple","values");
-#endif
     }
   else
     {
       lp->snames = lp->values = NULL;
     }
 }
+#endif
 
 static void
 lang_free(struct lang_context *lp)
@@ -121,6 +98,7 @@ lang_load(struct proj_context *p, struct lang_tag *lt)
   else
     lp->mode = m_alphabetic;
 
+#if 0
   /* Sumero-Akkadian Cuneiform may have its own sign list */
   if (!strcmp(lp->script, "020"))
     load_signs(lp);
@@ -128,7 +106,8 @@ lang_load(struct proj_context *p, struct lang_tag *lt)
   lp->cset = get_charset(lp->core->code,lp->mode);
   if (lp->cset && lp->cset->keys && !lp->cset->to_uni)
     chartrie_init(lp->cset);
-
+#endif
+  
   return lp;
 }
 
