@@ -257,6 +257,7 @@ AC_CONFIG_FILES([Makefile
 	c2/nss/atf/Makefile
 	c2/nss/cbd/Makefile
 	c2/nss/gdl/Makefile
+	c2/nss/xpd/Makefile
 	c2/bin/Makefile
 	c2/bin/ax/Makefile
 	c2/bin/sx/Makefile
