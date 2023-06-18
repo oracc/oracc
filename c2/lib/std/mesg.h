@@ -26,6 +26,8 @@ extern void mesg_print(FILE *fp);
 extern void mesg_print2(FILE *fp, List *mlist);
 extern List *mesg_retrieve(void);
 
+extern void mesg_notice(const char *file, int ln, const char *str);
+extern void mesg_vnotice(const char *file, int ln, const char *str, ...);
 extern void mesg_warning(const char *file, int ln, const char *str);
 extern void mesg_vwarning(const char *file, int ln, const char *s, ...);
 extern void mesg_avwarning(const char *file, int ln, const char *str, va_list ap);

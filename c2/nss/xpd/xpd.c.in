@@ -6,11 +6,12 @@
 #include "loadfile.h"
 #include "pool.h"
 #include "runexpat.h"
-#include "fname.h"
+#include "oraccsys.h"
 #include "hash.h"
-#include "xpd2.h"
 #include "mesg.h"
+#include "xpd.h"
 
+#define _MAX_PATH 2048
 extern int verbose;
 
 static const char *configname = "config.xml";
@@ -72,14 +73,14 @@ xpd_init(const char *project, Pool *pool)
     {
       xpds_load(xp,buf);
       if (verbose)
-	vnotice("xpd_init: loaded %s",buf);
+	mesg_vnotice(NULL, 0, "xpd_init: loaded %s",buf);
     }
   else if (strcmp(project, "oracc"))
-    vwarning("xpd_init: %s not found or not readable", buf);
+    mesg_vwarning(NULL, 0, "xpd_init: %s not found or not readable", buf);
   else
     {
       if (verbose)
-	vnotice("xpd_init: working with default project 'oracc'");
+	mesg_notice(NULL, 0, "xpd_init: working with default project 'oracc'");
     }
   
   return xp;

@@ -166,12 +166,36 @@ mesg_verr(Mloc *locp, const char *s, ...)
 }
 
 void
+mesg_notice(const char *file, int ln, const char *str)
+{
+  static Mloc l;
+  l.file = (char*)file;
+  l.line = ln;
+  mesg_err(&l,(char*)str);
+}
+
+void
 mesg_warning(const char *file, int ln, const char *str)
 {
   static Mloc l;
   l.file = (char*)file;
   l.line = ln;
   mesg_err(&l,(char*)str);
+}
+
+void
+mesg_vnotice(const char *file, int ln, const char *s, ...)
+{
+  static Mloc l;
+  l.file = (char*)file;
+  l.line = ln;
+  if (s)
+    {
+      va_list ap;
+      va_start(ap, s);
+      mesg_averr(&l, s, ap);
+      va_end(ap);
+    }
 }
 
 void

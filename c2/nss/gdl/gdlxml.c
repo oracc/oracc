@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "tree.h"
 #include "gdl.h"
+#include "gdlstate.h"
 #include "xml.h"
 #include "rnvxml.h"
 

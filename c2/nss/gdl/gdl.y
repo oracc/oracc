@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <mesg.h>
 #include "gdl.h"
+#include "gdlstate.h"
 extern int gdllex(void);
 extern void yyerror(const char *);
 extern const char *gdltext, *currgdlfile;
