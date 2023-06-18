@@ -7,9 +7,9 @@ libcbd_la_SOURCES = cbd.tab.c cbd-l.c cbdyacc.c cbd.c
 YACC=bison
 
 AM_CPPFLAGS=\
-	-I../std \
-	-I../include \
-	-I../xml
+	-I../../lib/std \
+	-I../../lib/include \
+	-I../../xml
 
 cbd.tab.c cbd.tab.h: cbd.y cbd.l
 	${YACC} -vd cbd.y

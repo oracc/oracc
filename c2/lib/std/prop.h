@@ -22,6 +22,8 @@ enum propgroup
     PG_LAST
   };
 
+typedef unsigned long gdlstate_t;
+
 struct prop
 {
   int p; 		/* property type */

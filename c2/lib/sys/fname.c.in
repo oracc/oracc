@@ -11,13 +11,13 @@
 #define MAX_PATH_     2048
 
 const char *
-oracc_builds ()
+oracc_builds (void)
 {
   return "@@ORACC_BUILDS@@";
 }
 
 const char *
-oracc_home ()
+oracc_home (void)
 {
   static char *cached_home = NULL;
   if (NULL == cached_home)
@@ -32,7 +32,7 @@ oracc_home ()
 /* this should really be called oracc_home but that function
    returns the ORACC env var */
 const char *
-oracc_project_home ()
+oracc_project_home (void)
 {
   static char *cached_home = NULL;
   if (NULL == cached_home)
@@ -45,7 +45,7 @@ oracc_project_home ()
 }
 
 const char *
-oracc_var ()
+oracc_var (void)
 {
   static char *cached_var = NULL;
   if (NULL == cached_var)

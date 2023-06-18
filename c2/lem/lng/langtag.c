@@ -255,7 +255,7 @@ langtag_error(const char *file, int lnum, const char *tag, const char *mess)
   if (file && *file)
     mesg_vwarning(file, lnum, "%s: %s\n", tag, mess);
   else
-    vwarning("%s: %s\n", tag, mess);
+    mesg_warning("%s: %s\n", tag, mess);
 #else
   if (file && *file)
     fprintf(stderr,"%s:%d: %s: %s\n", file, lnum, tag, mess);
