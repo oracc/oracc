@@ -15,7 +15,6 @@ AM_CPPFLAGS=-I@top_srcdir@/c/bin/se \
 
 #VPATH=.:..:../setxtx
 
-AM_CFLAGS=-pedantic -Wall -g
 
 bin_PROGRAMS=secbdx
 

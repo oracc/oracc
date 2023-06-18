@@ -12,7 +12,6 @@ AM_CPPFLAGS=-I@top_srcdir@/c/bin/se \
 	-I@top_srcdir@/c/otf/{chr,lng} \
 	-I@top_srcdir@/c/l2/{form,link,ngram,psus,sigs,word,xcl2}
 
-AM_CFLAGS=-pedantic -Wall -g
 
 bin_PROGRAMS=selemx
 

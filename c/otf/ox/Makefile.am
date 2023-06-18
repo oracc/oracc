@@ -2,7 +2,6 @@ include ../../../oracc-am-rules.txt
 
 #datadir=$(prefix)/lib/data
 
-AM_CFLAGS=-pedantic -Wall -g -std=c99
 SUBDIRS=
 bin_PROGRAMS=ox gdlme2 sigx gdlsig gdlsname gv
 noinst_PROGRAMS=prj tok f2test

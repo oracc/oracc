@@ -1,10 +1,10 @@
 include ../../oracc-am-rules.txt
 
-noinst_LTLIBRARIES=libns.la
+noinst_LTLIBRARIES=librnc.la
 
 rncdata_DATA=*.rnc
 
-libns_la_SOURCES=asl.c gdl.c xtf.c
+librnc_la_SOURCES=asl.c gdl.c xtf.c xpd.c
 
 AM_CPPFLAGS=\
 	-I../lib/xml

@@ -31,7 +31,6 @@ x_LDADD = -lestraier -lqdbm -lm -lz
 
 AM_CPPFLAGS = -I/usr/local/include -I ./estraier -I ./qdbm
 
-AM_CFLAGS = -fPIC -L./qdbm -L./estraier
 
 MYHEADS = estraier.h estmtdb.h estnode.h
 

@@ -7,7 +7,6 @@
 
 include ../../../oracc-am-rules.txt
 
-AM_CFLAGS=-ansi -pedantic -Wall
 SUBDIRS=
 noinst_LTLIBRARIES=libskl.la
 # noinst_PROGRAMS=sklfind sklshow

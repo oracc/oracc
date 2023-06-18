@@ -2,7 +2,6 @@ include ../../../oracc-am-rules.txt
 
 subdirs=ccgi
 
-AM_CFLAGS=-pedantic -Wall -g \
 	-I@top_srcdir@/c/lib/expat/xmlparse
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include -Wall -pedantic

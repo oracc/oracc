@@ -1,0 +1,28 @@
+c/bin/pg/Makefile.am:AM_CFLAGS=-pedantic -g -Wall
+c/bin/se/Makefile.am:AM_CFLAGS=-pedantic -Wall -g
+c/bin/se/secatx/Makefile.am:AM_CFLAGS=-pedantic -Wall -g
+c/bin/se/secbdx/Makefile.am:AM_CFLAGS=-pedantic -Wall -g
+c/bin/se/selemx/Makefile.am:AM_CFLAGS=-pedantic -Wall -g
+c/bin/se/setxtx/Makefile.am:AM_CFLAGS=-pedantic -Wall -g
+c/bin/server/Makefile.am:AM_CFLAGS=-pedantic -Wall -g \
+c/bin/server/ccgi/Makefile.am:AM_CFLAGS=-ansi -pedantic -Wall -g
+c/bin/util/Makefile.am:AM_CFLAGS=-pedantic -Wall
+c/l2/bigrams/Makefile.am:AM_CFLAGS=-pedantic -Wall -g
+c/l2/prop/Makefile.am:AM_CFLAGS=-ansi -pedantic -Wall -g
+c/l2/psus/Makefile.am:AM_CFLAGS=-ansi -pedantic -Wall -g
+c/l2/xli/Makefile.am:AM_CFLAGS=-ansi -pedantic -Wall -g
+c/lib/gsl/Makefile.am:AM_CFLAGS=-ansi -pedantic -Wall -g
+c/lib/oracc/Makefile.am:AM_CFLAGS=-std=c99 -pedantic -Wall -g
+c/lib/skl/Makefile.am:AM_CFLAGS=-ansi -pedantic -Wall
+c/otf/atf/Makefile.am:AM_CFLAGS=-ansi -pedantic -Wall -g -std=c99
+c/otf/cbd/Makefile.am:#AM_CFLAGS=-ansi
+c/otf/cbd/Makefile.am:AM_CFLAGS=-pedantic -Wall -g -O0 -DTGILTYPE_IS_DECLARED
+c/otf/gdl/Makefile.am:#AM_CFLAGS=-ansi
+c/otf/gdl/Makefile.am:AM_CFLAGS=-pedantic -Wall -g
+c/otf/lib/Makefile.am:AM_CFLAGS=-ansi -pedantic -Wall -g
+c/otf/lng/Makefile.am:AM_CFLAGS=-ansi -pedantic -Wall -g
+c/otf/otf/Makefile.am:AM_CFLAGS=-pedantic -Wall -g
+c/otf/ox/Makefile.am:AM_CFLAGS=-pedantic -Wall -g -std=c99
+c/otf/prj/Makefile.am:AM_CFLAGS=-ansi -pedantic -Wall -g -std=c99
+c/otf/run/Makefile.am:AM_CFLAGS=-ansi -pedantic -Wall -g -std=c99
+oracc-hyperestraier/Makefile.am:AM_CFLAGS = -fPIC -L./qdbm -L./estraier

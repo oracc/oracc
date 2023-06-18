@@ -1,1 +1,1 @@
-SUBDIRS=ns lib bin
+SUBDIRS=rnc lib lem nss bin

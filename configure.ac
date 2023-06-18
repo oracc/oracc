@@ -242,20 +242,21 @@ AC_CONFIG_FILES([Makefile
 	doc/ns/xtf/1.0/Makefile
 	doc/ns/xse/1.0/Makefile
 	c2/Makefile
-	c2/ns/Makefile
+	c2/rnc/Makefile
 	c2/lib/Makefile
 	c2/lib/sys/Makefile
 	c2/lib/std/Makefile
 	c2/lib/cat/Makefile
-	c2/lib/cbd/Makefile
-	c2/lib/asl/Makefile
-	c2/lib/atf/Makefile
-	c2/lib/gdl/Makefile
 	c2/lib/jsn/Makefile
-	c2/lib/lng/Makefile
 	c2/lib/xml/Makefile
 	c2/lib/xml/expat/Makefile
 	c2/lib/xml/rnv/Makefile
+	c2/lem/frm/Makefile
+	c2/lem/lng/Makefile
+	c2/nss/asl/Makefile
+	c2/nss/atf/Makefile
+	c2/nss/cbd/Makefile
+	c2/nss/gdl/Makefile
 	c2/bin/Makefile
 	c2/bin/ax/Makefile
 	c2/bin/sx/Makefile

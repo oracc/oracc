@@ -1,6 +1,5 @@
 include ../../../oracc-am-rules.txt
 
-AM_CFLAGS=-ansi -pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=libcdf.la
 noinst_SCRIPTS=mk_rnc.sh

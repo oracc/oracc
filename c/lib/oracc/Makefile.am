@@ -7,7 +7,6 @@
 
 include ../../../oracc-am-rules.txt
 
-AM_CFLAGS=-std=c99 -pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=liboracc.la
 

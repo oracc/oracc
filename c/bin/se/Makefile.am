@@ -17,7 +17,6 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/otf/{chr,gdl,lib,lng,run} \
 	-I/usr/local/include
 
-AM_CFLAGS=-pedantic -Wall -g
 
 AM_LDFLAGS=-L/opt/local/lib
 

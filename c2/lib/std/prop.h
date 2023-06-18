@@ -5,7 +5,7 @@
 #include <memo.h>
 #include <tree.h>
 
-#include <../gdl/gdlstate.h>
+/*#include <../gdl/gdlstate.h>*/
 
 enum propgroup
   {
