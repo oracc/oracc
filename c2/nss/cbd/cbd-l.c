@@ -941,6 +941,7 @@ char *yytext;
 
 #include <ctype128.h>
 #include <xsystem.h>
+#include <iome.h>
 #include "cbd.h"
 #include "cbd.tab.h"
 /*#include "rnvcbd.h"*/
@@ -962,7 +963,7 @@ char *yytext;
 static int after_s_entsns = 0;
 static int after_s_gw = 0;
 static int after_s_pos = 0;
-static int after_s_lang = 0;
+/*static int after_s_lang = 0;*/
 static int after_s_renmrg = 0;
 static int yycolumn = 0;
 extern char *efile;
@@ -975,8 +976,12 @@ static struct cbdtag *ctp;
 static void baseco(const char *type);
 static void basesc(const char *type);
 static int set_ctp(void);
+
 static int tg_set_flags(char *f);
+
+#if 0
 static int tg_validate(int retval);
+#endif
 
 static char *b_alt_tok = NULL;
 static void alt_wrapup(int clean);
@@ -1010,15 +1015,19 @@ struct bufstack
 };
 struct bufstack include_stack[MAX_INCLUDE_DEPTH];
 int include_stack_ptr = 0;
-static void includec(void);
+/*static void includec(void);*/
 static void includeo(char *file);
 
 YY_BUFFER_STATE bp;
 
+#if 1
+#define xreturn(x) return(x)
+#else
 #define xreturn(x) return(tg_validate(x))
-#line 1019 "cbd-l.c"
+#endif
+#line 1028 "cbd-l.c"
 
-#line 1021 "cbd-l.c"
+#line 1030 "cbd-l.c"
 
 #define INITIAL 0
 #define s_sol 1
@@ -1256,9 +1265,9 @@ YY_DECL
 		}
 
 	{
-#line 92 "cbd.l"
+#line 101 "cbd.l"
 
-#line 1261 "cbd-l.c"
+#line 1270 "cbd-l.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1352,73 +1361,73 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 93 "cbd.l"
+#line 102 "cbd.l"
 { BEGIN ss(s_sol); 	 return(yytext[0]); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 94 "cbd.l"
+#line 103 "cbd.l"
 { if (set_ctp()) xreturn(ctp->tok); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 95 "cbd.l"
+#line 104 "cbd.l"
 { if (set_ctp()) BEGIN ss(s_flag); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 96 "cbd.l"
+#line 105 "cbd.l"
 { tg_set_flags(yytext) ; xreturn(ctp->tok); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 97 "cbd.l"
+#line 106 "cbd.l"
 { if (set_ctp()) xreturn(ctp->tok); } 
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 98 "cbd.l"
+#line 107 "cbd.l"
 { if (set_ctp()) xreturn(ctp->tok); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 99 "cbd.l"
+#line 108 "cbd.l"
 { ksdup(yytext); xreturn(TEXTSPEC); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 100 "cbd.l"
+#line 109 "cbd.l"
 /* empty */
 	YY_BREAK
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 101 "cbd.l"
+#line 110 "cbd.l"
 { yycolumn=1; if (ctp->eol_sp) xreturn(TEXTSPEC); else xreturn(EOL); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 103 "cbd.l"
+#line 112 "cbd.l"
 { ytdup(); xreturn(CF); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 104 "cbd.l"
+#line 113 "cbd.l"
 { ytdup(); xreturn(CF); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 105 "cbd.l"
+#line 114 "cbd.l"
 { BEGIN ss(s_gw); xreturn(yytext[yyleng-1]); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 106 "cbd.l"
+#line 115 "cbd.l"
 { ytdup(); xreturn(GW); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 107 "cbd.l"
+#line 116 "cbd.l"
 { BEGIN ss(after_s_gw); xreturn(yytext[0]); }
 	YY_BREAK
 case 15:
@@ -1428,12 +1437,12 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 108 "cbd.l"
+#line 117 "cbd.l"
 { BEGIN ss(0); ytdup(); xreturn(POS); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 109 "cbd.l"
+#line 118 "cbd.l"
 { BEGIN ss(after_s_pos); ytdup(); xreturn(POS); }
 	YY_BREAK
 case 17:
@@ -1443,22 +1452,22 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 110 "cbd.l"
+#line 119 "cbd.l"
 { BEGIN ss(0); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 112 "cbd.l"
+#line 121 "cbd.l"
 { BEGIN ss(s_bp); basesc("initial"); xreturn(BASES); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 113 "cbd.l"
+#line 122 "cbd.l"
 { BEGIN ss(s_bp); xreturn(BASES); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 114 "cbd.l"
+#line 123 "cbd.l"
 { ytdupn(1); xreturn(LANGSPEC); }
 	YY_BREAK
 case 21:
@@ -1468,17 +1477,17 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 115 "cbd.l"
+#line 124 "cbd.l"
 { BEGIN ss(0); yycolumn = 1; basesc("final"); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 116 "cbd.l"
+#line 125 "cbd.l"
 { BEGIN ss(s_bp); basesc("double"); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 117 "cbd.l"
+#line 126 "cbd.l"
 { BEGIN ss(s_bp); }
 	YY_BREAK
 case 24:
@@ -1486,12 +1495,12 @@ case 24:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 118 "cbd.l"
+#line 127 "cbd.l"
 { BEGIN ss(s_ba); ytdup(); xreturn(BASE_PRI); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 119 "cbd.l"
+#line 128 "cbd.l"
 { ytdup(); xreturn(BASE_PRI); }
 	YY_BREAK
 case 26:
@@ -1501,120 +1510,120 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 120 "cbd.l"
+#line 129 "cbd.l"
 { BEGIN ss(0); yycolumn = 1; basesc("final"); if (b_alt_tok) { alt_wrapup(1); xreturn(BASE_ALT); } }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 121 "cbd.l"
+#line 130 "cbd.l"
 { baseco("double"); unput(','); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 122 "cbd.l"
+#line 131 "cbd.l"
 { if (b_alt_tok) { alt_wrapup(0); xreturn(BASE_ALT); } }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 123 "cbd.l"
+#line 132 "cbd.l"
 { baseco("initial"); unput('('); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 124 "cbd.l"
+#line 133 "cbd.l"
 { b_alt_tok = strdup(yytext+1); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 125 "cbd.l"
+#line 134 "cbd.l"
 { b_alt_tok = strdup(yytext); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 126 "cbd.l"
+#line 135 "cbd.l"
 { BEGIN ss(s_bp); basesc("double"); if (b_alt_tok) { alt_wrapup(1); xreturn(BASE_ALT); } }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 127 "cbd.l"
+#line 136 "cbd.l"
 { BEGIN ss(s_bp); if (b_alt_tok) { alt_wrapup(1); xreturn(BASE_ALT); } }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 129 "cbd.l"
+#line 138 "cbd.l"
 { BEGIN ss(s_f); xreturn(FORM); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 130 "cbd.l"
+#line 139 "cbd.l"
 { BEGIN ss(s_f); bang = 1; xreturn(FORM); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 131 "cbd.l"
+#line 140 "cbd.l"
 { ytdupn(1); xreturn(FLANG); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 132 "cbd.l"
+#line 141 "cbd.l"
 { ytdupn(1); xreturn(FRWS); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 133 "cbd.l"
+#line 142 "cbd.l"
 { ytdupn(1); xreturn(FBASE); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 134 "cbd.l"
+#line 143 "cbd.l"
 { ytdupn(1); xreturn(FCONT); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 135 "cbd.l"
+#line 144 "cbd.l"
 { ytdupn(1); xreturn(FNORM); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 136 "cbd.l"
+#line 145 "cbd.l"
 { ytdupn(2); xreturn(FMORPH2); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 137 "cbd.l"
+#line 146 "cbd.l"
 { ytdupn(1); xreturn(FMORPH); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 138 "cbd.l"
+#line 147 "cbd.l"
 { ytdupn(1); xreturn(FSTEM); }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 139 "cbd.l"
+#line 148 "cbd.l"
 { ytdup(); xreturn(FFORM); }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 141 "cbd.l"
+#line 150 "cbd.l"
 { BEGIN ss(s_incl); }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 142 "cbd.l"
+#line 151 "cbd.l"
 { includeo(yytext); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 144 "cbd.l"
+#line 153 "cbd.l"
 { BEGIN ss(0); }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 146 "cbd.l"
+#line 155 "cbd.l"
 ECHO;
 	YY_BREAK
-#line 1617 "cbd-l.c"
+#line 1626 "cbd-l.c"
 			case YY_STATE_EOF(INITIAL):
 			case YY_STATE_EOF(s_sol):
 			case YY_STATE_EOF(s_flag):
@@ -2618,7 +2627,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 146 "cbd.l"
+#line 155 "cbd.l"
 
 
 void
@@ -2732,7 +2741,9 @@ cbd_user_action(void)
   yylloc.line = yylineno;
 }
 
-#if 0
+#if 1
+#define tg_validate(x) (x)
+#else
 static int
 tg_validate(int retval)
 {
@@ -2790,6 +2801,7 @@ includeo(char *file)
   BEGIN(ss(INITIAL));
 }
 
+#if 0
 static void
 includec(void)
 {
@@ -2808,9 +2820,10 @@ includec(void)
         }
     }
 }
+#endif
 
 void
-cbd_l_init(struct iom_io *ip)
+cbd_l_init(Iome_io *ip)
 {
   if (!ip->use_stdio)
     {

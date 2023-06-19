@@ -8,6 +8,7 @@ struct Mloc
 {
   const char *file;
   int line;
+  void *user;
 };
 
 typedef struct Mloc Mloc;

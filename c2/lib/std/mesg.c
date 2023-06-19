@@ -57,7 +57,7 @@ mesg_remove_error(const char *file, int line, const char *str)
   for (lnp = mesg_list->last; lnp; lnp = lnp->prev)
     {
       const char *err = lnp->data;
-      if (!strncmp(err, file, strlen(file) && ':' == err[strlen(file)]))
+      if (!strncmp(err, file, strlen(file)) && ':' == err[strlen(file)])
 	{
 	  int errnum = atoi(err + strlen(file) + 1);
 	  if (errnum == line && strstr(err, str))

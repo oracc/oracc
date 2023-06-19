@@ -31,8 +31,10 @@ foreach my $f (@h, @i, @c) {
 	s/mb_/memo_/g;
 	s/struct memblock/Memo/g;
 	s/memblock.h/memo.h/;
+	s/struct f2/Form/g;
 	s/warning.h/mesg.h/;
 	s/vwarning2/mesg_vwarning/g;
+	s/msglist/mesg/g;
 	s/lang.h/lng.h/;
 	s/BIT_ISSET/bit_set/g;
     }

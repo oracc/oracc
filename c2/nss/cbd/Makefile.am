@@ -2,7 +2,7 @@ include ../../../oracc-am-rules.txt
 
 noinst_LTLIBRARIES=libcbd.la
 
-libcbd_la_SOURCES = cbd.tab.c cbd-l.c cbdyacc.c cbd.c
+libcbd_la_SOURCES = cbd.tab.c cbd-l.c cbdyacc.c
 
 YACC=bison
 
@@ -11,6 +11,7 @@ AM_CPPFLAGS=\
 	-I../../lib/sys \
 	-I../../lib/include \
 	-I../../lem/frm \
+	-I../../lem/lng \
 	-I../../xml
 
 cbd.tab.c cbd.tab.h: cbd.y cbd.l

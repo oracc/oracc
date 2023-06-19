@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype128.h>
+#include <mesg.h>
+#include <lng.h>
 #include "cbd.h"
 
 extern int bang, star;
@@ -15,7 +17,7 @@ List *cmt_queue = NULL;
 struct alias *
 bld_alias(YYLTYPE l, struct entry *e)
 {
-  struct alias *a = mb_new(e->owner->aliasmem);
+  struct alias *a = memo_new(e->owner->aliasmem);
   a->l = l;
   cmts(a->l.user);
   list_add(e->aliases, a);
@@ -28,14 +30,14 @@ void
 bld_allow(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs)
 {
   struct allow *ap = NULL;
-  Hash_table *h_a, *h_b;
+  Hash *h_a, *h_b;
 
   if (!e->b_allow)
     e->b_allow = hash_create(1024);
   if (!e->allows)
     e->allows = list_create(LIST_SINGLE);
 
-  ap = mb_new(e->owner->allowmem);
+  ap = memo_new(e->owner->allowmem);
   ap->lhs = lhs;
   ap->rhs = rhs;
   ap->l = l;
@@ -73,7 +75,7 @@ bld_bases_pri(YYLTYPE l, struct entry *e, unsigned char *lang, unsigned char *p)
     }
   else
     {
-      msglist_err(&l, "zero-length primary base (misplaced ';'?)");
+      mesg_err(&l, "zero-length primary base (misplaced ';'?)");
     }
 }
 
@@ -87,7 +89,7 @@ bld_bases_alt(YYLTYPE l, struct entry *e, unsigned char *a)
     }
   else
     {
-      msglist_err(&l, "zero-length alternate base (misplaced ','?)");
+      mesg_err(&l, "zero-length alternate base (misplaced ','?)");
     }
 }
 
@@ -95,25 +97,26 @@ struct cbd *
 bld_cbd(void)
 {
   struct cbd *c = NULL;
+  extern char *file; /*FIXME*/
   c = malloc(sizeof(struct cbd));
-  c->aliasmem = mb_init(sizeof(struct alias), 1024);
-  c->allowmem = mb_init(sizeof(struct allow), 1024);
-  c->cgpmem = mb_init(sizeof(struct cgp), 1024);
-  c->editmem = mb_init(sizeof(struct edit), 1024);
-  c->equivmem = mb_init(sizeof(struct equiv), 1024);
-  c->entrymem = mb_init(sizeof(struct entry), 1024);
-  c->formsmem = mb_init(sizeof(struct f2), 1024);
-  c->i18nmem = mb_init(sizeof(struct i18n), 1024);
-  c->metamem = mb_init(sizeof(struct meta), 1024);
-  c->locatormem = mb_init(sizeof(locator), 1024);
-  c->loctokmem = mb_init(sizeof(struct loctok), 1024);
-  c->metaordermem = mb_init(sizeof(struct metaorder), 1024);
-  c->partsmem = mb_init(sizeof(struct parts), 1024);
-  c->pleiadesmem = mb_init(sizeof(struct pleiades), 1024);
-  c->sensesmem = mb_init(sizeof(struct sense), 1024);
-  c->tagmem = mb_init(sizeof(struct tag), 1024);
-  c->taglmem = mb_init(sizeof(struct tagl), 1024);
-  c->pool = npool_init();
+  c->aliasmem = memo_init(sizeof(struct alias), 1024);
+  c->allowmem = memo_init(sizeof(struct allow), 1024);
+  c->cgpmem = memo_init(sizeof(struct cgp), 1024);
+  c->editmem = memo_init(sizeof(struct edit), 1024);
+  c->equivmem = memo_init(sizeof(struct equiv), 1024);
+  c->entrymem = memo_init(sizeof(struct entry), 1024);
+  c->formsmem = memo_init(sizeof(Form), 1024);
+  c->i18nmem = memo_init(sizeof(struct i18n), 1024);
+  c->metamem = memo_init(sizeof(struct meta), 1024);
+  c->locatormem = memo_init(sizeof(locator), 1024);
+  c->loctokmem = memo_init(sizeof(struct loctok), 1024);
+  c->metaordermem = memo_init(sizeof(struct metaorder), 1024);
+  c->partsmem = memo_init(sizeof(struct parts), 1024);
+  c->pleiadesmem = memo_init(sizeof(struct pleiades), 1024);
+  c->sensesmem = memo_init(sizeof(struct sense), 1024);
+  c->tagmem = memo_init(sizeof(struct tag), 1024);
+  c->taglmem = memo_init(sizeof(struct tagl), 1024);
+  c->pool = pool_init();
   c->letters = list_create(LIST_SINGLE);
   c->entries = list_create(LIST_SINGLE);
   c->edits = list_create(LIST_SINGLE);
@@ -122,7 +125,7 @@ bld_cbd(void)
   c->haliases = hash_create(16);
   c->hentries = hash_create(1024);
   c->l.file = (char *)file;
-  c->l.first_line = 1;
+  c->l.line = 1;
   return c;
 }
 
@@ -139,9 +142,9 @@ bld_cbd_setup(struct cbd*c)
 void
 bld_cbd_term(struct cbd*c)
 {
-  npool_term(c->pool);
+  pool_term(c->pool);
   hash_add(cbds, c->iname, NULL);
-  cuneify_term();
+  /*cuneify_term();*/
   free(c);
 }
 
@@ -172,7 +175,7 @@ bld_cmt_queue(locator *lp, unsigned char *cmt)
       list_add(cmt_queue, cmt);
     }
   else
-    msglist_err(lp, "#comments are only allowed inside entries");
+    mesg_err(lp, "#comments are only allowed inside entries");
 }
 
 void
@@ -183,7 +186,7 @@ bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg)
     e->dcfs = list_create(LIST_SINGLE);
   if (!e->hdcfs)
     e->hdcfs = hash_create(1024);
-  tp = mb_new(e->owner->tagmem);
+  tp = memo_new(e->owner->tagmem);
   tp->l = l;
   cmts(tp->l.user);
   tp->name = (ccp)dcf;
@@ -192,7 +195,7 @@ bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg)
     {
       struct cbdrws *cp = cbdrws(tp->name, strlen(tp->name));
       if (cp)
-	e->lang = cp->lang;
+	e->lang = (const unsigned char *)cp->lang;
     }
   list_add(e->dcfs, dcf);
   hash_add(e->hdcfs, dcf, tp);
@@ -221,7 +224,7 @@ bld_discl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text, int
     }
   else
     {
-      struct i18n *i18 = mb_new(e->owner->i18nmem);
+      struct i18n *i18 = memo_new(e->owner->i18nmem);
       i18->l = l;
       cmts(i18->l.user);
       i18->lang = lang;
@@ -235,7 +238,7 @@ bld_discl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text, int
 void
 bld_edit(struct entry *e, char ctxt, char type)
 {
-  struct edit *ed = mb_new(e->owner->editmem);
+  struct edit *ed = memo_new(e->owner->editmem);
   /*struct sense *snode = NULL;*/
   if (ctxt == 's')
     {
@@ -281,7 +284,7 @@ struct sense *
 bld_edit_sense(struct entry *e, char type)
 {
   bld_edit(e, 's', type);
-  return ((struct sense *)(list_last(e->senses)))->ed->sp = mb_new(e->owner->sensesmem);
+  return ((struct sense *)(list_last(e->senses)))->ed->sp = memo_new(e->owner->sensesmem);
 }
 
 void
@@ -295,14 +298,14 @@ bld_edit_why(struct entry *e, char *why)
 struct entry *
 bld_entry(YYLTYPE l, struct cbd* c)
 {
-  struct entry *e = mb_new(c->entrymem);
+  struct entry *e = memo_new(c->entrymem);
   e->aliases = list_create(LIST_SINGLE);
   e->forms = list_create(LIST_SINGLE);
   e->senses = list_create(LIST_SINGLE);
   e->owner = c;
   e->lang = c->lang;
   list_add(c->entries, e);
-  e->meta = mb_new(c->metamem);
+  e->meta = memo_new(c->metamem);
   e->l = l;
   cmts(e->l.user);
   if (bang)
@@ -347,19 +350,19 @@ bld_entry_term(struct entry *e)
 struct equiv *
 bld_equiv(struct entry *e, unsigned char *lang, unsigned char *text)
 {
-  struct equiv *eq = mb_new(e->owner->equivmem);
+  struct equiv *eq = memo_new(e->owner->equivmem);
   eq->lang = lang;
   eq->text = text;
   return eq;
 }
 
-struct f2 *
+Form *
 bld_form(YYLTYPE l, struct entry *e)
 {
-  static struct f2 *f2p;
-  f2p = mb_new(e->owner->formsmem);
+  static Form *f2p;
+  f2p = memo_new(e->owner->formsmem);
   f2p->file = (ucp)l.file;
-  f2p->lnum = l.first_line;
+  f2p->lnum = l.line;
   cmts(f2p->user);
   list_add(e->forms, f2p);
   if (bang)
@@ -371,7 +374,7 @@ bld_form(YYLTYPE l, struct entry *e)
 }
 
 void
-bld_form_setup(struct entry *e, struct f2* f2p)
+bld_form_setup(struct entry *e, Form* f2p)
 {
   f2p->project = e->owner->project;
   if (!f2p->lang)
@@ -385,7 +388,7 @@ bld_form_setup(struct entry *e, struct f2* f2p)
 void
 bld_gwl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text)
 {
-  struct i18n *i18 = mb_new(e->owner->i18nmem);
+  struct i18n *i18 = memo_new(e->owner->i18nmem);
   i18->l = l;
   cmts(i18->l.user);
   i18->lang = lang;
@@ -398,7 +401,7 @@ bld_gwl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text)
 locator *
 bld_locator(YYLTYPE l)
 {
-  locator *lp = mb_new(curr_cbd->locatormem);
+  locator *lp = memo_new(curr_cbd->locatormem);
   *lp = l;
   return lp;
 }
@@ -406,7 +409,7 @@ bld_locator(YYLTYPE l)
 struct loctok *
 bld_loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok)
 {
-  struct loctok *ltp = mb_new(e->owner->loctokmem);
+  struct loctok *ltp = memo_new(e->owner->loctokmem);
   ltp->l = *lp;
   cmts(ltp->l.user);
   ltp->tok = tok;
@@ -416,7 +419,7 @@ bld_loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok)
 struct meta *
 bld_meta_create(struct entry *e)
 {
-  return mb_new(e->owner->metamem);
+  return memo_new(e->owner->metamem);
 }
 
 void
@@ -483,7 +486,7 @@ bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *n
   if (lp)
     {
       list_add(lp, val);
-      orderp = mb_new(e->owner->metaordermem);
+      orderp = memo_new(e->owner->metaordermem);
       orderp->l = l;
       cmts(orderp->l.user);
       orderp->name = name;
@@ -498,7 +501,7 @@ bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *n
 void
 bld_note(YYLTYPE l, struct entry *e, struct meta *curr_meta, unsigned char *text)
 {
-  struct tagl *tlp = mb_new(e->owner->taglmem);
+  struct tagl *tlp = memo_new(e->owner->taglmem);
   tlp->l = l;
   cmts(tlp->l.user);
   tlp->data = text;
@@ -510,7 +513,7 @@ bld_note(YYLTYPE l, struct entry *e, struct meta *curr_meta, unsigned char *text
 void
 bld_notel(YYLTYPE l, struct entry *e, struct meta *curr_meta, const char *lang, unsigned char *text)
 {
-  struct i18n *i18p = mb_new(e->owner->i18nmem);
+  struct i18n *i18p = memo_new(e->owner->i18nmem);
   struct tagl *tp = list_last(curr_meta->note);
   i18p->l = l;
   cmts(i18p->l.user);
@@ -521,7 +524,7 @@ bld_notel(YYLTYPE l, struct entry *e, struct meta *curr_meta, const char *lang, 
 struct parts *
 bld_parts(YYLTYPE l, struct entry *e)
 {
-  struct parts *pp = mb_new(e->owner->partsmem);
+  struct parts *pp = memo_new(e->owner->partsmem);
   if (!e->parts)
     e->parts = list_create(LIST_SINGLE);
   list_add(e->parts, pp);
@@ -533,7 +536,7 @@ bld_parts(YYLTYPE l, struct entry *e)
 struct pleiades *
 bld_pl_id(YYLTYPE l, struct entry *e, unsigned char *id)
 {
-  struct pleiades *p = mb_new(e->owner->pleiadesmem);
+  struct pleiades *p = memo_new(e->owner->pleiadesmem);
   p->l_id = l;
   cmts(p->l_id.user);
   p->id = id;
@@ -551,7 +554,7 @@ bld_pl_coord(YYLTYPE l, struct pleiades *p, unsigned char *coord)
 void
 bld_pl_alias(YYLTYPE l, struct pleiades *p, const char *lang, unsigned char *alias)
 {
-  struct loctok *ltp = mb_new(curr_cbd->loctokmem);
+  struct loctok *ltp = memo_new(curr_cbd->loctokmem);
   if (!p->pl_aliases)
     p->pl_aliases = list_create(LIST_SINGLE);
   list_add(p->pl_aliases, ltp);
@@ -580,7 +583,7 @@ bld_reldef(struct cbd *c, char *text)
 struct sense *
 bld_sense(YYLTYPE l, struct entry *e)
 {
-  struct sense *sp = mb_new(e->owner->sensesmem);
+  struct sense *sp = memo_new(e->owner->sensesmem);
   sp->l = l;
   cmts(sp->l.user);
   list_add(e->senses, sp);
@@ -595,7 +598,7 @@ bld_sense(YYLTYPE l, struct entry *e)
 struct sense *
 bld_sensel(YYLTYPE l, struct entry *e)
 {
-  struct sense *sp = mb_new(e->owner->sensesmem);
+  struct sense *sp = memo_new(e->owner->sensesmem);
   struct sense *curr_sense = list_last(e->senses);
   sp->l = l;
   cmts(sp->l.user);
@@ -616,7 +619,7 @@ struct tag *
 bld_tag(YYLTYPE l, struct entry *e, const char *name, unsigned char *val)
 {
   struct tag *tp;
-  tp = mb_new(e->owner->tagmem);
+  tp = memo_new(e->owner->tagmem);
   tp->l = l;
   cmts(tp->l.user);
   tp->name = name;

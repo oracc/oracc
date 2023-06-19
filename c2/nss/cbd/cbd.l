@@ -7,6 +7,7 @@
 
 #include <ctype128.h>
 #include <xsystem.h>
+#include <iome.h>
 #include "cbd.h"
 #include "cbd.tab.h"
 /*#include "rnvcbd.h"*/
@@ -28,7 +29,7 @@
 static int after_s_entsns = 0;
 static int after_s_gw = 0;
 static int after_s_pos = 0;
-static int after_s_lang = 0;
+/*static int after_s_lang = 0;*/
 static int after_s_renmrg = 0;
 static int yycolumn = 0;
 extern char *efile;
@@ -41,8 +42,12 @@ static struct cbdtag *ctp;
 static void baseco(const char *type);
 static void basesc(const char *type);
 static int set_ctp(void);
+
 static int tg_set_flags(char *f);
+
+#if 0
 static int tg_validate(int retval);
+#endif
 
 static char *b_alt_tok = NULL;
 static void alt_wrapup(int clean);
@@ -76,12 +81,16 @@ struct bufstack
 };
 struct bufstack include_stack[MAX_INCLUDE_DEPTH];
 int include_stack_ptr = 0;
-static void includec(void);
+/*static void includec(void);*/
 static void includeo(char *file);
 
 YY_BUFFER_STATE bp;
 
+#if 1
+#define xreturn(x) return(x)
+#else
 #define xreturn(x) return(tg_validate(x))
+#endif
 %}
 
 %x s_sol s_flag
@@ -256,7 +265,9 @@ cbd_user_action(void)
   yylloc.line = yylineno;
 }
 
-#if 0
+#if 1
+#define tg_validate(x) (x)
+#else
 static int
 tg_validate(int retval)
 {
@@ -314,6 +325,7 @@ includeo(char *file)
   BEGIN(ss(INITIAL));
 }
 
+#if 0
 static void
 includec(void)
 {
@@ -332,9 +344,10 @@ includec(void)
         }
     }
 }
+#endif
 
 void
-cbd_l_init(struct iom_io *ip)
+cbd_l_init(Iome_io *ip)
 {
   if (!ip->use_stdio)
     {
