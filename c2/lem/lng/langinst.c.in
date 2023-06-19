@@ -1,19 +1,20 @@
 #include <sys/unistd.h>
 #include <ctype128.h>
+#include <xsystem.h>
 #include "pool.h"
 #include "mesg.h"
 #include "lng.h"
-#include "xpd2.h"
 
 struct lang_context *global_lang = NULL;
 struct lang_context *text_lang = NULL;
-struct lang_context *curr_lang = NULL;
+struct lang_context *curr_lang_ctxt = NULL;
 struct lang_context *logo_lang = NULL;
 
 extern int verbose;
 
 static List *langmem;
 
+#if 0
 static int
 find_project_csl(const char *proj,const char*lang)
 {
@@ -29,7 +30,6 @@ load_signs(struct lang_context *lp)
      if there is one, use it: */
   if (lp->owner && lp->owner->name && find_project_csl(lp->owner->name,lp->tag->lang))
     {
-#if 0
       char buf[16];
       sprintf(buf,"csl-%s",lp->tag->lang);
       lp->snames = skl_load(lp->owner->name,buf,"simple","signs");
@@ -48,7 +48,6 @@ load_signs(struct lang_context *lp)
 	  fprintf(stderr,"project signlist for %s, lang %s load %s\n",
 		  lp->owner->name, lp->tag->lang, slstat);
 	}
-#endif
     }
   /* if not, then if the signlist member is "#" we are using the 
      built-in sign list */
@@ -67,6 +66,7 @@ load_signs(struct lang_context *lp)
       lp->snames = lp->values = NULL;
     }
 }
+#endif
 
 static void
 lang_free(struct lang_context *lp)
@@ -121,6 +121,7 @@ lang_load(struct proj_context *p, struct lang_tag *lt)
   else
     lp->mode = m_alphabetic;
 
+#if 0
   /* Sumero-Akkadian Cuneiform may have its own sign list */
   if (!strcmp(lp->script, "020"))
     load_signs(lp);
@@ -128,7 +129,7 @@ lang_load(struct proj_context *p, struct lang_tag *lt)
   lp->cset = get_charset(lp->core->code,lp->mode);
   if (lp->cset && lp->cset->keys && !lp->cset->to_uni)
     chartrie_init(lp->cset);
-
+#endif
   return lp;
 }
 
@@ -151,7 +152,7 @@ lang_switch(struct lang_context *curr, const char *tag, int *taglenp,
 	  if (!(lp = lang_load(curr ? curr->owner : NULL, lt)))
 	    {
 	      lp = curr;
-	      vwarning2(file,lnum,"%s: unknown core language in language switch",tag);
+	      mesg_vwarning(file,lnum,"%s: unknown core language in language switch",tag);
 	    }
 	  else
 	    {

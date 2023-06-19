@@ -1,13 +1,13 @@
 #include <sys/unistd.h>
 #include <ctype128.h>
+#include <xsystem.h>
 #include "pool.h"
 #include "mesg.h"
 #include "lng.h"
-/*#include "xpd2.h"*/
 
 struct lang_context *global_lang = NULL;
 struct lang_context *text_lang = NULL;
-struct lang_context *curr_lang = NULL;
+struct lang_context *curr_lang_ctxt = NULL;
 struct lang_context *logo_lang = NULL;
 
 extern int verbose;
@@ -19,7 +19,7 @@ static int
 find_project_csl(const char *proj,const char*lang)
 {
   static char buf[128];
-  sprintf(buf,"/home/oracc/pub/%s/csl-%s.svl",proj,lang);
+  sprintf(buf,"/Users/stinney/orc/pub/%s/csl-%s.svl",proj,lang);
   return !xaccess(buf,R_OK,0);
 }
 
@@ -30,13 +30,36 @@ load_signs(struct lang_context *lp)
      if there is one, use it: */
   if (lp->owner && lp->owner->name && find_project_csl(lp->owner->name,lp->tag->lang))
     {
+      char buf[16];
+      sprintf(buf,"csl-%s",lp->tag->lang);
+      lp->snames = skl_load(lp->owner->name,buf,"simple","signs");
+      lp->values = skl_load(lp->owner->name,buf,"simple","values");
+      if (lp->snames || lp->values)
+	{
+	  sprintf(buf,"%s/csl-%s",lp->owner->name,lp->tag->lang);
+	  lp->signlist = (char *)npool_copy((unsigned char *)buf,
+					    lp->owner->owner->pool);
+	}
+      if (verbose)
+	{
+	  const char *slstat = "failed";
+	  if (lp->snames || lp->values)
+	    slstat = "succeded";
+	  fprintf(stderr,"project signlist for %s, lang %s load %s\n",
+		  lp->owner->name, lp->tag->lang, slstat);
+	}
     }
   /* if not, then if the signlist member is "#" we are using the 
      built-in sign list */
   else if (!strcmp(lp->script,"020"))
     {
+#if 1
       lp->signlist = "#";
       lp->snames = lp->values = NULL;
+#else
+      lp->snames = skl_load(lp->owner->name,lp->signlist,"simple","signs");
+      lp->values = skl_load(lp->owner->name,lp->signlist,"simple","values");
+#endif
     }
   else
     {
@@ -107,7 +130,6 @@ lang_load(struct proj_context *p, struct lang_tag *lt)
   if (lp->cset && lp->cset->keys && !lp->cset->to_uni)
     chartrie_init(lp->cset);
 #endif
-  
   return lp;
 }
 

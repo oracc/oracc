@@ -250,26 +250,14 @@ extern struct parts *curr_parts;
 
 extern const char *errmsg_fn;
 
-extern void common_init(void);
-extern void common_term(void);
-
 extern void o_tg2(struct cbd*c);
 extern void o_xc2(struct cbd*c);
 extern void validator(struct cbd*c);
 
 extern struct cbdpos *cbdpos(const char *str, size_t len);
 extern struct cbdrws *cbdrws(const char *str, size_t len);
-extern void untab(unsigned char *s);
 extern int edit_script(struct cbd *c);
-extern void cgp_init(struct cgp *c, unsigned char *cf, unsigned char *gw, unsigned char *pos);
-extern unsigned const char *cgp_entry_str(struct entry *e, int spread);
-extern const unsigned char *cgp_str(struct cgp *cp, int spread);
-extern void cgp_entry(struct cgp *c, struct entry *e);
-extern unsigned char *slurp(const char *caller, const char *fname, ssize_t *fsize);
 extern void cgp_parse(struct cgp *c, unsigned char *s, Mloc *lp);
-extern unsigned char *check_bom(unsigned char *s);
-extern unsigned char **setup_lines(unsigned char *ftext);
-extern unsigned char *tok(unsigned char *s, unsigned char *end);
 extern unsigned char *cbd_form_sig(struct entry *e, Form *f2p);
 
 extern struct cbdtag *cbdtags(const char *str, size_t len);

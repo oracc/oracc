@@ -1,0 +1,29 @@
+include ../../../oracc-am-rules.txt
+
+noinst_PROGRAMS=cx
+
+xLDADD=\
+	../../lib/xml/libxml.la \
+	../../lib/xml/rnv/librnv.la \
+	../../lib/std/libstd.la \
+	../../lib/sys/libsys.la \
+	../../lem/frm/libfrm.la \
+	../../lem/lng/liblng.la \
+	../../nss/gdl/libgdl.la \
+	../../nss/cbd/libcbd.la
+
+AM_CPPFLAGS=\
+	-I../../lib/include \
+	-I../../lib/std \
+	-I../../lib/sys \
+	-I../../lib/xml \
+	-I../../lem/lng \
+	-I../../lem/frm \
+	-I../../nss/gdl \
+	-I../../nss/cbd
+
+cx_SOURCES=common.c cx.c
+
+cx_LDADD = $(xLDADD)
+
+cx_DEPENDENCIES = $(cx_LDADD)

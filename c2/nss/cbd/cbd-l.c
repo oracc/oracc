@@ -968,7 +968,7 @@ static int after_s_renmrg = 0;
 static int yycolumn = 0;
 extern char *efile;
 
-extern int bang, star;
+int bang, star;
 extern List *cmt_queue;
 
 static struct cbdtag *ctp;

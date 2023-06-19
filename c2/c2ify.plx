@@ -37,6 +37,8 @@ foreach my $f (@h, @i, @c) {
 	s/msglist/mesg/g;
 	s/lang.h/lng.h/;
 	s/BIT_ISSET/bit_set/g;
+	s/struct iom /Iome /g;
+    	s/struct iom_io/Iome_io /g;
     }
     open(N,">new/$f") || die;
     print N @f;

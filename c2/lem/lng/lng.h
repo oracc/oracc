@@ -113,7 +113,7 @@ struct langatf
 
 extern struct lang_context *global_lang;
 extern struct lang_context *text_lang;
-extern struct lang_context *curr_lang;
+extern struct lang_context *curr_lang_ctxt;
 extern struct lang_context *logo_lang;
 
 extern struct langcore *lang_core(register const char *str,register size_t len);

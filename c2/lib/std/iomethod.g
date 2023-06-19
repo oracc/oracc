@@ -6,8 +6,7 @@
 %}
 struct iome;
 %%
-tg1, iome_tg1, "http://oracc.org/ns/cbd/2.0/g1", "cbd 1.0 text .glo file", NULL, NULL
-tg2, iome_tg2, "http://oracc.org/ns/cbd/2.0/g2", "cbd 2.0 text .glo file", NULL, NULL
+cbd, iome_cbd, "http://oracc.org/ns/cbd/1.0", "cbd 2.0 text .glo file", NULL, NULL
 xc1, iome_xc1, "http://oracc.org/ns/cbd/2.0/g1", "cbd 1.0 .xml form of .glo", NULL, NULL
 xc2, iome_xc2, "http://oracc.org/ns/cbd/2.0/g2", "cbd 2.0 .xml form of .glo", NULL, NULL
 x11, iome_x11, "http://oracc.org/ns/cbd/2.0/c1", "cbd 1.0 .cbd file (xml phase1)", NULL, NULL

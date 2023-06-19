@@ -9,6 +9,7 @@
 #define XSYSTEM_H_ 1
 
 #include <c2types.h>
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 

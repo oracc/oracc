@@ -2,7 +2,8 @@ include ../../../oracc-am-rules.txt
 
 noinst_LTLIBRARIES=libcbd.la
 
-libcbd_la_SOURCES = cbd.tab.c cbd-l.c cbdyacc.c
+libcbd_la_SOURCES = cbd.tab.c cbd-l.c cbdyacc.c \
+	cbdpos.c cbdrws.c cbdtags.c
 
 YACC=bison
 

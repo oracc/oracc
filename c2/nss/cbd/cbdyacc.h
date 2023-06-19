@@ -1,6 +1,9 @@
 #ifndef CBDYACC_H_
 #define CBDYACC_H_
 
+#define CBDLTYPE_IS_DECLARED 1
+#define CBDLTYPE Mloc
+
 #include "list.h"
 
 #define yPL_ID 258

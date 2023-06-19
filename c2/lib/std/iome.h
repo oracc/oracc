@@ -18,7 +18,7 @@ typedef void * (*iome_i_fnc)(Iome_io *);
 typedef void (*iome_o_fnc)(void *, Iome_io *);
 
 enum iome_types {
-  iome_tg1 , iome_tg2,
+  iome_cbd ,
   iome_xc1 , iome_xc2,
   iome_x11 , iome_x12,
   iome_x21 , iome_x22,
