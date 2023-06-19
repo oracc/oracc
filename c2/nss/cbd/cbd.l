@@ -3,7 +3,10 @@
 %option never-interactive noyywrap yylineno
 %{
 
+#define CBDLTYPE_IS_DECLARED 1
+
 #include <ctype128.h>
+#include <xsystem.h>
 #include "cbd.h"
 #include "cbd.tab.h"
 /*#include "rnvcbd.h"*/
@@ -93,9 +96,9 @@ YY_BUFFER_STATE bp;
 <s_flag>[!*]+	{ tg_set_flags(yytext) ; xreturn(ctp->tok); }
 ^@[A-Z]+	{ if (set_ctp()) xreturn(ctp->tok); } 
 <s_sol>@[a-z]+	{ if (set_ctp()) xreturn(ctp->tok); }
-[^ \t\n]+  	{ ksdup(yytext); xreturn(TEXT); }
+[^ \t\n]+  	{ ksdup(yytext); xreturn(TEXTSPEC); }
 [ \t]+		/* empty */
-\n		{ yycolumn=1; if (ctp->eol_sp) xreturn(TEXT); else xreturn(EOL); }
+\n		{ yycolumn=1; if (ctp->eol_sp) xreturn(TEXTSPEC); else xreturn(EOL); }
 
 <s_cf>[^\[\] \t\n][^\[\]\n]*[^\[\] \t\n]        { ytdup(); xreturn(CF); }
 <s_cf>[^\[\] \t\n]         { ytdup(); xreturn(CF); }
@@ -166,12 +169,12 @@ set_after(void)
 }
 
 static int
-set_ctp()
+set_ctp(void)
 {
   ctp = cbdtags(yytext,strlen(yytext));
   if (!ctp)
     {
-      BEGIN ss(s_flush); yylloc.file=efile; yylloc.first_line=yylineno;
+      BEGIN ss(s_flush); yylloc.file=efile; yylloc.line=yylineno;
       vyyerror(yylloc,"unknown at-command %s\n",yytext, NULL);
       return 0;
     }
@@ -211,7 +214,7 @@ static void
 basesc(const char *type)
 {
   yylloc.file=efile;
-  yylloc.first_line=yylineno; 
+  yylloc.line=yylineno; 
   vyyerror(yylloc,"misplaced %s semi-colon\n", type, NULL);
 }
 
@@ -219,7 +222,7 @@ static void
 baseco(const char *type)
 {
   yylloc.file=efile;
-  yylloc.first_line=yylineno; 
+  yylloc.line=yylineno; 
   vyyerror(yylloc,"misplaced %s comma\n", type, NULL);
 }
 
@@ -250,27 +253,16 @@ cbd_user_action(void)
       fprintf(stderr, "%s:%d: flextrace: state=%s tok=::%s::\n", efile, yylineno, ssnames[mystate], yytext);
     }
   yylloc.file = efile;
-  yylloc.first_line = yylloc.last_line = yylineno;
-  yylloc.first_column = yylloc.last_column;
-  for(int i = 0; yytext[i] != '\0'; i++)
-    {
-      if (yytext[i] == '\n')
-        {
-          yylloc.last_line++;
-          yylloc.last_column = 0;
-        }
-      else 
-        {
-          yylloc.last_column++;
-        }
-    }
+  yylloc.line = yylineno;
 }
 
+#if 0
 static int
 tg_validate(int retval)
 {
   extern int input_validation;
   extern char *rnvcbd_yytext;
+
   if (input_validation && yytext && *yytext)
     {
       if (retval == DCF)
@@ -280,6 +272,7 @@ tg_validate(int retval)
     }
   return retval;
 }
+#endif
 
 /* include_stack_ptr indexes into include_stack and gives the current
    state.  At the initial state, we push the top-level state into
@@ -313,6 +306,7 @@ includeo(char *file)
   include_stack[include_stack_ptr].yycb = YY_CURRENT_BUFFER;
   include_stack[include_stack_ptr].line = yylineno;
   include_stack[include_stack_ptr].fp = yyin = xfopen( yytext, "r" );
+
   yylineno = 1;
 
   if (flextrace) { fprintf(stderr, "%s:%d: include switching input to new file\n", efile, yylineno); }

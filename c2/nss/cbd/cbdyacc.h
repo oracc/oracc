@@ -19,12 +19,12 @@
 
 #include "mesg.h"
 
-typedef struct msgloc locator;
-typedef struct msgloc YYLTYPE;
-typedef struct msgloc TGILTYPE;
+typedef Mloc locator;
+typedef Mloc YYLTYPE;
+typedef Mloc CBDLTYPE;
 
-#undef YYLLOC_DEFAULT
-#define YYLLOC_DEFAULT(Current, Rhs, N)                                 \
+/*#undef YYLLOC_DEFAULT*/
+#define xYYLLOC_DEFAULT(Current, Rhs, N)                                 \
     do                                                                  \
       if (N)                                                            \
         {                                                               \

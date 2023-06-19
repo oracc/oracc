@@ -1,6 +1,6 @@
-#line 2 "cbd-l.c"
+#line 1 "cbd-l.c"
 
-#line 4 "cbd-l.c"
+#line 3 "cbd-l.c"
 
 #define YY_NO_INPUT 1
 #define  YY_INT_ALIGNED short int
@@ -307,6 +307,7 @@ typedef int16_t flex_int16_t;
 typedef uint16_t flex_uint16_t;
 typedef int32_t flex_int32_t;
 typedef uint32_t flex_uint32_t;
+typedef uint64_t flex_uint64_t;
 #else
 typedef signed char flex_int8_t;
 typedef short int flex_int16_t;
@@ -415,7 +416,7 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 typedef size_t yy_size_t;
 #endif
 
-extern int yyleng;
+extern yy_size_t yyleng;
 
 extern FILE *yyin, *yyout;
 
@@ -432,7 +433,7 @@ extern FILE *yyin, *yyout;
      */
     #define  YY_LESS_LINENO(n) \
             do { \
-                int yyl;\
+                yy_size_t yyl;\
                 for ( yyl = n; yyl < yyleng; ++yyl )\
                     if ( yytext[yyl] == '\n' )\
                         --yylineno;\
@@ -477,7 +478,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	int yy_n_chars;
+	yy_size_t yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -546,8 +547,8 @@ static YY_BUFFER_STATE * yy_buffer_stack = NULL; /**< Stack as an array. */
 
 /* yy_hold_char holds the character lost when yytext is formed. */
 static char yy_hold_char;
-static int yy_n_chars;		/* number of characters read into yy_ch_buf */
-int yyleng;
+static yy_size_t yy_n_chars;		/* number of characters read into yy_ch_buf */
+yy_size_t yyleng;
 
 /* Points to current character in buffer. */
 static char *yy_c_buf_p = NULL;
@@ -574,7 +575,7 @@ static void yy_init_buffer ( YY_BUFFER_STATE b, FILE *file  );
 
 YY_BUFFER_STATE yy_scan_buffer ( char *base, yy_size_t size  );
 YY_BUFFER_STATE yy_scan_string ( const char *yy_str  );
-YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len  );
+YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, yy_size_t len  );
 
 void *yyalloc ( yy_size_t  );
 void *yyrealloc ( void *, yy_size_t  );
@@ -630,7 +631,7 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
  */
 #define YY_DO_BEFORE_ACTION \
 	(yytext_ptr) = yy_bp; \
-	yyleng = (int) (yy_cp - yy_bp); \
+	yyleng = (yy_size_t) (yy_cp - yy_bp); \
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
@@ -936,7 +937,10 @@ char *yytext;
 #line 1 "cbd.l"
 #line 5 "cbd.l"
 
+#define CBDLTYPE_IS_DECLARED 1
+
 #include <ctype128.h>
+#include <xsystem.h>
 #include "cbd.h"
 #include "cbd.tab.h"
 /*#include "rnvcbd.h"*/
@@ -1012,9 +1016,9 @@ static void includeo(char *file);
 YY_BUFFER_STATE bp;
 
 #define xreturn(x) return(tg_validate(x))
-#line 1016 "cbd-l.c"
+#line 1019 "cbd-l.c"
 
-#line 1018 "cbd-l.c"
+#line 1021 "cbd-l.c"
 
 #define INITIAL 0
 #define s_sol 1
@@ -1065,7 +1069,7 @@ FILE *yyget_out ( void );
 
 void yyset_out  ( FILE * _out_str  );
 
-			int yyget_leng ( void );
+			yy_size_t yyget_leng ( void );
 
 char *yyget_text ( void );
 
@@ -1134,7 +1138,7 @@ static int input ( void );
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_is_interactive ) \
 		{ \
 		int c = '*'; \
-		int n; \
+		yy_size_t n; \
 		for ( n = 0; n < max_size && \
 			     (c = getc( yyin )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
@@ -1252,9 +1256,9 @@ YY_DECL
 		}
 
 	{
-#line 89 "cbd.l"
+#line 92 "cbd.l"
 
-#line 1258 "cbd-l.c"
+#line 1261 "cbd-l.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1293,6 +1297,7 @@ yy_match:
 yy_find_action:
 		yy_current_state = *--(yy_state_ptr);
 		(yy_lp) = yy_accept[yy_current_state];
+goto find_rule; /* Shut up GCC warning -Wall */
 find_rule: /* we branch to this label when backing up */
 		for ( ; ; ) /* until we find what rule we matched */
 			{
@@ -1333,7 +1338,7 @@ find_rule: /* we branch to this label when backing up */
 
 		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
 			{
-			int yyl;
+			yy_size_t yyl;
 			for ( yyl = 0; yyl < yyleng; ++yyl )
 				if ( yytext[yyl] == '\n' )
 					
@@ -1347,73 +1352,73 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 90 "cbd.l"
+#line 93 "cbd.l"
 { BEGIN ss(s_sol); 	 return(yytext[0]); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 91 "cbd.l"
+#line 94 "cbd.l"
 { if (set_ctp()) xreturn(ctp->tok); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 92 "cbd.l"
+#line 95 "cbd.l"
 { if (set_ctp()) BEGIN ss(s_flag); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 93 "cbd.l"
+#line 96 "cbd.l"
 { tg_set_flags(yytext) ; xreturn(ctp->tok); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 94 "cbd.l"
+#line 97 "cbd.l"
 { if (set_ctp()) xreturn(ctp->tok); } 
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 95 "cbd.l"
+#line 98 "cbd.l"
 { if (set_ctp()) xreturn(ctp->tok); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 96 "cbd.l"
-{ ksdup(yytext); xreturn(TEXT); }
+#line 99 "cbd.l"
+{ ksdup(yytext); xreturn(TEXTSPEC); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 97 "cbd.l"
+#line 100 "cbd.l"
 /* empty */
 	YY_BREAK
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 98 "cbd.l"
-{ yycolumn=1; if (ctp->eol_sp) xreturn(TEXT); else xreturn(EOL); }
+#line 101 "cbd.l"
+{ yycolumn=1; if (ctp->eol_sp) xreturn(TEXTSPEC); else xreturn(EOL); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 100 "cbd.l"
+#line 103 "cbd.l"
 { ytdup(); xreturn(CF); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 101 "cbd.l"
+#line 104 "cbd.l"
 { ytdup(); xreturn(CF); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 102 "cbd.l"
+#line 105 "cbd.l"
 { BEGIN ss(s_gw); xreturn(yytext[yyleng-1]); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 103 "cbd.l"
+#line 106 "cbd.l"
 { ytdup(); xreturn(GW); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 104 "cbd.l"
+#line 107 "cbd.l"
 { BEGIN ss(after_s_gw); xreturn(yytext[0]); }
 	YY_BREAK
 case 15:
@@ -1423,12 +1428,12 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 105 "cbd.l"
+#line 108 "cbd.l"
 { BEGIN ss(0); ytdup(); xreturn(POS); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 106 "cbd.l"
+#line 109 "cbd.l"
 { BEGIN ss(after_s_pos); ytdup(); xreturn(POS); }
 	YY_BREAK
 case 17:
@@ -1438,22 +1443,22 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 107 "cbd.l"
+#line 110 "cbd.l"
 { BEGIN ss(0); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 109 "cbd.l"
+#line 112 "cbd.l"
 { BEGIN ss(s_bp); basesc("initial"); xreturn(BASES); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 110 "cbd.l"
+#line 113 "cbd.l"
 { BEGIN ss(s_bp); xreturn(BASES); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 111 "cbd.l"
+#line 114 "cbd.l"
 { ytdupn(1); xreturn(LANGSPEC); }
 	YY_BREAK
 case 21:
@@ -1463,17 +1468,17 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 112 "cbd.l"
+#line 115 "cbd.l"
 { BEGIN ss(0); yycolumn = 1; basesc("final"); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 113 "cbd.l"
+#line 116 "cbd.l"
 { BEGIN ss(s_bp); basesc("double"); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 114 "cbd.l"
+#line 117 "cbd.l"
 { BEGIN ss(s_bp); }
 	YY_BREAK
 case 24:
@@ -1481,12 +1486,12 @@ case 24:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 115 "cbd.l"
+#line 118 "cbd.l"
 { BEGIN ss(s_ba); ytdup(); xreturn(BASE_PRI); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 116 "cbd.l"
+#line 119 "cbd.l"
 { ytdup(); xreturn(BASE_PRI); }
 	YY_BREAK
 case 26:
@@ -1496,120 +1501,120 @@ YY_LINENO_REWIND_TO(yy_cp - 1);
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 117 "cbd.l"
+#line 120 "cbd.l"
 { BEGIN ss(0); yycolumn = 1; basesc("final"); if (b_alt_tok) { alt_wrapup(1); xreturn(BASE_ALT); } }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 118 "cbd.l"
+#line 121 "cbd.l"
 { baseco("double"); unput(','); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 119 "cbd.l"
+#line 122 "cbd.l"
 { if (b_alt_tok) { alt_wrapup(0); xreturn(BASE_ALT); } }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 120 "cbd.l"
+#line 123 "cbd.l"
 { baseco("initial"); unput('('); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 121 "cbd.l"
+#line 124 "cbd.l"
 { b_alt_tok = strdup(yytext+1); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 122 "cbd.l"
+#line 125 "cbd.l"
 { b_alt_tok = strdup(yytext); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 123 "cbd.l"
+#line 126 "cbd.l"
 { BEGIN ss(s_bp); basesc("double"); if (b_alt_tok) { alt_wrapup(1); xreturn(BASE_ALT); } }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 124 "cbd.l"
+#line 127 "cbd.l"
 { BEGIN ss(s_bp); if (b_alt_tok) { alt_wrapup(1); xreturn(BASE_ALT); } }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 126 "cbd.l"
+#line 129 "cbd.l"
 { BEGIN ss(s_f); xreturn(FORM); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 127 "cbd.l"
+#line 130 "cbd.l"
 { BEGIN ss(s_f); bang = 1; xreturn(FORM); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 128 "cbd.l"
+#line 131 "cbd.l"
 { ytdupn(1); xreturn(FLANG); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 129 "cbd.l"
+#line 132 "cbd.l"
 { ytdupn(1); xreturn(FRWS); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 130 "cbd.l"
+#line 133 "cbd.l"
 { ytdupn(1); xreturn(FBASE); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 131 "cbd.l"
+#line 134 "cbd.l"
 { ytdupn(1); xreturn(FCONT); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 132 "cbd.l"
+#line 135 "cbd.l"
 { ytdupn(1); xreturn(FNORM); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 133 "cbd.l"
+#line 136 "cbd.l"
 { ytdupn(2); xreturn(FMORPH2); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 134 "cbd.l"
+#line 137 "cbd.l"
 { ytdupn(1); xreturn(FMORPH); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 135 "cbd.l"
+#line 138 "cbd.l"
 { ytdupn(1); xreturn(FSTEM); }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 136 "cbd.l"
+#line 139 "cbd.l"
 { ytdup(); xreturn(FFORM); }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 138 "cbd.l"
+#line 141 "cbd.l"
 { BEGIN ss(s_incl); }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 139 "cbd.l"
+#line 142 "cbd.l"
 { includeo(yytext); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 141 "cbd.l"
+#line 144 "cbd.l"
 { BEGIN ss(0); }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 143 "cbd.l"
+#line 146 "cbd.l"
 ECHO;
 	YY_BREAK
-#line 1613 "cbd-l.c"
+#line 1617 "cbd-l.c"
 			case YY_STATE_EOF(INITIAL):
 			case YY_STATE_EOF(s_sol):
 			case YY_STATE_EOF(s_flag):
@@ -1808,7 +1813,7 @@ static int yy_get_next_buffer (void)
 
 	else
 		{
-			int num_to_read =
+			yy_size_t num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
@@ -1850,7 +1855,7 @@ static int yy_get_next_buffer (void)
 
 	if (((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
-		int new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
+		yy_size_t new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
 		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc(
 			(void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, (yy_size_t) new_size  );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
@@ -1935,7 +1940,7 @@ static int yy_get_next_buffer (void)
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		int number_to_move = (yy_n_chars) + 2;
+		yy_size_t number_to_move = (yy_n_chars) + 2;
 		char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
 		char *source =
@@ -1990,7 +1995,7 @@ static int yy_get_next_buffer (void)
 
 		else
 			{ /* need more input */
-			int offset = (int) ((yy_c_buf_p) - (yytext_ptr));
+			yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -2365,12 +2370,12 @@ YY_BUFFER_STATE yy_scan_string (const char * yystr )
  * 
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, int  _yybytes_len )
+YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, yy_size_t  _yybytes_len )
 {
 	YY_BUFFER_STATE b;
 	char *buf;
 	yy_size_t n;
-	int i;
+	yy_size_t i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = (yy_size_t) (_yybytes_len + 2);
@@ -2412,7 +2417,7 @@ static void yynoreturn yy_fatal_error (const char* msg )
 	do \
 		{ \
 		/* Undo effects of setting up yytext. */ \
-        int yyless_macro_arg = (n); \
+        yy_size_t yyless_macro_arg = (n); \
         YY_LESS_LINENO(yyless_macro_arg);\
 		yytext[yyleng] = (yy_hold_char); \
 		(yy_c_buf_p) = yytext + yyless_macro_arg; \
@@ -2452,7 +2457,7 @@ FILE *yyget_out  (void)
 /** Get the length of the current token.
  * 
  */
-int yyget_leng  (void)
+yy_size_t yyget_leng  (void)
 {
         return yyleng;
 }
@@ -2613,7 +2618,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 143 "cbd.l"
+#line 146 "cbd.l"
 
 
 void
@@ -2640,12 +2645,12 @@ set_after(void)
 }
 
 static int
-set_ctp()
+set_ctp(void)
 {
   ctp = cbdtags(yytext,strlen(yytext));
   if (!ctp)
     {
-      BEGIN ss(s_flush); yylloc.file=efile; yylloc.first_line=yylineno;
+      BEGIN ss(s_flush); yylloc.file=efile; yylloc.line=yylineno;
       vyyerror(yylloc,"unknown at-command %s\n",yytext, NULL);
       return 0;
     }
@@ -2685,7 +2690,7 @@ static void
 basesc(const char *type)
 {
   yylloc.file=efile;
-  yylloc.first_line=yylineno; 
+  yylloc.line=yylineno; 
   vyyerror(yylloc,"misplaced %s semi-colon\n", type, NULL);
 }
 
@@ -2693,7 +2698,7 @@ static void
 baseco(const char *type)
 {
   yylloc.file=efile;
-  yylloc.first_line=yylineno; 
+  yylloc.line=yylineno; 
   vyyerror(yylloc,"misplaced %s comma\n", type, NULL);
 }
 
@@ -2724,27 +2729,16 @@ cbd_user_action(void)
       fprintf(stderr, "%s:%d: flextrace: state=%s tok=::%s::\n", efile, yylineno, ssnames[mystate], yytext);
     }
   yylloc.file = efile;
-  yylloc.first_line = yylloc.last_line = yylineno;
-  yylloc.first_column = yylloc.last_column;
-  for(int i = 0; yytext[i] != '\0'; i++)
-    {
-      if (yytext[i] == '\n')
-        {
-          yylloc.last_line++;
-          yylloc.last_column = 0;
-        }
-      else 
-        {
-          yylloc.last_column++;
-        }
-    }
+  yylloc.line = yylineno;
 }
 
+#if 0
 static int
 tg_validate(int retval)
 {
   extern int input_validation;
   extern char *rnvcbd_yytext;
+
   if (input_validation && yytext && *yytext)
     {
       if (retval == DCF)
@@ -2754,6 +2748,7 @@ tg_validate(int retval)
     }
   return retval;
 }
+#endif
 
 /* include_stack_ptr indexes into include_stack and gives the current
    state.  At the initial state, we push the top-level state into
@@ -2787,6 +2782,7 @@ includeo(char *file)
   include_stack[include_stack_ptr].yycb = YY_CURRENT_BUFFER;
   include_stack[include_stack_ptr].line = yylineno;
   include_stack[include_stack_ptr].fp = yyin = xfopen( yytext, "r" );
+
   yylineno = 1;
 
   if (flextrace) { fprintf(stderr, "%s:%d: include switching input to new file\n", efile, yylineno); }

@@ -4,16 +4,17 @@
 %define parse.error verbose
 %{
 #include <stdio.h>
+#include <stdarg.h>
+#include "form.h"
 #include "cbd.h"
 #include "mesg.h"
 
 #define CBDLTYPE_IS_DECLARED 1
 
-typedef struct msgloc CBDLTYPE;
-
+#define CBDLTYPE Mloc
 #define yylineno cbdlineno
 
-static struct f2 *curr_form;
+static Form *curr_form;
 static struct meta *curr_meta;
 static struct sense *curr_sense;
 static struct pleiades *curr_pleiades;
@@ -28,7 +29,7 @@ extern int yylex(void);
 
 %union { char *text; int i; }
 
-%token	ENDOF  0
+%token	ENDOF   0
 %token  <text> 		CF
 %token  <text> 		GW
 %token  <text> 		LANGSPEC
@@ -300,17 +301,17 @@ yyerror(const char *s)
   extern int yylineno;
   extern char *efile;
   loc.file = efile;
-  loc.first_line = yylineno;
+  loc.line = yylineno;
   if (!strncmp(s, "syntax error, ", strlen("syntax error, ")))
     s += strlen("syntax error, ");
-  msglist_verr(&loc, "%s\n", s);
+  mesg_verr(&loc, "%s\n", s);
   /*fprintf(stderr, "%s\n", s);*/
 }
 
 void
 lyyerror(YYLTYPE loc, char *s)
 {
-  msglist_err(&loc, s);
+  mesg_err(&loc, s);
   ++parser_status;
 }
 
@@ -321,7 +322,7 @@ vyyerror(YYLTYPE loc, char *s, ...)
     {
       va_list ap;
       va_start(ap, s);
-      msglist_averr(&loc, s, ap);
+      mesg_averr(&loc, s, ap);
       va_end(ap);
       ++parser_status;
     }

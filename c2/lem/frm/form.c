@@ -6,7 +6,7 @@
 #include "memo.h"
 #include "pool.h"
 #include "bits.h"
-/*#include "lang.h"*/
+#include "lng.h"
 #include "form.h"
 
 static Memo *formsmem = NULL;
@@ -151,7 +151,7 @@ form_parse(const Uchar *file, size_t line, Uchar *lp, struct form *formp, Uchar 
 {
   Uchar *err_lp = NULL,
     *disambig = NULL, *ampamp = NULL, 
-    *orig_lp = lp, field = '\0', *psu_tmp = NULL, *psu_form = NULL;
+    *orig_lp = lp, field = '\0', *psu_tmp = NULL/*, *psu_form = NULL*/;
   int ret = 0;
   const char *saved_phase = phase;
   char *at1 = NULL, *at2 = NULL;
@@ -236,15 +236,16 @@ form_parse(const Uchar *file, size_t line, Uchar *lp, struct form *formp, Uchar 
 	char *tmp2;
 	*tmp = '\0';
 	tmp2 = strstr((char *)lp, " = ");
-	if (tmp2) {
-	  psu_form = &lp[1];
-	  *tmp2 = '\0';
-	  lp = (Uchar *)(tmp2 + 3);
-	  *tmp = ' ';
-	}
+	if (tmp2)
+	  {
+	    /*psu_form = &lp[1];*/
+	    *tmp2 = '\0';
+	    lp = (Uchar *)(tmp2 + 3);
+	    *tmp = ' ';
+	  }
       }      
     }
-
+  
   /* Get numbers early */
   if ('n' == *lp && !strchr((const char *)lp,'['))
     {
@@ -303,7 +304,7 @@ form_parse(const Uchar *file, size_t line, Uchar *lp, struct form *formp, Uchar 
   while (*lp && (*lp != '[' || lp[-1] == '\\'))
     ++lp;
 
-  if (BIT_ISSET(formp->flags,FORM_FLAGS_CF_QUOTED))
+  if (bit_set(formp->flags,FORM_FLAGS_CF_QUOTED))
     {
       if (lp[-1] == '"')
 	lp[-1] = '\0';
@@ -477,7 +478,7 @@ form_parse(const Uchar *file, size_t line, Uchar *lp, struct form *formp, Uchar 
 		  formp->form = lp;
 		  break;
 		case '$':
-		  if (!BIT_ISSET(formp->flags, FORM_FLAGS_LEM_BY_NORM))
+		  if (!bit_set(formp->flags, FORM_FLAGS_LEM_BY_NORM))
 		    formp->norm = lp;
 		  /* else ignore normalization because we got it from the "FORM" */
 		  break;
@@ -564,20 +565,20 @@ form_parse(const Uchar *file, size_t line, Uchar *lp, struct form *formp, Uchar 
   if (formp->pos)
     {
       if (*formp->pos)
-	validate_pos((const char *)file, line, formp->pos);
+	/*validate_pos((const char *)file, line, formp->pos)*/;
       else
 	formp->pos = NULL;
     }
   if (formp->epos)
     {
       if (*formp->epos)
-	validate_pos((const char *)file, line, formp->epos);
+	/*validate_pos((const char *)file, line, formp->epos)*/;
       else
 	formp->epos = NULL;
     }
 
   if (formp->base)
-    validate_base((const char *)file, line, formp->base);
+    /*validate_base((const char *)file, line, formp->base)*/;
 
 #if 0
   /* If lp is non-zero we didn't manage to parse the entire form: */
@@ -597,7 +598,7 @@ form_parse(const Uchar *file, size_t line, Uchar *lp, struct form *formp, Uchar 
 	formp->norm = formp->cf;
     }
   
-  if (BIT_ISSET(formp->flags, FORM_FLAGS_LEM_BY_NORM))
+  if (bit_set(formp->flags, FORM_FLAGS_LEM_BY_NORM))
     {
       if (formp->norm && formp->cf && !strcmp((char*)formp->cf,(char*)formp->norm))
 	{

@@ -34,6 +34,7 @@ foreach my $f (@h, @i, @c) {
 	s/warning.h/mesg.h/;
 	s/vwarning2/mesg_vwarning/g;
 	s/lang.h/lng.h/;
+	s/BIT_ISSET/bit_set/g;
     }
     open(N,">new/$f") || die;
     print N @f;

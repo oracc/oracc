@@ -8,7 +8,9 @@ YACC=bison
 
 AM_CPPFLAGS=\
 	-I../../lib/std \
+	-I../../lib/sys \
 	-I../../lib/include \
+	-I../../lem/frm \
 	-I../../xml
 
 cbd.tab.c cbd.tab.h: cbd.y cbd.l

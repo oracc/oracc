@@ -5,6 +5,7 @@
 #include "memo.h"
 #include "pool.h"
 #include "mesg.h"
+#include "form.h"
 
 /* Common grammar header file for cbd.l and cbd.y */
 #include "cbdyacc.h"
@@ -269,7 +270,7 @@ extern void cgp_parse(struct cgp *c, unsigned char *s, Mloc *lp);
 extern unsigned char *check_bom(unsigned char *s);
 extern unsigned char **setup_lines(unsigned char *ftext);
 extern unsigned char *tok(unsigned char *s, unsigned char *end);
-extern unsigned char *form_sig(struct entry *e, struct f2 *f2p);
+extern unsigned char *cbd_form_sig(struct entry *e, Form *f2p);
 
 extern struct cbdtag *cbdtags(const char *str, size_t len);
 extern List *cgp_get_all(void);
@@ -295,8 +296,8 @@ extern void bld_edit_why(struct entry *e, char *why);
 extern struct entry *bld_entry(YYLTYPE l, struct cbd *c);
 extern void bld_entry_cgp(struct entry *e);
 extern struct equiv *bld_equiv(struct entry *e, unsigned char *lang, unsigned char *text);
-extern struct f2 *bld_form(YYLTYPE l, struct entry *e);
-extern void bld_form_setup(struct entry *e, struct f2 *fp);
+extern Form *bld_form(YYLTYPE l, struct entry *e);
+extern void bld_form_setup(struct entry *e, Form *fp);
 extern void bld_gwl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text);
 extern Mloc *bld_locator(YYLTYPE lp);
 extern struct loctok *bld_loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok);

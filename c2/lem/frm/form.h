@@ -2,6 +2,7 @@
 #define FORM_H_
 
 #include <stdio.h>
+#include <c2types.h>
 
 #define Uchar unsigned char
 #include "pool.h"
