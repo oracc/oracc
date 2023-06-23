@@ -1,0 +1,29 @@
+@project epsd2
+@lang sux
+@name epsd2/sux
+@proplist props.lst
+
+@entry a [water] N
+@sense N water
+@disc Some sense discussion.
+@sense .1 N water
+@sense #1 N water
+@sense #1 .1 N water
+@sense #1 .1 [water] N water
+@sense %en #1 .1 [water] N water
+@sense %en .1 [water] N water
+@sense %en [water] N water
+@sense %en N water
++@sense %en N water
+-@sense %en N water
+@sense %en N water
+> V/t to water
+@sense %en N water
+>> V/t to water
+@end entry
+
+@entry a [arm] N
+@senses
+@sense N arm
+@end senses
+@end entry

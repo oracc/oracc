@@ -17,7 +17,7 @@
 typedef int sort_cmp_func(const void*,const void*);
 
 typedef void hash_exec_func(void *);
-typedef void hash_exec2_func(Uchar*,void *);
+typedef void hash_exec2_func(const unsigned char*,void *);
 typedef void hash_free_func(void *);
 
 #define HASH_DEBUG	0

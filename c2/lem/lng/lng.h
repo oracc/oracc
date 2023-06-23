@@ -121,11 +121,13 @@ extern struct langcore *langcore_of(const char *lang);
 extern struct langmode *lang_mode(register const char *str,register size_t len);
 extern struct langrtl *langrtl(register const char *str,register size_t len);
 extern struct langatf *lang_atf(register const char *str, register size_t len);
-extern void lang_init(void);
-extern void lang_term(void);
-extern void set_uscore_mode(const char *lang, enum t_langmode mode);
+extern void lng_init(void);
+extern void lng_term(void);
+
 extern void langtag_init(void);
 extern void langtag_term(void);
+
+extern void set_uscore_mode(const char *lang, enum t_langmode mode);
 
 extern const char *langtag_compose(struct lang_tag *def, const char *lang,
 				   const char *xlang, const char *script, const char *x);

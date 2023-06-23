@@ -21,6 +21,18 @@ static const char *langtag_atf(const char *atf,
 static struct lang_tag *langtag_parse(const char *tag, 
 				      const char *file, int lnum);
 
+void
+lng_init(void)
+{
+  langtag_init();
+}
+
+void
+lng_term(void)
+{
+  langtag_term();
+}
+
 static int
 all_alpha(const char *s)
 {
@@ -69,11 +81,14 @@ valid_x(const char *s)
 void
 langtag_init(void)
 {
-  langtag_pool = pool_init();
-  langtag_hash = hash_create(1);
-  default_langtag = langtag_create(NULL,"sux",NULL,NULL,0);
-  noscript_hash = hash_create(1);
-  texttag_init();
+  if (NULL == langtag_pool)
+    {
+      langtag_pool = pool_init();
+      langtag_hash = hash_create(1);
+      default_langtag = langtag_create(NULL,"sux",NULL,NULL,0);
+      noscript_hash = hash_create(1);
+      texttag_init();
+    }
 }
 
 void
@@ -129,7 +144,7 @@ tag_no_script(const char *tag)
 
   if (tag)
     {
-      char *ret = hash_find(noscript_hash,tag);
+      char *ret = hash_find(noscript_hash,(const unsigned char *)tag);
       if (ret)
 	return ret;
       
@@ -140,7 +155,9 @@ tag_no_script(const char *tag)
 	--script;
       if (script > tmp && '-' == script[-1])
 	script[-1] = '\0';
-      hash_add(noscript_hash, pool_copy(tag,langtag_pool), (ret = pool_copy(tmp,langtag_pool)));
+      hash_add(noscript_hash,
+	       pool_copy((const unsigned char *)tag,langtag_pool),
+	       (ret = (char*)pool_copy((const unsigned char *)tmp,langtag_pool)));
       free(tmp);
       return ret;
     }
@@ -255,7 +272,7 @@ langtag_error(const char *file, int lnum, const char *tag, const char *mess)
   if (file && *file)
     mesg_vwarning(file, lnum, "%s: %s\n", tag, mess);
   else
-    mesg_warning("%s: %s\n", tag, mess);
+    mesg_vwarning("",0,"%s: %s\n", tag, mess);
 #else
   if (file && *file)
     fprintf(stderr,"%s:%d: %s: %s\n", file, lnum, tag, mess);

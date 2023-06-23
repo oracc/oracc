@@ -114,11 +114,11 @@ optheader_multi:
 	|	optheader_multi atreldef
 	;
 
-atproject: PROJECT PROJSPEC { curr_cbd->project = (ucp)yylval.text; }
+atproject: PROJECT TEXTSPEC EOL { curr_cbd->project = (ucp)yylval.text; }
 
-atlang:    LANG    LANGSPEC { curr_cbd->lang = (ucp)yylval.text; }
+atlang:    LANG    TEXTSPEC EOL { curr_cbd->lang = (ucp)yylval.text; }
 
-atname:    NAME    TEXTSPEC { curr_cbd->name = (ucp)yylval.text; }
+atname:    NAME    TEXTSPEC EOL { curr_cbd->name = (ucp)yylval.text; }
 
 atcbd:	   CBD     WORDSPEC { curr_cbd->version = (ucp)yylval.text; }
 

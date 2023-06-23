@@ -86,8 +86,9 @@ cx_init(void)
   common_init();
   cbd_pool = pool_init();
   tree_init();
-  gdl_init();
   mesg_init();
+  gdl_init();
+  lng_init();
   curr_lang_ctxt = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
   cbds = hash_create(1);
   with_textid = 0;
@@ -314,6 +315,9 @@ main(int argc, char **argv)
   cx_init();
 
   io_init();
+
+  if (!input_method)
+    input_method = iomethod("cbd", 3);
 
   io_run();
 

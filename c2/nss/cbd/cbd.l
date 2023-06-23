@@ -107,7 +107,7 @@ YY_BUFFER_STATE bp;
 <s_sol>@[a-z]+	{ if (set_ctp()) xreturn(ctp->tok); }
 [^ \t\n]+  	{ ksdup(yytext); xreturn(TEXTSPEC); }
 [ \t]+		/* empty */
-\n		{ yycolumn=1; if (ctp->eol_sp) xreturn(TEXTSPEC); else xreturn(EOL); }
+\n		{ yycolumn=1; if (ctp && ctp->eol_sp) xreturn(TEXTSPEC); else xreturn(EOL); }
 
 <s_cf>[^\[\] \t\n][^\[\]\n]*[^\[\] \t\n]        { ytdup(); xreturn(CF); }
 <s_cf>[^\[\] \t\n]         { ytdup(); xreturn(CF); }
@@ -180,11 +180,16 @@ set_after(void)
 static int
 set_ctp(void)
 {
-  ctp = cbdtags(yytext,strlen(yytext));
+  const char *atname = yytext;
+  while (*atname && '@' != *atname)
+    ++atname;
+  if (*atname)
+    ++atname;
+  ctp = cbdtags(atname,strlen(atname));
   if (!ctp)
     {
       BEGIN ss(s_flush); yylloc.file=efile; yylloc.line=yylineno;
-      vyyerror(yylloc,"unknown at-command %s\n",yytext, NULL);
+      vyyerror(yylloc,"unknown at-command %s\n",atname, NULL);
       return 0;
     }
   else

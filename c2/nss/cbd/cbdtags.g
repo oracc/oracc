@@ -5,6 +5,10 @@
 %}
 struct cbdtag;
 %%
+project, PROJECT, 0, 0
+lang, LANG, 0, 0
+name, NAME, 0, 0
+entry, ENTRY, 0, 0
 bases, BASES, 0, 0
 form,  FORM, 0, 0
 sense, SENSE, 0, 0

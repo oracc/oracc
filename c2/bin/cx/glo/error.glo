@@ -1,0 +1,14 @@
+@project epsd2
+@lang sux
+@name epsd2/sux
+@proplist props.lst
+
+@entry a [water] N
+@sense N water
+@bases a
+@boo
+@end entry
+
+@entry a [water] N
+@boo
+@end entry
