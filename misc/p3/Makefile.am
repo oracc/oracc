@@ -10,7 +10,7 @@ data_DATA=p3-template.xml as-base.xml p2colours.txt oas-template.xml oas-instanc
 js_DATA=p3.js oas.js p3-transonly.js
 scriptdata_DATA=p3-project.xsl p3-ce-HTML.xsl p3-htmlview.xsl p3-xmd-div.xsl oas-SEARCH.xsl oas-RETURN.xsl \
 	p3-html-wrapper.xsl p3-corpusview-lib.xsl p3-xtl-div.xsl p3-hub.xsl p3-social.xsl
-html_DATA=noresults.div empty.div colour_nn.html
+html_DATA=noresults.div empty.div colour_nn.html ga4-tag-http.txt ga4-tag-https.txt
 
 oas-instance.xml: oas-instance.xml.in
 	$(ORACCIFY) oas-instance.xml.in
