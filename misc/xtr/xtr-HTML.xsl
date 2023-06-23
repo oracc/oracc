@@ -31,6 +31,15 @@
 	<xsl:value-of select="concat('Translation of ',
 			             translate(/xtr:translation/@n,'ḫ','h'))"/>
       </title>
+<!-- Google tag (gtag.js) -->
+<script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-0QKC3P5HJ1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0QKC3P5HJ1');
+</script>
     </head>
     <body onload="window.location.hash='a.{$frag-id}'">
       <h1 class="tr title">

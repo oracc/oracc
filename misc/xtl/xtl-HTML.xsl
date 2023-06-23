@@ -18,6 +18,15 @@
       <title>
 	<xsl:value-of select="concat('Texts list for ', translate(/*/@n,'ḫ','h'))"/>
       </title>
+<!-- Google tag (gtag.js) -->
+<script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-0QKC3P5HJ1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0QKC3P5HJ1');
+</script>
     </head>
     <body>
       <div class="backbar">

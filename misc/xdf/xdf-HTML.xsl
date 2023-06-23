@@ -242,18 +242,14 @@
   <title><xsl:value-of select="$title"/></title>
   <link rel="stylesheet" type="text/css" href="{$prefix}/css/oraccdoc.css"/>
 <!--  <script src="/js/oraccdoc.js" type="text/javascript"><![CDATA[ ]]></script> -->
-<script type="text/javascript">
+<!-- Google tag (gtag.js) -->
+<script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-0QKC3P5HJ1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-32878242-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
+  gtag('config', 'G-0QKC3P5HJ1');
 </script>
 </head>
 </xsl:template>

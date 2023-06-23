@@ -16,6 +16,15 @@
       <script src="/js/p2.js" type="text/javascript"> </script>
       <script src="/js/p2-shortcuts.js" type="text/javascript"> </script>
       <script src="/js/p2-keys.js" type="text/javascript"> </script>      
+<!-- Google tag (gtag.js) -->
+<script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-0QKC3P5HJ1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0QKC3P5HJ1');
+</script>
       <title>
 	<xsl:value-of select="translate(id($block)/*[1]/@label,'ḫ','h')"/>
       </title>
