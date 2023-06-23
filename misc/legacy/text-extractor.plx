@@ -16,7 +16,7 @@ foreach my $f (@files) {
     $outfile =~ s/fix/txt/;
     $outfile =~ s/(?:fix|xml)$/txt/;
     my $xsl = 'tools/xml2txt.xsl';
-    $xsl = '/Users/stinney/orc/lib/scripts/xml2txt.xsl'
+    $xsl = '/home/oracc/lib/scripts/xml2txt.xsl'
 	unless -r $xsl;
     warn "$f\n";
     system 'xsltproc', '--output', $outfile, $xsl, $f;

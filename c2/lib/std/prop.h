@@ -7,6 +7,8 @@
 
 /*#include <../gdl/gdlstate.h>*/
 
+typedef unsigned long gdlstate_t;
+
 enum propgroup
   {
     PU_GDLSTATE = 0, /* PU_GDLSTATE is its own macro group and uses u.s */
@@ -21,8 +23,6 @@ enum propgroup
     PU_VOIDSTAR,     /* PG_XXX > PG_VOIDSTAR use u.v */
     PG_LAST
   };
-
-typedef unsigned long gdlstate_t;
 
 struct prop
 {
@@ -42,7 +42,7 @@ struct prop
 typedef struct prop Prop;
 struct node;
 
-extern gdlstate_t *prop_state(struct node *np, gdlstate_t *sp);
+/*extern gdlstate_t *prop_state(struct node *np, gdlstate_t *sp);*/
 extern Prop *prop_add(Memo *propmem, Prop *p, int ptype, int gtype);
 extern Prop *prop_add_kv(Memo *propmem, Memo *kevamem, Prop *p, int ptype, int gtype,
 			 const char *key, const char *value);

@@ -3,8 +3,8 @@ include ../../../oracc-am-rules.txt
 noinst_PROGRAMS=sx
 
 xLDADD=\
-	../../lib/gdl/libgdl.la \
-	../../lib/asl/libasl.la \
+	../../nss/gdl/libgdl.la \
+	../../nss/asl/libasl.la \
 	../../lib/xml/libxml.la \
 	../../lib/xml/rnv/librnv.la \
 	../../lib/std/libstd.la \
@@ -12,8 +12,8 @@ xLDADD=\
 
 AM_CPPFLAGS=\
 	-I../../lib/include \
-	-I../../lib/asl \
-	-I../../lib/gdl \
+	-I../../nss/asl \
+	-I../../nss/gdl \
 	-I../../lib/std \
 	-I../../lib/sys \
 	-I../../lib/xml 

@@ -4,21 +4,21 @@ noinst_PROGRAMS=catx gdlx
 
 xLDADD=\
 	../../lib/cat/libcat.la \
-	../../lib/gdl/libgdl.la \
+	../../nss/gdl/libgdl.la \
 	../../lib/std/libstd.la \
 	../../lib/sys/libsys.la \
 	../../lib/xml/libxml.la \
 	../../lib/xml/rnv/librnv.la \
-	../../ns/libns.la
+	../../rnc/librnc.la
 
 AM_CPPFLAGS=\
 	-I../../lib/include \
-	-I../../lib/gdl \
+	-I../../nss/gdl \
 	-I../../lib/std \
 	-I../../lib/sys \
 	-I../../lib/xml \
 	-I../../lib/cat \
-	-I../../ns
+	-I../../rnc
 
 catx_SOURCES=catx.c
 

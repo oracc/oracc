@@ -7,8 +7,8 @@ bin_PROGRAMS=concord
 xLDADD=\
 	../../../c/lib/liboracc.la \
 	../../lib/cat/libcat.la \
-	../../lib/gdl/libgdl.la \
-	../../lib/atf/libatf.la \
+	../../nss/gdl/libgdl.la \
+	../../nss/atf/libatf.la \
 	../../lib/sys/libsys.la \
 	../../lib/xml/libxml.la \
 	../../lib/xml/expat/libexpat.la \

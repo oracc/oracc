@@ -3,20 +3,23 @@ include ../../../oracc-am-rules.txt
 bin_PROGRAMS=ax
 
 xLDADD=\
+	../../nss/gdl/libgdl.la \
+	../../nss/atf/libatf.la \
 	../../lib/cat/libcat.la \
-	../../lib/gdl/libgdl.la \
-	../../lib/atf/libatf.la \
 	../../lib/sys/libsys.la \
 	../../lib/xml/libxml.la \
 	../../lib/xml/expat/libexpat.la \
 	../../lib/xml/rnv/librnv.la \
-	../../lib/std/libstd.la
+	../../lib/std/libstd.la \
+	../../nss/gdl/libgdl.la \
+	../../lib/std/libstd.la \
+	../../lib/sys/libsys.la
 
 AM_CPPFLAGS=\
 	-I../../lib/include \
-	-I../../lib/atf \
 	-I../../lib/cat \
-	-I../../lib/gdl \
+	-I../../nss/atf \
+	-I../../nss/gdl \
 	-I../../lib/std \
 	-I../../lib/sys \
 	-I../../lib/xml

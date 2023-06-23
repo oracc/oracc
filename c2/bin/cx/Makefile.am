@@ -10,7 +10,11 @@ xLDADD=\
 	../../lem/frm/libfrm.la \
 	../../lem/lng/liblng.la \
 	../../nss/gdl/libgdl.la \
-	../../nss/cbd/libcbd.la
+	../../lib/std/libstd.la \
+	../../nss/gdl/libgdl.la \
+	../../nss/cbd/libcbd.la \
+	../../lib/std/libstd.la \
+	../../lib/sys/libsys.la
 
 AM_CPPFLAGS=\
 	-I../../lib/include \
