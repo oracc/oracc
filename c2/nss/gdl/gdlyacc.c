@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <tree.h>
+#include <prop.h>
 #include <ctype128.h>
 #include "gdl.tab.h"
 #include "gdlstate.h"
