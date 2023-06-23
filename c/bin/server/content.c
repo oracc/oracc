@@ -255,6 +255,19 @@ printHTMLStart(struct frag *frag)
 	  frag->cop->title ? frag->cop->title : project, project);
   if (frag->cop->ga)
     {
+#if 1
+      fprintf(frag->fp,
+	      "<!-- Google tag (gtag.js) -->\n"
+	      "<script async=\"async\" src=\"https://www.googletagmanager.com/gtag/js?id=G-0QKC3P5HJ1\"></script>\n"
+	      "<script>\n"
+	      "  window.dataLayer = window.dataLayer || [];\n"
+	      "  function gtag(){dataLayer.push(arguments);}\n"
+	      "  gtag('js', new Date());\n"
+	      "\n"
+	      "  gtag('config', 'G-0QKC3P5HJ1');\n"
+	      "</script>\n"
+	      );
+#else
       fprintf(frag->fp,
 	      "<script type=\"text/javascript\">\n"
 	      "var _gaq = _gaq || [];\n"
@@ -266,6 +279,7 @@ printHTMLStart(struct frag *frag)
 	      "var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);\n"
 	      "})();\n</script>\n"
 	      );
+#endif
     }
   if (frag->cop->frag_id)
     fprintf(frag->fp, "</head>\n<body class=\"printHTMLStart\" onload=\"location.hash='%s'\">\n", frag->cop->frag_id);
