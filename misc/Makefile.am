@@ -11,7 +11,6 @@ SUBDIRS = \
 	cuneifyplus \
 	emacs \
 	epsd2 \
-	esp \
 	esp2 \
 	est \
 	fonts \
@@ -37,7 +36,6 @@ SUBDIRS = \
 	ods \
 	oid \
 	ol \
-	ood \
 	oss2 \
 	otf \
 	p3 \
