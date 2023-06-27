@@ -1,0 +1,10 @@
+@project epsd2
+@name epsd2/sux
+@lang sux
+
+-@entry a [water] N
+#why: because
+@bases a (e₄)
+@form a /a #~
+@sense N water
+@end entry

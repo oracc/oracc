@@ -1,0 +1,10 @@
+@project epsd2
+@lang sux
+@name epsd2/sux
+@proplist props.lst
+
+@include included.glo
+
+@entry a [arm] N
+@sense N arm
+@end entry
