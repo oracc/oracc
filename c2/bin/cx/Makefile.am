@@ -1,6 +1,6 @@
 include ../../../oracc-am-rules.txt
 
-noinst_PROGRAMS=cx
+noinst_PROGRAMS=
 
 xLDADD=\
 	../../lib/xml/libxml.la \
@@ -26,7 +26,7 @@ AM_CPPFLAGS=\
 	-I../../nss/gdl \
 	-I../../nss/cbd
 
-cx_SOURCES=common.c cx.c
+cx_SOURCES=
 
 cx_LDADD = $(xLDADD)
 
