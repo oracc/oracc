@@ -72,6 +72,11 @@ extern int yylex(void);
        STEM STEMS EDISC SDISC EDISCL SDISCL EOL CBD TRANSLANG GWL I18N
        NOTEL BFF
 
+%token <text> '%'
+%token <text> '#'
+%token <text> '.'
+%token <text> '['
+
 %start cbd
 
 %%
@@ -79,17 +84,20 @@ extern int yylex(void);
 cbd: 		header entrylist { return(parser_status); }
 	|      	header  	 { return(parser_status); }
 	|	/* empty */ 	 { return(parser_status); }
+	;
 
 header:		reqheader
 	|	reqheader optheader
+	;
 
 reqheader: 	atproject atlang atname
+	;
 
 optheader:	optheader_one
 	|	optheader_multi
 	|	optheader_one optheader_multi
 	|	optheader_multi optheader_one
-			
+	;
 
 optheader_one: 	atcbd
 	|	attranslang
@@ -106,6 +114,7 @@ optheader_one: 	atcbd
 	|	attranslang ati18n atcbd
 	|	ati18n atcbd attranslang
 	|	ati18n attranslang atcbd
+	;
 		
 optheader_multi:
 		atprops
@@ -114,19 +123,19 @@ optheader_multi:
 	|	optheader_multi atreldef
 	;
 
-atproject: PROJECT TEXTSPEC EOL { curr_cbd->project = (ucp)yylval.text; }
+atproject: PROJECT WORDSPEC { curr_cbd->project = (ucp)yylval.text; }
 
-atlang:    LANG    TEXTSPEC EOL { curr_cbd->lang = (ucp)yylval.text; }
+atlang:    LANG    WORDSPEC { curr_cbd->lang = (ucp)yylval.text; }
 
-atname:    NAME    TEXTSPEC EOL { curr_cbd->name = (ucp)yylval.text; }
+atname:    NAME    TEXTSPEC { curr_cbd->name = (ucp)yylval.text; }
 
 atcbd:	   CBD     WORDSPEC { curr_cbd->version = (ucp)yylval.text; }
 
-atprops:	PROPS TEXTSPEC { bld_props(curr_cbd, yylval.text); }
+atprops:	PROPS WORDSPEC { cbd_bld_props(curr_cbd, yylval.text); }
 
-atreldef:	RELDEF TEXTSPEC { bld_reldef(curr_cbd, yylval.text); }
+atreldef:	RELDEF TEXTSPEC { cbd_bld_reldef(curr_cbd, yylval.text); }
 
-attranslang:	TRANSLANG LANGSPEC { curr_cbd->trans = (ucp)yylval.text; }
+attranslang:	TRANSLANG WORDSPEC { curr_cbd->trans = (ucp)yylval.text; }
 
 ati18n:		I18N TEXTSPEC	  { curr_cbd->i18nstr = yylval.text; }
 		
@@ -137,18 +146,22 @@ cgp:    CF '[' GW ']' POS { cgp_save((ucp)$1, (ucp)$3, (ucp)$5); } ;
 	|	CF '[' GW ']' EOL { lyyerror(@1, "expected POS but found end of line"); }
 	|	CF '[' GW EOL { lyyerror(@1, "missing ']' (and maybe POS) after GW"); }
 	|	CF ']' POS { lyyerror(@1, "missing '[' before GW"); }
+	;
 
 disc:	disc_df
 	|	disc_df disc_trs
+	;
 
-disc_df:	EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = bld_tag(@1, curr_entry, "disc", (ucp)$2); }
-	|     	SDISC TEXTSPEC { curr_sense->disc = bld_tag(@1, curr_entry, "disc",(ucp)$2); }
+disc_df:	EDISC TEXTSPEC /* | FILESPEC | URLSPEC */ { curr_entry->disc = cbd_bld_tag(@1, curr_entry, "disc", (ucp)$2); }
+	|     	SDISC TEXTSPEC { curr_sense->disc = cbd_bld_tag(@1, curr_entry, "disc",(ucp)$2); }
+	;
 
 disc_trs:	disc_tr
 	|	disc_trs disc_tr
+	;
 		
-disc_tr:	EDISCL LANGSPEC TEXTSPEC /* | FILESPEC | URLSPEC */ { bld_discl(@1, curr_entry, (ccp)$2, (ucp)$3, 0); }
-        |     	SDISCL LANGSPEC TEXTSPEC 			    { bld_discl(@1, curr_entry, (ccp)$2, (ucp)$3, 1); }
+disc_tr:	EDISCL LANGSPEC TEXTSPEC /* | FILESPEC | URLSPEC */ { cbd_bld_discl(@1, curr_entry, (ccp)$2, (ucp)$3, 0); }
+        |     	SDISCL LANGSPEC TEXTSPEC 			    { cbd_bld_discl(@1, curr_entry, (ccp)$2, (ucp)$3, 1); }
 
 entrylist:	entry
 	|	entrylist entry
@@ -163,6 +176,7 @@ entry: 		entry_block end_entry
 	|	entry_block entry_block end_entry { lyyerror(@2,"duplicate @entry or missing @end entry"); }
 	|	entry_block senses_block lang_block end_entry  { lyyerror(@3, "lang block fields must come before senses block"); }
 	|	entry_block ENDOF 		  { lyyerror(@2,"input ended without @end entry"); return(1); }
+	;
 
 entry_block:    atentry
 	|	atentry aliases
@@ -170,32 +184,35 @@ entry_block:    atentry
 	| 	atentry aliases parts disc
 	|	atentry modentry
 	|	atentry modentry aliases
-	| 	atentry modentry aliases parts
-	| 	atentry modentry aliases parts disc
-	| 	atentry parts
-	| 	atentry parts disc
+	| 	atentry modentry aliases partses
+	| 	atentry modentry aliases partses disc
+	| 	atentry partses
+	| 	atentry partses disc
 	| 	atentry disc
+	;
 
-atentry: 	ent_cgp		     { bld_entry_cgp(curr_entry); }
-        |	'+' ent_cgp 	     { bld_entry_cgp(curr_entry); 
-    				       bld_edit_entry(curr_entry, '+'); } ;
+atentry: 	ent_cgp		     { cbd_bld_entry_cgp(curr_entry); }
+        |	'+' ent_cgp 	     { cbd_bld_entry_cgp(curr_entry); 
+    				       cbd_bld_edit_entry(curr_entry, '+'); } ;
 	|	'-' ent_cgp  why     {
-	    			      bld_entry_cgp(curr_entry);
-    				      bld_edit_entry(curr_entry, '-');
-				      bld_edit_why(curr_entry, yylval.text); } ;
+	    			      cbd_bld_entry_cgp(curr_entry);
+    				      cbd_bld_edit_entry(curr_entry, '-');
+				      cbd_bld_edit_why(curr_entry, yylval.text); } ;
+	;
 
 ent_cgp: 	begin_entry cgp
 	|	begin_entry cgp gwls
+	;
 
 gwls:		gwl
 	|	gwls gwl
 	;
 
-gwl:		GWL LANGSPEC TEXTSPEC { bld_gwl(@1,curr_entry,(ccp)$2,(ucp)$3); }
+gwl:		GWL LANGSPEC TEXTSPEC { cbd_bld_gwl(@1,curr_entry,(ccp)$2,(ucp)$3); }
 	;
 
-begin_entry:  	entry_wrapper { curr_entry = bld_entry(@1,curr_cbd); 
-	                        curr_meta = curr_entry->meta = bld_meta_create(curr_entry); } ;
+begin_entry:  	entry_wrapper { curr_entry = cbd_bld_entry(@1,curr_cbd); 
+	                        curr_meta = curr_entry->meta = cbd_bld_meta_create(curr_entry); } ;
 
 entry_wrapper:	 ENTRY
 	|	 error ENTRY  { yyerrok; }
@@ -203,23 +220,27 @@ entry_wrapper:	 ENTRY
 
 why:		WHY TEXTSPEC
 
-modentry: 	RENAME cgp { bld_edit_entry(curr_entry, '>'); } ;
-	| 	MERGE  cgp { bld_edit_entry(curr_entry, '|'); } ;
+modentry: 	RENAME cgp { cbd_bld_edit_entry(curr_entry, '>'); } ;
+	| 	MERGE  cgp { cbd_bld_edit_entry(curr_entry, '|'); } ;
 
 aliases: 	alias
 	| 	aliases alias
 
-alias:  	atalias cgp 	{ bld_alias(@1,curr_entry); }
-	|	DCF TEXTSPEC 	{ bld_dcf(@1,curr_entry, (ucp)$1, (ucp)$2); }
+alias:  	atalias cgp 	{ cbd_bld_alias(@1,curr_entry); }
+	|	DCF TEXTSPEC 	{ cbd_bld_dcf(@1,curr_entry, (ucp)$1, (ucp)$2); }
+	;
 
 atalias:	ALIAS
 
-/*  THIS DOESN'T ALLOW MULTIPLE @parts */
+partses:	parts
+	| 	partses parts
+	;
+
 parts:  	atparts cgplist { curr_parts->cgps = cgp_get_all(); }
 
-atparts: 	PARTS { curr_parts = bld_parts(@1,curr_entry); }
+atparts: 	PARTS { curr_parts = cbd_bld_parts(@1,curr_entry); }
 
-end_entry:	END_ENTRY { curr_entry->end_entry = bld_locator(@1); curr_entry = NULL; }
+end_entry:	END_ENTRY { curr_entry->end_entry = cbd_bld_locator(@1); curr_entry = NULL; }
 		
 lang_block: bases_block
 	    | bases_block forms
@@ -228,6 +249,7 @@ lang_block: bases_block
 bases_block: allows
 	     |	 allows bases_fields
 	     |	 bases_fields
+	;
 
 bases_fields: 	phon
 	|	phon root
@@ -239,11 +261,13 @@ bases_fields: 	phon
 	|	stems
 	|	stems bases
 	|	bases
+	;
 
 allows:	     allow
 	     | allows allow
+	;
 
-allow: 	     ALLOW BASE_PRI '=' BASE_PRI { bld_allow(@1,curr_entry,(ucp)$2,(ucp)$4); } 
+allow: 	     ALLOW BASE_PRI '=' BASE_PRI { cbd_bld_allow(@1,curr_entry,(ucp)$2,(ucp)$4); } 
 
 bases:	     atbases baselist
 
@@ -255,22 +279,22 @@ baselist:    base
 base: 	     base_pri
 	     | base_pri base_alt
 
-base_pri:	BASE_PRI          { bld_bases_pri(@1, curr_entry, NULL, (ucp)$1); }
-	|	LANGSPEC BASE_PRI { bld_bases_pri(@1, curr_entry, (ucp)$1, (ucp)$2); }
+base_pri:	BASE_PRI          { cbd_bld_bases_pri(@1, curr_entry, NULL, (ucp)$1); }
+	|	LANGSPEC BASE_PRI { cbd_bld_bases_pri(@1, curr_entry, (ucp)$1, (ucp)$2); }
 
-base_alt: 	BASE_ALT          { bld_bases_alt(@1, curr_entry, (ucp)$1); }
-	     |	base_alt BASE_ALT { bld_bases_alt(@1, curr_entry, (ucp)$2); }
+base_alt: 	BASE_ALT          { cbd_bld_bases_alt(@1, curr_entry, (ucp)$1); }
+	     |	base_alt BASE_ALT { cbd_bld_bases_alt(@1, curr_entry, (ucp)$2); }
 
-phon:		PHON TEXTSPEC { curr_entry->phon = bld_tag(@1, curr_entry, "phon", (ucp)$2); }
+phon:		PHON TEXTSPEC { curr_entry->phon = cbd_bld_tag(@1, curr_entry, "phon", (ucp)$2); }
 
-root:		ROOT TEXTSPEC { curr_entry->root = bld_tag(@1, curr_entry, "root", (ucp)$2); }
+root:		ROOT TEXTSPEC { curr_entry->root = cbd_bld_tag(@1, curr_entry, "root", (ucp)$2); }
 
 stems:	atstem stemlist
 
 stemlist: stem
 	|	stemlist stem
 
-stem:		WORDSPEC { bld_stem(@1, curr_entry, (ucp)$1); }
+stem:		WORDSPEC { cbd_bld_stem(@1, curr_entry, (ucp)$1); }
 
 atstem: 	STEM
 								
@@ -279,8 +303,8 @@ forms:		form
 
 form:		atform formlang form_args end_form
 
-atform:		FORM		{ curr_form = bld_form(@1, curr_entry); }
-end_form:	END_FORM	{ bld_form_setup(curr_entry, curr_form); curr_form = NULL; }
+atform:		FORM		{ curr_form = cbd_bld_form(@1, curr_entry); }
+end_form:	END_FORM	{ cbd_bld_form_setup(curr_entry, curr_form); curr_form = NULL; }
 formlang:	fform
 	|	fform flang
 	|	fform flang frws
@@ -326,8 +350,8 @@ fnorm: 		FNORM 		{ curr_form->norm = (ucp)$1; }
 senses_block: senses
 	      | begin_senses sensesmeta end_senses
 
-begin_senses: SENSES		{ curr_entry->begin_senses = bld_locator(@1); curr_meta = NULL; }
-end_senses:   END_SENSES	{ curr_meta = curr_entry->meta; curr_entry->end_senses = bld_locator(@1); }
+begin_senses: SENSES		{ curr_entry->begin_senses = cbd_bld_locator(@1); curr_meta = NULL; }
+end_senses:   END_SENSES	{ curr_meta = curr_entry->meta; curr_entry->end_senses = cbd_bld_locator(@1); }
 		
 senses:	      sense
 	      | senses sense
@@ -377,25 +401,25 @@ senseline_tr:	atsensel slang pos mng
 	;
 
 atsense:      	ssense
-        |	'+' ssense	{ bld_edit_sense(curr_entry, '+'); }
-	|	'-' ssense	{ bld_edit_sense(curr_entry, '-'); }
+        |	'+' ssense	{ cbd_bld_edit_sense(curr_entry, '+'); }
+	|	'-' ssense	{ cbd_bld_edit_sense(curr_entry, '-'); }
 
-atsensel:      	SENSEL 		{ curr_sense = bld_sensel(@1, curr_entry); }
+atsensel:      	SENSEL 		{ curr_sense = cbd_bld_sensel(@1, curr_entry); }
 
-ssense:		SENSE 		{ curr_sense = bld_sense(@1, curr_entry); 
-		    		  if (curr_entry->begin_senses) { curr_meta = curr_sense->meta = bld_meta_create(curr_entry); } }
-slang:		'%' WORDSPEC   	{ curr_sense->lng = (ucp)$2; }
+ssense:		SENSE 		{ curr_sense = cbd_bld_sense(@1, curr_entry); 
+		    		  if (curr_entry->begin_senses) { curr_meta = curr_sense->meta = cbd_bld_meta_create(curr_entry); } }
+slang:		'%'    	{ curr_sense->lng = (ucp)$1; }
 
-sid:		'#' WORDSPEC	{ curr_sense->sid = (ucp)$2; }
-sok:		'.' WORDSPEC	{ curr_sense->num = (ucp)$2; }
-sgw:		'[' GW ']'	{ curr_sense->sgw = (ucp)$2; }
+sid:		'#' 	{ curr_sense->sid = (ucp)$1; }
+sok:		'.' 	{ curr_sense->num = (ucp)$1; }
+sgw:		'['  	{ curr_sense->sgw = (ucp)$1; }
 pos:		POS /* should be restricted to legal POS */	  { curr_sense->pos = (ucp)$1; }
 mng:		TEXTSPEC /* shouldrestrict to disallow [ and ] */ { curr_sense->mng = (ucp)$1; }
 		
-modsense: 	RENAME POS TEXTSPEC { curr_sense = bld_edit_sense(curr_entry, '>');
+modsense: 	RENAME POS TEXTSPEC { curr_sense = cbd_bld_edit_sense(curr_entry, '>');
     				      curr_sense->pos = (ucp)$2;
 			              curr_sense->mng = (ucp)$3; }
-           | 	MERGE  POS TEXTSPEC { curr_sense = bld_edit_sense(curr_entry, '|'); 
+           | 	MERGE  POS TEXTSPEC { curr_sense = cbd_bld_edit_sense(curr_entry, '|'); 
     				      curr_sense->pos = (ucp)$2;
 			              curr_sense->mng = (ucp)$3; }
 
@@ -413,12 +437,12 @@ anymeta: 	pleiades
         | 	notes
 		/*  REL GOES HERE */
 
-equiv: 		EQUIV LANG TEXTSPEC		{ bld_meta_add(@1,curr_entry, curr_meta, $1, "equiv",
-		    					   bld_equiv(curr_entry,(ucp)$2,(ucp)$3)); }
-isslp:		ISSLP TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "isslp", (ucp)$2); }
-bib:		BIB TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "bib", (ucp)$2); }
+equiv: 		EQUIV LANG TEXTSPEC		{ cbd_bld_meta_add(@1,curr_entry, curr_meta, $1, "equiv",
+		    					   cbd_bld_equiv(curr_entry,(ucp)$2,(ucp)$3)); }
+isslp:		ISSLP TEXTSPEC			{ cbd_bld_meta_add(@1,curr_entry, curr_meta, $1, "isslp", (ucp)$2); }
+bib:		BIB TEXTSPEC			{ cbd_bld_meta_add(@1,curr_entry, curr_meta, $1, "bib", (ucp)$2); }
 
-inote:		INOTE TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "inote", (ucp)$2); }
+inote:		INOTE TEXTSPEC			{ cbd_bld_meta_add(@1,curr_entry, curr_meta, $1, "inote", (ucp)$2); }
 
 notes:		note
 	|	note notels
@@ -426,21 +450,21 @@ notes:		note
 notels: 	notel
 	|	notels notel
 
-note:		NOTE TEXTSPEC			{ bld_note(@1, curr_entry, curr_meta, (ucp)$2); }
-notel:		NOTEL LANGSPEC TEXTSPEC	       	{ bld_notel(@1, curr_entry, curr_meta, (ccp)$2, (ucp)$3); }
+note:		NOTE TEXTSPEC			{ cbd_bld_note(@1, curr_entry, curr_meta, (ucp)$2); }
+notel:		NOTEL LANGSPEC TEXTSPEC	       	{ cbd_bld_notel(@1, curr_entry, curr_meta, (ccp)$2, (ucp)$3); }
 
 pleiades:	pl_id pl_coord
 	|	pl_id pl_coord pl_aliases
-pl_id:		PL_ID TEXTSPEC			{ curr_pleiades = bld_pl_id(@1,curr_entry,(ucp)$2); }
-pl_coord:	PL_COORD TEXTSPEC		{ bld_pl_coord(@1,curr_pleiades,(ucp)$2); }
+pl_id:		PL_ID TEXTSPEC			{ curr_pleiades = cbd_bld_pl_id(@1,curr_entry,(ucp)$2); }
+pl_coord:	PL_COORD TEXTSPEC		{ cbd_bld_pl_coord(@1,curr_pleiades,(ucp)$2); }
 pl_aliases: 	pl_alias
 	|	pl_aliases pl_alias
-pl_alias:	PL_ALIAS TEXTSPEC		{ bld_pl_alias(@1,curr_pleiades,NULL,(ucp)$2); }
-	|	PL_ALIAS LANGSPEC TEXTSPEC     	{ bld_pl_alias(@1,curr_pleiades,(ccp)$2,(ucp)$3); } /* not in scanner.l yet */
+pl_alias:	PL_ALIAS TEXTSPEC		{ cbd_bld_pl_alias(@1,curr_pleiades,NULL,(ucp)$2); }
+	|	PL_ALIAS LANGSPEC TEXTSPEC     	{ cbd_bld_pl_alias(@1,curr_pleiades,(ccp)$2,(ucp)$3); } /* not in scanner.l yet */
 
-prop:		PROP TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "prop", (ucp)$2); }
-oid:		OID OIDSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "oid", (ucp)$2); }
-collo:		COLLO TEXTSPEC			{ bld_meta_add(@1,curr_entry, curr_meta, $1, "collo", (ucp)$2); }
+prop:		PROP TEXTSPEC			{ cbd_bld_meta_add(@1,curr_entry, curr_meta, $1, "prop", (ucp)$2); }
+oid:		OID OIDSPEC			{ cbd_bld_meta_add(@1,curr_entry, curr_meta, $1, "oid", (ucp)$2); }
+collo:		COLLO TEXTSPEC			{ cbd_bld_meta_add(@1,curr_entry, curr_meta, $1, "collo", (ucp)$2); }
 
 %%
 

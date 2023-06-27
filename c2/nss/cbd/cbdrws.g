@@ -6,6 +6,7 @@ struct cbdrws;
 %%
 EG, "sux"
 ES, "sux-x-emesal"
+ED, "sux-x-eardyn"
 UGN,"sux-x-udganu"
 SYL,"sux-x-syllab"
 UNO,"sux-x-unorth"

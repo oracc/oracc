@@ -1,0 +1,12 @@
+#define s_b 1
+#define s_cf 2
+#define s_f 3
+#define s_flag 4
+#define s_flush 5
+#define s_gw 6
+#define s_incl 7
+#define s_pos 8
+#define s_sol 9
+#define s_s 10
+#define s_text 11
+#define s_word 12

@@ -16,9 +16,10 @@ AM_CPPFLAGS=\
 	-I../../xml
 
 cbd.tab.c cbd.tab.h: cbd.y cbd.l
-	${YACC} -vd cbd.y
+	${YACC} -vdt cbd.y
 
 cbd-l.c: cbd.l cbd.tab.h
-	flex -B -DYY_NO_INPUT cbd.l
+	flex -d -B -DYY_NO_INPUT cbd.l
+	grep '#define s_' cbd-l.c >startstates.h
 
 cbd-l.o: cbd-l.c

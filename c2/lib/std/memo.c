@@ -120,14 +120,17 @@ memo_term (Memo *any)
 {
   struct memo_block *mp, *tmp;
 
-  for (mp = any->mem_base; mp; mp = tmp)
+  if (any)
     {
-      tmp = mp->next;
-      if (mp->mem)
-	free(mp->mem);
-      free(mp);
+      for (mp = any->mem_base; mp; mp = tmp)
+	{
+	  tmp = mp->next;
+	  if (mp->mem)
+	    free(mp->mem);
+	  free(mp);
+	}
+      free(any);
     }
-  free(any);
 }
 
 void *

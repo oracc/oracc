@@ -5,6 +5,7 @@
 #include <mesg.h>
 #include <lng.h>
 #include "cbd.h"
+#include "cbd.tab.h"
 
 extern int bang, star;
 static int one = 1;
@@ -15,7 +16,7 @@ List *cmt_queue = NULL;
 #define cmts(l) (l) = cmt_queue , cmt_queue = NULL;
 
 struct alias *
-bld_alias(YYLTYPE l, struct entry *e)
+cbd_bld_alias(YYLTYPE l, struct entry *e)
 {
   struct alias *a = memo_new(e->owner->aliasmem);
   a->l = l;
@@ -27,7 +28,7 @@ bld_alias(YYLTYPE l, struct entry *e)
 }
 
 void
-bld_allow(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs)
+cbd_bld_allow(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs)
 {
   struct allow *ap = NULL;
   Hash *h_a, *h_b;
@@ -62,11 +63,11 @@ bld_allow(YYLTYPE l, struct entry *e, unsigned char *lhs, unsigned char *rhs)
 
 /* At parse time we just save the bases in a list of lists */
 void
-bld_bases_pri(YYLTYPE l, struct entry *e, unsigned char *lang, unsigned char *p)
+cbd_bld_bases_pri(YYLTYPE l, struct entry *e, unsigned char *lang, unsigned char *p)
 {
   if (p && strlen((ccp)p))
     {
-      struct loctok *ltp = bld_loctok(&l,e,p);
+      struct loctok *ltp = cbd_bld_loctok(&l,e,p);
       ltp->lang = lang;
       if (!e->bases)
 	e->bases = list_create(LIST_SINGLE);
@@ -80,12 +81,12 @@ bld_bases_pri(YYLTYPE l, struct entry *e, unsigned char *lang, unsigned char *p)
 }
 
 void
-bld_bases_alt(YYLTYPE l, struct entry *e, unsigned char *a)
+cbd_bld_bases_alt(YYLTYPE l, struct entry *e, unsigned char *a)
 {
   if (a && strlen((ccp)a))
     {
       if (curr_base_list)
-	list_add(curr_base_list, bld_loctok(&l,e,a));
+	list_add(curr_base_list, cbd_bld_loctok(&l,e,a));
     }
   else
     {
@@ -94,7 +95,7 @@ bld_bases_alt(YYLTYPE l, struct entry *e, unsigned char *a)
 }
 
 struct cbd *
-bld_cbd(void)
+cbd_bld_cbd(void)
 {
   struct cbd *c = NULL;
   extern char *file; /*FIXME*/
@@ -130,7 +131,7 @@ bld_cbd(void)
 }
 
 void
-bld_cbd_setup(struct cbd*c)
+cbd_bld_cbd_setup(struct cbd*c)
 {
   c->iname = malloc(strlen((ccp)c->project) + strlen((ccp)c->lang) + 2);
   sprintf((char*)c->iname, "%s:%s", c->project, c->lang);
@@ -140,7 +141,7 @@ bld_cbd_setup(struct cbd*c)
 }
 
 void
-bld_cbd_term(struct cbd*c)
+cbd_bld_cbd_term(struct cbd*c)
 {
   pool_term(c->pool);
   hash_add(cbds, c->iname, NULL);
@@ -149,7 +150,7 @@ bld_cbd_term(struct cbd*c)
 }
 
 List *
-bld_cmt_append(List *to, List *from)
+cbd_bld_cmt_append(List *to, List *from)
 {
   if (!to)
     to = from;
@@ -166,7 +167,7 @@ bld_cmt_append(List *to, List *from)
 }
 
 void
-bld_cmt_queue(locator *lp, unsigned char *cmt)
+cbd_bld_cmt_queue(locator *lp, unsigned char *cmt)
 {
   if (curr_entry)
     {
@@ -179,7 +180,7 @@ bld_cmt_queue(locator *lp, unsigned char *cmt)
 }
 
 void
-bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg)
+cbd_bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg)
 {
   struct tag *tp;
   if (!e->dcfs)
@@ -202,7 +203,7 @@ bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfarg)
 }
 
 void
-bld_discl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text, int e_or_s)
+cbd_bld_discl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text, int e_or_s)
 {
   if (e_or_s) /* apply to sense */
     {
@@ -218,7 +219,7 @@ bld_discl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text, int
 	    }
 	}
       if (senselp)
-	senselp->disc = bld_tag(l, e, "discl", text);
+	senselp->disc = cbd_bld_tag(l, e, "discl", text);
       else
 	fprintf(stderr, "lang %s not found in sensels\n", lang);
     }
@@ -236,7 +237,7 @@ bld_discl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text, int
 }
 
 void
-bld_edit(struct entry *e, char ctxt, char type)
+cbd_bld_edit(struct entry *e, char ctxt, char type)
 {
   struct edit *ed = memo_new(e->owner->editmem);
   /*struct sense *snode = NULL;*/
@@ -275,20 +276,20 @@ bld_edit(struct entry *e, char ctxt, char type)
 }
 
 void
-bld_edit_entry(struct entry *e, char type)
+cbd_bld_edit_entry(struct entry *e, char type)
 {
-  bld_edit(e, 'e', type);
+  cbd_bld_edit(e, 'e', type);
 }
 
 struct sense *
-bld_edit_sense(struct entry *e, char type)
+cbd_bld_edit_sense(struct entry *e, char type)
 {
-  bld_edit(e, 's', type);
+  cbd_bld_edit(e, 's', type);
   return ((struct sense *)(list_last(e->senses)))->ed->sp = memo_new(e->owner->sensesmem);
 }
 
 void
-bld_edit_why(struct entry *e, char *why)
+cbd_bld_edit_why(struct entry *e, char *why)
 {
   if (e->ed)
     e->ed->why = (ucp)why;
@@ -296,7 +297,7 @@ bld_edit_why(struct entry *e, char *why)
 }
 
 struct entry *
-bld_entry(YYLTYPE l, struct cbd* c)
+cbd_bld_entry(YYLTYPE l, struct cbd* c)
 {
   struct entry *e = memo_new(c->entrymem);
   e->aliases = list_create(LIST_SINGLE);
@@ -322,7 +323,7 @@ bld_entry(YYLTYPE l, struct cbd* c)
 }
 
 void
-bld_entry_cgp(struct entry *e)
+cbd_bld_entry_cgp(struct entry *e)
 {
   e->cgp = cgp_get_one();
   hash_add(e->owner->hentries, e->cgp->tight, &one);
@@ -330,7 +331,7 @@ bld_entry_cgp(struct entry *e)
 
 #if 0
 static void
-bld_entry_term(struct entry *e)
+cbd_bld_entry_term(struct entry *e)
 {
   if (e->b_pri)
     {
@@ -348,7 +349,7 @@ bld_entry_term(struct entry *e)
 #endif
 
 struct equiv *
-bld_equiv(struct entry *e, unsigned char *lang, unsigned char *text)
+cbd_bld_equiv(struct entry *e, unsigned char *lang, unsigned char *text)
 {
   struct equiv *eq = memo_new(e->owner->equivmem);
   eq->lang = lang;
@@ -357,7 +358,7 @@ bld_equiv(struct entry *e, unsigned char *lang, unsigned char *text)
 }
 
 Form *
-bld_form(YYLTYPE l, struct entry *e)
+cbd_bld_form(YYLTYPE l, struct entry *e)
 {
   static Form *f2p;
   f2p = memo_new(e->owner->formsmem);
@@ -374,7 +375,7 @@ bld_form(YYLTYPE l, struct entry *e)
 }
 
 void
-bld_form_setup(struct entry *e, Form* f2p)
+cbd_bld_form_setup(struct entry *e, Form* f2p)
 {
   f2p->project = e->owner->project;
   if (!f2p->lang)
@@ -386,7 +387,7 @@ bld_form_setup(struct entry *e, Form* f2p)
 }
 
 void
-bld_gwl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text)
+cbd_bld_gwl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text)
 {
   struct i18n *i18 = memo_new(e->owner->i18nmem);
   i18->l = l;
@@ -399,7 +400,7 @@ bld_gwl(YYLTYPE l, struct entry *e, const char *lang, unsigned char *text)
 }
 
 locator *
-bld_locator(YYLTYPE l)
+cbd_bld_locator(YYLTYPE l)
 {
   locator *lp = memo_new(curr_cbd->locatormem);
   *lp = l;
@@ -407,7 +408,7 @@ bld_locator(YYLTYPE l)
 }
 
 struct loctok *
-bld_loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok)
+cbd_bld_loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok)
 {
   struct loctok *ltp = memo_new(e->owner->loctokmem);
   ltp->l = *lp;
@@ -417,65 +418,65 @@ bld_loctok(YYLTYPE *lp, struct entry *e, unsigned char *tok)
 }
 
 struct meta *
-bld_meta_create(struct entry *e)
+cbd_bld_meta_create(struct entry *e)
 {
   return memo_new(e->owner->metamem);
 }
 
 void
-bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *name, void *val)
+cbd_bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *name, void *val)
 {
   List *lp = NULL;
   struct metaorder *orderp;
   switch (tok)
     {
-    case yBIB:
+    case BIB:
       if (!mp->bib)
 	mp->bib = list_create(LIST_SINGLE);
       lp = mp->bib;
       break;
-    case yCOLLO:
+    case COLLO:
       if (!mp->collo)
 	mp->collo = list_create(LIST_SINGLE);
       lp = mp->collo;
       break;
-    case yEQUIV:
+    case EQUIV:
       if (!mp->equiv)
 	mp->equiv = list_create(LIST_SINGLE);
       lp = mp->equiv;
       break;
-    case yINOTE:
+    case INOTE:
       if (!mp->inote)
 	mp->inote = list_create(LIST_SINGLE);
       lp = mp->inote;
       break;
-    case yISSLP:
+    case ISSLP:
       if (!mp->isslp)
 	mp->isslp = list_create(LIST_SINGLE);
       lp = mp->isslp;
       break;
-    case yNOTE:
+    case NOTE:
       if (!mp->note)
 	mp->note = list_create(LIST_SINGLE);
       lp = mp->note;
       break;
-    case yOID:
+    case OID:
       if (!mp->oid)
 	mp->oid = list_create(LIST_SINGLE);
       lp = mp->oid;
       break;
-    case yPROP:
+    case PROP:
       if (!mp->prop)
 	mp->prop = list_create(LIST_SINGLE);
       lp = mp->prop;
       break;
-    case yPL_COORD:
+    case PL_COORD:
       if (!mp->pleiades)
 	mp->pleiades = list_create(LIST_SINGLE);
       lp = mp->pleiades;
       break;
 #if 0
-    case yREL:
+    case REL:
       lp = mp->rel;
       break;
 #endif
@@ -499,7 +500,7 @@ bld_meta_add(YYLTYPE l, struct entry *e, struct meta *mp, int tok, const char *n
 }
 
 void
-bld_note(YYLTYPE l, struct entry *e, struct meta *curr_meta, unsigned char *text)
+cbd_bld_note(YYLTYPE l, struct entry *e, struct meta *curr_meta, unsigned char *text)
 {
   struct tagl *tlp = memo_new(e->owner->taglmem);
   tlp->l = l;
@@ -511,7 +512,7 @@ bld_note(YYLTYPE l, struct entry *e, struct meta *curr_meta, unsigned char *text
 }
 
 void
-bld_notel(YYLTYPE l, struct entry *e, struct meta *curr_meta, const char *lang, unsigned char *text)
+cbd_bld_notel(YYLTYPE l, struct entry *e, struct meta *curr_meta, const char *lang, unsigned char *text)
 {
   struct i18n *i18p = memo_new(e->owner->i18nmem);
   struct tagl *tp = list_last(curr_meta->note);
@@ -522,7 +523,7 @@ bld_notel(YYLTYPE l, struct entry *e, struct meta *curr_meta, const char *lang, 
 }
 
 struct parts *
-bld_parts(YYLTYPE l, struct entry *e)
+cbd_bld_parts(YYLTYPE l, struct entry *e)
 {
   struct parts *pp = memo_new(e->owner->partsmem);
   if (!e->parts)
@@ -534,7 +535,7 @@ bld_parts(YYLTYPE l, struct entry *e)
 }
 
 struct pleiades *
-bld_pl_id(YYLTYPE l, struct entry *e, unsigned char *id)
+cbd_bld_pl_id(YYLTYPE l, struct entry *e, unsigned char *id)
 {
   struct pleiades *p = memo_new(e->owner->pleiadesmem);
   p->l_id = l;
@@ -544,7 +545,7 @@ bld_pl_id(YYLTYPE l, struct entry *e, unsigned char *id)
 }
 
 void
-bld_pl_coord(YYLTYPE l, struct pleiades *p, unsigned char *coord)
+cbd_bld_pl_coord(YYLTYPE l, struct pleiades *p, unsigned char *coord)
 {
   p->l_coord = l;
   cmts(p->l_coord.user);
@@ -552,7 +553,7 @@ bld_pl_coord(YYLTYPE l, struct pleiades *p, unsigned char *coord)
 }
 
 void
-bld_pl_alias(YYLTYPE l, struct pleiades *p, const char *lang, unsigned char *alias)
+cbd_bld_pl_alias(YYLTYPE l, struct pleiades *p, const char *lang, unsigned char *alias)
 {
   struct loctok *ltp = memo_new(curr_cbd->loctokmem);
   if (!p->pl_aliases)
@@ -565,7 +566,7 @@ bld_pl_alias(YYLTYPE l, struct pleiades *p, const char *lang, unsigned char *ali
 }
 
 void
-bld_props(struct cbd *c, char *text)
+cbd_bld_props(struct cbd *c, char *text)
 {
   if (!c->propss)
     c->propss = list_create(LIST_SINGLE);
@@ -573,7 +574,7 @@ bld_props(struct cbd *c, char *text)
 }
 
 void
-bld_reldef(struct cbd *c, char *text)
+cbd_bld_reldef(struct cbd *c, char *text)
 {
   if (!c->reldefs)
     c->reldefs = list_create(LIST_SINGLE);
@@ -581,7 +582,7 @@ bld_reldef(struct cbd *c, char *text)
 }
 
 struct sense *
-bld_sense(YYLTYPE l, struct entry *e)
+cbd_bld_sense(YYLTYPE l, struct entry *e)
 {
   struct sense *sp = memo_new(e->owner->sensesmem);
   sp->l = l;
@@ -596,7 +597,7 @@ bld_sense(YYLTYPE l, struct entry *e)
 }
 
 struct sense *
-bld_sensel(YYLTYPE l, struct entry *e)
+cbd_bld_sensel(YYLTYPE l, struct entry *e)
 {
   struct sense *sp = memo_new(e->owner->sensesmem);
   struct sense *curr_sense = list_last(e->senses);
@@ -607,16 +608,16 @@ bld_sensel(YYLTYPE l, struct entry *e)
 }
 
 void
-bld_stem(YYLTYPE l, struct entry *e, unsigned char *stem)
+cbd_bld_stem(YYLTYPE l, struct entry *e, unsigned char *stem)
 {
   if (!e->stems)
     e->stems = list_create(LIST_SINGLE);
   
-  list_add(e->stems, bld_loctok(&l,e,stem));
+  list_add(e->stems, cbd_bld_loctok(&l,e,stem));
 }
 
 struct tag *
-bld_tag(YYLTYPE l, struct entry *e, const char *name, unsigned char *val)
+cbd_bld_tag(YYLTYPE l, struct entry *e, const char *name, unsigned char *val)
 {
   struct tag *tp;
   tp = memo_new(e->owner->tagmem);

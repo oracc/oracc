@@ -1,6 +1,6 @@
 %option prefix="cbd"
 %option outfile="cbd-l.c"
-%option never-interactive noyywrap yylineno
+%option never-interactive noyywrap yylineno nounput
 %{
 
 #define CBDLTYPE_IS_DECLARED 1
@@ -10,7 +10,6 @@
 #include <iome.h>
 #include "cbd.h"
 #include "cbd.tab.h"
-/*#include "rnvcbd.h"*/
 #include "pool.h"
 #define YY_NO_UNISTD_H
 
@@ -29,29 +28,32 @@
 static int after_s_entsns = 0;
 static int after_s_gw = 0;
 static int after_s_pos = 0;
-/*static int after_s_lang = 0;*/
 static int after_s_renmrg = 0;
-static int yycolumn = 0;
 extern char *efile;
+
+static int base_state = BASE_PRI;
+static int base_tok(void);
 
 int bang, star;
 extern List *cmt_queue;
 
 static struct cbdtag *ctp;
 
+#if 0
+static int after_s_lang = 0;
+static int yycolumn = 0;
 static void baseco(const char *type);
 static void basesc(const char *type);
+static char *b_alt_tok = NULL;
+static void alt_wrapup(int clean);
+static void clean_alt_paren(void);
+#endif
+
+static int set_rws(void);
 static int set_ctp(void);
 
 static int tg_set_flags(char *f);
 
-#if 0
-static int tg_validate(int retval);
-#endif
-
-static char *b_alt_tok = NULL;
-static void alt_wrapup(int clean);
-static void clean_alt_paren(void);
 static char *unspace(char*s);
 static void cbd_user_action(void);
 #define mtch(x) fprintf(stderr,"matched %s",(x))
@@ -59,17 +61,8 @@ static void cbd_user_action(void);
 #define YY_USER_ACTION cbd_user_action();
 
 int ylntrace = 0;
-extern int flextrace;
 int mystate = 0;
 #define ss(arg) (mystate=arg)
-
-char *ssnames[] = {
-"0", "s_allow", "s_b", "s_bp", "s_b",
-"s_cf", "s_gw", "s_pos", "s_spos",
-"s_f", "s_s", "s_sw",
-"s_proj", "s_lang", "s_text", "s_word", "s_entsns", "s_why",
-"s_comment", "s_elang", "s_oid", "s_flush", "s_incl", 
-};
 
 #define MAX_INCLUDE_DEPTH 10
 struct bufstack
@@ -91,23 +84,61 @@ YY_BUFFER_STATE bp;
 #else
 #define xreturn(x) return(tg_validate(x))
 #endif
+
+char *ssnames[] = {
+"0",
+"s_b",
+"s_cf",
+"s_f",
+"s_flag",
+"s_flush",
+"s_gw",
+"s_incl",
+"s_pos",
+"s_sol",
+"s_s",
+"s_lang",
+"s_text",
+"s_word"
+};
+
 %}
 
-%x s_sol s_flag
-%x s_b s_bp s_ba
-%x s_cf s_gw s_pos s_spos
-%x s_f s_incl s_flush
+%x s_b
+%x s_cf
+%x s_f
+%x s_flag
+%x s_flush
+%x s_gw
+%x s_incl
+%x s_pos
+%x s_sol
+%x s_s
+%x s_text
+%x s_word
 
 %%
-^[-+>]+		{ BEGIN ss(s_sol); 	 return(yytext[0]); }
+
+	/* OUTER LEVEL TOKENIZER */
+
+^[-+]		{ BEGIN ss(s_sol); 	 return(yytext[0]); }
+^>>[ \t]*      	{ after_s_gw=s_pos; after_s_pos=0; BEGIN ss(s_cf); return(RENAME); }
+^>[ \t]*       	{ after_s_gw=s_pos; after_s_pos=0; BEGIN ss(s_cf); return(MERGE); }
+^@end[ \t]+entry[ \t]*\n  { BEGIN ss(0); return(END_ENTRY); }
+^@end[ \t]+senses[ \t]*\n { BEGIN ss(0); return(END_SENSES); }
 ^@[a-z]+	{ if (set_ctp()) xreturn(ctp->tok); }
 ^@[a-z]+/[!*]+	{ if (set_ctp()) BEGIN ss(s_flag); }
 <s_flag>[!*]+	{ tg_set_flags(yytext) ; xreturn(ctp->tok); }
-^@[A-Z]+	{ if (set_ctp()) xreturn(ctp->tok); } 
-<s_sol>@[a-z]+	{ if (set_ctp()) xreturn(ctp->tok); }
-[^ \t\n]+  	{ ksdup(yytext); xreturn(TEXTSPEC); }
-[ \t]+		/* empty */
-\n		{ yycolumn=1; if (ctp && ctp->eol_sp) xreturn(TEXTSPEC); else xreturn(EOL); }
+^@[A-Z]+	{ if (set_rws()) xreturn(DCF); } 
+<s_sol>@[a-z]+	{ BEGIN ss(0); if (set_ctp()) xreturn(ctp->tok); }
+[ \t]+       	{ /* empty */ }
+\n		{ BEGIN ss(0); }
+
+<s_word>[^ \t\n]+ { BEGIN ss(0); ksdup(yytext); xreturn(WORDSPEC); }
+<s_word>[ \t]+	  { /* empty */ }
+<s_text>[^\n]+    { BEGIN ss(0); ksdup(yytext); xreturn(TEXTSPEC); }
+
+	/* CF-GW-POS TOKENIZER */
 
 <s_cf>[^\[\] \t\n][^\[\]\n]*[^\[\] \t\n]        { ytdup(); xreturn(CF); }
 <s_cf>[^\[\] \t\n]         { ytdup(); xreturn(CF); }
@@ -117,26 +148,17 @@ YY_BUFFER_STATE bp;
 <s_pos>[^ \t\n]+[ \t]*/\n  { BEGIN ss(0); ytdup(); xreturn(POS); }
 <s_pos>[^ \t\n]+[ \t]*	   { BEGIN ss(after_s_pos); ytdup(); xreturn(POS); }
 <s_pos>[ \t]*/\n	   { BEGIN ss(0); }
+<s_gw>\n		   { BEGIN ss(0); xreturn(EOL); }
+<s_cf,s_gw,s_pos>[ \t]+	   { /* empty */ }
 
-^@bases[ \t]*";"[ \t]*	  { BEGIN ss(s_bp); basesc("initial"); xreturn(BASES); }
-^@bases[ \t]*	 	  { BEGIN ss(s_bp); xreturn(BASES); }
-<s_bp>%[^ \t\n]+[ \t]*	  { ytdupn(1); xreturn(LANGSPEC); }
-<s_bp>[ \t]*";"[ \t]*/\n	  { BEGIN ss(0); yycolumn = 1; basesc("final"); }
-<s_bp>\;[ \t]*\;[ \t]*     { BEGIN ss(s_bp); basesc("double"); }
-<s_bp>\;[ \t]+    	  { BEGIN ss(s_bp); }
-<s_bp>[^; \t\n]+[ \t]*/"(" { BEGIN ss(s_ba); ytdup(); xreturn(BASE_PRI); }
-<s_bp>[^; \t\n]+[ \t]* 	  { ytdup(); xreturn(BASE_PRI); }
-<s_ba>[ \t]*";"[ \t]*/\n	  { BEGIN ss(0); yycolumn = 1; basesc("final"); if (b_alt_tok) { alt_wrapup(1); xreturn(BASE_ALT); } }
-<s_ba>,[ \t]*,		  { baseco("double"); unput(','); }
-<s_ba>,[ \t]*		  { if (b_alt_tok) { alt_wrapup(0); xreturn(BASE_ALT); } }
-<s_ba>"("[ \t]*,		  { baseco("initial"); unput('('); }
-<s_ba>"("[^;, \t\n]+[ \t]* { b_alt_tok = strdup(yytext+1); }
-<s_ba>[^;, \t\n]+[ \t]* 	  { b_alt_tok = strdup(yytext); }
-<s_ba>\;[ \t]*\;[ \t]*     { BEGIN ss(s_bp); basesc("double"); if (b_alt_tok) { alt_wrapup(1); xreturn(BASE_ALT); } }
-<s_ba>\;[ \t]*    	  { BEGIN ss(s_bp); if (b_alt_tok) { alt_wrapup(1); xreturn(BASE_ALT); } }
+	/* BASES TOKENIZER */
 
-^@form[ \t]+	  	  { BEGIN ss(s_f); xreturn(FORM); }
-^@form![ \t]+	  	  { BEGIN ss(s_f); bang = 1; xreturn(FORM); }
+<s_b>[^ \t\n]+	{ return base_tok(); }
+<s_b>\n/"@"	{ BEGIN ss(0); base_state = BASE_PRI; }
+<s_b>[ \t]+	   	  { /* empty */ }
+
+	/* FORM TOKENIZER */
+
 <s_f>%[^ \t\n]+[ \t]*	  { ytdupn(1); xreturn(FLANG); }
 <s_f>@[^ \t\n]+[ \t]*	  { ytdupn(1); xreturn(FRWS); }
 <s_f>\/[^ \t\n]+[ \t]*	  { ytdupn(1); xreturn(FBASE); }
@@ -146,6 +168,18 @@ YY_BUFFER_STATE bp;
 <s_f>#[^ \t\n]+[ \t]*	  { ytdupn(1); xreturn(FMORPH); }
 <s_f>\*[^ \t\n]+[ \t]*	  { ytdupn(1); xreturn(FSTEM); }
 <s_f>[^+$#*/\n][^ \t\n]*[ \t]* { ytdup(); xreturn(FFORM); }
+<s_f>\n/"@"		  { BEGIN ss(0); xreturn(END_FORM); }
+<s_f>[ \t]+	   	  { /* empty */ }
+
+	/* SENSE TOKENIZER */
+
+<s_s>[\%.#][^ \t\n]+[ \t]* { ytdupn(1); return(yytext[0]); }
+<s_s>\[[^ \t\n\]]+\][ \t]* { ytdupn(1); return(yytext[0]); }
+<s_s>\[[^ \t\n]+[ \t]*     { ytdupn(1); return(yytext[0]); } /* error missing ']' */
+<s_s>[^ \t\n]+[ \t]*       { BEGIN ss(s_text); ytdup(); return(POS); }
+<s_s>[ \t]+	   	  { /* empty */ }
+
+	/* INCLUDES TOKENIZER */
 
 ^@include[ \t]*		  { BEGIN ss(s_incl); }
 <s_incl>[^ \t\n]+   	  { includeo(yytext); }
@@ -160,20 +194,46 @@ set_after(void)
   switch (ctp->tok)
     {
       case ENTRY:
-        after_s_renmrg = after_s_entsns = s_cf; after_s_gw = s_pos; after_s_pos = 0;
+	after_s_renmrg = after_s_entsns = s_cf;
+	after_s_gw = s_pos;
+	after_s_pos = 0;
         break;
       case SENSE:
       case SENSEL:
-	after_s_renmrg = after_s_entsns = after_s_gw = s_spos;
+	/*after_s_renmrg = after_s_entsns = after_s_gw = s_spos;*/
 	break;
       case ALIAS:
 	after_s_pos = 0;
         break;
       case PARTS:
-	after_s_pos = 0;
+	after_s_pos = s_cf;
         break;
       default:
         break;
+    }
+}
+
+static int
+set_rws(void)
+{
+  struct cbdrws *rws = NULL;
+  const char *atname = yytext;
+  while (*atname && '@' != *atname)
+    ++atname;
+  if (*atname)
+    ++atname;
+  rws = cbdrws(atname,strlen(atname));
+  if (rws)
+    {
+      BEGIN ss(s_text);
+      yylval.text = (char*)pool_copy((ucp)rws->lang, curr_cbd->pool);
+      return 1;
+    }
+  else
+    {
+      BEGIN ss(s_flush); yylloc.file=efile; yylloc.line=yylineno;
+      vyyerror(yylloc,"unknown RWS %s\n",atname, NULL);
+      return 0;
     }
 }
 
@@ -194,6 +254,10 @@ set_ctp(void)
     }
   else
     {
+      if (!strcmp(atname, "end"))
+	{
+	  
+	}
       BEGIN ss(ctp->ss); set_after();
     }
   return 1;
@@ -214,6 +278,47 @@ tg_set_flags(char *f)
   return ctp != NULL;
 }
 
+static int
+base_tok(void)
+{
+  int ret_state = BASE_PRI;
+
+  char *t = yytext;
+  char *e = yytext + strlen(yytext);
+
+  if ('(' == *t)
+    {
+      ++t;
+      ret_state = BASE_ALT;
+      if (';' == e[-1])
+	{
+	  if (')' == e[-2])
+	    e[-2] = '\0';
+	  else
+	    e[-1] = '\0';
+	  base_state = BASE_PRI;
+	}
+      else
+	{
+	  if (',' == e[-1])
+	    e[-1] = '\0';	      
+	  base_state = BASE_ALT;
+	}
+       }
+  else if ('%' == *t)
+    {
+      ret_state = LANGSPEC;
+      ++t;
+    }
+  else
+    {
+      ret_state = base_state;
+    }
+  ytdup();
+  return ret_state;
+}
+
+#if 0
 void
 alt_wrapup(int clean)
 {
@@ -245,7 +350,8 @@ clean_alt_paren(void)
 {
   b_alt_tok[strlen(b_alt_tok)-1] = '\0';
 }
-
+#endif
+       
 static char *
 unspace(char*s)
 {
@@ -260,11 +366,11 @@ unspace(char*s)
 static void
 cbd_user_action(void)
 {
-  if (flextrace)
+  if (cbd_flex_debug)
     {
       if (cmt_queue)
 	fprintf(stderr, "%s:%d: cmt_queue has %d items\n", efile, yylineno, (int)list_len(cmt_queue));
-      fprintf(stderr, "%s:%d: flextrace: state=%s tok=::%s::\n", efile, yylineno, ssnames[mystate], yytext);
+      fprintf(stderr, "%s:%d: cbd-flex: state=%s tok=::%s::\n", efile, yylineno, ssnames[mystate], yytext);
     }
   yylloc.file = efile;
   yylloc.line = yylineno;
@@ -325,7 +431,7 @@ includeo(char *file)
 
   yylineno = 1;
 
-  if (flextrace) { fprintf(stderr, "%s:%d: include switching input to new file\n", efile, yylineno); }
+  if (cbd_flex_debug) { fprintf(stderr, "%s:%d: include switching input to new file\n", efile, yylineno); }
   yy_switch_to_buffer(yy_create_buffer( yyin, YY_BUF_SIZE ) );
   BEGIN(ss(INITIAL));
 }
@@ -342,7 +448,7 @@ includec(void)
       efile = include_stack[include_stack_ptr].file;
       yylineno = include_stack[include_stack_ptr].line;
       yyin = include_stack[include_stack_ptr].fp;
-      if (flextrace)
+      if (cbd_flex_debug)
         {
           fprintf(stderr, "%s:%d: include of %s complete\n", efile, yylineno,
         	  	           		             include_stack[include_stack_ptr+1].file);

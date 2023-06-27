@@ -24,6 +24,8 @@
 #include "rnvxml.h"
 #endif
 
+extern int cbd_flex_debug, cbddebug;
+
 static const char *default_input_method = "tg1";
 
 extern Iome *iomethod(const char *str, size_t len);
@@ -41,7 +43,7 @@ const char *efile = NULL;
 Hash *cbds = NULL;
 
 int check = 0;
-int flextrace = 0;
+int trace_mode = 0;
 int rnvtrace = 0;
 int keepgoing = 0;
 int input_validation = 0;
@@ -216,7 +218,7 @@ io_run(void)
       rnvtgi_init(&cbd_tg1_data, input_method->name);
 #endif
       cbd_l_init(&input_io);
-      curr_cbd = bld_cbd();
+      curr_cbd = cbd_bld_cbd();
       phase = "syn";
       parse_return = cbdparse();
       /*rnvtgi_term();*/
@@ -304,14 +306,20 @@ io_run(void)
 int
 main(int argc, char **argv)
 {
+  extern void cbdset_debug(int);
+  
   status = 0;
   options(argc,argv,"A:I:O:i:o:ckrtTv");
+
   if (status)
     {
       fprintf(stderr, "cx: quitting after errors in option processing\n");
       exit(1);
     }
 
+  cbd_flex_debug = cbddebug = trace_mode;
+  cbdset_debug(trace_mode);
+  
   cx_init();
 
   io_init();
@@ -401,13 +409,13 @@ int opts(int och,char *oarg)
       sigs = 1;
       break;
     case 't':
-      flextrace = 1;
+      trace_mode = 1;
       break;
     case 'T':
       rnvtrace = 1;
       break;
     case 'v':
-      verbose = 1;
+      /* validate */
       break;
     case 'x':
       break;

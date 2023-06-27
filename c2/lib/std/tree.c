@@ -19,9 +19,12 @@ tree_init(void)
 void
 tree_term(Tree *tp)
 {
-  memo_term(tp->nodemem);
-  pool_term(tp->pool);
-  free(tp);
+  if (tp)
+    {
+      memo_term(tp->nodemem);
+      pool_term(tp->pool);
+      free(tp);
+    }
 }
 
 Node *
