@@ -6,6 +6,7 @@
 
 #include "list.h"
 
+#if 0
 #define yPL_ID 258
 #define yPL_COORD 259
 #define yPL_ALIAS 260
@@ -17,6 +18,7 @@
 #define yINOTE 266
 #define yISSLP 267
 #define yEQUIV 268
+#endif
 
 #define YYLTYPE_IS_DECLARED 1
 

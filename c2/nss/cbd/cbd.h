@@ -10,6 +10,8 @@
 /* Common grammar header file for cbd.l and cbd.y */
 #include "cbdyacc.h"
 
+#include "cbd.tab.h"
+
 #undef ucc
 #define ccp const char *
 #define ucc unsigned const char *
@@ -17,9 +19,6 @@
 #ifndef ucp
 #define ucp unsigned char *
 #endif
-
-typedef void (*iterator_fnc)(void*);
-extern Hash *cbds;
 
 struct cbd {
   Mloc l;
@@ -72,7 +71,7 @@ struct i18n {
 struct loctok {
   Mloc l;
   unsigned char *tok;
-  unsigned char *lang;
+  const char *lang;
 };
 
 struct cgp {
@@ -98,8 +97,8 @@ struct edit {
 struct entry {
   Mloc l;
   struct cgp *cgp;
-  unsigned const char *eid;
-  unsigned const char *lang;
+  const char *eid;
+  const char *lang;
   Hash *b_pri;
   Hash *b_alt;
   Hash *b_sig;
@@ -238,21 +237,12 @@ struct cbdtag {
   int ss;
 };
 
-extern int check;
-extern int entries;
-extern int keepgoing;
-extern int sigs;
+extern const char *errmsg_fn;
 
 extern struct cbd *curr_cbd;
 extern struct entry *curr_entry;
 extern struct alias *curr_alias;
 extern struct parts *curr_parts;
-
-extern const char *errmsg_fn;
-
-extern void o_tg2(struct cbd*c);
-extern void o_xc2(struct cbd*c);
-extern void validator(struct cbd*c);
 
 extern struct cbdpos *cbdpos(const char *str, size_t len);
 extern struct cbdrws *cbdrws(const char *str, size_t len);

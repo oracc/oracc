@@ -26,8 +26,8 @@ AM_CPPFLAGS=\
 	-I../../nss/gdl \
 	-I../../nss/cbd
 
-gx_SOURCES=common.c gx.c
+gx_SOURCES=common.c gx.c o_glo.c o_xml.c validate.c iterator.c
 
 gx_LDADD = $(xLDADD)
 
-gx_DEPENDENCIES = $(gx_LDADD)
+gx_DEPENDENCIES = $(gx_LDADD) o_glo_fncs.c o_xml_fncs.c validate_fncs.c

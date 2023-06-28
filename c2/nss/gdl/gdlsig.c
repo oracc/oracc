@@ -8,6 +8,18 @@ int deep_sig = 0;
 void gdlsig_descend(Node *np, List *lp);
 const char *gdlsig_sep(const char *sep);
 
+const char *
+gdlsig_str(Mloc *mp, unsigned char *atf, int frag_ok, int deep)
+{
+  Tree *tp = NULL;
+  gdlparse_reset();
+  tp = gdlparse_string(mp, (char*)atf);
+  if (tp)
+    return gdlsig(tp);
+  else
+    return NULL;
+}
+
 void
 gdlsig_addoid(Node *np, List *lp)
 {

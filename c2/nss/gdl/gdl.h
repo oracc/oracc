@@ -122,4 +122,6 @@ extern const char *gdlsig(Tree*tp);
 extern void gdlsig_node(Node *np, void *user);
 extern void gdl_update_state(Node *np, gdlstate_t gs_tok);
 
+extern const char *gdlsig_str(Mloc *mp, unsigned char *atf, int frag_ok, int deep);
+
 #endif /*GDL_H_*/

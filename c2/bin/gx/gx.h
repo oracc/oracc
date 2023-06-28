@@ -3,6 +3,25 @@
 
 #include <cbd.h>
 
+typedef void (*iterator_fnc)(void*);
+extern Hash *cbds;
+
+extern int check;
+extern int entries;
+extern int keepgoing;
+extern int sigs;
+
+extern int lnum;
+extern int verbose;
+
+extern const char *file;
+
+extern FILE *f_xml;
+
+extern void o_tg2(struct cbd*c);
+extern void o_xc2(struct cbd*c);
+extern void validator(struct cbd*c);
+
 extern void common_init(void);
 extern void common_term(void);
 extern void untab(unsigned char *s);

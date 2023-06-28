@@ -47,6 +47,7 @@ int trace_mode = 0;
 int rnvtrace = 0;
 int keepgoing = 0;
 int input_validation = 0;
+int lnum = 0;
 int math_mode = 0;
 int output_validation = 0;
 int parser_status = 0;
@@ -57,7 +58,7 @@ int stdin_output = 0;
 int verbose = 0;
 
 const char *file = NULL;
-FILE *f_log;
+FILE *f_log, *f_xml;
 int no_pi = 0;
 int do_cuneify = 0;
 int use_unicode = 1;
@@ -89,7 +90,7 @@ gx_init(void)
   cbd_pool = pool_init();
   tree_init();
   mesg_init();
-  gdl_init();
+  gdlparse_init();
   lng_init();
   curr_lang_ctxt = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
   cbds = hash_create(1);
@@ -147,7 +148,7 @@ static void
 gx_term(void)
 {
   lang_term();
-  gdl_term();
+  gdlparse_term();
   mesg_term();
   pool_term(cbd_pool);
   tree_term(cbd_tree);
