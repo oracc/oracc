@@ -100,6 +100,7 @@ char *ssnames[] = {
 "s_lang",
 "s_text",
 "s_word"
+"s_allow"
 };
 
 %}
@@ -116,7 +117,7 @@ char *ssnames[] = {
 %x s_s
 %x s_text
 %x s_word
-
+%x s_allow
 %%
 
 	/* OUTER LEVEL TOKENIZER */
@@ -150,6 +151,13 @@ char *ssnames[] = {
 <s_pos>[ \t]*/\n	   { BEGIN ss(0); }
 <s_gw>\n		   { BEGIN ss(0); xreturn(EOL); }
 <s_cf,s_gw,s_pos>[ \t]+	   { /* empty */ }
+
+	/* ALLOW TOKENIZER */
+
+<s_allow>=	    { xreturn(yytext[0]); }
+<s_allow>[^ \t\n=]+ { ksdup(yytext); xreturn(WORDSPEC); }
+<s_allow>\n	    { BEGIN ss(0); }
+<s_allow>[ \t]+	    { /* empty */ }
 
 	/* BASES TOKENIZER */
 

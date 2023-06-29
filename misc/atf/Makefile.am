@@ -11,7 +11,7 @@ bin_SCRIPTS = atf2ascii.plx atfdroppq.plx atfid.plx atfsignnames.plx	\
 	atfxhash.plx cleanpns.plx diffhack.plx				\
 	dollar-fixtailmisaligns.plx fixdoll.plx lemerr.plx		\
 	lemerr2.plx mksubcorpora.sh remove-bad.sh repo-status.plx	\
-	repo-status.sh sort-by-size.plx doll-loose.plx			\
+	repo-status.sh sort-by-size.plx 			\
 	doll-unloose.plx doll-unstrict.plx ur3uniq.plx			\
 	invert-lem-dump.plx revert-lem-dump.plx prune-lists.plx		\
 	atfsuxlem.plx atflemfix.plx mk-atf-reptab.plx			\

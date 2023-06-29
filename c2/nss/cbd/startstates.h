@@ -10,3 +10,4 @@
 #define s_s 10
 #define s_text 11
 #define s_word 12
+#define s_allow 13

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype128.h>
+#include <hash.h>
 #include <mesg.h>
 #include <lng.h>
 #include "cbd.h"
@@ -12,6 +13,8 @@ static int one = 1;
 static List *curr_base_list = NULL;
 struct parts *curr_parts;
 List *cmt_queue = NULL;
+
+Hash *cbds;
 
 #define cmts(l) (l) = cmt_queue , cmt_queue = NULL;
 
@@ -68,7 +71,7 @@ cbd_bld_bases_pri(YYLTYPE l, struct entry *e, unsigned char *lang, unsigned char
   if (p && strlen((ccp)p))
     {
       struct loctok *ltp = cbd_bld_loctok(&l,e,p);
-      ltp->lang = lang;
+      ltp->lang = (const char*)lang;
       if (!e->bases)
 	e->bases = list_create(LIST_SINGLE);
       list_add(e->bases, (curr_base_list = list_create(LIST_SINGLE)));
@@ -196,7 +199,7 @@ cbd_bld_dcf(YYLTYPE l, struct entry *e, unsigned char *dcf, unsigned char *dcfar
     {
       struct cbdrws *cp = cbdrws(tp->name, strlen(tp->name));
       if (cp)
-	e->lang = (const unsigned char *)cp->lang;
+	e->lang = (const char *)cp->lang;
     }
   list_add(e->dcfs, dcf);
   hash_add(e->hdcfs, dcf, tp);
@@ -304,7 +307,7 @@ cbd_bld_entry(YYLTYPE l, struct cbd* c)
   e->forms = list_create(LIST_SINGLE);
   e->senses = list_create(LIST_SINGLE);
   e->owner = c;
-  e->lang = c->lang;
+  e->lang = (const char *)c->lang;
   list_add(c->entries, e);
   e->meta = memo_new(c->metamem);
   e->l = l;
@@ -379,7 +382,7 @@ cbd_bld_form_setup(struct entry *e, Form* f2p)
 {
   f2p->project = e->owner->project;
   if (!f2p->lang)
-    f2p->lang = e->lang;
+    f2p->lang = (ucp)e->lang;
   f2p->core = langcore_of((ccp)f2p->lang);
   f2p->cf = e->cgp->cf;
   f2p->gw = e->cgp->gw;
@@ -561,7 +564,7 @@ cbd_bld_pl_alias(YYLTYPE l, struct pleiades *p, const char *lang, unsigned char 
   list_add(p->pl_aliases, ltp);
   ltp->l = l;
   cmts(ltp->l.user);
-  ltp->lang = (ucp)lang;
+  ltp->lang = (ccp)lang;
   ltp->tok = alias;
 }
 

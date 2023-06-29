@@ -19,7 +19,7 @@ inote, INOTE, 0, s_text
 parts, PARTS, 0, s_cf
 bff,   BFF, 0, 0
 alias, ALIAS, 0, s_cf
-allow, ALLOW, 0, s_word
+allow, ALLOW, 0, s_allow
 note,  NOTE, 0, s_text
 bib,   BIB, 0, s_text
 equiv, EQUIV, 0, s_text

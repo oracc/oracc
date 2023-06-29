@@ -239,6 +239,7 @@ struct cbdtag {
 
 extern const char *errmsg_fn;
 
+extern Hash *cbds;
 extern struct cbd *curr_cbd;
 extern struct entry *curr_entry;
 extern struct alias *curr_alias;

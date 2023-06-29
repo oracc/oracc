@@ -90,6 +90,7 @@ gx_init(void)
   cbd_pool = pool_init();
   tree_init();
   mesg_init();
+  gvl_setup("ogsl","ogsl");
   gdlparse_init();
   lng_init();
   curr_lang_ctxt = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
@@ -232,6 +233,10 @@ io_run(void)
 	      exit(1);
 	    }
 	}
+
+      if (check)
+	validator(curr_cbd);
+
       cbd_l_term();
       break;
 #if 0
@@ -308,6 +313,7 @@ int
 main(int argc, char **argv)
 {
   extern void cbdset_debug(int);
+  extern int gdl_flex_debug, gdldebug;
   
   status = 0;
   options(argc,argv,"A:I:O:i:o:ckrtTv");
@@ -318,7 +324,7 @@ main(int argc, char **argv)
       exit(1);
     }
 
-  cbd_flex_debug = cbddebug = trace_mode;
+  gdl_flex_debug = gdldebug = cbd_flex_debug = cbddebug = trace_mode;
   cbdset_debug(trace_mode);
   
   gx_init();
@@ -416,7 +422,7 @@ int opts(int och,char *oarg)
       rnvtrace = 1;
       break;
     case 'v':
-      /* validate */
+      verbose = 1;
       break;
     case 'x':
       break;

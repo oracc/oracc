@@ -911,8 +911,11 @@ gvl_validate(unsigned const char *g)
 			}
 		      else if ('n' == *lg)
 			{
-			  char *oneify = strdup((ccp)lg);
+			  char *oneify = strdup((ccp)lg), *oneify_orig;
+			  oneify_orig = oneify;
 			  *oneify = '1';
+			  if ('+' == oneify[1])
+			    oneify += 2; /* validate n+1(diš) via 1(diš) */
 			  if ((l = gvl_lookup((uccp)oneify)))
 			    {
 			      gp->oid = (ccp)l;
@@ -920,8 +923,8 @@ gvl_validate(unsigned const char *g)
 			    }
 			  else
 			    gp->mess = gvl_vmess("expected to validate %s via %s but %s doesn't exist", g, oneify, oneify);
-			  if (oneify)
-			    free(oneify);
+			  if (oneify_orig)
+			    free(oneify_orig);
 			}
 		      else
 			{

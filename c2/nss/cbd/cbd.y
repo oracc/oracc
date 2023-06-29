@@ -267,7 +267,7 @@ allows:	     allow
 	     | allows allow
 	;
 
-allow: 	     ALLOW BASE_PRI '=' BASE_PRI { cbd_bld_allow(@1,curr_entry,(ucp)$2,(ucp)$4); } 
+allow: 	     ALLOW WORDSPEC '=' WORDSPEC { cbd_bld_allow(@1,curr_entry,(ucp)$2,(ucp)$4); } 
 
 bases:	     atbases baselist
 
