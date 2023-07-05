@@ -132,6 +132,7 @@ while (<SIGS>) {
 	set_f($_);
 	next;
     }
+    my @sigs = ();
     my $sig = $_;
     if (/^\{(.*?)\}::/) {
 	$sig = $1;
@@ -145,60 +146,43 @@ while (<SIGS>) {
 	    m/(\@.*?\%.*?:)/;
 	    $sig .= $1;
 	}
+	push @sigs, $sig;
     } elsif (/\&\&/) {
-	# For COFs we only import the SIG once into the 
-	# lang of the head; tails which belong in NN
-	# need to be imported there by some other mechanism.
-	$sig =~ s/\&\&.*?\t/\t/;
+	# save the FORM
+	$sig =~ /:(.*?)=/;
+	my $form = $1;
+	@sigs = map { s/:=/:$form=/; $_ } split(/\&\&/, $sig);
+    } else {
+	push @sigs, $sig;
     }
 
-    next if $slice_lang !~ /-\d/ && script_glo($sig);
-    
-    my $matched = 1;
-
-    # remove script codes unless we've asked for a script
-    $sig =~ s/-[0-9][0-9][0-9]:/:/
-	unless $slice_lang && $slice_lang =~ /-\d\d\d$/;
-
-    foreach my $c (@constraints) {
-	if ($sig =~ /$$c[1]/) {
-	    $matched = ($$c[0] eq 'yes');
-	} else {
-	    $matched = ($$c[0] eq 'not');
-	}
-	if ($matched) {
-	    last if $$c[2] eq 'or';
-	} else {
-	    last unless $$c[2] eq 'or';
-	}
-    }
-
-    if ($matched) {
-	chomp;
-	my @f = split(/\t/,$_);
-	my $msig = $f[0];
-	if ($superlang) {
-	    $msig =~ s/\%.*?:/\%$superlang:/g;
-	}
-#	my $rank = $f[$f{'rank'}];
-#	my $freq = $f[$f{'freq'}];
-	my $refs = '';
-	if (defined $f{'inst'}) {
-	    $refs = $f[$f{'inst'}];
-	}
-	if ($refs) {
-	    if ($matches{$msig}) {
-		$matches{$msig} .= " $refs";
+    foreach my $s (@sigs) {
+	if (matches_slice($s)) {
+	    my @f = split(/\t/,$_);
+	    my $msig = $f[0];
+	    if ($superlang) {
+		$msig =~ s/\%.*?:/\%$superlang:/g;
+	    }
+	    #	my $rank = $f[$f{'rank'}];
+	    #	my $freq = $f[$f{'freq'}];
+	    my $refs = '';
+	    if (defined $f{'inst'}) {
+		$refs = $f[$f{'inst'}];
+	    }
+	    if ($refs) {
+		if ($matches{$msig}) {
+		    $matches{$msig} .= " $refs";
+		} else {
+		    $matches{$msig} = $refs;
+		}
 	    } else {
-		$matches{$msig} = $refs;
+		if ($all) {
+		    $matches{$msig} = '';
+		}
 	    }
-	} else {
-	    if ($all) {
-		$matches{$msig} = '';
-	    }
+	} elsif ($verbose) {
+	    warn "no match for $_\n";
 	}
-    } elsif ($verbose) {
-	warn "no match for $_\n";
     }
 }
 close SIGS;
@@ -289,6 +273,33 @@ make_constraint {
     } else {
 	die "sig-slicer.plx: type `$type' not handled\n";
     }
+}
+
+sub matches_slice {
+    my $sig = shift;
+    
+    return 0 if $slice_lang !~ /-\d/ && script_glo($sig);
+    
+    my $matched = 1;
+
+    # remove script codes unless we've asked for a script
+    $sig =~ s/-[0-9][0-9][0-9]:/:/
+	unless $slice_lang && $slice_lang =~ /-\d\d\d$/;
+    
+    foreach my $c (@constraints) {
+	if ($sig =~ /$$c[1]/) {
+	    $matched = ($$c[0] eq 'yes');
+	} else {
+	    $matched = ($$c[0] eq 'not');
+	}
+	if ($matched) {
+	    last if $$c[2] eq 'or';
+	} else {
+	    last unless $$c[2] eq 'or';
+	}
+    }
+    
+    return $matched;
 }
 
 sub

@@ -161,7 +161,6 @@ AC_CONFIG_FILES([Makefile
 	misc/emacs/Makefile
 	misc/epsd/Makefile
 	misc/epsd2/Makefile
-	misc/esp/Makefile
 	misc/esp2/Makefile
 	misc/est/Makefile
 	misc/fonts/Makefile
@@ -187,7 +186,6 @@ AC_CONFIG_FILES([Makefile
 	misc/ods/Makefile
 	misc/oid/Makefile
 	misc/ol/Makefile
-	misc/ood/Makefile
 	misc/oss2/Makefile
 	misc/otf/Makefile
 	misc/p3/Makefile
