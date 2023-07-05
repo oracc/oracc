@@ -14,7 +14,7 @@ static List *curr_base_list = NULL;
 struct parts *curr_parts;
 List *cmt_queue = NULL;
 
-Hash *cbds;
+Hash *cbds = NULL;
 
 #define cmts(l) (l) = cmt_queue , cmt_queue = NULL;
 

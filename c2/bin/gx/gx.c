@@ -40,7 +40,7 @@ Tree *cbd_tree = NULL;
 const char *errmsg_fn = NULL;
 const char *efile = NULL;
 
-Hash *cbds = NULL;
+/* Hash *cbds = NULL; */ /* defined in nss/cbd/cbdyacc.c */
 
 int check = 0;
 int trace_mode = 0;
