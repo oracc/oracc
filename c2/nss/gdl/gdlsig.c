@@ -12,12 +12,16 @@ const char *
 gdlsig_str(Mloc *mp, unsigned char *atf, int frag_ok, int deep)
 {
   Tree *tp = NULL;
+  int saved_deep = deep_sig;
+  const char *sig = NULL;
+  
+  deep_sig = deep;
   gdlparse_reset();
   tp = gdlparse_string(mp, (char*)atf);
   if (tp)
-    return gdlsig(tp);
-  else
-    return NULL;
+    sig = gdlsig(tp);
+  deep_sig = saved_deep; 
+  return sig;
 }
 
 void

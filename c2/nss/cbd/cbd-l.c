@@ -3042,23 +3042,43 @@ base_tok(void)
 	    e[-1] = '\0';
 	  base_state = BASE_PRI;
 	}
-      else
+      else if (',' == e[-1])
 	{
-	  if (',' == e[-1])
-	    e[-1] = '\0';	      
+	  e[-1] = '\0';
 	  base_state = BASE_ALT;
 	}
-       }
+      else if (')' == e[-1])
+	{
+	  e[-1] = '\0';
+	  base_state = BASE_PRI;
+	}
+    }
   else if ('%' == *t)
     {
       ret_state = LANGSPEC;
       ++t;
     }
+  else if (';' == e[-1])
+    {
+      if (')' == e[-2] && BASE_ALT == base_state)
+	{
+	  ret_state = BASE_ALT;
+	  e[-2] = '\0';
+	}
+      else
+	e[-1] = '\0';
+      base_state = BASE_PRI;
+    }
+  else if (',' == e[-1])
+    {
+      e[-1] = '\0';
+      ret_state = base_state = BASE_ALT;
+    }
   else
     {
       ret_state = base_state;
     }
-  ytdup();
+  yylval.text = (char*)pool_copy((ucp)t,curr_cbd->pool);
   return ret_state;
 }
 
