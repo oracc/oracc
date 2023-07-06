@@ -140,6 +140,7 @@ my @global_cbd = ();
 my %entries = ();
 my %entries_nopos = ();
 my %entries_cfmng = ();
+my %gdlsigs = ();
 my $in_entry = 0;
 my $init_acd = 0;
 my $is_compound = 0;
@@ -574,6 +575,26 @@ sub v_acd_ok {
     }
 }
 
+sub gdlsigs {
+    my %s = @_;
+
+    foreach my $core (keys %s) {
+	1 while $core =~ s/\{[^\}]+?\{.*?\}.*?\}//; # remove { ... {...} ... } first
+	1 while $core =~ s/\{[^}]+\}//;
+	++$s{$core};
+    }
+
+    fopen(S,">$$.gsig") || die "$.: unable to write to $$.gsig\n";
+    print join("\n", keys %s), "\n";
+    fclose(S);
+
+    my @s = `gdlx -d -s -f $$.gsig`; chomp @s;
+    foreach my $s (@s) {
+	my($gdl,$sig) = split(/\t/, $s);
+	$gdlsigs{$gdl} = $sig;
+    }
+}
+
 sub v_bases {
     my($tag,$arg) = @_;
 
@@ -611,6 +632,8 @@ sub v_bases {
     my $pri = '';
     my %vbases = (); # this one is just for validation of the current @bases field
     my $pricode = 0;
+
+    my %gdlsigs_needed = ();
     
     foreach my $b (@bits) {
 #	warn "base bit :$b:\n";
@@ -643,6 +666,7 @@ sub v_bases {
 		    $pri = $alt = '';
 		} else {
 		    ++$bases{$pri};
+		    ++$gdlsigs_needed{$pri} unless $gdlsigs{$pri};
 		    $bases{$pri,'*'} = $stem
 			if $stem;
 		    $bases{$pri,'%'} = $blang;
@@ -668,6 +692,7 @@ sub v_bases {
 				# all alternates for this primary
 				++${$vbases{"$pri#alt"}}{$a};
 				$bases{"#$a"} = $pri;
+				++$gdlsigs_needed{$a} unless $gdlsigs{$a};
 				# all alternates in this @bases
 				if ($vbases{'#alt'} && ${$vbases{'#alt'}}{$a}) {
 				    if (${$vbases{'#alt'}}{$a} eq '1') {
@@ -714,6 +739,9 @@ sub v_bases {
     # and captured in %vbases we can do some more validation ...
 
 #    warn "second phase base checking\n";
+
+    # get sigs for bases not previously looked up via gdlsig
+    gdlsigs(%gdlsigs_needed);
     
     # 1. Does more than one primary have the same signs?
     my %prisigs = ();
@@ -722,8 +750,11 @@ sub v_bases {
 	next if $p =~ /\#/;
 	pp_trace("BaseC::check: $p");
 	#	my $px = $p; $px =~ s/ₓ\(//g; pp_warn("(bases) $px has x-value with no qualifier") if $px =~ /ₓ/;
-	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
-#	warn ORACC::SL::BaseC::messages(), "\n";
+	###	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
+
+	my $psig = $gdlsigs($p);
+
+	#	warn ORACC::SL::BaseC::messages(), "\n";
 	if ($psig eq 'q00') {
 	    pp_warn("(bases) primary base $p not in OGSL");
 #	} elsif (@ORACC::SL::fixes_needed >= 0) {
@@ -751,7 +782,8 @@ sub v_bases {
 		    1 while $core =~ s/\{[^\}]+?\{.*?\}.*?\}//; # remove { ... {...} ... } first
 		    1 while $core =~ s/\{[^}]+\}//;
 		    if (!defined $vbases{$core}) {
-			my $csig = ORACC::SL::BaseC::check(undef,$core,1);
+			# my $csig = ORACC::SL::BaseC::check(undef,$core,1);
+			my $csig = $gdlsigs{$core};
 			if (defined $prisigs{$csig} && !is_allowed($core,$prisigs{$csig})) {
 			    pp_warn("(bases) core $core of base $p should be $prisigs{$csig}");
 			}
@@ -772,8 +804,9 @@ sub v_bases {
 	    foreach my $a (@alts) {
 		my $ped = ORACC::SL::BaseC::pedantic(0);
 		pp_trace("BaseC::check: $a");
-		my $asig = ORACC::SL::BaseC::check(undef,$a, 1);
-		ORACC::SL::BaseC::pedantic($ped) if $ped;
+		# my $asig = ORACC::SL::BaseC::check(undef,$a, 1);
+		# ORACC::SL::BaseC::pedantic($ped) if $ped;
+		my $asig = gdlsigs{$a};
 		unless ($lang =~ /qpn/) {
 		    atf_add($a,$lang) if $a;
 		}

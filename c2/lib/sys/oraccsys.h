@@ -46,7 +46,10 @@ extern unsigned char *sexify(int n, const char *aszdisz);
 extern void help (void);
 extern int opts (int optchar, char *optarg);
 extern void options (int argc, char *const *argv, const char *optstr);
+extern void banner(void);
+extern void usage(void);
 extern int optind, opterr;
 extern char *optarg;
+extern void program_values(const char *name, int major, int minor, const char *usage, const char *copyright);
 
 #endif/*ORACCSYS_H_*/

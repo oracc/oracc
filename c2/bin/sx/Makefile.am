@@ -1,8 +1,9 @@
 include ../../../oracc-am-rules.txt
 
-noinst_PROGRAMS=sx
+noinst_PROGRAMS=sx sl-index sl
 
 xLDADD=\
+	../../lem/lng/liblng.la \
 	../../nss/gdl/libgdl.la \
 	../../nss/asl/libasl.la \
 	../../lib/xml/libxml.la \
@@ -10,16 +11,33 @@ xLDADD=\
 	../../lib/std/libstd.la \
 	../../lib/sys/libsys.la 
 
+yLDADD=\
+	../../lib/std/libstd.la \
+	../../lib/sys/libsys.la 
+
 AM_CPPFLAGS=\
 	-I../../lib/include \
-	-I../../nss/asl \
-	-I../../nss/gdl \
 	-I../../lib/std \
-	-I../../lib/sys \
-	-I../../lib/xml 
+	-I../../lib/xml \
+	-I../../lem/lng \
+	-I../../nss/gdl \
+	-I../../lib/sys
+
+sl_SOURCES=sl.c
+
+sl_LDADD = $(xLDADD)
+
+sl_DEPENDENCIES = $(sl_LDADD)
 
 sx_SOURCES=sx.c
 
 sx_LDADD = $(xLDADD)
 
 sx_DEPENDENCIES = $(sx_LDADD)
+
+sl_index_SOURCES=sl-index.c
+
+sl_index_LDADD = $(yLDADD)
+
+sl_index_DEPENDENCIES = $(s_index_LDADD)
+

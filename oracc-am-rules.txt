@@ -30,9 +30,12 @@ install-exec-local:
 	$(top_srcdir)/oracc-pm.sh $(DESTDIR)$(prefix) $(top_srcdir)
 	$(top_srcdir)/maybe-install-cgi-bin.sh
 
-SUFFIXES=.g .c .o .xnn .rnc .rng
+SUFFIXES=.c.in .g .c .o .xnn .rnc .rng
 
 # .lst .g .c .o
+
+.c.in.c:
+	$(ORACCIFY) $<
 
 .g.c:
 	$(top_srcdir)/gperf-size_t.sh `basename $*` $< $@

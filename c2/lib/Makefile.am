@@ -1,1 +1,1 @@
-SUBDIRS=sys std cat jsn xml
+SUBDIRS=std sys cat jsn xml

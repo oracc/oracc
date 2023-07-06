@@ -4,7 +4,7 @@
 #include <mesg.h>
 #include <tree.h>
 #include <xml.h>
-#include <asl.h>
+#include <../../nss/asl/asl.h>
 #include <gdl.h>
 #include <oraccsys.h>
 #include <oracclocale.h>
@@ -36,7 +36,7 @@ main(int argc, char * const*argv)
         fprintf(stderr, "gvl_setup: failed to setlocale to '%s', 'UTF-8', or 'C'\n", ORACC_LOCALE);
   
   options(argc, argv, "crt");
-  aslflextrace = asltrace = asl_flex_debug = trace_mode;
+  asltrace = asl_flex_debug = trace_mode;
 
   mesg_init();
   nodeh_register(treexml_o_handlers, NS_SL, treexml_o_generic);

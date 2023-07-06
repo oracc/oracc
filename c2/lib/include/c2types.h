@@ -23,6 +23,7 @@ typedef uint16_t Unsigned16;
 typedef int32_t Signed32;
 typedef uint32_t Unsigned32;
 
+#define _MAX_PATH 1024
 
 #ifndef ccp
 #define ccp const char *
