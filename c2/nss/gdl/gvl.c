@@ -190,9 +190,20 @@ gvl_g *
 gvl_validate(unsigned const char *g)
 {
   gvl_g *gp = NULL;
+  const char *oid = NULL;
 
   if ((gp = hash_find(curr_sl->h,g)))
     return gp;
+  else if ((oid = hash_find(curr_sl->sl,g)))
+    {
+      gp = memo_new(curr_sl->m);
+      gp->orig = (uccp)pool_copy(g, curr_sl->p);
+      gp->sign = hash_find(curr_sl->sl, (uccp)oid);
+      gp->oid = (ccp)pool_copy((uccp)oid, curr_sl->p);
+      gp->type = "v";
+      hash_add(curr_sl->h,gp->orig,gp);
+      return gp;
+    }
   else
     return NULL;
 }

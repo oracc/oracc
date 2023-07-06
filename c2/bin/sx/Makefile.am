@@ -12,8 +12,8 @@ xLDADD=\
 	../../lib/sys/libsys.la 
 
 yLDADD=\
-	../../lib/std/libstd.la \
-	../../lib/sys/libsys.la 
+	../../lib/sys/libsys.la \
+	../../lib/std/libstd.la 
 
 AM_CPPFLAGS=\
 	-I../../lib/include \

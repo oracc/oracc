@@ -12,6 +12,7 @@
 #include <gdl.h>
 #include <lng.h>
 
+extern int sll_trace;
 const char *file = NULL;
 int lnum = 0;
 extern FILE *f_log;
@@ -174,7 +175,7 @@ main(int argc, char **argv)
 
   setlocale(LC_ALL,ORACC_LOCALE);
   
-  options(argc, argv, "eghk:p:n:ou8");
+  options(argc, argv, "eghk:p:n:otu8");
 
   /* Figure out the db and open it */
   if (!project)
@@ -184,6 +185,7 @@ main(int argc, char **argv)
   
   tree_init();
   gdl_init();
+  lng_init();
   curr_lang_ctxt = global_lang = lang_switch(NULL,"sux",NULL,NULL,0);
   
   gvl_setup(project, name);
@@ -271,6 +273,9 @@ opts(int argc, char *arg)
       break;
     case 'p':
       project = arg;
+      break;
+    case 't':
+      sll_trace = 1;
       break;
     case 'u':
       uhex = 1;

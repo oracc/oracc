@@ -22,7 +22,7 @@ static Pool *sllpool = NULL;
 
 static Hash *h = NULL;
 
-static int sll_trace = 0;
+int sll_trace = 0;
 
 static int signindicator[256];
 
