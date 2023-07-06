@@ -22,7 +22,7 @@ int rnvtrace;
 
 extern int gdl_flex_debug, gdldebug, gdl_orig_mode;
 
-int bare_mode = 0;
+int backward = 0;
 int check_mode = 0;
 extern int deep_sig;
 int error_stdout = 0;
@@ -32,7 +32,7 @@ int identity_mode = 0;
 int ns_output = 0;
 int pedantic = 0;
 int signatures = 0;
-int trace_mode = 0;
+int tabbed = 0;
 int validate = 0;
 int wrapper = 0;
 
@@ -73,10 +73,12 @@ do_one(char *s)
     }
 
   const char *sig = gdlsig(tp);
-  if (bare_mode)
-    fprintf(stdout, "%s\n", sig);
-  else
+  if (backward)
+    fprintf(stdout, "%s => %s\n", s, sig); /* tlitsig.plx format */
+  else if (tabbed)
     fprintf(stdout, "%s\t%s\n", s, sig);
+  else
+    fprintf(stdout, "%s\n", sig);
   fflush(stdout);
   gdlparse_reset();
   deep_sig = saved_deep;
@@ -121,8 +123,6 @@ main(int argc, char **argv)
   
   options(argc, argv, "bcdf:hinopstvw");
 
-  gdl_flex_debug = gdldebug = trace_mode;
-  
   gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
   gdlparse_init();
@@ -151,7 +151,7 @@ opts(int opt, char *arg)
   switch (opt)
     {
     case 'b':
-      bare_mode = 1;
+      backward = 1; /* use ba => o0000113 output format */
       break;
     case 'c':
       check_mode = 1;
@@ -181,7 +181,7 @@ opts(int opt, char *arg)
       signatures = 1;
       break;
     case 't':
-      trace_mode = 1;
+      tabbed = 1;
       break;
     case 'u': /* uptranslate to canonicalized version */
       gdl_c10e_mode = 1;
