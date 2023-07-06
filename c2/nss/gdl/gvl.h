@@ -41,6 +41,8 @@ typedef struct gvl_i gvl_i;
 
 #define QFIX (q_fixed ? (ccp)q_fixed : "")
 
+extern int gvl_sans_report;
+
 extern gvl_i *curr_sl;
 
 extern unsigned const char *gvl_lookup(unsigned const char *key);

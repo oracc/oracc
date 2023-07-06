@@ -17,7 +17,7 @@
  ***********************************************/
 
 const char *phase = NULL;
-
+static const char *mesg_prefix_string = NULL;
 static Pool *msgpool;
 static List *mesg_list;
 static int msg_cmp(const void *pa, const void *pb);
@@ -229,7 +229,13 @@ mesg_retrieve(void)
   mesg_list = NULL;
   return ret;
 }
- 
+
+void
+mesg_prefix(const char *p)
+{
+  mesg_prefix_string = p;
+}
+
 void
 mesg_print(FILE *fp)
 {
@@ -257,7 +263,11 @@ mesg_print2(FILE *fp, List *mlist)
 	  mp = (char**)list2array(mlist);
 	  qsort(mp, list_len(mlist), sizeof(char*), msg_cmp);
 	  for (i = 0; mp[i]; ++i)
-	    fputs(mp[i], fp);
+	    {
+	      if (mesg_prefix_string)
+		fputs(mesg_prefix_string, fp);
+	      fputs(mp[i], fp);
+	    }
 	}
       list_free(mlist, NULL);
       mlist = NULL;

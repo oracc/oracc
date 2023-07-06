@@ -13,7 +13,8 @@ The following conversion programs are planned:
     gx	Glossary (replaces ORACC::CBD::*)
     mx  Metadata (replaces xmdmanager.plx)
     sx	Signlist (replaces sl-xml.plx)
-    tx	Test harnesses (e.g., gvlx)
+    tx	Test harnesses (e.g., gdlx)
+    xx  Utility programs
 
 In addition, the following functionality will be revised/rewrittten:
 

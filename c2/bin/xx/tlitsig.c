@@ -38,22 +38,6 @@ int wrapper = 0;
 
 FILE *fp;
 
-static void
-test_identity(char *s, Tree *t)
-{
-  const char *res = NULL;
-  if (t->root && t->root->kids)
-    {
-      if (t->root->kids->text)
-	res = t->root->kids->text;
-      else
-	printf("%s\t(null)\n", s);
-    }
-
-  if (res && strcmp(s, res))
-    printf("%s\t%s\n", s, res);
-}
-
 void
 do_one(char *s)
 {
@@ -79,41 +63,21 @@ do_one(char *s)
   mp = mesg_retrieve();
   if (mp && list_len(mp))
     {
-      List *tmp = list_create(LIST_SINGLE);
-      unsigned const char *msg = NULL;
-      for (msg = list_first(mp); msg; msg = list_next(mp))
-	if (pedantic || (!strstr((ccp)msg, "qualified") && !strstr((ccp)msg, "unknown")))
-	  list_add(tmp, (void*)msg);
-      if (list_len(tmp))
+      if (error_stdout)
 	{
-	  if (error_stdout)
-	    {
-	      mesg_print2(stdout, tmp);
-	      fflush(stdout);
-	    }
-	  else
-	    mesg_print2(stderr, tmp);
-	}
-    }
-
-  if (identity_mode)
-    test_identity(s, tp);
-  else if (!check_mode)
-    {
-      if (signatures)
-	{
-	  const char *sig = gdlsig(tp);
-	  if (bare_mode)
-	    fprintf(stdout, "%s\n", sig);
-	  else
-	    fprintf(stdout, "%s\t%s\n", s, sig);
+	  mesg_print2(stdout, mp);
 	  fflush(stdout);
 	}
-      else if (ns_output)
-	tree_xml_rnv(stdout, tp, &gdl_data, "gdl");
       else
-	tree_xml(stdout, tp);
+	mesg_print2(stderr, mp);
     }
+
+  const char *sig = gdlsig(tp);
+  if (bare_mode)
+    fprintf(stdout, "%s\n", sig);
+  else
+    fprintf(stdout, "%s\t%s\n", s, sig);
+  fflush(stdout);
   gdlparse_reset();
   deep_sig = saved_deep;
   tree_term(tp);
@@ -135,15 +99,19 @@ do_many(const char *fn)
       char buf[1024], *s;
       ml.file = fn;
       ml.line = 1;
-      if (wrapper)
-	printf("<gdlx>");
       while ((s = fgets(buf, 1024, fp)))
 	do_one(s);
-      if (wrapper)
-	printf("</gdlx>");
     }
   else
     fprintf(stderr, "gdlx: file %s can't be read\n", fn);
+}
+
+static void
+helper_mode(void)
+{
+  error_stdout = 1;
+  mesg_prefix(">>");
+  gvl_sans_report = 1;
 }
 
 int
@@ -151,7 +119,7 @@ main(int argc, char **argv)
 {
   gdl_flex_debug = gdldebug = 0;
   
-  options(argc, argv, "bcdef:inopstvw");
+  options(argc, argv, "bcdf:hinopstvw");
 
   gdl_flex_debug = gdldebug = trace_mode;
   
@@ -168,7 +136,10 @@ main(int argc, char **argv)
   else if (fname)
     do_many(fname);
   else
-    do_many("-");
+    {
+      helper_mode();
+      do_many("-");
+    }
 
   gdlparse_term();
   return 0;
@@ -188,13 +159,11 @@ opts(int opt, char *arg)
     case 'd':
       deep_sig = 1;
       break;
-    case 'e':
-      error_stdout = 1;
-      mesg_prefix(">>");
-      gvl_sans_report = 1;
-      break;
     case 'f':
       fname = optarg;
+      break;
+    case 'h':
+      helper_mode();
       break;
     case 'i':
       identity_mode = 1;

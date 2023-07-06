@@ -114,7 +114,12 @@ gvl_s(Node *ynp)
       else
 	{
 	  if (!gdl_legacy_check(ynp, gp->orig))
-	    gp->mess = gvl_vmess("unknown value: %s. To request adding it please visit:\n\t%s", gp->orig, report);
+	    {
+	      if (gvl_sans_report)
+		gp->mess = gvl_vmess("unknown value: %s.", gp->orig);
+	      else
+		gp->mess = gvl_vmess("unknown value: %s. To request adding it please visit:\n\t%s", gp->orig, report);
+	    }
 	}
     }
 

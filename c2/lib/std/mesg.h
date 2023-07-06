@@ -23,6 +23,7 @@ extern char *mesg_loc(Mloc *locp);
 extern void mesg_err(Mloc *locp, const char *s);
 extern void mesg_verr(Mloc *locp, const char *s, ...);
 extern void mesg_averr(Mloc *locp, const char *s, va_list ap);
+extern void mesg_prefix(const char *p);
 extern void mesg_print(FILE *fp);
 extern void mesg_print2(FILE *fp, List *mlist);
 extern List *mesg_retrieve(void);

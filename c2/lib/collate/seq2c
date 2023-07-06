@@ -1,0 +1,220 @@
+#!/usr/bin/perl
+#
+# Copyright(c) Pennsylvania Sumerian Dictionary and Steve Tinney
+# 1997 under the GNU General Public License (see /psd/COPYING).
+#
+# $Id: seq2c.in,v 0.5 1998/08/05 13:56:00 s Exp s $
+
+use integer;
+
+$iso10646 = "iso10646";
+$equiv = 0;
+$currval = 0;
+$digit_offset = 0;
+%uvals = ();
+%ustr = ();
+%ustr_i = ();
+%used_tiles = ();
+%delims = ();
+%digits = ();
+$DELIMS = 1;
+$DIGITS = 2;
+$LETTERS = 3;
+$reading = 0;
+
+####################################################################
+
+open (ISO, $iso10646) || die "seq2c: unable to open $iso10646\n";
+$i = 0;
+print STDERR "reading $iso10646";
+for ($i = 0; $i < 4; ++$i) {
+    <ISO>;
+}
+while (<ISO>) {
+    print STDERR " ." unless $i++ % 1000;
+#    ($hex,$uname) = (/^(.*?)\t.*?\t(.*)$/);
+    ($hex,$uname) = (/^(.*?);(.*?)$/);
+    die "seq2c: bad iso input `$_'\n" unless length($uname) && length($hex);
+    $uvals{$uname} = hex($hex);
+}
+print STDERR "\n";
+close (ISO);
+
+open (IN, $ARGV[0]) || die "seq2c: unable to read seq file `$ARGV[0]'\n";
+
+my($fname) = $ARGV[0];
+my($tmp);
+if ($fname =~ /\//) {
+    $fname =~ /\/([^\/\.]*)\.[^\.]*$/;
+    $tmp = $1;
+} else {
+    $fname =~ /^(.*?)\./;
+    $tmp = $1;
+}
+$seq_name = $tmp;
+
+my $out_fname;
+$out_fname = $fname;
+$out_fname =~ s/(\.[^\.]*)?$/.c/;
+
+while (<IN>) {
+    next if /^\s*$/ || /^\#/;
+
+    if (/^delimiters\s*$/) {
+	$reading = $DELIMS;
+	next;
+    } elsif (/^digits\s*$/) {
+	$reading = $DIGITS;
+	$digit_offset = $currval+1;
+	next;
+    } elsif (/^letters\s*$/) {
+	$reading = $LETTERS;
+	next;
+    }
+
+    s/^\s*//; s/\s*$//;
+    if (/^=/) {
+	$equiv = 1;
+	s/^=\s*//;
+    } else {
+	$equiv = 0;
+	++$currval;
+    }
+
+    $ustr{&nam2uni($_)} = $currval;
+    $ustr_i{&nam2uni($_)} = &currval_i($_);
+
+    if ($reading == $DELIMS) {
+        $delims{$currval} = 1;
+    } elsif ($reading == $DIGITS) {
+        $digits{$currval} = 1;
+    } elsif ($reading == $LETTERS) {
+	;
+    }
+}
+
+foreach (keys (%ustr)) {
+    ${$used_tiles{$_/256}}{$_} = 1;
+}
+
+open (OUT, ">$out_fname") || die "seq2c: can't open `$out_fname' for writing\n";
+select OUT;
+
+print <<COMMENT;
+/* THIS FILE WAS GENERATED AUTOMATICALLY FROM THE FILE $fname
+   BY THE PERL PROGRAM seq2c.  CHANGES MADE TO THIS FILE WILL
+   DISAPPEAR THE NEXT TIME IT IS RECREATED */
+
+COMMENT
+
+print "\#include <stdlib.h>\n";
+print "\#include \"colltype.h\"\n\n";
+
+print "\#define COLLATE_LAST_VALUE $currval\n";
+print "\#define COLLATE_DIGIT_OFFSET $digit_offset\n";
+
+&print_tf ('delims', %delims);
+&print_tf ('digits', %digits);
+
+&print_indiv_tiles('used_tiles', 'ustr', '');
+&print_tiles_ptrs('used_tiles', '');
+
+&print_indiv_tiles('used_tiles', 'ustr_i', '_i');
+&print_tiles_ptrs('used_tiles', '_i');
+
+print <<COLLTAB;
+struct Collate_info ${seq_name}_collate_info =
+{
+  \"$seq_name\",
+  ${seq_name}_delims,
+  ${seq_name}_digits,
+  ${seq_name}_tiles,
+  ${seq_name}_i_tiles,
+  COLLATE_DIGIT_OFFSET,
+};
+COLLTAB
+
+close (OUT);
+exit 0;
+
+####################################################################
+sub
+nam2uni {
+    my ($uname) = shift @_;
+    die "seq2c: bad input `$_'\n" unless length($uname);
+    if (!defined ($uvals{$uname})) {
+	warn "seq2c: unable to determine unicode value for `$uname'\n";
+    }
+    return $uvals{$uname};
+}
+
+sub
+print_indiv_tiles {
+    my($tiles_hash,$uhash,$add) = @_;
+    foreach $tile (sort {$a<=>$b} keys(%{$tiles_hash})) {
+	print "const unsigned char ${seq_name}${add}_tile_$tile\[256\] =\n\{\n  ";
+	for ($i = 0; $i < 256; ++$i) {
+	    print "\n  " if $i && !($i%14);
+	    if (defined (${$uhash}{$tile*256+$i})) {
+                &print_val (${$uhash}{$tile*256+$i});
+	    } else {
+		&print_val (0);
+	    }
+	}
+	print "\n\};\n\n";
+    }
+}
+
+sub
+print_val {
+    printf ("%3d, ", $_[0]);
+}
+
+sub
+print_tiles_ptrs {
+    print "const unsigned char *${seq_name}$_[1]_tiles\[256\] =\n\{";
+    for ($i = 0; $i < 256; ++$i) {
+	if (defined (${$_[0]}{$i})) {
+	    $null_count = 0;
+	    if ($non_null_count == 0 || $non_null_count == 5) {
+		print "\n  ";
+		$non_null_count = 0;
+	    }
+	    print "${seq_name}$_[1]_tile_$i, ";
+	    ++$non_null_count;
+	} else {
+	    $non_null_count = 0;
+	    if ($null_count == 0 || $null_count == 12) {
+		print "\n  ";
+		$null_count = 0;
+	    }
+	    print "NULL, ";
+	    ++$null_count;
+	}
+    }
+    print "\n\};\n\n";
+}
+
+sub
+print_tf {
+    print "static char ${seq_name}_$_[0]\[COLLATE_LAST_VALUE+1\] =\n\{\n  ";
+    for ($i = 0; $i <= $currval; ++$i) {
+	print "\n  " if $i && !($i%36);
+	if (defined (${$_[0]}{$i})) {
+	    print "1,";
+	} else {
+	    print "0,";
+	}
+    }
+    print "\n\};\n\n";
+}
+
+sub
+currval_i {
+    my $l = $_[0];
+    $l =~ s/\s+SMALL|CAPITAL\s+/ /;
+    if (!defined ($names_i{$l})) {
+	$names_i{$l} = $currval;
+    }
+    return $names_i{$l};
+}

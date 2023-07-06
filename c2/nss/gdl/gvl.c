@@ -16,6 +16,7 @@
 #include "gdl.h"
 #include "gvl.h"
 
+int gvl_sans_report = 0;
 int gvl_trace = 0;
 int gvl_strict = 0;
 int c_delim_sentinel = 0;

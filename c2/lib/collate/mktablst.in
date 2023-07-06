@@ -1,0 +1,36 @@
+#!@PERL@
+#
+# Copyright(c) Pennsylvania Sumerian Dictionary and Steve Tinney
+# 1997 under the GNU General Public License (see /psd/COPYING).
+#
+# $Id: mktablst.in,v 0.2 1997/09/08 13:01:44 sjt Exp s $
+
+@tabs = ();
+foreach (@ARGV) {
+    my($nm);
+    if (/\//) {
+	/\/([^\/]*)$/;
+	$nm = $1;
+    } else {
+	$nm = $_;
+    }
+    $nm =~ s/\..*$//;
+    push (@tabs, $nm);
+}
+
+open (OUT, ">tablist.c");
+select OUT;
+print "\#include <stdlib.h>\n";
+print "\#include \"colltype.h\"\n\n";
+foreach (@tabs) {
+    print "extern struct Collate_info ${_}_collate_info;\n";
+}
+print "\nstruct Collate_info_list_node collate_infos[] = \n\{\n";
+foreach (@tabs) {
+    print "  \{ \"$_\", \&${_}_collate_info \},\n";
+}
+print "  \{ NULL, NULL \},\n";
+print "\};\n";
+
+exit 0;
+
