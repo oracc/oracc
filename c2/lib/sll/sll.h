@@ -12,6 +12,7 @@ struct sllext
   sll_get_fnc *fnc;
 };
 
+extern int sll_raw_output;
 extern int sll_trace;
 
 extern Hash *sll_init_t(const char *project, const char *name);

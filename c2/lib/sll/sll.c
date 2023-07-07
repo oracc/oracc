@@ -16,7 +16,7 @@
 #define ucp unsigned char *
 #define uccp unsigned const char *
 
-int raw_output = 1;
+int sll_raw_output = 0;
 int sll_trace = 0;
 const char *oracc = NULL;
 Pool *sllpool = NULL;
@@ -35,7 +35,7 @@ void
 sll_handle(unsigned const char *key)
 {
   unsigned const char *res = sll_lookup(key);
-  if (raw_output)
+  if (sll_raw_output)
     printf("%s\t%s\n", key, res);
   else
     sll_output(sll_resolve(key, res));
