@@ -201,7 +201,7 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 	  vq->oid = qp->oid;
 	  vq->sign = gvl_lookup(sll_tmp_key((uccp)qp->oid,""));
 	  /* add gp->orig to g hash as key of tmp2 ? */
-	  if (gvl_strict)
+	  if (gvl_strict && strcmp((ccp)vq->orig, (ccp)tmp2))
 	    vq->mess = gvl_vmess("[vq] %s(%s): should be %s%s", vp->orig, qp->orig, tmp2, QFIX);
 	  ret = 1;
 	}

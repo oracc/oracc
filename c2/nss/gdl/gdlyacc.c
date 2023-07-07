@@ -156,12 +156,16 @@ gdl_prop_kv(Node *ynp, int ptype, int gtype, const char *k, const char *v)
 void
 gdl_remove_q_error(Mloc m, Node *ynp)
 {
-  if (mesg_remove_error(m.file, m.line, "must be qualified") && gdltrace)
-    mesg_err(&m, "gdl_remove_q_error succeeded");
-  else if (mesg_remove_error(m.file, m.line, "unknown value") && gdltrace)
-    mesg_err(&m, "gdl_remove_q_error succeeded");
-  else if (mesg_remove_error(m.file, m.line, "unknown sign") && gdltrace)
-    mesg_err(&m, "gdl_remove_q_error succeeded");
+  int rem = 0;
+  (void)((rem = mesg_remove_error(m.file, m.line, "must be qualified"))
+	 || (rem = mesg_remove_error(m.file, m.line, "unknown value"))
+	 || (rem = mesg_remove_error(m.file, m.line, "unknown sign")));
+  if (rem)
+    {
+      if (gdltrace)
+	mesg_err(&m, "gdl_remove_q_error succeeded");
+      ((gvl_g*)(ynp->user))->mess = NULL;
+    }
 }
 
 /***********************************************************************
