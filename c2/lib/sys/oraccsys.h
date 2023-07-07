@@ -3,7 +3,7 @@
 
 #include <wchar.h>
 #include <wctype.h>
-
+#include <sys/types.h>
 #include <c2types.h>
 
 extern unsigned char *slurp(const char *caller, const char *fname, ssize_t *fsizep);
