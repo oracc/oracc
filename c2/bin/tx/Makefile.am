@@ -6,10 +6,10 @@ bin_PROGRAMS=gdlx
 xLDADD=\
 	../../lib/cat/libcat.la \
 	../../nss/gdl/libgdl.la \
-	../../lib/std/libstd.la \
+	../../lib/sll/libsll.la \
 	../../lib/sys/libsys.la \
 	../../lib/xml/libxml.la \
-	../../lib/sll/libsll.la \
+	../../lib/std/libstd.la \
 	../../lib/xml/rnv/librnv.la \
 	../../rnc/librnc.la
 

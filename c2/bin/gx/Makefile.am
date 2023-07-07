@@ -5,15 +5,14 @@ noinst_PROGRAMS=gx
 xLDADD=\
 	../../lib/xml/libxml.la \
 	../../lib/xml/rnv/librnv.la \
-	../../lib/std/libstd.la \
 	../../lib/sys/libsys.la \
 	../../lem/frm/libfrm.la \
 	../../lem/lng/liblng.la \
 	../../nss/gdl/libgdl.la \
-	../../lib/std/libstd.la \
 	../../lib/sll/libsll.la \
 	../../nss/gdl/libgdl.la \
 	../../nss/cbd/libcbd.la \
+	../../lib/sll/libsll.la \
 	../../lib/std/libstd.la \
 	../../lib/sys/libsys.la
 

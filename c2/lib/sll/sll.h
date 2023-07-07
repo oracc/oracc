@@ -38,6 +38,7 @@ extern List *sll_resolve(unsigned const char *key, unsigned const char *res);
 
 extern const char *sll_get_name(unsigned char *k);
 extern const char *sll_get_oid(unsigned char *k);
+extern List *sll_get_list(const char *k);
 extern List *sll_get_h(const char *k);
 
 extern struct sllext *sllext (register const char *str, register size_t len);

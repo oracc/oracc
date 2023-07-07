@@ -1,4 +1,5 @@
 #include <string.h>
+#include <ctype128.h>
 #include <oraccsys.h>
 #include <hash.h>
 #include <list.h>

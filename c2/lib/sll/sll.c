@@ -74,7 +74,7 @@ sll_resolve(unsigned const char *key, unsigned const char *res)
 	{
 	  struct sllext *s = NULL;
 	  ++semi;
-	  if ((s = sllext((ccp)key, strlen((ccp)key))))
+	  if ((s = sllext((ccp)semi, strlen((ccp)semi))))
 	    {
 	      List *slp = s->fnc((ccp)key);
 	      if (slp)
