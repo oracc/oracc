@@ -4,6 +4,7 @@
 
  $Id: dbi.c,v 0.5 1997/09/08 14:50:03 sjt Exp $
 */
+#include <sys/types.h>
 #include <c2types.h>
 #include <xsystem.h>
 #include <list.h>
