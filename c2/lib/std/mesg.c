@@ -290,12 +290,24 @@ static int
 msg_cmp(const void *pa, const void *pb)
 {
   const char *af = *(const char **)pa, *bf = *(const char **)pb;
-  const char *al = strchr(af,':')+1;
-  const char *bl = strchr(bf,':')+1;
-  int ret = strncmp(af,bf,al-af);
-  if (!ret)
-    ret = atoi(al) - atoi(bl);
-  return ret;
+  const char *al = strchr(af,':');
+  const char *bl = strchr(bf,':');
+  if (al && bl)
+    {
+      int ret = 0;
+      ++al;
+      ++bl;
+      ret = strncmp(af,bf,al-af);
+      if (!ret)
+	ret = atoi(al) - atoi(bl);
+      return ret;
+    }
+  else if (al)
+    return -1;
+  else if (bl)
+    return 1;
+  else
+    return 0;
 }
 
 static char *
