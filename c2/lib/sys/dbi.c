@@ -286,7 +286,7 @@ dbi_find (Dbi_index *dp, const Uchar *key)
 
   if (dp->h.ht_size)
     {
-      hashval = hash (key, dp->h.ht_size);
+      hashval = hash_ (key, dp->h.ht_size);
       fseek (dp->h_fp, dp->h.ht_begin + hashval * sizeof (Unsigned32), SEEK_SET);
       xfread (dp->h_fname, TRUE, &offset, sizeof (Unsigned32), 1, dp->h_fp);
     }
@@ -1095,7 +1095,7 @@ set_hash_vals ()
 
   hash_prime = hash_init (HASH_LOOSENESS * tmp_dp->h.entry_count);
   for (i = 0; i < tmp_dp->h.entry_count; ++i)
-    node_ptrs[i]->hashval = hash (node_ptrs[i]->key, hash_prime);
+    node_ptrs[i]->hashval = hash_ (node_ptrs[i]->key, hash_prime);
   hash_term ();
 }
 
@@ -1322,7 +1322,7 @@ hash_term ()
 }
 
 Unsigned32
-hash (register const Uchar *s, Unsigned32 hash_prime)
+hash_ (register const Uchar *s, Unsigned32 hash_prime)
 {
   Unsigned32 h = 0;
   int i;

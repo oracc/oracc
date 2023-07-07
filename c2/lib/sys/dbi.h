@@ -137,7 +137,7 @@ extern Dbi_index *	dbi_create (const char *name, const char *fname, size_t hash_
 extern Dbi_index *	dbi_open (const char *project,const char *index);
 extern Dbi_type_e	dbi_add (Dbi_index *dp, Uchar *key, void *data, Unsigned32 count);
 extern Unsigned32	hash_init (Unsigned32 n);
-extern Unsigned32	hash (register const Uchar *s, Unsigned32 hash_prime);
+extern Unsigned32	hash_ (register const Uchar *s, Unsigned32 hash_prime);
 extern void	dbi_flush (Dbi_index * dp);
 extern void	dbi_free (Dbi_index *dp);
 extern void	dbi_close (Dbi_index *dp);

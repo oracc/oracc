@@ -104,7 +104,10 @@ sll_tmp_key(unsigned const char *key, const char *field)
   static char tmpkey[128];
   if (key)
     {
+      char *semi = NULL;
       strcpy(tmpkey,(ccp)key);
+      if ((semi = strchr(tmpkey, ';')))
+	*semi = '\0';
       if (*field)
 	{
 	  char *tk = tmpkey + strlen(tmpkey);
