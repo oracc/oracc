@@ -1,32 +1,18 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
-#include <ctype.h>
-#include <wchar.h>
-#include <wctype.h>
-#include <locale.h>
-
 #include <oraccsys.h>
+#include <hash.h>
+#include <list.h>
 #include <pool.h>
+#include <dbi.h>
+#include <gutil.h>
 #include "sll.h"
-#include "gdl.h"
-#include "gvl.h"
-
-#define ccp const char *
-#define ucp unsigned char *
-#define uccp unsigned const char *
-
-static const char *oracc = NULL;
-static Hash *sll_sl = NULL;
-static Pool *sllpool = NULL;
-
-static Hash *h = NULL;
-
-int sll_trace = 0;
 
 static int signindicator[256];
 
-static List *kstrip;
+extern int sll_trace;
+extern Hash *sll_sl;
+extern const char *oracc;
+extern Pool *sllpool;
 
 /* Every sign name has at least one of these uppercase letters--this
    is validated by sl-xml */
@@ -112,123 +98,6 @@ sll_has_sign_indicator(unsigned const char *g)
   return 0;
 }
 
-static void
-sll_kstrip(void *k)
-{
-  unsigned char *ks = sll_strip_pp((unsigned char *)k);
-  if (strcmp((const char *)ks,(const char *)k))
-    {
-      unsigned char *kh = hash_find(h,ks);
-      if (kh)
-	; /* fprintf(stderr, "sll_init_h: stripped key %s=>%s duplicates known key with OID %s\n",
-	     (const char*)k, (const char*)ks, (const char*)kh);*/
-      else
-	{
-	  kh = hash_find(h,k);
-	  if (kh)
-	    {
-	      if (sll_trace)
-		fprintf(stderr, "adding stripped version %s for %s with OID %s\n",
-			(const char *)ks, (const char *)k, (const char *)kh);
-	      hash_add(h,pool_copy(ks, sllpool),kh);
-	    }
-	  else
-	    fprintf(stderr, "sll: internal error: no OID for key %s stripped to %s\n", (const char *)k, ks);
-	}
-    }
-  free(ks);
-}
-
-Hash *
-sll_init(const char *project, const char *name)
-{
-  char *tsv_file;
-  unsigned char *tsv_data = NULL, *p;
-  ssize_t fsiz;
-
-  sll_init_si();
-  sllpool = NULL;
-
-  /* Figure out the db and open it */
-  if (!project)
-    project = "ogsl";
-
-  if (!name)
-    name = "ogsl";
-
-  oracc = oracc_home();
-  tsv_file = malloc(strlen(oracc)+strlen("/pub/sl/") + strlen(project) + strlen("/sl.tsv") + 1);
-  sprintf(tsv_file, "%s/pub/%s/sl/sl.tsv", oracc, project);
-
-  tsv_data = slurp("sll", tsv_file, &fsiz);
-  if (tsv_data)
-    {
-      sllpool = pool_init();
-  
-      if (sll_trace)
-	fprintf(stderr, "sll: slurped %s\n", tsv_file);
-      h = hash_create(1024);
-      kstrip = list_create(LIST_SINGLE);
-      for (p = tsv_data; *p; )
-	{
-	  unsigned char *k = p, *v = NULL;
-	  while (*p && '\t' != *p)
-	    ++p;
-	  if (*p)
-	    {
-	      *p++ = '\0';
-	      v = p;
-	      while (*p && '\n' != *p)
-		++p;
-	      if ('\n' == *p)
-		*p++ = '\0';
-	      if (v)
-		{
-		  if (sll_trace)
-		    fprintf(stderr, "sll: adding %s = %s\n", k, v);
-		  hash_add(h, k, v);
-		  if ('o' == *v && isdigit(v[1]))
-		    {
-		      if (!strchr((ccp)k,';') && sll_has_sign_indicator(k))
-			{
-			  unsigned char *k2 = hash_find(h,v);
-			  if (k2)
-			    fprintf(stderr, "sll_init_h: duplicate key/val %s = %s\n", k, v);
-			  else
-			    {
-			      if (sll_trace)
-				fprintf(stderr, "sll: adding %s = %s\n", v, k);
-			      hash_add(h,v,k);
-			    }
-			  if (strpbrk((const char *)k,"()+"))
-			    list_add(kstrip, k);
-			}
-		    }
-		}
-	    }
-	}
-      list_exec(kstrip, (list_exec_func*)sll_kstrip);
-      list_free(kstrip,NULL);
-    }
-  else
-    {
-      fprintf(stderr, "sll_init_h: failed to load %s\n", tsv_file);
-    }
-
-  return sll_sl = h;
-}
-
-void
-sll_term(Hash *h)
-{
-}
-
-unsigned const char *
-sll_lookup(unsigned const char *key)
-{
-  return key ? hash_find(sll_sl, (const unsigned char *)key) : NULL;
-}
-
 unsigned char *
 sll_tmp_key(unsigned const char *key, const char *field)
 {
@@ -262,11 +131,11 @@ sll_v_from_h(const unsigned char *b, const unsigned char *qsub)
 	  unsigned char *ret = malloc(strlen((ccp)b)+7);
 	  int tens = qsub_i / 10;
 	  int unit = qsub_i % 10;
-	  const char *tensp = NULL, *unitp = sub_of(unit);
+	  const char *tensp = NULL, *unitp = g_sub_of(unit);
 	  strcpy((char *)ret, (const char *)b);
 	  if (qsub_i)
 	    {
-	      if (tens && ((tensp = sub_of(tens))))
+	      if (tens && ((tensp = g_sub_of(tens))))
 		strcat((char *)ret,tensp);
 	      if (unitp)
 		strcat((char *)ret,unitp);
@@ -279,10 +148,12 @@ sll_v_from_h(const unsigned char *b, const unsigned char *qsub)
   return NULL;
 }
 
+/* Take a sign and see if it has a value with the same base as the
+   grapheme arg g */
 unsigned char *
 sll_try_h(const char *oid, unsigned const char *g)
 {
-  unsigned char *b = base_of(g);
+  unsigned char *b = g_base_of(g);
   unsigned const char *h = sll_lookup(sll_tmp_key(b,"h"));
   unsigned char *p = NULL;
   if (h)
@@ -319,6 +190,8 @@ sll_try_h(const char *oid, unsigned const char *g)
   return p;
 }
 
+/* Return a string consisting of the sign names for each of the OIDs
+   in the arg string */
 unsigned char *
 sll_snames_of(unsigned const char *oids)
 {

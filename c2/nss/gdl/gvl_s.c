@@ -113,7 +113,15 @@ gvl_s(Node *ynp)
 	}
       else
 	{
-	  if (!gdl_legacy_check(ynp, gp->orig))
+	  unsigned char *u = gdl_unlegacy_str(ynp->mloc, gp->orig);
+	  if (strcmp((ccp)u,(ccp)gp->orig) && ((l = gvl_lookup(u))))
+	    {
+	      gp->oid = (ccp)l;
+	      gp->sign = gvl_lookup(sll_tmp_key(l,""));
+	      gp->c10e = u;
+	      (void)gdl_legacy_check(ynp,u);
+	    }
+	  else
 	    {
 	      if (gvl_sans_report)
 		gp->mess = gvl_vmess("unknown value: %s.", gp->orig);

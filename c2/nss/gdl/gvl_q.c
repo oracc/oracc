@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <tree.h>
+#include <unidef.h>
+#include <gutil.h>
 
 #include "sll.h"
 #include "gdl.h"
 #include "gvl.h"
-#include "unidef.h"
 
 extern const char *currgdlfile;
 extern int gdllineno;

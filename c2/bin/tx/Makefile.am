@@ -9,12 +9,14 @@ xLDADD=\
 	../../lib/std/libstd.la \
 	../../lib/sys/libsys.la \
 	../../lib/xml/libxml.la \
+	../../lib/sll/libsll.la \
 	../../lib/xml/rnv/librnv.la \
 	../../rnc/librnc.la
 
 AM_CPPFLAGS=\
 	-I../../lib/include \
 	-I../../nss/gdl \
+	-I../../lib/sll \
 	-I../../lib/std \
 	-I../../lib/sys \
 	-I../../lib/xml \

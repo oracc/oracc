@@ -788,7 +788,11 @@ sub v_bases {
 		unless (pp_sl_messages()) {
 		    if ($asig) {
 			if ($prisig ne $asig) {
-			    pp_warn("(bases) primary '$p' and alt '$a' have different signs ($prisig ne $asig)");
+			    my $pdeep = ORACC::SL::Tlitsig::sig(undef,"$p+");
+			    my $adeep = ORACC::SL::Tlitsig::sig(undef,"$a+");
+			    if ($pdeep ne $adeep) {
+				pp_warn("(bases) primary '$p' and alt '$a' have different signs ($prisig ne $asig)");
+			    }
 			}
 			$altsigs{$asig} = $a;
 			$altsigs{"$asig#code"} = $pcode;

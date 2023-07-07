@@ -72,7 +72,7 @@ tlitsigx {
     while (1) {
 	$res = <SL_OUT>;
 	if ($res && $res =~ s/^>>//) { # error message
-	    $res =~ s/^.*?:\s+//; chomp($res);
+	    chomp($res);
 	    ### FIXME: add context somehow
 	    push @messages, $res;
 	} else {

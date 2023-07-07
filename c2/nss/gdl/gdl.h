@@ -101,15 +101,6 @@ extern void gdl_balance_init(void);
 extern void gdl_balance_term(void);
 extern void gdl_balance_flush(Mloc mlp);
 extern void gdl_gp_type(Tree *ytp, enum gdlpropvals p);
-extern wchar_t *g_wlc(wchar_t *w);
-extern wchar_t *g_wuc(wchar_t *w);
-extern unsigned char *g_lc(unsigned const char *g);
-extern unsigned char *g_uc(unsigned const char *g);
-extern unsigned char *base_of(const unsigned char *v);
-extern const char *sub_of(int i);
-extern wchar_t subdig_of(wchar_t w);
-extern wchar_t vowel_of(wchar_t w);
-
 extern const char *gdl_mod_cat(Node *np);
 extern void gdl_modq_add(Node *np);
 extern void gdl_modq_flush(void);

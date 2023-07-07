@@ -11,6 +11,7 @@ xLDADD=\
 	../../lem/lng/liblng.la \
 	../../nss/gdl/libgdl.la \
 	../../lib/std/libstd.la \
+	../../lib/sll/libsll.la \
 	../../nss/gdl/libgdl.la \
 	../../nss/cbd/libcbd.la \
 	../../lib/std/libstd.la \
@@ -18,6 +19,7 @@ xLDADD=\
 
 AM_CPPFLAGS=\
 	-I../../lib/include \
+	-I../../lib/sll \
 	-I../../lib/std \
 	-I../../lib/sys \
 	-I../../lib/xml \

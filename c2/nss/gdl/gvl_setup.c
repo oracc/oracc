@@ -1,4 +1,4 @@
-#include <stdlib.h>
+#include <stdlib.h>AA
 #include <string.h>
 #include <locale.h>
 
@@ -29,7 +29,7 @@ gvl_setup(const char *project, const char *name)
       if (!(l = setlocale(LC_ALL, "C")))
         fprintf(stderr, "gvl_setup: failed to setlocale to '%s', 'UTF-8', or 'C'\n", ORACC_LOCALE);
   
-  if ((h = sll_init(project, name)))
+  if ((h = sll_init_t(project, name)))
     {
       ret = gvl_i_init_h(name, h);
       sll_set_sl(ret->sl);
