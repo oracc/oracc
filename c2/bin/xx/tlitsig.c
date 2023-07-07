@@ -9,7 +9,7 @@
 #include <gdl.h>
 #include <gvl.h>
 
-/* test harness for gvl/gdl libraries */
+/* Tool to produce gdl signatures from transliteration */
 
 static Mloc ml;
 
@@ -31,7 +31,7 @@ int gdl_c10e_mode = 1;
 int identity_mode = 0;
 int ns_output = 0;
 int pedantic = 0;
-int signatures = 0;
+int sortsigs = 0;
 int tabbed = 0;
 int validate = 0;
 int wrapper = 0;
@@ -102,10 +102,20 @@ do_many(const char *fn)
       ml.file = fn;
       ml.line = 1;
       while ((s = fgets(buf, 1024, fp)))
-	do_one(s);
+	{
+	  if (s)
+	    {
+	      if (0x04 == *s) /* exit on ^D */
+		exit(0);
+	      else
+		do_one(s);
+	    }
+	  else
+	    exit(1);
+	}
     }
   else
-    fprintf(stderr, "gdlx: file %s can't be read\n", fn);
+    fprintf(stderr, "tlitsig: file %s can't be read\n", fn);
 }
 
 static void
@@ -121,7 +131,7 @@ main(int argc, char **argv)
 {
   gdl_flex_debug = gdldebug = 0;
   
-  options(argc, argv, "bcdf:hinopstvw");
+  options(argc, argv, "bcdf:hinoprstvw");
 
   gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
@@ -177,8 +187,11 @@ opts(int opt, char *arg)
     case 'p':
       pedantic = 1;
       break;
+    case 'r':
+      gvl_sans_report = 1;
+      break;
     case 's':
-      signatures = 1;
+      sortsigs = 1;
       break;
     case 't':
       tabbed = 1;
@@ -202,5 +215,5 @@ opts(int opt, char *arg)
 void
 help(void)
 {
-  fprintf(stderr, "gdlx: give grapheme on command line or use -c / -i and read lines from stdin\n");
+  fprintf(stderr, "tlitsig: give grapheme on command line or use -c / -i and read lines from stdin\n");
 }

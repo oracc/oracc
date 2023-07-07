@@ -59,7 +59,7 @@ use ORACC::CBD::PPWarn;
 use ORACC::CBD::Props;
 use ORACC::CBD::Sigs;
 use ORACC::CBD::Bases;
-use ORACC::SL::BaseC;
+use ORACC::SL::Tlitsig;
 use Data::Dumper;
 
 #################################################
@@ -140,7 +140,6 @@ my @global_cbd = ();
 my %entries = ();
 my %entries_nopos = ();
 my %entries_cfmng = ();
-my %gdlsigs = ();
 my $in_entry = 0;
 my $init_acd = 0;
 my $is_compound = 0;
@@ -240,10 +239,10 @@ sub pp_validate {
     %tlit_sigs = ();
     %ORACC::CBD::forms = ();
 	
-    ORACC::SL::BaseC::init();
+    ORACC::SL::Tlitsig::init();
     $ORACC::SL::report_all = 1;
     if ($lang =~ /^(sux|qpn)/ && $project =~ /epsd|dcclt|blms|gkab/) {
-	ORACC::SL::BaseC::pedantic(1);
+	ORACC::SL::Tlitsig::pedantic(1);
 	$always_check_base = 1;
 	$detcheck = 1 if pp_file() eq '00src/sux.glo';
     }
@@ -380,7 +379,7 @@ sub pp_validate {
 
     pp_trace("calling atf_check at pp_line()==", pp_line());
     atf_check($project,$lang);
-    ORACC::SL::BaseC::pedantic(1);
+    ORACC::SL::Tlitsig::pedantic(1);
     cpd_check($project,$lang, $$args{'file'});
 
     %{$glodata{'bffs'}} = bff_check();
@@ -575,26 +574,6 @@ sub v_acd_ok {
     }
 }
 
-sub gdlsigs {
-    my %s = @_;
-
-    foreach my $core (keys %s) {
-	1 while $core =~ s/\{[^\}]+?\{.*?\}.*?\}//; # remove { ... {...} ... } first
-	1 while $core =~ s/\{[^}]+\}//;
-	++$s{$core};
-    }
-
-    fopen(S,">$$.gsig") || die "$.: unable to write to $$.gsig\n";
-    print join("\n", keys %s), "\n";
-    fclose(S);
-
-    my @s = `gdlx -d -s -f $$.gsig`; chomp @s;
-    foreach my $s (@s) {
-	my($gdl,$sig) = split(/\t/, $s);
-	$gdlsigs{$gdl} = $sig;
-    }
-}
-
 sub v_bases {
     my($tag,$arg) = @_;
 
@@ -633,8 +612,6 @@ sub v_bases {
     my %vbases = (); # this one is just for validation of the current @bases field
     my $pricode = 0;
 
-    my %gdlsigs_needed = ();
-    
     foreach my $b (@bits) {
 #	warn "base bit :$b:\n";
 	if ($b =~ s/^\*(\S+)\s+//) {
@@ -666,7 +643,6 @@ sub v_bases {
 		    $pri = $alt = '';
 		} else {
 		    ++$bases{$pri};
-		    ++$gdlsigs_needed{$pri} unless $gdlsigs{$pri};
 		    $bases{$pri,'*'} = $stem
 			if $stem;
 		    $bases{$pri,'%'} = $blang;
@@ -692,7 +668,6 @@ sub v_bases {
 				# all alternates for this primary
 				++${$vbases{"$pri#alt"}}{$a};
 				$bases{"#$a"} = $pri;
-				++$gdlsigs_needed{$a} unless $gdlsigs{$a};
 				# all alternates in this @bases
 				if ($vbases{'#alt'} && ${$vbases{'#alt'}}{$a}) {
 				    if (${$vbases{'#alt'}}{$a} eq '1') {
@@ -740,21 +715,19 @@ sub v_bases {
 
 #    warn "second phase base checking\n";
 
-    # get sigs for bases not previously looked up via gdlsig
-    gdlsigs(%gdlsigs_needed);
-    
     # 1. Does more than one primary have the same signs?
     my %prisigs = ();
     my %altsigs = ();
     foreach my $p (sort keys %vbases) {
 	next if $p =~ /\#/;
-	pp_trace("BaseC::check: $p");
+	pp_trace("Tlitsig::sig: $p");
 	#	my $px = $p; $px =~ s/ₓ\(//g; pp_warn("(bases) $px has x-value with no qualifier") if $px =~ /ₓ/;
-	###	my $psig = ORACC::SL::BaseC::check(undef,$p, 1);
+	###	my $psig = ORACC::SL::Tlitsig::sig(undef,$p, 1);
 
-	my $psig = $gdlsigs($p);
-
-	#	warn ORACC::SL::BaseC::messages(), "\n";
+	my $psig = ORACC::SL::Tlitsig::sig(undef,$p,1);
+	pp_sl_messages();
+	
+	# warn ORACC::SL::BaseC::messages(), "\n";
 	if ($psig eq 'q00') {
 	    pp_warn("(bases) primary base $p not in OGSL");
 #	} elsif (@ORACC::SL::fixes_needed >= 0) {
@@ -782,8 +755,8 @@ sub v_bases {
 		    1 while $core =~ s/\{[^\}]+?\{.*?\}.*?\}//; # remove { ... {...} ... } first
 		    1 while $core =~ s/\{[^}]+\}//;
 		    if (!defined $vbases{$core}) {
-			# my $csig = ORACC::SL::BaseC::check(undef,$core,1);
-			my $csig = $gdlsigs{$core};
+			# my $csig = ORACC::SL::Tlitsig::sig(undef,$core,1);
+			my $csig = ORACC::SL::Tlitsig::sig(undef,$core,1);
 			if (defined $prisigs{$csig} && !is_allowed($core,$prisigs{$csig})) {
 			    pp_warn("(bases) core $core of base $p should be $prisigs{$csig}");
 			}
@@ -802,14 +775,12 @@ sub v_bases {
 	    my @alts = sort keys %{$vbases{"$p#alt"}};
 	    my $pcode = $vbases{"$p#code"};
 	    foreach my $a (@alts) {
-		my $ped = ORACC::SL::BaseC::pedantic(0);
-		pp_trace("BaseC::check: $a");
-		# my $asig = ORACC::SL::BaseC::check(undef,$a, 1);
-		# ORACC::SL::BaseC::pedantic($ped) if $ped;
-		my $asig = gdlsigs{$a};
-		unless ($lang =~ /qpn/) {
+		my $ped = ORACC::SL::Tlitsig::pedantic(0);
+ 		unless ($lang =~ /qpn/) {
 		    atf_add($a,$lang) if $a;
 		}
+		pp_trace("Tlitsig::sig: $a");
+		my $asig = ORACC::SL::Tlitsig::sig(undef,$a,1);
 		unless (pp_sl_messages()) {
 		    if ($prisig ne $asig) {
 			pp_warn("(bases) primary '$p' and alt '$a' have different signs ($prisig ne $asig)");
@@ -834,6 +805,8 @@ sub v_bases {
 	}
     }
 
+### REDO THIS
+    
     # 4. For compounds, if it isn't in the sign list does it use the right component names?
     #
     # We do this one by collecting all the bases that contain elements with compounds and
@@ -886,7 +859,7 @@ sub xflang {
 
 sub pp_sl_messages {
     my $p = shift || '';
-    my @m = ORACC::SL::BaseC::messages();
+    my @m = ORACC::SL::Tlitsig::messages();
 #    warn "pp_sl_messages p=$p; m = @m\n";
     if ($#m >= 0) {
 	foreach my $m (@m) {
@@ -997,7 +970,7 @@ sub v_form {
 	    }
 	    if ($b) {
 		if ($always_check_base) {
-		    ORACC::SL::BaseC::check('',$b);
+		    ORACC::SL::Tlitsig::sig('',$b);
 		    pp_sl_messages('Q');
 		}
 		if ($is_compound) {
@@ -1016,7 +989,7 @@ sub v_form {
 				# slow but effective check for base match by tlit signature
 				atf_add($b,$lang) if $b;
 				my $tsig = $tlit_sigs{$b};
-				$tsig = $tlit_sigs{$b} = ORACC::SL::BaseC::tlit_sig('',$b)
+				$tsig = $tlit_sigs{$b} = ORACC::SL::Tlitsig::sig('',$b)
 				    unless $tsig;
 				# warn "tsig for $b == $tsig\n";
 				# my $nkeys = scalar keys %{$ORACC::CBD::bases{$curr_cfgw}};
@@ -1024,7 +997,7 @@ sub v_form {
 				foreach my $c (keys %{$ORACC::CBD::bases{$curr_cfgw}}) {
 				    $c =~ s/^\%.*?://;
 				    my $csig = $tlit_sigs{$c};
-				    $csig = $tlit_sigs{$c} = ORACC::SL::BaseC::tlit_sig('',$c)
+				    $csig = $tlit_sigs{$c} = ORACC::SL::Tlitsig::sig('',$c)
 					unless $csig;
 				    # warn "csig for $c == $csig\n";
 				    if ($tsig eq $csig && $b ne $c) {
