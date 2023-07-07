@@ -14,6 +14,7 @@ struct Mloc
 typedef struct Mloc Mloc;
 
 extern const char *phase;
+extern int mesg_no_loc;
 
 extern void mesg_append(const char *a);
 extern void mesg_init(void);

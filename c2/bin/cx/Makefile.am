@@ -25,9 +25,3 @@ AM_CPPFLAGS=\
 	-I../../lem/frm \
 	-I../../nss/gdl \
 	-I../../nss/cbd
-
-cx_SOURCES=
-
-cx_LDADD = $(xLDADD)
-
-cx_DEPENDENCIES = $(cx_LDADD)

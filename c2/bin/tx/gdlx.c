@@ -206,7 +206,7 @@ opts(int opt, char *arg)
       gdl_orig_mode = 1;
       break;
     case 'p':
-      pedantic = 1;
+      gvl_strict = pedantic = 1;
       break;
     case 's':
       signatures = 1;

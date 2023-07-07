@@ -726,6 +726,7 @@ sub v_bases {
 
 	my $psig = ORACC::SL::Tlitsig::sig(undef,$p,1);
 	pp_sl_messages();
+	next unless $psig;
 	
 	# warn ORACC::SL::BaseC::messages(), "\n";
 	if ($psig eq 'q00') {
@@ -757,8 +758,11 @@ sub v_bases {
 		    if (!defined $vbases{$core}) {
 			# my $csig = ORACC::SL::Tlitsig::sig(undef,$core,1);
 			my $csig = ORACC::SL::Tlitsig::sig(undef,$core,1);
-			if (defined $prisigs{$csig} && !is_allowed($core,$prisigs{$csig})) {
-			    pp_warn("(bases) core $core of base $p should be $prisigs{$csig}");
+			pp_sl_messages();
+			if ($csig) {
+			    if (defined $prisigs{$csig} && !is_allowed($core,$prisigs{$csig})) {
+				pp_warn("(bases) core $core of base $p should be $prisigs{$csig}");
+			    }
 			}
 		    }
 		}
@@ -782,12 +786,14 @@ sub v_bases {
 		pp_trace("Tlitsig::sig: $a");
 		my $asig = ORACC::SL::Tlitsig::sig(undef,$a,1);
 		unless (pp_sl_messages()) {
-		    if ($prisig ne $asig) {
-			pp_warn("(bases) primary '$p' and alt '$a' have different signs ($prisig ne $asig)");
+		    if ($asig) {
+			if ($prisig ne $asig) {
+			    pp_warn("(bases) primary '$p' and alt '$a' have different signs ($prisig ne $asig)");
+			}
+			$altsigs{$asig} = $a;
+			$altsigs{"$asig#code"} = $pcode;
+			$altsigs{$a} = $asig;
 		    }
-		    $altsigs{$asig} = $a;
-		    $altsigs{"$asig#code"} = $pcode;
-		    $altsigs{$a} = $asig;
 		}
 	    }
 	}
@@ -989,18 +995,27 @@ sub v_form {
 				# slow but effective check for base match by tlit signature
 				atf_add($b,$lang) if $b;
 				my $tsig = $tlit_sigs{$b};
-				$tsig = $tlit_sigs{$b} = ORACC::SL::Tlitsig::sig('',$b)
-				    unless $tsig;
+				unless ($tsig) {
+				    $tsig = ORACC::SL::Tlitsig::sig('',$b);
+				    if ($tsig) {
+					$tlit_sigs{$b} = $tsig;
+				    }
+				}
 				# warn "tsig for $b == $tsig\n";
 				# my $nkeys = scalar keys %{$ORACC::CBD::bases{$curr_cfgw}};
 				# warn "curr_cfgw == $curr_cfgw; nkeys = $nkeys\n";
 				foreach my $c (keys %{$ORACC::CBD::bases{$curr_cfgw}}) {
 				    $c =~ s/^\%.*?://;
 				    my $csig = $tlit_sigs{$c};
-				    $csig = $tlit_sigs{$c} = ORACC::SL::Tlitsig::sig('',$c)
-					unless $csig;
+				    unless ($csig) {
+					$csig = ORACC::SL::Tlitsig::sig('',$c);
+					if ($csig) {
+					    $tlit_sigs{$c} = $csig;
+					}
+				    }
+				    
 				    # warn "csig for $c == $csig\n";
-				    if ($tsig eq $csig && $b ne $c) {
+				    if ($tsig && $csig && $tsig eq $csig && $b ne $c) {
 					$c =~ s/^\#//;
 					pp_warn "form's BASE $b should be $c";
 					$warned = 1;

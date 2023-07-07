@@ -122,6 +122,7 @@ static void
 helper_mode(void)
 {
   error_stdout = 1;
+  mesg_no_loc = 1;
   mesg_prefix(">>");
   gvl_sans_report = 1;
 }
@@ -185,7 +186,7 @@ opts(int opt, char *arg)
       gdl_orig_mode = 1;
       break;
     case 'p':
-      pedantic = 1;
+      gvl_strict = pedantic = 1;
       break;
     case 'r':
       gvl_sans_report = 1;

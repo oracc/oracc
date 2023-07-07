@@ -17,6 +17,7 @@
  ***********************************************/
 
 const char *phase = NULL;
+int mesg_no_loc = 0;
 static const char *mesg_prefix_string = NULL;
 static Pool *msgpool;
 static List *mesg_list;
@@ -126,7 +127,10 @@ mesg_err(Mloc *locp, const char *s)
       loc = mesg_loc(locp);
       need = snprintf(NULL, 0, "%s: %s\n", loc, s);
       e = malloc(need + 1 + 1); /* always allocate space for an extra \n */
-      sprintf(e, "%s: %s\n", loc, s);
+      if (!mesg_no_loc)
+	sprintf(e, "%s: %s\n", loc, s);
+      else
+	sprintf(e, "%s\n", s);
       mesg_add((char*)pool_copy((ucp)nl(e), msgpool));
       free(e);
       free(loc);
@@ -145,7 +149,10 @@ mesg_averr(Mloc *locp, const char *s, va_list ap)
   need = vsnprintf(NULL, 0, s, ap);
   need += strlen(loc) + 3 + 1; /* always allocate space for an extra \n */
   e = malloc(need);
-  sprintf(e, "%s: ", loc);
+  if (!mesg_no_loc)
+    sprintf(e, "%s: ", loc);
+  else
+    *e = '\0';
   free(loc);
   vsprintf(e+strlen(e), s, ap2);
   va_end(ap2);

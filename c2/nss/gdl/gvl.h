@@ -42,6 +42,7 @@ typedef struct gvl_i gvl_i;
 #define QFIX (q_fixed ? (ccp)q_fixed : "")
 
 extern int gvl_sans_report;
+extern int gvl_strict;
 
 extern gvl_i *curr_sl;
 

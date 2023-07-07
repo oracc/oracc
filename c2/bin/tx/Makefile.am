@@ -1,6 +1,7 @@
 include ../../../oracc-am-rules.txt
 
-noinst_PROGRAMS=catx gdlx
+noinst_PROGRAMS=catx
+bin_PROGRAMS=gdlx
 
 xLDADD=\
 	../../lib/cat/libcat.la \

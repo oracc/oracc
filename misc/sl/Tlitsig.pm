@@ -7,6 +7,8 @@ binmode STDERR, ':utf8';
 
 use Fcntl;
 
+my $loaded = 0;
+my @messages = ();
 my $pedantic = 0;
 
 sub
@@ -19,7 +21,8 @@ init {
 	die "ORACC::SL::BaseC: signlist data $tsv_file non-existent or unreadable\n";
     }
     eval {
-	open2(\*SL_OUT, \*SL_IN, "@@ORACC@@/bin/tlitsig -h");
+	my $p = ($pedantic ? "p" : "");
+	open2(\*SL_OUT, \*SL_IN, "@@ORACC@@/bin/tlitsig -h$p");
     };
     if ($@) {
 	die "tlitsig: $@\n";
@@ -48,7 +51,7 @@ sub pedantic {# return the previous value
 sub sig {
     my($context,$test) = @_;
     my $s = tlitsigx($test);
-    if ($s =~ /q/ && $test =~ /\|/) {
+    if ($s && $s =~ /q/ && $test =~ /\|/) {
 	$test =~ tr/|//d;
 	$s = tlitsigx($test);
     }
@@ -65,10 +68,11 @@ term {
 sub
 tlitsigx {
     print SL_IN "$_[0]\n";
+    my $res = undef;
     while (1) {
-	my $res = <SL_OUT>;
-	if ($res =~ s/^>>//) { # error message
-	    $res =~ s/^.*?:\s+//;
+	$res = <SL_OUT>;
+	if ($res && $res =~ s/^>>//) { # error message
+	    $res =~ s/^.*?:\s+//; chomp($res);
 	    ### FIXME: add context somehow
 	    push @messages, $res;
 	} else {
