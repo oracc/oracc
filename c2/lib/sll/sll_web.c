@@ -1,25 +1,178 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <wchar.h>
+#include <wctype.h>
+#include <locale.h>
 
+#include <oraccsys.h>
+#include <pool.h>
+#include <dbi.h>
+#include <gutil.h>
+#include "sll.h"
 
-struct sllparts *
-sll_split(const char *sc)
+struct sllparts
 {
-  char *s = strdup(sc);
-  while (*s)
+  const char *id;
+  const char *sn;
+  const char *v;
+};
+
+/* Web variables used when called from url-resolver */
+const char *wcaller;
+const char *wext;
+const char *wsign;
+const char *wproject;
+
+static void sll_esp_output(List *lp);
+static void sll_esp_ext(const char *key, const char *ext, List *lp);
+static void sll_esp_header(const char *v, const char *ext);
+static void sll_esp_trailer(void);
+static void sll_esp_p(const char *oid, const char *sn, const char *v, const char *p);
+static void sll_web_error(const char *err);
+static void sll_web_output(List *lp);
+static void sll_uri_output(List *lp);
+static void sll_sign_frame(const char *oid);
+static void sll_open_frame_divs(void);
+static void sll_inter_frame_divs(void);
+static void sll_close_frame_divs(void);
+static void sll_html_header(void);
+static void sll_html_p(const char *id, const char *sn, const char *v, const char *p);
+static void sll_html_trailer(void);
+static struct sllparts *sll_split(const char *sc);
+
+void
+sll_web_handler(const char *wcaller, const char *wextension, const char *wgrapheme, const char *wproject)
+{
+  struct sllext *ep = NULL;
+  if (wextension && !(ep = sllext(wextension, strlen(wextension))))
+    sll_web_error("error");
+  else
     {
-      if (*s == 'o' && isdigit(s[1]))
-	id = s;
-      else if (sll_has_sign_indicator(*s))
-	sn = s;
+      Dbi_index *dbi = sll_init_d(wproject, NULL);
+      sll_web_output(sll_resolve((uccp)wgrapheme, wextension, ep));
+      sll_term_d(dbi);
+    }
+  fflush(stdout);
+  exit(0);
+}
+
+static void
+sll_web_error(const char *err)
+{
+  fprintf(stderr, "%s\n", err);
+}
+
+static void
+sll_web_output(List *lp)
+{
+  if (lp && list_len(lp))
+    {
+      if (!strcmp(wcaller, "esp"))
+	sll_esp_output(lp);
       else
-	v = s;
-      while (*s && '\t' != *s)
-	++s;
-      if (*s)
-	*s++ = '\t';
+	sll_uri_output(lp);
+    }
+  else
+    {
+      if (!strcmp(wgrapheme, "#none"))
+	{
+	  sll_html_header();
+	  sll_sign_frame("");
+	  sll_html_trailer();
+	}
+      else
+	{
+	  sll_html_header();
+	  printf("<p class=\"nomatch\">No matches</p>");
+	  sll_html_trailer();
+	}
     }
 }
 
-void
+/********************************************************************
+ *** Routines to respond to a FORM query from an esp-based signlist
+ ********************************************************************/
+
+static void
+sll_esp_output(List *lp)
+{
+  if (wextension)
+    sll_esp_ext(wgrapheme, wextension, lp);
+  else
+    {
+      const char *letter = NULL, *oid = NULL;
+      char *html = NULL;
+      oid = list_first(lp);
+      letter = (ccp)sll_lookup(sll_tmp_key((uccp)oid, "let"));
+      html = malloc(strlen(wproject) + strlen(letter) + strlen(oid) + strlen("//signlist///index.html") + 1);
+      sprintf(html, "/%s/signlist/%s/%s/index.html", wproject, letter, oid);
+      printf("Status: 302 Found\nLocation: %s\n\n", html);
+    }
+}
+
+static void
+sll_esp_ext(const char *key, const char *ext, List *lp)
+{
+  char *r;
+  int i = 0;
+  sll_esp_header(key,ext);
+  for (r = list_first(lp); r; r = list_next(lp))
+    {
+      char *s = r;
+      const char *p = "";
+      struct sllparts *sp = NULL;
+      if (i++)
+	p = ";";
+      sp = sll_split(s);
+      sll_esp_p(sp->id, sp->sn, sp->v, p);
+    }
+  sll_esp_trailer();
+}
+
+static void
+sll_esp_header(const char *v, const char *ext)
+{
+  char *vcat = NULL;
+  struct sllext *ep = sllext(ext, strlen(ext));
+  vcat = malloc(strlen(v) + strlen(ep->pre) + strlen(ep->pst) + 1);
+  (void)sprintf(vcat, "%s%s%s", ep->pre, v, ep->pst);
+  printf("%s\n\n", "Content-type: text/html; charset=utf-8");
+  printf("%s\n", "<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"sux\" xml:lang=\"sux\">");
+  printf("%s\n", "<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
+  printf("<title>OGSL Results for %s</title>\n", vcat);
+  printf("%s\n", "<link rel=\"shortcut icon\" type=\"image/ico\" href=\"/favicon.ico\" />");
+  printf("%s\n", "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/p3.css\" />");
+  printf("%s\n", "<script src=\"/js/p3.js\" type=\"text/javascript\"><![CDATA[ ]]></script>");
+  printf("%s\n", "</head><body class=\"ogslres\">");
+  printf("<h1 class=\"ogslres\">%s</h1>\n", vcat);
+  free(vcat);
+}
+
+static void
+sll_esp_trailer(void)
+{
+  printf("%s\n", "</body></html>");
+}
+
+static void
+sll_esp_p(const char *oid, const char *sn, const char *v, const char *p)
+{
+  const char *vx = (v ? "&#xa0;=&#xa0;" : "");
+  const char *pspan = (p ? "<span class=\"ogsl-punct\">;</span>" : "");
+  char html[1024];
+  const char *letter = (ccp)sll_lookup(sll_tmp_key((uccp)oid,"d"));
+  (void)sprintf(html, "/%s/signlist/%s/%s/index.html", wproject, letter, oid);
+  printf("<p><a target=\"slmain\" href=\"%s\">%s<span class=\"sign\">%s</span></a>%s</p>\n",
+	 html, vx, sn, pspan);
+}
+
+/********************************************************************
+ *** Routines to respond to a URI-based request; not supported yet
+ ********************************************************************/
+
+static void
 sll_uri_output(List *lp)
 {
   if (wextension)
@@ -27,27 +180,145 @@ sll_uri_output(List *lp)
       const char *v = NULL;
       const char *first_id = NULL;
       int i = 0;
+      Hash *seen = hash_create(1);
+      
       sll_html_header();
       for (v = list_first(lp); v; v = list_next(lp))
 	{
-	  const char *p = (i++ ? "; " : "");
-		  
-#if 0
-	  /* In the perl version this line eliminated duplicates like a₆ occurring 4 times because of the U variants */
-	  next if $known{$s}++;
-#endif
-	  if (!first_id)
-	    first_id = oid;
-	  sll_html_p(oid,sn,v,p);
+	  struct sllparts *sp = sll_split(v);
+	  if (!hash_find(seen, (uccp)sp->v))
+	    {
+	      const char *p = (i++ ? "; " : "");
+	      hash_add(seen, (uccp)sp->v, "");
+	      if (!first_id)
+		first_id = sp->id;
+	      sll_html_p(sp->id,sp->sn,sp->v,p);
+	    }
 	}
-      if (!strstr(project, "epsd2"))
-	sign_frame(first_id);
-      html_trailer();
+      if (!strstr(wproject, "epsd2"))
+	sll_sign_frame(first_id);
+      sll_html_trailer();
     }
   else
     {
-      html_header();
-      sign_frame(oid);
-      html_trailer();
+      sll_html_header();
+      sll_sign_frame(list_first(lp));
+      sll_html_trailer();
     }
+}
+
+/* WHAT DOES IT MEAN TO CALL THIS WITH A "" ARG ? */
+static void
+sll_sign_frame(const char *oid)
+{
+  sll_inter_frame_divs();
+  printf("<iframe seamless=\"seamless\" class=\"sign-frame\" id=\"signframe\" src=\"/%s/signs/%s.html\"> </iframe>", wproject, oid);
+  sll_close_frame_divs();
+}
+
+static void
+sll_open_frame_divs(void)
+{
+  printf("<div name=\"ogsltop\" id=\"ogsltop\">");
+}
+
+static void
+sll_inter_frame_divs(void)
+{
+  printf("</div><div name=\"ogsl-body\" id=\"ogslbody\">");
+}
+
+static void
+sll_close_frame_divs(void)
+{
+  printf("</div>");
+}
+
+static void
+sll_html_header(void)
+{
+  char *vcat = NULL;
+  const char *ext = wextension;
+  if (wextension)
+    {
+#if 0 /* WHAT WAS THIS SUPPOSED TO DO IN PERL VERSION */
+      const char *sn = NULL;
+      if (!strcmp(wextension, "forms"))
+	vcat = wgrapheme;
+      else if (signlist_hack)
+	ext = "signlist";
+#endif
+      struct sllext *ep = sllext(ext, strlen(ext));
+      vcat = malloc(strlen(ep->pre)+strlen(ep->pst)+strlen(wgrapheme)+1);
+      sprintf(vcat, "%s%s%s", ep->pre, wgrapheme, ep->pst);
+    }
+  
+  printf("Content-type: text/html; charset=utf-8\n\n");
+  printf("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+  printf("<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"sux\" xml:lang=\"sux\">\n");
+  printf("<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n");
+  printf("<title>OGSL Results for %s</title>\n", vcat);
+  printf("<link rel=\"shortcut icon\" type=\"image/ico\" href=\"/favicon.ico\" />\n");
+  printf("<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/cbd.css\" />\n");
+  printf("<script src=\"/js/cbd.js\" type=\"text/javascript\"><![CDATA[ ]]></script>\n");
+  printf("<!-- Google tag (gtag.js) -->\n");
+  printf("<script async=\"async\" src=\"https://www.googletagmanager.com/gtag/js?id=G-0QKC3P5HJ1\"></script>\n");
+  printf("<script>\n");
+  printf("  window.dataLayer = window.dataLayer || [];\n");
+  printf("  function gtag(){dataLayer.push(arguments);}\n");
+  printf("  gtag('js', new Date());\n\n");
+  printf("  gtag('config', 'G-0QKC3P5HJ1');\n");
+  printf("</script>\n");
+  printf("</head><body>\n");
+
+  if (wextension)
+    {
+      if (!strstr(wproject, "epsd2"))
+	sll_open_frame_divs();
+      printf("<h1 class=\"ogslres\">%s</h1>\n", vcat);
+    }
+  free(vcat);
+}
+
+static void
+sll_html_trailer(void)
+{
+  printf("</body></html>\n");
+}
+
+static void
+sll_html_p(const char *id, const char *sn, const char *v, const char *p)
+{
+  const char *vx = (v ? "&#xa0;=&#xa0;" : "");
+  const char *pspan = "";
+  if (p)
+    {
+      if (strstr(wproject, "epsd2"))
+	pspan = "<br/>";
+      else
+	pspan = "<span class=\"ogsl-punct\">;</span>";
+    }
+  printf("<a href=\"javascript:showsign('%s','%s')\">%s<span class=\"sign\">%s</span></a>%s\n", wproject, id, vx, sn, pspan);
+}
+
+static struct sllparts *
+sll_split(const char *sc)
+{
+  char *s = strdup(sc);
+  static struct sllparts sp;
+  memset(&sp, 1, sizeof(struct sllparts));
+  while (*s)
+    {
+      if (*s == 'o' && isdigit(s[1]))
+	sp.id = s;
+      else if (sll_has_sign_indicator((uccp)s))
+	sp.sn = s;
+      else
+	sp.v = s;
+      while (*s && '\t' != *s)
+	++s;
+      if (*s)
+	*s++ = '\t';
+    }
+  return &sp;
 }

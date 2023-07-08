@@ -70,7 +70,7 @@ List *
 sll_get_one(const char *k)
 {
   List *r = list_create(LIST_SINGLE);
-  list_add(r, (void*)sll_lookup(k));
+  list_add(r, (void*)sll_lookup((uccp)k));
   return r;
 }
 
@@ -78,7 +78,7 @@ List *
 sll_get_one_n(const char *k)
 {
   List *r = list_create(LIST_SINGLE);
-  list_add(r, (void*)sll_get_name(k));
+  list_add(r, (void*)sll_get_name((ucp)k));
   return r;
 }
 
@@ -86,7 +86,7 @@ List *
 sll_get_one_o(const char *k)
 {
   List *r = list_create(LIST_SINGLE);
-  list_add(r, (void*)sll_get_oid(k));
+  list_add(r, (void*)sll_get_oid((ucp)k));
   return r;
 }
 

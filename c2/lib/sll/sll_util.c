@@ -10,10 +10,65 @@
 
 static int signindicator[256];
 
-extern int sll_trace;
-extern Hash *sll_sl;
-extern const char *oracc;
-extern Pool *sllpool;
+int sll_raw_output = 0;
+int sll_trace = 0;
+const char *oracc = NULL;
+Pool *sllpool = NULL;
+Hash *sll_sl = NULL;
+Dbi_index *sll_db = NULL;
+
+unsigned const char *
+sll_lookup(unsigned const char *key)
+{
+  if (sll_sl)
+    return sll_lookup_t(key);
+  else
+    return sll_lookup_d(sll_db, key);
+}
+
+List *
+sll_resolve(unsigned const char *g, const char *e, struct sllext *ep)
+{
+  List *r = NULL;
+  if (ep)
+    r = ep->fnc((ccp)g);
+  else
+    r = sll_get_one((ccp)g);
+  if (list_len(r))
+    return r;
+  else
+    {
+      list_free(r, NULL);
+      return NULL;
+    }
+}
+
+unsigned const char *
+sll_ext_check(unsigned const char *k, enum sll_t t)
+{
+  if (t == SLL_ID)
+    {
+      if (*k == 'o' && isdigit(k[1]))
+	return k;
+      else
+	return sll_lookup(k);
+    }
+  else if (t == SLL_SN)
+    {
+      if (sll_has_sign_indicator(k))
+	return k;
+      else
+	{
+	  unsigned const char *oid = sll_lookup(k);
+	  if (oid)
+	    return sll_lookup(oid);
+	  else
+	    return NULL;
+	}
+    }
+  else
+    return k;
+}
 
 /* Every sign name has at least one of these uppercase letters--this
    is validated by sl-xml */
