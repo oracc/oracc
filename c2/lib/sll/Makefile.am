@@ -6,5 +6,6 @@ AM_CPPFLAGS=-I../include \
 
 noinst_LTLIBRARIES=libsll.la
 
-libsll_la_SOURCES=$(SLLSRCS) sll.c sll_dbi.c sll_tsv.c sll_util.c sllext.c sll_get.c
+libsll_la_SOURCES=sll.c sll_dbi.c sll_tsv.c sll_util.c sllext.c sll_get.c sll-esp.c sll-html.c
+
 

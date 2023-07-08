@@ -6,9 +6,15 @@
 
 typedef List *(sll_get_fnc)(const char *key);
 
+enum sll_t { ID, SN };
+
 struct sllext
 {
   const char *name;
+  const char *ext;
+  const char *pre;
+  const char *pst;
+  enum sll_t type;
   sll_get_fnc *fnc;
 };
 
