@@ -6,7 +6,7 @@
 
 typedef List *(sll_get_fnc)(const char *key);
 
-enum sll_t { ID, SN };
+enum sll_t { SLL_ANY, SLL_ID, SLL_SN };
 
 struct sllext
 {
@@ -21,6 +21,8 @@ struct sllext
 extern int sll_raw_output;
 extern int sll_trace;
 
+extern const char *wcaller, *wextension, *wgrapheme, *wproject;
+
 extern Hash *sll_init_t(const char *project, const char *name);
 extern void sll_term_t(Hash *h);
 
@@ -30,7 +32,8 @@ extern void sll_term_d(Dbi_index *d);
 extern int sll_has_sign_indicator(unsigned const char *g);
 extern void sll_init_si(void);
 
-extern void sll_handle(unsigned const char *key);
+extern void sll_cli_handler(unsigned const char *key);
+extern void sll_web_handler(unsigned const char *key);
 extern unsigned char *sll_strip_pp(unsigned const char *g);
 extern unsigned char *sll_snames_of(unsigned const char *oids);
 extern unsigned const char *sll_lookup(unsigned const char *key);

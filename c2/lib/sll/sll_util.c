@@ -90,7 +90,7 @@ sll_strip_pp(unsigned const char *g)
 int
 sll_has_sign_indicator(unsigned const char *g)
 {
-  while (*g)
+  while (*g && !isspace(*g))
     {
       if (signindicator[*g])
 	return 1;

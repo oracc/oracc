@@ -1,4 +1,18 @@
 
+void
+sll_esp_output(List *lp)
+{
+  if (wextension)
+    sll_esp_ext(List *lp);
+  else
+    {
+      const char *letter = sll_lookup(sll_tmp_key(oid, "let"));
+      char *html = malloc(strlen(wproject) + strlen(letter) + strlen(oid) + strlen("//signlist///index.html") + 1);
+      sprintf(html, "/%s/signlist/%s/%s/index.html", wproject, letter, oid);
+      printf("Status: 302 Found\nLocation: %s\n\n", html);
+    }
+}
+
 #if 0
     if ($caller eq 'esp') {
 	my $pr1 = $pr;
@@ -30,20 +44,8 @@ sll_esp_ext(const char *key, const char *ext, List *lp)
 	p = ";";
       else
 	p = "";
-      while (*s)
-	{
-	  if (*s == 'o' && isdigit(s[1]))
-	    id = s;
-	  else if (islower(*s))
-	    v = s;
-	  else
-	    sn = s;
-	  while (*s && '\t' != *s)
-	    ++s;
-	  if (*s)
-	    *s++ = '\t';
-	}
-      sll_esp_p(id, sn, v, p);
+      sp = sll_split(s);
+      sll_esp_p(sp->id, sp->sn, sp->v, p);
     }
   sll_esp_trailer();
 }

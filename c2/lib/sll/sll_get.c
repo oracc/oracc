@@ -67,6 +67,30 @@ sll_get_list(const char *k)
 }
 
 List *
+sll_get_one(const char *k)
+{
+  List *r = list_create(LIST_SINGLE);
+  list_add(r, (void*)sll_lookup(k));
+  return r;
+}
+
+List *
+sll_get_one_n(const char *k)
+{
+  List *r = list_create(LIST_SINGLE);
+  list_add(r, (void*)sll_get_name(k));
+  return r;
+}
+
+List *
+sll_get_one_o(const char *k)
+{
+  List *r = list_create(LIST_SINGLE);
+  list_add(r, (void*)sll_get_oid(k));
+  return r;
+}
+
+List *
 sll_get_h(const char *k)
 {
   const char *h = (ccp)sll_lookup(sll_tmp_key((uccp)k, "h"));

@@ -23,22 +23,104 @@ Pool *sllpool = NULL;
 Hash *sll_sl = NULL;
 Dbi_index *sll_db = NULL;
 
+/* Web variables */
+
+const char *wcaller;
+const char *wext;
+const char *wsign;
+const char *wproject;
+
+static unsigned const char *sll_ext_check(unsigned const char *k, enum sll_t t);
+static List *sll_resolve(unsigned const char *g, const char *e, struct sllext *ep);
+
 void
-sll_output(List *lp)
+sll_web_error(const char *err)
 {
-  const char *d = NULL;
-  for (d = list_first(lp); d; d = list_next(lp))
-    printf("%s\n", d);
+  fprintf(stderr, "%s\n", err);
 }
 
 void
-sll_handle(unsigned const char *key)
+sll_web_output(List *lp)
 {
-  unsigned const char *res = sll_lookup(key);
-  if (sll_raw_output)
-    printf("%s\t%s\n", key, res);
+  if (lp && list_len(lp))
+    {
+      if (!strcmp(wcaller, "esp"))
+	sll_esp_output(lp);
+      else
+	sll_uri_output(lp);
+    }
   else
-    sll_output(sll_resolve(key, res));
+    {
+      if (!strcmp(wgrapheme, "#none"))
+	{
+	  sll_html_header();
+	  sll_sign_frame("");
+	  sll_html_trailer();
+	}
+      else
+	{
+	  sll_html_header();
+	  printf("<p class=\"nomatch\">No matches</p>");
+	  sll_html_trailer();
+	}
+    }
+}
+
+void
+sll_web_handler(const char *wcaller, const char *wextension, const char *wgrapheme, const char *wproject)
+{
+  struct sllext *ep = NULL;
+  if (wextension && !(ep = sllext(wextension, strlen(wextension))))
+    sll_web_error("error");
+  else
+    {
+      Dbi_index *dbi = dbi_init(wproject, NULL);
+      sll_web_output(sll_resolve(wgrapheme, wextension, ep));
+      dbi_term(dbi);
+    }
+  fflush(stdout);
+  exit(0);
+}
+
+void
+sll_cli_error(const char *err)
+{
+  fprintf(stderr, "%s\n", err);
+}
+
+void
+sll_cli_output(List *lp)
+{
+  if (lp)
+    {
+      const char *d = NULL;
+      for (d = list_first(lp); d; d = list_next(lp))
+	printf("%s\n", d);
+    }
+}
+
+void
+sll_cli_handler(unsigned const char *key)
+{
+  if (sll_raw_output)
+    {
+      unsigned const char *res = sll_lookup(key);
+      printf("%s\t%s\n", key, res);
+    }
+  else
+    {
+      struct sllext *ep = NULL;
+      List *lp = NULL;
+      const unsigned char *g = NULL, *e = NULL;
+      g = strdup(key);
+      if ((e = strchr(key, ';')))
+	*e++ = '\0';
+      if (e && !(ep = sllext(e, strlen(e))))
+	sll_cli_error("error");
+      else
+	sll_cli_output(sll_resolve(g, e, ep));
+      free(g);
+    }
 }
 
 unsigned const char *
@@ -50,43 +132,14 @@ sll_lookup(unsigned const char *key)
     return sll_lookup_d(sll_db, key);
 }
 
-List *
-sll_resolve(unsigned const char *key, unsigned const char *res)
+static List *
+sll_resolve(unsigned const char *g, const char *e, struct sllext *ep)
 {
-  List *r = list_create(LIST_SINGLE);
-  const char *semi = NULL;
-  if (!res)
-    {
-      if ((semi = strchr((ccp)key, ';')))
-	{
-	  ++semi;
-	  if (!strcmp(semi, "name"))
-	    list_add(r, (void*)sll_get_name(sll_tmp_key(key,"")));
-	  else if (!strcmp(semi, "oid"))
-	    list_add(r, (void*)sll_get_oid(sll_tmp_key(key,"")));
-	  else
-	    ;
-	}
-    }
+  List *r = NULL;
+  if (ep)
+    r = ep->fnc(g);
   else
-    {
-      if ((semi = strchr((ccp)key, ';')))
-	{
-	  struct sllext *s = NULL;
-	  ++semi;
-	  if ((s = sllext((ccp)semi, strlen((ccp)semi))))
-	    {
-	      List *slp = s->fnc((ccp)key);
-	      if (slp)
-		{
-		  list_free(r, NULL);
-		  r = slp;
-		}
-	    }
-	}
-      else
-	list_add(r, (void*)sll_get_oid((ucp)key));
-    }
+    r = sll_get_one(g);
   if (list_len(r))
     return r;
   else
@@ -95,3 +148,29 @@ sll_resolve(unsigned const char *key, unsigned const char *res)
       return NULL;
     }
 }
+
+static unsigned const char *
+sll_ext_check(unsigned const char *k, enum sll_t t)
+{
+  if (t == SLL_ID)
+    {
+      if (*k == 'o' && isdigit(k[1]))
+	return k;
+      else
+	return sll_lookup(k);
+    }
+  else if (t == SLL_SN)
+    {
+      if (sll_has_sign_indicator(k))
+	return k;
+      else
+	{
+	  const char *oid = sll_lookup(k);
+	  if (oid)
+	    return sll_lookup(oid);
+	  else
+	    return NULL;
+	}
+    }
+}
+

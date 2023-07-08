@@ -1,54 +1,7 @@
 
-    if ($ext) {
-	html_header();
-	my %known = ();
-	my $first_id = undef;
-	my @ss = split(/\s+/,$pr);
-	for (my $i = 0; $i <= $#ss; ++$i) {
-	    my $s = $ss[$i];
-	    my $punct = ($i < $#ss ? ';' : '');
-	    next if $known{$s}++;
-	    if ($s =~ m,/,) {
-		my ($id,$n) = ($s =~ m,^(.*?)/(.*?)$,);
-		$first_id = $id unless $first_id;
-		if ($n =~ /^~[a-z]+/) {
-		    # do nothing
-		} else {
-		    if ($n >= 1000) {
-			$n = 'x';
-		    } elsif ($n == 0) {
-			$n = '';
-		    }
-		}
-		my $sn = slse("$id\;name");
-		my $vh = $v;
-		if (is_signlist($vh)) {
-		    printhtml($id,$sn,"$vh$n",$punct);
-		} else {
-		    printhtml($id,$sn,"$vh<sub>$n</sub>",$punct);
-		}
-	    } else {
-		my $sn = slse("$s;name");
-		printhtml($s,$sn);
-	    }
-	}
-	sign_frame($first_id) unless $project eq 'epsd2';
-	html_trailer();
-    } else {
-	$pr =~ s/\s+.*$//;
-	html_header();
-	sign_frame($pr);
-	html_trailer();
-    }
-} elsif ($grapheme eq '#none') {
-    html_header();
-    sign_frame('');
-    html_trailer();
-} else {
-    html_header();
-    print '<p class="nomatch">No matches</p>';
-    html_trailer();
-}
+void
+sll_html(List *lp, const char *oid, const char *key, const char *sn, const char *ext)
+{
 
 ##############################################################################
 

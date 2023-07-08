@@ -91,5 +91,9 @@ sl(char *ctext)
     do404();
 
   /* run signlist UI */
+#ifdef SLL2
+  execl("@@ORACC_BUILDS@@/bin/slx", "slx", "-C", caller, "-P", project, "-E", extension, "-G", grapheme, NULL);
+#else
   execl("/usr/bin/perl", "perl", "@@ORACC_BUILDS@@/bin/slse-slave.plx", "-caller", caller, "-project", project, "-extension", extension, "-grapheme", grapheme, NULL);
+#endif
 }
