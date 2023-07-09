@@ -17,6 +17,20 @@ Pool *sllpool = NULL;
 Hash *sll_sl = NULL;
 Dbi_index *sll_db = NULL;
 
+const char *correctedg = NULL;
+
+void
+sll_init(void)
+{
+  sllpool = pool_init();
+}
+
+void
+sll_term(void)
+{
+  pool_term(sllpool);
+}
+
 unsigned const char *
 sll_lookup(unsigned const char *key)
 {
@@ -31,9 +45,15 @@ sll_resolve(unsigned const char *g, const char *e, struct sllext *ep)
 {
   List *r = NULL;
   if (ep)
-    r = ep->fnc((ccp)g);
+    {
+      correctedg = (ccp)pool_copy((uccp)sll_ext_check(g, ep->type),sllpool);
+      r = ep->fnc((ccp)correctedg);
+    }
   else
-    r = sll_get_one((ccp)g);
+    {
+      correctedg = (ccp)pool_copy((uccp)g,sllpool);
+      r = sll_get_one((ccp)g);
+    }
   if (list_len(r))
     return r;
   else
@@ -97,7 +117,7 @@ sll_set_sl(Hash *sl)
 unsigned char *
 sll_strip_pp(unsigned const char *g)
 {
-  unsigned char *no_p = (ucp)strdup((ccp)g), *end;
+  unsigned char *no_p = (ucp)pool_copy((uccp)g,sllpool), *end;
   unsigned const char *orig = g;
   end = no_p;
   while (*g)
@@ -170,7 +190,7 @@ sll_tmp_key(unsigned const char *key, const char *field)
 	  *tk++ = ';';
 	  strcpy(tk,field);
 	}
-      return (ucp)tmpkey;
+      return pool_copy( (ucp)tmpkey,sllpool);
     }
   else
     return NULL;
@@ -187,7 +207,7 @@ sll_v_from_h(const unsigned char *b, const unsigned char *qsub)
       int qsub_i = atoi((ccp)qsub);
       if (qsub_i >= 0)
 	{
-	  unsigned char *ret = malloc(strlen((ccp)b)+7);
+	  unsigned char *ret = pool_alloc( strlen((ccp)b)+7,sllpool);
 	  int tens = qsub_i / 10;
 	  int unit = qsub_i % 10;
 	  const char *tensp = NULL, *unitp = g_sub_of(unit);
@@ -219,21 +239,20 @@ sll_try_h(const char *oid, unsigned const char *g)
     {
       if ((p = (ucp)strstr((ccp)h, oid)))
 	{
-	  unsigned char *p2 = NULL, *p_end = (ucp)strchr((char*)p,' '), *p_slash = NULL, *free1 = NULL, *free2 = NULL;
+	  unsigned char *p2 = NULL, *p_end = (ucp)strchr((char*)p,' '), *p_slash = NULL;
 	  if (p_end)
 	    {
-	      p2 = free2 = malloc((p_end-p) + 1);
+	      p2 = pool_alloc( (p_end-p) + 1,sllpool);
 	      strncpy((char*)p2,(char*)p,p_end-p);
 	      p2[p_end-p] = '\0';
 	    }
 	  else
 	    {
-	      p2 = malloc(strlen((char*)p) + 1);
-	      strcpy((char*)p2,(char*)p);
+	      p2 = pool_copy((uccp)p,sllpool);
 	    }
 	  if ((p_slash = (ucp)strchr((ccp)p2,'/')))
 	    {
-	      p = free1 = sll_v_from_h((uccp)b, (uccp)p_slash+1);
+	      p = sll_v_from_h((uccp)b, (uccp)p_slash+1);
 	      if (!p)
 		{
 		  fprintf(stderr, "sll: internal error in data: sll_from_h failed on %s\n", p_slash);
@@ -242,8 +261,6 @@ sll_try_h(const char *oid, unsigned const char *g)
 	    }
 	  else
 	    p = b;
-	  if (free2)
-	    free(free2);
 	}
     }
   return p;
@@ -255,7 +272,7 @@ unsigned char *
 sll_snames_of(unsigned const char *oids)
 {
   List *l = list_create(LIST_SINGLE);
-  unsigned char *xoids = (ucp)strdup((ccp)oids), *xoid, *x, *ret;
+  unsigned char *xoids = (ucp)pool_copy((uccp)oids,sllpool), *xoid, *x, *ret;
   x = xoids;
   while (*x)
     {
@@ -268,6 +285,5 @@ sll_snames_of(unsigned const char *oids)
     }
   ret = list_concat(l);
   list_free(l,NULL);
-  free(xoids);
   return ret;
 }

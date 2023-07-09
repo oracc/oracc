@@ -27,14 +27,16 @@ sll_cli_handler(unsigned const char *key)
     {
       struct sllext *ep = NULL;
       unsigned char *g = NULL, *e = NULL;
-      g = (ucp)strdup((ccp)key);
-      if ((e = (ucp)strchr((ccp)key, ';')))
+      g = (ucp)pool_copy(key, sllpool);
+      if ((e = (ucp)strchr((ccp)g, ';')))
 	*e++ = '\0';
+      wgrapheme = (ccp)g;
+      wextension = (ccp)e;
       if (e && !(ep = sllext((ccp)e, strlen((ccp)e))))
 	sll_cli_error("error");
       else
 	sll_cli_output(sll_resolve((uccp)g, (ccp)e, ep));
-      free(g);
+      /*free(g);*/ /* NEED TO FREE AT END if !caller free(wgrapheme) */
     }
 }
 

@@ -39,7 +39,6 @@ sll_kstrip(void *k)
 	    fprintf(stderr, "sll: internal error: no OID for key %s stripped to %s\n", (const char *)k, ks);
 	}
     }
-  free(ks);
 }
 
 Hash *
@@ -49,8 +48,8 @@ sll_init_t(const char *project, const char *name)
   unsigned char *tsv_data = NULL, *p;
   ssize_t fsiz;
 
+  sll_init();
   sll_init_si();
-  sllpool = NULL;
 
   /* Figure out the db and open it */
   if (!project)
@@ -60,7 +59,7 @@ sll_init_t(const char *project, const char *name)
     name = "ogsl";
 
   oracc = oracc_home();
-  tsv_file = malloc(strlen(oracc)+strlen("/pub/sl/") + strlen(project) + strlen("/sl.tsv") + 1);
+  tsv_file = (char *)pool_alloc(strlen(oracc)+strlen("/pub/sl/") + strlen(project) + strlen("/sl.tsv") + 1, sllpool);
   sprintf(tsv_file, "%s/pub/%s/sl/sl.tsv", oracc, project);
 
   tsv_data = slurp("sll", tsv_file, &fsiz);
@@ -111,7 +110,7 @@ sll_init_t(const char *project, const char *name)
 	    }
 	}
       list_exec(kstrip, (list_exec_func*)sll_kstrip);
-      list_free(kstrip,NULL);
+      list_free(kstrip, NULL);
     }
   else
     {
@@ -124,6 +123,7 @@ sll_init_t(const char *project, const char *name)
 void
 sll_term_t(Hash *h)
 {
+  sll_term();
 }
 
 unsigned const char *

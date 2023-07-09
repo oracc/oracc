@@ -7,7 +7,7 @@
 
 typedef List *(sll_get_fnc)(const char *key);
 
-enum sll_t { SLL_ANY, SLL_ID, SLL_SN };
+enum sll_t { SLL_ANY, SLL_ID, SLL_SN, SLL_V };
 
 struct sllext
 {
@@ -32,7 +32,10 @@ extern Pool *sllpool;
 extern int sll_raw_output;
 extern int sll_trace;
 
-extern const char *wcaller, *wextension, *wgrapheme, *wproject;
+extern const char *wcaller, *wextension, *wgrapheme, *wproject, *correctedg;
+
+extern void sll_init(void);
+extern void sll_term(void);
 
 extern Hash *sll_init_t(const char *project, const char *name);
 extern void sll_term_t(Hash *h);
@@ -44,7 +47,7 @@ extern int sll_has_sign_indicator(unsigned const char *g);
 extern void sll_init_si(void);
 
 extern void sll_cli_handler(unsigned const char *key);
-extern void sll_web_handler(const char *wcaller, const char *wextension, const char *wgrapheme, const char *wproject);
+extern void sll_web_handler(const char *wcaller, const char *wproject, const char *wgrapheme, const char *wextension);
 extern unsigned char *sll_strip_pp(unsigned const char *g);
 extern unsigned char *sll_snames_of(unsigned const char *oids);
 extern unsigned const char *sll_lookup(unsigned const char *key);
@@ -57,7 +60,8 @@ extern unsigned char *sll_tmp_key(unsigned const char *key, const char *field);
 
 extern const char *sll_get_name(unsigned char *k);
 extern const char *sll_get_oid(unsigned char *k);
-extern List *sll_get_list(const char *k);
+extern List *sll_get_cpd(const char *k);
+extern List *sll_get_forms(const char *k);
 extern List *sll_get_h(const char *k);
 extern List *sll_get_one(const char *k);
 extern List *sll_get_one_n(const char *k);

@@ -4,16 +4,12 @@
 %}
 struct sllext;
 %%
-aka, "", " Aliases", SLL_SN, sll_get_list
-c, ""," Compounds", SLL_SN, sll_get_list
-cinit, "Initial ", "", SLL_SN, sll_get_list
-clast, "Final ", "", SLL_SN, sll_get_list
-contains, "", "Container", SLL_SN, sll_get_list
-contained, "", "", SLL_SN, sll_get_list
-forms, "", " Forms", SLL_ID, sll_get_list
-h, ""," Homophones", SLL_SN, sll_get_h
-m, "Modified ","", SLL_SN, sll_get_list
-multi, "", " Repeated", SLL_SN, sll_get_list
-signlist, "", " Numbers", SLL_SN, sll_get_list
+cmemb, ""," Compounds", SLL_SN, sll_get_cpd
+cinit, "Initial ", "", SLL_SN, sll_get_cpd
+clast, "Final ", "", SLL_SN, sll_get_cpd
+contains, "", "Container", SLL_SN, sll_get_cpd
+contained, "", "", SLL_SN, sll_get_cpd
+forms, "", " Forms", SLL_ID, sll_get_forms
+h, ""," Homophones", SLL_V, sll_get_h
 name, "", "", SLL_ANY, sll_get_one_n
 oid, "", "", SLL_ANY, sll_get_one_o

@@ -1,4 +1,4 @@
-#include <stdlib.h>AA
+#include <stdlib.h>
 #include <string.h>
 #include <locale.h>
 

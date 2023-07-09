@@ -18,12 +18,19 @@ use constant { TOP=>0, SUB=>1 };
 my $boot = 0;
 my $sldb2 = 0;
 
+my %cmembseen = ();
+
 GetOptions(
     'boot'=>\$boot
     ) || usage_and_exit();
 
 
 ### OGSL BUG: @sign BAR.AN @v kunga₂ @form |ŠU₂.AN| ... @sign |ŠU₂.AN| @v kunga₂ shouldn't be allowed
+
+### BUGS:
+### ;lists gives sign name without number e.g. LAK ELLES
+### ;cmemb needs to be uniqed to prevent, e.g., 'U&U' generating two entries
+###
 
 ##########################################################################################
 #
@@ -313,7 +320,7 @@ add_comp_children {
 	    my $g = $g[$i];
 	    my $n = $g->nextSibling();
 	    my $gt = gtext($g,$n,$id);
-	    push @{$values{$gt,'cmemb'}}, $id;
+	    push @{$values{$gt,'cmemb'}}, $id unless $cmembseen{"$gt;cmemb:$id"}++;
 	    if ($i == 0) {
 		push @{$values{$gt,'cinit'}}, $id;
 	    } elsif ($i == $#g) {

@@ -19,11 +19,15 @@ struct sllparts
   const char *v;
 };
 
-/* Web variables used when called from url-resolver */
-const char *wcaller;
-const char *wext;
-const char *wsign;
-const char *wproject;
+/* Web variables used when called from url-resolver. Note that
+   wextension and wgrapheme are overloaded to serve as global records
+   of the parts of the key request when in CLI mode, so it's important
+   to test only wcaller to determine if the request is coming from a
+   web source. */
+const char *wcaller = NULL;
+const char *wextension = NULL;
+const char *wgrapheme = NULL;
+const char *wproject = NULL;
 
 static void sll_esp_output(List *lp);
 static void sll_esp_ext(const char *key, const char *ext, List *lp);
@@ -43,9 +47,22 @@ static void sll_html_trailer(void);
 static struct sllparts *sll_split(const char *sc);
 
 void
-sll_web_handler(const char *wcaller, const char *wextension, const char *wgrapheme, const char *wproject)
+sll_web_handler(const char *wcall, const char *wproj, const char *wgraph, const char *wext)
 {
   struct sllext *ep = NULL;
+
+  /* This code allows sll_web_handler to be called from another
+     program with the global variables as function arguments; when
+     called from slx they are set directly from the options code */
+  if (!wcaller)
+    wcaller = wcall;
+  if (!wproject)
+    wproject = wproj ? wproj : "ogsl";
+  if (!wgrapheme)
+    wgrapheme = wgraph;
+  if (!wextension)
+    wextension = wext;
+  
   if (wextension && !(ep = sllext(wextension, strlen(wextension))))
     sll_web_error("error");
   else
@@ -106,7 +123,9 @@ sll_esp_output(List *lp)
       char *html = NULL;
       oid = list_first(lp);
       letter = (ccp)sll_lookup(sll_tmp_key((uccp)oid, "let"));
-      html = malloc(strlen(wproject) + strlen(letter) + strlen(oid) + strlen("//signlist///index.html") + 1);
+      if (!letter)
+	letter = "BAD";
+      html = (char*)pool_alloc(strlen(wproject) + strlen(letter) + strlen(oid) + strlen("//signlist///index.html") + 1, sllpool);
       sprintf(html, "/%s/signlist/%s/%s/index.html", wproject, letter, oid);
       printf("Status: 302 Found\nLocation: %s\n\n", html);
     }
@@ -136,7 +155,7 @@ sll_esp_header(const char *v, const char *ext)
 {
   char *vcat = NULL;
   struct sllext *ep = sllext(ext, strlen(ext));
-  vcat = malloc(strlen(v) + strlen(ep->pre) + strlen(ep->pst) + 1);
+  vcat = (char*)pool_alloc(strlen(v) + strlen(ep->pre) + strlen(ep->pst) + 1, sllpool);
   (void)sprintf(vcat, "%s%s%s", ep->pre, v, ep->pst);
   printf("%s\n\n", "Content-type: text/html; charset=utf-8");
   printf("%s\n", "<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"sux\" xml:lang=\"sux\">");
@@ -147,7 +166,6 @@ sll_esp_header(const char *v, const char *ext)
   printf("%s\n", "<script src=\"/js/p3.js\" type=\"text/javascript\"><![CDATA[ ]]></script>");
   printf("%s\n", "</head><body class=\"ogslres\">");
   printf("<h1 class=\"ogslres\">%s</h1>\n", vcat);
-  free(vcat);
 }
 
 static void
@@ -249,7 +267,7 @@ sll_html_header(void)
 	ext = "signlist";
 #endif
       struct sllext *ep = sllext(ext, strlen(ext));
-      vcat = malloc(strlen(ep->pre)+strlen(ep->pst)+strlen(wgrapheme)+1);
+      vcat = (char*)pool_alloc(strlen(ep->pre)+strlen(ep->pst)+strlen(wgrapheme)+1, sllpool);
       sprintf(vcat, "%s%s%s", ep->pre, wgrapheme, ep->pst);
     }
   
@@ -277,7 +295,6 @@ sll_html_header(void)
 	sll_open_frame_divs();
       printf("<h1 class=\"ogslres\">%s</h1>\n", vcat);
     }
-  free(vcat);
 }
 
 static void
@@ -301,18 +318,23 @@ sll_html_p(const char *id, const char *sn, const char *v, const char *p)
   printf("<a href=\"javascript:showsign('%s','%s')\">%s<span class=\"sign\">%s</span></a>%s\n", wproject, id, vx, sn, pspan);
 }
 
+/* sn is always first; second item is either ID or a variable part
+   which could be form name (U@c) or homophone (aₓ) */
 static struct sllparts *
 sll_split(const char *sc)
 {
-  char *s = strdup(sc);
+  char *s = (char*)pool_copy((uccp)sc, sllpool);
   static struct sllparts sp;
   memset(&sp, 1, sizeof(struct sllparts));
+  sp.sn = s; /* sn always in first position */
+  while (*s && '\t' != *s)
+    ++s;
+  if ('\t' == *s)
+    ++s;
   while (*s)
     {
       if (*s == 'o' && isdigit(s[1]))
 	sp.id = s;
-      else if (sll_has_sign_indicator((uccp)s))
-	sp.sn = s;
       else
 	sp.v = s;
       while (*s && '\t' != *s)

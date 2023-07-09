@@ -23,7 +23,7 @@ main(int argc, char **argv)
 
   setlocale(LC_ALL,ORACC_LOCALE);
   
-  options(argc, argv, "C:E:G:P:edghk:p:n:otu8");
+  options(argc, argv, "C:E:G:P:k:dn:p:rt");
 
   if (wcaller)
     {
@@ -87,6 +87,9 @@ opts(int argc, char *arg)
       break;
     case 'P':
       wproject = arg;
+      break;
+    case 'd':
+      dbi_mode = 1;
       break;
     case 'k':
       key = arg;
