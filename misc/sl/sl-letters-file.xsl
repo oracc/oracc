@@ -15,6 +15,7 @@
 
 <xsl:template match="sl:sign">
   <xsl:value-of select="concat(@xml:id,'&#x9;',ancestor::sl:letter/@xml:id,'&#xa;')"/>
+  
 </xsl:template>
 
 <xsl:template match="text()"/>

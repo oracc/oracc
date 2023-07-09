@@ -78,6 +78,12 @@ sll_init_t(const char *project, const char *name)
       for (p = tsv_data; *p; )
 	{
 	  unsigned char *k = p, *v = NULL;
+
+	  /* The #letters appendix in sl.tsv is not used in the
+	     internalized signlist only in the dbi */
+	  if ('#' == *p && !strncmp((ccp)p, "#letters", strlen("#letters")))
+	    break;
+
 	  while (*p && '\t' != *p)
 	    ++p;
 	  if (*p)

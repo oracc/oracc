@@ -313,6 +313,14 @@ add_comp {
 sub
 add_comp_children {
     my($parent,$id) = @_;
+
+    if ($id) {
+	# warn "add_comp_children called with id=$id and parent=$parent\n";
+    } else {
+	# warn "add_comp_children called with NULL id and parent=$parent\n";
+	return;
+    }
+
     my @g = grep ($_->isa('XML::LibXML::Element'), $parent->childNodes());
     foreach (my $i = 0; $i <= $#g; ++$i) {
 	if ($g[$i]->localName() eq 'g') {
@@ -322,7 +330,7 @@ add_comp_children {
 	    my $g = $g[$i];
 	    my $n = $g->nextSibling();
 	    my $gt = gtext($g,$n,$id);
-	    push @{$values{$gt,'cmemb'}}, $id unless $cmembseen{"$gt;cmemb:$id"}++;
+	    push (@{$values{$gt,'cmemb'}}, $id) unless $cmembseen{$gt,$id}++;
 	    if ($i == 0) {
 		push @{$values{$gt,'cinit'}}, $id;
 	    } elsif ($i == $#g) {
@@ -503,14 +511,18 @@ hsort {
     my @srt = @_;
     my @ret = ();
     # print STDERR "hsort in:";
+    my %hseen = ();
     foreach my $s (sort { vkey($a) <=> vkey($b) } @srt) {
 	my $vk = vkey($s);
 	# print STDERR " $$s[0]";
 	if ($vk == 1) {
-	    push @ret, $$s[0];
+	    push @ret, $$s[0] unless $hseen{$$s[0],'1'}++; # only add first instance of non-x-values
 	} else {
-	    $vk = 0 if $vk == 1000;
-	    push @ret, $$s[0].'/'.$vk;
+	    if ($vk == 1000) {
+		push @ret, $$s[0].'/'.'0'; # add all x-values
+	    } else {
+		push @ret, $$s[0].'/'.$vk unless $hseen{$$s[0],$vk}++; # only add first instance of non-x-values
+	    }
 	}
     }
     # print STDERR "\n";

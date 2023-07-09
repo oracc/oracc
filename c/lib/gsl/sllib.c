@@ -223,6 +223,7 @@ sl_init_h(const char *project, const char *name)
 		      if (!strchr((ccp)k,';') && sl_has_sign_indicator(k))
 			{
 			  unsigned char *k2 = hash_find(h,v);
+#if 0
 			  if (k2)
 			    fprintf(stderr, "sl_init_h: duplicate key/val %s = %s\n", k, v);
 			  else
@@ -231,6 +232,7 @@ sl_init_h(const char *project, const char *name)
 				fprintf(stderr, "sllib: adding %s = %s\n", v, k);
 			      hash_add(h,v,k);
 			    }
+#endif
 			  if (strpbrk((const char *)k,"()+"))
 			    list_add(kstrip, k);
 			}

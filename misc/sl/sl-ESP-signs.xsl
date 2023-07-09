@@ -74,11 +74,13 @@
 	</p>
       </xsl:if>
       <xsl:variable name="oid" select="@xml:id"/>
-      <xsl:for-each select="document($snippets)">
-	<xsl:for-each select="id($oid)">	  
-	  <p>See the <esp:link url="{$snippetdir}/{$oid}.html">EMSS scrapbook page for this sign</esp:link>.</p>
+      <xsl:if test="$project='emss'">
+	<xsl:for-each select="document($snippets)">
+	  <xsl:for-each select="id($oid)">	  
+	    <p>See the <esp:link url="{$snippetdir}/{$oid}.html">EMSS scrapbook page for this sign</esp:link>.</p>
+	  </xsl:for-each>
 	</xsl:for-each>
-      </xsl:for-each>
+      </xsl:if>
     </div>
     <xsl:if test="count(sl:v)>0">
       <div class="ogsl-values">
@@ -153,7 +155,7 @@
   ></tr>
 </xsl:template>
 
-<xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note|sl:qs"/>
+<xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note|sl:qs|sl:inherited"/>
 
 <xsl:template match="sl:note">
   <p class="ogsl-note"><xsl:apply-templates/></p>

@@ -122,12 +122,21 @@ sll_esp_output(List *lp)
       const char *letter = NULL, *oid = NULL;
       char *html = NULL;
       oid = list_first(lp);
-      letter = (ccp)sll_lookup(sll_tmp_key((uccp)oid, "let"));
-      if (!letter)
-	letter = "BAD";
-      html = (char*)pool_alloc(strlen(wproject) + strlen(letter) + strlen(oid) + strlen("//signlist///index.html") + 1, sllpool);
-      sprintf(html, "/%s/signlist/%s/%s/index.html", wproject, letter, oid);
-      printf("Status: 302 Found\nLocation: %s\n\n", html);
+      if (!oid)
+	{
+	  sll_esp_header(wgrapheme, wextension);
+	  printf("<p class=\"nomatch\">No matches</p>");
+	  sll_esp_trailer();
+	}
+      else
+	{
+	  letter = (ccp)sll_lookup(sll_tmp_key((uccp)oid, "let"));
+	  if (!letter)
+	    letter = "BAD";
+	  html = (char*)pool_alloc(strlen(wproject) + strlen(letter) + strlen(oid) + strlen("//signlist///index.html") + 1, sllpool);
+	  sprintf(html, "/%s/signlist/%s/%s/index.html", wproject, letter, oid);
+	  printf("Status: 302 Found\nLocation: %s\n\n", html);
+	}
     }
 }
 
@@ -150,13 +159,23 @@ sll_esp_ext(const char *key, const char *ext, List *lp)
   sll_esp_trailer();
 }
 
+/* FIXME: v needs to be stripped of risky characters here */
 static void
 sll_esp_header(const char *v, const char *ext)
 {
   char *vcat = NULL;
-  struct sllext *ep = sllext(ext, strlen(ext));
-  vcat = (char*)pool_alloc(strlen(v) + strlen(ep->pre) + strlen(ep->pst) + 1, sllpool);
-  (void)sprintf(vcat, "%s%s%s", ep->pre, v, ep->pst);
+  struct sllext *ep = NULL;
+
+  if (ext)
+    {
+      ep = sllext(ext, strlen(ext));
+      vcat = (char*)pool_alloc(strlen(v) + strlen(ep->pre) + strlen(ep->pst) + 1, sllpool);
+      (void)sprintf(vcat, "%s%s%s", ep->pre, v, ep->pst);
+    }
+  else if (v)
+    vcat = (char*)v;
+  else
+    vcat = "(last search)";
   printf("%s\n\n", "Content-type: text/html; charset=utf-8");
   printf("%s\n", "<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"sux\" xml:lang=\"sux\">");
   printf("%s\n", "<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
@@ -180,7 +199,7 @@ sll_esp_p(const char *oid, const char *sn, const char *v, const char *p)
   const char *vx = (v ? "&#xa0;=&#xa0;" : "");
   const char *pspan = (p ? "<span class=\"ogsl-punct\">;</span>" : "");
   char html[1024];
-  const char *letter = (ccp)sll_lookup(sll_tmp_key((uccp)oid,"d"));
+  const char *letter = (ccp)sll_lookup(sll_tmp_key((uccp)oid,"let"));
   (void)sprintf(html, "/%s/signlist/%s/%s/index.html", wproject, letter, oid);
   printf("<p><a target=\"slmain\" href=\"%s\">%s<span class=\"sign\">%s</span></a>%s</p>\n",
 	 html, vx, sn, pspan);

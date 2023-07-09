@@ -8,10 +8,12 @@ sl-xml.plx ogsl
 sl-group.plx
 xsltproc ${ORACC}/lib/scripts/sl-letters-file.xsl 02xml/sl-grouped.xml >02pub/letters.tab
 sl-signlist.sh
-sl-db.plx ogsl
+#sl-db.plx ogsl
 sl-db2.plx ogsl
 (cd 02pub/sl ; ln -sf ogsl-db2.tsv sl.tsv)
-sl-index -boot
+echo '#letters' >>02pub/sl/sl.tsv
+sed 's/	/;let	/' <02pub/letters.tab >>02pub/sl/sl.tsv
+#sl-index -boot
 slix -boot
 xsltproc -stringparam project ogsl ${ORACC}/lib/scripts/sl-HTML.xsl 02xml/ogsl-sl.xml >02www/ogsl.html
 o2-portal.sh

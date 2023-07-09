@@ -177,10 +177,16 @@ sll_has_sign_indicator(unsigned const char *g)
 unsigned char *
 sll_tmp_key(unsigned const char *key, const char *field)
 {
-  static char tmpkey[128];
+  static char *tmpkey = NULL;
+  static int tmpkey_size = 0;
   if (key)
     {
       char *semi = NULL;
+      if (!tmpkey || (strlen((ccp)key) > tmpkey_size))
+	{
+	  tmpkey_size = 10 * strlen((ccp)key);
+	  tmpkey = (char *)pool_alloc(tmpkey_size, sllpool);
+	}
       strcpy(tmpkey,(ccp)key);
       if ((semi = strchr(tmpkey, ';')))
 	*semi = '\0';
