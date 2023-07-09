@@ -12,9 +12,10 @@ extern int sll_trace;
 extern Hash *sll_sl;
 extern const char *oracc;
 extern Pool *sllpool;
-static List *kstrip = NULL;
+/*static List *kstrip = NULL;*/
 static Hash *h = NULL;
 
+#if 0
 static void
 sll_kstrip(void *k)
 {
@@ -40,6 +41,7 @@ sll_kstrip(void *k)
 	}
     }
 }
+#endif
 
 Hash *
 sll_init_t(const char *project, const char *name)
@@ -70,7 +72,9 @@ sll_init_t(const char *project, const char *name)
       if (sll_trace)
 	fprintf(stderr, "sll: slurped %s\n", tsv_file);
       h = hash_create(1024);
+#if 0
       kstrip = list_create(LIST_SINGLE);
+#endif
       for (p = tsv_data; *p; )
 	{
 	  unsigned char *k = p, *v = NULL;
@@ -89,6 +93,7 @@ sll_init_t(const char *project, const char *name)
 		  if (sll_trace)
 		    fprintf(stderr, "sll: adding %s = %s\n", k, v);
 		  hash_add(h, k, v);
+#if 0
 		  if ('o' == *v && isdigit(v[1]))
 		    {
 		      if (!strchr((ccp)k,';') && sll_has_sign_indicator(k))
@@ -106,11 +111,14 @@ sll_init_t(const char *project, const char *name)
 			    list_add(kstrip, k);
 			}
 		    }
+#endif
 		}
 	    }
 	}
+#if 0
       list_exec(kstrip, (list_exec_func*)sll_kstrip);
       list_free(kstrip, NULL);
+#endif
     }
   else
     {

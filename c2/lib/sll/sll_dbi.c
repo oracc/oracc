@@ -26,7 +26,7 @@ sll_init_d(const char *project, const char *name)
     project = "ogsl";
 
   if (!name)
-    name = "ogsl";
+    name = "sl";
 
   oracc = oracc_home();
   db = (char*)pool_alloc(strlen(oracc)+strlen("/pub/sl/") + strlen(project) + 1, sllpool);

@@ -25,7 +25,7 @@ main(int argc, char **argv)
 
   if (boot)
     {
-      strcpy(dbname, "ogsl");
+      strcpy(dbname, "sl");
       strcpy(dbdir, "@@ORACC@@/pub/ogsl/sl");
       if (!(infile = fopen("@@ORACC@@/pub/ogsl/sl/sl.tsv", "r")))
 	{

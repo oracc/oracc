@@ -1,6 +1,6 @@
 include ../../../oracc-am-rules.txt
 
-noinst_PROGRAMS=sx sl-index slx
+bin_PROGRAMS=sx slix slx
 
 xLDADD=\
 	../../lem/lng/liblng.la \
@@ -37,9 +37,9 @@ sx_LDADD = $(xLDADD)
 
 sx_DEPENDENCIES = $(sx_LDADD)
 
-sl_index_SOURCES=sl-index.c
+slix_SOURCES=slix.c
 
-sl_index_LDADD = $(yLDADD)
+slix_LDADD = $(yLDADD)
 
-sl_index_DEPENDENCIES = $(s_index_LDADD)
+slix_DEPENDENCIES = $(s_index_LDADD)
 

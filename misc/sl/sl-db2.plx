@@ -189,6 +189,8 @@ my $gdl_uri = 'http://oracc.org/ns/gdl/1.0';
 my $dbdir = undef;
 my $dbbase = undef;
 my $dbname = undef;
+my @kstrip = ();
+my %kstrip = ();
 my $sl_xml = undef;
 
 if ($boot) {
@@ -459,7 +461,7 @@ dump_db {
 	} elsif ($dbk =~ /h$/) {
 	    my $kk = $dbk;
 	    $kk =~ tr//;/;
-            warn "db_dump $kk\n";
+            # warn "db_dump $kk\n";
 	    my $str = hsort(@{$values{$k}});
 	    $db{$dbk} = $str;
 	    if ($k =~ /₊/) {
@@ -664,6 +666,10 @@ subsign {
 	# $values{$sn} = $id;
 	# $values{$xsn} = $id;
 	$values{$sn} = $id; # ,'s'
+	$values{$id} = $sn;
+	if ($sn =~ /[()+]/ && !$kstrip{$sn}++) {
+	    push @kstrip, $sn;
+	}
 	# $values{$xsn,'sign'} = $id;
     } else {
 	if ($form_is_TOP) {
@@ -671,6 +677,10 @@ subsign {
 	    # $values{$xsn} = $id;
 	}
 	$values{$sn} = $id; # ,'f'
+	$values{$id} = $sn unless $values{$id};
+	if ($sn =~ /[()+]/ && !$kstrip{$sn}++) {
+	    push @kstrip, $sn;
+	}
 	# $values{$xsn,'form'} = $id;
     }
 
