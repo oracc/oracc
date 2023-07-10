@@ -13,7 +13,7 @@ aslyacc(void)
 {
   Tree *tp = NULL;
   curraslfile = aslfile = "<stdin>";
-  sl = asl_bld_init();
+  curr_sl = asl_bld_init();
   aslparse();
   /*asl_bld_term(sl);*/ /* This needs to be called after the signlist is done with */
   return tp;

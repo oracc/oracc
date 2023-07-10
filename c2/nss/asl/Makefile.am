@@ -2,7 +2,7 @@ include ../../../oracc-am-rules.txt
 
 noinst_LTLIBRARIES=libasl.la
 
-libasl_la_SOURCES = asl.tab.c asl-l.c aslyacc.c asl.c
+libasl_la_SOURCES = asl.tab.c asl-l.c aslyacc.c asl.c asl_bld.c
 
 # asltree.c
 

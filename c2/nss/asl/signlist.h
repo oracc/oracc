@@ -2,6 +2,7 @@
 #define SIGNLIST_H_
 
 #include <hash.h>
+#include <list.h>
 #include <pool.h>
 #include <tree.h>
 
@@ -10,10 +11,10 @@ struct sl_signlist
   Hash *signs;
   Hash *forms_which_are_not_signs;
   struct sl_sign *sorted_signs;
-  struct letter *letters;
-  struct sign *curr_sign;
-  struct form *curr_form;
-  struct value *curr_value;
+  struct sl_letter *letters;
+  struct sl_sign *curr_sign;
+  struct sl_form *curr_form;
+  struct sl_value *curr_value;
   Memo *m_letters;
   Memo *m_groups;
   Memo *m_signs;
@@ -44,7 +45,7 @@ struct sl_sign
   const char *oid;
   List *lit;
   List *notes;
-  List *inotes
+  List *inotes;
   List *unotes;
   int nosign;
   int fake;
@@ -71,7 +72,7 @@ struct sl_form
   const char *oid;
   List *lit;
   List *notes;
-  List *inotes
+  List *inotes;
   List *unotes;
   int noform;
   int query;
@@ -101,11 +102,15 @@ struct sl_value
   const unsigned char *utf8;
   List *lit;
   List *notes;
-  List *inotes
+  List *inotes;
   List *unotes;
   int novalue;
   int deprecated;
   int query;
 };
+
+extern struct sl_signlist *asl_bld_init(void);
+extern void asl_bld_term(struct sl_signlist *);
+extern void asl_bld_sign(struct sl_signlist *sl, const unsigned char *n, int list);
 
 #endif/*SIGNLIST_H_*/

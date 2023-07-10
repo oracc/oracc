@@ -33,6 +33,8 @@ int nosign = 0;
 		INOTE LIT NOTE TEXT END EBAD EFORM ESIGN
 		UCHAR UCODE UPHASE UNAME UNOTE
 
+%nterm  <text> gname 
+
 %start fields
 
 %%
