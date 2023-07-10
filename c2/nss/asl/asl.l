@@ -43,7 +43,7 @@ COMPOUND	"|"([a-zA-Z\x80-\xff]|[@~().%&+()0-9])+"|"
 GRAPHEME 	((({G}|{N}){M})|"15")
 PHONGRAPH	"/"{G}"/"
 LISTNUM		([A-Z]+[0-9]+[()A-Z0-9a-z_'"+*/]*){M}
-NUMGRAPH	[0-9]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}
+NUMGRAPH	[0-9nN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}
 FRACTION	[0-9]\/[0-9]
 PUNCT		("*"|:['".:]?|"/")
 
