@@ -29,7 +29,8 @@ GetOptions(
 
 ### BUGS:
 ### ;lists gives sign name without number e.g. LAK ELLES
-### ;cmemb needs to be uniqed to prevent, e.g., 'U&U' generating two entries
+### @form that has no @sign should get a sign-xref entry which occurs in its proper place in the sort order
+### @form entries should not be included in cmemb and friends--but the sign-xref entry should be included
 ###
 
 ##########################################################################################
@@ -191,12 +192,13 @@ my $dbbase = undef;
 my $dbname = undef;
 my @kstrip = ();
 my %kstrip = ();
+my %letters = ();
 my $sl_xml = undef;
 
 if ($boot) {
-    $sl_xml = "$ENV{'ORACC'}/xml/ogsl/ogsl-sl.xml";
+    $sl_xml = "$ENV{'ORACC'}/xml/ogsl/sl-grouped.xml";
     unless (-r $sl_xml) {
-	warn "sl-db.plx: must install ogsl-sl.xml in $ENV{'ORACC'}/ogsl first. Stop.\n";
+	warn "sl-db.plx: must install sl-grouped.xml in $ENV{'ORACC'}/ogsl first. Stop.\n";
 	exit 1;
     }
     $dbdir = "$ENV{'ORACC'}/pub/ogsl/sl"; system 'mkdir', '-p', $dbdir;
@@ -209,7 +211,8 @@ if ($boot) {
 	exit 1;
     }
     $dbname = "$dbbase-db2";
-    $sl_xml = "02xml/$dbbase-sl.xml";
+    # $sl_xml = "02xml/$dbbase-sl.xml";
+    $sl_xml = "02xml/sl-grouped.xml";
 }
 
 my %db;
@@ -225,9 +228,30 @@ my $global_id = '';
 # first load up %values with the sign names and values
 foreach my $s ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
 								 'sign')) {
-    my $parent_id = subsign($s,TOP,undef);
+    subsign($s,TOP,undef);
+    my $letter = $s->parentNode()->parentNode();
+    if ($letter->nodeName() eq 'letter') {
+	$letters{xid($s)} = xid($letter);
+    } else {
+	my $id = xid($s);
+	warn "sign $id is not two-down from letter\n";
+    }
+}
+foreach my $s ($sl->getDocumentElement()->getElementsByTagNameNS($sl_uri,
+								 'sign')) {
+    my $parent_id = xid($s);
     foreach my $f ($s->getElementsByTagNameNS($sl_uri,'form')) {
 	subsign($f,SUB,$parent_id);
+	my $id = xid($f);
+	if ($id) {
+	    my $letter = $f->parentNode()->parentNode()->parentNode();
+	    if ($letter->nodeName() eq 'letter') {
+		$letters{xid($f)} = xid($letter);
+	    } else {
+		my $id = xid($f);
+		warn "form $id is not three-down from letter\n";
+	    }
+	}
     }
 }
 
@@ -453,7 +477,7 @@ dump_db {
     unlink "$dbdir/$dbname";
     my $ixname = "\U$project". ' Index';
     my $ix = ORACC::SE::Indexer::index($dbbase,$ixname,'x1',0,
-				       [ qw/h aka c cinit clast contains contained forms multi mod link/ ],
+				       [ qw/h aka cmemb cinit clast contains contained forms link/ ],
 				       [], 0, 10000, 0, 1);
     my %db = %$ix;
     $db{'#tsv'} = "02pub/sl/$dbname.tsv";
@@ -478,6 +502,11 @@ dump_db {
 	} elsif ($dbk =~ /forms$/) {
 	    my $str = fsort(@{$values{$k}});
 	    $db{$k} = $str;
+	} elsif ($dbk =~ /(?:cmemb|cinit|clast|contains|contained)$/) {
+	    # warn "compound: dkb = $dbk\n";
+	    my $v = join(' ', @{$values{$k}});
+	    Encode::_utf8_off($v);
+	    $db{$dbk} = $v;
 	} elsif ($dbk =~ //) {
 	    # FIXME: shouldn't be necessary to grep out defined
 	    # warn "dbk = $dbk\n";
@@ -494,6 +523,14 @@ dump_db {
     ORACC::SE::DBM::setdir($dbdir);
     ORACC::SE::TSV::toTSV(\%db);
     untie %db;
+    my @tsv = `cat 02pub/sl/$dbname.tsv`;
+    open(T, ">02pub/sl/$dbname.tsv");
+    print T @tsv;
+    print T "#letters\n";
+    foreach my $l (keys %letters) {
+	print T "$l;let\t$letters{$l}\n";
+    }
+    close(T);
 }
 
 sub
@@ -516,12 +553,12 @@ hsort {
 	my $vk = vkey($s);
 	# print STDERR " $$s[0]";
 	if ($vk == 1) {
-	    push @ret, $$s[0] unless $hseen{$$s[0],'1'}++; # only add first instance of non-x-values
+	    push @ret, $$s[0] unless $hseen{'1'}++; # only add first instance of non-x-values
 	} else {
 	    if ($vk == 1000) {
 		push @ret, $$s[0].'/'.'0'; # add all x-values
 	    } else {
-		push @ret, $$s[0].'/'.$vk unless $hseen{$$s[0],$vk}++; # only add first instance of non-x-values
+		push @ret, $$s[0].'/'.$vk unless $hseen{$vk}++; # only add first instance of non-x-values
 	    }
 	}
     }
@@ -655,7 +692,7 @@ subsign {
 	    my $v_orig = $v;
 	    $v =~ s/[ₓ₀-₉]*$//;
 	    push @{$values{$v,'h'}}, [$id,$v_orig];
-	} elsif ($lname eq 'name') {
+	} elsif ($lname eq 'name' && $mode == TOP) {
 	    foreach my $gc (tags($c,$GDL,'c')) {
 		add_comp($id,$gc);
 	    }

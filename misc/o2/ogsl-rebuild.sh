@@ -11,8 +11,8 @@ sl-signlist.sh
 #sl-db.plx ogsl
 sl-db2.plx ogsl
 (cd 02pub/sl ; ln -sf ogsl-db2.tsv sl.tsv)
-echo '#letters' >>02pub/sl/sl.tsv
-sed 's/	/;let	/' <02pub/letters.tab >>02pub/sl/sl.tsv
+#echo '#letters' >>02pub/sl/sl.tsv
+#sed 's/	/;let	/' <02pub/letters.tab >>02pub/sl/sl.tsv
 #sl-index -boot
 slix -boot
 xsltproc -stringparam project ogsl ${ORACC}/lib/scripts/sl-HTML.xsl 02xml/ogsl-sl.xml >02www/ogsl.html

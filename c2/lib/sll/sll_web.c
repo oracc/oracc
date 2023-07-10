@@ -144,17 +144,22 @@ static void
 sll_esp_ext(const char *key, const char *ext, List *lp)
 {
   char *r;
+#if 0
   int i = 0;
+#endif
   sll_esp_header(key,ext);
   for (r = list_first(lp); r; r = list_next(lp))
     {
       char *s = r;
-      const char *p = "";
       struct sllparts *sp = NULL;
+#if 0
+      const char *p = "";
+      /* punctuation is unnecessary in the online signlist lookup */
       if (i++)
 	p = ";";
+#endif
       sp = sll_split(s);
-      sll_esp_p(sp->id, sp->sn, sp->v, p);
+      sll_esp_p(sp->id, sp->sn, sp->v, NULL);
     }
   sll_esp_trailer();
 }
@@ -198,11 +203,13 @@ sll_esp_p(const char *oid, const char *sn, const char *v, const char *p)
 {
   const char *vx = (v ? "&#xa0;=&#xa0;" : "");
   const char *pspan = (p ? "<span class=\"ogsl-punct\">;</span>" : "");
-  char html[1024];
+  char html[1024];  
   const char *letter = (ccp)sll_lookup(sll_tmp_key((uccp)oid,"let"));
+  if (!v)
+    v = "";
   (void)sprintf(html, "/%s/signlist/%s/%s/index.html", wproject, letter, oid);
-  printf("<p><a target=\"slmain\" href=\"%s\">%s<span class=\"sign\">%s</span></a>%s</p>\n",
-	 html, vx, sn, pspan);
+  printf("<p><a target=\"slmain\" href=\"%s\">%s%s<span class=\"sign\">%s</span></a>%s</p>\n",
+	 html, v, vx, sn, pspan);
 }
 
 /********************************************************************
@@ -344,12 +351,12 @@ sll_split(const char *sc)
 {
   char *s = (char*)pool_copy((uccp)sc, sllpool);
   static struct sllparts sp;
-  memset(&sp, 1, sizeof(struct sllparts));
+  memset(&sp, '\0', sizeof(struct sllparts));
   sp.sn = s; /* sn always in first position */
   while (*s && '\t' != *s)
     ++s;
   if ('\t' == *s)
-    ++s;
+    *s++ = '\0';
   while (*s)
     {
       if (*s == 'o' && isdigit(s[1]))
@@ -359,7 +366,7 @@ sll_split(const char *sc)
       while (*s && '\t' != *s)
 	++s;
       if (*s)
-	*s++ = '\t';
+	*s++ = '\0';
     }
   return &sp;
 }
