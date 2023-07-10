@@ -62,6 +62,9 @@ sll_web_handler(const char *wcall, const char *wproj, const char *wgraph, const 
     wgrapheme = wgraph;
   if (!wextension)
     wextension = wext;
+
+  if (wextension && !strcmp(wextension, "#none"))
+    wextension = NULL;
   
   if (wextension && !(ep = sllext(wextension, strlen(wextension))))
     sll_web_error("error");

@@ -28,7 +28,12 @@
   <p class="lex-spel" title="{@value}">
     <span class="lex-spel-tlit"><xsl:value-of select="@value"/></span>
     <xsl:text>: </xsl:text>
-    <xsl:apply-templates/>
+    <xsl:for-each select="lex:data">
+      <xsl:apply-templates select="."/>
+      <xsl:if test="not(position()=last())">
+	<xsl:text>; </xsl:text>
+      </xsl:if>
+    </xsl:for-each>
     <xsl:text>.</xsl:text>
   </p>
 </xsl:template>
@@ -47,9 +52,6 @@
     <xsl:otherwise>
     </xsl:otherwise>
   </xsl:choose>
-  <xsl:if test="count(following-sibling::*) > 0">
-    <xsl:text>; </xsl:text>
-  </xsl:if>
 </xsl:template>
 
 </xsl:stylesheet>

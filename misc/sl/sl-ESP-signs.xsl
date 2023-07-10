@@ -56,6 +56,9 @@
 
 <xsl:template name="sign-or-form">
   <div iclass="ogsl-{local-name(.)}">
+    <xsl:if test="local-name() = 'form'">
+      <h3><xsl:apply-templates select="sl:name[1]"/> (variant <xsl:value-of select="@var"/></h3>
+    </xsl:if>
     <div class="ogsl-info">
       <p style="font-size: 150%">
 	<xsl:for-each select="sl:name[1]//*">
@@ -110,7 +113,7 @@
     <xsl:apply-templates select="sl:note"/>
     <xsl:call-template name="unicode-info"/>
     <xsl:apply-templates mode="rest"/>    
-    <xsl:if test="count(sl:v)>0">
+    <xsl:if test="count(sl:glo)>0">
       <div id="glodata">
 	<h2 class="ogsl-glo">Glossary Attestations</h2>
 	<xsl:for-each select="sl:v">
@@ -121,8 +124,9 @@
 	</xsl:for-each>
       </div>
     </xsl:if>
-    <xsl:if test="sl:form">
+    <xsl:if test="sl:form">      
       <div class="ogsl-signforms">
+	<h2 class="sl-signforms">Variant sign-forms</h2>
 	<xsl:apply-templates select="sl:form"/>
       </div>
     </xsl:if>

@@ -58,9 +58,9 @@ hproj=`/bin/echo -n $project | tr / -`
 if [ -r 02pub/sl/$hproj-db.tsv ]; then
     echo indexing signlist
     if [ "$project" == "ogsl" ]; then
-	sl-index -boot
+	slix -boot
     else
-	cat 02pub/sl/$hproj-db.tsv | sl-index $project
+	cat 02pub/sl/$hproj-db.tsv | slix $project
     fi
     chmod -R o+r 02pub/sl
 fi
