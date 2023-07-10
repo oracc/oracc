@@ -202,7 +202,7 @@ if ($boot) {
 	exit 1;
     }
     $dbdir = "$ENV{'ORACC'}/pub/ogsl/sl"; system 'mkdir', '-p', $dbdir;
-    $dbname = "ogsl-db";
+    $dbname = "sl";
 } else {
     $dbdir = '02pub/sl'; system 'mkdir','-p',$dbdir;
     $dbbase = shift @ARGV;
@@ -210,7 +210,7 @@ if ($boot) {
 	warn "sl-db.plx: must either give db-name or '-boot' on command line. Stop.\n";
 	exit 1;
     }
-    $dbname = "$dbbase-db2";
+    $dbname = "sl";
     # $sl_xml = "02xml/$dbbase-sl.xml";
     $sl_xml = "02xml/sl-grouped.xml";
 }

@@ -19,8 +19,10 @@ main(int argc, char **argv)
     }
   else
     {
-      fprintf(stderr, "sl-index.c: must give output DB name or -boot option on command line\n");
+#if 0
+      fprintf(stderr, "slix: must give output DB name or -boot option on command line\n");
       exit(1);
+#endif
     }
 
   if (boot)
@@ -29,15 +31,20 @@ main(int argc, char **argv)
       strcpy(dbdir, "@@ORACC@@/pub/ogsl/sl");
       if (!(infile = fopen("@@ORACC@@/pub/ogsl/sl/sl.tsv", "r")))
 	{
-	  fprintf(stderr, "sl-index.c: boot mode requires @@ORACC@@/pub/ogsl/sl.tsv\n");
+	  fprintf(stderr, "slix: boot mode requires @@ORACC@@/pub/ogsl/sl.tsv\n");
 	  exit(1);
 	}
     }
   else
     {
-      strcpy(dbname, argv[1]);
+      strcpy(dbname, "sl");
       strcpy(dbdir, "02pub/sl");
-      infile = stdin;
+      if (!(infile = fopen("02pub/sl/sl.tsv", "r")))
+	{
+	  fprintf(stderr, "slix: can't index signlist without 02pub/sl/sl.tsv\n");
+	  exit(1);
+	}
+      /*infile = stdin;*/
     }
 
   dbi = dbi_create(dbname, dbdir, 0, 1, DBI_BALK);
@@ -54,13 +61,13 @@ main(int argc, char **argv)
 	    }
 	  else
 	    {
-	      fprintf(stderr,"sl-index.c: line too long.\n");
+	      fprintf(stderr,"slix: line too long.\n");
 	      exit(1);
 	    }
 	}
       else if ('#' != *k)
 	{
-	  fprintf(stderr, "sl-index.c: no tab in line\n");
+	  fprintf(stderr, "slix: no tab in line\n");
 	  exit(1);
 	}
     }
