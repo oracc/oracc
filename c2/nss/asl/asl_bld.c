@@ -37,5 +37,12 @@ asb_bld_sign(struct sl_signlist *sl, const unsigned char *n, int list)
   struct sl_sign *s = memo_new(sl->m_signs);
   s->name = n;
   s->name_is_list_num = list;
-  sl->curr_sign = hash_add(sl->signs, n, s);
+  if (hash_find(sl->signs, n))
+    {
+      /* error: duplicate sign */
+    }
+  else
+    {
+      sl->curr_sign = hash_add(sl->signs, n, s);
+    }
 }

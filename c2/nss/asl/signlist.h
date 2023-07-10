@@ -52,7 +52,8 @@ struct sl_sign
   int name_is_listnum;
   Tree *gdl;
   Hash *lists;
-  Hash *forms;
+  Hash *forms_by_var;
+  Hash *forms_by_name;
   Hash *values;
   struct sl_value *sorted_values;
   int sort;
