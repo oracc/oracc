@@ -58,7 +58,7 @@ main(int argc, char **argv)
 	      exit(1);
 	    }
 	}
-      else
+      else if ('#' != *k)
 	{
 	  fprintf(stderr, "sl-index.c: no tab in line\n");
 	  exit(1);
