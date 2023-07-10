@@ -3,14 +3,19 @@
 #include <ctype.h>
 #include <tree.h>
 #include "asl.h"
+#include "signlist.h"
 #include "asl.tab.h"
+
+struct sl_signlist *curr_sl = NULL;
 
 Tree *
 aslyacc(void)
 {
   Tree *tp = NULL;
   curraslfile = aslfile = "<stdin>";
+  sl = asl_bld_init();
   aslparse();
+  /*asl_bld_term(sl);*/ /* This needs to be called after the signlist is done with */
   return tp;
 }
 
