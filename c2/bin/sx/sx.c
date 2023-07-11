@@ -8,13 +8,17 @@
 #include <gdl.h>
 #include <oraccsys.h>
 #include <oracclocale.h>
+#include "sx.h"
 
-Mloc xo_loc;
+Mloc *xo_loc;
 FILE *f_xml;
 const char *file;
 int verbose;
 int status;
 int asltrace,rnvtrace;
+
+int tree_output = 0;
+int xml_output = 0;
 
 extern int asl_raw_tokens; /* ask asl to produce list of @sign/@form/@v tokens */
 
@@ -28,6 +32,8 @@ main(int argc, char * const*argv)
   Tree *tp = NULL;
   const char *l = NULL;
 
+  xo_loc = malloc(sizeof(Mloc));
+  mesg_init();
   asl_flex_debug = 0;
   
   if (!(l = setlocale(LC_ALL,ORACC_LOCALE)))
@@ -35,7 +41,7 @@ main(int argc, char * const*argv)
       if (!(l = setlocale(LC_ALL, "C")))
         fprintf(stderr, "gvl_setup: failed to setlocale to '%s', 'UTF-8', or 'C'\n", ORACC_LOCALE);
   
-  options(argc, argv, "crt");
+  options(argc, argv, "crtTx");
   asltrace = asl_flex_debug = trace_mode;
 
   mesg_init();
@@ -44,8 +50,13 @@ main(int argc, char * const*argv)
   asl_init();
   tp = aslyacc();
   mesg_print(stderr);
-  if (tp)
+
+  if (xml_output)
+    sx_xml(curr_asl);
+
+  if (tree_output && tp)
     tree_xml(NULL, tp);
+
   asl_term();
 }
 
@@ -62,6 +73,12 @@ opts(int opt, char *arg)
       break;
     case 't':
       trace_mode = 1;
+      break;
+    case 'T':
+      tree_output = 1;
+      break;
+    case 'x':
+      xml_output = 1;
       break;
     default:
       return 1;

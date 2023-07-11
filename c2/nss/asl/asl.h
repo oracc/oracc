@@ -3,6 +3,10 @@
 
 #include <tree.h>
 
+#include "signlist.h"
+
+extern struct sl_signlist *curr_asl;
+extern int asl_raw_tokens;
 extern int aslflextrace;
 
 extern const char *curraslfile, *aslfile;

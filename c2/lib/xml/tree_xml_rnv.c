@@ -18,7 +18,7 @@ tree_xml_rnv_node(Node *np, void *user)
 	{
 	  rnvval_ea(rnvd.tag , rnvd.ratts);
 	  if (rnvd.chardata)
-	    rnvval_ch(rnvd.chardata);
+	    rnvval_ch((ccp)rnvd.chardata);
 	}
       if (xml_printing)
 	{
@@ -28,7 +28,7 @@ tree_xml_rnv_node(Node *np, void *user)
 	  if (rnvd.ratts)
 	    xml_attr(rnvd.ratts->atts, xhp->fp);
 	  if (rnvd.chardata)
-	    fputs(rnvd.chardata, xhp->fp);
+	    fputs((ccp)rnvd.chardata, xhp->fp);
 	}
     }
 }
@@ -51,7 +51,7 @@ void
 tree_xml_rnv(FILE *fp, Tree *tp, struct xnn_data *xdp, const char *rncbase)
 {
   Xmlhelper *xhp = xmlh_init(fp ? fp : stdout);
-  rnvxml_init(tp, xdp, rncbase);
+  rnvxml_init_tree(tp, xdp, rncbase);
   tree_iterator(tp, xhp, tree_xml_rnv_node, tree_xml_rnv_post);
   free(xhp);
 }

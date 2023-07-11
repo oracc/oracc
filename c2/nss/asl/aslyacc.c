@@ -6,14 +6,14 @@
 #include "signlist.h"
 #include "asl.tab.h"
 
-struct sl_signlist *curr_sl = NULL;
+struct sl_signlist *curr_asl = NULL;
 
 Tree *
 aslyacc(void)
 {
   Tree *tp = NULL;
   curraslfile = aslfile = "<stdin>";
-  curr_sl = asl_bld_init();
+  curr_asl = asl_bld_init();
   aslparse();
   /*asl_bld_term(sl);*/ /* This needs to be called after the signlist is done with */
   return tp;

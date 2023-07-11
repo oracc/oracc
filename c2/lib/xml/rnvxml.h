@@ -13,8 +13,10 @@ struct rnvdata {
 };
 
 extern void rnvxml_init_err(void);
-extern void rnvxml_init(Tree *tp, struct xnn_data *xdp, const char *rncbase);
-extern void rnvxml_term(Tree *tp);
+extern void rnvxml_init_tree(Tree *tp, struct xnn_data *xdp, const char *rncbase);
+extern void rnvxml_init(struct xnn_data *xdp, const char *rncbase);
+extern void rnvxml_term_tree(Tree *tp);
+extern void rnvxml_term(void);
 extern void rnvxml_ch(const char *ch);
 extern void rnvxml_ea(const char *pname, struct rnvval_atts *ratts);
 extern void rnvxml_ec(const char *pname, struct rnvval_atts *ratts);

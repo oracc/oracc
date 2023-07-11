@@ -68,27 +68,26 @@ rnvxml_init_err(void)
 }
 
 void
-rnvxml_init(Tree *tp, struct xnn_data *xdp, const char *rncbase)
+rnvxml_init_tree(Tree *tp, struct xnn_data *xdp, const char *rncbase)
 {
-#if 1
-  char *fn = malloc(strlen(rncbase)+5);
-  sprintf(fn, "%s.rnc", rncbase);
-  rnvval_init(xdp, fn);
-  free(fn);
+  rnvxml_init(xdp, rncbase);
+}
+
+void
+rnvxml_init(struct xnn_data *xdp, const char *rncbase)
+{
+  if (f_xml == NULL)
+    f_xml = stdout;
+  rnvval_init(xdp, rncbase);
   xmlns_atts = xdp->nstab;
   xgi_pool = pool_init();
   xgi_stack = list_create(LIST_LIFO);
   xgi_flags[0] = '\0';
   rnv_validate_start();      
-  /*rnvval_ea(tp->root->name, NULL);*/
-#else
-  rnvval_init(xdp, NULL);
-  xmlns_atts = xdp->nstab;
-#endif
 }
 
 void
-rnvxml_term(Tree *tp)
+rnvxml_term(/*Tree *tp*/)
 {
   /*rnvval_ee(tp->root->name);*/
 }

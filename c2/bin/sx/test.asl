@@ -1,6 +1,6 @@
 @sign   A
 @v	a
-@form   A@g
+@form ~a  A@g
 @v	a₃
 @end form
 @end sign

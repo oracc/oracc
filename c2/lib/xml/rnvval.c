@@ -43,7 +43,7 @@ rnvval_init_err(void (*eh)(int erno,va_list ap))
 }
 
 void
-rnvval_init(struct xnn_data *xdp, char *rncfile)
+rnvval_init(struct xnn_data *xdp, const char *rncfile)
 {
   int i;
   char *p = rncfile_path(rncfile);

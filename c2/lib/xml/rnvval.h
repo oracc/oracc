@@ -7,7 +7,7 @@ struct rnvval_atts {
 };
 
 extern void rnvval_init_err(void (*eh)(int erno,va_list ap));
-extern void rnvval_init(struct xnn_data *xdp, char *rncfile);
+extern void rnvval_init(struct xnn_data *xdp, const char *rncfile);
 extern void rnvval_term(void);
 extern void rnvval_free_atts(struct rnvval_atts *ratts);
 extern struct rnvval_atts *rnvval_aa(const char *pname, ...);
