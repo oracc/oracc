@@ -34,7 +34,7 @@ slx_LDADD = $(xLDADD)
 
 slx_DEPENDENCIES = $(slx_LDADD)
 
-sx_SOURCES=sx.c sx_xml.c
+sx_SOURCES=sx.c sx_xml.c sx_identity.c
 
 sx_LDADD = $(xLDADD)
 

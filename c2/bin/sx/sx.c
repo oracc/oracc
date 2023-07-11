@@ -51,6 +51,12 @@ main(int argc, char * const*argv)
   tp = aslyacc();
   mesg_print(stderr);
 
+  if (identity_output)
+    {
+      struct sx_functions *f = sx_identity_init(stdout, "-");
+      f->sll(f,curr_asl);
+    }
+  
   if (xml_output)
     sx_xml(curr_asl);
 
