@@ -10,13 +10,19 @@ enum nscode { NS_NONE=0 , NS_CBD , NS_GDL , NS_SL , NS_XTF , NS_XMD , NS_LAST };
 typedef enum nscode nscode;
 typedef nscode nsrefs[NS_LAST];
 
+struct treemem
+{
+  Memo *tree_mem;
+  Memo *node_mem;
+  Pool *pool;
+  Memo *prop_mem;
+  Memo *keva_mem;
+};
+
 struct tree {
+  struct treemem *tm;
   struct node *root;
   struct node *curr;
-  Memo *nodemem;
-  Memo *propmem;
-  Memo *kevamem;
-  Pool *pool;
   nsrefs ns_used;
 };
 

@@ -17,6 +17,7 @@ int verbose;
 int status;
 int asltrace,rnvtrace;
 
+int asl_output = 0;
 int tree_output = 0;
 int xml_output = 0;
 
@@ -24,22 +25,19 @@ extern int asl_raw_tokens; /* ask asl to produce list of @sign/@form/@v tokens *
 
 int check_mode = 0;
 int trace_mode = 0;
-extern int asl_flex_debug;
+extern int asl_flex_debug, gdl_flex_debug;
 
 int
 main(int argc, char * const*argv)
 {
   Tree *tp = NULL;
-  const char *l = NULL;
 
   xo_loc = malloc(sizeof(Mloc));
   mesg_init();
-  asl_flex_debug = 0;
-  
-  if (!(l = setlocale(LC_ALL,ORACC_LOCALE)))
-    if (!(l = setlocale(LC_ALL, "en_US.UTF-8")))
-      if (!(l = setlocale(LC_ALL, "C")))
-        fprintf(stderr, "gvl_setup: failed to setlocale to '%s', 'UTF-8', or 'C'\n", ORACC_LOCALE);
+  asl_flex_debug = gdl_flex_debug = 0;
+
+  /* Initialize a dummy gvl with an empty hash instead of a signlist */
+  (void)gvl_setup(NULL, NULL);
   
   options(argc, argv, "crtTx");
   asltrace = asl_flex_debug = trace_mode;
@@ -47,13 +45,14 @@ main(int argc, char * const*argv)
   mesg_init();
   nodeh_register(treexml_o_handlers, NS_SL, treexml_o_generic);
   nodeh_register(treexml_c_handlers, NS_SL, treexml_c_generic);
+  gdl_init();
   asl_init();
   tp = aslyacc();
   mesg_print(stderr);
 
-  if (identity_output)
+  if (asl_output)
     {
-      struct sx_functions *f = sx_identity_init(stdout, "-");
+      struct sl_functions *f = sx_asl_init(stdout, "-");
       f->sll(f,curr_asl);
     }
   
@@ -63,6 +62,7 @@ main(int argc, char * const*argv)
   if (tree_output && tp)
     tree_xml(NULL, tp);
 
+  gdl_term();
   asl_term();
 }
 
@@ -71,6 +71,9 @@ opts(int opt, char *arg)
 {
   switch (opt)
     {
+    case 'a':
+      asl_output = 1;
+      break;
     case 'c':
       check_mode = 1;
       break;

@@ -4,8 +4,8 @@ bin_PROGRAMS=sx slix slx
 
 xLDADD=\
 	../../lem/lng/liblng.la \
-	../../nss/gdl/libgdl.la \
 	../../nss/asl/libasl.la \
+	../../nss/gdl/libgdl.la \
 	../../lib/sll/libsll.la \
 	../../lib/xml/libxml.la \
 	../../lib/xml/rnv/librnv.la \
@@ -34,7 +34,7 @@ slx_LDADD = $(xLDADD)
 
 slx_DEPENDENCIES = $(slx_LDADD)
 
-sx_SOURCES=sx.c sx_xml.c sx_identity.c
+sx_SOURCES=sx.c sx_asl.c sx_xml.c
 
 sx_LDADD = $(xLDADD)
 

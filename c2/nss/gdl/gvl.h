@@ -43,6 +43,7 @@ typedef struct gvl_i gvl_i;
 
 extern int gvl_sans_report;
 extern int gvl_strict;
+extern int gvl_void_messages;
 
 extern gvl_i *curr_sl;
 

@@ -55,3 +55,18 @@ gdl_term(void)
       gdl_modq_term();
     }
 }
+
+/* This is not necessarily a good implementation because it may be
+   necessary to traverse np->kids laterally instead of depth first to
+   find the first sign */
+const unsigned char *
+gdl_first_s(Node *gdl)
+{
+  Node *np;
+  for (np = gdl; np && strcmp(np->name, "g:s"); np = np->kids)
+    ;
+  if (np && np->user)
+    return ((gvl_g*)(np->user))->orig;
+  else
+    return NULL;
+}

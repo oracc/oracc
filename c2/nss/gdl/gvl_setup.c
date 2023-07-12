@@ -12,6 +12,11 @@
 #include "sll.h"
 #include "gvl.h"
 
+int gvl_void_messages; /* when non-zero only complain about structural
+			  issues not about unknown signs and other
+			  things that are OK if we are parsing a sign
+			  list */
+
 static gvl_i *gvl_i_init_h(const char *name, Hash *h);
 static void   gvl_i_term(const char *name);
 static gvl_i *sl = NULL; /* sl is always the head of the list of signlist datasets, not necessarily the current one */
@@ -28,16 +33,26 @@ gvl_setup(const char *project, const char *name)
     if (!(l = setlocale(LC_ALL, "en_US.UTF-8")))
       if (!(l = setlocale(LC_ALL, "C")))
         fprintf(stderr, "gvl_setup: failed to setlocale to '%s', 'UTF-8', or 'C'\n", ORACC_LOCALE);
-  
-  if ((h = sll_init_t(project, name)))
+
+  if (project && name)
     {
-      ret = gvl_i_init_h(name, h);
-      sll_set_sl(ret->sl);
+      if ((h = sll_init_t(project, name)))
+	{
+	  ret = gvl_i_init_h(name, h);
+	  sll_set_sl(ret->sl);
+	}
+      else
+	fprintf(stderr, "gvl: failed to open TSV %s/%s\n", (char *)project, (char*)name);
     }
   else
-    fprintf(stderr, "gvl: failed to open TSV %s/%s\n", (char *)project, (char*)name);
-
-  sll_init_si();
+    {
+      h = hash_create(1);
+      sll_init();
+      sll_init_si();
+      sll_set_sl(h);
+      ret = gvl_i_init_h("voidsl", h);
+      gvl_void_messages = 1;
+    }
 
   return ret;
 }

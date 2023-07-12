@@ -115,4 +115,6 @@ extern void gdl_update_state(Node *np, gdlstate_t gs_tok);
 
 extern const char *gdlsig_str(Mloc *mp, unsigned char *atf, int frag_ok, int deep);
 
+const unsigned char *gdl_first_s(Node *gdl);
+
 #endif /*GDL_H_*/

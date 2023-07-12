@@ -11,7 +11,7 @@ prop_state(Node *np, gdlstate_t *sp)
     {
       if (np->props->g != PU_GDLSTATE)
 	{
-	  Prop *p = memo_new(np->tree->propmem);
+	  Prop *p = memo_new(np->tree->tm->prop_mem);
 	  p->g = PU_GDLSTATE;
 	  p->next = np->props;
 	  np->props = p;
@@ -19,7 +19,7 @@ prop_state(Node *np, gdlstate_t *sp)
     }
   else
     {
-      np->props = memo_new(np->tree->propmem);
+      np->props = memo_new(np->tree->tm->prop_mem);
       np->props->g = PU_GDLSTATE;
     }
   if (sp)
@@ -92,12 +92,12 @@ prop_node_add(struct node *np, int ptype, int gtype, const char *key, const char
   if (key)
     {
       if (value)
-	p = prop_add_kv(np->tree->propmem, np->tree->kevamem, np->props, ptype, gtype, key, value);
+	p = prop_add_kv(np->tree->tm->prop_mem, np->tree->tm->keva_mem, np->props, ptype, gtype, key, value);
       else
-	p = prop_add_v(np->tree->propmem, np->props, ptype, gtype, (void*)key);
+	p = prop_add_v(np->tree->tm->prop_mem, np->props, ptype, gtype, (void*)key);
     }
   else
-    p = prop_add(np->tree->propmem, np->props, ptype, gtype);
+    p = prop_add(np->tree->tm->prop_mem, np->props, ptype, gtype);
 
   if (!np->props)
     np->props = p;

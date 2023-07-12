@@ -139,7 +139,7 @@ void
 gdl_prop(Node *ynp, int ptype, int gtype)
 {
   if (ynp)
-    ynp->props = prop_add(ynp->tree->propmem, ynp->props, ptype, gtype);
+    ynp->props = prop_add(ynp->tree->tm->prop_mem, ynp->props, ptype, gtype);
   else
     mesg_warning(currgdlfile, gdllineno, "gdl_prop passed NULL ynp");
 }
@@ -206,7 +206,7 @@ gdl_cell(Tree *ytp, const char *span)
   else
     tree_curr(ancestor->rent);
   cp = tree_add(ytp, NS_GDL, "g:cell", ytp->root->depth+1, NULL);
-  gdl_prop_kv(cp, GP_ATTRIBUTE, PG_GDL_INFO, "span", (ccp)pool_copy((uccp)span, ytp->pool));
+  gdl_prop_kv(cp, GP_ATTRIBUTE, PG_GDL_INFO, "span", (ccp)pool_copy((uccp)span, ytp->tm->pool));
   tree_curr(cp);
 }
 
@@ -249,7 +249,7 @@ gdl_field(Tree *ytp, const char *ftype)
   else
     tree_curr(ancestor->rent);
   fp = tree_add(ytp, NS_GDL, "g:field", ytp->root->depth+1, NULL);
-  gdl_prop_kv(fp, GP_ATTRIBUTE, PG_GDL_INFO, "field", (ccp)pool_copy((uccp)ftype, ytp->pool));
+  gdl_prop_kv(fp, GP_ATTRIBUTE, PG_GDL_INFO, "field", (ccp)pool_copy((uccp)ftype, ytp->tm->pool));
   tree_curr(fp);
 }
 

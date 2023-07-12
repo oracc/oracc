@@ -116,7 +116,7 @@ do_one(char *s)
     }
   gdlparse_reset();
   deep_sig = saved_deep;
-  tree_term(tp);
+  /*tree_term(tp);*/
 }
 
 void

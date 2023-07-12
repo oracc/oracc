@@ -60,7 +60,7 @@ struct sl_any_note
 struct sl_sign
 {
   const unsigned char *name;
-  Tree *gdl;
+  Node *gdl;
   unsigned const char *letter;
   unsigned const char *group;
   Hash *hlists;
@@ -85,7 +85,7 @@ struct sl_form
 {
   const unsigned char *name; /* The variant code for the form, with tilde */
   const unsigned char *sign; /* The sign name for the form */
-  Tree *gdl;
+  Node *gdl;
   unsigned const char *letter;
   unsigned const char *group;
   Hash *hlists;
@@ -111,7 +111,7 @@ struct sl_list
 struct sl_value
 {
   const unsigned char *name;
-  Tree *gdl;
+  Node *gdl;
   const char *lang; /* this is inline in the @v */
   const unsigned char *comment; /* this is inline in the @v */
   const unsigned char *bib; /* this is inline in the @v */
@@ -149,6 +149,6 @@ struct sl_functions
 
 extern struct sl_signlist *asl_bld_init(void);
 extern void asl_bld_term(struct sl_signlist *);
-extern void asl_bld_sign(struct sl_signlist *sl, const unsigned char *n, int list);
+extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
 
 #endif/*SIGNLIST_H_*/

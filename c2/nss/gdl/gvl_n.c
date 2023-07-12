@@ -117,11 +117,11 @@ gvl_n_sexify(Node *ynp)
 	      else
 		mesg_err(ynp->mloc, "internal error: sexify returned number without parens");	      
 	      gdl_push(ntp, "g:q");
-	      qnp = gdl_number(ntp, (ccp)pool_copy((uccp)n,ynp->tree->pool));
+	      qnp = gdl_number(ntp, (ccp)pool_copy((uccp)n,ynp->tree->tm->pool));
 	      qnp = qnp->rent;
 
 	      if (*q)
-		gdl_graph(ntp,(ccp)pool_copy((uccp)q,ynp->tree->pool));
+		gdl_graph(ntp,(ccp)pool_copy((uccp)q,ynp->tree->tm->pool));
 	      
 	      /* process each q-node as though it were a regular qualified number */
 	      gvl_n(qnp);

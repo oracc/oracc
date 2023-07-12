@@ -13,7 +13,9 @@ AM_CPPFLAGS=\
 	-I../../lib/cat \
 	-I../../lib/std \
 	-I../../lib/sys \
-	-I../../lib/xml
+	-I../../lib/sll \
+	-I../../lib/xml \
+	-I../../nss/gdl 
 
 asl.tab.c asl.tab.h: asl.y asl.l
 	${YACC} -vd asl.y

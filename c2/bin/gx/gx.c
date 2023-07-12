@@ -152,8 +152,9 @@ gx_term(void)
   gdlparse_term();
   mesg_term();
   pool_term(cbd_pool);
-  tree_term(cbd_tree);
+  /*tree_term(cbd_tree);*/
   common_term();
+  /*treemem_term();*/
 }
 
 static void

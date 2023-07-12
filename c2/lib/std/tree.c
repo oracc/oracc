@@ -5,32 +5,55 @@
 #include "memo.h"
 #include "tree.h"
 
-Tree *
-tree_init(void)
+static struct treemem *tmem = NULL;
+
+void
+treemem_init(void)
 {
-  Tree *tp = calloc(1, sizeof(Tree));
-  tp->nodemem = memo_init(sizeof(Node), 1024);
-  tp->pool = pool_init();
-  tp->propmem = memo_init(sizeof(Prop), 1024);
-  tp->kevamem = memo_init(sizeof(Keva), 1024);
-  return tp;
+  tmem = calloc(1, sizeof(struct treemem));
+  tmem->tree_mem = memo_init(sizeof(Tree), 1024);
+  tmem->node_mem = memo_init(sizeof(Node), 1024);
+  tmem->prop_mem = memo_init(sizeof(Prop), 1024);
+  tmem->keva_mem = memo_init(sizeof(Keva), 1024);
+  tmem->pool = pool_init();
 }
 
 void
-tree_term(Tree *tp)
+tmem_term(void)
 {
-  if (tp)
+  if (tmem)
     {
-      memo_term(tp->nodemem);
-      pool_term(tp->pool);
-      free(tp);
+      memo_term(tmem->tree_mem);
+      memo_term(tmem->node_mem);
+      memo_term(tmem->prop_mem);
+      memo_term(tmem->keva_mem);
+      pool_term(tmem->pool);
+      free(tmem);
     }
 }
+
+Tree *
+tree_init(void)
+{
+  Tree *tp = NULL;
+  if (!tmem)
+    treemem_init();
+  tp = memo_new(tmem->tree_mem);
+  tp->tm = tmem;
+  return tp;
+}
+
+#if 0
+void
+tree_term()
+{
+}
+#endif
 
 Node *
 tree_node(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc)
 {
-  Node *np = memo_new(tp->nodemem);
+  Node *np = memo_new(tp->tm->node_mem);
   np->tree = tp;
   np->name = name;
   np->depth = depth;

@@ -170,7 +170,7 @@ o_xml_end_cbd(struct cbd *c)
 {
 #if 1
   rnvxml_ee("cbd");
-  rnvxml_term(NULL);
+  rnvxml_term();
 #else
   fprintf(f_xml, "</cbd>");
 #endif

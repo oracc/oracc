@@ -82,7 +82,7 @@ do_one(char *s)
   fflush(stdout);
   gdlparse_reset();
   deep_sig = saved_deep;
-  tree_term(tp);
+  /*tree_term(tp);*/ /* don't do this per-tree any more */
 }
 
 void

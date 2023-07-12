@@ -78,7 +78,8 @@ gvl_s(Node *ynp)
       else
 	{
 	  if (!gdl_legacy_check(ynp, gp->orig))
-	    gp->mess = gvl_vmess("unknown sign name: %s", gp->orig);
+	    if (!gvl_void_messages)
+	      gp->mess = gvl_vmess("unknown sign name: %s", gp->orig);
 	}
     }
   else if ('l' == *gp->type)
@@ -93,7 +94,8 @@ gvl_s(Node *ynp)
       else
 	{
 	  if (!gdl_legacy_check(ynp, gp->orig))
-	    gp->mess = gvl_vmess("unknown signlist name: %s", gp->orig);
+	    if (!gvl_void_messages)
+	      gp->mess = gvl_vmess("unknown signlist name: %s", gp->orig);
 	}
 
     }

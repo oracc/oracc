@@ -214,7 +214,7 @@ gdl_unlegacy(Node *np)
       if (strcmp(np->text, (ccp)res))
 	{
 	  prop_node_add(np, GP_TRACKING, PG_GDL_INFO, "legacy", np->text);
-	  np->text = (ccp)pool_copy(res, np->tree->pool);
+	  np->text = (ccp)pool_copy(res, np->tree->tm->pool);
 	}
     }
   else
