@@ -8,9 +8,10 @@ struct sl_signlist *
 asl_bld_init(void)
 {
   struct sl_signlist *sl = malloc(sizeof(struct sl_signlist));
-  sl->signs = hash_create(1024);
-  sl->forms_which_are_not_signs = hash_create(128);
-  sl->signvalues = hash_create(1024);
+  sl->hsigns = hash_create(1024);
+  sl->hforms = hash_create(1024);
+  sl->hforms_which_are_not_signs = hash_create(128);
+  sl->hsignvalues = hash_create(1024);
   sl->hletters = hash_create(32);
   sl->m_letters = memo_init(sizeof(struct sl_letter), 32);
   sl->m_groups = memo_init(sizeof(struct sl_letter), 128);
@@ -18,6 +19,7 @@ asl_bld_init(void)
   sl->m_forms = memo_init(sizeof(struct sl_form),512);
   sl->m_lists = memo_init(sizeof(struct sl_value),256);
   sl->m_values = memo_init(sizeof(struct sl_value),1024);
+  sl->m_signs_p = memo_init(sizeof(struct sl_sign *),512);
   sl->p = pool_init();
   return sl;
 }
@@ -27,8 +29,10 @@ asl_bld_term(struct sl_signlist *sl)
 {
   if (sl)
     {
-      hash_free(sl->signs, NULL);
-      hash_free(sl->forms_which_are_not_signs, NULL);
+      hash_free(sl->hsigns, NULL);
+      hash_free(sl->hforms, NULL);
+      hash_free(sl->hforms_which_are_not_signs, NULL);
+      hash_free(sl->hsignvalues, NULL);
       memo_term(sl->m_letters);
       memo_term(sl->m_groups);
       memo_term(sl->m_signs);
@@ -52,7 +56,7 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
   struct sl_sign *s = memo_new(sl->m_signs);
   s->name = n;
   s->name_is_listnum = list;
-  if (hash_find(sl->signs, n))
+  if (hash_find(sl->hsigns, n))
     {
       /* error: duplicate sign */
     }
@@ -60,7 +64,7 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
     {
       Tree *tp;
       unsigned const char *group;
-      hash_add(sl->signs, n, s);
+      hash_add(sl->hsigns, n, s);
       sl->curr_sign = s;
       tp = asl_bld_gdl(locp, (char*)pool_copy(n,sl->p));
       s->gdl = tp->root;
