@@ -8,15 +8,14 @@
 
 struct sl_signlist *curr_asl = NULL;
 
-Tree *
+struct sl_signlist *
 aslyacc(void)
 {
-  Tree *tp = NULL;
   curraslfile = aslfile = "<stdin>";
   curr_asl = asl_bld_init();
   aslparse();
   /*asl_bld_term(sl);*/ /* This needs to be called after the signlist is done with */
-  return tp;
+  return curr_asl;
 }
 
 int
@@ -24,9 +23,9 @@ asl_grapheme(const char *gp)
 {
   const char *gp_orig = gp;
   while (*gp)
-    if (*gp < 1288 && islower(*gp))
+    if (*gp <= 127 && islower(*gp))
       return GVALUE;
-    else if (*gp < 1288 && isupper(*gp))
+    else if (*gp <= 127 && isupper(*gp))
       return GNAME;
     else
       ++gp;

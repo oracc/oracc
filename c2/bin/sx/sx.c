@@ -30,7 +30,7 @@ extern int asl_flex_debug, gdl_flex_debug;
 int
 main(int argc, char * const*argv)
 {
-  Tree *tp = NULL;
+  struct sl_signlist *sl;
 
   xo_loc = malloc(sizeof(Mloc));
   mesg_init();
@@ -47,20 +47,29 @@ main(int argc, char * const*argv)
   nodeh_register(treexml_c_handlers, NS_SL, treexml_c_generic);
   gdl_init();
   asl_init();
-  tp = aslyacc();
+  sl = aslyacc();
   mesg_print(stderr);
 
-  if (asl_output)
+  if (sl)
     {
-      struct sl_functions *f = sx_asl_init(stdout, "-");
-      f->sll(f,curr_asl);
-    }
-  
-  if (xml_output)
-    sx_xml(curr_asl);
+      sx_marshall(sl);
+      
+      if (asl_output)
+	{
+	  struct sl_functions *f = sx_asl_init(stdout, "-");
+	  f->sll(f,sl);
+	}
 
-  if (tree_output && tp)
-    tree_xml(NULL, tp);
+      if (xml_output)
+	{
+#if 0
+	  struct sl_functions *f = sx_asl_init(stdout, "-");
+	  f->sll(f, sl);
+#else
+	  sx_xml(sl);
+#endif
+	}
+    }
 
   gdl_term();
   asl_term();

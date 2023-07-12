@@ -409,3 +409,19 @@ list2array(List *l)
   c[cindex] = NULL;
   return c;
 }
+
+const char **
+list2chars(List *l)
+{
+  char **c = malloc((1+list_len(l))*sizeof(char*));
+  int cindex = 0;
+  List_node *lnp;
+
+  if (!l || !list_len(l))
+    return NULL;
+
+  for (lnp = l->first; lnp; lnp = lnp->next)
+    c[cindex++] = (char*)lnp->data;
+  c[cindex] = NULL;
+  return c;
+}

@@ -13,5 +13,6 @@ extern void sx_xml(struct sl_signlist *sl);
 extern void sx_xml_init(void);
 
 extern struct sl_functions *sx_asl_init(FILE *fp, const char *fname);
+extern void sx_marshall(struct sl_signlist *sl);
 
 #endif/*SX_H_*/

@@ -15,8 +15,9 @@ struct sl_signlist
   Hash *forms_which_are_not_signs;
   Hash *signvalues;
   Hash *hletters;
-  struct sl_sign *sorted_signs;
+  struct sl_sign *signs;
   struct sl_letter *letters;
+  int nletters;
   struct sl_sign *curr_sign;
   struct sl_form *curr_form;
   struct sl_value *curr_value;
@@ -33,12 +34,13 @@ struct sl_letter
 {
   const unsigned char *name;
   struct sl_group *groups;
+  int ngroups;
 };
 
 struct sl_group 
 {
   const unsigned char *name;
-  struct sl_sign *signs;
+  struct sl_sign **signs;
 };
 
 struct sl_signform_meta
