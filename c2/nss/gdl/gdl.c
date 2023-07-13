@@ -56,17 +56,40 @@ gdl_term(void)
     }
 }
 
-/* This is not necessarily a good implementation because it may be
-   necessary to traverse np->kids laterally instead of depth first to
-   find the first sign */
+
+static Node *
+gdl_first_s_sub(Node *np)
+{
+  if (np)
+    {
+      if (strlen(np->name)==3 && (np->name[2] == 'l' || np->name[2] == 'n' || np->name[2] == 's'))
+	return np;
+      else
+	return gdl_first_s_sub(np->kids);
+    }
+  return NULL;
+}
+
 const unsigned char *
 gdl_first_s(Node *gdl)
 {
-  Node *np;
-  for (np = gdl; np && strcmp(np->name, "g:s"); np = np->kids)
-    ;
+  Node *np = gdl_first_s_sub(gdl);
+
+  if (!np)
+    {
+      if (gdl->kids->kids)
+	np = gdl_first_s_sub(gdl->kids->kids->next);
+      if (!np)
+	{
+	  if (gdl->kids->kids && gdl->kids->kids->kids)
+	    np = gdl_first_s_sub(gdl->kids->kids->kids->next);
+	  else if (gdl->kids->kids && gdl->kids->kids->next)
+	    np = gdl_first_s_sub(gdl->kids->kids->next->next);
+	}
+    }
+
   if (np && np->user)
-    return ((gvl_g*)(np->user))->orig;
+    return ((gvl_g*)(np->user))->orig;  
   else
     return NULL;
 }

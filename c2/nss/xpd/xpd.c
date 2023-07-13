@@ -11,7 +11,7 @@
 #include "mesg.h"
 #include "xpd.h"
 
-#define _MAX_PATH 2048
+/*#define _MAX_PATH 2048*/
 extern int verbose;
 
 static const char *configname = "config.xml";
@@ -168,7 +168,7 @@ xpd_echo(const char *xpd_project, FILE *fp)
 {
   char tmp[_MAX_PATH], *text;
   size_t nbytes;
-  (void)sprintf(tmp,"/Users/stinney/orc/xml/%s/%s", xpd_project, configname);
+  (void)sprintf(tmp,"/home/oracc/xml/%s/%s", xpd_project, configname);
   text = (char*)loadfile((unsigned char *)tmp, &nbytes);
   if (text)
     {

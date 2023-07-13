@@ -49,7 +49,9 @@ gvl_c(gvl_g *cp)
 	}
       else
 	{
-	  if (!gdl_corrq && !strchr((ccp)cp->orig,'X')) /* don't error on corrections or compounds with X--the latter should be configurable */
+	   /* don't error when errors are voided, on corrections or
+	      compounds with X--the latter should be configurable */
+	  if (!gvl_void_messages && !gdl_corrq && !strchr((ccp)cp->orig,'X'))
 	    {
 	      if (strcmp((ccp)cp->orig, (ccp)cp->c10e) && c10e_no_p && strcmp((ccp)cp->c10e, (ccp)c10e_no_p))
 		cp->mess = gvl_vmess("unknown compound: %s (also tried %s/%s)", cp->orig, cp->c10e, c10e_no_p);
@@ -61,7 +63,7 @@ gvl_c(gvl_g *cp)
 		cp->mess = gvl_vmess("unknown compound: %s", cp->orig);
 	    }
 	}
-      free(c10e_no_p);
+      /*free(c10e_no_p);*/
     }
 }
 

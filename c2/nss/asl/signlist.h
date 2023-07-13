@@ -75,6 +75,7 @@ struct sl_sign
   struct sl_list *lists;
   struct sl_value *values;
   struct sl_form *forms;
+  int nforms;
   struct sl_signform_meta m;
   struct sl_any_note n;
   int nosign;

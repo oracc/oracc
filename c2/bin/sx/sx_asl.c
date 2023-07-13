@@ -29,10 +29,10 @@ static void
 sx_a_signlist(struct sl_functions *f, struct sl_signlist *s)
 {
   fprintf(f->fp, "@signlist %s\n", s->project);
-  if (s->letters)
+  if (s->nletters)
     {
       int i;
-      for (i = 0; s->letters[i].name; ++i)
+      for (i = 0; i < s->nletters; ++i)
 	f->let(f, &s->letters[i]);
     }
 }
@@ -41,10 +41,10 @@ static void
 sx_a_letter(struct sl_functions *f, struct sl_letter *l)
 {
   fprintf(f->fp, "@letter\t%s\n", l->name);
-  if (l->groups)
+  if (l->ngroups)
     {
       int i;
-      for (i = 0; l->groups[i].name; ++i)
+      for (i = 0; i < l->ngroups; ++i)
 	f->grp(f, &l->groups[i]);
     }
 }
@@ -53,7 +53,7 @@ static void
 sx_a_group(struct sl_functions *f, struct sl_group *g)
 {
   fprintf(f->fp, "@group\t%s\n", g->name);
-  if (g->signs)
+  if (g->nsigns)
     {
       int i;
       for (i = 0; i < g->nsigns; ++i)
@@ -65,10 +65,10 @@ static void
 sx_a_sign(struct sl_functions *f, struct sl_sign *s)
 {
   fprintf(f->fp, "@sign\t%s\n", s->name);
-  if (s->forms)
+  if (s->nforms)
     {
       int i;
-      for (i = 0; s->forms[i].name; ++i)
+      for (i = 0; i < s->nforms; ++i)
 	f->frm(f,&s->forms[i]);
     }
   fprintf(f->fp, "@end sign\n");

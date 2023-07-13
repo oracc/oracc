@@ -19,7 +19,7 @@ u_charbytes(const unsigned char *g)
 	return len;
       else
 	{
-	  fprintf(stderr,"u_charbytes: mbtowc failed\n");
+	  fprintf(stderr,"u_charbytes: mbtowc failed: %s\n", strerror());
 	  return 1; /* if a pointer is using this make sure it moves */
 	}
     }
@@ -150,8 +150,8 @@ utf2wcs(const unsigned char *src, size_t *len)
   if (nbytes == (size_t)-1)
     {
 #if 0
-      fprintf(stderr,"%d: conversion of '%s' from UTF-8 to wide chars failed\n", 
-	      (atf_cbd_err ? cbd_err_line : lnum), src);
+      fprintf(stderr,"%d: conversion of '%s' from UTF-8 to wide chars failed: %s\n", 
+	      (atf_cbd_err ? cbd_err_line : lnum), src, strerror);
 #endif
       return NULL;
     }

@@ -42,13 +42,26 @@ gvl_s(Node *ynp)
       gvl_n_sexify(ynp);
       return ynp->user;
     }
-
+#if 0
+  else if ('R' == *gp->type)
+    {
+      /* This happens only with bare 'n' and 'N' */
+      gp->type = "n";
+      ynp->name = "g:n";
+    }
+#endif
+  
   if ('a' != curr_lang && 's' != curr_lang && (curr_lang < '0' || curr_lang > '9'))
     return gp;
   
   if ((l = gvl_lookup(gp->orig)))
     {
-      /* best case: g is a known sign or value */
+      /* best case: g is a known sign or value; only n or N can have type 'R' here */
+      if ('R' == *gp->type)
+	{
+	  gp->type = "n";
+	  ynp->name = "g:n";
+	}	    
       gp->oid = (ccp)l;
       gp->sign = gvl_lookup(sll_tmp_key(l,""));
       gp->c10e = gp->orig;
@@ -125,10 +138,23 @@ gvl_s(Node *ynp)
 	    }
 	  else
 	    {
-	      if (gvl_sans_report)
-		gp->mess = gvl_vmess("unknown value: %s.", gp->orig);
+	      /* we can reach this with n or N when using a void signlist */
+	      if ('R' == *gp->type && strlen((ccp)gp->orig) == 1 && (*gp->orig == 'n' || *gp->orig == 'N'))
+		{
+		  gp->type = "n";
+		  ynp->name = "g:n";
+		}
 	      else
-		gp->mess = gvl_vmess("unknown value: %s. To request adding it please visit:\n\t%s", gp->orig, report);
+		{
+		  if (!gvl_void_messages)
+		    {
+		      if (gvl_sans_report)
+			gp->mess = gvl_vmess("unknown sign/value: %s.", gp->orig);
+		      else
+			gp->mess = gvl_vmess("unknown sign/value: %s. To request adding it please visit:\n\t%s",
+					     gp->orig, report);
+		    }
+		}
 	    }
 	}
     }

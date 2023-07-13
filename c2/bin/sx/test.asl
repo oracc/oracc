@@ -1,3 +1,9 @@
+@sign BA
+@v ba
+@form ~a BU
+@form ~b BI
+@end sign
+
 @sign   A
 @v	a
 @form ~a  A@g

@@ -11,7 +11,7 @@ xLDADD=\
 	../../lib/xml/libxml.la \
 	../../lib/xml/rnv/librnv.la \
 	../../lib/std/libstd.la \
-	../../lib/collate/libcollate.la \
+	../../lib/collate/libcoll.la \
 	../../rnc/librnc.la \
 	../../lib/sys/libsys.la 
 

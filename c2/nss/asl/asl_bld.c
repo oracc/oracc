@@ -1,3 +1,4 @@
+#include <string.h>
 #include <tree.h>
 #include <mesg.h>
 #include <oraccsys.h>
@@ -74,8 +75,8 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
 	{
 	  /* get the letter from the group sign */
 	  unsigned char *letter = NULL;
-	  Hash *lg; /* letter groups */
-	  List *gs; /* group signs */
+	  Hash *lghash; /* letter groups */
+	  List *gslist; /* group signs */
 
 	  if (*group < 128)
 	    {
@@ -85,27 +86,29 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
 	    }
 	  else
 	    {
-	      size_t x;
-	      wchar_t w[2];
-	      size_t n = 0;
-	      w[0] = utf1char(group, &x);
+	      wchar_t *w = NULL;
+	      unsigned char *c = NULL;
+	      size_t len = 0;
+	      w = utf2wcs(group, &len);
 	      w[1] = L'\0';
-	      letter = pool_alloc((n = (wcstombs(NULL,w,0)+1)), sl->p);
-	      if (n != wcstombs((char*)letter,w,n))
-		mesg_verr(locp, "conversion of multibyte first letter in %s failed", group);
+	      c = wcs2utf(w, 1);
+	      letter = pool_copy(c,sl->p);
 	    }
 
 	  /* This is where the structure of the signlist is built */
 	  
 	  /* remember the letter */
-	  if (!(lg = hash_find(sl->hletters, letter)))
-	    hash_add(sl->hletters, letter, (lg = hash_create(128))); /* AB1: hash of letters in signlist;
-									value is hash of groups */
+	  if (!(lghash = hash_find(sl->hletters, letter)))
+	    hash_add(sl->hletters, letter, (lghash = hash_create(128))); /* AB1: hash of letters in signlist;
+									    value is hash of groups in letter */
 	  /* remember the group belongs to the letter */
-	  if (!(gs = hash_find(lg, group)))
-	    hash_add(lg, group, (gs = list_create(LIST_SINGLE))); /* AB2: hash of groups in letter;
-								     value is list of struct sl_sign * */
-	  list_add(gs, s); /* AB3: list of signs in group, expressed as struct sl_sign* */
+	  if (!(gslist = hash_find(lghash, group)))
+	    {
+	      
+	      hash_add(lghash, group, (gslist = list_create(LIST_SINGLE))); /* AB2: hash of groups in letter;
+									       value is list of struct sl_sign * */
+	      list_add(gslist, s); /* AB3: list of signs in group, expressed as struct sl_sign* */
+	    }
 	}
       else
 	mesg_verr(locp, "no sign name found in GDL of %s", n);
