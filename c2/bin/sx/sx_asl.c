@@ -82,7 +82,7 @@ sx_a_sign(struct sl_functions *f, struct sl_sign *s)
 static void
 sx_a_form(struct sl_functions *f, struct sl_form *s)
 {
-  fprintf(f->fp, "@form\t%s\n", s->name);
+  fprintf(f->fp, "@form\t%s %s\n", s->var, s->name);
 #if 0
   /*sx_a_signform_info();*/
   fprintf(f->fp, "@end form\n");

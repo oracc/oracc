@@ -123,10 +123,12 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       struct sl_form *f = memo_new(sl->m_forms);
       f->mloc = locp;
       f->name = n;
+      f->var = var;
+      /*f->ref = ref;*/
       f->name_is_listnum = list;
       sl->curr_form = f;
-      if (!hash_find(sl->hforms, n))
-	hash_add(sl->hforms, (uccp)n, f);
+      if (!hash_find(sl->hforms, f->name))
+	hash_add(sl->hforms, (uccp)f->name, f);
       if (!sl->curr_sign->hforms)
 	sl->curr_sign->hforms = hash_create(128);
       hash_add(sl->curr_sign->hforms, f->name, f);

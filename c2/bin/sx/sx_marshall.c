@@ -13,6 +13,18 @@ form_as_sign(struct sl_signlist *sl, struct sl_form *f)
   return s;
 }
 
+static int forms_cmp(const void *a, const void *b)
+{
+  int a1 = (*(struct sl_form**)a)->sort;
+  int b1 = (*(struct sl_form**)b)->sort;
+  if (a1 < b1)
+    return -1;
+  else if (a1 > b1)
+    return 1;
+  else
+    return 0;
+}
+
 static int signs_cmp(const void *a, const void *b)
 {
   int a1 = (*(struct sl_sign**)a)->sort;
@@ -38,16 +50,7 @@ sx_marshall(struct sl_signlist *sl)
   for (i = 0; i < nfrms; ++i)
     {
       if (!hash_find(sl->hsigns, (uccp)frms[i]))
-	{
-#if 0
-	  fprintf(stderr, "adding form %s as xsign\n", frms[i]);
-#endif
-	  hash_add(sl->hsigns, (uccp)frms[i], form_as_sign(sl, hash_find(sl->hforms, (uccp)frms[i])));
-	}
-#if 0
-      else
-	fprintf(stderr, "form %s already known as sign\n", frms[i]);
-#endif
+	hash_add(sl->hsigns, (uccp)frms[i], form_as_sign(sl, hash_find(sl->hforms, (uccp)frms[i])));
     }
   
   sgns = hash_keys2(sl->hsigns, &nsgns);
@@ -60,6 +63,16 @@ sx_marshall(struct sl_signlist *sl)
       sl->signs[i]->sort = i;
     }
 
+  /* Provide forms with sort codes based on sign sort sequence */
+  sl->forms = malloc(sizeof(struct sl_form*) * nfrms);
+  for (i = 0; i < nfrms; ++i)
+    {
+      struct sl_sign *s = NULL;
+      sl->forms[i] = hash_find(sl->hforms, (ucp)frms[i]);
+      s = hash_find(sl->hsigns, (ucp)frms[i]);
+      sl->forms[i]->sort = s->sort;
+    }
+  
   /* Dereference structures created in asl_bld.c--see that file for AB1/AB2/AB3 creation */
   lets = hash_keys2(sl->hletters, &nlets); /* obtain list of letters from AB1 */
   qsort(lets, nlets, sizeof(const char*), (cmp_fnc_t)collate_cmp_graphemes);
@@ -103,6 +116,7 @@ sx_marshall(struct sl_signlist *sl)
 	  sp->nforms = snfrms;
 	  for (j = 0; j < snfrms; ++j)
 	    sp->forms[j] = hash_find(sp->hforms, (uccp)sfrms[j]);
+	  qsort(sp->forms,sp->nforms, sizeof(void*), (cmp_fnc_t)forms_cmp);
 	}
     }
 

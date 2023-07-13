@@ -19,6 +19,8 @@ struct sl_signlist
   Hash *hletters;
   struct sl_sign **signs;
   int nsigns;
+  struct sl_form **forms;
+  int nforms;
   struct sl_letter *letters;
   int nletters;
   struct sl_sign *curr_sign;
@@ -81,10 +83,10 @@ struct sl_sign
   int nforms;
   struct sl_signform_meta m;
   struct sl_any_note n;
+  int name_is_listnum;
   int nosign;
   int fake;
   int query;
-  int name_is_listnum;
   int sort;
   struct sl_form *xref; /* this sign is a header for the @form which
 			   defines the sign name; sort value is sort
@@ -94,8 +96,8 @@ struct sl_sign
 
 struct sl_form
 {
-  const unsigned char *name; /* The variant code for the form, with tilde */
-  const unsigned char *sign; /* The sign name for the form */
+  const unsigned char *name;
+  const unsigned char *var; /* The variant code for the form, with tilde */
   Node *gdl;
   unsigned const char *letter;
   unsigned const char *group;
@@ -109,6 +111,7 @@ struct sl_form
   int name_is_listnum;
   int noform;
   int query;
+  int sort;
   Mloc *mloc;
 };
 
