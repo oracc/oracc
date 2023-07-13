@@ -1,3 +1,4 @@
+signlist, SIGNLIST, 0
 sign, SIGN, 0
 form, FORM, 0
 v, V, 0

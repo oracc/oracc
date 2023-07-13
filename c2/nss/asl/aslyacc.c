@@ -6,13 +6,11 @@
 #include "signlist.h"
 #include "asl.tab.h"
 
-struct sl_signlist *curr_asl = NULL;
-
 struct sl_signlist *
 aslyacc(void)
 {
   curraslfile = aslfile = "<stdin>";
-  curr_asl = asl_bld_init();
+  /*curr_asl = asl_bld_init();*/ /* This is done via new @signlist command */
   aslparse();
   /*asl_bld_term(sl);*/ /* This needs to be called after the signlist is done with */
   return curr_asl;

@@ -1,9 +1,12 @@
 #include <string.h>
+#include <ctype128.h>
 #include <tree.h>
 #include <mesg.h>
 #include <oraccsys.h>
 #include <gdl.h>
 #include "signlist.h"
+
+struct sl_signlist *curr_asl = NULL;
 
 struct sl_signlist *
 asl_bld_init(void)
@@ -95,6 +98,10 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
 	      letter = pool_copy(c,sl->p);
 	    }
 
+#if 0
+	  fprintf(stderr, "%s\t%s\t%s\n", n, letter, group);
+#endif
+
 	  /* This is where the structure of the signlist is built */
 	  
 	  /* remember the letter */
@@ -102,15 +109,25 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
 	    hash_add(sl->hletters, letter, (lghash = hash_create(128))); /* AB1: hash of letters in signlist;
 									    value is hash of groups in letter */
 	  /* remember the group belongs to the letter */
-	  if (!(gslist = hash_find(lghash, group)))
-	    {
-	      
-	      hash_add(lghash, group, (gslist = list_create(LIST_SINGLE))); /* AB2: hash of groups in letter;
-									       value is list of struct sl_sign * */
-	      list_add(gslist, s); /* AB3: list of signs in group, expressed as struct sl_sign* */
-	    }
+	  if (!(gslist = hash_find(lghash, group)))	      
+	    hash_add(lghash, group, (gslist = list_create(LIST_SINGLE))); /* AB2: hash of groups in letter;
+									     value is list of struct sl_sign * */
+	  list_add(gslist, s); /* AB3: list of signs in group, expressed as struct sl_sign* */
 	}
       else
 	mesg_verr(locp, "no sign name found in GDL of %s", n);
     }
+}
+
+struct sl_signlist *
+asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list)
+{
+  curr_asl = asl_bld_init();
+  if (n)
+    {
+      while (isspace(*n))
+	++n;
+      curr_asl->project = (ccp)n;
+    }
+  return curr_asl;
 }

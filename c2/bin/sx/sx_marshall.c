@@ -4,8 +4,8 @@
 
 int signs_cmp(const void *a, const void *b)
 {
-  int a1 = ((struct sl_sign*)a)->sort;
-  int b1 = ((struct sl_sign*)b)->sort;
+  int a1 = (*(struct sl_sign**)a)->sort;
+  int b1 = (*(struct sl_sign**)b)->sort;  
   if (a1 < b1)
     return -1;
   else if (a1 > b1)

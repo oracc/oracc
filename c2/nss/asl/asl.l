@@ -67,6 +67,7 @@ PUNCT		("*"|:['".:]?|"/")
 ^[ \t]+.+/\n    		{ aslsave; pmatch("###tab\n"); return TAB; }
 
 ^@end/[ \t].*\n        	       	{ atcmd(END,E); }
+^@signlist/[ \t]       		{ atcmd(SIGNLIST,T); }
 ^@sign/[ \t]       		{ atcmd(SIGN,0); }
 ^@pname/[ \t]       		{ atcmd(PNAME,0); }
 ^@nosign/[ \t]     		{ atcmd(NOSIGN,0); }

@@ -31,7 +31,7 @@ int nosign = 0;
 		GBAD ATF LANG
 		V NOV QRYV ATFV VCMT VREF LIST LISTNUM LISTNUMQ
 		INOTE LIT NOTE TEXT END EBAD EFORM ESIGN
-		UCHAR UCODE UPHASE UNAME UNOTE
+		UCHAR UCODE UPHASE UNAME UNOTE SIGNLIST
 
 %nterm  <text> gname 
 
@@ -61,7 +61,8 @@ line:	atcmd		{ if (asltrace) fprintf(stderr, "atcmd/EOL: %s\n", asllval.text); }
 	;
 
 atcmd:
-	  atsign	{ nosign = 0; }
+	  atsignlist	{ }
+	| atsign	{ nosign = 0; }
 	| atnosign
 	| atpname
 	| atlist
@@ -71,6 +72,10 @@ atcmd:
 	| atunicode
 	| atend
         ;
+
+atsignlist:
+	  SIGNLIST TEXT { asl_bld_signlist(&@1, curr_asl, (uccp)$2, 0); }
+	;
 
 atsign:
 	  SIGN gname	 { asl_bld_sign(&@1, curr_asl, (uccp)$2, 0); }

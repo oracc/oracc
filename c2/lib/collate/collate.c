@@ -191,15 +191,18 @@ int
 collate_cmp_graphemes (const Uchar *k1, const Uchar *k2)
 {
   static Uchar k1buf[1024], k2buf[1024];
-  const Uchar *kk1, *kk2, *b1, *b2, *d1, *d2, *e1, *e2, *max_e1, *max_e2;
+  const Uchar *k1c, *k2c, *kk1, *kk2, *b1, *b2, *d1, *d2, *e1, *e2, *max_e1, *max_e2;
   int first_pass = 1;
 
+  k1c = *(const char **)k1;
+  k2c = *(const char **)k2;
+  
 START:
 
   if (first_pass)
     {
-      strcpy(k1buf,k1);
-      strcpy(k2buf,k2);
+      strcpy(k1buf,k1c);
+      strcpy(k2buf,k2c);
       kk1 = collate_makekey_i(k1buf);
       kk2 = collate_makekey_i(k2buf);
       while (curr_collate->delims[*kk1])
@@ -215,8 +218,8 @@ START:
     }
   else
     {
-      strcpy(k1buf,k1);
-      strcpy(k2buf,k2);
+      strcpy(k1buf,k1c);
+      strcpy(k2buf,k2c);
       kk1 = collate_makekey(k1buf); 
       kk2 = collate_makekey(k2buf);
       max_e1 = kk1 + strlen (kk1);

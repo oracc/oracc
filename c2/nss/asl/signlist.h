@@ -155,7 +155,8 @@ struct sl_functions
   };
 
 extern struct sl_signlist *asl_bld_init(void);
-extern void asl_bld_term(struct sl_signlist *);
 extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
+extern struct sl_signlist *asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
+extern void asl_bld_term(struct sl_signlist *);
 
 #endif/*SIGNLIST_H_*/

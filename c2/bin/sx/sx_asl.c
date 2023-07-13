@@ -65,6 +65,7 @@ static void
 sx_a_sign(struct sl_functions *f, struct sl_sign *s)
 {
   fprintf(f->fp, "@sign\t%s\n", s->name);
+#if 0
   if (s->nforms)
     {
       int i;
@@ -72,6 +73,7 @@ sx_a_sign(struct sl_functions *f, struct sl_sign *s)
 	f->frm(f,&s->forms[i]);
     }
   fprintf(f->fp, "@end sign\n");
+#endif
 }
 
 static void
