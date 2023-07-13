@@ -102,6 +102,7 @@ struct sl_form
   struct sl_value *ivalues; /* inherited values */
   struct sl_signform_meta m;
   struct sl_any_note n;
+  int name_is_listnum;
   int noform;
   int query;
 };
@@ -155,6 +156,8 @@ struct sl_functions
   };
 
 extern struct sl_signlist *asl_bld_init(void);
+extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list,
+			 const unsigned char *var, const unsigned char *ref);
 extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
 extern struct sl_signlist *asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
 extern void asl_bld_term(struct sl_signlist *);

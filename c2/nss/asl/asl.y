@@ -33,7 +33,7 @@ int nosign = 0;
 		INOTE LIT NOTE TEXT END EBAD EFORM ESIGN
 		UCHAR UCODE UPHASE UNAME UNOTE SIGNLIST
 
-%nterm  <text> gname 
+%nterm  <text> gname vref
 
 %start fields
 
@@ -98,8 +98,8 @@ atnosign:
 	;
 
 atform:
-	  FORM VAR gname vref
-	| FORM VAR LISTNUM
+	  FORM VAR gname vref 	{ asl_bld_form(&@1, curr_asl, (uccp)$3, 0, (uccp)$2, (uccp)$4); }
+	| FORM VAR LISTNUM vref { asl_bld_form(&@1, curr_asl, (uccp)$3, 1, (uccp)$2, (uccp)$4); }
 	| FORM VAR GBAD
 	;
 
@@ -143,7 +143,7 @@ gvalue:
 
 vref:
 	  VREF
-	| /* empty */
+	  | /* empty */ { $$ = NULL; }
 	;
 
 atend:

@@ -55,67 +55,95 @@ asl_bld_gdl(Mloc *locp, char *s)
   return tp;
 }
 
+static void
+asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
+{
+  Tree *tp;
+  unsigned const char *group;
+  tp = asl_bld_gdl(locp, (char*)pool_copy(s->name,sl->p));
+  s->gdl = tp->root;
+  /* get the group sign -- the first g:s node */
+  if ((group = gdl_first_s(s->gdl)))
+    {
+      /* get the letter from the group sign */
+      unsigned char *letter = NULL;
+      Hash *lghash; /* letter groups */
+      List *gslist; /* group signs */
+
+      if (*group < 128)
+	{
+	  letter = pool_alloc(2, sl->p);
+	  letter[0] = *group;
+	  letter[1] = '\0';
+	}
+      else
+	{
+	  wchar_t *w = NULL;
+	  unsigned char *c = NULL;
+	  size_t len = 0;
+	  w = utf2wcs(group, &len);
+	  w[1] = L'\0';
+	  c = wcs2utf(w, 1);
+	  letter = pool_copy(c,sl->p);
+	}
+
+#if 0
+      fprintf(stderr, "%s\t%s\t%s\n", n, letter, group);
+#endif
+
+      /* This is where the structure of the signlist is built */
+	  
+      /* remember the letter */
+      if (!(lghash = hash_find(sl->hletters, letter)))
+	hash_add(sl->hletters, letter, (lghash = hash_create(128))); /* AB1: hash of letters in signlist;
+									value is hash of groups in letter */
+      /* remember the group belongs to the letter */
+      if (!(gslist = hash_find(lghash, group)))	      
+	hash_add(lghash, group, (gslist = list_create(LIST_SINGLE))); /* AB2: hash of groups in letter;
+									 value is list of struct sl_sign * */
+      list_add(gslist, s); /* AB3: list of signs in group, data member is struct sl_sign* */
+    }
+  else
+    mesg_verr(locp, "no sign name found in GDL of %s", s->name);
+}
+
+
+void
+asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list,
+	     const unsigned char *var, const unsigned char *ref)
+{
+  if (sl->curr_sign->forms && hash_find(sl->curr_sign->hforms, n))
+    {
+      mesg_verr(locp, "duplicate form %s in sign %s\n", n, sl->curr_sign->name);
+    }
+  else
+    {
+      struct sl_form *f = memo_new(sl->m_forms);
+      f->name = n;
+      f->name_is_listnum = list;
+      sl->curr_form = f;
+      if (!sl->curr_sign->hforms)
+	sl->curr_sign->hforms = hash_create(128);
+      hash_add(sl->curr_sign->hforms, f->name, f);
+      /* only register forms if they do not occur as signs; done later */
+    }
+}
+
 void
 asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list)
 {
-  struct sl_sign *s = memo_new(sl->m_signs);
-  s->name = n;
-  s->name_is_listnum = list;
   if (hash_find(sl->hsigns, n))
     {
       mesg_verr(locp, "duplicate sign %s\n", n);
     }
   else
     {
-      Tree *tp;
-      unsigned const char *group;
-      hash_add(sl->hsigns, n, s);
+      struct sl_sign *s = memo_new(sl->m_signs);
+      s->name = n;
+      s->name_is_listnum = list;
       sl->curr_sign = s;
-      tp = asl_bld_gdl(locp, (char*)pool_copy(n,sl->p));
-      s->gdl = tp->root;
-      /* get the group sign -- the first g:s node */
-      if ((group = gdl_first_s(s->gdl)))
-	{
-	  /* get the letter from the group sign */
-	  unsigned char *letter = NULL;
-	  Hash *lghash; /* letter groups */
-	  List *gslist; /* group signs */
-
-	  if (*group < 128)
-	    {
-	      letter = pool_alloc(2, sl->p);
-	      letter[0] = *group;
-	      letter[1] = '\0';
-	    }
-	  else
-	    {
-	      wchar_t *w = NULL;
-	      unsigned char *c = NULL;
-	      size_t len = 0;
-	      w = utf2wcs(group, &len);
-	      w[1] = L'\0';
-	      c = wcs2utf(w, 1);
-	      letter = pool_copy(c,sl->p);
-	    }
-
-#if 0
-	  fprintf(stderr, "%s\t%s\t%s\n", n, letter, group);
-#endif
-
-	  /* This is where the structure of the signlist is built */
-	  
-	  /* remember the letter */
-	  if (!(lghash = hash_find(sl->hletters, letter)))
-	    hash_add(sl->hletters, letter, (lghash = hash_create(128))); /* AB1: hash of letters in signlist;
-									    value is hash of groups in letter */
-	  /* remember the group belongs to the letter */
-	  if (!(gslist = hash_find(lghash, group)))	      
-	    hash_add(lghash, group, (gslist = list_create(LIST_SINGLE))); /* AB2: hash of groups in letter;
-									     value is list of struct sl_sign * */
-	  list_add(gslist, s); /* AB3: list of signs in group, expressed as struct sl_sign* */
-	}
-      else
-	mesg_verr(locp, "no sign name found in GDL of %s", n);
+      hash_add(sl->hsigns, s->name, s);
+      asl_register_sign(locp, sl, s);
     }
 }
 
