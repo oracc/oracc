@@ -2,7 +2,7 @@
 #include <signlist.h>
 #include <sx.h>
 
-int signs_cmp(void *a, void *b)
+int signs_cmp(const void *a, const void *b)
 {
   int a1 = ((struct sl_sign*)a)->sort;
   int b1 = ((struct sl_sign*)b)->sort;

@@ -19,7 +19,7 @@ asl_bld_init(void)
   sl->m_forms = memo_init(sizeof(struct sl_form),512);
   sl->m_lists = memo_init(sizeof(struct sl_value),256);
   sl->m_values = memo_init(sizeof(struct sl_value),1024);
-  sl->m_signs_p = memo_init(sizeof(struct sl_sign*),1024);
+  sl->m_signs_p = memo_init(sizeof(struct sl_sign *),512);
   sl->p = pool_init();
   return sl;
 }

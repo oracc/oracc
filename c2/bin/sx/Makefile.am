@@ -11,6 +11,7 @@ xLDADD=\
 	../../lib/xml/libxml.la \
 	../../lib/xml/rnv/librnv.la \
 	../../lib/std/libstd.la \
+	../../lib/collate/libcollate.la \
 	../../rnc/librnc.la \
 	../../lib/sys/libsys.la 
 
@@ -24,6 +25,7 @@ AM_CPPFLAGS=\
 	-I../../lib/collate \
 	-I../../lib/sll \
 	-I../../lib/xml \
+	-I../../lib/collate \
 	-I../../lem/lng \
 	-I../../rnc \
 	-I../../nss/gdl \
