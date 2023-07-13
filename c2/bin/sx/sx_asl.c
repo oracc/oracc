@@ -56,8 +56,8 @@ sx_a_group(struct sl_functions *f, struct sl_group *g)
   if (g->signs)
     {
       int i;
-      for (i = 0; g->signs[i].name; ++i)
-	f->sgn(f, &g->signs[i]);
+      for (i = 0; g->signs[i]->name; ++i)
+	f->sgn(f, g->signs[i]);
     }
 }
 

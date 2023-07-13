@@ -39,7 +39,7 @@ main(int argc, char * const*argv)
   /* Initialize a dummy gvl with an empty hash instead of a signlist */
   (void)gvl_setup(NULL, NULL);
   
-  options(argc, argv, "crtTx");
+  options(argc, argv, "acrtTx");
   asltrace = asl_flex_debug = trace_mode;
 
   mesg_init();

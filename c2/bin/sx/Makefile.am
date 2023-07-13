@@ -6,6 +6,7 @@ xLDADD=\
 	../../lem/lng/liblng.la \
 	../../nss/asl/libasl.la \
 	../../nss/gdl/libgdl.la \
+	../../lib/collate/libcoll.la \
 	../../lib/sll/libsll.la \
 	../../lib/xml/libxml.la \
 	../../lib/xml/rnv/librnv.la \
@@ -20,6 +21,7 @@ yLDADD=\
 AM_CPPFLAGS=\
 	-I../../lib/include \
 	-I../../lib/std \
+	-I../../lib/collate \
 	-I../../lib/sll \
 	-I../../lib/xml \
 	-I../../lem/lng \
@@ -34,7 +36,7 @@ slx_LDADD = $(xLDADD)
 
 slx_DEPENDENCIES = $(slx_LDADD)
 
-sx_SOURCES=sx.c sx_asl.c sx_xml.c
+sx_SOURCES=sx.c sx_marshall.c sx_asl.c sx_xml.c
 
 sx_LDADD = $(xLDADD)
 

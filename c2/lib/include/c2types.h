@@ -37,5 +37,6 @@ typedef uint32_t Unsigned32;
 #define uccp unsigned const char *
 #endif
 
+typedef int(*cmp_fnc_t)(const void *,const void*);
 
 #endif /*C2TYPES_H_*/

@@ -11,11 +11,13 @@
 struct sl_signlist
 {
   const char *project;
-  Hash *signs;
-  Hash *forms_which_are_not_signs;
-  Hash *signvalues;
+  Hash *hsigns;
+  Hash *hforms;
+  Hash *hforms_which_are_not_signs;
+  Hash *hsignvalues;
   Hash *hletters;
-  struct sl_sign *signs;
+  struct sl_sign **signs;
+  int nsigns;
   struct sl_letter *letters;
   int nletters;
   struct sl_sign *curr_sign;
@@ -27,6 +29,7 @@ struct sl_signlist
   Memo *m_forms;
   Memo *m_lists;
   Memo *m_values;
+  Memo *m_signs_p;
   Pool *p;
 };
 
@@ -41,6 +44,7 @@ struct sl_group
 {
   const unsigned char *name;
   struct sl_sign **signs;
+  int nsigns;
 };
 
 struct sl_signform_meta
