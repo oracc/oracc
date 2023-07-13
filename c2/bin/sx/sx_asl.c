@@ -64,14 +64,17 @@ sx_a_group(struct sl_functions *f, struct sl_group *g)
 static void
 sx_a_sign(struct sl_functions *f, struct sl_sign *s)
 {
-  fprintf(f->fp, "@sign\t%s\n", s->name);
-#if 0
+  if (s->xref)
+    fprintf(f->fp, "@xsign\t%s\n", s->name);
+  else
+    fprintf(f->fp, "@sign\t%s\n", s->name);
   if (s->nforms)
     {
       int i;
       for (i = 0; i < s->nforms; ++i)
-	f->frm(f,&s->forms[i]);
+	f->frm(f, s->forms[i]);
     }
+#if 0
   fprintf(f->fp, "@end sign\n");
 #endif
 }
@@ -80,8 +83,10 @@ static void
 sx_a_form(struct sl_functions *f, struct sl_form *s)
 {
   fprintf(f->fp, "@form\t%s\n", s->name);
+#if 0
   /*sx_a_signform_info();*/
   fprintf(f->fp, "@end form\n");
+#endif
 }
 
 static void

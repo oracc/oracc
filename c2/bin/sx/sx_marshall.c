@@ -2,7 +2,18 @@
 #include <signlist.h>
 #include <sx.h>
 
-int signs_cmp(const void *a, const void *b)
+static struct sl_sign *
+form_as_sign(struct sl_signlist *sl, struct sl_form *f)
+{
+  struct sl_sign *s = memo_new(sl->m_signs);
+  s->mloc = f->mloc;
+  s->name = f->name;
+  s->xref = f;
+  asl_register_sign(f->mloc, sl, s);
+  return s;
+}
+
+static int signs_cmp(const void *a, const void *b)
 {
   int a1 = (*(struct sl_sign**)a)->sort;
   int b1 = (*(struct sl_sign**)b)->sort;  
@@ -17,10 +28,27 @@ int signs_cmp(const void *a, const void *b)
 void
 sx_marshall(struct sl_signlist *sl)
 {
-  const char**sgns = NULL;
+  const char**sgns = NULL, **frms = NULL;;
   const char**lets = NULL;
-  int nlets = 0, nsgns = 0, i;
+  int nlets = 0, nsgns = 0, nfrms = 0, i;
   collate_init((ucp)"unicode");
+
+  /* Add forms to the signs hash if they don't already exist as a sign */
+  frms = hash_keys2(sl->hforms, &nfrms);
+  for (i = 0; i < nfrms; ++i)
+    {
+      if (!hash_find(sl->hsigns, (uccp)frms[i]))
+	{
+#if 0
+	  fprintf(stderr, "adding form %s as xsign\n", frms[i]);
+#endif
+	  hash_add(sl->hsigns, (uccp)frms[i], form_as_sign(sl, hash_find(sl->hforms, (uccp)frms[i])));
+	}
+#if 0
+      else
+	fprintf(stderr, "form %s already known as sign\n", frms[i]);
+#endif
+    }
   
   sgns = hash_keys2(sl->hsigns, &nsgns);
   qsort(sgns, nsgns, sizeof(char*), (cmp_fnc_t)collate_cmp_graphemes);
@@ -62,5 +90,21 @@ sx_marshall(struct sl_signlist *sl)
 		sl->letters[i].groups[j].nsigns, sizeof(void*), (cmp_fnc_t)signs_cmp);
 	}
     }
+
+  /* Sort the forms for each sign */
+  for (i = 0; i < sl->nsigns; ++i)
+    {
+      struct sl_sign *sp = sl->signs[i];
+      if (sp->hforms)
+	{
+	  int snfrms, j;
+	  const char **sfrms = hash_keys2(sp->hforms, &snfrms);
+	  sp->forms = memo_new_array(sl->m_forms, snfrms);
+	  sp->nforms = snfrms;
+	  for (j = 0; j < snfrms; ++j)
+	    sp->forms[j] = hash_find(sp->hforms, (uccp)sfrms[j]);
+	}
+    }
+
   /*collate_term();*/
 }

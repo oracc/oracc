@@ -107,7 +107,7 @@ atvv:
  	  atv
 	| atnov
 	| atqryv
-
+	;
 atv:
 	  V lang gvalue vref
 	| V lang GVALUEQ vref
@@ -143,7 +143,7 @@ gvalue:
 
 vref:
 	  VREF
-	  | /* empty */ { $$ = NULL; }
+	| /* empty */ { $$ = NULL; }
 	;
 
 atend:

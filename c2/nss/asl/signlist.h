@@ -5,6 +5,7 @@
 #include <list.h>
 #include <pool.h>
 #include <tree.h>
+#include <mesg.h>
 
 /*enum sl_type_codes { SL_SIGNLIST , SL_LETTER , SL_GROUP , SL_SIGN , SL_FORM , SL_LIST, SL_VALUE, SL_MAX_TYPE };*/
 
@@ -31,6 +32,7 @@ struct sl_signlist
   Memo *m_values;
   Memo *m_signs_p;
   Pool *p;
+  Mloc *mloc;
 };
 
 struct sl_letter
@@ -56,6 +58,7 @@ struct sl_signform_meta
   List *unotes;
 };
 
+/* need a structure here to host Mloc * */
 struct sl_any_note
 {
   List *lit;
@@ -74,7 +77,7 @@ struct sl_sign
   Hash *hforms;
   struct sl_list *lists;
   struct sl_value *values;
-  struct sl_form *forms;
+  struct sl_form **forms;
   int nforms;
   struct sl_signform_meta m;
   struct sl_any_note n;
@@ -86,6 +89,7 @@ struct sl_sign
   struct sl_form *xref; /* this sign is a header for the @form which
 			   defines the sign name; sort value is sort
 			   sequence with signs */
+  Mloc *mloc;
 };
 
 struct sl_form
@@ -105,6 +109,7 @@ struct sl_form
   int name_is_listnum;
   int noform;
   int query;
+  Mloc *mloc;
 };
 
 struct sl_list
@@ -114,6 +119,7 @@ struct sl_list
   const unsigned char *num;
   struct sl_any_note n;
   int query;
+  Mloc *mloc;
 };
 
 struct sl_value
@@ -127,6 +133,7 @@ struct sl_value
   int novalue;
   int deprecated;
   int query;
+  Mloc *mloc;
 };
 
 
@@ -161,5 +168,7 @@ extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char
 extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
 extern struct sl_signlist *asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
 extern void asl_bld_term(struct sl_signlist *);
+extern void asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s);
+
 
 #endif/*SIGNLIST_H_*/

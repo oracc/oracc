@@ -50,12 +50,14 @@ asl_bld_term(struct sl_signlist *sl)
 Tree *
 asl_bld_gdl(Mloc *locp, char *s)
 {
-  Tree *tp = gdlparse_string(locp, s);
+  Tree *tp = NULL;
+  mesg_init();
+  tp = gdlparse_string(locp, s);
   gdlparse_reset();
   return tp;
 }
 
-static void
+void
 asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 {
   Tree *tp;
@@ -119,19 +121,26 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
   else
     {
       struct sl_form *f = memo_new(sl->m_forms);
+      f->mloc = locp;
       f->name = n;
       f->name_is_listnum = list;
       sl->curr_form = f;
+      if (!hash_find(sl->hforms, n))
+	hash_add(sl->hforms, (uccp)n, f);
       if (!sl->curr_sign->hforms)
 	sl->curr_sign->hforms = hash_create(128);
       hash_add(sl->curr_sign->hforms, f->name, f);
-      /* only register forms if they do not occur as signs; done later */
     }
 }
 
 void
 asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list)
 {
+  if (!sl)
+    {
+      fprintf(stderr, "asl: signlist must begin with @signlist [PROJECTNAME]\n");
+      exit(1);
+    }
   if (hash_find(sl->hsigns, n))
     {
       mesg_verr(locp, "duplicate sign %s\n", n);
@@ -139,6 +148,7 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
   else
     {
       struct sl_sign *s = memo_new(sl->m_signs);
+      s->mloc = locp;
       s->name = n;
       s->name_is_listnum = list;
       sl->curr_sign = s;
