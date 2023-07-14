@@ -35,7 +35,7 @@ int nosign = 0;
 		UCHAR UCODE UPHASE UNAME UNOTE SIGNLIST
 
 %nterm  <i>	atvx
-%nterm  <text>  gname gvalue lang vref
+%nterm  <text>  gname lang vref
 
 %start fields
 
@@ -106,7 +106,8 @@ atform:
 	;
 
 atv:
-	  atvx lang gvalue vref { asl_bld_value(&@1, curr_asl, $1, (uccp)$3, (ccp)$2, (uccp)$4); }
+	  atvx lang ATF vref    { asl_bld_value(&@1, curr_asl, $1, (uccp)$3, (ccp)$2, (uccp)$4, 1); }
+	| atvx lang GVALUE vref { asl_bld_value(&@1, curr_asl, $1, (uccp)$3, (ccp)$2, (uccp)$4, 0); }
 	| atvx lang GBAD vref
 	;
 
@@ -118,11 +119,6 @@ atvx:
 
 gname:
 	  GNAME			
-	;
-
-gvalue:
-	  GVALUE 		
-	| ATF
 	;
 
 vref:

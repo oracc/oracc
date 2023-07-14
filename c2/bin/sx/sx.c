@@ -42,12 +42,22 @@ main(int argc, char * const*argv)
   options(argc, argv, "acrtTx");
   asltrace = asl_flex_debug = trace_mode;
 
+  if (argv[optind])
+    {
+      file = argv[optind];
+      if (!freopen(file, "r", stdin))
+	{
+	  fprintf(stderr, "sx: unable to read from %s\n", file);
+	  exit(1);
+	}
+    }
+  
   mesg_init();
   nodeh_register(treexml_o_handlers, NS_SL, treexml_o_generic);
   nodeh_register(treexml_c_handlers, NS_SL, treexml_c_generic);
   gdl_init();
   asl_init();
-  sl = aslyacc();
+  sl = aslyacc(file);
   mesg_print(stderr);
 
   if (sl)

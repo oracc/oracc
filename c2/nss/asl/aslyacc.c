@@ -7,9 +7,12 @@
 #include "asl.tab.h"
 
 struct sl_signlist *
-aslyacc(void)
+aslyacc(const char *file)
 {
-  curraslfile = aslfile = "<stdin>";
+  if (file)
+    curraslfile = aslfile = file;
+  else
+    curraslfile = aslfile = "<stdin>";
   /*curr_asl = asl_bld_init();*/ /* This is done via new @signlist command */
   aslparse();
   /*asl_bld_term(sl);*/ /* This needs to be called after the signlist is done with */

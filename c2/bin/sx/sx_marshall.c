@@ -6,17 +6,56 @@ static struct sl_sign *
 form_as_sign(struct sl_signlist *sl, struct sl_form *f)
 {
   struct sl_sign *s = memo_new(sl->m_signs);
-  s->mloc = f->mloc;
+  struct sl_inst *i = list_first(f->insts);
+  s->mloc = i->mloc;
   s->name = f->name;
   s->xref = f;
-  asl_register_sign(f->mloc, sl, s);
+  asl_register_sign(i->mloc, sl, s);
   return s;
 }
 
+#if 0
 static int forms_cmp(const void *a, const void *b)
 {
   int a1 = (*(struct sl_form**)a)->sort;
   int b1 = (*(struct sl_form**)b)->sort;
+  if (a1 < b1)
+    return -1;
+  else if (a1 > b1)
+    return 1;
+  else
+    return 0;
+}
+#endif
+
+static int forms_inst_cmp(const void *a, const void *b)
+{
+  int a1 = (*(struct sl_inst**)a)->u.f->sort;
+  int b1 = (*(struct sl_inst**)b)->u.f->sort;
+  if (a1 < b1)
+    return -1;
+  else if (a1 > b1)
+    return 1;
+  else
+    return 0;
+}
+#if 0
+static int lists_inst_cmp(const void *a, const void *b)
+{
+  int a1 = (*(struct sl_inst**)a)->u.l->sort;
+  int b1 = (*(struct sl_inst**)b)->u.l->sort;
+  if (a1 < b1)
+    return -1;
+  else if (a1 > b1)
+    return 1;
+  else
+    return 0;
+}
+#endif
+static int values_inst_cmp(const void *a, const void *b)
+{
+  int a1 = (*(struct sl_inst**)a)->u.v->sort;
+  int b1 = (*(struct sl_inst**)b)->u.v->sort;
   if (a1 < b1)
     return -1;
   else if (a1 > b1)
@@ -40,9 +79,9 @@ static int signs_cmp(const void *a, const void *b)
 void
 sx_marshall(struct sl_signlist *sl)
 {
-  const char**sgns = NULL, **frms = NULL;;
+  const char**sgns = NULL, **frms = NULL, **vals = NULL;
   const char**lets = NULL;
-  int nlets = 0, nsgns = 0, nfrms = 0, i;
+  int nlets = 0, nsgns = 0, nfrms = 0, nvals = 0, i;
   collate_init((ucp)"unicode");
 
   /* Add forms to the signs hash if they don't already exist as a sign */
@@ -55,14 +94,12 @@ sx_marshall(struct sl_signlist *sl)
 	hash_add(sl->hsigns, (uccp)frms[i], form_as_sign(sl, hash_find(sl->hforms, (uccp)frms[i])));
       else
 	{
-	  struct sl_form *f = hash_find(sl->forms, (uccp)frms[i]);
+	  struct sl_form *f = hash_find(sl->hforms, (uccp)frms[i]);
 	  f->gdl = s->gdl;
 	}
-	  
-	 
-	
     }
-  
+
+  /* Sort the combined signs and forms-treated-as-signs */
   sgns = hash_keys2(sl->hsigns, &nsgns);
   qsort(sgns, nsgns, sizeof(char*), (cmp_fnc_t)collate_cmp_graphemes);
   sl->signs = malloc(sizeof(struct sl_sign*) * nsgns);
@@ -84,7 +121,15 @@ sx_marshall(struct sl_signlist *sl)
     }
 
   /* Create sort codes for values--the sequence is completely independent of the sign sort codes */
-  
+  vals = hash_keys2(sl->hvalues, &nvals);
+  qsort(vals, nvals, sizeof(char*), (cmp_fnc_t)collate_cmp_graphemes);
+  sl->values = malloc(sizeof(struct sl_sign*) * nvals);
+  sl->nvalues = nvals;
+  for (i = 0; i < nvals; ++i)
+    {
+      sl->values[i] = hash_find(sl->hvalues, (ucp)vals[i]);
+      sl->values[i]->sort = i;
+    }
   
   /* Dereference structures created in asl_bld.c--see that file for AB1/AB2/AB3 creation */
   lets = hash_keys2(sl->hletters, &nlets); /* obtain list of letters from AB1 */
@@ -117,19 +162,42 @@ sx_marshall(struct sl_signlist *sl)
 	}
     }
 
-  /* Sort the forms for each sign */
+  /* Sort the values and forms for each sign */
   for (i = 0; i < sl->nsigns; ++i)
     {
       struct sl_sign *sp = sl->signs[i];
+      if (sp->hvalues)
+	{
+	  int nsvals, j;
+	  const char **svals = hash_keys2(sp->hvalues, &nsvals);
+	  sp->values = memo_new_array(sl->m_insts, nsvals);
+	  sp->nvalues = nsvals;
+	  for (j = 0; j < sp->nvalues; ++j)
+	    sp->values[j] = hash_find(sp->hvalues, (uccp)svals[j]);
+	  qsort(sp->values, sp->nvalues, sizeof(void*), (cmp_fnc_t)values_inst_cmp);
+	}
       if (sp->hforms)
 	{
-	  int snfrms, j;
-	  const char **sfrms = hash_keys2(sp->hforms, &snfrms);
-	  sp->forms = memo_new_array(sl->m_forms, snfrms);
-	  sp->nforms = snfrms;
-	  for (j = 0; j < snfrms; ++j)
-	    sp->forms[j] = hash_find(sp->hforms, (uccp)sfrms[j]);
-	  qsort(sp->forms,sp->nforms, sizeof(void*), (cmp_fnc_t)forms_cmp);
+	  int nsfrms, j;
+	  const char **sfrms = hash_keys2(sp->hforms, &nsfrms);
+	  sp->forms = memo_new_array(sl->m_insts, nsfrms);
+	  sp->nforms = nsfrms;
+	  for (j = 0; j < sp->nforms; ++j)
+	    {
+	      struct sl_inst *fp;
+	      fp = sp->forms[j] = hash_find(sp->hforms, (uccp)sfrms[j]);
+	      if (fp->vd && fp->vd->hvalues)
+		{
+		  int nsvals, j;
+		  const char **svals = hash_keys2(fp->vd->hvalues, &nsvals);
+		  fp->vd->values = memo_new_array(sl->m_insts, nsvals);
+		  fp->vd->nvalues = nsvals;
+		  for (j = 0; j < fp->vd->nvalues; ++j)
+		    fp->vd->values[j] = hash_find(fp->vd->hvalues, (uccp)svals[j]);
+		  qsort(fp->vd->values, fp->vd->nvalues, sizeof(void*), (cmp_fnc_t)values_inst_cmp);
+		}
+	    }
+	  qsort(sp->forms, sp->nforms, sizeof(void*), (cmp_fnc_t)forms_inst_cmp);
 	}
     }
 

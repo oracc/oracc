@@ -78,7 +78,9 @@ sx_a_sign(struct sl_functions *f, struct sl_sign *s)
     {
       int i;
       for (i = 0; i < s->nforms; ++i)
-	f->frm(f, s->forms[i]);
+	{
+	  f->frm(f, s->forms[i]);
+	}
     }
 #if 0
   fprintf(f->fp, "@end sign\n");
@@ -86,14 +88,14 @@ sx_a_sign(struct sl_functions *f, struct sl_sign *s)
 }
 
 static void
-sx_a_form(struct sl_functions *f, struct sl_form *s)
+sx_a_form(struct sl_functions *f, struct sl_inst *s)
 {
-  fprintf(f->fp, "@form\t%s %s\n", s->var, s->name);
-  if (s->nvalues)
+  fprintf(f->fp, "@form\t%s %s\n", s->u.f->var, s->u.f->name);
+  if (s->vd && s->vd->nvalues)
     {
       int i;
-      for (i = 0; i < s->nvalues; ++i)
-	f->val(f, s->values[i]);
+      for (i = 0; i < s->vd->nvalues; ++i)
+	f->val(f, s->vd->values[i]);
     }
 #if 0
   /*sx_a_signform_info();*/
@@ -108,12 +110,12 @@ sx_a_list(struct sl_functions *f, struct sl_list *l)
 }
 
 static void
-sx_a_value(struct sl_functions *f, struct sl_value *v)
+sx_a_value(struct sl_functions *f, struct sl_inst *v)
 {
   const char *queryminus = "";
   if (v->deprecated)    
     queryminus = "-";
   else if (v->query)
     queryminus = "?";
-  fprintf(f->fp, "@v%s\t%s\n", queryminus, v->name);
+  fprintf(f->fp, "@v%s\t%s\n", queryminus, v->u.v->name);
 }

@@ -1,0 +1,53 @@
+* No longer use ? for unknown value; use 'x' instead
+
+  @v	? [SF 064 = dcclt:P010655 o iii 14]
+
+  =>
+
+  @v	x [SF 064 = dcclt:P010655 o iii 14]
+
+
+* No longer use ? after value to express uncertainty; use @v?
+
+  @v	dur₂?
+
+  =>
+
+  @v?	dur₂
+
+* Comments are no longer allowed as part of @v; use '@inote' instead or @v- instead
+
+  @v	#nib leb
+
+  =>
+
+  @v	leb
+  @inote nib
+  
+  OR
+
+  @v	nigidaeš
+  @v	#old nieš
+
+  =>
+
+  @v	nigidaeš
+  @v-	nieš
+  @inote old
+
+* What about
+
+  @v [...]ingara
+
+  Which ATF would complain about and cannot be validated as a (partial) value; write xingara instead?  Or have a notation to allow a validatable value e.g.
+
+  @v <xingara> [...]ingara
+
+?
+
+* We probably need split/merger tags with some sort of time/place labelling
+
+* Maybe an ATF convention to say sign-X-is-written-with-glyph-Y without implying that Y has to be a known form of X
+
+
+  
