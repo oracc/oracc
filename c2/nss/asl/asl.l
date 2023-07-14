@@ -42,7 +42,7 @@ N		(N[0-9]+)
 COMPOUND	"|"([a-zA-Z\x80-\xff]|[@~().%&+()0-9])+"|"
 GRAPHEME 	((({G}|{N}){M})|"15")
 PHONGRAPH	"/"{G}"/"
-LISTNUM		([A-Z]+[0-9]+[()A-Z0-9a-z_'"+*/]*){M}
+LISTNUM		([A-Z]+[0-9]+[()A-Z0-9a-z_'"+*/]*){M}\??
 NUMGRAPH	[0-9nN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}
 FRACTION	[0-9]\/[0-9]
 PUNCT		("*"|:['".:]?|"/")
@@ -75,7 +75,6 @@ PUNCT		("*"|:['".:]?|"/")
 ^@form/[ \t]	       		{ atcmd(FORM,0); }
 ^@noform/[ \t]         		{ atcmd(NOFORM,0); }
 ^@v/[ \t]	       		{ atcmd(V,0); }
-^@nov/[ \t]	       		{ atcmd(NOV,0); }
 ^@v-/[ \t]	       		{ atcmd(NOV,0); }
 ^@v"?"/[ \t]	       		{ atcmd(QRYV,0); }
 ^@inote/[ \t]	       		{ atcmd(INOTE,T); }
@@ -96,17 +95,13 @@ PUNCT		("*"|:['".:]?|"/")
 
 {FRACTION}			{ aslsave; return GVALUE; }
 
-{GRAPHEME}"?"			{ aslsave; return GVALUEQ; }
-
 {GRAPHEME}|{COMPOUND}          	{ aslsave; return asl_grapheme(asllval.text); }
-
-{LISTNUM}"?"   	 	      	{ aslsave; return LISTNUMQ; }
 
 {LISTNUM}   	 	      	{ aslsave; return LISTNUM; }
 
-{PHONGRAPH}	       		{ aslsave; return GVALUEX; }
+{PHONGRAPH}	       		{ aslsave; return GVALUE; }
 
-{PUNCT}				{ aslsave; return GVALUEX; }
+{PUNCT}				{ aslsave; return GVALUE; }
 
 [^ \t]+"[...]"[^ \t\n]+[ \t]*/\n { aslsave; return ATF; }
 [^ \t]+"[...]"[ \t]*/\n       	{ aslsave; return ATF; }
@@ -116,13 +111,12 @@ PUNCT		("*"|:['".:]?|"/")
 
 "%"[-a-z0-9]+("/n")?   		{ aslsave; return LANG; }
 
-"?"				{ aslsave; return GVALUEX; }
-
 "~"[^ \t\n]+			{ aslsave; return VAR; }
 
 ^"#".*$				{ aslsave; return CMT; }
 
-"#"[^ \t\n]+			{ aslsave; return VCMT; }
+"#"[^ \t\n]+			{ mesg_vwarning(curraslfile, asllineno,
+						"asl.l: #comments no longer allowed in @v lines; use @inote or @v-\n"); }
 
 "[".*/\n	       		{ aslsave; return VREF; }
 

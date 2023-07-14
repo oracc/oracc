@@ -26,14 +26,16 @@ int nosign = 0;
 
 %union { char *text; int i; }
 
+%token  <i>	V NOV QRYV
 %token	<text>  TOK TRANS TAB EOL PAR CMT BAD LINE SIGLUM
 		SIGN NOSIGN PNAME FORM NOFORM VAR GNAME GVALUE GVALUEQ GVALUEX
 		GBAD ATF LANG
-		V NOV QRYV ATFV VCMT VREF LIST LISTNUM LISTNUMQ
+		ATFV VCMT VREF LIST LISTNUM LISTNUMQ
 		INOTE LIT NOTE TEXT END EBAD EFORM ESIGN
 		UCHAR UCODE UPHASE UNAME UNOTE SIGNLIST
 
-%nterm  <text> gname vref
+%nterm  <i>	atvx
+%nterm  <text>  gname gvalue lang vref
 
 %start fields
 
@@ -66,7 +68,7 @@ atcmd:
 	| atnosign
 	| atpname
 	| atlist
-	| atvv
+	| atv
 	| atform
 	| atmeta
 	| atunicode
@@ -103,42 +105,24 @@ atform:
 	| FORM VAR GBAD
 	;
 
-atvv:
- 	  atv
-	| atnov
-	| atqryv
-	;
 atv:
-	  V lang gvalue vref
-	| V lang GVALUEQ vref
-	| V lang GVALUEX vref
-	| V lang ATF vref
-	| V VCMT ATF vref
-	| V VCMT gvalue vref
-	| V VCMT GVALUEQ vref
-	| V GBAD vref
-	| V VCMT GBAD vref
+	  atvx lang gvalue vref { asl_bld_value(&@1, curr_asl, $1, (uccp)$3, (ccp)$2, (uccp)$4); }
+	| atvx lang GBAD vref
 	;
 
-atnov:
-	  NOV ATF vref
-	| NOV GVALUE vref
-	| NOV GVALUEX vref
-	| NOV GBAD
-	;
-
-atqryv:
-	  QRYV GVALUE vref
-	| QRYV ATF vref
-	| QRYV GBAD
+atvx:
+	  V    		     	{ $$ = $1; }
+	| NOV			{ $$ = $1; }
+	| QRYV			{ $$ = $1; }
 	;
 
 gname:
-	  GNAME			{ if (asl_raw_tokens && !nosign) fprintf(stdout, "%s\n", $1); }
+	  GNAME			
 	;
 
 gvalue:
-	  GVALUE 		{ if (asl_raw_tokens && !nosign) fprintf(stdout, "%s\n", $1); }
+	  GVALUE 		
+	| ATF
 	;
 
 vref:
@@ -146,6 +130,7 @@ vref:
 	| /* empty */ { $$ = NULL; }
 	;
 
+/* Possibly add EGROUP ELETTER ESECTION here */
 atend:
 	  END EFORM
 	| END ESIGN
@@ -204,7 +189,7 @@ cont: 	TAB		{ if (asltrace) fprintf(stderr, "field/TAB: %s\n", asllval.text); }
 
 lang:
 	  LANG
-	| /* empty */
+	| /* empty */ { $$ = NULL; }
 	;
 
 %%

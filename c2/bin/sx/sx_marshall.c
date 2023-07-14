@@ -49,8 +49,18 @@ sx_marshall(struct sl_signlist *sl)
   frms = hash_keys2(sl->hforms, &nfrms);
   for (i = 0; i < nfrms; ++i)
     {
-      if (!hash_find(sl->hsigns, (uccp)frms[i]))
+      struct sl_sign *s;
+      
+      if (!(s = hash_find(sl->hsigns, (uccp)frms[i])))
 	hash_add(sl->hsigns, (uccp)frms[i], form_as_sign(sl, hash_find(sl->hforms, (uccp)frms[i])));
+      else
+	{
+	  struct sl_form *f = hash_find(sl->forms, (uccp)frms[i]);
+	  f->gdl = s->gdl;
+	}
+	  
+	 
+	
     }
   
   sgns = hash_keys2(sl->hsigns, &nsgns);
@@ -62,7 +72,7 @@ sx_marshall(struct sl_signlist *sl)
       sl->signs[i] = hash_find(sl->hsigns, (ucp)sgns[i]);
       sl->signs[i]->sort = i;
     }
-
+  
   /* Provide forms with sort codes based on sign sort sequence */
   sl->forms = malloc(sizeof(struct sl_form*) * nfrms);
   for (i = 0; i < nfrms; ++i)
@@ -72,6 +82,9 @@ sx_marshall(struct sl_signlist *sl)
       s = hash_find(sl->hsigns, (ucp)frms[i]);
       sl->forms[i]->sort = s->sort;
     }
+
+  /* Create sort codes for values--the sequence is completely independent of the sign sort codes */
+  
   
   /* Dereference structures created in asl_bld.c--see that file for AB1/AB2/AB3 creation */
   lets = hash_keys2(sl->hletters, &nlets); /* obtain list of letters from AB1 */

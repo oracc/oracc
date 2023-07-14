@@ -1,3 +1,5 @@
+@signlist test
+
 @sign BA
 @v ba
 @form ~a BU

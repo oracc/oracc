@@ -12,28 +12,57 @@
 struct sl_signlist
 {
   const char *project;
-  Hash *hsigns;
-  Hash *hforms;
-  Hash *hforms_which_are_not_signs;
-  Hash *hsignvalues;
+  Hash *hsigns; /* contains signs and is augmented with forms which are not also signs */
+  Hash *hforms; /* constains all forms */
+  Hash *hvalues; /* contains all values */
   Hash *hletters;
+  Hash *hsignvalues; /* contains only values which belong to @sign, not those belonging to @form */
   struct sl_sign **signs;
   int nsigns;
   struct sl_form **forms;
   int nforms;
+  struct sl_values **values;
+  int nvalues;
   struct sl_letter *letters;
   int nletters;
   struct sl_sign *curr_sign;
-  struct sl_form *curr_form;
-  struct sl_value *curr_value;
+  struct sl_inst *curr_form;
+  struct sl_inst *curr_value;
   Memo *m_letters;
   Memo *m_groups;
   Memo *m_signs;
   Memo *m_forms;
   Memo *m_lists;
   Memo *m_values;
+  Memo *m_insts;
   Memo *m_signs_p;
   Pool *p;
+  Mloc *mloc;
+};
+
+/* each of the lists in sl_any_note is a list of sl_str_loc* */
+struct sl_str_loc
+{
+  const unsigned char *s;
+  Mloc *mloc;
+};
+
+struct sl_any_note
+{
+  List *lit;
+  List *notes;
+  List *inotes;
+  List *comments;
+};
+
+struct sl_inst
+{
+  char type;
+  union { struct sl_sign *s; struct sl_form *f; struct sl_list *l; struct sl_value *v; } u;
+  const unsigned char *ref; /* this is inline in the @v */
+  struct sl_any_note n;
+  Boolean deprecated;
+  Boolean query;
   Mloc *mloc;
 };
 
@@ -47,49 +76,37 @@ struct sl_letter
 struct sl_group 
 {
   const unsigned char *name;
-  struct sl_sign **signs;
+  struct sl_inst **insts;
   int nsigns;
-};
-
-struct sl_signform_meta
-{
-  const char *oid;
-  const char *uphase;
-  const char *uname;
-  const unsigned char *utf8;
-  List *unotes;
-};
-
-/* need a structure here to host Mloc * */
-struct sl_any_note
-{
-  List *lit;
-  List *notes;
-  List *inotes;
 };
 
 struct sl_sign
 {
   const unsigned char *name;
+  int name_is_listnum;
   Node *gdl;
   unsigned const char *letter;
   unsigned const char *group;
   Hash *hlists;
   Hash *hvalues;
   Hash *hforms;
-  struct sl_list *lists;
-  struct sl_value *values;
-  struct sl_form **forms;
+  struct sl_inst **lists;
+  int nlists;
+  struct sl_inst **values;
+  int nvalues;
+  struct sl_inst **forms;
   int nforms;
-  struct sl_signform_meta m;
   struct sl_any_note n;
-  int name_is_listnum;
-  int nosign;
   int fake;
-  int query;
   int sort;
+  const char *oid;
+  const char *uphase;
+  const char *uname;
+  const unsigned char *utf8;
+  List *unotes;
+  struct sl_inst *inst;
   struct sl_form *xref; /* this sign is a header for the @form which
-			   defines the sign name; sort value is sort
+			   defines the sign name; sort value is in sort
 			   sequence with signs */
   Mloc *mloc;
 };
@@ -102,16 +119,19 @@ struct sl_form
   unsigned const char *letter;
   unsigned const char *group;
   Hash *hlists;
-  Hash *hivalues;
   Hash *hvalues;
-  struct sl_value *values;
-  struct sl_value *ivalues; /* inherited values */
-  struct sl_signform_meta m;
-  struct sl_any_note n;
+  Hash *hivalues;
+  struct sl_inst **lists;
+  int nlists;
+  struct sl_inst **values;
+  int nvalues;
+  struct sl_inst **ivalues; /* inherited values */
+  int nivalues;
+  List *owners; /* this is a list of sl_sign* the form is associated with */
+  List *insts; 	/* this is a list of sl_inst* where the form occurs */
   int name_is_listnum;
-  int noform;
-  int query;
   int sort;
+  struct sl_any_note n;
   Mloc *mloc;
 };
 
@@ -120,25 +140,25 @@ struct sl_list
   const unsigned char *name;
   const unsigned char *base;
   const unsigned char *num;
+  List *owners; /* this is a list of sl_inst* the list is associated with; could be @sign or @form */
   struct sl_any_note n;
   int query;
+  int sort;
+  List *insts;
   Mloc *mloc;
 };
 
+/* This is the global value information structure */
 struct sl_value
 {
   const unsigned char *name;
   Node *gdl;
-  const char *lang; /* this is inline in the @v */
-  const unsigned char *comment; /* this is inline in the @v */
-  const unsigned char *bib; /* this is inline in the @v */
-  struct sl_any_note n;
-  int novalue;
-  int deprecated;
-  int query;
-  Mloc *mloc;
+  const char *lang; /* this is inline in the @v; it's an error for two @v to have different lang */
+  struct sl_sign *sowner; /* for a value at the sign level, this is the sign it belongs to; may be NULL if value only occurs in forms */
+  List *fowners; /* for a value at the form level, this is a list of sl_inst* it belongs to */
+  List *insts;
+  int sort;
 };
-
 
 struct sl_functions;
 
@@ -171,7 +191,7 @@ extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char
 extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
 extern struct sl_signlist *asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
 extern void asl_bld_term(struct sl_signlist *);
+extern void asl_bld_value(Mloc *locp, struct sl_signlist *sl, int type, const unsigned char *n, const char *lang, const unsigned char *ref);
 extern void asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s);
-
 
 #endif/*SIGNLIST_H_*/
