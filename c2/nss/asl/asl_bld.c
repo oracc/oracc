@@ -8,6 +8,8 @@
 #include <asl.tab.h>
 #include "signlist.h"
 
+static void check_query(char *n, int *q);
+
 struct sl_signlist *curr_asl = NULL;
 
 struct sl_signlist *
@@ -27,7 +29,7 @@ asl_bld_init(void)
   sl->m_values = memo_init(sizeof(struct sl_value),1024);
   sl->m_insts = memo_init(sizeof(struct sl_inst),1024);
   sl->m_signs_p = memo_init(sizeof(struct sl_sign *),512);
-  sl->m_valdata = memo_init(sizeof(struct sl_value_data),512);
+  sl->m_lv_data = memo_init(sizeof(struct sl_lv_data),512);
   sl->p = pool_init();
   return sl;
 }
@@ -49,7 +51,7 @@ asl_bld_term(struct sl_signlist *sl)
       memo_term(sl->m_values);
       memo_term(sl->m_insts);
       memo_term(sl->m_signs_p);
-      memo_term(sl->m_valdata);
+      memo_term(sl->m_lv_data);
       free(sl);
     }
 }
@@ -114,9 +116,13 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 
 void
 asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list,
-	     const unsigned char *var, const unsigned char *ref)
+	     const unsigned char *var, const unsigned char *ref, int minus_flag)
 {
+  int query;
+  
   sl->curr_value = NULL;
+
+  check_query((char*)n, &query);
 
   if (sl->curr_sign->forms && hash_find(sl->curr_sign->hforms, n))
     {
@@ -150,6 +156,8 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       i->u.f = f;
       i->ref = ref;
       i->mloc = locp;
+      i->removed = (Boolean)minus_flag;
+      i->query = (Boolean)query;
       
       if (!sl->curr_sign->hforms)
 	sl->curr_sign->hforms = hash_create(128);
@@ -158,14 +166,97 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
     }
 }
 
-void
-asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list)
+static void
+asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int q, int m)
 {
+  struct sl_list *l = NULL;
+  struct sl_inst *i = memo_new(sl->m_insts);
+  Hash *h = NULL;
+  
+  i->mloc = locp;
+  i->type = 'l';
+  i->removed = (Boolean)m;
+  i->query = (Boolean)q;
+
+  /* If this list is already in the lists hash for the sign or the form-instance it's an error */
+  if (sl->curr_form)
+    {
+      if (sl->curr_form->lv)
+	h = sl->curr_form->lv->hlists;
+      else
+	{
+	  sl->curr_form->lv = memo_new(sl->m_lv_data);
+	  if (!sl->curr_form->lv->hlists)
+	    h = sl->curr_form->lv->hlists = hash_create(1);
+	}      
+    }
+  else
+    h = sl->curr_sign->hlists;
+
+  if ((l = hash_find(h, n)))
+    {
+      const char *f_or_s = (sl->curr_form ? "form" : "sign");
+      const char *f_or_s_name = (sl->curr_form ? (ccp)sl->curr_form->u.f->name : (ccp)sl->curr_sign->name);
+      mesg_verr(locp, "duplicate @list %s within @%s %s\n", n, f_or_s, f_or_s_name);
+    }
+  else
+    {
+      /* Now check the signlist's registry of @lists and add the new
+	 sl_list* or add the inst to the existing sl_list* */
+      if ((l = hash_find(sl->hlists, n)))
+        list_add(l->insts, i);
+      else
+	{
+	  l = memo_new(sl->m_lists);
+	  l->name = n;
+	  l->insts = list_create(LIST_SINGLE);
+	  list_add(l->insts, i);
+	  hash_add(sl->hlists, n, l);
+	}
+    }
+
+  i->u.l = l;
+
+  if (sl->curr_form)
+    {
+      hash_add(sl->curr_form->lv->hlists, l->name, i);
+      list_add(l->insts, sl->curr_form);
+    }
+  else
+    {
+      if (!sl->curr_sign->hlists)
+	sl->curr_sign->hlists = hash_create(1);
+      hash_add(sl->curr_sign->hlists, l->name, i);
+      list_add(l->insts, sl->curr_sign->inst);
+    }
+}
+
+void
+asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag)
+{
+  int query = 0;
+
+  check_query((char*)n, &query);
+ 
+  if (sl->curr_form)
+    asl_add_list(locp, sl, n, query, minus_flag);
+  else
+    asl_add_list(locp, sl, n, query, minus_flag);
+}
+
+void
+asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list, int minus_flag)
+{
+  int query = 0;
+
   if (!sl)
     {
       fprintf(stderr, "asl: signlist must begin with @signlist [PROJECTNAME]\n");
       exit(1);
     }
+
+  check_query((char*)n, &query);
+  
   if (hash_find(sl->hsigns, n))
     {
       mesg_verr(locp, "duplicate sign %s\n", n);
@@ -179,6 +270,8 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       s->inst = i;
       i->type = 's';
       i->mloc = locp;
+      i->removed = (Boolean)minus_flag;
+      i->query = (Boolean)query;
       i->u.s = s;
       sl->curr_sign = s;
       sl->curr_form = NULL;
@@ -202,13 +295,15 @@ asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int
 }
 
 void
-asl_bld_value(Mloc *locp, struct sl_signlist *sl, int type, const unsigned char *n,
-	      const char *lang, const unsigned char *ref, int atf_flag)
+asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
+	      const char *lang, const unsigned char *ref, int atf_flag, int minus_flag)
 {
   struct sl_value *v;
   struct sl_inst *i = memo_new(sl->m_insts);
-  int xvalue = 0, uvalue = 0;
+  int xvalue = 0, uvalue = 0, query = 0;
 
+  check_query((char*)n, &query);
+  
   if (strlen((ccp)n) > 3)
     {
       if (!strcmp((ccp)(n+(strlen((ccp)n)-3)), U_s_x_u8str))
@@ -220,10 +315,8 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, int type, const unsigned char 
   i->type = 'v';
   i->mloc = locp;
   i->ref = ref;
-  if (NOV == type)
-    i->deprecated = 1;
-  else if (QRYV == type)
-    i->query = 1;
+  i->removed = (Boolean)minus_flag;
+  i->query = (Boolean)query;
   
   if ((v = hash_find(sl->hsignvalues, n)))
     {
@@ -269,11 +362,11 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, int type, const unsigned char 
 	  if (!v->fowners)
 	    v->fowners = list_create(LIST_SINGLE);
 	  list_add(v->fowners, sl->curr_form);
-	  if (!sl->curr_form->vd)
-	    sl->curr_form->vd = memo_new(sl->m_valdata);
-	  if (!sl->curr_form->vd->hvalues)
-	    sl->curr_form->vd->hvalues = hash_create(1);
-	  else if ((known = hash_find(sl->curr_form->vd->hvalues, n)))
+	  if (!sl->curr_form->lv)
+	    sl->curr_form->lv = memo_new(sl->m_lv_data);
+	  if (!sl->curr_form->lv->hvalues)
+	    sl->curr_form->lv->hvalues = hash_create(1);
+	  else if ((known = hash_find(sl->curr_form->lv->hvalues, n)))
 	    {
 	      if (!xvalue)
 		{
@@ -282,7 +375,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, int type, const unsigned char 
 		}
 	    }
 	  if (!known)
-	    hash_add(sl->curr_form->vd->hvalues, v->name, i);
+	    hash_add(sl->curr_form->lv->hvalues, v->name, i);
 	}
       else
 	{
@@ -303,11 +396,11 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, int type, const unsigned char 
     {
       if (sl->curr_form)
 	{
-	  if (!sl->curr_form->vd)
-	    sl->curr_form->vd = memo_new(sl->m_valdata);
-	  if (!sl->curr_form->vd->hvalues)
-	    sl->curr_form->vd->hvalues = hash_create(1);	  
-	  hash_add(sl->curr_form->vd->hvalues, v->name, i);
+	  if (!sl->curr_form->lv)
+	    sl->curr_form->lv = memo_new(sl->m_lv_data);
+	  if (!sl->curr_form->lv->hvalues)
+	    sl->curr_form->lv->hvalues = hash_create(1);	  
+	  hash_add(sl->curr_form->lv->hvalues, v->name, i);
 	  if (!v->fowners)
 	    v->fowners = list_create(LIST_SINGLE);
 	  list_add(v->fowners, sl->curr_form);
@@ -325,4 +418,17 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, int type, const unsigned char 
 
   i->u.v = v;
   sl->curr_value = i;
+}
+
+static void
+check_query(char *n, int *q)
+{
+  char *last = (char*)(n + (strlen((ccp)n)-1));
+  if ('?' == *last)
+    {
+      *last = '\0';
+      *q = 1;
+    }
+  else
+    *q = 0;
 }

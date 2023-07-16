@@ -22,6 +22,8 @@ extern Pool *aslpool;
 #define xaslpool(s) (char*)pool_copy((const unsigned char*)(s),aslpool);
 static void asl_user_action(void);
 
+static void check_minus(char *t);
+
 /* #if 1 to print every matched rule */
 #if 0
 #define pmatch(m) fprintf(stderr, (m))
@@ -31,7 +33,7 @@ static void asl_user_action(void);
 
 #define aslsave asllval.text=xaslpool(asltext)
 
-#define atcmd(at,st) aslsave; pmatch("###ATCMD\n"); BEGIN((st)); return(at)
+#define atcmd(at,st) aslsave; check_minus(asllval.text); pmatch("###ATCMD\n"); BEGIN((st)); return(at)
 
 %}
 
@@ -39,13 +41,14 @@ S		\xe2\xb8[^\xa2-\xa5]
 G		([a-zA-Z'\x80-\xc2\xc4-\xe1\xe3-\xff]|{S}|\xc3[^\x97]|\xe2[^\xb8])+
 M		([@~]([a-z]+|90|180|270))*
 N		(N[0-9]+)
-COMPOUND	"|"([a-zA-Z\x80-\xff]|[@~().%&+()0-9])+"|"
-GRAPHEME 	((({G}|{N}){M})|"15")
+Q		\??
+COMPOUND	"|"([a-zA-Z\x80-\xff]|[@~().%&+()0-9])+"|"{Q}
+GRAPHEME 	((({G}|{N}){M})|"15"){Q}
 PHONGRAPH	"/"{G}"/"
-LISTNUM		([A-Z]+[0-9]+[()A-Z0-9a-z_'"+*/]*){M}\??
-NUMGRAPH	[0-9nN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}
+LISTNUM		([A-Z]+[0-9]+[()A-Z0-9a-z_'"+*/]*){M}{Q}
+NUMGRAPH	[0-9nN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}{Q}
 FRACTION	[0-9]\/[0-9]
-PUNCT		("*"|:['".:]?|"/")
+PUNCT		("*"|:['".:]?|"/"){Q}
 
 %s E
 %s T
@@ -68,16 +71,15 @@ PUNCT		("*"|:['".:]?|"/")
 
 ^@end/[ \t].*\n        	       	{ atcmd(END,E); }
 ^@signlist/[ \t]       		{ atcmd(SIGNLIST,T); }
-^@sign/[ \t]       		{ atcmd(SIGN,0); }
+^@sign-?/[ \t]       		{ atcmd(SIGN,0); }
 ^@pname/[ \t]       		{ atcmd(PNAME,0); }
-^@nosign/[ \t]     		{ atcmd(NOSIGN,0); }
-^@list/[ \t]       		{ atcmd(LIST,0); }
-^@form/[ \t]	       		{ atcmd(FORM,0); }
-^@noform/[ \t]         		{ atcmd(NOFORM,0); }
-^@v/[ \t]	       		{ atcmd(V,0); }
-^@v-/[ \t]	       		{ atcmd(NOV,0); }
-^@v"?"/[ \t]	       		{ atcmd(QRYV,0); }
-^@inote/[ \t]	       		{ atcmd(INOTE,T); }
+^@nosign/[ \t]     		{ mesg_vwarning(curraslfile, asllineno, "[asl] '@nosign' has been replaced by '@sign-'");
+				  atcmd(SIGN,-1); }
+^@list-?/[ \t]       		{ atcmd(LIST,0); }
+^@form-?/[ \t]	       		{ atcmd(FORM,0); }
+^@noform/[ \t]         		{ mesg_vwarning(curraslfile, asllineno, "[asl] '@noform' has been replaced by '@form-'");
+				  atcmd(FORM,-1); }
+^@v-?/[ \t]	       		{ atcmd(V,0); }
 ^@lit/[ \t]	       		{ atcmd(LIT,T); }
 ^@note/[ \t]*       		{ atcmd(NOTE,T); }
 ^@uchar[ \t]+.*/\n		{ atcmd(UCHAR,0); }
@@ -88,12 +90,13 @@ PUNCT		("*"|:['".:]?|"/")
 ^@fake[ \t]+1[ \t]*/\n		{ fake_flag = 1; }
 
 ^@[a-z]+         		{ BEGIN 0; mesg_vwarning(curraslfile, asllineno,
-							"[asl] malformed or unknown @-line: %s\n", asltext); }
-
+							"[asl] malformed or unknown @-line: %s", asltext); }
 
 {NUMGRAPH}			{ aslsave; return asl_grapheme(asllval.text); }
 
-{FRACTION}			{ aslsave; return GVALUE; }
+{FRACTION}			{ aslsave; mesg_vwarning(curraslfile, asllineno,
+							 "[asl] unqualified FRACTION not allowed: %s", asltext);
+				  return GVALUE; }
 
 {GRAPHEME}|{COMPOUND}          	{ aslsave; return asl_grapheme(asllval.text); }
 
@@ -116,7 +119,7 @@ PUNCT		("*"|:['".:]?|"/")
 ^"#".*$				{ aslsave; return CMT; }
 
 "#"[^ \t\n]+			{ mesg_vwarning(curraslfile, asllineno,
-						"asl.l: #comments no longer allowed in @v lines; use @inote or @v-\n"); }
+						"[asl] #comments no longer allowed in @v lines; use @inote or @v-"); }
 
 "[".*/\n	       		{ aslsave; return VREF; }
 
@@ -129,7 +132,7 @@ PUNCT		("*"|:['".:]?|"/")
 \n				{ pmatch("###eol\n"); return EOL; }
 
 .				{ mesg_vwarning(curraslfile, asllineno,
-						"asl.l: unmatched character %c\n", *asltext); }
+						"[asl] unmatched character %c", *asltext); }
 
 %%
 
@@ -143,4 +146,20 @@ asl_user_action(void)
 
   asllloc.file = curraslfile;
   asllloc.line = yylineno;
+}
+
+static void
+check_minus(char *t)
+{
+  char *m = strrchr(t,'-');
+  extern int minus_flag;
+  if (m && !m[1])
+    {
+      if (strcmp(t, "@sign-") && strcmp(t, "@form-") && strcmp(t, "@list-") && strcmp(t, "@v-"))
+	mesg_vwarning(curraslfile, asllineno, "[asl] '-' not allowed on %s (only on @sign/@form/@list/@v)", *asltext);
+      else
+        minus_flag = 1;
+    }
+  else
+    minus_flag = 0;
 }

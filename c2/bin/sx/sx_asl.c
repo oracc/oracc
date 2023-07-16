@@ -6,6 +6,7 @@ static sl_letter_f sx_a_letter;
 static sl_group_f sx_a_group;
 static sl_sign_f sx_a_sign;
 static sl_form_f sx_a_form;
+static sl_list_f sx_a_list;
 static sl_value_f sx_a_value;
 
 struct sl_functions sx_asl_fncs;
@@ -17,6 +18,7 @@ sx_asl_init(FILE *fp, const char *fname)
   sx_asl_fncs.let = sx_a_letter;
   sx_asl_fncs.grp = sx_a_group;
   sx_asl_fncs.sgn = sx_a_sign;
+  sx_asl_fncs.lst = sx_a_list;
   sx_asl_fncs.frm = sx_a_form;
   sx_asl_fncs.val = sx_a_value;
   sx_asl_fncs.fp = fp;
@@ -91,11 +93,11 @@ static void
 sx_a_form(struct sl_functions *f, struct sl_inst *s)
 {
   fprintf(f->fp, "@form\t%s %s\n", s->u.f->var, s->u.f->name);
-  if (s->vd && s->vd->nvalues)
+  if (s->lv && s->lv->nvalues)
     {
       int i;
-      for (i = 0; i < s->vd->nvalues; ++i)
-	f->val(f, s->vd->values[i]);
+      for (i = 0; i < s->lv->nvalues; ++i)
+	f->val(f, s->lv->values[i]);
     }
 #if 0
   /*sx_a_signform_info();*/
@@ -104,16 +106,16 @@ sx_a_form(struct sl_functions *f, struct sl_inst *s)
 }
 
 static void
-sx_a_list(struct sl_functions *f, struct sl_list *l)
+sx_a_list(struct sl_functions *f, struct sl_inst *l)
 {
-  fprintf(f->fp, "@list\t%s%s\n", l->name, l->query ? "?" : "");
+  fprintf(f->fp, "@list\t%s%s\n", l->u.l->name, l->query ? "?" : "");
 }
 
 static void
 sx_a_value(struct sl_functions *f, struct sl_inst *v)
 {
   const char *queryminus = "";
-  if (v->deprecated)    
+  if (v->removed)
     queryminus = "-";
   else if (v->query)
     queryminus = "?";

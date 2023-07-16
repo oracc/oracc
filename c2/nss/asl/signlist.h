@@ -15,12 +15,15 @@ struct sl_signlist
   Hash *hsigns; /* contains signs and is augmented with forms which are not also signs */
   Hash *hforms; /* constains all forms */
   Hash *hvalues; /* contains all values */
+  Hash *hlists; /* contains all sl_list* */
   Hash *hletters;
   Hash *hsignvalues; /* contains only values which belong to @sign, not those belonging to @form */
   struct sl_sign **signs;
   int nsigns;
   struct sl_form **forms;
   int nforms;
+  struct sl_list **lists;
+  int nlists;
   struct sl_value **values;
   int nvalues;
   struct sl_letter *letters;
@@ -36,7 +39,7 @@ struct sl_signlist
   Memo *m_values;
   Memo *m_insts;
   Memo *m_signs_p;
-  Memo *m_valdata;
+  Memo *m_lv_data;
   Pool *p;
   Mloc *mloc;
 };
@@ -56,10 +59,14 @@ struct sl_any_note
   List *comments;
 };
 
-struct sl_value_data
+/* List and value data for @sign and @form insts */
+struct sl_lv_data
 {
+  Hash *hlists;
   Hash *hvalues;
   Hash *hivalues;
+  struct sl_inst **lists;
+  int nlists;
   struct sl_inst **values;
   int nvalues;
   struct sl_inst **ivalues; /* inherited values */
@@ -74,11 +81,11 @@ struct sl_inst
     struct sl_form *f;
     struct sl_list *l;
     struct sl_value *v; } u;
-  struct sl_value_data *vd; /* used by form instances */
+  struct sl_lv_data *lv; /* used by form instances */
   const unsigned char *ref; /* this is inline in the @v */
   struct sl_any_note n;
-  Boolean deprecated;
   Boolean query;
+  Boolean removed;
   Mloc *mloc;
 };
 
@@ -137,9 +144,6 @@ struct sl_form
   const unsigned char *name;
   const unsigned char *var; /* The variant code for the form, with tilde */
   Node *gdl;
-  Hash *hlists;
-  struct sl_inst **lists;
-  int nlists;
   List *owners; /* this is a list of sl_sign* the form is associated with */
   List *insts; 	/* this is a list of sl_inst* where the form occurs */
   int name_is_listnum;
@@ -152,11 +156,8 @@ struct sl_list
   const unsigned char *name;
   const unsigned char *base;
   const unsigned char *num;
-  List *owners; /* this is a list of sl_inst* the list is associated with; could be @sign or @form */
-  struct sl_any_note n;
-  int query;
   int sort;
-  List *insts;
+  List *insts; /* signs or forms where this list occurs */
 };
 
 /* This is the global value information structure */
@@ -200,12 +201,16 @@ struct sl_functions
   };
 
 extern struct sl_signlist *asl_bld_init(void);
-extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list,
-			 const unsigned char *var, const unsigned char *ref);
-extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
-extern struct sl_signlist *asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
+extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
+			 int list, const unsigned char *var, const unsigned char *ref, int minus_flag);
+extern void asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag);
+extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
+			 int list, int minus_flag);
+extern struct sl_signlist *asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
+					    int list);
 extern void asl_bld_term(struct sl_signlist *);
-extern void asl_bld_value(Mloc *locp, struct sl_signlist *sl, int type, const unsigned char *n, const char *lang, const unsigned char *ref, int atf_flag);
+extern void asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
+			  const char *lang, const unsigned char *ref, int atf_flag, int minus_flag);
 extern void asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s);
 
 #endif/*SIGNLIST_H_*/

@@ -39,7 +39,7 @@ static int forms_inst_cmp(const void *a, const void *b)
   else
     return 0;
 }
-#if 0
+
 static int lists_inst_cmp(const void *a, const void *b)
 {
   int a1 = (*(struct sl_inst**)a)->u.l->sort;
@@ -51,7 +51,7 @@ static int lists_inst_cmp(const void *a, const void *b)
   else
     return 0;
 }
-#endif
+
 static int values_inst_cmp(const void *a, const void *b)
 {
   int a1 = (*(struct sl_inst**)a)->u.v->sort;
@@ -79,9 +79,9 @@ static int signs_cmp(const void *a, const void *b)
 void
 sx_marshall(struct sl_signlist *sl)
 {
-  const char**sgns = NULL, **frms = NULL, **vals = NULL;
+  const char**sgns = NULL, **frms = NULL, **vals = NULL, **lsts;
   const char**lets = NULL;
-  int nlets = 0, nsgns = 0, nfrms = 0, nvals = 0, i;
+  int nlets = 0, nsgns = 0, nfrms = 0, nlsts = 0, nvals = 0, i;
   collate_init((ucp)"unicode");
 
   /* Add forms to the signs hash if they don't already exist as a sign */
@@ -120,6 +120,20 @@ sx_marshall(struct sl_signlist *sl)
       sl->forms[i]->sort = s->sort;
     }
 
+  /* Create sort codes for lists--note that a listname used in @sign
+     or @form has a different code than the same listname used in
+     @list; all @list entries are sorted into a single sequence
+     separate from the @sign sort */
+  lsts = hash_keys2(sl->hsigns, &nlsts);
+  qsort(lsts, nlsts, sizeof(char*), (cmp_fnc_t)collate_cmp_graphemes);
+  sl->lists = malloc(sizeof(struct sl_sign*) * nlsts);
+  sl->nlists = nlsts;
+  for (i = 0; i < nlsts; ++i)
+    {
+      sl->lists[i] = hash_find(sl->hsigns, (ucp)lsts[i]);
+      sl->lists[i]->sort = i;
+    }
+  
   /* Create sort codes for values--the sequence is completely independent of the sign sort codes */
   vals = hash_keys2(sl->hvalues, &nvals);
   qsort(vals, nvals, sizeof(char*), (cmp_fnc_t)collate_cmp_graphemes);
@@ -162,10 +176,20 @@ sx_marshall(struct sl_signlist *sl)
 	}
     }
 
-  /* Sort the values and forms for each sign */
+  /* Sort the lists, values and forms for each sign */
   for (i = 0; i < sl->nsigns; ++i)
     {
       struct sl_sign *sp = sl->signs[i];
+      if (sp->hlists)
+	{
+	  int nslsts, j;
+	  const char **slsts = hash_keys2(sp->hlists, &nslsts);
+	  sp->lists = memo_new_array(sl->m_insts, nslsts);
+	  sp->nlists = nslsts;
+	  for (j = 0; j < sp->nlists; ++j)
+	    sp->lists[j] = hash_find(sp->hlists, (uccp)slsts[j]);
+	  qsort(sp->lists, sp->nlists, sizeof(void*), (cmp_fnc_t)lists_inst_cmp);
+	}
       if (sp->hvalues)
 	{
 	  int nsvals, j;
@@ -186,15 +210,25 @@ sx_marshall(struct sl_signlist *sl)
 	    {
 	      struct sl_inst *fp;
 	      fp = sp->forms[j] = hash_find(sp->hforms, (uccp)sfrms[j]);
-	      if (fp->vd && fp->vd->hvalues)
+	      if (fp->lv && fp->lv->hlists)
+		{
+		  int nslsts, j;
+		  const char **slsts = hash_keys2(fp->lv->hlists, &nslsts);
+		  fp->lv->lists = memo_new_array(sl->m_insts, nslsts);
+		  fp->lv->nlists = nslsts;
+		  for (j = 0; j < fp->lv->nlists; ++j)
+		    fp->lv->lists[j] = hash_find(fp->lv->hlists, (uccp)slsts[j]);
+		  qsort(fp->lv->lists, fp->lv->nlists, sizeof(void*), (cmp_fnc_t)lists_inst_cmp);
+		}
+	      if (fp->lv && fp->lv->hvalues)
 		{
 		  int nsvals, j;
-		  const char **svals = hash_keys2(fp->vd->hvalues, &nsvals);
-		  fp->vd->values = memo_new_array(sl->m_insts, nsvals);
-		  fp->vd->nvalues = nsvals;
-		  for (j = 0; j < fp->vd->nvalues; ++j)
-		    fp->vd->values[j] = hash_find(fp->vd->hvalues, (uccp)svals[j]);
-		  qsort(fp->vd->values, fp->vd->nvalues, sizeof(void*), (cmp_fnc_t)values_inst_cmp);
+		  const char **svals = hash_keys2(fp->lv->hvalues, &nsvals);
+		  fp->lv->values = memo_new_array(sl->m_insts, nsvals);
+		  fp->lv->nvalues = nsvals;
+		  for (j = 0; j < fp->lv->nvalues; ++j)
+		    fp->lv->values[j] = hash_find(fp->lv->hvalues, (uccp)svals[j]);
+		  qsort(fp->lv->values, fp->lv->nvalues, sizeof(void*), (cmp_fnc_t)values_inst_cmp);
 		}
 	    }
 	  qsort(sp->forms, sp->nforms, sizeof(void*), (cmp_fnc_t)forms_inst_cmp);
