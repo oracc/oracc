@@ -228,4 +228,8 @@ extern void asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned cha
 			  const char *lang, const unsigned char *ref, int atf_flag, int minus_flag);
 extern void asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s);
 
+extern void asl_bld_inote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_lit(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_note(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+
 #endif/*SIGNLIST_H_*/

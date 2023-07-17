@@ -58,6 +58,23 @@ asl_bld_term(struct sl_signlist *sl)
     }
 }
 
+static void
+asl_bld_list_string(const unsigned char *t, List **lp)
+{
+  if (!*lp)
+    *lp = list_create(LIST_SINGLE);
+  list_add(*lp, (void*)t);
+}
+
+static void
+asl_bld_singleton_string(Mloc *locp, const unsigned char *t, const char *tag, unsigned char const* *dest)
+{
+  if (*dest)
+    mesg_verr(locp, "tag @%s can only be used once in a @sign or @form", tag);
+  else
+    *dest = t;
+}
+
 Tree *
 asl_bld_gdl(Mloc *locp, char *s)
 {
@@ -246,6 +263,26 @@ asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
     asl_add_list(locp, sl, n, query, minus_flag);
 }
 
+/* m for meta */
+
+void
+asl_bld_inote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+  asl_bld_list_string(t, sl->curr_form ? &sl->curr_form->n.notes : &sl->curr_sign->inst->n.inotes);
+}
+
+void
+asl_bld_lit(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+  asl_bld_list_string(t, sl->curr_form ? &sl->curr_form->n.lit : &sl->curr_sign->inst->n.lit);
+}
+
+void
+asl_bld_note(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+  asl_bld_list_string(t, sl->curr_form ? &sl->curr_form->n.notes : &sl->curr_sign->inst->n.notes);
+}
+
 void
 asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list, int minus_flag)
 {
@@ -294,23 +331,6 @@ asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int
       curr_asl->project = (ccp)n;
     }
   return curr_asl;
-}
-
-static void
-asl_bld_singleton_string(Mloc *locp, const unsigned char *t, const char *tag, unsigned char const* *dest)
-{
-  if (*dest)
-    mesg_verr(locp, "tag @%s can only be used once in a @sign or @form", tag);
-  else
-    *dest = t;
-}
-
-static void
-asl_bld_list_string(const unsigned char *t, List **lp)
-{
-  if (!*lp)
-    *lp = list_create(LIST_SINGLE);
-  list_add(*lp, (void*)t);
 }
 
 void

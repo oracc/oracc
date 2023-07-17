@@ -634,7 +634,7 @@
 
 <xsl:template match="xtf:nonl|xtf:nonx">
   <xsl:choose>
-    <xsl:when test="$proofing-mode = true()">
+    <xsl:when test="$proofing-mode=true()">
     </xsl:when>
     <xsl:otherwise>
       <xsl:variable name="class-val">
@@ -923,7 +923,6 @@
 	    </xsl:call-template>
 	    <xsl:apply-templates>
 	      <xsl:with-param name="maxcols" select="$maxcols"/>
-	      <xsl:with-param name="proofing-mode" select="$proofing-mode"/>
 	    </xsl:apply-templates>
 	  </xsl:when>
 	  <xsl:otherwise>
@@ -1020,29 +1019,111 @@
       </xsl:when>
       <!-- this block is used for P-texts -->
       <xsl:when test="string-length($name) > 0">
-	<xsl:call-template name="td-lnum">
-	  <xsl:with-param name="label" select="$label"/>
-	</xsl:call-template>
 	<xsl:choose>
-	  <xsl:when test="xtf:c">
- 	    <xsl:apply-templates>
-	      <xsl:with-param name="maxcols" select="$maxcols"/>
-	      <xsl:with-param name="proofing-mode" select="$proofing-mode"/>
-	    </xsl:apply-templates>
+	  <xsl:when test="$proofing-mode=true()">
+	    <td>
+	      <table class="proof">
+		<tr>
+		  <xsl:call-template name="td-lnum">
+		    <xsl:with-param name="label" select="$label"/>
+		  </xsl:call-template>
+		  <xsl:for-each select="*">
+		    <td>
+		      <xsl:apply-templates select="."/>
+		    </td>
+		  </xsl:for-each>
+		</tr>
+		<tr>
+		  <td>&#xa0;</td>
+		  <xsl:for-each select="*">
+		    <xsl:choose>
+		      <xsl:when test="self::gdl:w">
+			<xsl:variable name="lnodes" select="key('lnodes',@xml:id)"/>
+			<td>
+			  <xsl:choose>
+			    <xsl:when test="starts-with($lnodes/@inst,'%')">
+			      <xsl:value-of select="substring-after($lnodes/@inst,':')"/>
+			    </xsl:when>
+			    <xsl:otherwise>
+			      <xsl:value-of select="$lnodes/@inst"/>
+			    </xsl:otherwise>
+			  </xsl:choose>
+			</td>
+		      </xsl:when>
+		      <xsl:otherwise>
+			<td>&#xa0;</td>
+		      </xsl:otherwise>
+		    </xsl:choose>
+		  </xsl:for-each>
+		</tr>
+		<tr>
+		  <td>&#xa0;</td>
+		  <xsl:for-each select="*">
+		    <xsl:choose>
+		      <xsl:when test="self::gdl:w">
+			<xsl:variable name="lnodes" select="key('lnodes',@xml:id)"/>
+			<td>
+			  <xsl:choose>
+			    <xsl:when test="$lnodes/*[1]/@morph2">
+			      <xsl:value-of select="$lnodes/*[1]/@morph"/>
+			    </xsl:when>
+			    <xsl:otherwise>
+			      <xsl:value-of select="$lnodes/*[1]/@norm"/>
+			    </xsl:otherwise>
+			  </xsl:choose>
+			</td>
+		      </xsl:when>
+		      <xsl:otherwise>
+			<td>&#xa0;</td>
+		      </xsl:otherwise>
+		    </xsl:choose>
+		  </xsl:for-each>
+		</tr>
+		<xsl:if test="key('lnodes',*/@xml:id)/*[1]/@morph2">
+		  <tr>
+		    <td>&#xa0;</td>
+		    <xsl:for-each select="*">
+		      <xsl:choose>
+			<xsl:when test="self::gdl:w">
+			  <xsl:variable name="lnodes" select="key('lnodes',@xml:id)"/>
+			  <td><xsl:value-of select="$lnodes/*[1]/@morph2"/></td>
+			</xsl:when>
+			<xsl:otherwise>
+			  <td>&#xa0;</td>
+			</xsl:otherwise>
+		      </xsl:choose>
+		    </xsl:for-each>
+		  </tr>
+		</xsl:if>
+	      </table>
+	    </td>
 	  </xsl:when>
 	  <xsl:otherwise>
- 	    <td class="tlit">
-	      <xsl:if test="@spanall='1'">
-		<xsl:attribute name="colspan">
-		  <xsl:value-of select="ancestor-or-self::*[@cols][1]/@cols"/>
-		</xsl:attribute>
-	      </xsl:if>
-	      <p class="tt">
-		<xsl:apply-templates>
+	    <xsl:call-template name="td-lnum">
+	      <xsl:with-param name="label" select="$label"/>
+	    </xsl:call-template>
+	    <xsl:choose>
+	      <xsl:when test="xtf:c">
+ 		<xsl:apply-templates>
+		  <xsl:with-param name="maxcols" select="$maxcols"/>
 		  <xsl:with-param name="proofing-mode" select="$proofing-mode"/>
 		</xsl:apply-templates>
-	      </p>
-	    </td>
+	      </xsl:when>
+	      <xsl:otherwise>
+ 		<td class="tlit">
+		  <xsl:if test="@spanall='1'">
+		    <xsl:attribute name="colspan">
+		      <xsl:value-of select="ancestor-or-self::*[@cols][1]/@cols"/>
+		    </xsl:attribute>
+		  </xsl:if>
+		  <p class="tt">
+		    <xsl:apply-templates>
+		      <xsl:with-param name="proofing-mode" select="$proofing-mode"/>
+		    </xsl:apply-templates>
+		  </p>
+		</td>
+	      </xsl:otherwise>
+	    </xsl:choose>
 	  </xsl:otherwise>
 	</xsl:choose>
       </xsl:when>

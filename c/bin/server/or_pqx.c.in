@@ -263,7 +263,7 @@ h_pqx_proofing_html(const char *project, struct component *components)
   execl("/usr/bin/xsltproc", "xsltproc", 
 	"--param", "standalone", "true()",
 	"--stringparam", "project", project,
-	"--stringparam", "proofing-mode", "true()",
+	"--param", "proofing-mode", "true()",
 	proofing_html, 
 	xtf, NULL);
   do404();

@@ -152,15 +152,15 @@ atmeta:
 	;
 
 atinote:
-	  INOTE	TEXT
+	  INOTE	TEXT	{ asl_bld_inote(&@1, curr_asl, (uccp)$2); }
         ;
 
 atlit:
-	  LIT	TEXT
+	  LIT	TEXT	{ asl_bld_lit(&@1, curr_asl, (uccp)$2); }
         ;
 
 atnote:
-	  NOTE	TEXT
+	  NOTE	TEXT	{ asl_bld_note(&@1, curr_asl, (uccp)$2); }
         ;
 
 cont: 	TAB		{ if (asltrace) fprintf(stderr, "field/TAB: %s\n", asllval.text); }
