@@ -18,6 +18,7 @@ asl_bld_init(void)
   struct sl_signlist *sl = malloc(sizeof(struct sl_signlist));
   sl->hsigns = hash_create(1024);
   sl->hforms = hash_create(1024);
+  sl->hlists = hash_create(1024);
   sl->hvalues = hash_create(1024);
   sl->hsignvalues = hash_create(1024);
   sl->hletters = hash_create(32);
@@ -41,6 +42,7 @@ asl_bld_term(struct sl_signlist *sl)
     {
       hash_free(sl->hsigns, NULL);
       hash_free(sl->hforms, NULL);
+      hash_free(sl->hlists, NULL);
       hash_free(sl->hvalues, NULL);
       hash_free(sl->hsignvalues, NULL);
       memo_term(sl->m_letters);

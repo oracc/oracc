@@ -49,5 +49,68 @@
 
 * Maybe an ATF convention to say sign-X-is-written-with-glyph-Y without implying that Y has to be a known form of X
 
+* How would we define @form? Cases like A ..
 
+* Do we need a notation for X-is-abbreviated-as-Y (e.g., LAGAB×A written as A)?
+
+* Do we add such abbreviations to OGSL or are they part of spelling of words? KU in ED IIIa; probably many other examples
+
+* Do we need the ~a part of @form--is it ever used/will we ever use it? It makes sorting of forms counter-intuitive
+
+* Should forms automatically inherit all values or should we parse the
+  corpus for actual attestations and set up OGSL based on that, then
+  add new values to @form only when they are encountered?
+
+* Should we then normalize values in @form to the versions in @sign when there are minor differences, e.g., sim/sem?
+
+* Should we provide Unicode rendering guidelines for @fake signs like PN?
+
+* I would like to reassign signs which should be forms to be forms via
+  some kind of computational process that uses ePSD to group writings
+  of addir, for example, into a single place rather than many places
+
+*** Niek 20230717
+
+* Any general thoughts at the outset?
+
+* This convo is partly general preliminary and partly some minor
+  immediate needs; would like to have a convo with an agenda and some
+  explanatory notes soon-ish
+
+* OGSL is our working data: are we OK making it a public part of the
+  Unicode Cuneiform (UC) work or do we feel that will constrain our
+  ability to change freely as we need?
+
+* If we are concerned about that freedom, would we maintain a
+  derivative of OGSL that could serve UC needs?
+
+* Does NV want to be part of this possible UC initiative?
+
+* Are there any other Assyriologists we could/should include?
+
+* Do we feel that Robin is sufficient for non-Assyriological input?
+
+* Generally OK with minor changes to format of OGSL?
+
+  ** Make '?' always follow graphemes/list numbers for questionable items (no @v? always @v a?)
   
+  ** All removed sign/form/value marked with @sign- / @form- / @v- instead of the @nosign tag
+  
+  ** Write x for unknown sign-reading rather than '?'
+  
+  ** Write [x]ingara rather than [...]ingara because with legacy in
+     effect [x]ingara would be legal ATF (this is desirable because
+     then the rule can be that anything after @sign/@form/@v (except
+     for '[Pxxx ...]' refs) must be well-formed ATF; right now that
+     can't be the case); this would mean there are values with 'x' in
+     them to indicate missing parts, like xingara which would be a
+     little odd-looking but they would be consistent and unambiguous
+     (even in CDLI ASCII ATF final 'x' must be followed by '(' so an x
+     not followed by '(' would be legal if part of zi[...] =>
+     zix). There are 36 of these partially broken values in OGSL
+
+  ** Remove Civil's /šumun/-type values? Or at least reserve them to
+     @inote?  Or give them a different tag (@word?) There are 15 of
+     them.  They can't be used as values, so they shouldn't be @v.
+
+

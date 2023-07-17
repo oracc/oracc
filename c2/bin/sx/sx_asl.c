@@ -70,6 +70,12 @@ sx_a_sign(struct sl_functions *f, struct sl_sign *s)
     fprintf(f->fp, "@xsign\t%s\n", s->name);
   else
     fprintf(f->fp, "@sign\t%s\n", s->name);
+  if (s->nlists)
+    {
+      int i;
+      for (i = 0; i < s->nlists; ++i)
+	f->lst(f, s->lists[i]);
+    }
   if (s->nvalues)
     {
       int i;
@@ -93,11 +99,20 @@ static void
 sx_a_form(struct sl_functions *f, struct sl_inst *s)
 {
   fprintf(f->fp, "@form\t%s %s\n", s->u.f->var, s->u.f->name);
-  if (s->lv && s->lv->nvalues)
+  if (s->lv)
     {
-      int i;
-      for (i = 0; i < s->lv->nvalues; ++i)
-	f->val(f, s->lv->values[i]);
+      if (s->lv->nlists)
+	{
+	  int i;
+	  for (i = 0; i < s->lv->nlists; ++i)
+	    f->lst(f, s->lv->lists[i]);
+	}
+      if (s->lv->nvalues)
+	{
+	  int i;
+	  for (i = 0; i < s->lv->nvalues; ++i)
+	    f->val(f, s->lv->values[i]);
+	}
     }
 #if 0
   /*sx_a_signform_info();*/

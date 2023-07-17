@@ -124,13 +124,13 @@ sx_marshall(struct sl_signlist *sl)
      or @form has a different code than the same listname used in
      @list; all @list entries are sorted into a single sequence
      separate from the @sign sort */
-  lsts = hash_keys2(sl->hsigns, &nlsts);
+  lsts = hash_keys2(sl->hlists, &nlsts);
   qsort(lsts, nlsts, sizeof(char*), (cmp_fnc_t)collate_cmp_graphemes);
   sl->lists = malloc(sizeof(struct sl_sign*) * nlsts);
   sl->nlists = nlsts;
   for (i = 0; i < nlsts; ++i)
     {
-      sl->lists[i] = hash_find(sl->hsigns, (ucp)lsts[i]);
+      sl->lists[i] = hash_find(sl->hlists, (ucp)lsts[i]);
       sl->lists[i]->sort = i;
     }
   
