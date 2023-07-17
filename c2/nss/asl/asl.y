@@ -126,23 +126,23 @@ atunicode:
 	;
 
 atuchar:
-	  UCHAR
+	  UCHAR TEXT	{ asl_bld_uchar(&@1, curr_asl, (uccp)$2); }
 	;
 
 atucode:
-	  UCODE
+	  UCODE TEXT	{ asl_bld_ucode(&@1, curr_asl, (uccp)$2); }
 	;
 
 atuname:
-	  UNAME
+	  UNAME TEXT	{ asl_bld_uname(&@1, curr_asl, (uccp)$2); }
 	;
 
 atunote:
-	  UNOTE	TEXT
+	  UNOTE	TEXT	{ asl_bld_unote(&@1, curr_asl, (uccp)$2); }
         ;
 
 atuphase:
-	  UPHASE
+	  UPHASE TEXT	{ asl_bld_uphase(&@1, curr_asl, (uccp)$2); }
 	;
 
 atmeta:

@@ -296,6 +296,51 @@ asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int
   return curr_asl;
 }
 
+static void
+asl_bld_singleton_string(Mloc *locp, const unsigned char *t, const char *tag, unsigned char const* *dest)
+{
+  if (*dest)
+    mesg_verr(locp, "tag @%s can only be used once in a @sign or @form", tag);
+  else
+    *dest = t;
+}
+
+static void
+asl_bld_list_string(const unsigned char *t, List **lp)
+{
+  if (!*lp)
+    *lp = list_create(LIST_SINGLE);
+  list_add(*lp, (void*)t);
+}
+
+void
+asl_bld_uchar(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+  asl_bld_singleton_string(locp, t, "uchar",
+			   sl->curr_form ? &sl->curr_form->u.f->U.uchar : &sl->curr_sign->U.uchar);
+}
+
+void
+asl_bld_ucode(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+}
+
+void
+asl_bld_uname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+}
+
+void
+asl_bld_unote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+  asl_bld_list_string(t, sl->curr_form ? &sl->curr_form->u.f->U.unotes : &sl->curr_sign->U.unotes);
+}
+
+void
+asl_bld_uphase(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+}
+
 void
 asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	      const char *lang, const unsigned char *ref, int atf_flag, int minus_flag)

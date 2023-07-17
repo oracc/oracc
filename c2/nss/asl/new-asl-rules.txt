@@ -69,6 +69,24 @@
   some kind of computational process that uses ePSD to group writings
   of addir, for example, into a single place rather than many places
 
+* Need @alias tag to allow, say, an LAK number to be a legal sign name
+  where the actual sign name is cumbersom?
+
+* Need @xref tag or implicit xreffing of notes within forms that occur
+  more than once; in which case, we probably need instance-specific
+  notes vs. global notes.
+
+  ** @inote -- internal note, no replication/xreffing/printing
+  ** @xnote -- printed note automatically gets xreffed if it the sign/form is used more than once
+  ** @lnote -- local note, only applicable to instance of sign/form where it occurs
+  ** @unote -- unicode note which is intended to be actionable in UC; otherwise use [ixl]note
+
+* Does sx need a true identity mode? Or is it OK to reorder notes, for
+  example--could implement true identity by using line numbers of
+  input file as a sort key but is it worth it?
+
+* Why does @fake need an argument? Just use @fake instead of @fake 1.
+
 *** Niek 20230717
 
 * Any general thoughts at the outset?

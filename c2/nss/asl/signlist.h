@@ -7,17 +7,17 @@
 #include <tree.h>
 #include <mesg.h>
 
-/*enum sl_type_codes { SL_SIGNLIST , SL_LETTER , SL_GROUP , SL_SIGN , SL_FORM , SL_LIST, SL_VALUE, SL_MAX_TYPE };*/
-
 struct sl_signlist
 {
   const char *project;
-  Hash *hsigns; /* contains signs and is augmented with forms which are not also signs */
-  Hash *hforms; /* constains all forms */
-  Hash *hvalues; /* contains all values */
-  Hash *hlists; /* contains all sl_list* */
+  Hash *hsigns; 	/* contains signs and is augmented with forms
+			   which are not also signs */
+  Hash *hforms; 	/* constains all forms */
+  Hash *hvalues; 	/* contains all values */
+  Hash *hlists; 	/* contains all sl_list* */
   Hash *hletters;
-  Hash *hsignvalues; /* contains only values which belong to @sign, not those belonging to @form */
+  Hash *hsignvalues; 	/* contains only values which belong to @sign,
+			   not those belonging to @form */
   struct sl_sign **signs;
   int nsigns;
   struct sl_form **forms;
@@ -57,6 +57,15 @@ struct sl_any_note
   List *notes;
   List *inotes;
   List *comments;
+};
+
+struct sl_unicode_info
+{
+  const unsigned char *uchar;
+  const char *ucode;
+  const char *uphase;
+  const char *uname;
+  List *unotes;
 };
 
 /* List and value data for @sign and @form insts */
@@ -119,14 +128,10 @@ struct sl_sign
   int nvalues;
   struct sl_inst **forms;
   int nforms;
-  struct sl_any_note n;
+  struct sl_unicode_info U;
   int fake;
   int sort;
   const char *oid;
-  const char *uphase;
-  const char *uname;
-  const unsigned char *utf8;
-  List *unotes;
   struct sl_inst *inst;
   struct sl_form *xref; /* this sign is a header for the @form which
 			   defines the sign name; sort value is in
@@ -148,7 +153,7 @@ struct sl_form
   List *insts; 	/* this is a list of sl_inst* where the form occurs */
   int name_is_listnum;
   int sort;
-  struct sl_any_note n;
+  struct sl_unicode_info U;
 };
 
 struct sl_list
@@ -165,13 +170,18 @@ struct sl_value
 {
   const unsigned char *name;
   Node *gdl;
-  const char *lang; /* this is inline in the @v; it's an error for two @v to have different lang */
-  struct sl_sign *sowner; /* for a value at the sign level, this is the sign it belongs to; may be NULL if value only occurs in forms */
-  List *fowners; /* for a value at the form level, this is a list of sl_inst* it belongs to */
+  const char *lang; 	  /* this is inline in the @v; it's an error
+			     for two @v to have different lang */
+  struct sl_sign *sowner; /* for a value at the sign level, this is
+			     the sign it belongs to; may be NULL if
+			     value only occurs in forms */
+  List *fowners; 	  /* for a value at the form level, this is a
+			     list of sl_inst* it belongs to */
   List *insts;
   int atf;
   int phonetic;
-  int unknown; /* name is 'x'; these are SIGN entries in lex whose value is not preserved */
+  int unknown; 		  /* name is 'x'; these are SIGN entries in
+			     lex whose value is not preserved */
   int sort;
 };
 
@@ -209,6 +219,11 @@ extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char
 extern struct sl_signlist *asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 					    int list);
 extern void asl_bld_term(struct sl_signlist *);
+extern void asl_bld_ucode(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_uphase(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_unote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_uname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_uchar(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 			  const char *lang, const unsigned char *ref, int atf_flag, int minus_flag);
 extern void asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s);

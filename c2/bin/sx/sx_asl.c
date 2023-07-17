@@ -64,12 +64,36 @@ sx_a_group(struct sl_functions *f, struct sl_group *g)
 }
 
 static void
+sx_a_str_list(FILE *fp, const char *tag, List *lp)
+{
+  unsigned const char *t;
+  for (t = list_first(lp); t; t = list_next(lp))
+    fprintf(fp, "@%s\t%s\n", tag, t);
+}
+
+static void
+sx_a_unicode(FILE *fp, struct sl_unicode_info *up)
+{
+  if (up->uname)
+    fprintf(fp, "@uchar\t%s\n", up->uname);
+  if (up->uphase)
+    fprintf(fp, "@uchar\t%s\n", up->uphase);
+  if (up->ucode)
+    fprintf(fp, "@uchar\t%s\n", up->ucode);
+  if (up->uchar)
+    fprintf(fp, "@uchar\t%s\n", up->uchar);
+  if (up->unotes)
+    sx_a_str_list(fp, "unote", up->unotes);
+}
+
+static void
 sx_a_sign(struct sl_functions *f, struct sl_sign *s)
 {
   if (s->xref)
     fprintf(f->fp, "@xsign\t%s\n", s->name);
   else
     fprintf(f->fp, "@sign\t%s\n", s->name);
+  sx_a_unicode(f->fp, &s->U);
   if (s->nlists)
     {
       int i;

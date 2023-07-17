@@ -35,6 +35,8 @@ static void check_minus(char *t);
 
 #define atcmd(at,st) aslsave; check_minus(asllval.text); pmatch("###ATCMD\n"); BEGIN((st)); return(at)
 
+#define Tcmd(at,st) pmatch("###TCMD\n"); BEGIN((st)); return(at)
+
 %}
 
 S		\xe2\xb8[^\xa2-\xa5]
@@ -51,6 +53,7 @@ FRACTION	[0-9]\/[0-9]
 PUNCT		("*"|:['".:]?|"/"){Q}
 
 %s E
+%s S
 %s T
 
 %%
@@ -60,6 +63,8 @@ PUNCT		("*"|:['".:]?|"/"){Q}
 <E>"form"			{ fake_flag = 0; atcmd(EFORM,0); }
 
 <E>[^ \t]			{ fake_flag = 0; aslsave; fprintf(stderr, "###EBAD %s\n", asltext); return EBAD; }
+
+<S>[ \t]+			{ BEGIN T; }
 
 <T>^[ \t]+.+/\n    		{ BEGIN 0; aslsave; pmatch("###TEXTCONT\n"); return TAB; }
 
@@ -79,14 +84,14 @@ PUNCT		("*"|:['".:]?|"/"){Q}
 ^@form-?/[ \t]	       		{ atcmd(FORM,0); }
 ^@noform/[ \t]         		{ mesg_vwarning(curraslfile, asllineno, "[asl] '@noform' has been replaced by '@form-'");
 				  atcmd(FORM,-1); }
-^@v-?/[ \t]	       		{ atcmd(V,0); }
-^@lit/[ \t]	       		{ atcmd(LIT,T); }
-^@note/[ \t]*       		{ atcmd(NOTE,T); }
-^@uchar[ \t]+.*/\n		{ atcmd(UCHAR,0); }
-^@ucode[ \t]+.*/\n		{ atcmd(UCODE,0); }
-^@uname[ \t]+.*/\n		{ atcmd(UNAME,0); }
-^@unote/[ \t]	       		{ atcmd(UNOTE,T); }
-^@uphase[ \t]+.*/\n		{ atcmd(UPHASE,0); }
+^@v-?/[ \t]+	       		{ atcmd(V,0); }
+^@lit/[ \t]+	       		{ atcmd(LIT,T); }
+^@note/[ \t]+       		{ atcmd(NOTE,T); }
+^@uchar/[ \t]+			{ Tcmd(UCHAR,S); }
+^@ucode/[ \t]+			{ Tcmd(UCODE,S); }
+^@uname/[ \t]+			{ Tcmd(UNAME,S); }
+^@unote/[ \t]+   		{ Tcmd(UNOTE,S); }
+^@uphase[ \t]+			{ Tcmd(UPHASE,S); }
 ^@fake[ \t]+1[ \t]*/\n		{ fake_flag = 1; }
 
 ^@[a-z]+         		{ BEGIN 0; mesg_vwarning(curraslfile, asllineno,
