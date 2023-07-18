@@ -10,42 +10,47 @@
 struct sl_signlist
 {
   const char *project;
-  Hash *hsigns; 	/* contains signs and is augmented with forms
-			   which are not also signs */
-  Hash *hforms; 	/* constains all forms */
-  Hash *hvalues; 	/* contains all values */
-  Hash *hminus;		/* values that are removed from the sign list,
-			   both sign and form (need to include them in
-			   sort order) */
-  Hash *hvsort;		/* contains all hvalues and hminus as basis for sort */
-  Hash *hlists; 	/* contains all sl_list* */
+  Hash *htoken; 	/* Every token that is a sign/form/list/value
+			   as a struct sl_token * */
+  Hash *hsentry; 	/* All the @sign/@sign- entries in the signlist */
+  Hash *hfentry; 	/* All @form/@form- entries in signlist; host for sl_form* */
+  Hash *hventry; 	/* All @v/@v- entries in signlist; host for sl_value* */
+  Hash *hlentry; 	/* All @list/@list- entries in signlist; host for sl_list* */
+  Hash *hsignvvalid; 	/* All @v which belong to a @sign,
+			   not those belonging to @form; no @v- */
   Hash *hletters;
-  Hash *hsignvalues; 	/* contains only values which belong to @sign,
-			   not those belonging to @form */
-  struct sl_sign **signs;
+  struct sl_token **tokens; /* sorted htoken */
+  struct sl_sign  **signs;  /* sorted hsentry */
   int nsigns;
-  struct sl_form **forms;
+  struct sl_form  **forms;  /* sorted hfentry */
   int nforms;
-  struct sl_list **lists;
-  int nlists;
-  struct sl_value **values;
+  struct sl_value **values;  /* sorted hventry */
   int nvalues;
+  struct sl_list  **lists;  /* sorted hlentry */
+  int nlists;
   struct sl_letter *letters;
   int nletters;
   struct sl_sign *curr_sign;
   struct sl_inst *curr_form;
   struct sl_inst *curr_value;
+  Memo *m_tokens;
   Memo *m_letters;
   Memo *m_groups;
   Memo *m_signs;
+  Memo *m_signs_p;
   Memo *m_forms;
   Memo *m_lists;
   Memo *m_values;
   Memo *m_insts;
-  Memo *m_signs_p;
   Memo *m_lv_data;
   Pool *p;
   Mloc *mloc;
+};
+
+struct sl_token
+{
+  const unsigned char *t;	/* sign/form/value/list name token */
+  int s;			/* sort code for token */
 };
 
 /* each of the lists in sl_any_note is a list of char; handlers should
@@ -67,12 +72,14 @@ struct sl_unicode_info
   List *unotes;
 };
 
-/* List and value data for @sign and @form insts */
+/* List and value data for @form insts */
 struct sl_lv_data
 {
-  Hash *hlists;
-  Hash *hvalues;
-  Hash *hivalues;
+  Hash *hlentry; 	/* All @list entries */
+  Hash *hlvalid;	/* @list entries except @list- ; NULL unless there is an @list- */
+  Hash *hventry;	/* All @v entries */
+  Hash *hvvalid;	/* @v entries except @v- ; NULL unless there is an @v- */
+  Hash *hivalues; 	/* Inherited values from parent @sign's hvvalid */
   struct sl_inst **lists;
   int nlists;
   struct sl_inst **values;
@@ -92,8 +99,8 @@ struct sl_inst
   struct sl_lv_data *lv; /* used by form instances */
   const unsigned char *ref; /* this is inline in the @v */
   struct sl_any_note n;
+  Boolean valid; /* doesn't have a - after it */
   Boolean query;
-  Boolean removed;
   Boolean uchar;
   Boolean ucode;
   Boolean uname;
@@ -120,11 +127,11 @@ struct sl_sign
   const unsigned char *name;
   int name_is_listnum;
   Node *gdl;
+  Hash *hlentry; 	/* All @list entries */
+  Hash *hventry;	/* All @v entries */
+  Hash *hfentry;	/* All @form entries */
   unsigned const char *letter;
   unsigned const char *group;
-  Hash *hlists;
-  Hash *hvalues;
-  Hash *hforms;
   struct sl_inst **lists;
   int nlists;
   struct sl_inst **values;

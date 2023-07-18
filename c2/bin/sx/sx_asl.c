@@ -163,7 +163,7 @@ static void
 sx_a_value(struct sl_functions *f, struct sl_inst *v)
 {
   const char *queryminus = "";
-  if (v->removed)
+  if (!v->valid)
     queryminus = "-";
   else if (v->query)
     queryminus = "?";

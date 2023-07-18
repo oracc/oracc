@@ -54,7 +54,6 @@ GRAPHEME 	((({G}|{N}))|"15")
 LISTNUM		([A-Z][A-Z]+[0-9]+[A-Z0-9a-z_'"+*/]*)
 NUMGRAPH	[0-9XNn]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\)
 FRACTION	[0-9]\/[0-9]
-PUNCT		("*"|:['".:]?|"/")
 
 L_UHS		"\xe2\xb8\xa2"
 R_UHS		"\xe2\xb8\xa3"
@@ -139,7 +138,13 @@ _			{ gsave; return LANG_FLIP; }
 ^[#"~=@^]	       	{ gsave; return gdl_lexfld[(int)*yytext]; }
 [#"~=@^]   		{ gsave; if (SIN) { SIN=0; return gdl_lexfld[(int)*yytext]; } else { return *yytext; } }
 "*"			{ /*"*/ gsave; if (GIN) { return(*yytext); } else { GIN=1; return(PUNCT); } }
-(:['".:]?|"/")/[\]>#*!? \t\n()]	{ /*"*/ GIN=1; gsave; return PUNCT; }
+
+":"/[ \t\n\(]  		{ /*"*/ GIN=1; gsave; return PUNCT; }
+":."			{ /*"*/ GIN=1; gsave; return PUNCT; }
+":'"			{ /*"*/ GIN=1; gsave; return PUNCT; }
+":\""			{ /*"*/ GIN=1; gsave; return PUNCT; }
+"::"      		{ /*"*/ GIN=1; gsave; return PUNCT; }
+"/"/[ \t\n\(]		{ /*"*/ GIN=1; gsave; return PUNCT; }
 
 [0-9]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
 

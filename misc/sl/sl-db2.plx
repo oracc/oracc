@@ -661,7 +661,8 @@ subsign {
 	    next if $dropped and $dropped eq 'yes';
 
 	    my $type = $c->getAttribute('type');
-	    next if $type && ($type eq 'tlit' || $type eq 'word');
+	    my $v = $c->getAttribute('n');
+	    next if $type && ($type eq 'tlit' || ($type eq 'word' && $v ne '/')); # we want / as a value
 
 	    my $xlang = $c->getAttribute('xml:lang');
 	    if ($xlang) {
@@ -670,7 +671,6 @@ subsign {
 		# need to allow %akk and %elx as valid graphemes
 	    }
 
-	    my $v = $c->getAttribute('n');
 	    $v =~ tr/?//d;
 	    my $orig_v = $v;
 	    $v =~ s/\{.*?\}//g;

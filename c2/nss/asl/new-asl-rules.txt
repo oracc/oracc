@@ -1,3 +1,18 @@
+! Should validate multiple base-values e.g., šudul₄ and šudul₅ in same sign or form
+
+* Uniqueness constraints:
+
+  ** Signs must be unique across @sign and @sign- combined
+  ** Forms must be unique within each @sign across @form and @form- combined
+  ** Values must be unique within each @sign or @form across @v and @v- combined
+
+  In other words, you can't say @sign- A and @sign A, etc.
+
+* Should validation require unicode info to be repeated for @form
+  which are @sign or require it to be omitted? Should pick one and not
+  do a hybrid; require info in "defining instance", i.e., @sign or one
+  of the times a @form is used which is not a @sign
+
 * No longer use ? for unknown value; use 'x' instead
 
   @v	? [SF 064 = dcclt:P010655 o iii 14]
@@ -49,13 +64,15 @@
 
 * Maybe an ATF convention to say sign-X-is-written-with-glyph-Y without implying that Y has to be a known form of X
 
-* How would we define @form? Cases like A ..
+* How would we define @form? Cases like A ...
 
 * Do we need a notation for X-is-abbreviated-as-Y (e.g., LAGAB×A written as A)?
 
 * Do we add such abbreviations to OGSL or are they part of spelling of words? KU in ED IIIa; probably many other examples
 
 * Do we need the ~a part of @form--is it ever used/will we ever use it? It makes sorting of forms counter-intuitive
+
+* Do we need @end form?
 
 * Should forms automatically inherit all values or should we parse the
   corpus for actual attestations and set up OGSL based on that, then
