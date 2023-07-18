@@ -18,6 +18,7 @@ int status;
 int asltrace,rnvtrace;
 
 int asl_output = 0;
+int identity_mode = 0;
 int tree_output = 0;
 int xml_output = 0;
 
@@ -39,7 +40,7 @@ main(int argc, char * const*argv)
   /* Initialize a dummy gvl with an empty hash instead of a signlist */
   (void)gvl_setup(NULL, NULL);
   
-  options(argc, argv, "acrtTx");
+  options(argc, argv, "acirtTx");
   asltrace = asl_flex_debug = trace_mode;
 
   if (argv[optind])
@@ -95,6 +96,9 @@ opts(int opt, char *arg)
       break;
     case 'c':
       check_mode = 1;
+      break;
+    case 'i':
+      asl_output = identity_mode = 1;
       break;
     case 'r':
       asl_raw_tokens = 1;

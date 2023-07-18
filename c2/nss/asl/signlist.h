@@ -33,6 +33,7 @@ struct sl_signlist
   struct sl_sign *curr_sign;
   struct sl_inst *curr_form;
   struct sl_inst *curr_value;
+  struct sl_inst *curr_inst; /* used to attach meta to correct tag */
   Memo *m_tokens;
   Memo *m_letters;
   Memo *m_groups;
@@ -98,6 +99,7 @@ struct sl_inst
     struct sl_value *v; } u;
   struct sl_lv_data *lv; /* used by form instances */
   const unsigned char *ref; /* this is inline in the @v */
+  const unsigned char *var; /* The variant code for the form in this instance, with tilde */
   struct sl_any_note n;
   Boolean valid; /* doesn't have a - after it */
   Boolean query;
@@ -139,6 +141,7 @@ struct sl_sign
   struct sl_inst **forms;
   int nforms;
   struct sl_unicode_info U;
+  const unsigned char *pname;
   Boolean uchar;
   Boolean ucode;
   Boolean uname;
@@ -161,7 +164,7 @@ struct sl_sign
 struct sl_form
 {
   const unsigned char *name;
-  const unsigned char *var; /* The variant code for the form, with tilde */
+  const unsigned char *pname;
   Node *gdl;
   List *owners; /* this is a list of sl_sign* the form is associated with */
   List *insts; 	/* this is a list of sl_inst* where the form occurs */
@@ -228,6 +231,8 @@ extern struct sl_signlist *asl_bld_init(void);
 extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 			 int list, const unsigned char *var, const unsigned char *ref, int minus_flag);
 extern void asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag);
+extern void asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+
 extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 			 int list, int minus_flag);
 extern struct sl_signlist *asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,

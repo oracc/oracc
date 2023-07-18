@@ -176,7 +176,6 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
 	{
 	  f = memo_new(sl->m_forms);
 	  f->name = n;
-	  f->var = var;
 	  f->name_is_listnum = list;
 	  f->insts = list_create(LIST_SINGLE);
 	  list_add(f->insts, i);
@@ -193,10 +192,12 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
 
       i->type = 'f';
       i->u.f = f;
+      i->var = var;
       i->ref = ref;
       i->mloc = locp;
       i->valid = (Boolean)!minus_flag;
       i->query = (Boolean)query;
+      sl->curr_inst = i;
       
       if (!sl->curr_sign->hfentry)
 	sl->curr_sign->hfentry = hash_create(128);
@@ -216,6 +217,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int q, 
   i->type = 'l';
   i->valid = (Boolean)!m;
   i->query = (Boolean)q;
+  sl->curr_inst = i;
 
   /* If this list is already in the lists hash for the sign or the form-instance it's an error */
   if (sl->curr_form)
@@ -295,19 +297,56 @@ asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
 void
 asl_bld_inote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_list_string(t, sl->curr_form ? &sl->curr_form->n.inotes : &sl->curr_sign->inst->n.inotes);
+  if (sl->curr_inst)
+    asl_bld_list_string(t, &sl->curr_inst->n.inotes);
+  else
+    mesg_verr(locp, "misplaced @inote");
 }
 
 void
 asl_bld_lit(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_list_string(t, sl->curr_form ? &sl->curr_form->n.lit : &sl->curr_sign->inst->n.lit);
+  if (sl->curr_inst)
+    asl_bld_list_string(t, &sl->curr_inst->n.lit);
+  else
+    mesg_verr(locp, "misplaced @inote");
 }
 
 void
 asl_bld_note(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_list_string(t, sl->curr_form ? &sl->curr_form->n.notes : &sl->curr_sign->inst->n.notes);
+  if (sl->curr_inst)
+    asl_bld_list_string(t, &sl->curr_inst->n.notes);
+  else
+    mesg_verr(locp, "misplaced @inote");
+}
+
+void
+asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+  int query;
+  check_query((char*)t, &query);
+  if (query)
+    mesg_verr(locp, "'?' is ignored on @pname");
+    
+  asl_bld_token(sl, t);
+
+  if (sl->curr_form)
+    {
+      if (sl->curr_form->u.f->pname)
+	mesg_verr(locp, "@pname can only be given once for each @form");
+      else
+	sl->curr_form->u.f->pname = pool_copy(t, sl->p);
+    }
+  else if (sl->curr_sign)
+    {
+      if (sl->curr_sign->pname)
+	mesg_verr(locp, "@pname can only be given once for each @sign");
+      else
+	sl->curr_sign->pname = pool_copy(t, sl->p);
+    }
+  else
+    mesg_verr(locp, "misplaced @pname");
 }
 
 void
@@ -322,11 +361,12 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       exit(1);
     }
 
-  sl->curr_form = NULL;
-  sl->curr_value = NULL;
   check_query((char*)n, &query);
   asl_bld_token(sl, n);
-  
+
+  sl->curr_form = NULL;
+  sl->curr_value = NULL;
+
   if ((s = hash_find(sl->hsentry, n)))
     {
       if (s->inst->valid && minus_flag)
@@ -347,6 +387,7 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       i->mloc = locp;
       i->valid = (Boolean)!minus_flag;
       i->query = (Boolean)query;
+      sl->curr_inst = i;
       i->u.s = s;
       sl->curr_sign = s;
       hash_add(sl->hsentry, s->name, s);
@@ -429,12 +470,13 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   i->ref = ref;
   i->valid = (Boolean)!minus_flag;
   i->query = (Boolean)query;
+  sl->curr_inst = i;
   
   if ((v = hash_find(sl->hsignvvalid, n)))
     {
       /* If we are processing a sign and the v is already in
 	 signlist's sign-values it's an error for it to occur again */
-      if (!sl->curr_form && !xvalue && !uvalue && !v->atf && !minus_flag && sl->curr_sign->inst->valid)
+      if (!sl->curr_form && !xvalue && !v->atf && !minus_flag && sl->curr_sign->inst->valid)
 	{
 	  if (!strcmp((ccp)v->sowner->name, (ccp)sl->curr_sign->name))
 	    mesg_verr(locp, "value %s occurs more than once in sign %s\n", n, sl->curr_sign->name);
@@ -501,7 +543,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	    sl->curr_form->lv = memo_new(sl->m_lv_data);
 	  if (!sl->curr_form->lv->hventry)
 	    sl->curr_form->lv->hventry = hash_create(1);
-	  else if (hash_find(sl->curr_form->lv->hventry, n))
+	  if (hash_find(sl->curr_form->lv->hventry, n))
 	    {
 	      if (!xvalue)
 		{

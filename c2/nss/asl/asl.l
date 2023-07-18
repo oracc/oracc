@@ -93,7 +93,7 @@ PUNCT		("*"|:['".:]?|"/"){Q}
 ^@uname/[ \t]+			{ Tcmd(UNAME,S); }
 ^@unote/[ \t]+   		{ Tcmd(UNOTE,S); }
 ^@uphase/[ \t]+			{ Tcmd(UPHASE,S); }
-^@fake[ \t]+1[ \t]*/\n		{ fake_flag = 1; }
+^@fake[ \t]+1[ \t]*/\n		{ return FAKE; }
 
 ^@[a-z]+         		{ BEGIN 0; mesg_vwarning(curraslfile, asllineno,
 							"[asl] malformed or unknown @-line: %s", asltext); }

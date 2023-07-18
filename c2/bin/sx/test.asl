@@ -17,6 +17,7 @@
 
 @sign   A
 @v	a
+@inote a note on @v
 @form ~a  A@g
 @v	a₃
 @end form

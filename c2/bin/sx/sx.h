@@ -9,6 +9,8 @@ extern void sx_gparse(Node *np, char *data);
 extern void sx_vpp_parse(Node *np, char *data);
 #endif
 
+extern int identity_mode;
+
 extern void sx_xml(struct sl_signlist *sl);
 extern void sx_xml_init(void);
 
