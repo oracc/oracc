@@ -14,6 +14,10 @@ struct sl_signlist
 			   which are not also signs */
   Hash *hforms; 	/* constains all forms */
   Hash *hvalues; 	/* contains all values */
+  Hash *hminus;		/* values that are removed from the sign list,
+			   both sign and form (need to include them in
+			   sort order) */
+  Hash *hvsort;		/* contains all hvalues and hminus as basis for sort */
   Hash *hlists; 	/* contains all sl_list* */
   Hash *hletters;
   Hash *hsignvalues; 	/* contains only values which belong to @sign,
@@ -44,13 +48,8 @@ struct sl_signlist
   Mloc *mloc;
 };
 
-/* each of the lists in sl_any_note is a list of sl_str_loc* */
-struct sl_str_loc
-{
-  const unsigned char *s;
-  Mloc *mloc;
-};
-
+/* each of the lists in sl_any_note is a list of char; handlers should
+   be passed the owner sl_inst so an Mloc is available */
 struct sl_any_note
 {
   List *lit;
@@ -95,6 +94,10 @@ struct sl_inst
   struct sl_any_note n;
   Boolean query;
   Boolean removed;
+  Boolean uchar;
+  Boolean ucode;
+  Boolean uname;
+  Boolean uphase;
   Mloc *mloc;
 };
 
@@ -129,6 +132,10 @@ struct sl_sign
   struct sl_inst **forms;
   int nforms;
   struct sl_unicode_info U;
+  Boolean uchar;
+  Boolean ucode;
+  Boolean uname;
+  Boolean uphase;
   int fake;
   int sort;
   const char *oid;

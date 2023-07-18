@@ -85,13 +85,14 @@ PUNCT		("*"|:['".:]?|"/"){Q}
 ^@noform/[ \t]         		{ mesg_vwarning(curraslfile, asllineno, "[asl] '@noform' has been replaced by '@form-'");
 				  atcmd(FORM,-1); }
 ^@v-?/[ \t]+	       		{ atcmd(V,0); }
-^@lit/[ \t]+	       		{ atcmd(LIT,T); }
-^@note/[ \t]+       		{ atcmd(NOTE,T); }
+^@inote/[ \t]+       		{ Tcmd(INOTE,S); }
+^@lit/[ \t]+	       		{ Tcmd(LIT,S); }
+^@note/[ \t]+       		{ Tcmd(NOTE,S); }
 ^@uchar/[ \t]+			{ Tcmd(UCHAR,S); }
 ^@ucode/[ \t]+			{ Tcmd(UCODE,S); }
 ^@uname/[ \t]+			{ Tcmd(UNAME,S); }
 ^@unote/[ \t]+   		{ Tcmd(UNOTE,S); }
-^@uphase[ \t]+			{ Tcmd(UPHASE,S); }
+^@uphase/[ \t]+			{ Tcmd(UPHASE,S); }
 ^@fake[ \t]+1[ \t]*/\n		{ fake_flag = 1; }
 
 ^@[a-z]+         		{ BEGIN 0; mesg_vwarning(curraslfile, asllineno,

@@ -12,6 +12,7 @@
 @list LAK101
 @end form
 @form ~b BI
+@inote A note on BI.
 @end sign
 
 @sign   A

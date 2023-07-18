@@ -87,6 +87,13 @@ sx_a_unicode(FILE *fp, struct sl_unicode_info *up)
 }
 
 static void
+sx_a_notes(FILE *fp, struct sl_inst *i)
+{
+  if (i->n.inotes)
+    sx_a_str_list(fp, "inote", i->n.inotes);
+}
+
+static void
 sx_a_sign(struct sl_functions *f, struct sl_sign *s)
 {
   if (s->xref)
@@ -123,6 +130,7 @@ static void
 sx_a_form(struct sl_functions *f, struct sl_inst *s)
 {
   fprintf(f->fp, "@form\t%s %s\n", s->u.f->var, s->u.f->name);
+  sx_a_notes(f->fp, s);
   if (s->lv)
     {
       if (s->lv->nlists)
@@ -148,6 +156,7 @@ static void
 sx_a_list(struct sl_functions *f, struct sl_inst *l)
 {
   fprintf(f->fp, "@list\t%s%s\n", l->u.l->name, l->query ? "?" : "");
+  sx_a_notes(f->fp, l);
 }
 
 static void
@@ -159,4 +168,5 @@ sx_a_value(struct sl_functions *f, struct sl_inst *v)
   else if (v->query)
     queryminus = "?";
   fprintf(f->fp, "@v%s\t%s\n", queryminus, v->u.v->name);
+  sx_a_notes(f->fp, v);
 }

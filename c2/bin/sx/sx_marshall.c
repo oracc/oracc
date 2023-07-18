@@ -135,13 +135,22 @@ sx_marshall(struct sl_signlist *sl)
     }
   
   /* Create sort codes for values--the sequence is completely independent of the sign sort codes */
+  sl->hvsort = hash_create(8192);
   vals = hash_keys2(sl->hvalues, &nvals);
+  for (i = 0; i < nvals; ++i)
+    hash_add(sl->hvsort, (ucp)vals[i], hash_find(sl->hvalues, (ucp)vals[i]));
+  vals = hash_keys2(sl->hminus, &nvals);
+  for (i = 0; i < nvals; ++i)
+    hash_add(sl->hvsort, (ucp)vals[i], hash_find(sl->hminus, (ucp)vals[i]));
+
+  vals = hash_keys2(sl->hvsort, &nvals);
   qsort(vals, nvals, sizeof(char*), (cmp_fnc_t)collate_cmp_graphemes);
+  /* sl->values should not be used for output unless the value is also checked for minus_flag */
   sl->values = malloc(sizeof(struct sl_sign*) * nvals);
   sl->nvalues = nvals;
   for (i = 0; i < nvals; ++i)
     {
-      sl->values[i] = hash_find(sl->hvalues, (ucp)vals[i]);
+      sl->values[i] = hash_find(sl->hvsort, (ucp)vals[i]);
       sl->values[i]->sort = i;
     }
   

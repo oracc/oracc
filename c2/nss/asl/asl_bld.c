@@ -20,6 +20,7 @@ asl_bld_init(void)
   sl->hforms = hash_create(1024);
   sl->hlists = hash_create(1024);
   sl->hvalues = hash_create(1024);
+  sl->hminus = hash_create(1024);
   sl->hsignvalues = hash_create(1024);
   sl->hletters = hash_create(32);
   sl->m_letters = memo_init(sizeof(struct sl_letter), 32);
@@ -44,6 +45,7 @@ asl_bld_term(struct sl_signlist *sl)
       hash_free(sl->hforms, NULL);
       hash_free(sl->hlists, NULL);
       hash_free(sl->hvalues, NULL);
+      hash_free(sl->hminus, NULL);
       hash_free(sl->hsignvalues, NULL);
       memo_term(sl->m_letters);
       memo_term(sl->m_groups);
@@ -67,12 +69,15 @@ asl_bld_list_string(const unsigned char *t, List **lp)
 }
 
 static void
-asl_bld_singleton_string(Mloc *locp, const unsigned char *t, const char *tag, unsigned char const* *dest)
+asl_bld_singleton_string(Mloc *locp, const unsigned char *t, const char *tag, unsigned char const* *dest, Boolean *seen)
 {
-  if (*dest)
+  if (*seen)
     mesg_verr(locp, "tag @%s can only be used once in a @sign or @form", tag);
   else
-    *dest = t;
+    {
+      *dest = t;
+      *seen = 1;
+    }
 }
 
 Tree *
@@ -268,7 +273,7 @@ asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
 void
 asl_bld_inote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_list_string(t, sl->curr_form ? &sl->curr_form->n.notes : &sl->curr_sign->inst->n.inotes);
+  asl_bld_list_string(t, sl->curr_form ? &sl->curr_form->n.inotes : &sl->curr_sign->inst->n.inotes);
 }
 
 void
@@ -337,17 +342,24 @@ void
 asl_bld_uchar(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
   asl_bld_singleton_string(locp, t, "uchar",
-			   sl->curr_form ? &sl->curr_form->u.f->U.uchar : &sl->curr_sign->U.uchar);
+			   sl->curr_form ? &sl->curr_form->u.f->U.uchar : &sl->curr_sign->U.uchar,
+			   sl->curr_form ? &sl->curr_form->uchar : &sl->curr_sign->uchar);
 }
 
 void
 asl_bld_ucode(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
+  asl_bld_singleton_string(locp, t, "ucode",
+			   (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.ucode : &sl->curr_sign->U.ucode),
+			   sl->curr_form ? &sl->curr_form->ucode : &sl->curr_sign->ucode);
 }
 
 void
 asl_bld_uname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
+  asl_bld_singleton_string(locp, t, "uname",
+			   (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.uname : &sl->curr_sign->U.uname),
+			   sl->curr_form ? &sl->curr_form->uname : &sl->curr_sign->uname);
 }
 
 void
@@ -359,6 +371,9 @@ asl_bld_unote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 void
 asl_bld_uphase(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
+  asl_bld_singleton_string(locp, t, "uphase",
+			   (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.uphase : &sl->curr_sign->U.uphase),
+			   sl->curr_form ? &sl->curr_form->uphase : &sl->curr_sign->uphase);
 }
 
 void
@@ -387,7 +402,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   
   if ((v = hash_find(sl->hsignvalues, n)))
     {
-      if (!sl->curr_form && !xvalue && !uvalue && !v->atf && !v->phonetic)
+      if (!sl->curr_form && !xvalue && !uvalue && !v->atf && !v->phonetic && !minus_flag)
 	{
 	  /* If we are processing a sign and the v is already in
 	     signlist's sign-values it's an error for it to occur
@@ -416,9 +431,13 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	}
       if (lang)
 	v->lang = lang;
-      hash_add(sl->hvalues, n, v);
+      if (!minus_flag)
+	hash_add(sl->hvalues, n, v);
+      else
+	hash_add(sl->hminus, n, v);
       if (!sl->curr_form)
-	hash_add(sl->hsignvalues, n, v);
+	if (!minus_flag)
+	  hash_add(sl->hsignvalues, n, v);
       v->insts = list_create(LIST_SINGLE);
       list_add(v->insts, i);
       

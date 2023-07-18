@@ -87,6 +87,10 @@
 
 * Why does @fake need an argument? Just use @fake instead of @fake 1.
 
+* What are %akk values? %elx are Elamite ones: does %akk mean "only in Akkadian"
+
+* What are %akk/n values? Logograms? Remove to @inote?
+
 *** Niek 20230717
 
 * Any general thoughts at the outset?
@@ -104,9 +108,9 @@
 
 * Does NV want to be part of this possible UC initiative?
 
-* Are there any other Assyriologists we could/should include?
+* Are there any other Assyriologists we could/should include? Emilie? Laura Hawkins?
 
-* Do we feel that Robin is sufficient for non-Assyriological input?
+* Do we feel that Robin is sufficient for non-Assyriological input? Debbie Anderson? Everson??
 
 * Generally OK with minor changes to format of OGSL?
 
