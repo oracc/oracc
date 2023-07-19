@@ -2,7 +2,79 @@
 #include <signlist.h>
 #include <sx.h>
 
+extern int sortcode_output;
 extern Hash * oid_load(const char *domain);
+Hash *oid_sort_keys;
+
+static int oid_char_cmp(const void *a, const void *b)
+{
+  const char *cc1 = (*(char**)a);
+  const char *cc2 = (*(char**)b);
+  int a1 = (uintptr_t)hash_find(oid_sort_keys, (uccp)cc1);
+  int b1 = (uintptr_t)hash_find(oid_sort_keys, (uccp)cc2);
+  if (a1 < b1)
+    return -1;
+  else if (a1 > b1)
+    return 1;
+  else
+    return 0;
+}
+
+static const char **
+sx_oid_array(struct sl_sign *s, List *o)
+{
+  const char **oids = NULL;
+  int noids = 0;
+  if (s)
+    ++noids;
+  if (o)
+    noids += list_len(o);
+  if (noids == 0)
+    return NULL;
+  else if (noids == 1)
+    {
+      oids = malloc(2*sizeof(const char *));
+      if (s)
+	oids[0] = s->oid;
+      else
+	{
+	  struct sl_inst *ip = list_first(o);
+	  oids[0] = (ip->type == 's' ? ip->u.s->oid : ip->u.f->oid);
+	  oids[1] = NULL;
+	}
+    }
+  else
+    {
+      Hash *seen = hash_create(16);
+      struct sl_inst *ip = NULL;
+      int i = 0;
+      oids = calloc(noids+1, sizeof(const char *));
+      if (s)
+	{
+	  hash_add(seen, (uccp)s->oid, "");
+	  oids[i++] = s->oid;
+	}
+      for (ip = list_first(o); ip; ip = list_next(o))
+	{
+	  const char *oid = (ip->type == 's' ? ip->u.s->oid : ip->u.f->oid);
+	  if (oid)
+	    {
+	      if (!hash_find(seen, (uccp)oid))
+		{
+		  hash_add(seen, (uccp)oid, "");
+		  oids[i++] = oid;
+		}
+	    }
+	  else
+	    fprintf(stderr, "strange ... no OID on sign or form instance\n");
+	}
+      noids = i;
+      oids[noids] = NULL;
+      qsort(oids, noids, sizeof(const char *), (cmp_fnc_t)oid_char_cmp);
+      hash_free(seen, NULL);
+    }
+  return oids;
+}
 
 #if 0
 static struct sl_sign *
@@ -18,10 +90,34 @@ form_as_sign(struct sl_signlist *sl, struct sl_form *f)
 }
 #endif
 
+static int forms_cmp(const void *a, const void *b)
+{
+  int a1 = (*(struct sl_form**)a)->sort;
+  int b1 = (*(struct sl_form**)b)->sort;  
+  if (a1 < b1)
+    return -1;
+  else if (a1 > b1)
+    return 1;
+  else
+    return 0;
+}
+
 static int forms_inst_cmp(const void *a, const void *b)
 {
   int a1 = (*(struct sl_inst**)a)->u.f->sort;
   int b1 = (*(struct sl_inst**)b)->u.f->sort;
+  if (a1 < b1)
+    return -1;
+  else if (a1 > b1)
+    return 1;
+  else
+    return 0;
+}
+
+static int lists_cmp(const void *a, const void *b)
+{
+  int a1 = (*(struct sl_list**)a)->sort;
+  int b1 = (*(struct sl_list**)b)->sort;  
   if (a1 < b1)
     return -1;
   else if (a1 > b1)
@@ -74,6 +170,18 @@ static int toks_cmp(const void *a, const void *b)
   return collate_cmp_graphemes((ucp)&t_a, (ucp)&t_b);
 }
 
+static int values_cmp(const void *a, const void *b)
+{
+  int a1 = (*(struct sl_value**)a)->sort;
+  int b1 = (*(struct sl_value**)b)->sort;  
+  if (a1 < b1)
+    return -1;
+  else if (a1 > b1)
+    return 1;
+  else
+    return 0;
+}
+
 void
 sx_marshall(struct sl_signlist *sl)
 {
@@ -88,6 +196,7 @@ sx_marshall(struct sl_signlist *sl)
   oids = oid_load("sl");
   if (!oids)
     oids = hash_create(1);
+  oid_sort_keys = hash_create(2048);
   
 #if 0
   /* Add forms to the signs hash if they don't already exist as a sign */
@@ -127,9 +236,15 @@ sx_marshall(struct sl_signlist *sl)
       sl->signs[i]->sort = tp->s;
       if (!(sl->signs[i]->oid = hash_find(oids, sl->signs[i]->name)))
 	mesg_verr(sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
+      else
+	{
+	  if (sortcode_output)
+	    fprintf(stderr, "SIGN\t%s\t%d\n", sl->signs[i]->oid, sl->signs[i]->sort);
+	  hash_add(oid_sort_keys, (uccp)sl->signs[i]->oid, (void*)(uintptr_t)sl->signs[i]->sort);
+	}
     }
   /* Sort the signs */
-  qsort(keys, nkeys, sizeof(char*), (cmp_fnc_t)signs_cmp);
+  qsort(sl->signs, sl->nsigns, sizeof(struct sl_sign*), (cmp_fnc_t)signs_cmp);
   
   /* Provide forms with sort codes based on token sort sequence */
   keys = hash_keys2(sl->hfentry, &nkeys);  
@@ -146,7 +261,18 @@ sx_marshall(struct sl_signlist *sl)
 	  struct sl_inst *inst = list_first(sl->forms[i]->insts);
 	  mesg_verr(inst->mloc, "OID needed for FORM %s", sl->forms[i]->name);
 	}
+      else
+	{
+	  if (!hash_find(oid_sort_keys, (uccp)sl->forms[i]->oid))
+	    {
+	      if (sortcode_output)
+		fprintf(stderr, "FORM\t%s\t%d\n", sl->forms[i]->oid, sl->forms[i]->sort);
+	      hash_add(oid_sort_keys, (uccp)sl->forms[i]->oid, (void*)(uintptr_t)sl->forms[i]->sort);
+	    }
+	}
     }
+  /* Sort the forms */
+  qsort(sl->forms, sl->nforms, sizeof(struct sl_form*), (cmp_fnc_t)forms_cmp);
 
   /* Provide lists with sort codes based on token sort sequence */
   keys = hash_keys2(sl->hlentry, &nkeys);  
@@ -159,6 +285,12 @@ sx_marshall(struct sl_signlist *sl)
       tp = hash_find(sl->htoken, (ucp)keys[i]);
       sl->lists[i]->sort = tp->s;
     }
+  /* Sort the lists */
+  qsort(sl->lists, sl->nlists, sizeof(struct sl_list*), (cmp_fnc_t)lists_cmp);
+
+  /* Create oid arrays for the list entries */
+  for (i = 0; i < sl->nlists; ++i)
+    sl->lists[i]->oids = sx_oid_array(NULL, sl->lists[i]->insts);
 
   /* Provide values with sort codes based on token sort sequence */
   keys = hash_keys2(sl->hventry, &nkeys);  
@@ -171,6 +303,12 @@ sx_marshall(struct sl_signlist *sl)
       tp = hash_find(sl->htoken, (ucp)keys[i]);
       sl->values[i]->sort = tp->s;
     }
+  /* Sort the values */
+  qsort(sl->values, sl->nvalues, sizeof(struct sl_value*), (cmp_fnc_t)values_cmp);
+
+  /* Create oid arrays for the value entries */
+  for (i = 0; i < sl->nvalues; ++i)
+    sl->values[i]->oids = sx_oid_array(sl->values[i]->sowner, sl->values[i]->fowners);
   
   /* Dereference structures created in asl_bld.c--see that file for AB1/AB2/AB3 creation */
   lets = hash_keys2(sl->hletters, &nlets); /* obtain list of letters from AB1 */

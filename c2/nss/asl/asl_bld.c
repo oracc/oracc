@@ -247,14 +247,15 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int q, 
     {
       /* Now check the signlist's registry of @lists and add the new
 	 sl_list* or add the inst to the existing sl_list* */
+      struct sl_inst *parent_inst = (sl->curr_form ? sl->curr_form : sl->curr_sign->inst);
       if ((l = hash_find(sl->hlentry, n)))
-        list_add(l->insts, i);
+        list_add(l->insts, parent_inst);
       else
 	{
 	  l = memo_new(sl->m_lists);
 	  l->name = n;
 	  l->insts = list_create(LIST_SINGLE);
-	  list_add(l->insts, i);
+	  list_add(l->insts, parent_inst);
 	  hash_add(sl->hlentry, n, l);
 	}
     }
@@ -524,9 +525,9 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	    {
 	      if (!v->fowners)
 		v->fowners = list_create(LIST_SINGLE);
-	      list_add(v->fowners, sl->curr_form);
+	      list_add(v->fowners, sl->curr_sign->inst);
 	    }
-	  else	    
+	  else
 	    v->sowner = sl->curr_sign;
 	  if (!sl->curr_sign->hventry)
 	    sl->curr_sign->hventry = hash_create(1);
@@ -567,7 +568,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	    sl->curr_sign->hventry = hash_create(1);
 	  hash_add(sl->curr_sign->hventry, v->name, i);
 	  if (xvalue)
-	    list_add(v->fowners, sl->curr_form);
+	    list_add(v->fowners, sl->curr_sign->inst);
 	}
       list_add(v->insts, i);
     }

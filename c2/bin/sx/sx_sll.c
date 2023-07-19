@@ -21,6 +21,7 @@ static void sx_s_notes(FILE *fp, struct sl_inst *i);
 static void sx_s_str(FILE *fp, const char *tag, const unsigned char *s);
 static void sx_s_unicode(FILE *fp, struct sl_unicode_info *up);
 static void sx_s_FORM(struct sl_functions *f, struct sl_form *s);
+static void sx_s_LIST(struct sl_functions *f, struct sl_list *s);
 
 struct sl_functions *
 sx_sll_init(FILE *fp, const char *fname)
@@ -46,6 +47,8 @@ sx_s_signlist(struct sl_functions *f, struct sl_signlist *sl)
     f->sgn(f, sl->signs[i]);
   for (i = 0; i < sl->nforms; ++i)
     sx_s_FORM(f, sl->forms[i]);
+  for (i = 0; i < sl->nlists; ++i)
+    sx_s_LIST(f, sl->lists[i]);
 }
 
 static void
@@ -83,6 +86,20 @@ sx_s_FORM(struct sl_functions *f, struct sl_form *s)
 static void
 sx_s_list(struct sl_functions *f, struct sl_inst *l)
 {
+}
+
+static void
+sx_s_LIST(struct sl_functions *f, struct sl_list *s)
+{
+  int i;
+  fprintf(f->fp, "%s;l\t", s->name);
+  for (i = 0; s->oids[i]; ++i)
+    {
+      if (i)
+	fputc(' ', f->fp);
+      fputs(s->oids[i], f->fp);
+    }
+  fputc('\n', f->fp);
 }
 
 static void

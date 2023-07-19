@@ -194,7 +194,9 @@ struct sl_list
   const unsigned char *base;
   const unsigned char *num;
   int sort;
-  List *insts; /* signs or forms where this list occurs */
+  List *insts; 		/* signs or forms where this list occurs */
+  const char **oids; 	/* NULL-terminated, sorted and uniqued list of
+			   sign/form names from the list's insts */
 };
 
 /* This is the global value information structure */
@@ -215,6 +217,9 @@ struct sl_value
   int unknown; 		  /* name is 'x'; these are SIGN entries in
 			     lex whose value is not preserved */
   int sort;
+  const char **oids; /* NULL-terminated, sorted and uniqued list of
+			sign/form names from the value's sign and form
+			insts */
 };
 
 struct sl_functions;
