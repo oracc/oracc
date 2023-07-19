@@ -33,6 +33,7 @@ asl_bld_init(void)
   sl->m_values = memo_init(sizeof(struct sl_value),1024);
   sl->m_insts = memo_init(sizeof(struct sl_inst),1024);
   sl->m_lv_data = memo_init(sizeof(struct sl_lv_data),512);
+  sl->m_split_v = memo_init(sizeof(struct sl_split_value),512);
   sl->p = pool_init();
   return sl;
 }
@@ -470,7 +471,6 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   i->ref = ref;
   i->valid = (Boolean)!minus_flag;
   i->query = (Boolean)query;
-  i->u.v->xvalue = xvalue;
   sl->curr_inst = i;
   
   if ((v = hash_find(sl->hsignvvalid, n)))
@@ -573,6 +573,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
     }
 
   i->u.v = v;
+  i->u.v->xvalue = xvalue;
   sl->curr_value = i;
 }
 

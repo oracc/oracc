@@ -3,6 +3,25 @@
 #include <signlist.h>
 #include <sx.h>
 
+
+int
+g_index_of(const unsigned char *g, const unsigned char *b)
+{
+  int i = 0;
+  if (!b)
+    b = g_base_of(g);
+  g += strlen((ccp)b);
+  if (strlen((ccp)g) == 6)
+    {
+      i = ((g[2] - 0x80)) * 10;
+      g += 3;
+    }
+  i += (g[2] - 0x80);
+  if (i == 13) /* subscript x */
+    i = 1000;
+  return i;
+}
+
 /* No need to store split_value data in value because for
  * sl->values[i] the split_value is in sl->splitv[i]
  */

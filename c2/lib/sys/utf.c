@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include "oraccsys.h"
 
 int
@@ -19,7 +20,7 @@ u_charbytes(const unsigned char *g)
 	return len;
       else
 	{
-	  fprintf(stderr,"u_charbytes: mbtowc failed: %s\n", strerror());
+	  fprintf(stderr,"u_charbytes: mbtowc failed: %s\n", strerror(errno));
 	  return 1; /* if a pointer is using this make sure it moves */
 	}
     }

@@ -16,7 +16,7 @@ g_base_of(const unsigned char *v)
       
       b = malloc(strlen((ccp)v)+1);
       strcpy((char*)b, (ccp)v);
-      if (strlen((ccp)v) > 4)
+      if (strlen((ccp)v) > 3)
 	{
 	  sub = b + strlen((ccp)b);
 	  while (1)
