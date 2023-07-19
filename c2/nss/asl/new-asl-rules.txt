@@ -1,10 +1,18 @@
 ! Should validate multiple base-values e.g., šudul₄ and šudul₅ in same sign or form
 
+* Qualified-value (qv) requirements: sl-db2.plx enforced unnecessary
+  qv requirements.  The new qv requirements are:
+
+  ** all ₓ-values must be qualified
+  ** all non-ₓ-values which occur with more than one @form must be qualified  
+
 * Comments -- @inote, @note, @lit, #-comments, are always attached to
   the most recent instance node: this means @sign, @list, @form or @v.
   This means that when OGSL is processed, the location of these
   comments may change slightly.  It also means that proper OGSL
   practice is to specify these immediately after an instance node.
+
+* Possibly don't allow #-comments; use @inote or @sign-/@form-/@list-/@v- 
 
 * Does sx need a true identity mode? Or is it OK to relocate notes, for
   example--could implement true identity by using line numbers of

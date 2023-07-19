@@ -234,7 +234,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int q, 
   else
     h = sl->curr_sign->hlentry;
 
-  /* After setting h to an hlvalid hash we can check if we've seen a
+  /* After setting h to an hlentry hash we can check if we've seen a
      valid @list with this name in the appropriate context */
   if (h && (l = hash_find(h, n)))
     {
@@ -470,6 +470,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   i->ref = ref;
   i->valid = (Boolean)!minus_flag;
   i->query = (Boolean)query;
+  i->u.v->xvalue = xvalue;
   sl->curr_inst = i;
   
   if ((v = hash_find(sl->hsignvvalid, n)))

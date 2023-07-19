@@ -18,6 +18,9 @@ struct sl_signlist
   Hash *hlentry; 	/* All @list/@list- entries in signlist; host for sl_list* */
   Hash *hsignvvalid; 	/* All @v which belong to a @sign,
 			   not those belonging to @form; no @v- */
+  Hash *homophones;	/* Hash of value-bases each with list of
+			   sl_split_value* that reduce to that base;
+			   x-values include the 'ₓ' in their base */
   Hash *hletters;
   struct sl_token **tokens; /* sorted htoken */
   struct sl_sign  **signs;  /* sorted hsentry */
@@ -30,6 +33,7 @@ struct sl_signlist
   int nlists;
   struct sl_letter *letters;
   int nletters;
+  struct sl_split_value *splitv;
   struct sl_sign *curr_sign;
   struct sl_inst *curr_form;
   struct sl_inst *curr_value;
@@ -44,6 +48,7 @@ struct sl_signlist
   Memo *m_values;
   Memo *m_insts;
   Memo *m_lv_data;
+  Memo *m_split_v;
   Pool *p;
   Mloc *mloc;
 };
@@ -52,6 +57,13 @@ struct sl_token
 {
   const unsigned char *t;	/* sign/form/value/list name token */
   int s;			/* sort code for token */
+};
+
+struct sl_split_value
+{
+  const unsigned char *b;
+  int i;
+  struct sl_value *v;
 };
 
 /* each of the lists in sl_any_note is a list of char; handlers should
@@ -150,6 +162,7 @@ struct sl_sign
   int sort;
   const char *oid;
   struct sl_inst *inst;
+#if 0
   struct sl_form *xref; /* this sign is a header for the @form which
 			   defines the sign name; sort value is in
 			   sort sequence with signs; note that the
@@ -158,6 +171,7 @@ struct sl_sign
 			   once) so printed xrefs should use
 			   sign->xref->form->owners which should also
 			   be sorted before output */
+#endif
   Mloc *mloc;
 };
 
@@ -196,7 +210,7 @@ struct sl_value
 			     list of sl_inst* it belongs to */
   List *insts;
   int atf;
-  int phonetic;
+  int xvalue;		  /* value ends in ₓ */
   int unknown; 		  /* name is 'x'; these are SIGN entries in
 			     lex whose value is not preserved */
   int sort;

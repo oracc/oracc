@@ -248,5 +248,8 @@ sx_marshall(struct sl_signlist *sl)
 	}
     }
 
+  sx_homophones(sl);
+  /*sx_qualified(sl);*/
+
   /*collate_term();*/
 }

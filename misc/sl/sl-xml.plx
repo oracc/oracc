@@ -574,7 +574,15 @@ sub compute_qualified {
 		}
 	    } elsif ($v{'#signv'}) {
 		my @sv = keys %{$v{'#signv'}};
-		# all values are considered to be both in form and in sign; must be qualified
+		# all values are considered to be both in form and in
+		# sign; must be qualified
+		#
+		# 20230718:
+		#
+		# This is incorrect--if the value is not qualified the @sign is
+		# implied; it must be qualified in order to reference
+		# the @form version
+		#
 		foreach my $sv (@sv) {
 		    $sv = xmlify($sv);
 		    $f = xmlify($f);
