@@ -2,6 +2,8 @@
 #include <signlist.h>
 #include <sx.h>
 
+extern Hash * oid_load(const char *domain);
+
 #if 0
 static struct sl_sign *
 form_as_sign(struct sl_signlist *sl, struct sl_form *f)
@@ -77,11 +79,16 @@ sx_marshall(struct sl_signlist *sl)
 {
   const char**keys = NULL;
   int nkeys;
+  Hash *oids;
 
   const char**lets = NULL;
   int nlets = 0, i;
   collate_init((ucp)"unicode");
 
+  oids = oid_load("sl");
+  if (!oids)
+    oids = hash_create(1);
+  
 #if 0
   /* Add forms to the signs hash if they don't already exist as a sign */
   frms = hash_keys2(sl->hforms, &nfrms);
@@ -108,7 +115,7 @@ sx_marshall(struct sl_signlist *sl)
       tp->s = i;
     }
   
-  /* Provide signs with sort codes base on token sort sequence */
+  /* Provide signs with sort codes base on token sort sequence; add oids while we are at it */
   keys = hash_keys2(sl->hsentry, &nkeys);
   sl->signs = malloc(sizeof(struct sl_sign*) * nkeys);
   sl->nsigns = nkeys;
@@ -118,6 +125,8 @@ sx_marshall(struct sl_signlist *sl)
       sl->signs[i] = hash_find(sl->hsentry, (ucp)keys[i]);
       tp = hash_find(sl->htoken, sl->signs[i]->name);
       sl->signs[i]->sort = tp->s;
+      if (!(sl->signs[i]->oid = hash_find(oids, sl->signs[i]->name)))
+	mesg_verr(sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
     }
   /* Sort the signs */
   qsort(keys, nkeys, sizeof(char*), (cmp_fnc_t)signs_cmp);
@@ -132,6 +141,11 @@ sx_marshall(struct sl_signlist *sl)
       sl->forms[i] = hash_find(sl->hfentry, (ucp)keys[i]);
       tp = hash_find(sl->htoken, (ucp)keys[i]);
       sl->forms[i]->sort = tp->s;
+      if (!(sl->forms[i]->oid = hash_find(oids, sl->forms[i]->name)))
+	{
+	  struct sl_inst *inst = list_first(sl->forms[i]->insts);
+	  mesg_verr(inst->mloc, "OID needed for FORM %s", sl->forms[i]->name);
+	}
     }
 
   /* Provide lists with sort codes based on token sort sequence */

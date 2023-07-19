@@ -171,8 +171,8 @@ struct sl_sign
 			   once) so printed xrefs should use
 			   sign->xref->form->owners which should also
 			   be sorted before output */
+  Mloc *mloc; /* Or: keep this as indicator of "defining instance" ? */
 #endif
-  Mloc *mloc;
 };
 
 struct sl_form
@@ -184,6 +184,7 @@ struct sl_form
   List *insts; 	/* this is a list of sl_inst* where the form occurs */
   int name_is_listnum;
   int sort;
+  const char *oid;
   struct sl_unicode_info U;
 };
 

@@ -59,7 +59,6 @@ main(int argc, char * const*argv)
   gdl_init();
   asl_init();
   sl = aslyacc(file);
-  mesg_print(stderr);
 
   if (sl)
     {
@@ -84,6 +83,7 @@ main(int argc, char * const*argv)
 
   gdl_term();
   asl_term();
+  mesg_print(stderr);
 }
 
 int
