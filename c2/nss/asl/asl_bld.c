@@ -32,6 +32,7 @@ asl_bld_init(void)
   sl->m_lists = memo_init(sizeof(struct sl_value),256);
   sl->m_values = memo_init(sizeof(struct sl_value),1024);
   sl->m_insts = memo_init(sizeof(struct sl_inst),1024);
+  sl->m_insts_p = memo_init(sizeof(struct sl_inst*),512);
   sl->m_lv_data = memo_init(sizeof(struct sl_lv_data),512);
   sl->m_split_v = memo_init(sizeof(struct sl_split_value),512);
   sl->p = pool_init();
@@ -59,6 +60,7 @@ asl_bld_term(struct sl_signlist *sl)
       memo_term(sl->m_lists);
       memo_term(sl->m_values);
       memo_term(sl->m_insts);
+      memo_term(sl->m_insts_p);
       memo_term(sl->m_lv_data);
       free(sl);
     }

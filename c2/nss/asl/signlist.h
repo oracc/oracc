@@ -47,6 +47,7 @@ struct sl_signlist
   Memo *m_lists;
   Memo *m_values;
   Memo *m_insts;
+  Memo *m_insts_p;
   Memo *m_lv_data;
   Memo *m_split_v;
   Pool *p;
@@ -212,6 +213,9 @@ struct sl_value
   List *fowners; 	  /* for a value at the form level, this is a
 			     list of sl_inst* it belongs to */
   List *insts;
+  struct sl_inst **fowners_i_sort; /* The fowners as an array of
+				      sorted pointers to sl_insts */
+  int nfowners;
   int atf;
   int xvalue;		  /* value ends in ₓ */
   int unknown; 		  /* name is 'x'; these are SIGN entries in

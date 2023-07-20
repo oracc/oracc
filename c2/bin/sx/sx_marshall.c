@@ -114,6 +114,21 @@ static int forms_inst_cmp(const void *a, const void *b)
     return 0;
 }
 
+/* fowners is a list of inst where the insts can be either sign or form insts */
+static int fowners_cmp(const void *a, const void *b)
+{
+  struct sl_inst *ai = (*(struct sl_inst**)a);
+  struct sl_inst *bi = (*(struct sl_inst**)b);
+  int a1 = ('f'==ai->type) ? ai->u.f->sort : ai->u.s->sort;
+  int b1 = ('f'==ai->type) ? bi->u.f->sort : bi->u.s->sort;
+  if (a1 < b1)
+    return -1;
+  else if (a1 > b1)
+    return 1;
+  else
+    return 0;
+}
+
 static int lists_cmp(const void *a, const void *b)
 {
   int a1 = (*(struct sl_list**)a)->sort;
@@ -302,6 +317,26 @@ sx_marshall(struct sl_signlist *sl)
       sl->values[i] = hash_find(sl->hventry, (ucp)keys[i]);
       tp = hash_find(sl->htoken, (ucp)keys[i]);
       sl->values[i]->sort = tp->s;
+      /* Sort fowners if there are any */
+      if (sl->values[i]->fowners)
+	{
+	  sl->values[i]->nfowners = list_len(sl->values[i]->fowners);
+	  if (sl->values[i]->nfowners == 1)
+	    {
+	      sl->values[i]->fowners_i_sort = memo_new(sl->m_insts_p);
+	      sl->values[i]->fowners_i_sort = list_first(sl->values[i]->fowners);
+	    }
+	  else
+	    {
+	      struct sl_inst *ip;
+	      int j = 0;
+	      sl->values[i]->fowners_i_sort = memo_new_array(sl->m_insts_p, sl->values[i]->nfowners);
+	      for (ip = list_first(sl->values[i]->fowners); ip; ip = list_next(sl->values[i]->fowners))
+		sl->values[i]->fowners_i_sort[j++] = ip;
+	      qsort(sl->values[i]->fowners_i_sort, sl->values[i]->nfowners, sizeof(struct sl_inst *), (cmp_fnc_t)fowners_cmp);
+	    }
+	}
+
     }
   /* Sort the values */
   qsort(sl->values, sl->nvalues, sizeof(struct sl_value*), (cmp_fnc_t)values_cmp);
