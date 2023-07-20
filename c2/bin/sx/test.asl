@@ -10,9 +10,11 @@
 @form ~a BU
 @list MZL334
 @list LAK101
+@v baₓ
 @end form
 @form ~b BI
 @inote A note on BI.
+@v baₓ
 @end sign
 
 @sign   A
