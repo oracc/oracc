@@ -22,6 +22,7 @@ static void sx_s_str(FILE *fp, const char *tag, const unsigned char *s);
 static void sx_s_unicode(FILE *fp, struct sl_unicode_info *up);
 static void sx_s_FORM(struct sl_functions *f, struct sl_form *s);
 static void sx_s_LIST(struct sl_functions *f, struct sl_list *s);
+static void sx_s_homophones(FILE *fp, struct sl_signlist *sl);
 
 struct sl_functions *
 sx_sll_init(FILE *fp, const char *fname)
@@ -49,6 +50,7 @@ sx_s_signlist(struct sl_functions *f, struct sl_signlist *sl)
     sx_s_FORM(f, sl->forms[i]);
   for (i = 0; i < sl->nlists; ++i)
     sx_s_LIST(f, sl->lists[i]);
+  sx_s_homophones(f->fp, sl);
 }
 
 static void
@@ -151,3 +153,27 @@ sx_s_notes(FILE *fp, struct sl_inst *i)
 }
 #endif
 
+static void
+sx_s_homophones(FILE *fp, struct sl_signlist *sl)
+{
+  const char **keys;
+  int nkeys, i;
+  keys = hash_keys2(sl->homophones, &nkeys);
+  for (i = 0; i < nkeys; ++i)
+    {
+      struct sl_split_value **spv = NULL;
+      List *lp = NULL;
+      int j;
+      
+      fprintf(fp, "%s;h\t", keys[i]);
+      lp = hash_find(sl->homophones, (uccp)keys[i]);
+      spv = (struct sl_split_value**)list2array(lp);
+      for (j = 0; j < list_len(lp); ++j)
+	{
+	  if (j)
+	    fputc(' ', fp);
+	  fprintf(fp, "%s/%d", oid, spv[j]->i);
+	}
+      fputc('\n', fp);
+    }
+}

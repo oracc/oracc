@@ -63,7 +63,7 @@ struct sl_split_value
 {
   const unsigned char *b;
   int i;
-  struct sl_value *v;
+  const char *oid;
 };
 
 /* each of the lists in sl_any_note is a list of char; handlers should
