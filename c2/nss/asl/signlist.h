@@ -221,9 +221,9 @@ struct sl_value
   int unknown; 		  /* name is 'x'; these are SIGN entries in
 			     lex whose value is not preserved */
   int sort;
-  const char **oids; /* NULL-terminated, sorted and uniqued list of
-			sign/form names from the value's sign and form
-			insts */
+  const char **oids; 	  /* NULL-terminated, sorted and uniqued list of
+			     sign/form names from the value's sign and form
+			     insts */
 };
 
 struct sl_functions;

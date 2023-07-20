@@ -4,6 +4,7 @@
 
 extern int sortcode_output;
 extern Hash * oid_load(const char *domain);
+Hash *oids;
 Hash *oid_sort_keys;
 
 static int oid_char_cmp(const void *a, const void *b)
@@ -202,7 +203,6 @@ sx_marshall(struct sl_signlist *sl)
 {
   const char**keys = NULL;
   int nkeys;
-  Hash *oids;
 
   const char**lets = NULL;
   int nlets = 0, i;

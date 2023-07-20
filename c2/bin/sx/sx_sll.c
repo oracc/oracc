@@ -1,6 +1,8 @@
 #include <signlist.h>
 #include <sx.h>
 
+extern Hash *oids;
+
 static sl_signlist_f sx_s_signlist;
 static sl_letter_f sx_s_letter;
 static sl_group_f sx_s_group;
@@ -22,6 +24,7 @@ static void sx_s_str(FILE *fp, const char *tag, const unsigned char *s);
 static void sx_s_unicode(FILE *fp, struct sl_unicode_info *up);
 static void sx_s_FORM(struct sl_functions *f, struct sl_form *s);
 static void sx_s_LIST(struct sl_functions *f, struct sl_list *s);
+static void sx_s_VALUE(struct sl_functions *f, struct sl_value *v);
 static void sx_s_homophones(FILE *fp, struct sl_signlist *sl);
 
 struct sl_functions *
@@ -50,6 +53,8 @@ sx_s_signlist(struct sl_functions *f, struct sl_signlist *sl)
     sx_s_FORM(f, sl->forms[i]);
   for (i = 0; i < sl->nlists; ++i)
     sx_s_LIST(f, sl->lists[i]);
+  for (i = 0; i < sl->nvalues; ++i)
+    sx_s_VALUE(f, sl->values[i]);
   sx_s_homophones(f->fp, sl);
 }
 
@@ -107,6 +112,48 @@ sx_s_LIST(struct sl_functions *f, struct sl_list *s)
 static void
 sx_s_value(struct sl_functions *f, struct sl_inst *v)
 {
+}
+
+static void
+sx_s_VALUE(struct sl_functions *f, struct sl_value *v)
+{
+  if (v->sowner)
+    {
+      fprintf(f->fp, "%s\t%s\n", v->name, v->sowner->oid);
+      if (v->nfowners)
+	{
+	  int i;
+	  for (i = 0; i < v->nfowners; ++i)
+	    {
+	      const char *sname = NULL, *oid = NULL;
+	      if ('s' == v->fowners_i_sort[i]->type)
+		{
+		  sname = (ccp)v->fowners_i_sort[i]->u.s->name;
+		  oid = (ccp)v->fowners_i_sort[i]->u.s->oid;
+		}
+	      else
+		{
+		  sname = (ccp)v->fowners_i_sort[i]->u.f->name;
+		  oid = (ccp)v->fowners_i_sort[i]->u.f->oid;
+		}
+	      fprintf(f->fp, "%s(%s);qv\t%s\n", v->name, sname, oid);
+	    }
+	}
+    }
+  else
+    {
+      int i;
+      fprintf(f->fp, "%s;q\t", v->name);
+      for (i = 0; v->oids[i]; ++i)
+	{
+	  if (i)
+	    fputc(' ', f->fp);
+	  fputs(hash_find(oids, (uccp)v->oids[i]), f->fp);
+	}
+      fputs("\n", f->fp);
+      for (i = 0; v->oids[i]; ++i)
+	fprintf(f->fp, "%s(%s);qv\t%s\n", v->name, (ccp)hash_find(oids, (uccp)v->oids[i]), v->oids[i]);
+    }
 }
 
 static void
