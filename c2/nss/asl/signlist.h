@@ -38,6 +38,7 @@ struct sl_signlist
   struct sl_inst *curr_form;
   struct sl_inst *curr_value;
   struct sl_inst *curr_inst; /* used to attach meta to correct tag */
+  List *compounds;
   Memo *m_tokens;
   Memo *m_letters;
   Memo *m_groups;
@@ -163,7 +164,6 @@ struct sl_sign
   int sort;
   const char *oid;
   struct sl_inst *inst;
-#if 0
   struct sl_form *xref; /* this sign is a header for the @form which
 			   defines the sign name; sort value is in
 			   sort sequence with signs; note that the
@@ -172,6 +172,7 @@ struct sl_sign
 			   once) so printed xrefs should use
 			   sign->xref->form->owners which should also
 			   be sorted before output */
+#if 0
   Mloc *mloc; /* Or: keep this as indicator of "defining instance" ? */
 #endif
 };
@@ -181,8 +182,12 @@ struct sl_form
   const unsigned char *name;
   const unsigned char *pname;
   Node *gdl;
-  List *owners; /* this is a list of sl_sign* the form is associated with */
-  List *insts; 	/* this is a list of sl_inst* where the form occurs */
+  struct sl_sign *sign; /* This always points to a sign that
+			   corresponds to the form; if the form
+			   doesn't occur as an @sign entry, the
+			   back-reference form->sign->xref is set */
+  List *owners; 	/* this is a list of sl_sign* the form is associated with */
+  List *insts; 		/* this is a list of sl_inst* where the form occurs */
   int name_is_listnum;
   int sort;
   const char *oid;

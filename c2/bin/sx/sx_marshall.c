@@ -77,19 +77,18 @@ sx_oid_array(struct sl_sign *s, List *o)
   return oids;
 }
 
-#if 0
 static struct sl_sign *
 form_as_sign(struct sl_signlist *sl, struct sl_form *f)
 {
   struct sl_sign *s = memo_new(sl->m_signs);
-  struct sl_inst *i = list_first(f->insts);
-  s->mloc = i->mloc;
+  struct sl_inst *ip = list_first(f->insts);
+  s->inst = ip;
   s->name = f->name;
   s->xref = f;
-  asl_register_sign(i->mloc, sl, s);
+  hash_add(sl->hsentry, s->name, s);
+  asl_register_sign(ip->mloc, sl, s);
   return s;
 }
-#endif
 
 static int forms_cmp(const void *a, const void *b)
 {
@@ -213,22 +212,20 @@ sx_marshall(struct sl_signlist *sl)
     oids = hash_create(1);
   oid_sort_keys = hash_create(2048);
   
-#if 0
-  /* Add forms to the signs hash if they don't already exist as a sign */
-  frms = hash_keys2(sl->hforms, &nfrms);
-  for (i = 0; i < nfrms; ++i)
+  /* Register forms that don't exist as signs as if they were signs */
+  keys = hash_keys2(sl->hfentry, &nkeys);
+  for (i = 0; i < nkeys; ++i)
     {
       struct sl_sign *s;
+      struct sl_form *f = hash_find(sl->hfentry, (uccp)keys[i]);
       
-      if (!(s = hash_find(sl->hsigns, (uccp)frms[i])))
-	hash_add(sl->hsigns, (uccp)frms[i], form_as_sign(sl, hash_find(sl->hforms, (uccp)frms[i])));
-      else
-	{
-	  struct sl_form *f = hash_find(sl->hforms, (uccp)frms[i]);
-	  f->gdl = s->gdl;
-	}
+      if (!(s = hash_find(sl->hsentry, (uccp)keys[i])))
+	s = form_as_sign(sl, hash_find(sl->hfentry, (uccp)keys[i]));
+      f->gdl = s->gdl;
+      f->sign = s;
     }
-#endif
+
+  sx_compounds(sl);
   
   /* Sort the tokens and set the token sort codes */
   keys = hash_keys2(sl->htoken, &nkeys);

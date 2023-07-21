@@ -36,6 +36,7 @@ asl_bld_init(void)
   sl->m_lv_data = memo_init(sizeof(struct sl_lv_data),512);
   sl->m_split_v = memo_init(sizeof(struct sl_split_value),512);
   sl->p = pool_init();
+  sl->compounds = list_create(LIST_SINGLE);
   return sl;
 }
 
@@ -62,6 +63,8 @@ asl_bld_term(struct sl_signlist *sl)
       memo_term(sl->m_insts);
       memo_term(sl->m_insts_p);
       memo_term(sl->m_lv_data);
+      pool_term(sl->p);
+      list_free(sl->compounds, NULL);
       free(sl);
     }
 }
@@ -113,6 +116,10 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 {
   Tree *tp;
   unsigned const char *group;
+
+  if ('|' == *s->name)
+    list_add(sl->compounds, (void*)s->name);
+
   tp = asl_bld_gdl(locp, (char*)pool_copy(s->name,sl->p));
   s->gdl = tp->root;
   /* get the group sign */

@@ -71,9 +71,12 @@ sx_s_group(struct sl_functions *f, struct sl_group *g)
 static void
 sx_s_sign(struct sl_functions *f, struct sl_sign *s)
 {
-  curr_oid = s->oid;
-  fprintf(f->fp, "%s\t%s\n", s->name, curr_oid);
-  sx_s_unicode(f->fp, &s->U);
+  if (!s->xref)
+    {
+      curr_oid = s->oid;
+      fprintf(f->fp, "%s\t%s\n", s->name, curr_oid);
+      sx_s_unicode(f->fp, &s->U);
+    }
 }
 
 static void
@@ -85,9 +88,12 @@ sx_s_form(struct sl_functions *f, struct sl_inst *s)
 static void
 sx_s_FORM(struct sl_functions *f, struct sl_form *s)
 {
-  curr_oid = s->oid;
-  fprintf(f->fp, "%s\t%s\n", s->name, curr_oid);
-  sx_s_unicode(f->fp, &s->U);
+  if (s->sign->xref)
+    {
+      curr_oid = s->oid;
+      fprintf(f->fp, "%s\t%s\n", s->name, curr_oid);
+      sx_s_unicode(f->fp, &s->U);
+    }
 }
 
 static void
