@@ -72,5 +72,6 @@
 #define U_lrhsq 0x2e25
 
 #define U_s_x_u8str "\xE2\x82\x93"
+#define U_s_X_u8str "\xC3\x97"
 
 #endif/*UNIDEF_H_*/

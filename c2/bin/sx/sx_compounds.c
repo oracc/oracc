@@ -1,3 +1,4 @@
+#include <unidef.h>
 #include <signlist.h>
 #include <sx.h>
 
@@ -24,10 +25,15 @@ Memo *cmem = NULL;
    'final' */
 const char *last_g = NULL;
 
-enum sxc_state { sxc_before , sxc_during , sxc_contained };
+/*enum sxc_state { sxc_before , sxc_during , sxc_contained };*/
+
+/* g:d text=× sets this to 1; it is reset to 0 by g:s unless a g:gp
+   sets it to 2 in which case g:gp sets it to 0 at the end of the
+   (...) */
+int sxc_contained = 0;
 
 static void sx_compound(struct sl_signlist *sl, Node *gdl, const char *oid);
-static void sx_compound_node(Node *np, struct sl_signlist *sl, const char *oid, int nth);
+static void sx_compound_node(Node *np, struct sl_signlist *sl, const char *oid, int *nth);
 
 static struct sl_c_data *
 sx_cd_init(void)
@@ -58,18 +64,18 @@ sx_compounds(struct sl_signlist *sl)
 }
 
 static void
-sx_compound_node(Node *np, struct sl_signlist *sl, const char *sname, int nth)
+sx_compound_node(Node *np, struct sl_signlist *sl, const char *sname, int *nth)
 {
   if (np)
     {
-      if (!strcmp(np->name, "g:s"))
+      if (!strcmp(np->name, "g:s") || !strcmp(np->name, "g:l"))
 	{
 	  struct sl_c_data *cdp = NULL;
 
 	  last_g = np->text;
 	  
 	  if (ctrace)
-	    fprintf(stderr, "ctrace: g:s %s nth=%d\n", np->text, nth);
+	    fprintf(stderr, "ctrace: g:s %s nth=%d contained=%d\n", np->text, *nth, sxc_contained);
 
 	  if (!(cdp = hash_find(c, (uccp)np->text)))
 	    {
@@ -78,34 +84,92 @@ sx_compound_node(Node *np, struct sl_signlist *sl, const char *sname, int nth)
 	    }
 
 	  if (!hash_find(cdp->p, (uccp)sname))
-	    hash_add(cdp->p, (uccp)sname, cdp);
+	    hash_add(cdp->p, (uccp)sname, "");
 
 	  if (!nth)
 	    list_add(cdp->i, (void*)sname);
+
+	  if (sxc_contained)
+	    {
+	      if (!(hash_find(cdp->c, (uccp)sname)))
+		hash_add(cdp->c, (uccp)sname, "");
+	      if (sxc_contained == 1)
+		sxc_contained = 0;
+	    }
 	  
-	  ++nth;
+	  ++*nth;
+
+	  /* don't process g:l/g:s kids because we have mods from s->text
+	     and we don't currently index @g etc (might one day) */
 	}
-      for (np = np->kids; np; np = np->next)
-	sx_compound_node(np, sl, sname, nth);
+      else if (!strcmp(np->name, "g:d"))
+	{
+	  if (!strcmp(np->text, U_s_X_u8str))
+	    {
+	      if (ctrace)
+		fprintf(stderr, "ctrace: g:d %s\n", np->text);
+	      if (last_g)
+		{
+		  struct sl_c_data *cdp = NULL;
+		  if (!(cdp = hash_find(c, (uccp)np->text)))
+		    {
+		      cdp = sx_cd_init();
+		      hash_add(c, (uccp)np->text, cdp);
+		    }
+		  if (!hash_find(cdp->t, (uccp)last_g))
+		    hash_add(cdp->t, (uccp)sname, "");
+		}
+	      sxc_contained = 1;
+	    }
+	}
+      else if (!strcmp(np->name, "g:gp"))
+	{
+	  if (sxc_contained)
+	    sxc_contained = 2;
+	  for (np = np->kids; np; np = np->next)
+	    sx_compound_node(np, sl, sname, nth);
+	  sxc_contained = 0;
+	}
+      else if (!strcmp(np->name, "g:c") || !strcmp(np->name, "g:n"))
+	{
+	  for (np = np->kids; np; np = np->next)
+	    sx_compound_node(np, sl, sname, nth);
+	}
+      else if (!strcmp(np->name, "g:m"))
+	; /* ignore @g on |(LAK079&LAK079)@g| */
+      else if (!strcmp(np->name, "g:r"))
+	; /* ignore repetition node on numbers */
+      else
+	{
+	  fprintf(stderr, "sx: internal error: gvl node type %s not handled\n", np->name);
+	}
     }
 }
 
 static void
 sx_compound(struct sl_signlist *sl, Node *gdl, const char *sname)
 {
+  int nth = 0;
   if (gdl && !strcmp(gdl->kids->name, "g:c"))
     {      
       struct sl_c_data *cdp = NULL;
+
       if (ctrace)
 	fprintf(stderr, "ctrace: start %s\n", gdl->kids->text);
+
       last_g = NULL;
-      sx_compound_node(gdl->kids, sl, sname, 0);
-      if (!(cdp = hash_find(c, (uccp)last_g)))
+
+      sx_compound_node(gdl->kids, sl, sname, &nth);
+
+      if (last_g)
 	{
-	  cdp = sx_cd_init();
-	  hash_add(c, (uccp)last_g, cdp);
+	  if (!(cdp = hash_find(c, (uccp)last_g)))
+	    {
+	      cdp = sx_cd_init();
+	      hash_add(c, (uccp)last_g, cdp);
+	    }
+	  list_add(cdp->f, (void*)sname);
 	}
-      list_add(cdp->f, (void*)sname);
       
     }
 }
