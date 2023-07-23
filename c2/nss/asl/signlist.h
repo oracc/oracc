@@ -21,6 +21,7 @@ struct sl_signlist
   Hash *homophones;	/* Hash of value-bases each with list of
 			   sl_split_value* that reduce to that base;
 			   x-values include the 'ₓ' in their base */
+  Hash *hvbases;	/* All @v bases; used only for checking duplicates like a₂ and a₃ */
   Hash *hletters;
   struct sl_token **tokens; /* sorted htoken */
   struct sl_sign  **signs;  /* sorted hsentry */
@@ -38,6 +39,7 @@ struct sl_signlist
   struct sl_inst *curr_form;
   struct sl_inst *curr_value;
   struct sl_inst *curr_inst; /* used to attach meta to correct tag */
+  Hash *hcompounds;
   List *compounds;
   Memo *m_tokens;
   Memo *m_letters;
@@ -51,6 +53,7 @@ struct sl_signlist
   Memo *m_insts_p;
   Memo *m_lv_data;
   Memo *m_split_v;
+  Memo *m_compounds;
   Pool *p;
   Mloc *mloc;
 };
@@ -91,10 +94,11 @@ struct sl_unicode_info
 struct sl_lv_data
 {
   Hash *hlentry; 	/* All @list entries */
-  Hash *hlvalid;	/* @list entries except @list- ; NULL unless there is an @list- */
+  /*Hash *hlvalid;*/	/* @list entries except @list- ; NULL unless there is an @list- */
   Hash *hventry;	/* All @v entries */
-  Hash *hvvalid;	/* @v entries except @v- ; NULL unless there is an @v- */
-  Hash *hivalues; 	/* Inherited values from parent @sign's hvvalid */
+  Hash *hvbases;	/* All @v bases; used only for checking duplicates like a₂ and a₃ */
+  /*Hash *hvvalid;*/	/* @v entries except @v- ; NULL unless there is an @v- */
+  Hash *hivalues; 	/* Inherited values from parent @sign's hventry */
   struct sl_inst **lists;
   int nlists;
   struct sl_inst **values;
@@ -115,13 +119,13 @@ struct sl_inst
   const unsigned char *ref; /* this is inline in the @v */
   const unsigned char *var; /* The variant code for the form in this instance, with tilde */
   struct sl_any_note n;
+  Mloc *mloc;
   Boolean valid; /* doesn't have a - after it */
   Boolean query;
   Boolean uchar;
   Boolean ucode;
   Boolean uname;
   Boolean uphase;
-  Mloc *mloc;
 };
 
 struct sl_letter
@@ -138,6 +142,20 @@ struct sl_group
   int nsigns;
 };
 
+struct sl_compound
+{
+  char initial_or_final; /* 0 for no; -1 for initial; 1 for final */
+  char medial; 		 /* 0 for no; 1 for singleton occurrence; 2
+			    for multiple occurences. This means that
+			    if a final instance of the sign is
+			    encountered member can be decremented and
+			    will zero out if the final member is also
+			    the only medial member, but remain 1 if
+			    the sign is, e.g., |U.U.U| */
+  char container; 	 /* 0 for no 1 for yes */
+  char contained; 	 /* 0 for no 1 for yes */
+};
+
 struct sl_sign
 {
   const unsigned char *name;
@@ -146,6 +164,9 @@ struct sl_sign
   Hash *hlentry; 	/* All @list entries */
   Hash *hventry;	/* All @v entries */
   Hash *hfentry;	/* All @form entries */
+  Hash *hcompounds;	/* Compound data: sign S has hash of names of
+			   compounds C with hashvals consisting of
+			   struct sl_compound */
   unsigned const char *letter;
   unsigned const char *group;
   struct sl_inst **lists;
@@ -156,11 +177,6 @@ struct sl_sign
   int nforms;
   struct sl_unicode_info U;
   const unsigned char *pname;
-  Boolean uchar;
-  Boolean ucode;
-  Boolean uname;
-  Boolean uphase;
-  int fake;
   int sort;
   const char *oid;
   struct sl_inst *inst;
@@ -172,6 +188,11 @@ struct sl_sign
 			   once) so printed xrefs should use
 			   sign->xref->form->owners which should also
 			   be sorted before output */
+  Boolean uchar;
+  Boolean ucode;
+  Boolean uname;
+  Boolean uphase;
+  Boolean fake;
 #if 0
   Mloc *mloc; /* Or: keep this as indicator of "defining instance" ? */
 #endif
@@ -209,6 +230,7 @@ struct sl_list
 struct sl_value
 {
   const unsigned char *name;
+  const unsigned char *base; /* without index, e.g., for a₃ this is 'a' */
   Node *gdl;
   const char *lang; 	  /* this is inline in the @v; it's an error
 			     for two @v to have different lang */
@@ -221,14 +243,15 @@ struct sl_value
   struct sl_inst **fowners_i_sort; /* The fowners as an array of
 				      sorted pointers to sl_insts */
   int nfowners;
-  int atf;
-  int xvalue;		  /* value ends in ₓ */
-  int unknown; 		  /* name is 'x'; these are SIGN entries in
-			     lex whose value is not preserved */
   int sort;
   const char **oids; 	  /* NULL-terminated, sorted and uniqued list of
 			     sign/form names from the value's sign and form
 			     insts */
+  Boolean atf;		  /* value is not a simple grapheme but an atf transliteration, e.g., u-gun₃ */
+  Boolean xvalue;      	  /* value ends in ₓ */
+  Boolean unknown;     	  /* name is 'x'; these are SIGN entries in
+			     lex whose value is not preserved */
+  unsigned char index; 	  /* 1 for no index; integer value of index for numeric indices; 255 for sub x */
 };
 
 struct sl_functions;

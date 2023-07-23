@@ -20,6 +20,7 @@ asl_bld_init(void)
   sl->hsentry = hash_create(2048);
   sl->hfentry = hash_create(1024);
   sl->hventry = hash_create(2048);
+  sl->hvbases = hash_create(1024);
   sl->hlentry = hash_create(1024);
   sl->hsignvvalid = hash_create(1024);
   sl->hletters = hash_create(32);
@@ -35,6 +36,7 @@ asl_bld_init(void)
   sl->m_insts_p = memo_init(sizeof(struct sl_inst*),512);
   sl->m_lv_data = memo_init(sizeof(struct sl_lv_data),512);
   sl->m_split_v = memo_init(sizeof(struct sl_split_value),512);
+  sl->m_compounds = memo_init(sizeof(struct sl_compound), 512);
   sl->p = pool_init();
   sl->compounds = list_create(LIST_SINGLE);
   return sl;
@@ -52,6 +54,7 @@ asl_bld_term(struct sl_signlist *sl)
       hash_free(sl->hlentry, NULL);
       hash_free(sl->hsignvvalid, NULL);
       hash_free(sl->hletters, NULL);
+      hash_free(sl->hcompounds, NULL);
       memo_term(sl->m_tokens);
       memo_term(sl->m_letters);
       memo_term(sl->m_groups);
@@ -64,7 +67,6 @@ asl_bld_term(struct sl_signlist *sl)
       memo_term(sl->m_insts_p);
       memo_term(sl->m_lv_data);
       pool_term(sl->p);
-      list_free(sl->compounds, NULL);
       free(sl);
     }
 }
