@@ -46,7 +46,7 @@ sx_compound_data(struct sl_signlist *sl, const char *sgnname, const char *cpdnam
   sp = hash_find(sl->hsentry, (uccp)sgnname);
   if (!sp)
     {
-      fprintf(stderr, "sx: internal error: sign %s not found in signlist\n", sgnname);
+      fprintf(stderr, "sx: internal error: sign %s not found in signlist\n", sgnname); /* need to register as a sign */
       return;      
     }
   if (!sp->hcompounds)
@@ -156,11 +156,6 @@ sx_compound_node(Node *np, struct sl_signlist *sl, const char *sname)
 	  if (ctrace)
 	    fprintf(stderr, "ctrace: g:s %s nth=%d contained=%d\n", np->text, sxc_nth, sxc_container_active);
 
-#if 0
-	  /* just use the keys of the sign's compounds hash to get list of compounds that sign is a cmemb of */
-	  if (!hash_find(cdp->p, (uccp)sname))
-	    hash_add(cdp->p, (uccp)sname, "");
-#endif	  
 	  if (!sxc_nth)
 	    sx_compound_data(sl, last_g, sname, sxc_initial);
 	  else
@@ -169,12 +164,7 @@ sx_compound_node(Node *np, struct sl_signlist *sl, const char *sname)
 
 	  if (sxc_container_active)
 	    {
-#if 1
 	      sx_compound_data(sl, last_g, sname, sxc_contained);
-#else
-	      if (!(hash_find(cdp->c, (uccp)sname)))
-		hash_add(cdp->c, (uccp)sname, "");
-#endif
 	      if (sxc_container_active == 1)
 		sxc_container_active = 0;
 	    }
@@ -192,18 +182,7 @@ sx_compound_node(Node *np, struct sl_signlist *sl, const char *sname)
 		fprintf(stderr, "ctrace: g:d %s\n", np->text);
 	      if (last_g)
 		{
-#if 1
 		  sx_compound_data(sl, last_g, sname, sxc_container);
-#else
-		  struct sl_c_data *cdp = NULL;
-		  if (!(cdp = hash_find(c, (uccp)np->text)))
-		    {
-		      cdp = sx_cd_init();
-		      hash_add(c, (uccp)np->text, cdp);
-		    }
-		  if (!hash_find(cdp->t, (uccp)last_g))
-		    hash_add(cdp->t, (uccp)sname, "");
-#endif
 		}
 	      sxc_container_active = 1;
 	    }
