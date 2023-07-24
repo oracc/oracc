@@ -37,6 +37,7 @@ asl_bld_init(void)
   sl->m_lv_data = memo_init(sizeof(struct sl_lv_data),512);
   sl->m_split_v = memo_init(sizeof(struct sl_split_value),512);
   sl->m_compounds = memo_init(sizeof(struct sl_compound), 512);
+  sl->m_digests = memo_init(sizeof(struct sl_compound_digest), 512);
   sl->p = pool_init();
   sl->compounds = list_create(LIST_SINGLE);
   return sl;
@@ -54,7 +55,6 @@ asl_bld_term(struct sl_signlist *sl)
       hash_free(sl->hlentry, NULL);
       hash_free(sl->hsignvvalid, NULL);
       hash_free(sl->hletters, NULL);
-      hash_free(sl->hcompounds, NULL);
       memo_term(sl->m_tokens);
       memo_term(sl->m_letters);
       memo_term(sl->m_groups);
@@ -66,6 +66,9 @@ asl_bld_term(struct sl_signlist *sl)
       memo_term(sl->m_insts);
       memo_term(sl->m_insts_p);
       memo_term(sl->m_lv_data);
+      memo_term(sl->m_split_v);
+      memo_term(sl->m_compounds);
+      memo_term(sl->m_digests);
       pool_term(sl->p);
       free(sl);
     }
@@ -91,7 +94,7 @@ asl_bld_singleton_string(Mloc *locp, const unsigned char *t, const char *tag, un
     }
 }
 
-static void
+void
 asl_bld_token(struct sl_signlist *sl, const unsigned char *t)
 {
   if (!hash_find(sl->htoken, t))
@@ -119,6 +122,8 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
   Tree *tp;
   unsigned const char *group;
 
+  s->sl = sl;
+  
   if ('|' == *s->name)
     list_add(sl->compounds, (void*)s->name);
 
@@ -206,7 +211,7 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       i->u.f = f;
       i->var = var;
       i->ref = ref;
-      i->mloc = locp;
+      i->mloc = *locp;
       i->valid = (Boolean)!minus_flag;
       i->query = (Boolean)query;
       sl->curr_inst = i;
@@ -225,7 +230,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int q, 
   struct sl_inst *i = memo_new(sl->m_insts);
   Hash *h = NULL;
   
-  i->mloc = locp;
+  i->mloc = *locp;
   i->type = 'l';
   i->valid = (Boolean)!m;
   i->query = (Boolean)q;
@@ -397,7 +402,7 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       s->name_is_listnum = list;
       s->inst = i;
       i->type = 's';
-      i->mloc = locp;
+      i->mloc = *locp;
       i->valid = (Boolean)!minus_flag;
       i->query = (Boolean)query;
       sl->curr_inst = i;
@@ -479,7 +484,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   else if (!strcmp((ccp)n, "x"))
     uvalue = 1;
   i->type = 'v';
-  i->mloc = locp;
+  i->mloc = *locp;
   i->ref = ref;
   i->valid = (Boolean)!minus_flag;
   i->query = (Boolean)query;

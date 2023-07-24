@@ -63,7 +63,11 @@ sx_a_group(struct sl_functions *f, struct sl_group *g)
     {
       int i;
       for (i = 0; i < g->nsigns; ++i)
-	f->sgn(f, g->signs[i]);
+	{
+	  if ((!g->signs[i]->xref && !g->signs[i]->compound_only)
+	      || !identity_mode)
+	    f->sgn(f, g->signs[i]);
+	}
     }
 }
 
@@ -101,43 +105,68 @@ sx_a_notes(FILE *fp, struct sl_inst *i)
     sx_a_str_list(fp, "inote", i->n.inotes);
 }
 
+/* In identity_mode this routine is not called when sl_sign is an xref
+   to a form or only occurs in compounds */
 static void
 sx_a_sign(struct sl_functions *f, struct sl_sign *s)
 {
   const char *minus = "", *query = "";
+
   if (!s->inst->valid)
     minus = "-";
   if (s->inst->query)
     query = "?";
-  fprintf(f->fp, "@sign%s\t%s%s\n", minus, s->name, query);
-  if (s->fake)
-    fprintf(f->fp, "@fake 1\n");
-  if (s->pname)
-    fprintf(f->fp, "@pname %s\n", s->pname);
-  sx_a_unicode(f->fp, &s->U);
-  sx_a_notes(f->fp, s->inst);
-  if (s->nlists)
+  if (s->xref)
     {
-      int i;
-      for (i = 0; i < s->nlists; ++i)
-	f->lst(f, s->lists[i]);
+      struct sl_sign *sowner;
+      fprintf(f->fp, "@xref%s\t%s%s\n", minus, s->name, query);
+      /* SORTME ? */
+      for (sowner = list_first(s->xref->owners); sowner; sowner = list_next(s->xref->owners))
+	fprintf(f->fp, "@see %s\n", sowner->name);
+      fprintf(f->fp, "@end xref\n");
     }
-  if (s->nvalues)
+  else if (s->compound_only)
     {
-      int i;
-      for (i = 0; i < s->nvalues; ++i)
-	f->val(f, s->values[i]);
+      const char **keys;
+      int nkeys, i;
+      keys = hash_keys2(s->hcompounds, &nkeys);
+      fprintf(f->fp, "@xref%s\t%s%s\n", minus, s->name, query);
+      /* SORTME ? */
+      for (i = 0; i < nkeys; ++i)
+	fprintf(f->fp, "@see %s\n", keys[i]);
+      fprintf(f->fp, "@end xref\n");
     }
-  if (s->nforms)
+  else
     {
-      int i;
-      for (i = 0; i < s->nforms; ++i)
+      fprintf(f->fp, "@sign%s\t%s%s\n", minus, s->name, query);
+      if (s->fake)
+	fprintf(f->fp, "@fake 1\n");
+      if (s->pname)
+	fprintf(f->fp, "@pname %s\n", s->pname);
+      sx_a_unicode(f->fp, &s->U);
+      sx_a_notes(f->fp, s->inst);
+      if (s->nlists)
 	{
-	  f->frm(f, s->forms[i]);
+	  int i;
+	  for (i = 0; i < s->nlists; ++i)
+	    f->lst(f, s->lists[i]);
 	}
+      if (s->nvalues)
+	{
+	  int i;
+	  for (i = 0; i < s->nvalues; ++i)
+	    f->val(f, s->values[i]);
+	}
+      if (s->nforms)
+	{
+	  int i;
+	  for (i = 0; i < s->nforms; ++i)
+	    {
+	      f->frm(f, s->forms[i]);
+	    }
+	}
+      fprintf(f->fp, "@end sign\n\n");
     }
-  if (identity_mode)
-    fprintf(f->fp, "@end sign\n\n");
 }
 
 static void

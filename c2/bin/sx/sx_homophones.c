@@ -68,7 +68,7 @@ sx_homophones(struct sl_signlist *sl)
 	      else if ('f' == ip->type)
 		oid = ip->u.f->oid;
 	      else
-		mesg_verr(ip->mloc, "unexpected type in homophone (expected 's' or 'f'; found '%c'", ip->type);
+		mesg_verr(&ip->mloc, "unexpected type in homophone (expected 's' or 'f'; found '%c'", ip->type);
 	      if (oid)
 		{
 		  sp->oid = oid;
@@ -91,7 +91,7 @@ sx_homophones(struct sl_signlist *sl)
 	  else if ('f' == ip->type)
 	    oid = ip->u.f->oid;
 	  else
-	    mesg_verr(ip->mloc, "unexpected type in homophone (expected 's' or 'f'; found '%c'", ip->type);
+	    mesg_verr(&ip->mloc, "unexpected type in homophone (expected 's' or 'f'; found '%c'", ip->type);
 
 	  if (oid)
 	    sl->splitv[i].oid = oid;

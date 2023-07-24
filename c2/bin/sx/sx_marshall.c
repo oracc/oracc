@@ -82,11 +82,16 @@ form_as_sign(struct sl_signlist *sl, struct sl_form *f)
 {
   struct sl_sign *s = memo_new(sl->m_signs);
   struct sl_inst *ip = list_first(f->insts);
+
+#if 0
+  fprintf(stderr, "form_as_sign: %s; file=%s; line=%d\n", f->name, ip->mloc.file, ip->mloc.line);
+#endif
+  
   s->inst = ip;
   s->name = f->name;
-  s->xref = f;
+  s->xref = f;  
   hash_add(sl->hsentry, s->name, s);
-  asl_register_sign(ip->mloc, sl, s);
+  asl_register_sign(&ip->mloc, sl, s);
   return s;
 }
 
@@ -225,6 +230,7 @@ sx_marshall(struct sl_signlist *sl)
       f->sign = s;
     }
 
+  /* First compounds phase: gather the data for digesting later */
   sx_compounds(sl);
   
   /* Sort the tokens and set the token sort codes */
@@ -247,7 +253,14 @@ sx_marshall(struct sl_signlist *sl)
       tp = hash_find(sl->htoken, sl->signs[i]->name);
       sl->signs[i]->sort = tp->s;
       if (!(sl->signs[i]->oid = hash_find(oids, sl->signs[i]->name)))
-	mesg_verr(sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
+	{
+#if 0
+	  if (!sl->signs[i]->inst || !sl->signs[i]->inst->mloc)
+	    fprintf(stderr, "sx: internal error: bad mloc\n");
+	  else
+#endif
+	    mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
+	}
       else
 	{
 	  if (sortcode_output)
@@ -271,7 +284,7 @@ sx_marshall(struct sl_signlist *sl)
       if (!(sl->forms[i]->oid = hash_find(oids, sl->forms[i]->name)))
 	{
 	  struct sl_inst *inst = list_first(sl->forms[i]->insts);
-	  mesg_verr(inst->mloc, "OID needed for FORM %s", sl->forms[i]->name);
+	  mesg_verr(&inst->mloc, "OID needed for FORM %s", sl->forms[i]->name);
 	}
       else
 	{
@@ -321,7 +334,7 @@ sx_marshall(struct sl_signlist *sl)
 	  if (sl->values[i]->nfowners == 1)
 	    {
 	      sl->values[i]->fowners_i_sort = memo_new(sl->m_insts_p);
-	      sl->values[i]->fowners_i_sort = list_first(sl->values[i]->fowners);
+	      sl->values[i]->fowners_i_sort[0] = list_first(sl->values[i]->fowners);
 	    }
 	  else
 	    {
@@ -341,6 +354,10 @@ sx_marshall(struct sl_signlist *sl)
   /* Create oid arrays for the value entries */
   for (i = 0; i < sl->nvalues; ++i)
     sl->values[i]->oids = sx_oid_array(sl->values[i]->sowner, sl->values[i]->fowners);
+
+  /* Second phase of compounds: invert Hashes of sl_compound
+     structures into arrays of OIDs for each category */
+  sx_compound_digests(sl);
   
   /* Dereference structures created in asl_bld.c--see that file for AB1/AB2/AB3 creation */
   lets = hash_keys2(sl->hletters, &nlets); /* obtain list of letters from AB1 */

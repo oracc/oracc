@@ -18,6 +18,7 @@ extern struct sl_functions *sx_asl_init(FILE *fp, const char *fname);
 extern struct sl_functions *sx_sll_init(FILE *fp, const char *fname);
 
 extern void sx_compounds(struct sl_signlist *sl);
+extern void sx_compound_digests(struct sl_signlist *sl);
 extern void sx_homophones(struct sl_signlist *sl);
 extern void sx_marshall(struct sl_signlist *sl);
 

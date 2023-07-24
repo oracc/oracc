@@ -39,7 +39,6 @@ struct sl_signlist
   struct sl_inst *curr_form;
   struct sl_inst *curr_value;
   struct sl_inst *curr_inst; /* used to attach meta to correct tag */
-  Hash *hcompounds;
   List *compounds;
   Memo *m_tokens;
   Memo *m_letters;
@@ -54,6 +53,7 @@ struct sl_signlist
   Memo *m_lv_data;
   Memo *m_split_v;
   Memo *m_compounds;
+  Memo *m_digests;
   Pool *p;
   Mloc *mloc;
 };
@@ -119,7 +119,7 @@ struct sl_inst
   const unsigned char *ref; /* this is inline in the @v */
   const unsigned char *var; /* The variant code for the form in this instance, with tilde */
   struct sl_any_note n;
-  Mloc *mloc;
+  Mloc mloc;
   Boolean valid; /* doesn't have a - after it */
   Boolean query;
   Boolean uchar;
@@ -156,8 +156,21 @@ struct sl_compound
   char contained; 	 /* 0 for no 1 for yes */
 };
 
+/* These are NULL-terminated arrays of OID or compound-sign-names
+   which are derived from the sl_compound data */
+struct sl_compound_digest
+{
+  const char **memb;
+  const char **initial;
+  const char **medial;
+  const char **final;
+  const char **container;
+  const char **contained;
+};
+
 struct sl_sign
 {
+  struct sl_signlist *sl;
   const unsigned char *name;
   int name_is_listnum;
   Node *gdl;
@@ -166,7 +179,10 @@ struct sl_sign
   Hash *hfentry;	/* All @form entries */
   Hash *hcompounds;	/* Compound data: sign S has hash of names of
 			   compounds C with hashvals consisting of
-			   struct sl_compound */
+			   struct sl_compound; two special items are
+			   hashed: '#digest_by_oid' and
+			   '#digest_by_name'; the hashvals for these
+			   are both sl_compound_digest */
   unsigned const char *letter;
   unsigned const char *group;
   struct sl_inst **lists;
@@ -193,6 +209,7 @@ struct sl_sign
   Boolean uname;
   Boolean uphase;
   Boolean fake;
+  Boolean compound_only;
 #if 0
   Mloc *mloc; /* Or: keep this as indicator of "defining instance" ? */
 #endif
@@ -290,6 +307,8 @@ extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char
 extern struct sl_signlist *asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 					    int list);
 extern void asl_bld_term(struct sl_signlist *);
+extern void asl_bld_token(struct sl_signlist *sl, const unsigned char *t);
+
 extern void asl_bld_ucode(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_uphase(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_unote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);

@@ -26,6 +26,7 @@ static void sx_s_FORM(struct sl_functions *f, struct sl_form *s);
 static void sx_s_LIST(struct sl_functions *f, struct sl_list *s);
 static void sx_s_VALUE(struct sl_functions *f, struct sl_value *v);
 static void sx_s_homophones(FILE *fp, struct sl_signlist *sl);
+static void sx_s_compounds(FILE *fp, const unsigned char *name, const char *tag, const char **oids);
 
 struct sl_functions *
 sx_sll_init(FILE *fp, const char *fname)
@@ -77,6 +78,26 @@ sx_s_sign(struct sl_functions *f, struct sl_sign *s)
       fprintf(f->fp, "%s\t%s\n", s->name, curr_oid);
       sx_s_unicode(f->fp, &s->U);
     }
+  if (s->hcompounds)
+    {
+      struct sl_compound_digest *dp = hash_find(s->hcompounds, (uccp)"#digest_by_oid");
+      if (dp->memb)
+	sx_s_compounds(f->fp, s->name, "cmemb", dp->memb);
+      if (dp->initial)
+	sx_s_compounds(f->fp, s->name, "cinit", dp->initial);
+#if 0
+      /* This is not used in sldb2.tsv; possibly a bug */
+      if (dp->medial)
+	sx_s_compounds(f->fp, s->name, "cmedial", dp->medial);
+#endif
+      if (dp->final)
+	sx_s_compounds(f->fp, s->name, "clast", dp->final);
+      if (dp->container)
+	sx_s_compounds(f->fp, s->name, "contains", dp->container);
+      if (dp->contained)
+	sx_s_compounds(f->fp, s->name, "contained", dp->contained);
+      
+    }
 }
 
 static void
@@ -91,7 +112,7 @@ sx_s_FORM(struct sl_functions *f, struct sl_form *s)
   if (s->sign->xref)
     {
       curr_oid = s->oid;
-      fprintf(f->fp, "%s\t%s\n", s->name, curr_oid);
+      fprintf(f->fp, "%s\t%s\n", s->name, s->sign->oid);
       sx_s_unicode(f->fp, &s->U);
     }
 }
@@ -232,4 +253,18 @@ sx_s_homophones(FILE *fp, struct sl_signlist *sl)
 	}
       fputc('\n', fp);
     }
+}
+
+static void
+sx_s_compounds(FILE *fp, const unsigned char *name, const char *tag, const char **oids)
+{
+  int i;
+  fprintf(fp, "%s;%s\t", name, tag);
+  for (i = 0; oids[i]; ++i)
+    {
+      if (i)
+	fputc(' ', fp);
+      fputs(oids[i], fp);
+    }
+  fputc('\n', fp);
 }
