@@ -82,6 +82,7 @@ sx_inherited(struct sl_signlist *sl)
 			      if (!form_inst->lv->hivalues)
 				form_inst->lv->hivalues = hash_create(1);
 			      hash_add(form_inst->lv->hivalues, (uccp)b, "");
+			      hash_add(form_inst->lv->hventry, (uccp)b, hash_find(form_inst->parent->hventry, (uccp)b));
 			      sx_v_fowner(sl, form_inst, b);
 			    }
 			}
@@ -92,8 +93,10 @@ sx_inherited(struct sl_signlist *sl)
 		      /* inherit into an empty lv node */
 		      if (!form_inst->lv)
 			form_inst->lv = memo_new(sl->m_lv_data);
+		      form_inst->lv->hventry = hash_create(1);
 		      form_inst->lv->hivalues = hash_create(1);
 		      hash_add(form_inst->lv->hivalues, (uccp)b, "");
+		      hash_add(form_inst->lv->hventry, (uccp)b, hash_find(form_inst->parent->hventry, (uccp)b));
 		      sx_v_fowner(sl, form_inst, b);
 		    }
 		}

@@ -383,6 +383,8 @@ sx_marshall(struct sl_signlist *sl)
 	}
     }
 
+  sx_inherited(sl);
+  
   /* Sort the lists, values and forms for each sign */
   for (i = 0; i < sl->nsigns; ++i)
     {
@@ -442,8 +444,6 @@ sx_marshall(struct sl_signlist *sl)
 	}
     }
 
-  sx_inherited(sl);
-  
   sx_homophones(sl);
 
   /*sx_qualified(sl);*/
