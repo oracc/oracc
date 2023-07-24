@@ -1,3 +1,4 @@
+#include <hash.h>
 #include <collate.h>
 #include <signlist.h>
 #include <sx.h>
@@ -126,6 +127,21 @@ static int fowners_cmp(const void *a, const void *b)
   struct sl_inst *bi = (*(struct sl_inst**)b);
   int a1 = ('f'==ai->type) ? ai->u.f->sort : ai->u.s->sort;
   int b1 = ('f'==ai->type) ? bi->u.f->sort : bi->u.s->sort;
+  if (a1 < b1)
+    return -1;
+  else if (a1 > b1)
+    return 1;
+  else
+    return 0;
+}
+
+/* form->owners is a list of sl_sign* */
+static int owners_cmp(const void *a, const void *b)
+{
+  struct sl_sign *ai = (*(struct sl_sign**)a);
+  struct sl_sign *bi = (*(struct sl_sign**)b);
+  int a1 = ai->sort;
+  int b1 = bi->sort;
   if (a1 < b1)
     return -1;
   else if (a1 > b1)
@@ -292,6 +308,29 @@ sx_marshall(struct sl_signlist *sl)
   /* Sort the forms */
   qsort(sl->forms, sl->nforms, sizeof(struct sl_form*), (cmp_fnc_t)forms_cmp);
 
+  /* Sort form owners (sl_sign*) if there are any */
+  for (i = 0; i < sl->nforms; ++i)
+    {
+      if (sl->forms[i]->owners)
+	{
+	  sl->forms[i]->nowners = list_len(sl->forms[i]->owners);
+	  if (sl->forms[i]->nowners == 1)
+	    {
+	      sl->forms[i]->owners_sort = memo_new(sl->m_signs_p);
+	      sl->forms[i]->owners_sort[0] = list_first(sl->forms[i]->owners);
+	    }
+	  else
+	    {
+	      struct sl_sign *sp;
+	      int j = 0;
+	      sl->forms[i]->owners_sort = memo_new_array(sl->m_signs_p, sl->forms[i]->nowners);
+	      for (sp = list_first(sl->forms[i]->owners); sp; sp = list_next(sl->forms[i]->owners))
+		sl->forms[i]->owners_sort[j++] = sp;
+	      qsort(sl->forms[i]->owners_sort, sl->forms[i]->nowners, sizeof(struct sl_sign *), (cmp_fnc_t)owners_cmp);
+	    }
+	}
+    }
+
   /* Provide lists with sort codes based on token sort sequence */
   keys = hash_keys2(sl->hlentry, &nkeys);  
   sl->lists = malloc(sizeof(struct sl_list*) * nkeys);
@@ -348,6 +387,9 @@ sx_marshall(struct sl_signlist *sl)
   for (i = 0; i < sl->nvalues; ++i)
     sl->values[i]->oids = sx_oid_array(sl->values[i]->sowner, sl->values[i]->fowners);
 
+  /* Create list of globally known values for each OID */
+  sx_values_by_oid(sl);
+  
   /* Second phase of compounds: invert Hashes of sl_compound
      structures into arrays of OIDs for each category */
   sx_compound_digests(sl);
@@ -359,20 +401,18 @@ sx_marshall(struct sl_signlist *sl)
   sl->nletters = nlets;
   for (i = 0; i < nlets; ++i)
     {
-      Hash *groups = NULL;
       const char **grps = NULL;
       int ngrps = 0, j;
-      
-      sl->letters[i].name = (ucp)lets[i];
-      groups = hash_find(sl->hletters, (ucp)lets[i]);
-      grps = hash_keys2(groups, &ngrps); /* obtain list of groups in letter from AB2 */
+      struct sl_letter *letterp = hash_find(sl->hletters, (uccp)lets[i]);
+      sl->letters[i] = *letterp;
+      grps = hash_keys2(sl->letters[i].hgroups, &ngrps); /* obtain list of groups in letter from AB2 */
       qsort(grps, ngrps, sizeof(const char*), (cmp_fnc_t)collate_cmp_graphemes);
       sl->letters[i].groups = memo_new_array(sl->m_groups, ngrps);
       sl->letters[i].ngroups = ngrps;
 
       for (j = 0; j < ngrps; ++j)
 	{
-	  List *slist = hash_find(groups, (ucp)grps[j]); /* obtain list of signs in group from AB3 */
+	  List *slist = hash_find(sl->letters[i].hgroups, (ucp)grps[j]); /* obtain list of signs in group from AB3 */
 	  sl->letters[i].groups[j].name = (ucp)grps[j];
 	  sl->letters[i].groups[j].nsigns = list_len(slist);
 	  sl->letters[i].groups[j].signs = memo_new_array(sl->m_signs_p,

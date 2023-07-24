@@ -27,6 +27,7 @@ static void sx_s_LIST(struct sl_functions *f, struct sl_list *s);
 static void sx_s_VALUE(struct sl_functions *f, struct sl_value *v);
 static void sx_s_homophones(FILE *fp, struct sl_signlist *sl);
 static void sx_s_compounds(FILE *fp, const unsigned char *name, const char *tag, const char **oids);
+static void sx_s_values_by_oid(FILE *fp, struct sl_signlist *sl);
 
 struct sl_functions *
 sx_sll_init(FILE *fp, const char *fname)
@@ -56,12 +57,22 @@ sx_s_signlist(struct sl_functions *f, struct sl_signlist *sl)
     sx_s_LIST(f, sl->lists[i]);
   for (i = 0; i < sl->nvalues; ++i)
     sx_s_VALUE(f, sl->values[i]);
+  sx_s_values_by_oid(f->fp, sl);
   sx_s_homophones(f->fp, sl);
+  for (i = 0; i < sl->nletters; ++i)
+    sx_s_letter(f, &sl->letters[i]);
 }
 
 static void
 sx_s_letter(struct sl_functions *f, struct sl_letter *l)
 {
+  int i = 0;
+  for (i = 0; i < l->ngroups; ++i)
+    {
+      int j;
+      for (j = 0; j < l->groups[i].nsigns; ++j)
+	fprintf(f->fp, "%s;let\tl%04d\n", l->groups[i].signs[j]->oid, l->code);
+    }
 }
 
 static void
@@ -99,6 +110,27 @@ sx_s_compounds_driver(FILE *fp, const unsigned char *n, Hash *hcompounds)
 }
 
 static void
+sx_s_values_by_oid(FILE *fp, struct sl_signlist *sl)
+{
+  const char **keys;
+  int nkeys, i;
+  keys = hash_keys2(sl->values_by_oid, &nkeys);
+  for (i = 0; i < nkeys; ++i)
+    {
+      int j;
+      const char **vals = hash_find(sl->values_by_oid, (uccp)keys[i]);
+      fprintf(fp, "%s;values\t", keys[i]);
+      for (j = 0; vals[j]; ++j)
+	{
+	  if (j)
+	    fputc(' ', fp);
+	  fputs((ccp)vals[j], fp);
+	}
+      fputc('\n', fp);
+    }
+}
+
+static void
 sx_s_sign(struct sl_functions *f, struct sl_sign *s)
 {
   if (!s->xref)
@@ -108,6 +140,19 @@ sx_s_sign(struct sl_functions *f, struct sl_sign *s)
 
       sx_s_unicode(f->fp, &s->U);
 
+      if (s->nforms)
+	{
+	  int i;
+	  fprintf(f->fp, "%s;forms\t", s->oid);
+	  for (i = 0; i < s->nforms; ++i)
+	    {
+	      if (i)
+		fputc(' ', f->fp);
+	      fprintf(f->fp, "%s/%s", s->forms[i]->u.f->oid, s->forms[i]->var);
+	    }
+	  fputc('\n', f->fp);
+	}
+      
       if (s->aka)
 	sx_s_aka(f->fp, s->oid, s->aka);
     }
@@ -137,6 +182,18 @@ sx_s_FORM(struct sl_functions *f, struct sl_form *s)
 
       if (s->aka)
 	sx_s_aka(f->fp, s->oid, s->aka);
+    }
+  if (s->nowners)
+    {
+      int i;
+      fprintf(f->fp, "%s;signs\t", s->oid);
+      for (i = 0; i < s->nowners; ++i)
+	{
+	  if (i)
+	    fputc(' ', f->fp);
+	  fputs(s->owners_sort[i]->oid, f->fp);
+	}
+      fputc('\n', f->fp);
     }
 }
 

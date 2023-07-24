@@ -22,6 +22,7 @@ struct sl_signlist
 			   sl_split_value* that reduce to that base;
 			   x-values include the 'ₓ' in their base */
   Hash *hcompoundnew;	/* Signs reported in sx_compound_new_sign to prevent multiple error messages */
+  Hash *values_by_oid;
   Hash *hletters;
   struct sl_token **tokens; /* sorted htoken */
   struct sl_sign  **signs;  /* sorted hsentry */
@@ -132,6 +133,10 @@ struct sl_inst
 struct sl_letter
 {
   const unsigned char *name;
+  int code; 		/* integer of first character; used in
+			   directory names, e.g., l0065, l0352, but
+			   not suitable for sorting */
+  Hash *hgroups;	/* hash of groups used while building structure */
   struct sl_group *groups;
   int ngroups;
 };
@@ -228,6 +233,8 @@ struct sl_form
 			   doesn't occur as an @sign entry, the
 			   back-reference form->sign->xref is set */
   List *owners; 	/* this is a list of sl_sign* the form is associated with */
+  struct sl_sign **owners_sort; /* owners as sorted array */
+  int nowners;
   List *insts; 		/* this is a list of sl_inst* where the form occurs */
   List *aka;		/* alternatively known as form-names to support non-standard names */
   int name_is_listnum;

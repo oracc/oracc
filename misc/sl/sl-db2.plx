@@ -109,7 +109,7 @@ GetOptions(
 #
 
 #
-# A form also has an OID:par field which gives a space-separated list
+# A form also has an OID:parents field which gives a space-separated list
 # of the signs under which it appears as a form.
 #
 # ;parents
