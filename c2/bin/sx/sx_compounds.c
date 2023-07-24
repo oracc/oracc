@@ -60,11 +60,6 @@ sx_compound_init(struct sl_signlist *sl, Hash *h, const char *c)
 static void /* struct sl_sign* */
 sx_compound_new_sign(struct sl_signlist *sl, const char *sgnname, const char *cpdname)
 {
-#if 0
-  struct sl_sign *s = memo_new(sl->m_signs);
-  struct sl_inst *ip = NULL;
-#endif
-
   const unsigned char *lc = NULL;
   struct sl_value *vp = NULL;
   struct sl_sign *sp = NULL;
@@ -110,23 +105,6 @@ sx_compound_new_sign(struct sl_signlist *sl, const char *sgnname, const char *cp
     {
       mesg_verr(locp, "compound element %s should have @sign entry\n", sgnname);
     }
-  
-#if 0
-  if ((sp = hash_find(sl->hsentry, (uccp)cpdname)))
-    ip = sp->inst;
-  else if ((fp = hash_find(sl->hfentry, (uccp)cpdname)))
-    ip = list_first(fp->insts);
-  else
-    fprintf(stderr, "sx: internal error: compound sign %s not found as sign or form in signlist\n", cpdname);
-
-  s->inst = ip;
-  s->name = (uccp)sgnname;
-  s->compound_only = 1;
-  hash_add(sl->hsentry, s->name, s);
-  asl_bld_token(sl, (uccp)sgnname);
-  asl_register_sign(&ip->mloc, sl, s);
-  return s;
-#endif
 }
 
 static void

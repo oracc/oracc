@@ -4,6 +4,7 @@
 #include <mesg.h>
 #include <oraccsys.h>
 #include <unidef.h>
+#include <gutil.h>
 #include <gdl.h>
 #include <asl.tab.h>
 #include "signlist.h"
@@ -20,7 +21,6 @@ asl_bld_init(void)
   sl->hsentry = hash_create(2048);
   sl->hfentry = hash_create(1024);
   sl->hventry = hash_create(2048);
-  sl->hvbases = hash_create(1024);
   sl->hlentry = hash_create(1024);
   sl->hsignvvalid = hash_create(1024);
   sl->hletters = hash_create(32);
@@ -205,7 +205,8 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
 	  list_add(f->insts, i);
 	}
 
-      sl->curr_form = i;
+      sl->curr_form = sl->curr_inst = i;
+      i->parent = sl->curr_sign;
 
       i->type = 'f';
       i->u.f = f;
@@ -214,7 +215,6 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       i->mloc = *locp;
       i->valid = (Boolean)!minus_flag;
       i->query = (Boolean)query;
-      sl->curr_inst = i;
       
       if (!sl->curr_sign->hfentry)
 	sl->curr_sign->hfentry = hash_create(128);
@@ -350,9 +350,9 @@ asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
   asl_bld_token(sl, t);
 
   if (sl->curr_form)
-    list_add(sl->curr_form->u.f->aka, t);
+    list_add(sl->curr_form->u.f->aka, (void*)t);
   else if (sl->curr_sign)
-    list_add(sl->curr_sign->aka, t);
+    list_add(sl->curr_sign->aka, (void*)t);
   else
     mesg_verr(locp, "misplaced @aka");
 }
@@ -487,10 +487,51 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	      const char *lang, const unsigned char *ref, int atf_flag, int minus_flag)
 {
   struct sl_value *v;
-  struct sl_inst *i = memo_new(sl->m_insts);
+  struct sl_inst *i = NULL; 
   int xvalue = 0, uvalue = 0, query = 0;
+  const unsigned char *base = NULL;
 
   check_query((char*)n, &query);
+
+  base = g_base_of(n);
+
+  /* if the base of the new value duplicates a base in the current
+     form/sign, it's an error; don't proceed with it, just warn and
+     return */
+
+  if (sl->curr_form)
+    {
+      unsigned const char *b = NULL;
+      if (sl->curr_form->lv && sl->curr_form->lv->hvbases && (b = hash_find(sl->curr_form->lv->hvbases, base)))
+	{
+	  mesg_verr(&sl->curr_inst->mloc, "form %s values %s and %s have the same base %s\n", sl->curr_form->u.f->name, b, n, base);
+	  return;
+	}
+      else
+	{
+	  if (!sl->curr_form->lv)
+	    sl->curr_form->lv = memo_new(sl->m_lv_data);
+	  if (!sl->curr_form->lv->hvbases)
+	    sl->curr_form->lv->hvbases = hash_create(1);
+	  hash_add(sl->curr_form->lv->hvbases, pool_copy((uccp)base, sl->p), (void*)n);
+	}
+    }
+  else
+    {
+      unsigned const char *b = NULL;
+      if ((b = hash_find(sl->curr_sign->hvbases, base)))
+	{
+	  mesg_verr(&sl->curr_inst->mloc, "sign %s values %s and %s have the same base %s\n", sl->curr_sign->name, b, n, base);
+	  return;
+	}
+      else
+	{
+	  if (!sl->curr_sign->hvbases)
+	    sl->curr_sign->hvbases = hash_create(1);
+	  hash_add(sl->curr_sign->hvbases, pool_copy((uccp)base, sl->p), (void*)n);
+	}
+    }
+
   asl_bld_token(sl, n);
   
   if (strlen((ccp)n) > 3)
@@ -501,6 +542,8 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
     }
   else if (!strcmp((ccp)n, "x"))
     uvalue = 1;
+
+  i = memo_new(sl->m_insts);
   i->type = 'v';
   i->mloc = *locp;
   i->ref = ref;
@@ -508,10 +551,10 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   i->query = (Boolean)query;
   sl->curr_inst = i;
   
+  /* If we are processing a sign and the v is already in
+     signlist's sign-values it's an error for it to occur again */
   if ((v = hash_find(sl->hsignvvalid, n)))
     {
-      /* If we are processing a sign and the v is already in
-	 signlist's sign-values it's an error for it to occur again */
       if (!sl->curr_form && !xvalue && !v->atf && !minus_flag && sl->curr_sign->inst->valid)
 	{
 	  if (!strcmp((ccp)v->sowner->name, (ccp)sl->curr_sign->name))
@@ -520,8 +563,8 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	    mesg_verr(locp, "duplicate value %s in sign %s (first occurs in %s)\n", n, sl->curr_sign->name, v->sowner->name);
 	  return;
 	}
-    }    
-  
+    }
+
   if (!v && !(v = hash_find(sl->hventry, n)))
     {
       Tree *tp = NULL;

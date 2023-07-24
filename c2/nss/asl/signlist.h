@@ -21,7 +21,6 @@ struct sl_signlist
   Hash *homophones;	/* Hash of value-bases each with list of
 			   sl_split_value* that reduce to that base;
 			   x-values include the 'ₓ' in their base */
-  Hash *hvbases;	/* All @v bases; used only for checking duplicates like a₂ and a₃ */
   Hash *hcompoundnew;	/* Signs reported in sx_compound_new_sign to prevent multiple error messages */
   Hash *hletters;
   struct sl_token **tokens; /* sorted htoken */
@@ -97,7 +96,7 @@ struct sl_lv_data
   Hash *hlentry; 	/* All @list entries */
   /*Hash *hlvalid;*/	/* @list entries except @list- ; NULL unless there is an @list- */
   Hash *hventry;	/* All @v entries */
-  Hash *hvbases;	/* All @v bases; used only for checking duplicates like a₂ and a₃ */
+  Hash *hvbases;	/* All @v bases; used only for checking duplicates like a₂ and a₃ within a @form */
   /*Hash *hvvalid;*/	/* @v entries except @v- ; NULL unless there is an @v- */
   Hash *hivalues; 	/* Inherited values from parent @sign's hventry */
   struct sl_inst **lists;
@@ -118,7 +117,8 @@ struct sl_inst
     struct sl_value *v; } u;
   struct sl_lv_data *lv; /* used by form instances */
   const unsigned char *ref; /* this is inline in the @v */
-  const unsigned char *var; /* The variant code for the form in this instance, with tilde */
+  const unsigned char *var; /* The variant code for a form instance, with tilde */
+  struct sl_sign *parent; /* The parent sign for a form instance */
   struct sl_any_note n;
   Mloc mloc;
   Boolean valid; /* doesn't have a - after it */
@@ -177,6 +177,7 @@ struct sl_sign
   Node *gdl;
   Hash *hlentry; 	/* All @list entries */
   Hash *hventry;	/* All @v entries */
+  Hash *hvbases;	/* All @v bases; used only for checking duplicates like a₂ and a₃ within a @sign */
   Hash *hfentry;	/* All @form entries */
   Hash *hcompounds;	/* Compound data: sign S has hash of names of
 			   compounds C with hashvals consisting of
@@ -303,6 +304,7 @@ extern struct sl_signlist *asl_bld_init(void);
 extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 			 int list, const unsigned char *var, const unsigned char *ref, int minus_flag);
 extern void asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag);
+extern void asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 
 extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
