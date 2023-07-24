@@ -461,22 +461,30 @@ sx_marshall(struct sl_signlist *sl)
 	      fp = sp->forms[j] = hash_find(sp->hfentry, (uccp)sfrms[j]);
 	      if (fp->lv && fp->lv->hlentry)
 		{
-		  int nslsts, j;
+		  int nslsts, m;
 		  const char **slsts = hash_keys2(fp->lv->hlentry, &nslsts);
 		  fp->lv->lists = memo_new_array(sl->m_insts, nslsts);
 		  fp->lv->nlists = nslsts;
-		  for (j = 0; j < fp->lv->nlists; ++j)
-		    fp->lv->lists[j] = hash_find(fp->lv->hlentry, (uccp)slsts[j]);
+		  for (m = 0; m < fp->lv->nlists; ++m)
+		    fp->lv->lists[m] = hash_find(fp->lv->hlentry, (uccp)slsts[m]);
 		  qsort(fp->lv->lists, fp->lv->nlists, sizeof(void*), (cmp_fnc_t)lists_inst_cmp);
 		}
 	      if (fp->lv && fp->lv->hventry)
 		{
-		  int nsvals, j;
+		  int nsvals, k, l;
 		  const char **svals = hash_keys2(fp->lv->hventry, &nsvals);
 		  fp->lv->values = memo_new_array(sl->m_insts, nsvals);
 		  fp->lv->nvalues = nsvals;
-		  for (j = 0; j < fp->lv->nvalues; ++j)
-		    fp->lv->values[j] = hash_find(fp->lv->hventry, (uccp)svals[j]);
+		  for (k = l = 0; k < fp->lv->nvalues; ++k)
+		    if (svals[k])
+		      {
+			if (!(fp->lv->values[l++] = hash_find(fp->lv->hventry, (uccp)svals[k])))
+			  --l;
+		      }
+		    else
+		      fprintf(stderr, "skipping NULL entry in %s::%s hventry\n",
+			      sp->forms[j]->u.f->sign->name, sp->forms[j]->u.f->name);
+		  fp->lv->nvalues = l;
 		  qsort(fp->lv->values, fp->lv->nvalues, sizeof(void*), (cmp_fnc_t)values_inst_cmp);
 		}
 	    }

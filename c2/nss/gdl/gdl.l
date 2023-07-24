@@ -146,7 +146,7 @@ _			{ gsave; return LANG_FLIP; }
 "::"      		{ /*"*/ GIN=1; gsave; return PUNCT; }
 "/"/[ \t\n\(]		{ /*"*/ GIN=1; gsave; return PUNCT; }
 
-[0-9]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
+[0-9nN]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
 
 [0-9]+(\/[0-9]+)?	{ GIN=1; gsave; return BARENUM; }
 

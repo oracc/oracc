@@ -80,11 +80,11 @@ PUNCT		("*"|:['".:]?|"/"){Q}
 ^@aka/[ \t]       		{ atcmd(AKA,0); }
 ^@pname/[ \t]       		{ atcmd(PNAME,0); }
 ^@nosign/[ \t]     		{ mesg_vwarning(curraslfile, asllineno, "[asl] '@nosign' has been replaced by '@sign-'");
-				  atcmd(SIGN,-1); }
+				  /*atcmd(SIGN,-1);*/ }
 ^@list-?/[ \t]       		{ atcmd(LIST,0); }
 ^@form-?/[ \t]	       		{ atcmd(FORM,0); }
 ^@noform/[ \t]         		{ mesg_vwarning(curraslfile, asllineno, "[asl] '@noform' has been replaced by '@form-'");
-				  atcmd(FORM,-1); }
+				  /* atcmd(FORM,-1);*/ }
 ^@v-?/[ \t]+	       		{ atcmd(V,0); }
 ^@inote/[ \t]+       		{ Tcmd(INOTE,S); }
 ^@lit/[ \t]+	       		{ Tcmd(LIT,S); }
@@ -137,6 +137,9 @@ PUNCT		("*"|:['".:]?|"/"){Q}
 [ \t]+				{ }
 
 \n				{ pmatch("###eol\n"); return EOL; }
+
+\?				{ mesg_vwarning(curraslfile, asllineno,
+						"[asl] misplaced '?'; say, e.g., @v ba?", *asltext); }
 
 .				{ mesg_vwarning(curraslfile, asllineno,
 						"[asl] unmatched character %c", *asltext); }

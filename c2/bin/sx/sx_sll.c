@@ -279,10 +279,12 @@ sx_s_str_list(FILE *fp, const char *tag, List *lp)
 static void
 sx_s_unicode(FILE *fp, struct sl_unicode_info *up)
 {
+#if 0
   if (up->uname)
     sx_s_str(fp, "uname", (uccp)up->uname);
   if (up->uphase)
     sx_s_str(fp, "uphase", (uccp)up->uphase);
+#endif
   if (up->ucode)
     sx_s_str(fp, "ucode", (uccp)up->ucode);
   if (up->uchar)

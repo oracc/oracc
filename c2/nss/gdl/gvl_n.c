@@ -54,7 +54,10 @@ gvl_n(Node *ynp)
 		  nq->sign = gvl_lookup(sll_tmp_key(l,""));
 		}
 	      else
-		nq->mess = gvl_vmess("expected to validate %s via %s but %s doesn't exist", p, oneify, oneify);
+		{
+		  if (!gvl_void_messages)
+		    nq->mess = gvl_vmess("expected to validate %s via %s but %s doesn't exist", p, oneify, oneify);
+		}
 	      if (oneify)
 		free(oneify);
 	    }
