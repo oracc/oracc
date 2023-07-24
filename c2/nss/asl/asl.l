@@ -77,6 +77,7 @@ PUNCT		("*"|:['".:]?|"/"){Q}
 ^@end/[ \t].*\n        	       	{ atcmd(END,E); }
 ^@signlist/[ \t]       		{ atcmd(SIGNLIST,T); }
 ^@sign-?/[ \t]       		{ atcmd(SIGN,0); }
+^@aka/[ \t]       		{ atcmd(AKA,0); }
 ^@pname/[ \t]       		{ atcmd(PNAME,0); }
 ^@nosign/[ \t]     		{ mesg_vwarning(curraslfile, asllineno, "[asl] '@nosign' has been replaced by '@sign-'");
 				  atcmd(SIGN,-1); }

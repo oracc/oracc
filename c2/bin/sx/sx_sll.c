@@ -70,34 +70,53 @@ sx_s_group(struct sl_functions *f, struct sl_group *g)
 }
 
 static void
+sx_s_aka(FILE *fp, const char *oid, List *aka)
+{
+  const unsigned char *n;
+  for (n = list_first(aka); n; n = list_next(aka))
+    fprintf(fp, "%s;aka\t%s\n", n, oid);
+}
+
+static void
+sx_s_compounds_driver(FILE *fp, const unsigned char *n, Hash *hcompounds)
+{
+  struct sl_compound_digest *dp = hash_find(hcompounds, (uccp)"#digest_by_oid");
+  if (dp->memb)
+    sx_s_compounds(fp, n, "cmemb", dp->memb);
+  if (dp->initial)
+    sx_s_compounds(fp, n, "cinit", dp->initial);
+#if 0
+  /* This is not used in sldb2.tsv; possibly a bug */
+  if (dp->medial)
+    sx_s_compounds(fp, n, "cmedial", dp->medial);
+#endif
+  if (dp->final)
+    sx_s_compounds(fp, n, "clast", dp->final);
+  if (dp->container)
+    sx_s_compounds(fp, n, "contains", dp->container);
+  if (dp->contained)
+    sx_s_compounds(fp, n, "contained", dp->contained);
+}
+
+static void
 sx_s_sign(struct sl_functions *f, struct sl_sign *s)
 {
   if (!s->xref)
     {
       curr_oid = s->oid;
       fprintf(f->fp, "%s\t%s\n", s->name, curr_oid);
+
       sx_s_unicode(f->fp, &s->U);
+
+      if (s->aka)
+	sx_s_aka(f->fp, s->oid, s->aka);
     }
+
+  /* this is for both sign and form_as_sign where the sign wrapper
+     carries the homophone data */
   if (s->hcompounds)
-    {
-      struct sl_compound_digest *dp = hash_find(s->hcompounds, (uccp)"#digest_by_oid");
-      if (dp->memb)
-	sx_s_compounds(f->fp, s->name, "cmemb", dp->memb);
-      if (dp->initial)
-	sx_s_compounds(f->fp, s->name, "cinit", dp->initial);
-#if 0
-      /* This is not used in sldb2.tsv; possibly a bug */
-      if (dp->medial)
-	sx_s_compounds(f->fp, s->name, "cmedial", dp->medial);
-#endif
-      if (dp->final)
-	sx_s_compounds(f->fp, s->name, "clast", dp->final);
-      if (dp->container)
-	sx_s_compounds(f->fp, s->name, "contains", dp->container);
-      if (dp->contained)
-	sx_s_compounds(f->fp, s->name, "contained", dp->contained);
-      
-    }
+    sx_s_compounds_driver(f->fp, s->name, s->hcompounds);
+  
 }
 
 static void
@@ -113,7 +132,11 @@ sx_s_FORM(struct sl_functions *f, struct sl_form *s)
     {
       curr_oid = s->oid;
       fprintf(f->fp, "%s\t%s\n", s->name, s->sign->oid);
+
       sx_s_unicode(f->fp, &s->U);
+
+      if (s->aka)
+	sx_s_aka(f->fp, s->oid, s->aka);
     }
 }
 

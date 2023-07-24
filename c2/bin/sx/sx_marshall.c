@@ -253,14 +253,7 @@ sx_marshall(struct sl_signlist *sl)
       tp = hash_find(sl->htoken, sl->signs[i]->name);
       sl->signs[i]->sort = tp->s;
       if (!(sl->signs[i]->oid = hash_find(oids, sl->signs[i]->name)))
-	{
-#if 0
-	  if (!sl->signs[i]->inst || !sl->signs[i]->inst->mloc)
-	    fprintf(stderr, "sx: internal error: bad mloc\n");
-	  else
-#endif
-	    mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
-	}
+	mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
       else
 	{
 	  if (sortcode_output)

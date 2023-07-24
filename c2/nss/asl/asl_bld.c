@@ -340,6 +340,24 @@ asl_bld_note(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 }
 
 void
+asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+  int query;
+  check_query((char*)t, &query);
+  if (query)
+    mesg_verr(locp, "'?' is ignored on @aka");
+    
+  asl_bld_token(sl, t);
+
+  if (sl->curr_form)
+    list_add(sl->curr_form->u.f->aka, t);
+  else if (sl->curr_sign)
+    list_add(sl->curr_sign->aka, t);
+  else
+    mesg_verr(locp, "misplaced @aka");
+}
+
+void
 asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
   int query;

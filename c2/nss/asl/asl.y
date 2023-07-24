@@ -27,7 +27,8 @@ int minus_flag = 0;
 %union { char *text; int i; }
 
 %token	<text>  TOK TRANS TAB EOL PAR CMT BAD LINE SIGLUM
-		SIGN FAKE PNAME FORM NOFORM VAR GNAME GVALUE GVALUEX
+		SIGN FAKE AKA PNAME FORM NOFORM VAR
+		GNAME GVALUE GVALUEX
 		GBAD ATF LANG V VCMT VREF LIST LISTNUM
 		INOTE LIT NOTE TEXT END EBAD EFORM ESIGN
 		UCHAR UCODE UPHASE UNAME UNOTE SIGNLIST
@@ -62,6 +63,7 @@ line:	  atcmd		{ if (asltrace) fprintf(stderr, "atcmd/EOL: %s\n", asllval.text);
 atcmd:
 	  atsignlist
 	| atsign
+        | ataka
         | atpname
 	| atfake
 	| atlist
@@ -84,6 +86,10 @@ atsign:
 
 atfake:   FAKE 		{ if (curr_asl->curr_sign && !curr_asl->curr_form) { curr_asl->curr_sign->fake = 1; }
 	    		  else { mesg_vwarning(curraslfile, asllineno, "asl: misplaced @fake line\n");  } }
+
+ataka:
+	  AKA GVALUE 	 { asl_bld_aka(&@1, curr_asl, (uccp)$2); }
+	| AKA GNAME 	 { asl_bld_aka(&@1, curr_asl, (uccp)$2); }
 
 atpname:
 	  PNAME GVALUE 	 { asl_bld_pname(&@1, curr_asl, (uccp)$2); }

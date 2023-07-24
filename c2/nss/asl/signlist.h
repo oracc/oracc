@@ -22,6 +22,7 @@ struct sl_signlist
 			   sl_split_value* that reduce to that base;
 			   x-values include the 'ₓ' in their base */
   Hash *hvbases;	/* All @v bases; used only for checking duplicates like a₂ and a₃ */
+  Hash *hcompoundnew;	/* Signs reported in sx_compound_new_sign to prevent multiple error messages */
   Hash *hletters;
   struct sl_token **tokens; /* sorted htoken */
   struct sl_sign  **signs;  /* sorted hsentry */
@@ -193,6 +194,7 @@ struct sl_sign
   int nforms;
   struct sl_unicode_info U;
   const unsigned char *pname;
+  List *aka;		/* alternatively known as sign-names to support non-standard names */
   int sort;
   const char *oid;
   struct sl_inst *inst;
@@ -226,6 +228,7 @@ struct sl_form
 			   back-reference form->sign->xref is set */
   List *owners; 	/* this is a list of sl_sign* the form is associated with */
   List *insts; 		/* this is a list of sl_inst* where the form occurs */
+  List *aka;		/* alternatively known as form-names to support non-standard names */
   int name_is_listnum;
   int sort;
   const char *oid;

@@ -1,3 +1,6 @@
+* Every component in compounds must be declared as @sign; see @aka for
+  a way to have non-standard components in compounds
+
 ! Should validate multiple base-values e.g., šudul₄ and šudul₅ in same sign or form
 
 * Qualified-value (qv) requirements: sl-db2.plx enforced unnecessary
@@ -116,6 +119,12 @@
 
 * Need @alias tag to allow, say, an LAK number to be a legal sign name
   where the actual sign name is cumbersom?
+
+  Implementation: @alias would be confusable with Sumerian aliasing as
+  used in ePSD so we use @aka as the tag.  @aka in @sign or @form is a
+  simple referer: it points to the previous @form or @sign and is
+  output to the db as name;aka--this means that GVL can avoid setting
+  a reciprocal OID->AKA hash entry
 
 * Need @xref tag or implicit xreffing of notes within forms that occur
   more than once; in which case, we probably need instance-specific
