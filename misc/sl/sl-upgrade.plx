@@ -28,7 +28,7 @@ while (<>) {
     s/\@nosign/\@sign-/;
     s/\@noform/\@form-/;
     s/\@nov/\@v-/;
-    s#\@v\s+/#\@inote MC: /#;
+    s#\@v\s+(/.*?/)#\@inote MC: $1/#;
     s#\@v-\s+/#\@inote MC:- /#;
     if (/\@v\s+\?/) {
 	my $tens = ($x / 10);
@@ -44,7 +44,7 @@ while (<>) {
     s/\@v\s+\#old/\@inote #old/;
     s/\@v\s+\#nib/\@inote #nib/;
     s/\@v\s+\%/\@inote \%/;
-    s#\@v\s+(\d/\d)#\@inote \@v- $1#;
+    s#\@v\s+(\d/\d)\s*$#\@inote \@v- $1#;
     s/\@fake\s*$/\@fake 1/;
     print "$_\n";
 }

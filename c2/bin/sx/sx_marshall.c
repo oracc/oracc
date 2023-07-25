@@ -265,6 +265,7 @@ sx_marshall(struct sl_signlist *sl)
   for (i = 0; i < nkeys; ++i)
     {
       struct sl_token *tp = NULL;
+      int j;
       sl->signs[i] = hash_find(sl->hsentry, (ucp)keys[i]);
       tp = hash_find(sl->htoken, sl->signs[i]->name);
       sl->signs[i]->sort = tp->s;
@@ -275,6 +276,14 @@ sx_marshall(struct sl_signlist *sl)
 	  if (sortcode_output)
 	    fprintf(stderr, "SIGN\t%s\t%d\n", sl->signs[i]->oid, sl->signs[i]->sort);
 	  hash_add(oid_sort_keys, (uccp)sl->signs[i]->oid, (void*)(uintptr_t)sl->signs[i]->sort);
+	}
+
+      if (sl->signs[i]->hventry)
+	{
+	  const char **vkeys = hash_keys2(sl->signs[i]->hventry, &sl->signs[i]->nvalues);
+	  sl->signs[i]->values = memo_new_array(sl->m_insts_p, sl->signs[i]->nvalues);
+	  for (j = 0; j < sl->signs[i]->nvalues; ++j)
+	    sl->signs[i]->values[j] = hash_find(sl->signs[i]->hventry, (uccp)vkeys[j]);
 	}
     }
   /* Sort the signs */
@@ -302,6 +311,24 @@ sx_marshall(struct sl_signlist *sl)
 	      if (sortcode_output)
 		fprintf(stderr, "FORM\t%s\t%d\n", sl->forms[i]->oid, sl->forms[i]->sort);
 	      hash_add(oid_sort_keys, (uccp)sl->forms[i]->oid, (void*)(uintptr_t)sl->forms[i]->sort);
+	    }
+	}
+      if (list_len(sl->forms[i]->insts))
+	{
+	  struct sl_inst *ip;
+	  for (ip = list_first(sl->forms[i]->insts); ip; list_next(sl->forms[i]->insts))
+	    {
+	      if (ip->lv && ip->lv->hventry)
+		{
+		  const char **lvv;
+		  int nlvv, k;
+		  lvv = hash_keys2(ip->lv->hventry, &nlvv);
+		  ip->lv->values = memo_new_array(sl->m_insts_p, nlvv);
+		  ip->lv->nvalues = nlvv;
+		  for (k = 0; k < nlvv; ++k)
+		    ip->lv->values[k] = hash_find(ip->lv->hventry, (uccp)lvv[k]);
+		  qsort(ip->lv->values, nlvv, sizeof(struct sl_inst*), fowners_cmp);
+		}
 	    }
 	}
     }
@@ -387,9 +414,6 @@ sx_marshall(struct sl_signlist *sl)
   for (i = 0; i < sl->nvalues; ++i)
     sl->values[i]->oids = sx_oid_array(sl->values[i]->sowner, sl->values[i]->fowners);
 
-  /* Create list of globally known values for each OID */
-  sx_values_by_oid(sl);
-  
   /* Second phase of compounds: invert Hashes of sl_compound
      structures into arrays of OIDs for each category */
   sx_compound_digests(sl);
@@ -424,6 +448,9 @@ sx_marshall(struct sl_signlist *sl)
     }
 
   sx_inherited(sl);
+  
+  /* Create list of globally known values for each OID; need to do this after sx_inherited */
+  sx_values_by_oid(sl);
   
   /* Sort the lists, values and forms for each sign */
   for (i = 0; i < sl->nsigns; ++i)

@@ -119,14 +119,17 @@ sx_s_values_by_oid(FILE *fp, struct sl_signlist *sl)
     {
       int j;
       const char **vals = hash_find(sl->values_by_oid, (uccp)keys[i]);
-      fprintf(fp, "%s;values\t", keys[i]);
-      for (j = 0; vals[j]; ++j)
+      if (vals)
 	{
-	  if (j)
-	    fputc(' ', fp);
-	  fputs((ccp)vals[j], fp);
+	  fprintf(fp, "%s;values\t", keys[i]);
+	  for (j = 0; vals[j]; ++j)
+	    {
+	      if (j)
+		fputc(' ', fp);
+	      fputs((ccp)vals[j], fp);
+	    }
+	  fputc('\n', fp);
 	}
-      fputc('\n', fp);
     }
 }
 

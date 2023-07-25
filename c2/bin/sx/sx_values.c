@@ -19,6 +19,70 @@ static int val_cmp(const void *a, const void *b)
     return 0;
 }
 
+#if 1
+void
+sx_values_by_oid(struct sl_signlist *sl)
+{
+  Hash *h = hash_create(1024);
+  int i;
+  for (i = 0; i < sl->nsigns; ++i)
+    {
+      List *lp = list_create(LIST_SINGLE);
+      const char **vals;
+      if (sl->signs[i]->inst->valid)
+	{
+	  int j;
+	  for (j = 0; j < sl->signs[i]->nvalues; ++j)
+	    {
+	      if (!sl->signs[i]->values[j]->u.v->atf && sl->signs[i]->values[j]->valid)
+		{
+		  list_add(lp, (void*)sl->signs[i]->values[j]->u.v->name);
+		}
+	    }
+	}
+      vals = list2chars(lp);
+      cmpsl = sl;
+      qsort(vals, list_len(lp), sizeof(const char *), (cmp_fnc_t)val_cmp);
+      cmpsl = NULL;
+      if (sl->signs[i]->oid)
+	hash_add(h, (uccp)sl->signs[i]->oid, vals);
+      list_free(lp, NULL);
+    }
+  for (i = 0; i < sl->nforms; ++i)
+    {
+      if (list_len(sl->forms[i]->insts))
+	{
+	  struct sl_inst *ip;
+	  const char **vals;
+	  List *lp = list_create(LIST_SINGLE);
+	  for (ip = list_first(sl->forms[i]->insts); ip; list_next(sl->forms[i]->insts))
+	    {
+	      if (ip->valid)
+		{
+		  if (ip->lv && ip->lv->nvalues)
+		    {
+		      int j;
+		      for (j = 0; j < ip->lv->nvalues; ++j)
+			{
+			  if (ip->lv->values[j]->valid)
+			    {
+			      list_add(lp, (void*)ip->lv->values[j]->u.v->name);
+			    }
+			}
+		    }
+		}
+	    }
+	  vals = list2chars(lp);
+	  cmpsl = sl;
+	  qsort(vals, list_len(lp), sizeof(const char *), (cmp_fnc_t)val_cmp);
+	  cmpsl = NULL;
+	  hash_add(h, (uccp)sl->forms[i]->oid, vals);
+	}
+    }
+  sl->values_by_oid = h;
+}
+
+#else
 void
 sx_values_by_oid(struct sl_signlist *sl)
 {
@@ -28,29 +92,37 @@ sx_values_by_oid(struct sl_signlist *sl)
   
   for (i = 0; i < sl->nvalues; ++i)
     {
-      if (sl->values[i]->sowner)
+      if (!sl->values[i]->atf)
 	{
-	  List *lp;
-	  if (!(lp = hash_find(h, (uccp)sl->values[i]->sowner->oid)))
-	    {
-	      lp = list_create(LIST_SINGLE);
-	      hash_add(h, (uccp)sl->values[i]->sowner->oid, lp);
-	    }
-	  list_add(lp, (void*)sl->values[i]->name);
-	}
-      if (sl->values[i]->fowners)
-	{
-	  struct sl_inst *ip;
-	  for (ip = list_first(sl->values[i]->fowners); ip; ip = list_next(sl->values[i]->fowners))
+	  /* Drop @sign- */
+	  if (sl->values[i]->sowner && sl->values[i]->sowner->inst->valid)
 	    {
 	      List *lp;
-	      unsigned const char *oid = (uccp)(ip->type == 's' ? ip->u.s->oid : ip->u.f->sign->oid);
-	      if (!(lp = hash_find(h, (uccp)oid)))
+	      if (!(lp = hash_find(h, (uccp)sl->values[i]->sowner->oid)))
 		{
 		  lp = list_create(LIST_SINGLE);
-		  hash_add(h, (uccp)oid, lp);
+		  hash_add(h, (uccp)sl->values[i]->sowner->oid, lp);
 		}
 	      list_add(lp, (void*)sl->values[i]->name);
+	    }
+	  if (sl->values[i]->fowners)
+	    {
+	      struct sl_inst *ip;
+	      for (ip = list_first(sl->values[i]->fowners); ip; ip = list_next(sl->values[i]->fowners))
+		{
+		  /* Drop @sign- and @form- */
+		  if (ip->valid)
+		    {
+		      List *lp;
+		      unsigned const char *oid = (uccp)(ip->type == 's' ? ip->u.s->oid : ip->u.f->sign->oid);
+		      if (!(lp = hash_find(h, (uccp)oid)))
+			{
+			  lp = list_create(LIST_SINGLE);
+			  hash_add(h, (uccp)oid, lp);
+			}
+		      list_add(lp, (void*)sl->values[i]->name);
+		    }
+		}
 	    }
 	}
     }
@@ -66,3 +138,4 @@ sx_values_by_oid(struct sl_signlist *sl)
     }
   sl->values_by_oid = h2;
 }
+#endif
