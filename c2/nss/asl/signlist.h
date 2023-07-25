@@ -71,6 +71,9 @@ struct sl_parents
 {
   List *signs; /* list of insts; plural because xvalues can legally have multiple parents */
   List *forms; /* list of insts */
+  /* Sorted array of OIDs for easy printing; if qvsign and qvform it's
+     all OIDs; if just qvform it's only form OIDs */
+  const char **qvoids;
 };
 
 struct sl_split_value
@@ -287,6 +290,8 @@ struct sl_value
 			     insts */
   Boolean atf;		  /* value is not a simple grapheme but an atf transliteration, e.g., u-gun₃ */
   Boolean xvalue;      	  /* value ends in ₓ */
+  Boolean qvsign;	  /* value must be qualified when it has a sign parent */
+  Boolean qvform;	  /* value must be qualified when it has a form parent */
   Boolean unknown;     	  /* name is 'x'; these are SIGN entries in
 			     lex whose value is not preserved */
   unsigned char index; 	  /* 1 for no index; integer value of index for numeric indices; 255 for sub x */

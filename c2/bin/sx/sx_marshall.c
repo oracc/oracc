@@ -9,7 +9,7 @@ Hash *oids;
 Hash *oid_sort_keys;
 static struct sl_signlist *cmpsl = NULL;
 
-static int oid_char_cmp(const void *a, const void *b)
+int oid_char_cmp(const void *a, const void *b)
 {
   const char *cc1 = (*(char**)a);
   const char *cc2 = (*(char**)b);
@@ -559,11 +559,11 @@ sx_marshall(struct sl_signlist *sl)
 
   sx_values_parents(sl);
 
-  sx_values_parents_dump(sl);
+  /*sx_values_parents_dump(sl);*/
   
   sx_homophones(sl);
 
-  /*sx_qualified(sl);*/
+  sx_qualified(sl);
 
   /*collate_term();*/
 }

@@ -24,6 +24,7 @@ extern void sx_compound_digests(struct sl_signlist *sl);
 extern void sx_homophones(struct sl_signlist *sl);
 extern void sx_inherited(struct sl_signlist *sl);
 extern void sx_marshall(struct sl_signlist *sl);
+extern void sx_qualified(struct sl_signlist *sl);
 extern void sx_values_by_oid(struct sl_signlist *sl);
 extern void sx_values_parents(struct sl_signlist *sl);
 extern void sx_values_parents_dump(struct sl_signlist *sl);

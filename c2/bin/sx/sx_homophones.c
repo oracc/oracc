@@ -3,7 +3,7 @@
 #include <signlist.h>
 #include <sx.h>
 
-int htrace = 1;
+int htrace = 0;
 
 int
 g_index_of(const unsigned char *g, const unsigned char *b)

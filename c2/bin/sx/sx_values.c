@@ -2,7 +2,7 @@
 #include <signlist.h>
 #include <sx.h>
 
-int vtrace = 1;
+int vtrace = 0;
 
 static struct sl_signlist *cmpsl = NULL;
 static int val_cmp(const void *a, const void *b)

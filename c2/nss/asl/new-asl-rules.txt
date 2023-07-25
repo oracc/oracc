@@ -6,8 +6,10 @@
 * Qualified-value (qv) requirements: sl-db2.plx enforced unnecessary
   qv requirements.  The new qv requirements are:
 
-  ** all ₓ-values must be qualified
-  ** all non-ₓ-values which occur with more than one @form must be qualified  
+  ** all ₓ-values must be qualified all non-ₓ-values which occur with
+  ** more than one @form must be qualified when they are written with
+  ** a form (i.e., they default to the sign-writing if they are not
+  ** qualified and there is a sign-writing)
 
 * Comments -- @inote, @note, @lit, #-comments, are always attached to
   the most recent instance node: this means @sign, @list, @form or @v.
