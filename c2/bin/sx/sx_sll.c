@@ -28,6 +28,7 @@ static void sx_s_VALUE(struct sl_functions *f, struct sl_value *v);
 static void sx_s_homophones(FILE *fp, struct sl_signlist *sl);
 static void sx_s_compounds(FILE *fp, const unsigned char *name, const char *tag, const char **oids);
 static void sx_s_values_by_oid(FILE *fp, struct sl_signlist *sl);
+static void sx_s_qualified(FILE *fp, struct sl_signlist *sl);
 
 struct sl_functions *
 sx_sll_init(FILE *fp, const char *fname)
@@ -55,12 +56,11 @@ sx_s_signlist(struct sl_functions *f, struct sl_signlist *sl)
     sx_s_FORM(f, sl->forms[i]);
   for (i = 0; i < sl->nlists; ++i)
     sx_s_LIST(f, sl->lists[i]);
-#if 0
   for (i = 0; i < sl->nvalues; ++i)
     sx_s_VALUE(f, sl->values[i]);
-#endif
   sx_s_values_by_oid(f->fp, sl);
   sx_s_homophones(f->fp, sl);
+  sx_s_qualified(f->fp, sl);
   for (i = 0; i < sl->nletters; ++i)
     sx_s_letter(f, &sl->letters[i]);
 }
@@ -229,42 +229,22 @@ sx_s_value(struct sl_functions *f, struct sl_inst *v)
 static void
 sx_s_VALUE(struct sl_functions *f, struct sl_value *v)
 {
-  if (v->sowner)
+  if (!v->qvmust && !v->atf)
     {
-      fprintf(f->fp, "%s\t%s\n", v->name, v->sowner->oid);
-      if (v->nfowners)
+      if (v->parents)
 	{
-	  int i;
-	  for (i = 0; i < v->nfowners; ++i)
+	  struct sl_inst *ip;
+	  if (v->parents->signs)
 	    {
-	      const char *sname = NULL, *oid = NULL;
-	      if ('s' == v->fowners_i_sort[i]->type)
-		{
-		  sname = (ccp)v->fowners_i_sort[i]->u.s->name;
-		  oid = (ccp)v->fowners_i_sort[i]->u.s->oid;
-		}
-	      else
-		{
-		  sname = (ccp)v->fowners_i_sort[i]->u.f->name;
-		  oid = (ccp)v->fowners_i_sort[i]->u.f->oid;
-		}
-	      fprintf(f->fp, "%s(%s);qv\t%s\n", v->name, sname, oid);
+	      if ((ip = list_first(v->parents->signs)))
+		fprintf(f->fp, "%s\t%s\n", v->name, ip->u.s->oid);
+	    }
+	  else if (v->parents->forms)
+	    {
+	      if ((ip = list_first(v->parents->forms)))
+		fprintf(f->fp, "%s\t%s\n", v->name, ip->u.f->oid);
 	    }
 	}
-    }
-  else
-    {
-      int i;
-      fprintf(f->fp, "%s;q\t", v->name);
-      for (i = 0; v->oids[i]; ++i)
-	{
-	  if (i)
-	    fputc(' ', f->fp);
-	  fputs(hash_find(oids, (uccp)v->oids[i]), f->fp);
-	}
-      fputs("\n", f->fp);
-      for (i = 0; v->oids[i]; ++i)
-	fprintf(f->fp, "%s(%s);qv\t%s\n", v->name, (ccp)hash_find(oids, (uccp)v->oids[i]), v->oids[i]);
     }
 }
 
@@ -356,4 +336,35 @@ sx_s_compounds(FILE *fp, const unsigned char *name, const char *tag, const char 
       fputs(oids[i], fp);
     }
   fputc('\n', fp);
+}
+
+static void
+sx_s_qualified(FILE *fp, struct sl_signlist *sl)
+{
+  int i;
+  for (i = 0; i < sl->nvalues; ++i)
+    {
+      if (sl->values[i]->parents)
+	{
+	  if (sl->values[i]->parents->qvoids)
+	    {
+	      int j;
+	      if (sl->values[i]->qvmust)
+		{
+		  fprintf(fp, "%s;q\t", sl->values[i]->name);
+		  for (j = 0; sl->values[i]->parents->qvoids[j]; ++j)
+		    {
+		      if (j)
+			fputc(' ', fp);
+		      fputs(hash_find(oids, (uccp)sl->values[i]->parents->qvoids[j]), fp);
+		    }
+		  fputc('\n', fp);
+		}
+	      for (j = 0; sl->values[i]->parents->qvoids[j]; ++j)
+		fprintf(fp, "%s(%s);qv\t%s\n", sl->values[i]->name,
+			(const char*)hash_find(oids, (uccp)sl->values[i]->parents->qvoids[j]),
+			sl->values[i]->parents->qvoids[j]);
+	    }
+	}
+    }
 }

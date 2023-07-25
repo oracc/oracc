@@ -2,7 +2,7 @@
 #include <signlist.h>
 #include <sx.h>
 
-int vtrace = 0;
+int vtrace = 1;
 
 static struct sl_signlist *cmpsl = NULL;
 static int val_cmp(const void *a, const void *b)
@@ -28,6 +28,11 @@ void
 sx_values_parents(struct sl_signlist *sl)
 {
   int i;
+  FILE *vfp = NULL;
+
+  if (vtrace)
+    vfp = fopen("vtrace.log", "w");
+  
   /* Gather the valid parents--both value and sign/form need to be marked valid */
   for (i = 0; i < sl->nvalues; ++i)
     {
@@ -46,7 +51,7 @@ sx_values_parents(struct sl_signlist *sl)
 		      if (ip->parent_s->valid)
 			{
 			  if (vtrace)
-			    fprintf(stderr, "vtrace: adding %s under parent sign %s\n", sl->values[i]->name, ip->parent_s->u.s->name);
+			    fprintf(vfp, "vtrace: adding %s under parent sign %s\n", sl->values[i]->name, ip->parent_s->u.s->name);
 			  if (!sl->values[i]->parents->signs)
 			    sl->values[i]->parents->signs = list_create(LIST_SINGLE);
 			  list_add(sl->values[i]->parents->signs, ip->parent_s);
@@ -57,7 +62,7 @@ sx_values_parents(struct sl_signlist *sl)
 		      if (ip->parent_f->valid)
 			{
 			  if (vtrace)
-			    fprintf(stderr, "vtrace: adding %s under parent form %s::%s\n",
+			    fprintf(vfp, "vtrace: adding %s under parent form %s::%s\n",
 				    sl->values[i]->name, ip->parent_f->parent_s->u.s->name, ip->parent_f->u.f->name);
 			  if (!sl->values[i]->parents->forms)
 			    sl->values[i]->parents->forms = list_create(LIST_SINGLE);
@@ -68,12 +73,15 @@ sx_values_parents(struct sl_signlist *sl)
 	    }
 	}
     }
+  if (vfp)
+    fclose(vfp);
 }
 
 void
 sx_values_parents_dump(struct sl_signlist *sl)
 {
   int i;
+  FILE *vfp = fopen("vparents.log", "w");
   /* Gather the valid parents--both value and sign/form need to be marked valid */
   for (i = 0; i < sl->nvalues; ++i)
     {
@@ -84,17 +92,18 @@ sx_values_parents_dump(struct sl_signlist *sl)
 	    {
 	      struct sl_inst *ip;
 	      for (ip = list_first(p->signs); ip; ip = list_next(p->signs))
-		fprintf(stderr, "values: value %s has parent sign %s\n", sl->values[i]->name, ip->u.s->name);
+		fprintf(vfp, "values: value %s has parent sign %s\n", sl->values[i]->name, ip->u.s->name);
 	    }
 	  if (p->forms)
 	    {
 	      struct sl_inst *ip;
 	      for (ip = list_first(p->forms); ip; ip = list_next(p->forms))
-		fprintf(stderr, "values: value %s has parent form %s::%s\n",
+		fprintf(vfp, "values: value %s has parent form %s::%s\n",
 			sl->values[i]->name, ip->parent_s->u.s->name, ip->u.f->name);
 	    }
 	}
-    }  
+    }
+  fclose(vfp);
 }
 
 #if 1

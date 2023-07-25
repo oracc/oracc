@@ -292,6 +292,7 @@ struct sl_value
   Boolean xvalue;      	  /* value ends in ₓ */
   Boolean qvsign;	  /* value must be qualified when it has a sign parent */
   Boolean qvform;	  /* value must be qualified when it has a form parent */
+  Boolean qvmust;	  /* Value has no unqualified version */
   Boolean unknown;     	  /* name is 'x'; these are SIGN entries in
 			     lex whose value is not preserved */
   unsigned char index; 	  /* 1 for no index; integer value of index for numeric indices; 255 for sub x */

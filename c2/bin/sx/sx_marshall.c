@@ -559,7 +559,7 @@ sx_marshall(struct sl_signlist *sl)
 
   sx_values_parents(sl);
 
-  /*sx_values_parents_dump(sl);*/
+  sx_values_parents_dump(sl);
   
   sx_homophones(sl);
 
