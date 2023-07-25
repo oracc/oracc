@@ -2,6 +2,8 @@
 #include <signlist.h>
 #include <sx.h>
 
+int vtrace = 1;
+
 static struct sl_signlist *cmpsl = NULL;
 static int val_cmp(const void *a, const void *b)
 {
@@ -17,6 +19,82 @@ static int val_cmp(const void *a, const void *b)
     return 1;
   else
     return 0;
+}
+
+/* iterate over the value instances and make a list of the parent
+   sign/forms of each; this can then be the basis for both homophones
+   and qualified values */
+void
+sx_values_parents(struct sl_signlist *sl)
+{
+  int i;
+  /* Gather the valid parents--both value and sign/form need to be marked valid */
+  for (i = 0; i < sl->nvalues; ++i)
+    {
+      if (!sl->values[i]->atf)
+	{
+	  struct sl_inst *ip;
+
+	  sl->values[i]->parents = memo_new(sl->m_parents);
+
+	  for (ip = list_first(sl->values[i]->insts); ip; ip = list_next(sl->values[i]->insts))
+	    {
+	      if (ip->valid)
+		{
+		  if (ip->parent_s)
+		    {
+		      if (ip->parent_s->valid)
+			{
+			  if (vtrace)
+			    fprintf(stderr, "vtrace: adding %s under parent sign %s\n", sl->values[i]->name, ip->parent_s->u.s->name);
+			  if (!sl->values[i]->parents->signs)
+			    sl->values[i]->parents->signs = list_create(LIST_SINGLE);
+			  list_add(sl->values[i]->parents->signs, ip->parent_s);
+			}
+		    }
+		  else if (ip->parent_f)
+		    {
+		      if (ip->parent_f->valid)
+			{
+			  if (vtrace)
+			    fprintf(stderr, "vtrace: adding %s under parent form %s::%s\n",
+				    sl->values[i]->name, ip->parent_f->parent_s->u.s->name, ip->parent_f->u.f->name);
+			  if (!sl->values[i]->parents->forms)
+			    sl->values[i]->parents->forms = list_create(LIST_SINGLE);
+			  list_add(sl->values[i]->parents->forms, ip->parent_f);
+			}
+		    }
+		}
+	    }
+	}
+    }
+}
+
+void
+sx_values_parents_dump(struct sl_signlist *sl)
+{
+  int i;
+  /* Gather the valid parents--both value and sign/form need to be marked valid */
+  for (i = 0; i < sl->nvalues; ++i)
+    {
+      if (sl->values[i]->parents)
+	{
+	  struct sl_parents *p = sl->values[i]->parents;
+	  if (p->signs)
+	    {
+	      struct sl_inst *ip;
+	      for (ip = list_first(p->signs); ip; ip = list_next(p->signs))
+		fprintf(stderr, "values: value %s has parent sign %s\n", sl->values[i]->name, ip->u.s->name);
+	    }
+	  if (p->forms)
+	    {
+	      struct sl_inst *ip;
+	      for (ip = list_first(p->forms); ip; ip = list_next(p->forms))
+		fprintf(stderr, "values: value %s has parent form %s::%s\n",
+			sl->values[i]->name, ip->parent_s->u.s->name, ip->u.f->name);
+	    }
+	}
+    }  
 }
 
 #if 1
@@ -83,6 +161,7 @@ sx_values_by_oid(struct sl_signlist *sl)
 }
 
 #else
+
 void
 sx_values_by_oid(struct sl_signlist *sl)
 {

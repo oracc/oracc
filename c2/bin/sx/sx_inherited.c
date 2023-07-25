@@ -53,14 +53,14 @@ sx_inherited(struct sl_signlist *sl)
       for (form_inst = list_first(sl->forms[i]->insts); form_inst; form_inst = list_next(sl->forms[i]->insts))
 	{
 	  if (itrace)
-	    fprintf(stderr, "inherit: processing %s::%s\n", form_inst->parent->name, sl->forms[i]->name);
+	    fprintf(stderr, "inherit: processing %s::%s\n", form_inst->parent_s->u.s->name, sl->forms[i]->name);
 	  /* Each of form_owner's values is a candidate for inheriting; we can approach this via the sign's hvbases */
-	  if (form_inst->parent->hvbases)
+	  if (form_inst->parent_s->u.s->hvbases)
 	    {
 	      const char **keys;
 	      int nkeys;
 	      int j;
-	      keys = hash_keys2(form_inst->parent->hvbases, &nkeys);
+	      keys = hash_keys2(form_inst->parent_s->u.s->hvbases, &nkeys);
 	      for (j = 0; j < nkeys; ++j)
 		{
 		  unsigned const char *b = NULL;
@@ -77,16 +77,16 @@ sx_inherited(struct sl_signlist *sl)
 			  const unsigned char *sb = NULL;
 			  if (!(sb = hash_find(sl->forms[i]->sign->hvbases, (uccp)keys[j])))
 			    {
-			      b = hash_find(form_inst->parent->hvbases, (uccp)keys[j]);
+			      b = hash_find(form_inst->parent_s->u.s->hvbases, (uccp)keys[j]);
 			      if (itrace)
 				fprintf(stderr, "inherit: value %s is inheritable in form %s under sign %s\n",
-					b, sl->forms[i]->name, form_inst->parent->name);
+					b, sl->forms[i]->name, form_inst->parent_s->u.s->name);
 			      if (!form_inst->lv)
 				form_inst->lv = memo_new(sl->m_lv_data);
 			      if (!form_inst->lv->hivalues)
 				form_inst->lv->hivalues = hash_create(1);
 			      hash_add(form_inst->lv->hivalues, (uccp)b, "");
-			      hash_add(form_inst->lv->hventry, (uccp)b, hash_find(form_inst->parent->hventry, (uccp)b));
+			      hash_add(form_inst->lv->hventry, (uccp)b, hash_find(form_inst->parent_s->u.s->hventry, (uccp)b));
 			      sx_v_fowner(sl, form_inst, b);
 			    }
 			}
@@ -95,7 +95,7 @@ sx_inherited(struct sl_signlist *sl)
 		    {
 		      if (itrace)
 			fprintf(stderr, "inherit: parent base %s not found in form_inst->lv->hvbases\n", keys[j]);
-		      b = hash_find(form_inst->parent->hvbases, (uccp)keys[j]);
+		      b = hash_find(form_inst->parent_s->u.s->hvbases, (uccp)keys[j]);
 		      /* inherit into an empty lv node */
 		      if (!form_inst->lv)
 			form_inst->lv = memo_new(sl->m_lv_data);
@@ -106,7 +106,7 @@ sx_inherited(struct sl_signlist *sl)
 		      if (itrace)
 			fprintf(stderr, "inherit: adding %s to form_inst->lv->hventry/hivalues\n", b);
 		      hash_add(form_inst->lv->hivalues, (uccp)b, "");
-		      hash_add(form_inst->lv->hventry, (uccp)b, hash_find(form_inst->parent->hventry, (uccp)b));
+		      hash_add(form_inst->lv->hventry, (uccp)b, hash_find(form_inst->parent_s->u.s->hventry, (uccp)b));
 		      sx_v_fowner(sl, form_inst, b);
 		    }
 		}
@@ -130,7 +130,7 @@ sx_inherited(struct sl_signlist *sl)
 		      /* @sign A @v a and @form A @v a₆ */
 		      if (sb && fb && strcmp((ccp)sb, (ccp)fb))
 			mesg_verr(&form_inst->mloc, "value %s in form %s::%s has the same base as value %s in sign %s\n",
-				  fb, form_inst->parent->name, sl->forms[i]->name, sb, sl->forms[i]->sign->name);
+				  fb, form_inst->parent_s->u.s->name, sl->forms[i]->name, sb, sl->forms[i]->sign->name);
 		    }
 		}
 	    }

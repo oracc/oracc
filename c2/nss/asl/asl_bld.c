@@ -38,6 +38,7 @@ asl_bld_init(void)
   sl->m_split_v = memo_init(sizeof(struct sl_split_value),512);
   sl->m_compounds = memo_init(sizeof(struct sl_compound), 512);
   sl->m_digests = memo_init(sizeof(struct sl_compound_digest), 512);
+  sl->m_parents = memo_init(sizeof(struct sl_parents), 1024);
   sl->p = pool_init();
   sl->compounds = list_create(LIST_SINGLE);
   return sl;
@@ -69,6 +70,7 @@ asl_bld_term(struct sl_signlist *sl)
       memo_term(sl->m_split_v);
       memo_term(sl->m_compounds);
       memo_term(sl->m_digests);
+      memo_term(sl->m_parents);
       pool_term(sl->p);
       free(sl);
     }
@@ -219,8 +221,8 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
 	}
 
       sl->curr_form = sl->curr_inst = i;
-      i->parent = sl->curr_sign;
 
+      i->parent_s = sl->curr_sign->inst;
       i->type = 'f';
       i->u.f = f;
       i->var = var;
@@ -562,6 +564,10 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   i->ref = ref;
   i->valid = (Boolean)!minus_flag;
   i->query = (Boolean)query;
+  if (sl->curr_form)
+    i->parent_f = sl->curr_form;
+  else
+    i->parent_s = sl->curr_sign->inst;
   sl->curr_inst = i;
   
   /* If we are processing a sign and the v is already in

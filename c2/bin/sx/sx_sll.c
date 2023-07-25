@@ -335,7 +335,9 @@ sx_s_homophones(FILE *fp, struct sl_signlist *sl)
 	    fputc(' ', fp);
 	  if (spv[j]->i == 1)
 	    fputs(spv[j]->oid, fp);
-	  else	    
+	  else if (spv[j]->i == 1000)
+	    fprintf(fp, "%s/0", spv[j]->oid);
+	  else 
 	    fprintf(fp, "%s/%d", spv[j]->oid, spv[j]->i);
 	}
       fputc('\n', fp);

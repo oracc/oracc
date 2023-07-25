@@ -55,6 +55,7 @@ struct sl_signlist
   Memo *m_split_v;
   Memo *m_compounds;
   Memo *m_digests;
+  Memo *m_parents;
   Pool *p;
   Mloc *mloc;
 };
@@ -63,6 +64,13 @@ struct sl_token
 {
   const unsigned char *t;	/* sign/form/value/list name token */
   int s;			/* sort code for token */
+};
+
+/* Parents of values */
+struct sl_parents
+{
+  List *signs; /* list of insts; plural because xvalues can legally have multiple parents */
+  List *forms; /* list of insts */
 };
 
 struct sl_split_value
@@ -119,7 +127,8 @@ struct sl_inst
   struct sl_lv_data *lv; /* used by form instances */
   const unsigned char *ref; /* this is inline in the @v */
   const unsigned char *var; /* The variant code for a form instance, with tilde */
-  struct sl_sign *parent; /* The parent sign for a form instance */
+  struct sl_inst *parent_s; /* The parent sign for a form or value instance; if NULL use parent_f */
+  struct sl_inst *parent_f; /* The parent form for a value instance */
   struct sl_any_note n;
   Mloc mloc;
   Boolean valid; /* doesn't have a - after it */
@@ -268,6 +277,7 @@ struct sl_value
   List *fowners; 	  /* for a value at the form level, this is a
 			     list of sl_inst* it belongs to */
   List *insts;
+  struct sl_parents *parents; /* Just the valid parents computed from the insts */
   struct sl_inst **fowners_i_sort; /* The fowners as an array of
 				      sorted pointers to sl_insts */
   int nfowners;
