@@ -7,6 +7,7 @@ extern int sortcode_output;
 extern Hash * oid_load(const char *domain);
 Hash *oids;
 Hash *oid_sort_keys;
+static struct sl_signlist *cmpsl = NULL;
 
 static int oid_char_cmp(const void *a, const void *b)
 {
@@ -218,6 +219,24 @@ static int values_cmp(const void *a, const void *b)
     return 0;
 }
 
+#if 0
+static int via_tok_cmp(const void *a, const void *b)
+{
+  const char *cc1 = (*(char**)a);
+  const char *cc2 = (*(char**)b);
+  struct sl_token *t1 = hash_find(cmpsl->htoken, (uccp)cc1);
+  struct sl_token *t2 = hash_find(cmpsl->htoken, (uccp)cc2);
+  int a1 = t1->s;
+  int b1 = t2->s;
+  if (a1 < b1)
+    return -1;
+  else if (a1 > b1)
+    return 1;
+  else
+    return 0;
+}
+#endif
+
 void
 sx_marshall(struct sl_signlist *sl)
 {
@@ -313,26 +332,6 @@ sx_marshall(struct sl_signlist *sl)
 	      hash_add(oid_sort_keys, (uccp)sl->forms[i]->oid, (void*)(uintptr_t)sl->forms[i]->sort);
 	    }
 	}
-#if 0
-      if (list_len(sl->forms[i]->insts))
-	{
-	  struct sl_inst *ip;
-	  for (ip = list_first(sl->forms[i]->insts); ip; ip = list_next(sl->forms[i]->insts))
-	    {
-	      if (ip->lv && ip->lv->hventry)
-		{
-		  const char **lvv;
-		  int nlvv, k;
-		  lvv = hash_keys2(ip->lv->hventry, &nlvv);
-		  ip->lv->values = memo_new_array(sl->m_insts_p, nlvv);
-		  ip->lv->nvalues = nlvv;
-		  for (k = 0; k < nlvv; ++k)
-		    ip->lv->values[k] = hash_find(ip->lv->hventry, (uccp)lvv[k]);
-		  qsort(ip->lv->values, nlvv, sizeof(struct sl_inst*), fowners_cmp);
-		}
-	    }	  
-	}
-#endif
     }
   /* Sort the forms */
   qsort(sl->forms, sl->nforms, sizeof(struct sl_form*), (cmp_fnc_t)forms_cmp);
@@ -377,7 +376,8 @@ sx_marshall(struct sl_signlist *sl)
   /* Sort the lists */
   qsort(sl->lists, sl->nlists, sizeof(struct sl_list*), (cmp_fnc_t)lists_cmp);
 
-  /* Convert lv->hventry to lv->values and sort them */
+  /* Convert lv->hventry to lv->values */
+  cmpsl = sl;
   for (i = 0; i < sl->nforms; ++i)
     {
       if (sl->forms[i]->insts)
@@ -389,6 +389,10 @@ sx_marshall(struct sl_signlist *sl)
 		{
 		  int j, k;
 		  const char **vkeys = hash_keys2(ip->lv->hventry, &ip->lv->nvalues);
+#if 0
+		  if (ip->lv->nvalues > 1)
+		    qsort(vkeys, ip->lv->nvalues, sizeof(char*), (cmp_fnc_t)via_tok_cmp);
+#endif
 		  ip->lv->values = memo_new_array(sl->m_insts_p, ip->lv->nvalues);
 		  for (j = k = 0; j < ip->lv->nvalues; ++j)
 		    {
@@ -403,8 +407,9 @@ sx_marshall(struct sl_signlist *sl)
 	    }
 	}
     }
-  
-  /* Create oid arrays for the list entries */
+  cmpsl = NULL;
+
+  /* Create oid arrays for the list entries; used in sx_sll output */
   for (i = 0; i < sl->nlists; ++i)
     sl->lists[i]->oids = sx_oid_array(NULL, sl->lists[i]->insts);
 
@@ -442,11 +447,13 @@ sx_marshall(struct sl_signlist *sl)
   /* Sort the values */
   qsort(sl->values, sl->nvalues, sizeof(struct sl_value*), (cmp_fnc_t)values_cmp);
 
+#if 0
   /* NOT SURE THIS IS USEFUL */
   /* Create oid arrays for the value entries */
   for (i = 0; i < sl->nvalues; ++i)
     sl->values[i]->oids = sx_oid_array(sl->values[i]->sowner, sl->values[i]->fowners);
-
+#endif
+  
   /* Second phase of compounds: invert Hashes of sl_compound
      structures into arrays of OIDs for each category */
   sx_compound_digests(sl);
