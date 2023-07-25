@@ -55,7 +55,7 @@ sx_values_by_oid(struct sl_signlist *sl)
 	  struct sl_inst *ip;
 	  const char **vals;
 	  List *lp = list_create(LIST_SINGLE);
-	  for (ip = list_first(sl->forms[i]->insts); ip; list_next(sl->forms[i]->insts))
+	  for (ip = list_first(sl->forms[i]->insts); ip; ip = list_next(sl->forms[i]->insts))
 	    {
 	      if (ip->valid)
 		{

@@ -51,6 +51,10 @@ sx_homophones(struct sl_signlist *sl)
   for (i = 0; i < sl->nvalues; ++i)
     {
       List *lp = NULL;
+
+      if (sl->values[i]->atf)
+	continue;
+
       if (sl->values[i]->xvalue)
 	{
 	  struct sl_inst *ip = NULL;

@@ -64,9 +64,13 @@ sx_inherited(struct sl_signlist *sl)
 	      for (j = 0; j < nkeys; ++j)
 		{
 		  unsigned const char *b = NULL;
+		  if (itrace)
+		    fprintf(stderr, "inherit: testing parent base %s\n", keys[j]);
 		  if (form_inst->lv && form_inst->lv->hvbases)
 		    {
 		      /* If the sign has a saman₀ and the form has a saman₀ don't inherit */
+		      if (itrace)
+			fprintf(stderr, "inherit: parent base %s found in form_inst->lv->hvbases\n", keys[j]);
 		      if (!(b = hash_find(form_inst->lv->hvbases, (uccp)keys[j])))
 			{
 			  /* In @sign A @v a and @sign E @v a₆ @form A we have to reject inheritance */
@@ -89,12 +93,18 @@ sx_inherited(struct sl_signlist *sl)
 		    }
 		  else
 		    {
+		      if (itrace)
+			fprintf(stderr, "inherit: parent base %s not found in form_inst->lv->hvbases\n", keys[j]);
 		      b = hash_find(form_inst->parent->hvbases, (uccp)keys[j]);
 		      /* inherit into an empty lv node */
 		      if (!form_inst->lv)
 			form_inst->lv = memo_new(sl->m_lv_data);
-		      form_inst->lv->hventry = hash_create(1);
-		      form_inst->lv->hivalues = hash_create(1);
+		      if (!form_inst->lv->hventry)
+			form_inst->lv->hventry = hash_create(32);
+		      if (!form_inst->lv->hivalues)
+			  form_inst->lv->hivalues = hash_create(32);
+		      if (itrace)
+			fprintf(stderr, "inherit: adding %s to form_inst->lv->hventry/hivalues\n", b);
 		      hash_add(form_inst->lv->hivalues, (uccp)b, "");
 		      hash_add(form_inst->lv->hventry, (uccp)b, hash_find(form_inst->parent->hventry, (uccp)b));
 		      sx_v_fowner(sl, form_inst, b);

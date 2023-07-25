@@ -55,8 +55,10 @@ sx_s_signlist(struct sl_functions *f, struct sl_signlist *sl)
     sx_s_FORM(f, sl->forms[i]);
   for (i = 0; i < sl->nlists; ++i)
     sx_s_LIST(f, sl->lists[i]);
+#if 0
   for (i = 0; i < sl->nvalues; ++i)
     sx_s_VALUE(f, sl->values[i]);
+#endif
   sx_s_values_by_oid(f->fp, sl);
   sx_s_homophones(f->fp, sl);
   for (i = 0; i < sl->nletters; ++i)

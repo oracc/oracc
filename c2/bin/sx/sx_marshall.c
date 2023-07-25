@@ -288,7 +288,7 @@ sx_marshall(struct sl_signlist *sl)
     }
   /* Sort the signs */
   qsort(sl->signs, sl->nsigns, sizeof(struct sl_sign*), (cmp_fnc_t)signs_cmp);
-  
+
   /* Provide forms with sort codes based on token sort sequence */
   keys = hash_keys2(sl->hfentry, &nkeys);  
   sl->forms = malloc(sizeof(struct sl_form*) * nkeys);
@@ -313,10 +313,11 @@ sx_marshall(struct sl_signlist *sl)
 	      hash_add(oid_sort_keys, (uccp)sl->forms[i]->oid, (void*)(uintptr_t)sl->forms[i]->sort);
 	    }
 	}
+#if 0
       if (list_len(sl->forms[i]->insts))
 	{
 	  struct sl_inst *ip;
-	  for (ip = list_first(sl->forms[i]->insts); ip; list_next(sl->forms[i]->insts))
+	  for (ip = list_first(sl->forms[i]->insts); ip; ip = list_next(sl->forms[i]->insts))
 	    {
 	      if (ip->lv && ip->lv->hventry)
 		{
@@ -329,11 +330,15 @@ sx_marshall(struct sl_signlist *sl)
 		    ip->lv->values[k] = hash_find(ip->lv->hventry, (uccp)lvv[k]);
 		  qsort(ip->lv->values, nlvv, sizeof(struct sl_inst*), fowners_cmp);
 		}
-	    }
+	    }	  
 	}
+#endif
     }
   /* Sort the forms */
   qsort(sl->forms, sl->nforms, sizeof(struct sl_form*), (cmp_fnc_t)forms_cmp);
+
+  /* add inherited values to forms: timing of this routine is important--don't move it! */
+  sx_inherited(sl);
 
   /* Sort form owners (sl_sign*) if there are any */
   for (i = 0; i < sl->nforms; ++i)
@@ -372,6 +377,33 @@ sx_marshall(struct sl_signlist *sl)
   /* Sort the lists */
   qsort(sl->lists, sl->nlists, sizeof(struct sl_list*), (cmp_fnc_t)lists_cmp);
 
+  /* Convert lv->hventry to lv->values and sort them */
+  for (i = 0; i < sl->nforms; ++i)
+    {
+      if (sl->forms[i]->insts)
+	{
+	  struct sl_inst *ip;
+	  for (ip = list_first(sl->forms[i]->insts); ip; ip = list_next(sl->forms[i]->insts))
+	    {
+	      if (ip->lv && ip->lv->hventry)
+		{
+		  int j, k;
+		  const char **vkeys = hash_keys2(ip->lv->hventry, &ip->lv->nvalues);
+		  ip->lv->values = memo_new_array(sl->m_insts_p, ip->lv->nvalues);
+		  for (j = k = 0; j < ip->lv->nvalues; ++j)
+		    {
+		      ip->lv->values[k] = hash_find(ip->lv->hventry, (uccp)vkeys[j]);
+		      /* ignore NULL entries which can occur when a value is a duplicate */
+		      if (ip->lv->values[k])
+			++k;
+		    }
+		  if (k < ip->lv->nvalues)
+		    ip->lv->nvalues = k;
+		}
+	    }
+	}
+    }
+  
   /* Create oid arrays for the list entries */
   for (i = 0; i < sl->nlists; ++i)
     sl->lists[i]->oids = sx_oid_array(NULL, sl->lists[i]->insts);
@@ -410,6 +442,7 @@ sx_marshall(struct sl_signlist *sl)
   /* Sort the values */
   qsort(sl->values, sl->nvalues, sizeof(struct sl_value*), (cmp_fnc_t)values_cmp);
 
+  /* NOT SURE THIS IS USEFUL */
   /* Create oid arrays for the value entries */
   for (i = 0; i < sl->nvalues; ++i)
     sl->values[i]->oids = sx_oid_array(sl->values[i]->sowner, sl->values[i]->fowners);
@@ -447,9 +480,7 @@ sx_marshall(struct sl_signlist *sl)
 	}
     }
 
-  sx_inherited(sl);
-  
-  /* Create list of globally known values for each OID; need to do this after sx_inherited */
+  /* Marshall sign/form values by OID suitable for output in TSV */
   sx_values_by_oid(sl);
   
   /* Sort the lists, values and forms for each sign */
