@@ -46,6 +46,14 @@ while (<>) {
     s/\@v\s+\%/\@inote \%/;
     s#\@v\s+(\d/\d)\s*$#\@inote \@v- $1#;
     s/\@fake\s*$/\@fake 1/;
+    if (/\@v/ && /\.\.\./) {
+	my $orig = $_;
+	1 while s/\[\.\.\.\]/x/;
+	s/\.\.\./x/;
+	s/\s*$/ₓ/;
+	s/AŠ/aš/;
+	warn "$orig => $_\n";
+    }
     print "$_\n";
 }
 

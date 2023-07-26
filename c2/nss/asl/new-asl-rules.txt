@@ -1,5 +1,16 @@
-* Every component in compounds must be declared as @sign; see @aka for
-  a way to have non-standard components in compounds
+* When the lhs of a × compound is itself a compound it may be
+  convenient to use a value as a sign, e.g., |ITI×(U.U.U)@g| rather
+  than |UD×(U.U.U)×(U.U.U)@g| (though this particular example is
+  suspicious); allowable sign name alternatives can be given with the
+  @name ITI tag
+
+* @aka can be used to create entire compound names that are also
+  accepted by GVL, e.g., @sign |MAŠ.MI| @aka |MAŠ.GI₆|
+
+* for components of compounds that are not signs, use @comp GU@90
+
+* @form entries that do not exist separately as @sign are handled
+  automatically and do not need to be declared as @signs
 
 ! Should validate multiple base-values e.g., šudul₄ and šudul₅ in same sign or form
 
