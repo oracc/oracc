@@ -133,7 +133,7 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
   s->sl = sl;
   
   if ('|' == *s->name)
-    list_add(sl->compounds, (void*)s->name);
+    list_add(sl->compounds, (void*)s->inst);
 
   tp = asl_bld_gdl(locp, (char*)pool_copy(s->name,sl->p));
   s->gdl = tp->root;
@@ -453,7 +453,7 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       else if (!s->inst->valid || minus_flag)
 	mesg_verr(locp, "@sign- %s duplicates valid @sign %s; remove one", n, n);
       else
-	mesg_verr(locp, "duplicate @sign %s\n", n);
+	mesg_verr(locp, "duplicate @sign %s (first occurrence at line %d)\n", n, s->inst->mloc.line);
     }
   else
     {
@@ -546,12 +546,12 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   if (sl->curr_form)
     {
       unsigned const char *b = NULL;
-      if (sl->curr_form->lv && sl->curr_form->lv->hvbases && (b = hash_find(sl->curr_form->lv->hvbases, base)))
+      if (!minus_flag && sl->curr_form->lv && sl->curr_form->lv->hvbases && (b = hash_find(sl->curr_form->lv->hvbases, base)))
 	{
 	  mesg_verr(&sl->curr_inst->mloc, "form %s values %s and %s have the same base %s\n", sl->curr_form->u.f->name, b, n, base);
 	  return;
 	}
-      else
+      else if (!minus_flag) /* only add valid values to hvbases */
 	{
 	  if (!sl->curr_form->lv)
 	    sl->curr_form->lv = memo_new(sl->m_lv_data);
@@ -563,12 +563,12 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   else
     {
       unsigned const char *b = NULL;
-      if ((b = hash_find(sl->curr_sign->hvbases, base)))
+      if (!minus_flag && (b = hash_find(sl->curr_sign->hvbases, base)))
 	{
 	  mesg_verr(&sl->curr_inst->mloc, "sign %s values %s and %s have the same base %s\n", sl->curr_sign->name, b, n, base);
 	  return;
 	}
-      else
+      else if (!minus_flag)
 	{
 	  if (!sl->curr_sign->hvbases)
 	    sl->curr_sign->hvbases = hash_create(1);

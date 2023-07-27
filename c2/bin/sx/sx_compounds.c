@@ -31,15 +31,16 @@ static void sx_compound_node(Node *np, struct sl_signlist *sl, const char *oid);
 void
 sx_compounds(struct sl_signlist *sl)
 {
-  unsigned const char *n;
+  struct sl_inst *ip;
 
   /* We can't process these in sorted order because we can't guarantee
      that we have all the sortable tokens until after processing the
      compounds */
-  for (n = list_first(sl->compounds); n; n = list_next(sl->compounds))
+  for (ip = list_first(sl->compounds); ip; ip = list_next(sl->compounds))
     {
-      struct sl_sign *s = hash_find(sl->hsentry, n);
+      struct sl_sign *s = (ip->type == 's' ? ip->u.s : ip->u.f->sign);
       sxc_nth = 0;
+      sl->curr_inst = ip;
       sx_compound(sl, s->gdl, (ccp)s->name);
     }
 }
@@ -63,7 +64,7 @@ sx_compound_new_sign(struct sl_signlist *sl, const char *sgnname, const char *cp
   const unsigned char *lc = NULL;
   struct sl_value *vp = NULL;
   struct sl_sign *sp = NULL;
-  Mloc *locp = NULL;
+  int line;
 
   if (!sl->hcompoundnew)
     sl->hcompoundnew = hash_create(32);
@@ -74,45 +75,41 @@ sx_compound_new_sign(struct sl_signlist *sl, const char *sgnname, const char *cp
 	   
   lc = utf_lcase((uccp)sgnname);
   vp = hash_find(sl->hventry, (uccp)lc);
+
+  line = sl->curr_inst->mloc.line;
   
-  if ((sp = hash_find(sl->hsentry, (uccp)cpdname)))
-    locp = &sp->inst->mloc;
-  else
-    fprintf(stderr, "sx: no hsentry for form %s\n", cpdname);
+  if (!(sp = hash_find(sl->hsentry, (uccp)cpdname)))
+    mesg_verr(&sl->curr_inst->mloc, "sx: no hsentry for form %s\n", cpdname);
 
   if (vp)
     {
       const unsigned char *sn = NULL;
       struct sl_inst *ip = NULL;
-      if (vp->sowner && vp->sowner->inst->valid)
-	{
-	  sn = vp->sowner->name;
-	  ip = vp->sowner->inst;
-	}
-      else if (vp->fowners)
-	{
-	  for (ip = list_first(vp->fowners); ip; ip = list_next(vp->fowners))
-	    if (ip->valid)
-	      break;
-	  if (ip)
-	    sn = (ip->type == 'f' ? ip->u.f->name : ip->u.s->name);
-	  else
-	    mesg_verr(locp, "compound element %s in %s does not correspond to a valid value", sgnname, cpdname);
-	}
+      
+      /* Traverse the list of sl_inst* for the value looking for a valid one */
+      for (ip = list_first(vp->insts); ip; ip = list_next(vp->insts))
+	if (ip->valid)
+	  break;
+
+      if (ip)
+	sn = (ip->parent_f ? ip->parent_f->u.f->name : ip->parent_s->u.s->name);
+      else
+	mesg_verr(&sl->curr_inst->mloc, "compound element %s in %s does not correspond to a valid value", sgnname, cpdname);
+
       if (sn)
 	{
 	  if (!hash_find(oids, sn))
-	    mesg_verr(locp, "compound element %s should have @sign entry (also tried %s=>%s)", sgnname, vp->name, sn);
-	  else if (!ip->literal)
-	    mesg_verr(locp, "%s in %s should be %s; use @aka if necessary\n",
+	    mesg_verr(&sl->curr_inst->mloc, "compound element %s should have @sign entry (also tried %s=>%s)", sgnname, vp->name, sn);
+	  else if (!sl->curr_inst->literal)
+	    mesg_verr(&sl->curr_inst->mloc, "%s in %s should be %s; use @aka if necessary\n",
 		      sgnname, cpdname, sn);
 	}
       else
-	fprintf(stderr, "sx: strange: no sign name for value %s\n", vp->name);
+	mesg_verr(&sl->curr_inst->mloc, "compound element %s has no valid corresponding value %s\n", sgnname, vp->name);
     }
   else
     {
-      mesg_verr(locp, "compound element %s should have @sign entry\n", sgnname);
+      mesg_verr(&sl->curr_inst->mloc, "compound element %s should have @sign entry\n", sgnname);
     }
 }
 
@@ -236,7 +233,7 @@ sx_compound_node(Node *np, struct sl_signlist *sl, const char *sname)
 {
   if (np)
     {
-      if (!strcmp(np->name, "g:s") || !strcmp(np->name, "g:l"))
+      if (!strcmp(np->name, "g:s") || !strcmp(np->name, "g:l") || !strcmp(np->name, "g:n"))
 	{
 
 	  last_g = np->text;
@@ -283,7 +280,7 @@ sx_compound_node(Node *np, struct sl_signlist *sl, const char *sname)
 	    sx_compound_node(np, sl, sname);
 	  sxc_container_active = 0;
 	}
-      else if (!strcmp(np->name, "g:c") || !strcmp(np->name, "g:n"))
+      else if (!strcmp(np->name, "g:c"))
 	{
 	  for (np = np->kids; np; np = np->next)
 	    sx_compound_node(np, sl, sname);
