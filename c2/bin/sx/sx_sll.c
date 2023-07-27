@@ -311,14 +311,17 @@ sx_s_homophones(FILE *fp, struct sl_signlist *sl)
       spv = (struct sl_split_value**)list2array(lp);
       for (j = 0; j < list_len(lp); ++j)
 	{
-	  if (j)
-	    fputc(' ', fp);
-	  if (spv[j]->i == 1)
-	    fputs(spv[j]->oid, fp);
-	  else if (spv[j]->i == 1000)
-	    fprintf(fp, "%s/0", spv[j]->oid);
-	  else 
-	    fprintf(fp, "%s/%d", spv[j]->oid, spv[j]->i);
+	  if (spv[j]->oid)
+	    {
+	      if (j)
+		fputc(' ', fp);
+	      if (spv[j]->i == 1)
+		fputs(spv[j]->oid, fp);
+	      else if (spv[j]->i == 1000)
+		fprintf(fp, "%s/0", spv[j]->oid);
+	      else 
+		fprintf(fp, "%s/%d", spv[j]->oid, spv[j]->i);
+	    }
 	}
       fputc('\n', fp);
     }

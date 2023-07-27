@@ -27,7 +27,7 @@ int minus_flag = 0;
 %union { char *text; int i; }
 
 %token	<text>  TOK TRANS TAB EOL PAR CMT BAD LINE SIGLUM
-		SIGN FAKE AKA PNAME FORM NOFORM VAR
+		SIGN FAKE AKA COMP PNAME FORM NOFORM
 		GNAME GVALUE GVALUEX
 		GBAD ATF LANG V VCMT VREF LIST LISTNUM
 		INOTE LIT NOTE TEXT END EBAD EFORM ESIGN
@@ -64,6 +64,7 @@ atcmd:
 	  atsignlist
 	| atsign
         | ataka
+        | atcomp
         | atpname
 	| atfake
 	| atlist
@@ -91,6 +92,10 @@ ataka:
 	  AKA GVALUE 	 { asl_bld_aka(&@1, curr_asl, (uccp)$2); }
 	| AKA GNAME 	 { asl_bld_aka(&@1, curr_asl, (uccp)$2); }
 
+atcomp:
+	  COMP GVALUE 	 { asl_bld_comp(&@1, curr_asl, (uccp)$2); }
+	| COMP GNAME 	 { asl_bld_comp(&@1, curr_asl, (uccp)$2); }
+
 atpname:
 	  PNAME GVALUE 	 { asl_bld_pname(&@1, curr_asl, (uccp)$2); }
 	| PNAME GNAME 	 { asl_bld_pname(&@1, curr_asl, (uccp)$2); }
@@ -101,9 +106,9 @@ atlist:
 	;
 
 atform:
-	  FORM VAR gname vref 	{ asl_bld_form(&@1, curr_asl, (uccp)$3, 0, (uccp)$2, (uccp)$4, minus_flag); }
-	| FORM VAR LISTNUM vref { asl_bld_form(&@1, curr_asl, (uccp)$3, 1, (uccp)$2, (uccp)$4, minus_flag); }
-	| FORM VAR GBAD
+	  FORM gname vref 	{ asl_bld_form(&@1, curr_asl, (uccp)$2, 0, (uccp)$3, minus_flag); }
+	| FORM LISTNUM vref 	{ asl_bld_form(&@1, curr_asl, (uccp)$2, 1, (uccp)$3, minus_flag); }
+	| FORM GBAD
 	;
 
 atv:
@@ -121,7 +126,7 @@ vref:
 	| /* empty */ { $$ = NULL; }
 	;
 
-/* Possibly add EGROUP ELETTER ESECTION here */
+/* Possibly add EGROUP ELETTER ESECTION here; note: EFORM no longer used; on ESIGN we should NULL out sl->curr_sign/form/inst */
 atend:
 	  END EFORM
 	| END ESIGN

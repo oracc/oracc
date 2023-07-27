@@ -186,7 +186,7 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 
 void
 asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list,
-	     const unsigned char *var, const unsigned char *ref, int minus_flag)
+	     const unsigned char *ref, int minus_flag)
 {
   int query;
   
@@ -225,7 +225,6 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       i->parent_s = sl->curr_sign->inst;
       i->type = 'f';
       i->u.f = f;
-      i->var = var;
       i->ref = ref;
       i->mloc = *locp;
       i->valid = (Boolean)!minus_flag;
@@ -365,9 +364,17 @@ asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
   asl_bld_token(sl, t);
 
   if (sl->curr_form)
-    list_add(sl->curr_form->u.f->aka, (void*)t);
+    {
+      if (!sl->curr_form->u.f->aka)
+	sl->curr_form->u.f->aka = list_create(LIST_SINGLE);
+      list_add(sl->curr_form->u.f->aka, (void*)t);
+    }
   else if (sl->curr_sign)
-    list_add(sl->curr_sign->aka, (void*)t);
+    {
+      if (!sl->curr_sign->aka)
+	sl->curr_sign->aka = list_create(LIST_SINGLE);
+      list_add(sl->curr_sign->aka, (void*)t);
+    }
   else
     mesg_verr(locp, "misplaced @aka");
 }
@@ -401,6 +408,14 @@ asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 }
 
 void
+asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char *n)
+{
+  asl_bld_sign(locp, sl, n, 0, 0);
+  sl->curr_sign->compound_only = 1;
+  sl->curr_sign = NULL;
+}
+
+void
 asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list, int minus_flag)
 {
   int query = 0;
@@ -429,8 +444,8 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
     }
   else
     {
-      struct sl_sign *s = memo_new(sl->m_signs);
       struct sl_inst *i = memo_new(sl->m_insts);
+      s = memo_new(sl->m_signs);
       s->name = n;
       s->name_is_listnum = list;
       s->inst = i;
@@ -440,10 +455,10 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       i->query = (Boolean)query;
       sl->curr_inst = i;
       i->u.s = s;
-      sl->curr_sign = s;
       hash_add(sl->hsentry, s->name, s);
       asl_register_sign(locp, sl, s);
     }
+  sl->curr_sign = s;
 }
 
 struct sl_signlist *

@@ -106,6 +106,19 @@
 
 * We probably need split/merger tags with some sort of time/place labelling
 
+* Notation for logograms, e.g.,
+
+  @logo A
+  @equ %akk mû
+  @cgp mû[water]N
+  @ref ME 237 CD 213b ZL 435
+
+  For Akkadograms
+
+  @logo %a A
+
+  etc.
+
 * Maybe an ATF convention to say sign-X-is-written-with-glyph-Y without implying that Y has to be a known form of X
 
 * How would we define @form? Cases like A ...

@@ -325,10 +325,11 @@ struct sl_functions
 
 extern struct sl_signlist *asl_bld_init(void);
 extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
-			 int list, const unsigned char *var, const unsigned char *ref, int minus_flag);
+			 int list, const unsigned char *ref, int minus_flag);
 extern void asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag);
 extern void asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char *n);
 
 extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 			 int list, int minus_flag);

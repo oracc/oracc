@@ -4,14 +4,14 @@
 
 ** Run ../../../misc/sl/sl-upgrade.plx /home/oracc/ogsl/00lib/ogsl.asl >ogsl2.asl
 
-** cat comp.add >>ogsl2.asl (temporarily add these as @sign to
+-- DONE ** cat comp.add >>ogsl2.asl (temporarily add these as @sign to
    ogsl.asl and do a build as an easy way of getting them OIDs)
 
-** script the addition of aka.tab to ogsl2.asl
+-- DONE -- built in to sl-upgrade.plx ** script the addition of aka.tab to ogsl2.asl
 
 ** insert @name tags for select items that cause the @aka diagnostic
    but which it is undesirable or perhaps premature to change (ASAL₂,
    ITI, EŠ)
 
-** manually fix the 60 or so "duplicate value", "same base", and
+-- DONE in /home/ogsl/00lib/ogsl.asl ** manually fix the 60 or so "duplicate value", "same base", and
    repeated @uname/@ucode errors in ogsl.asl

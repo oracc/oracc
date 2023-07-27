@@ -78,6 +78,7 @@ PUNCT		("*"|:['".:]?|"/"){Q}
 ^@signlist/[ \t]       		{ atcmd(SIGNLIST,T); }
 ^@sign-?/[ \t]       		{ atcmd(SIGN,0); }
 ^@aka/[ \t]       		{ atcmd(AKA,0); }
+^@comp/[ \t]       		{ atcmd(COMP,0); }
 ^@pname/[ \t]       		{ atcmd(PNAME,0); }
 ^@nosign/[ \t]     		{ mesg_vwarning(curraslfile, asllineno, "[asl] '@nosign' has been replaced by '@sign-'");
 				  /*atcmd(SIGN,-1);*/ }
@@ -121,7 +122,7 @@ PUNCT		("*"|:['".:]?|"/"){Q}
 
 "%"[-a-z0-9]+("/n")?   		{ aslsave; return LANG; }
 
-"~"[^ \t\n]+			{ aslsave; return VAR; }
+"~"[^ \t\n]+			{ mesg_vwarning(curraslfile, asllineno, "[asl] form variant tags like ~a are no longer used"); }
 
 ^"#".*$				{ aslsave; return CMT; }
 

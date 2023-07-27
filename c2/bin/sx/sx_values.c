@@ -163,7 +163,8 @@ sx_values_by_oid(struct sl_signlist *sl)
 	  cmpsl = sl;
 	  qsort(vals, list_len(lp), sizeof(const char *), (cmp_fnc_t)val_cmp);
 	  cmpsl = NULL;
-	  hash_add(h, (uccp)sl->forms[i]->oid, vals);
+	  if (sl->forms[i]->oid)
+	    hash_add(h, (uccp)sl->forms[i]->oid, vals);
 	}
     }
   sl->values_by_oid = h;

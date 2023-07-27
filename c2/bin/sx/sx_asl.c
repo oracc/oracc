@@ -127,14 +127,7 @@ sx_a_sign(struct sl_functions *f, struct sl_sign *s)
     }
   else if (s->compound_only)
     {
-      const char **keys;
-      int nkeys, i;
-      keys = hash_keys2(s->hcompounds, &nkeys);
-      fprintf(f->fp, "@xref%s\t%s%s\n", minus, s->name, query);
-      /* SORTME ? */
-      for (i = 0; i < nkeys; ++i)
-	fprintf(f->fp, "@see %s\n", keys[i]);
-      fprintf(f->fp, "@end xref\n");
+      fprintf(f->fp, "@comp\t%s\n", s->name);
     }
   else
     {
@@ -182,7 +175,7 @@ sx_a_form(struct sl_functions *f, struct sl_inst *s)
       refspace = " ";
       ref = (ccp)s->ref;
     }
-  fprintf(f->fp, "@form%s\t%s %s%s%s%s\n", minus, s->var, s->u.f->name, query, refspace, ref);
+  fprintf(f->fp, "@form%s\t%s%s%s%s\n", minus, s->u.f->name, query, refspace, ref);
   if (s->u.f->pname)
     fprintf(f->fp, "@pname %s\n", s->u.f->pname);
   sx_a_unicode(f->fp, &s->u.f->U);

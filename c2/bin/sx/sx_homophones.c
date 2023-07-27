@@ -34,14 +34,18 @@ spv_cmp(const void *a, const void *b)
 {
   struct sl_split_value *spv1 = (*(struct sl_split_value**)a);
   struct sl_split_value *spv2 = (*(struct sl_split_value**)b);
-  int a1 = (uintptr_t)hash_find(oid_sort_keys, (uccp)spv1->oid);
-  int b1 = (uintptr_t)hash_find(oid_sort_keys, (uccp)spv2->oid);
-  if (a1 < b1)
-    return -1;
-  else if (a1 > b1)
-    return 1;
-  else
-    return 0;
+  if (spv1->oid && spv2->oid)
+    {
+      int a1 = (uintptr_t)hash_find(oid_sort_keys, (uccp)spv1->oid);
+      int b1 = (uintptr_t)hash_find(oid_sort_keys, (uccp)spv2->oid);
+      if (a1 < b1)
+	return -1;
+      else if (a1 > b1)
+	return 1;
+      else
+	return 0;
+    }
+  return 0;
 }
 
 static void

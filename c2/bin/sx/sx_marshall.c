@@ -13,14 +13,18 @@ int oid_char_cmp(const void *a, const void *b)
 {
   const char *cc1 = (*(char**)a);
   const char *cc2 = (*(char**)b);
-  int a1 = (uintptr_t)hash_find(oid_sort_keys, (uccp)cc1);
-  int b1 = (uintptr_t)hash_find(oid_sort_keys, (uccp)cc2);
-  if (a1 < b1)
-    return -1;
-  else if (a1 > b1)
-    return 1;
-  else
-    return 0;
+  if (cc1 && cc2)
+    {
+      int a1 = (uintptr_t)hash_find(oid_sort_keys, (uccp)cc1);
+      int b1 = (uintptr_t)hash_find(oid_sort_keys, (uccp)cc2);
+      if (a1 < b1)
+	return -1;
+      else if (a1 > b1)
+	return 1;
+      else
+	return 0;
+    }
+  return 0;
 }
 
 static const char **
@@ -38,7 +42,9 @@ sx_oid_array(struct sl_sign *s, List *o)
     {
       oids = malloc(2*sizeof(const char *));
       if (s)
-	oids[0] = s->oid;
+	{
+	  oids[0] = s->oid;
+	}
       else
 	{
 	  struct sl_inst *ip = list_first(o);
@@ -69,7 +75,11 @@ sx_oid_array(struct sl_sign *s, List *o)
 		}
 	    }
 	  else
-	    fprintf(stderr, "strange ... no OID on sign or form instance\n");
+	    {
+	      unsigned const char *sname = NULL;
+	      sname = (ip->type == 's' ? ip->u.s->name : ip->u.f->name);
+	      mesg_verr(&ip->mloc, "strange ... no OID for sign or form %s\n", sname);
+	    }
 	}
       noids = i;
       oids[noids] = NULL;
