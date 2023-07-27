@@ -9,7 +9,7 @@
 #include <asl.tab.h>
 #include "signlist.h"
 
-static void check_query(char *n, int *q);
+static void check_flags(char *n, int *q, int *l);
 
 struct sl_signlist *curr_asl = NULL;
 
@@ -41,6 +41,11 @@ asl_bld_init(void)
   sl->m_parents = memo_init(sizeof(struct sl_parents), 1024);
   sl->p = pool_init();
   sl->compounds = list_create(LIST_SINGLE);
+
+  sl->notes = memo_new(sl->m_insts);
+  sl->notes->type = 'S';
+  sl->notes->u.S = sl;
+
   return sl;
 }
 
@@ -188,10 +193,11 @@ void
 asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list,
 	     const unsigned char *ref, int minus_flag)
 {
-  int query;
+  int literal, query;
   
   sl->curr_value = NULL;
-  check_query((char*)n, &query);
+  check_flags((char*)n, &query, &literal);
+
   asl_bld_token(sl, n);
 
   if (sl->curr_sign->hfentry && hash_find(sl->curr_sign->hfentry, n))
@@ -229,6 +235,7 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       i->mloc = *locp;
       i->valid = (Boolean)!minus_flag;
       i->query = (Boolean)query;
+      i->literal = literal;
       
       if (!sl->curr_sign->hfentry)
 	sl->curr_sign->hfentry = hash_create(128);
@@ -238,7 +245,7 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
 }
 
 static void
-asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int q, int m)
+asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit, int q, int m)
 {
   struct sl_list *l = NULL;
   struct sl_inst *i = memo_new(sl->m_insts);
@@ -247,6 +254,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int q, 
   i->mloc = *locp;
   i->type = 'l';
   i->valid = (Boolean)!m;
+  i->literal = (Boolean)lit;
   i->query = (Boolean)q;
   sl->curr_inst = i;
 
@@ -313,15 +321,15 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int q, 
 void
 asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag)
 {
-  int query = 0;
+  int literal, query = 0;
 
-  check_query((char*)n, &query);
+  check_flags((char*)n, &query, &literal);
   asl_bld_token(sl, n);
  
   if (sl->curr_form)
-    asl_add_list(locp, sl, n, query, minus_flag);
+    asl_add_list(locp, sl, n, literal, query, minus_flag);
   else
-    asl_add_list(locp, sl, n, query, minus_flag);
+    asl_add_list(locp, sl, n, literal, query, minus_flag);
 }
 
 /* m for meta */
@@ -356,8 +364,10 @@ asl_bld_note(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 void
 asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  int query;
-  check_query((char*)t, &query);
+  int literal, query;
+  check_flags((char*)t, &query, &literal);
+  if (literal)
+    mesg_verr(locp, "'*' is ignored on @aka");
   if (query)
     mesg_verr(locp, "'?' is ignored on @aka");
     
@@ -382,8 +392,11 @@ asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 void
 asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  int query;
-  check_query((char*)t, &query);
+  int literal, query;
+  check_flags((char*)t, &query, &literal);
+
+  if (literal)
+    mesg_verr(locp, "'*' is ignored on @aka");
   if (query)
     mesg_verr(locp, "'?' is ignored on @pname");
     
@@ -408,9 +421,9 @@ asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 }
 
 void
-asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char *n)
+asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list)
 {
-  asl_bld_sign(locp, sl, n, 0, 0);
+  asl_bld_sign(locp, sl, n, list, 0);
   sl->curr_sign->compound_only = 1;
   sl->curr_sign = NULL;
 }
@@ -418,7 +431,7 @@ asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char *n)
 void
 asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list, int minus_flag)
 {
-  int query = 0;
+  int literal = 0, query = 0;
   struct sl_sign *s;
 
   if (!sl)
@@ -427,7 +440,7 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       exit(1);
     }
 
-  check_query((char*)n, &query);
+  check_flags((char*)n, &query, &literal);
   asl_bld_token(sl, n);
 
   sl->curr_form = NULL;
@@ -453,6 +466,7 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       i->mloc = *locp;
       i->valid = (Boolean)!minus_flag;
       i->query = (Boolean)query;
+      i->literal = (Boolean)literal;
       sl->curr_inst = i;
       i->u.s = s;
       hash_add(sl->hsentry, s->name, s);
@@ -470,7 +484,7 @@ asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int
       while (isspace(*n))
 	++n;
       curr_asl->project = (ccp)n;
-    }
+    }  
   return curr_asl;
 }
 
@@ -518,10 +532,10 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 {
   struct sl_value *v;
   struct sl_inst *i = NULL; 
-  int xvalue = 0, uvalue = 0, query = 0;
+  int literal = 0, xvalue = 0, uvalue = 0, query = 0;
   const unsigned char *base = NULL;
 
-  check_query((char*)n, &query);
+  check_flags((char*)n, &query, &literal);
 
   base = g_base_of(n);
 
@@ -689,15 +703,24 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   sl->curr_value = i;
 }
 
+/* The lexer rules only allow the flags in the order:
+ *
+ *   optional ?
+ *   optional =
+ */
 static void
-check_query(char *n, int *q)
+check_flags(char *n, int *q, int *l)
 {
   char *last = (char*)(n + (strlen((ccp)n)-1));
+  *l = *q = 0;
+  if ('=' == *last)
+    {
+      *last-- = '\0';
+      *l = 1;
+    }
   if ('?' == *last)
     {
       *last = '\0';
       *q = 1;
     }
-  else
-    *q = 0;
 }

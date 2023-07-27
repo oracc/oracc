@@ -298,13 +298,26 @@ sx_marshall(struct sl_signlist *sl)
       sl->signs[i] = hash_find(sl->hsentry, (ucp)keys[i]);
       tp = hash_find(sl->htoken, sl->signs[i]->name);
       sl->signs[i]->sort = tp->s;
-      if (!(sl->signs[i]->oid = hash_find(oids, sl->signs[i]->name)))
-	mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
-      else
+      if (!sl->signs[i]->xref)
 	{
-	  if (sortcode_output)
-	    fprintf(stderr, "SIGN\t%s\t%d\n", sl->signs[i]->oid, sl->signs[i]->sort);
-	  hash_add(oid_sort_keys, (uccp)sl->signs[i]->oid, (void*)(uintptr_t)sl->signs[i]->sort);
+	  if (!(sl->signs[i]->oid = hash_find(oids, sl->signs[i]->name)))
+	    {
+	      if (sl->signs[i]->aka)
+		{
+		  unsigned const char *a;
+		  for (a = list_first(sl->signs[i]->aka); a; a = list_next(sl->signs[i]->aka))
+		    if ((sl->signs[i]->oid = hash_find(oids, a)))
+		      break;
+		}
+	      if (!sl->signs[i]->oid)
+		mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
+	    }
+	  else
+	    {
+	      if (sortcode_output)
+		fprintf(stderr, "SIGN\t%s\t%d\n", sl->signs[i]->oid, sl->signs[i]->sort);
+	      hash_add(oid_sort_keys, (uccp)sl->signs[i]->oid, (void*)(uintptr_t)sl->signs[i]->sort);
+	    }
 	}
 
       if (sl->signs[i]->hventry)
@@ -330,8 +343,23 @@ sx_marshall(struct sl_signlist *sl)
       sl->forms[i]->sort = tp->s;
       if (!(sl->forms[i]->oid = hash_find(oids, sl->forms[i]->name)))
 	{
-	  struct sl_inst *inst = list_first(sl->forms[i]->insts);
-	  mesg_verr(&inst->mloc, "OID needed for FORM %s", sl->forms[i]->name);
+	  if (sl->forms[i]->aka)
+	    {
+	      unsigned const char *a;
+	      for (a = list_first(sl->forms[i]->aka); a; a = list_next(sl->forms[i]->aka))
+		if ((sl->forms[i]->oid = hash_find(oids, a)))
+		  break;
+	    }
+	  if (sl->forms[i]->oid)
+	    {
+	      if (sl->forms[i]->sign->xref)
+		sl->forms[i]->sign->oid = sl->forms[i]->oid;
+	    }
+	  else
+	    {
+	      struct sl_inst *inst = list_first(sl->forms[i]->insts);
+	      mesg_verr(&inst->mloc, "OID needed for FORM %s", sl->forms[i]->name);
+	    }
 	}
       else
 	{

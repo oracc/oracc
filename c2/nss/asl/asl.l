@@ -44,13 +44,14 @@ G		([a-zA-Z'\x80-\xc2\xc4-\xe1\xe3-\xff]|{S}|\xc3[^\x97]|\xe2[^\xb8])+
 M		([@~]([a-z]+|90|180|270))*
 N		(N[0-9]+)
 Q		\??
-COMPOUND	"|"([a-zA-Z\x80-\xff]|[@~().%&+()0-9])+"|"{Q}
-GRAPHEME 	((({G}|{N}){M})|"15"){Q}
+L		=?
+COMPOUND	"|"([a-zA-Z\x80-\xff]|[@~().%&+()0-9])+"|"{Q}{L}
+GRAPHEME 	((({G}|{N}){M})|"15"){Q}{L}
 PHONGRAPH	"/"{G}"/"
-LISTNUM		([A-Z]+[0-9]+[()A-Z0-9a-z_'"+*/]*){M}{Q}
-NUMGRAPH	[0-9nN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}{Q}
+LISTNUM		([A-Z]+[0-9]+[()A-Z0-9a-z_'"+*/]*){M}{Q}{L}
+NUMGRAPH	[0-9nN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}{Q}{L}
 FRACTION	[0-9]\/[0-9]
-PUNCT		("*"|:['".:]?|"/"){Q}
+PUNCT		("*"|:['".:]?|"/"){Q}{L}
 
 %s E
 %s S

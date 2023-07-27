@@ -93,8 +93,9 @@ ataka:
 	| AKA GNAME 	 { asl_bld_aka(&@1, curr_asl, (uccp)$2); }
 
 atcomp:
-	  COMP GVALUE 	 { asl_bld_comp(&@1, curr_asl, (uccp)$2); }
-	| COMP GNAME 	 { asl_bld_comp(&@1, curr_asl, (uccp)$2); }
+	  COMP GVALUE 	 { asl_bld_comp(&@1, curr_asl, (uccp)$2, 0); }
+	| COMP GNAME 	 { asl_bld_comp(&@1, curr_asl, (uccp)$2, 0); }
+	| COMP LISTNUM 	 { asl_bld_comp(&@1, curr_asl, (uccp)$2, 1); }
 
 atpname:
 	  PNAME GVALUE 	 { asl_bld_pname(&@1, curr_asl, (uccp)$2); }

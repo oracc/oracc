@@ -54,8 +54,8 @@ sx_compound_init(struct sl_signlist *sl, Hash *h, const char *c)
 
 /* An earlier version of sx_compounds registered signs that were not
    themselves in OGSL but this caused problems so now we require any
-   compound element to be registered as a @sign and also require the
-   use of @aka with sign-names that have non-standard name
+   compound element to be registered as a @sign or @comp and also
+   require the use of @aka with sign-names that have non-standard name
    components. */
 static void /* struct sl_sign* */
 sx_compound_new_sign(struct sl_signlist *sl, const char *sgnname, const char *cpdname)
@@ -83,18 +83,27 @@ sx_compound_new_sign(struct sl_signlist *sl, const char *sgnname, const char *cp
   if (vp)
     {
       const unsigned char *sn = NULL;
-      if (vp->sowner)
-	sn = vp->sowner->name;
+      struct sl_inst *ip = NULL;
+      if (vp->sowner && vp->sowner->inst->valid)
+	{
+	  sn = vp->sowner->name;
+	  ip = vp->sowner->inst;
+	}
       else if (vp->fowners)
 	{
-	  struct sl_inst *ip = list_first(vp->fowners);
-	  sn = (ip->type == 'f' ? ip->u.f->name : ip->u.s->name);
+	  for (ip = list_first(vp->fowners); ip; ip = list_next(vp->fowners))
+	    if (ip->valid)
+	      break;
+	  if (ip)
+	    sn = (ip->type == 'f' ? ip->u.f->name : ip->u.s->name);
+	  else
+	    mesg_verr(locp, "compound element %s in %s does not correspond to a valid value", sgnname, cpdname);
 	}
       if (sn)
 	{
 	  if (!hash_find(oids, sn))
 	    mesg_verr(locp, "compound element %s should have @sign entry (also tried %s=>%s)", sgnname, vp->name, sn);
-	  else
+	  else if (!ip->literal)
 	    mesg_verr(locp, "%s in %s should be %s; use @aka if necessary\n",
 		      sgnname, cpdname, sn);
 	}

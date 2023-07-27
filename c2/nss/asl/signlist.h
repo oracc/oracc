@@ -7,9 +7,12 @@
 #include <tree.h>
 #include <mesg.h>
 
+struct sl_inst;
+
 struct sl_signlist
 {
   const char *project;
+  struct sl_inst *notes;/* Allow inotes etc., after @signlist */
   Hash *htoken; 	/* Every token that is a sign/form/list/value
 			   as a struct sl_token * */
   Hash *hsentry; 	/* All the @sign/@sign- entries in the signlist */
@@ -90,7 +93,6 @@ struct sl_any_note
   List *lit;
   List *notes;
   List *inotes;
-  List *comments;
 };
 
 struct sl_unicode_info
@@ -121,8 +123,9 @@ struct sl_lv_data
 
 struct sl_inst
 {
-  char type;
+  char type; /* S = signlist; s = sign; f = form; l = list; v = value */
   union {
+    struct sl_signlist *S;
     struct sl_sign *s;
     struct sl_form *f;
     struct sl_list *l;
@@ -135,6 +138,7 @@ struct sl_inst
   struct sl_any_note n;
   Mloc mloc;
   Boolean valid; /* doesn't have a - after it */
+  Boolean literal;
   Boolean query;
   Boolean uchar;
   Boolean ucode;
@@ -329,7 +333,7 @@ extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char
 extern void asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag);
 extern void asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
-extern void asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char *n);
+extern void asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
 
 extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 			 int list, int minus_flag);
