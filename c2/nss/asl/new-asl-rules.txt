@@ -1,3 +1,9 @@
+* add @lref MZL432a to reference signlist items that are not otherwise
+  referenced in OGSL, explained formally through @note (required) and
+  informally through @inote
+
+* add @cite for a citation of an occurrence; same syntax as [...] proof
+
 * When the lhs of a × compound is itself a compound it may be
   convenient to use a value as a sign, e.g., |ITI×(U.U.U)@g| rather
   than |UD×(U.U.U)×(U.U.U)@g| (though this particular example is
