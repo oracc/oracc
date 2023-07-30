@@ -95,7 +95,7 @@ struct sl_any_note
   List *inotes;
 };
 
-struct sl_unicode_info
+struct sl_unicode
 {
   const unsigned char *uchar;
   const char *ucode;
@@ -160,7 +160,8 @@ struct sl_letter
 struct sl_group 
 {
   const unsigned char *name;
-  struct sl_sign **signs;
+  Hash *hentry; 	/* Hash of sl_inst *that belong to this group */
+  struct sl_inst **signs;
   int nsigns;
 };
 
@@ -214,7 +215,7 @@ struct sl_sign
   int nvalues;
   struct sl_inst **forms;
   int nforms;
-  struct sl_unicode_info U;
+  struct sl_unicode U;
   const unsigned char *pname;
   List *aka;		/* alternatively known as sign-names to support non-standard names */
   int sort;
@@ -256,7 +257,7 @@ struct sl_form
   int name_is_listnum;
   int sort;
   const char *oid;
-  struct sl_unicode_info U;
+  struct sl_unicode U;
 };
 
 struct sl_list
@@ -301,31 +302,6 @@ struct sl_value
 			     lex whose value is not preserved */
   unsigned char index; 	  /* 1 for no index; integer value of index for numeric indices; 255 for sub x */
 };
-
-struct sl_functions;
-
-typedef void (sl_signlist_f)(struct sl_functions *,struct sl_signlist*);
-typedef void (sl_letter_f)(struct sl_functions *,struct sl_letter*);
-typedef void (sl_group_f)(struct sl_functions *,struct sl_group*);
-typedef void (sl_sign_f)(struct sl_functions *,struct sl_sign*);
-typedef void (sl_list_f)(struct sl_functions *,struct sl_inst*);
-typedef void (sl_form_f)(struct sl_functions *,struct sl_inst*);
-typedef void (sl_value_f)(struct sl_functions *,struct sl_inst*);
-
-#include <stdio.h>
-
-struct sl_functions
-  {
-    sl_signlist_f *sll;
-    sl_letter_f *let;
-    sl_group_f *grp;
-    sl_sign_f *sgn;
-    sl_form_f *frm;
-    sl_list_f *lst;
-    sl_value_f *val;
-    FILE *fp;
-    const char *fname;
-  };
 
 extern struct sl_signlist *asl_bld_init(void);
 extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,

@@ -1,17 +1,17 @@
 #include <signlist.h>
 #include <sx.h>
 
-static sl_signlist_f sx_a_signlist;
-static sl_letter_f sx_a_letter;
-static sl_group_f sx_a_group;
-static sl_sign_f sx_a_sign;
-static sl_form_f sx_a_form;
-static sl_list_f sx_a_list;
-static sl_value_f sx_a_value;
+static sx_signlist_f sx_a_signlist;
+static sx_letter_f sx_a_letter;
+static sx_group_f sx_a_group;
+static sx_sign_f sx_a_sign;
+static sx_form_f sx_a_form;
+static sx_list_f sx_a_list;
+static sx_value_f sx_a_value;
 
-struct sl_functions sx_asl_fncs;
+struct sx_functions sx_asl_fncs;
 
-struct sl_functions *
+struct sx_functions *
 sx_asl_init(FILE *fp, const char *fname)
 {
   sx_asl_fncs.sll = sx_a_signlist;
@@ -28,7 +28,7 @@ sx_asl_init(FILE *fp, const char *fname)
 
 /* This is the entry point for asl output */
 static void
-sx_a_signlist(struct sl_functions *f, struct sl_signlist *s)
+sx_a_signlist(struct sx_functions *f, struct sl_signlist *s)
 {
   fprintf(f->fp, "@signlist %s\n\n", s->project);
   if (s->nletters)
@@ -40,7 +40,7 @@ sx_a_signlist(struct sl_functions *f, struct sl_signlist *s)
 }
 
 static void
-sx_a_letter(struct sl_functions *f, struct sl_letter *l)
+sx_a_letter(struct sx_functions *f, struct sl_letter *l)
 {
   if (!identity_mode)
     fprintf(f->fp, "@letter\t%s\n", l->name);
@@ -54,7 +54,7 @@ sx_a_letter(struct sl_functions *f, struct sl_letter *l)
 }
 
 static void
-sx_a_group(struct sl_functions *f, struct sl_group *g)
+sx_a_group(struct sx_functions *f, struct sl_group *g)
 {
   if (!identity_mode)
     fprintf(f->fp, "@group\t%s\n", g->name);
@@ -64,9 +64,12 @@ sx_a_group(struct sl_functions *f, struct sl_group *g)
       int i;
       for (i = 0; i < g->nsigns; ++i)
 	{
-	  if ((!g->signs[i]->xref && !g->signs[i]->compound_only)
-	      || !identity_mode)
-	    f->sgn(f, g->signs[i]);
+	  if ('s' == g->signs[i]->type)
+	    {
+	      if ((!g->signs[i]->u.s->xref && !g->signs[i]->u.s->compound_only)
+		  || !identity_mode)
+		f->sgn(f, g->signs[i]->u.s);
+	    }
 	}
     }
 }
@@ -108,7 +111,7 @@ sx_a_notes(FILE *fp, struct sl_inst *i)
 /* In identity_mode this routine is not called when sl_sign is an xref
    to a form or only occurs in compounds */
 static void
-sx_a_sign(struct sl_functions *f, struct sl_sign *s)
+sx_a_sign(struct sx_functions *f, struct sl_sign *s)
 {
   const char *minus = "", *query = "";
 
@@ -163,7 +166,7 @@ sx_a_sign(struct sl_functions *f, struct sl_sign *s)
 }
 
 static void
-sx_a_form(struct sl_functions *f, struct sl_inst *s)
+sx_a_form(struct sx_functions *f, struct sl_inst *s)
 {
   const char *minus = "", *query = "", *ref = "", *refspace = "";
   if (!s->valid)
@@ -202,14 +205,14 @@ sx_a_form(struct sl_functions *f, struct sl_inst *s)
 }
 
 static void
-sx_a_list(struct sl_functions *f, struct sl_inst *l)
+sx_a_list(struct sx_functions *f, struct sl_inst *l)
 {
   fprintf(f->fp, "@list\t%s%s\n", l->u.l->name, l->query ? "?" : "");
   sx_a_notes(f->fp, l);
 }
 
 static void
-sx_a_value(struct sl_functions *f, struct sl_inst *v)
+sx_a_value(struct sx_functions *f, struct sl_inst *v)
 {
   const char *minus = "", *query = "", *refspace = "", *ref = "";
   if (!v->valid)

@@ -3,15 +3,15 @@
 
 extern Hash *oids;
 
-static sl_signlist_f sx_s_signlist;
-static sl_letter_f sx_s_letter;
-static sl_group_f sx_s_group;
-static sl_sign_f sx_s_sign;
-static sl_form_f sx_s_form;
-static sl_list_f sx_s_list;
-static sl_value_f sx_s_value;
+static sx_signlist_f sx_s_signlist;
+static sx_letter_f sx_s_letter;
+static sx_group_f sx_s_group;
+static sx_sign_f sx_s_sign;
+static sx_form_f sx_s_form;
+static sx_list_f sx_s_list;
+static sx_value_f sx_s_value;
 
-struct sl_functions sx_sll_fncs;
+struct sx_functions sx_sll_fncs;
 
 static const char *curr_oid;
 
@@ -22,15 +22,15 @@ static void sx_s_notes(FILE *fp, struct sl_inst *i);
 
 static void sx_s_str(FILE *fp, const char *tag, const unsigned char *s);
 static void sx_s_unicode(FILE *fp, struct sl_unicode_info *up);
-static void sx_s_FORM(struct sl_functions *f, struct sl_form *s);
-static void sx_s_LIST(struct sl_functions *f, struct sl_list *s);
-static void sx_s_VALUE(struct sl_functions *f, struct sl_value *v);
+static void sx_s_FORM(struct sx_functions *f, struct sl_form *s);
+static void sx_s_LIST(struct sx_functions *f, struct sl_list *s);
+static void sx_s_VALUE(struct sx_functions *f, struct sl_value *v);
 static void sx_s_homophones(FILE *fp, struct sl_signlist *sl);
 static void sx_s_compounds(FILE *fp, const unsigned char *name, const char *tag, const char **oids);
 static void sx_s_values_by_oid(FILE *fp, struct sl_signlist *sl);
 static void sx_s_qualified(FILE *fp, struct sl_signlist *sl);
 
-struct sl_functions *
+struct sx_functions *
 sx_sll_init(FILE *fp, const char *fname)
 {
   sx_sll_fncs.sll = sx_s_signlist;
@@ -47,7 +47,7 @@ sx_sll_init(FILE *fp, const char *fname)
 
 /* This is the entry point for sll output */
 static void
-sx_s_signlist(struct sl_functions *f, struct sl_signlist *sl)
+sx_s_signlist(struct sx_functions *f, struct sl_signlist *sl)
 {
   int i;
   for (i = 0; i < sl->nsigns; ++i)
@@ -66,19 +66,20 @@ sx_s_signlist(struct sl_functions *f, struct sl_signlist *sl)
 }
 
 static void
-sx_s_letter(struct sl_functions *f, struct sl_letter *l)
+sx_s_letter(struct sx_functions *f, struct sl_letter *l)
 {
   int i = 0;
   for (i = 0; i < l->ngroups; ++i)
     {
       int j;
       for (j = 0; j < l->groups[i].nsigns; ++j)
-	fprintf(f->fp, "%s;let\tl%04d\n", l->groups[i].signs[j]->oid, l->code);
+	if ('s' == l->groups[i].signs[j]->type)
+	  fprintf(f->fp, "%s;let\tl%04d\n", l->groups[i].signs[j]->u.s->oid, l->code);
     }
 }
 
 static void
-sx_s_group(struct sl_functions *f, struct sl_group *g)
+sx_s_group(struct sx_functions *f, struct sl_group *g)
 {
 }
 
@@ -136,7 +137,7 @@ sx_s_values_by_oid(FILE *fp, struct sl_signlist *sl)
 }
 
 static void
-sx_s_sign(struct sl_functions *f, struct sl_sign *s)
+sx_s_sign(struct sx_functions *f, struct sl_sign *s)
 {
   if (!s->xref)
     {
@@ -170,13 +171,13 @@ sx_s_sign(struct sl_functions *f, struct sl_sign *s)
 }
 
 static void
-sx_s_form(struct sl_functions *f, struct sl_inst *s)
+sx_s_form(struct sx_functions *f, struct sl_inst *s)
 {
   /* NOT USED */
 }
 
 static void
-sx_s_FORM(struct sl_functions *f, struct sl_form *s)
+sx_s_FORM(struct sx_functions *f, struct sl_form *s)
 {
   if (s->sign->xref)
     {
@@ -203,12 +204,12 @@ sx_s_FORM(struct sl_functions *f, struct sl_form *s)
 }
 
 static void
-sx_s_list(struct sl_functions *f, struct sl_inst *l)
+sx_s_list(struct sx_functions *f, struct sl_inst *l)
 {
 }
 
 static void
-sx_s_LIST(struct sl_functions *f, struct sl_list *s)
+sx_s_LIST(struct sx_functions *f, struct sl_list *s)
 {
   int i;
   fprintf(f->fp, "%s;l\t", s->name);
@@ -222,12 +223,12 @@ sx_s_LIST(struct sl_functions *f, struct sl_list *s)
 }
 
 static void
-sx_s_value(struct sl_functions *f, struct sl_inst *v)
+sx_s_value(struct sx_functions *f, struct sl_inst *v)
 {
 }
 
 static void
-sx_s_VALUE(struct sl_functions *f, struct sl_value *v)
+sx_s_VALUE(struct sx_functions *f, struct sl_value *v)
 {
   if (!v->qvmust && !v->atf)
     {
@@ -244,7 +245,7 @@ sx_s_VALUE(struct sl_functions *f, struct sl_value *v)
 	      if ((ip = list_first(v->parents->forms)))
 		fprintf(f->fp, "%s\t%s\n", v->name, ip->u.f->oid);
 	    }
-	}
+	}g
     }
 }
 

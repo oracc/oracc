@@ -64,7 +64,6 @@ sx_compound_new_sign(struct sl_signlist *sl, const char *sgnname, const char *cp
   const unsigned char *lc = NULL;
   struct sl_value *vp = NULL;
   struct sl_sign *sp = NULL;
-  int line;
 
   if (!sl->hcompoundnew)
     sl->hcompoundnew = hash_create(32);
@@ -76,8 +75,6 @@ sx_compound_new_sign(struct sl_signlist *sl, const char *sgnname, const char *cp
   lc = utf_lcase((uccp)sgnname);
   vp = hash_find(sl->hventry, (uccp)lc);
 
-  line = sl->curr_inst->mloc.line;
-  
   if (!(sp = hash_find(sl->hsentry, (uccp)cpdname)))
     mesg_verr(&sl->curr_inst->mloc, "sx: no hsentry for form %s\n", cpdname);
 

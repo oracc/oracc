@@ -519,7 +519,7 @@ sx_marshall(struct sl_signlist *sl)
 	  sl->letters[i].groups[j].nsigns = list_len(slist);
 	  sl->letters[i].groups[j].signs = memo_new_array(sl->m_signs_p,
 							  sl->letters[i].groups[j].nsigns);
-	  sl->letters[i].groups[j].signs = (struct sl_sign **)list2array(slist);
+	  sl->letters[i].groups[j].signs = (struct sl_inst **)list2array(slist);
 	  qsort(sl->letters[i].groups[j].signs,
 		sl->letters[i].groups[j].nsigns, sizeof(void*), (cmp_fnc_t)signs_cmp);
 	}

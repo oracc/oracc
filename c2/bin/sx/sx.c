@@ -65,26 +65,29 @@ main(int argc, char * const*argv)
   if (sl)
     {
       sx_marshall(sl);
-      
+
+#if 0
       if (asl_output)
 	{
-	  struct sl_functions *f = sx_asl_init(stdout, "-");
+	  struct sx_functions *f = sx_asl_init(stdout, "-");
 	  f->sll(f,sl);
 	}
 
       if (sll_output)
 	{
-	  struct sl_functions *f = sx_sll_init(stdout, "-");
+	  struct sx_functions *f = sx_sll_init(stdout, "-");
 	  f->sll(f,sl);
 	}
 
+#endif
+      
       if (xml_output)
 	{
 #if 0
-	  struct sl_functions *f = sx_asl_init(stdout, "-");
+	  struct sx_functions *f = sx_asl_init(stdout, "-");
 	  f->sll(f, sl);
 #else
-	  sx_xml(sl);
+	  /* sx_xml(sl); */
 #endif
 	}
     }
