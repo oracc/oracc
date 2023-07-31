@@ -74,7 +74,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 					{
 					  int m;
 					  f->lst(f, sl, NULL, sx_pos_init);
-					  for (m = 0; m < sl->letters[i].groups[j].signs[k]->u.s->forms[m]->lv->nlists; ++m)
+					  for (m = 0; m < sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->nlists; ++m)
 					    {
 					      f->lst(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->lists[m],
 						     sx_pos_inst);
@@ -100,7 +100,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 					{
 					  int m;
 					  f->inh(f, sl, NULL, sx_pos_init);
-					  for (m = 0; l < sl->letters[i].groups[j].signs[k]->u.s->forms[m]->lv->nivalues; ++m)
+					  for (m = 0; l < sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->nivalues; ++m)
 					    f->inh(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->ivalues[m],
 						   sx_pos_inst);
 					  f->inh(f, sl, NULL, sx_pos_term);

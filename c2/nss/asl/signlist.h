@@ -138,6 +138,7 @@ struct sl_inst
   struct sl_any_note n;
   Mloc mloc;
   Boolean valid; /* doesn't have a - after it */
+  Boolean inherited;
   Boolean literal;
   Boolean query;
   Boolean uchar;

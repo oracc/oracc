@@ -16,7 +16,7 @@ struct sl_signlist *curr_asl = NULL;
 struct sl_signlist *
 asl_bld_init(void)
 {
-  struct sl_signlist *sl = malloc(sizeof(struct sl_signlist));
+  struct sl_signlist *sl = calloc(1, sizeof(struct sl_signlist));
   sl->htoken = hash_create(4192);
   sl->hsentry = hash_create(2048);
   sl->hfentry = hash_create(1024);
@@ -31,7 +31,7 @@ asl_bld_init(void)
   sl->m_signs_p = memo_init(sizeof(struct sl_sign*),512);
   sl->m_forms = memo_init(sizeof(struct sl_form),512);
   sl->m_lists = memo_init(sizeof(struct sl_value),256);
-  sl->m_values = memo_init(sizeof(struct sl_value),1024);
+  sl->m_values = memo_init(sizeof(struct sl_value),11000);
   sl->m_insts = memo_init(sizeof(struct sl_inst),1024);
   sl->m_insts_p = memo_init(sizeof(struct sl_inst*),512);
   sl->m_lv_data = memo_init(sizeof(struct sl_lv_data),512);
@@ -236,6 +236,7 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       i->valid = (Boolean)!minus_flag;
       i->query = (Boolean)query;
       i->literal = literal;
+      i->lv = memo_new(sl->m_lv_data);
       
       if (!sl->curr_sign->hfentry)
 	sl->curr_sign->hfentry = hash_create(128);
@@ -261,14 +262,8 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
   /* If this list is already in the lists hash for the sign or the form-instance it's an error */
   if (sl->curr_form)
     {
-      if (sl->curr_form->lv)
-	h = sl->curr_form->lv->hlentry;
-      else
-	{
-	  sl->curr_form->lv = memo_new(sl->m_lv_data);
-	  if (!sl->curr_form->lv->hlentry)
-	    h = sl->curr_form->lv->hlentry = hash_create(1);
-	}      
+      if (!sl->curr_form->lv->hlentry)
+	h = sl->curr_form->lv->hlentry = hash_create(1);
     }
   else
     h = sl->curr_sign->hlentry;
@@ -302,8 +297,6 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
 
   if (sl->curr_form)
     {
-      if (!sl->curr_form->lv)
-	sl->curr_form->lv = memo_new(sl->m_lv_data);
       if (!sl->curr_form->lv->hlentry)
 	sl->curr_form->lv->hlentry = hash_create(1);
       hash_add(sl->curr_form->lv->hlentry, l->name, i);
@@ -553,8 +546,6 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	}
       else if (!minus_flag) /* only add valid values to hvbases */
 	{
-	  if (!sl->curr_form->lv)
-	    sl->curr_form->lv = memo_new(sl->m_lv_data);
 	  if (!sl->curr_form->lv->hvbases)
 	    sl->curr_form->lv->hvbases = hash_create(1);
 	  hash_add(sl->curr_form->lv->hvbases, pool_copy((uccp)base, sl->p), (void*)n);
@@ -638,8 +629,6 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	  if (!v->fowners)
 	    v->fowners = list_create(LIST_SINGLE);
 	  list_add(v->fowners, sl->curr_form);
-	  if (!sl->curr_form->lv)
-	    sl->curr_form->lv = memo_new(sl->m_lv_data);
 	  if (!sl->curr_form->lv->hventry)
 	    sl->curr_form->lv->hventry = hash_create(1);
 	  hash_add(sl->curr_form->lv->hventry, v->name, i);
@@ -666,8 +655,6 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
     {
       if (sl->curr_form)
 	{
-	  if (!sl->curr_form->lv)
-	    sl->curr_form->lv = memo_new(sl->m_lv_data);
 	  if (!sl->curr_form->lv->hventry)
 	    sl->curr_form->lv->hventry = hash_create(1);
 	  if (hash_find(sl->curr_form->lv->hventry, n))

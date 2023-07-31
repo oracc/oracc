@@ -200,7 +200,19 @@ static int values_inst_cmp(const void *a, const void *b)
 static int signs_cmp(const void *a, const void *b)
 {
   int a1 = (*(struct sl_sign**)a)->sort;
-  int b1 = (*(struct sl_sign**)b)->sort;  
+  int b1 = (*(struct sl_sign**)b)->sort;
+  if (a1 < b1)
+    return -1;
+  else if (a1 > b1)
+    return 1;
+  else
+    return 0;
+}
+
+static int signs_inst_cmp(const void *a, const void *b)
+{
+  int a1 = (*(struct sl_inst**)a)->u.s->sort;
+  int b1 = (*(struct sl_inst**)b)->u.s->sort;
   if (a1 < b1)
     return -1;
   else if (a1 > b1)
@@ -286,7 +298,7 @@ sx_marshall(struct sl_signlist *sl)
       struct sl_token *tp = hash_find(sl->htoken, (ucp)keys[i]);
       tp->s = i;
     }
-  
+
   /* Provide signs with sort codes base on token sort sequence; add oids while we are at it */
   keys = hash_keys2(sl->hsentry, &nkeys);
   sl->signs = malloc(sizeof(struct sl_sign*) * nkeys);
@@ -476,7 +488,13 @@ sx_marshall(struct sl_signlist *sl)
 	      int j = 0;
 	      sl->values[i]->fowners_i_sort = memo_new_array(sl->m_insts_p, sl->values[i]->nfowners);
 	      for (ip = list_first(sl->values[i]->fowners); ip; ip = list_next(sl->values[i]->fowners))
-		sl->values[i]->fowners_i_sort[j++] = ip;
+		{
+		  if ('s' == ip->type || 'f' == ip->type)
+		    sl->values[i]->fowners_i_sort[j++] = ip;
+		  else
+		    fprintf(stderr, "[asl] internal error: fowner should have type 's' or 'f'\n");
+		}
+	      assert(j == sl->values[i]->nfowners);
 	      qsort(sl->values[i]->fowners_i_sort, sl->values[i]->nfowners, sizeof(struct sl_inst *), (cmp_fnc_t)fowners_cmp);
 	    }
 	}
@@ -521,7 +539,7 @@ sx_marshall(struct sl_signlist *sl)
 							  sl->letters[i].groups[j].nsigns);
 	  sl->letters[i].groups[j].signs = (struct sl_inst **)list2array(slist);
 	  qsort(sl->letters[i].groups[j].signs,
-		sl->letters[i].groups[j].nsigns, sizeof(void*), (cmp_fnc_t)signs_cmp);
+		sl->letters[i].groups[j].nsigns, sizeof(void*), (cmp_fnc_t)signs_inst_cmp);
 	}
     }
 

@@ -4,6 +4,7 @@
 int itrace = 1;
 
 static void sx_v_fowner(struct sl_signlist *sl, struct sl_inst *ip, unsigned const char *v);
+static struct sl_inst *clone_inherited(struct sl_signlist *sl, struct sl_inst *ip);
 
 /* Go through the forms and add to their inherited values as necessary.
 
@@ -89,7 +90,8 @@ sx_inherited(struct sl_signlist *sl)
 			      if (itrace)
 				fprintf(ifp, "inherit: adding %s(%s) to form_inst->lv->hventry/hivalues\n", b, form_inst->u.f->name);
 			      hash_add(form_inst->lv->hivalues, (uccp)b, "");
-			      hash_add(form_inst->lv->hventry, (uccp)b, hash_find(form_inst->parent_s->u.s->hventry, (uccp)b));
+			      hash_add(form_inst->lv->hventry, (uccp)b,
+				       clone_inherited(sl, hash_find(form_inst->parent_s->u.s->hventry, (uccp)b)));
 			      sx_v_fowner(sl, form_inst, b);
 			    }
 			  else
@@ -126,7 +128,8 @@ sx_inherited(struct sl_signlist *sl)
 		      if (itrace)
 			fprintf(ifp, "inherit: adding %s(%s) to form_inst->lv->hventry/hivalues\n", b, form_inst->u.f->name);
 		      hash_add(form_inst->lv->hivalues, (uccp)b, "");
-		      hash_add(form_inst->lv->hventry, (uccp)b, hash_find(form_inst->parent_s->u.s->hventry, (uccp)b));
+		      hash_add(form_inst->lv->hventry, (uccp)b,
+			       clone_inherited(sl, hash_find(form_inst->parent_s->u.s->hventry, (uccp)b)));
 		      sx_v_fowner(sl, form_inst, b);
 		    }
 		}
@@ -175,12 +178,21 @@ sx_v_fowner(struct sl_signlist *sl, struct sl_inst *ip, unsigned const char *v)
       ip2->parent_s = NULL;
       ip2->parent_f = ip;
       ip2->var = NULL;
+      ip2->inherited = 1;
       if (!vp->fowners)
 	vp->fowners = list_create(LIST_SINGLE);
-      list_add(vp->fowners, ip2);
+      list_add(vp->fowners, ip);
       if (!vp->insts)
 	vp->insts = list_create(LIST_SINGLE);
       list_add(vp->insts, ip2);
     }
 }
 
+static struct sl_inst *
+clone_inherited(struct sl_signlist *sl, struct sl_inst *ip)
+{
+  struct sl_inst *ip2 = memo_new(sl->m_insts);
+  *ip2 = *ip;
+  ip2->inherited = 1;
+  return ip2;
+}
