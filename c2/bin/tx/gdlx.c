@@ -8,6 +8,7 @@
 #include <ns-gdl.h>
 #include <gdl.h>
 #include <gvl.h>
+#include <gsort.h>
 
 /* test harness for gvl/gdl libraries */
 
@@ -28,6 +29,7 @@ extern int deep_sig;
 int error_stdout = 0;
 const char *fname = NULL;
 int gdl_c10e_mode = 1;
+int gsort_mode = 1;
 int identity_mode = 0;
 int ns_output = 0;
 int pedantic = 0;
@@ -98,6 +100,8 @@ do_one(char *s)
 
   if (identity_mode)
     test_identity(s, tp);
+  else if (gsort_mode)
+    gsort_show(tp);
   else if (!check_mode)
     {
       if (signatures)
@@ -151,13 +155,16 @@ main(int argc, char **argv)
 {
   gdl_flex_debug = gdldebug = 0;
   
-  options(argc, argv, "bcdef:inopstvw");
+  options(argc, argv, "bcdef:ginopstvw");
 
   gdl_flex_debug = gdldebug = trace_mode;
   
   gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
   gdlparse_init();
+
+  if (gsort_mode)
+    gsort_init();
   
   if (argv[optind])
     {
@@ -195,6 +202,9 @@ opts(int opt, char *arg)
       break;
     case 'f':
       fname = optarg;
+      break;
+    case 'g':
+      gsort_mode = 1;
       break;
     case 'i':
       identity_mode = 1;

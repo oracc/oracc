@@ -2887,7 +2887,6 @@
 #@ucode	x122D9.x1202F
 #@v	kunga
 #@v	kungi
-#@end form
 @form	|3×AN|
 @list ELLES006b
 @list LAK010
@@ -34910,9 +34909,6 @@
 @aka |KUŠ.GAN|
 @inote addx dcclt/ebla
 @v	duganₓ
-@end sign
-
-
 @end sign
 
 @sign |KI.LAM×KUR|

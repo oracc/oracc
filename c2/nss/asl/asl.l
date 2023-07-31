@@ -75,6 +75,7 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 
 ^[ \t]+.+/\n    		{ aslsave; pmatch("###tab\n"); return TAB; }
 
+^@@				{ /* no-op */ }
 ^@end/[ \t].*\n        	       	{ atcmd(END,E); }
 ^@signlist/[ \t]       		{ atcmd(SIGNLIST,T); }
 ^@sign-?/[ \t]       		{ atcmd(SIGN,0); }

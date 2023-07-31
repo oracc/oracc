@@ -332,4 +332,6 @@ extern void asl_bld_inote(Mloc *locp, struct sl_signlist *sl, const unsigned cha
 extern void asl_bld_lit(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_note(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 
+extern void asl_bld_end_sign(Mloc *locp, struct sl_signlist *sl);
+
 #endif/*SIGNLIST_H_*/

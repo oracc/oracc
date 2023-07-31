@@ -31,7 +31,7 @@ asl_bld_init(void)
   sl->m_signs_p = memo_init(sizeof(struct sl_sign*),512);
   sl->m_forms = memo_init(sizeof(struct sl_form),512);
   sl->m_lists = memo_init(sizeof(struct sl_value),256);
-  sl->m_values = memo_init(sizeof(struct sl_value),11000);
+  sl->m_values = memo_init(sizeof(struct sl_value),1024);
   sl->m_insts = memo_init(sizeof(struct sl_inst),1024);
   sl->m_insts_p = memo_init(sizeof(struct sl_inst*),512);
   sl->m_lv_data = memo_init(sizeof(struct sl_lv_data),512);
@@ -257,7 +257,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
   i->valid = (Boolean)!m;
   i->literal = (Boolean)lit;
   i->query = (Boolean)q;
-  sl->curr_inst = i;
+  /*sl->curr_inst = i;*/
 
   /* If this list is already in the lists hash for the sign or the form-instance it's an error */
   if (sl->curr_form)
@@ -466,6 +466,19 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       asl_register_sign(locp, sl, s);
     }
   sl->curr_sign = s;
+}
+
+void
+asl_bld_end_sign(Mloc *locp, struct sl_signlist *sl)
+{
+  if (sl->curr_sign)
+    {
+      sl->curr_sign = NULL;
+      sl->curr_form = NULL;
+      sl->curr_inst = NULL;
+    }
+  else
+    mesg_verr(locp, "misplaced @end sign, not in an @sign");    
 }
 
 struct sl_signlist *

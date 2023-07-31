@@ -130,7 +130,7 @@ vref:
 /* Possibly add EGROUP ELETTER ESECTION here; note: EFORM no longer used; on ESIGN we should NULL out sl->curr_sign/form/inst */
 atend:
 	  END EFORM
-	| END ESIGN
+	| END ESIGN	    { asl_bld_end_sign(&@1, curr_asl); }
 	| END EBAD
 	;
 

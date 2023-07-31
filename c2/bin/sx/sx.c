@@ -91,6 +91,7 @@ main(int argc, char * const*argv)
 
   gdl_term();
   asl_term();
+  asl_bld_term(sl);
   mesg_print(stderr);
 }
 

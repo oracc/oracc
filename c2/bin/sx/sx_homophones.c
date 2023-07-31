@@ -5,29 +5,6 @@
 
 int htrace = 0;
 
-int
-g_index_of(const unsigned char *g, const unsigned char *b)
-{
-  int i = 0;
-  if (!b)
-    b = g_base_of(g);
-  g += strlen((ccp)b);
-  if (g[0])
-    {
-      if (strlen((ccp)g) == 6)
-	{
-	  i = ((g[2] - 0x80)) * 10;
-	  g += 3;
-	}
-      i += (g[2] - 0x80);
-      if (i == 19) /* subscript x char 3 = 0x93 - 0x80 = 0x13 = 19 */
-	i = 1000;
-    }
-  else
-    i = 1;
-  return i;
-}
-
 extern Hash *oid_sort_keys;
 static int
 spv_cmp(const void *a, const void *b)
