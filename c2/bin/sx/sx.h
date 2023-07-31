@@ -45,7 +45,8 @@ extern Hash *oid_sort_keys;
 extern void sx_xml(struct sl_signlist *sl);
 extern void sx_xml_init(void);
 
-extern struct sx_functions *sx_asl_init(FILE *fp, const char *fname);
+extern struct sx_functions *sx_w_asl_init(FILE *fp, const char *fname);
+/*extern struct sx_functions *sx_asl_init(FILE *fp, const char *fname);*/
 extern struct sx_functions *sx_sll_init(FILE *fp, const char *fname);
 
 extern void sx_compounds(struct sl_signlist *sl);

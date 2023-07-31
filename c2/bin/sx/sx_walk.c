@@ -7,7 +7,7 @@
 void
 sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 {
-  f->sll(f, sl, sx_pos_inst);
+  f->sll(f, sl, sx_pos_init);
   f->not(f, sl, &sl->notes->n);
   if (sl->nletters)
     {
@@ -86,7 +86,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 					{
 					  int m;
 					  f->val(f, sl, NULL, sx_pos_init);
-					  for (m = 0; m < sl->letters[i].groups[j].signs[k]->u.s->forms[m]->lv->nvalues; ++m)
+					  for (m = 0; m < sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->nvalues; ++m)
 					    {
 					      f->val(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->values[m],
 						     sx_pos_inst);

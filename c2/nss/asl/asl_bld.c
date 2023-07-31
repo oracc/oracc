@@ -180,10 +180,10 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
       /* remember the group belongs to the letter */
       if (!(gslist = hash_find(lp->hgroups, group)))	      
 	hash_add(lp->hgroups, group,
-		 (gslist = list_create(LIST_SINGLE))); /* AB2: hash of groups in letter;
-							  value is list of struct sl_sign * */
-      list_add(gslist, s); 		/* AB3: list of signs in group,
-					   data member is struct sl_sign* */
+		 (gslist = list_create(LIST_SINGLE)));  /* AB2: hash of groups in letter;
+							   value is list of struct sl_sign * */
+      list_add(gslist, s->inst); 			/* AB3: list of signs in group,
+					   		   data member is struct sl_inst* */ /* WHAT ABOUT @comp ? */
     }
   else
     mesg_verr(locp, "no sign name found in GDL of %s", s->name);

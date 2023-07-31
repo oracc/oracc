@@ -66,13 +66,10 @@ main(int argc, char * const*argv)
     {
       sx_marshall(sl);
 
-#if 0
       if (asl_output)
-	{
-	  struct sx_functions *f = sx_asl_init(stdout, "-");
-	  f->sll(f,sl);
-	}
+	sx_walk(sx_w_asl_init(stdout, "-"), sl);
 
+#if 0
       if (sll_output)
 	{
 	  struct sx_functions *f = sx_sll_init(stdout, "-");

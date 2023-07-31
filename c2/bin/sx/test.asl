@@ -7,12 +7,12 @@
 @list MZL333
 @list LAK102
 @v ba
-@form ~a BU
+@form BU
 @list MZL334
 @list LAK101
 @v baₓ
 @end form
-@form ~b BI
+@form BI
 @inote A note on BI.
 @v baₓ
 @end sign
@@ -20,7 +20,7 @@
 @sign   A
 @v	a
 @inote a note on @v
-@form ~a  A@g
+@form A@g
 @v	a₃
 @end form
 @form ~b BA
