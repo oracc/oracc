@@ -8,7 +8,7 @@ void
 sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 {
   f->sll(f, sl, sx_pos_init);
-  f->not(f, sl, &sl->notes->n);
+  f->not(f, sl, sl->notes);
   if (sl->nletters)
     {
       int i;
@@ -35,7 +35,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 			  f->sgn(f, sl, sl->letters[i].groups[j].signs[k], sx_pos_inst);
 			  if ('s' == sl->letters[i].groups[j].signs[k]->type)
 			    {
-			      f->not(f, sl, &sl->letters[i].groups[j].signs[k]->n);
+			      f->not(f, sl, sl->letters[i].groups[j].signs[k]);
 			      f->uni(f, sl, &sl->letters[i].groups[j].signs[k]->u.s->U);
 			      if (sl->letters[i].groups[j].signs[k]->u.s->nlists)
 				{
@@ -44,7 +44,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 				  for (l = 0; l < sl->letters[i].groups[j].signs[k]->u.s->nlists; ++l)
 				    {
 				      f->lst(f, sl, sl->letters[i].groups[j].signs[k]->u.s->lists[l], sx_pos_inst);
-				      f->not(f, sl, &sl->letters[i].groups[j].signs[k]->u.s->lists[l]->n);
+				      f->not(f, sl, sl->letters[i].groups[j].signs[k]->u.s->lists[l]);
 				    }
 				  f->lst(f, sl, NULL, sx_pos_term);
 				}
@@ -57,7 +57,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 				      f->val(f, sl, sl->letters[i].groups[j].signs[k]->u.s->values[l], sx_pos_inst);
 				      if (QV(sl->letters[i].groups[j].signs[k]->u.s->values[l]))
 					list_add(qv, sl->letters[i].groups[j].signs[k]->u.s->values[l]);
-				      f->not(f, sl, &sl->letters[i].groups[j].signs[k]->u.s->values[l]->n);
+				      f->not(f, sl, sl->letters[i].groups[j].signs[k]->u.s->values[l]);
 				    }
 				  f->val(f, sl, NULL, sx_pos_term);
 				}
@@ -68,7 +68,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 				  for (l = 0; l < sl->letters[i].groups[j].signs[k]->u.s->nforms; ++l)
 				    {
 				      f->frm(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l], sx_pos_inst);
-				      f->not(f, sl, &sl->letters[i].groups[j].signs[k]->u.s->forms[l]->n);
+				      f->not(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]);
 				      f->uni(f, sl, &sl->letters[i].groups[j].signs[k]->u.s->forms[l]->u.f->U);
 				      if (sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->nlists)
 					{
@@ -78,7 +78,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 					    {
 					      f->lst(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->lists[m],
 						     sx_pos_inst);
-					      f->not(f, sl, &sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->lists[m]->n);
+					      f->not(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->lists[m]);
 					    }
 					  f->lst(f, sl, NULL, sx_pos_term);
 					}
@@ -90,9 +90,9 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 					    {
 					      f->val(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->values[m],
 						     sx_pos_inst);
+					      f->not(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->values[m]);
 					      if (QV(sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->values[m]))
 						list_add(qv, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->values[m]);
-					      f->not(f, sl, &sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->values[m]->n);
 					    }
 					  f->val(f, sl, NULL, sx_pos_term);
 					}

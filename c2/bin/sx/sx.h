@@ -13,7 +13,7 @@ typedef void (sx_sign_f)(struct sx_functions*,struct sl_signlist*,struct sl_inst
 typedef void (sx_list_f)(struct sx_functions*,struct sl_signlist*,struct sl_inst*,enum sx_pos_e);
 typedef void (sx_form_f)(struct sx_functions*,struct sl_signlist*,struct sl_inst*,enum sx_pos_e);
 typedef void (sx_value_f)(struct sx_functions*,struct sl_signlist*,struct sl_inst*,enum sx_pos_e);
-typedef void (sx_notes_f)(struct sx_functions*,struct sl_signlist*,struct sl_any_note*);
+typedef void (sx_notes_f)(struct sx_functions*,struct sl_signlist*,struct sl_inst*);
 typedef void (sx_unicode_f)(struct sx_functions*,struct sl_signlist*,struct sl_unicode*);
 typedef void (sx_String_f)(struct sx_functions*,struct sl_signlist*,unsigned const char *,enum sx_pos_e);
 typedef void (sx_List_f)(struct sx_functions*,struct sl_signlist*,List *,enum sx_pos_e);
