@@ -96,6 +96,7 @@ static int
 gsort_cmp_item(GS_item *a, GS_item *b)
 {
   int ret = 0;
+
   /* force number graphemes to sort after other signs */
   if (a->r > 0 || b->r > 0)
     {
@@ -103,21 +104,14 @@ gsort_cmp_item(GS_item *a, GS_item *b)
 	return 1;
       else if (b->r > a->r)
 	return -1;
-      else if ((ret = strcmp((ccp)a->k, (ccp)b->k)))
-	return ret;
-      if ((ret = a->x - b->x))
-	return ret;
     }
-  else
-    {
-      /* compare grapheme base via the key */
-      if ((ret = strcmp((ccp)a->k, (ccp)b->k)))
-	return ret;
-      /* compare index */
-      if ((ret = a->x - b->x))
-	return ret;
-    }
-  return ret;
+
+  /* compare grapheme base via the key */
+  if ((ret = strcmp((ccp)a->k, (ccp)b->k)))
+    return ret;
+
+  /* compare index */
+  return a->x - b->x;
 }
 
 int
@@ -132,19 +126,7 @@ gsort_cmp(const void *v1, const void *v2)
       return ret;
 
   /* If all the members compared equal, the longer is later in sort order */
-  if (i < h2->n)
-    return -1;
-  else if (i < h1->n)
-    return 1;
-
-#if 0
-  /* straight comparison of the graphemes (or delimiters) */
-  for (i = 0; i < g1->n && i < g2->n; ++i)
-    if ((ret = strcmp(g1->g, g2->g)))
-      return ret;
-#endif
-
-  return 0;
+  return h1->n - h2->n;
 }
 
 static GS_item *
