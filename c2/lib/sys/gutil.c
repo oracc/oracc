@@ -8,6 +8,37 @@
 /****************************** GRAPHEME MANIPULATION UTILITY ROUTINES **********************************/
 
 unsigned char *
+g_base_of_preserve_case(const unsigned char *v)
+{
+  if (v)
+    {
+      unsigned char *b = NULL, *sub = NULL;
+      
+      b = malloc(strlen((ccp)v)+1);
+      strcpy((char*)b, (ccp)v);
+      if (strlen((ccp)v) > 3)
+	{
+	  sub = b + strlen((ccp)b);
+	  while (1)
+	    {
+	      if ('\0' == *sub && sub - 3 > b && sub[-3] == 0xe2 && sub[-2] == 0x82)
+		{
+		  if ((sub[-1] >= 0x80 && sub[-1] <= 0x89) || sub[-1] == 0x93)
+		    {
+		      sub -= 3;
+		      *sub = '\0';
+		    }
+		}
+	      else
+		break;
+	    }
+	}
+      return b;
+    }
+  return NULL;
+}
+
+unsigned char *
 g_base_of(const unsigned char *v)
 {
   if (v)

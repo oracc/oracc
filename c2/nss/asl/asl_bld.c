@@ -155,17 +155,32 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
       unsigned char *letter = NULL;
       List *gslist; /* group signs */
       int code = -1;
-
+      unsigned char *group_orig = group;
+      char *at = NULL;
+      unsigned char *slist = (ucp)sll_is_signlist((ccp)group);
+      
+      if ((at = strchr((ccp)group, '@')))
+	*at = '\0';
+      else if ((at = strchr((ccp)group, '/')))
+	*at = '\0';
+      else if ('O' == *group)
+	group[1] = '\0';
+      
+      group = pool_copy(g_base_of_preserve_case(group), sl->p);
+ 
       if (isdigit(*group))
 	{
 	  letter = pool_alloc(2, sl->p);
 	  letter[0] = '0';
 	  letter[1] = '\0';
 	  code = 0xffffff; /* should be after last letter code */
-	  if (group[1] && isdigit(group[1]))
-	    group[2] = '\0';
-	  else
-	    group[1] = '\0';
+	  if (!slist)
+	    {
+	      if (group[1] && isdigit(group[1]))
+		group[2] = '\0';
+	      else
+		group[1] = '\0';
+	    }
 	}
       else if (*group < 128)
 	{
@@ -173,6 +188,23 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 	  letter[0] = *group;
 	  letter[1] = '\0';
 	  code = (int)letter[0];
+	  if (group[1] && group[1] < 128)
+	    group[2] = '\0';
+	  else
+	    {
+	      wchar_t *w = NULL;
+	      unsigned char *c = NULL;
+	      size_t len = 0;
+	      w = utf2wcs(group, &len);
+	      if (len > 1)
+		{
+		  w[2] = L'\0';
+		  c = wcs2utf(w, 2);
+		  group = pool_copy(c,sl->p);
+		}
+	      else
+		group = letter;
+	    }
 	}
       else
 	{
@@ -181,11 +213,39 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 	  size_t len = 0;
 	  w = utf2wcs(group, &len);
 	  code = (int)w[0];
-	  w[1] = L'\0';
-	  c = wcs2utf(w, 1);
-	  letter = pool_copy(c,sl->p);
+	  if (len == 1)
+	    {
+	      c = wcs2utf(w, 1);
+	      group = letter = pool_copy(c,sl->p);
+	    }
+	  else
+	    {
+	      wchar_t z = w[1];
+	      w[1] = L'\0';
+	      c = wcs2utf(w, 1);
+	      letter = pool_copy(c,sl->p);
+	      w[1] = z;
+	      w[2] = L'\0';
+	      c = wcs2utf(w, 2);
+	      group = pool_copy(c,sl->p);
+	    }	  
 	}
 
+      if (slist)
+	group = slist;
+      else
+	{
+	  if (isdigit(group[0]))
+	    group = (ucp)"0";
+	  else if (!strchr("AEIU", group[0]) && 'N' == group[1])
+	    {
+	      group = (ucp)"NN";
+	      letter = (ucp)"N";
+	    }
+	}
+      
+      fprintf(stderr, "[asl] letter %s group %s -> %s\n", letter, group_orig, group);
+      
       /* This is where the structure of the signlist is built */
 
       /* remember the letter */	  

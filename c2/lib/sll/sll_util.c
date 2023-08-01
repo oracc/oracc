@@ -8,6 +8,9 @@
 #include <gutil.h>
 #include "sll.h"
 
+
+extern struct sll_signlist *sll_signlist (register const char *str, register size_t len);
+
 static int signindicator[256];
 
 int sll_raw_output = 0;
@@ -172,6 +175,32 @@ sll_has_sign_indicator(unsigned const char *g)
       ++g;
     }
   return 0;
+}
+
+const char *
+sll_is_signlist(const char *key)
+{
+  if (key)
+    {
+      char *x;
+      const char *y;
+      for (y = key; *y; ++y)
+	if (isdigit(*y))
+	  break;
+      if (*y)
+	{
+	  int len = y - key;
+	  struct sll_signlist *sl = NULL;
+	  x = malloc(len + 1);
+	  strncpy(x, key, len);
+	  x[len] = '\0';
+	  sl = sll_signlist(x, len);
+	  free(x);
+	  if (sl)
+	    return sl->name;
+	}
+    }
+  return NULL;
 }
 
 unsigned char *

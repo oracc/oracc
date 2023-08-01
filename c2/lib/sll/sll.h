@@ -18,6 +18,11 @@ struct sllext
   sll_get_fnc *fnc;
 };
 
+struct sll_signlist
+{
+  const char *name;
+};
+
 #undef ccp
 #define ccp const char *
 #undef ucp
@@ -71,5 +76,7 @@ extern struct sllext *sllext (register const char *str, register size_t len);
 
 extern unsigned const char *sll_ext_check(unsigned const char *k, enum sll_t t);
 extern List *sll_resolve(unsigned const char *g, const char *e, struct sllext *ep);
+
+extern const char *sll_is_signlist(const char *key);
 
 #endif /*SLL_H_*/

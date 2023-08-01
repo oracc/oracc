@@ -538,11 +538,14 @@ sx_marshall(struct sl_signlist *sl)
   qsort(lets, nlets, sizeof(const char*), (cmp_fnc_t)collate_cmp_graphemes);
   sl->letters = memo_new_array(sl->m_letters, nlets);
   sl->nletters = nlets;
+
+  /* 0 sorts to first letter so we manually move it to last */
   if (nlets && *lets[0] == '0')
     {
-      memmove(lets, &lets[1], sizeof(const char *));
+      memmove(lets, &lets[1], (nlets-1)*sizeof(const char *));
       lets[nlets-1] = "0";
     }
+  
   for (i = 0; i < nlets; ++i)
     {
       const char **grps = NULL;
