@@ -175,7 +175,7 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 	  letter = pool_alloc(2, sl->p);
 	  letter[0] = '0';
 	  letter[1] = '\0';
-	  code = 0xffffff; /* should be after last letter code */
+	  code = 0; /* generates a letter code 'l0000' */
 	  if (!slist)
 	    {
 	      if (group[1] && isdigit(group[1]))

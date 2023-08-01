@@ -70,14 +70,8 @@ main(int argc, char * const*argv)
       if (asl_output)
 	sx_walk(sx_w_asl_init(stdout, "-"), sl);
 
-#if 0
       if (sll_output)
-	{
-	  struct sx_functions *f = sx_sll_init(stdout, "-");
-	  f->sll(f,sl);
-	}
-
-#endif
+	sx_s_sll(stdout, sl);
       
       if (xml_output)
 	{

@@ -9,7 +9,7 @@ Hash *oids;
 Hash *oid_sort_keys;
 static struct sl_signlist *cmpsl = NULL;
 
-int sx_show_tokens = 1;
+int sx_show_tokens = 0;
 
 int oid_char_cmp(const void *a, const void *b)
 {
@@ -214,7 +214,7 @@ static int signs_cmp(const void *a, const void *b)
 static int signs_inst_cmp(const void *a, const void *b)
 {
   int a1 = ((*(struct sl_inst**)a)->type == 's') ? (*(struct sl_inst**)a)->u.s->sort : (*(struct sl_inst**)a)->u.f->sort;
-  int b1 = ((*(struct sl_inst**)b)->type == 's') ? (*(struct sl_inst**)b)->u.s->sort : (*(struct sl_inst**)b)->u.f->sort;;
+  int b1 = ((*(struct sl_inst**)b)->type == 's') ? (*(struct sl_inst**)b)->u.s->sort : (*(struct sl_inst**)b)->u.f->sort;
   if (a1 < b1)
     return -1;
   else if (a1 > b1)

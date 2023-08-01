@@ -60,5 +60,6 @@ extern void sx_values_parents(struct sl_signlist *sl);
 extern void sx_values_parents_dump(struct sl_signlist *sl);
 
 extern void sx_walk(struct sx_functions *f, struct sl_signlist *sl);
+extern void sx_s_sll(FILE *f, struct sl_signlist *sl);
 
 #endif/*SX_H_*/
