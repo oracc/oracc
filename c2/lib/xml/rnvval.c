@@ -120,8 +120,8 @@ rnvval_aa(const char *pname, ...)
   va_list ap;
   struct rnvval_atts *ratts = malloc(sizeof(struct rnvval_atts));
 
-  atts = malloc(atts_alloced);
-  qatts = malloc(atts_alloced);
+  atts = malloc(atts_alloced * sizeof(char*));
+  qatts = malloc(atts_alloced * sizeof(char*));
   pool_reset(rnv_pool);
 
   va_start(ap, pname);
@@ -132,8 +132,9 @@ rnvval_aa(const char *pname, ...)
 
       if (atts_alloced - nargs < 3)
 	{
-	  atts = realloc(atts, atts_alloced *= 2);
-	  qatts = realloc(qatts, atts_alloced);
+	  atts_alloced *= 2;
+	  atts = realloc(atts, atts_alloced * sizeof(char*));
+	  qatts = realloc(qatts, atts_alloced * sizeof(char*));
 	}
 
       if ((nargs%2) == 0) /* even numbered args are names */

@@ -79,7 +79,7 @@ main(int argc, char * const*argv)
 	  struct sx_functions *f = sx_asl_init(stdout, "-");
 	  f->sll(f, sl);
 #else
-	  /* sx_xml(sl); */
+	  sx_walk(sx_w_xml_init(stdout, "_"), sl);
 #endif
 	}
     }

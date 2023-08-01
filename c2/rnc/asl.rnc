@@ -1,57 +1,113 @@
+namespace g = "http://oracc.org/ns/gdl/1.0"
+namespace n = "http://oracc.org/ns/norm/1.0"
 namespace sl = "http://oracc.org/ns/sl/1.0"
 
 start =
   element sl:signlist {
-    attribute project { xsd:NCName },
-    element sl:sign {
-      attribute deprecated { xsd:integer }?,
-      attribute n { text },
-      attribute id { xsd:NCName },
-      sort?,
-      (inote
-       | \list
-       | note
-       | pname
-       | uname
-       | uphase
-       | utf8
-       | element sl:unote { text })*,
-      v*,
-      element sl:form {
-        attribute n { text },
-        attribute ref { xsd:NCName }?,
-        attribute utf8 { text }?,
-        attribute var { text },
-        attribute varid { xsd:NCName },
-        attribute id { xsd:NCName }?,
-        sort?,
-        (proof
-         | (inote | \list | note | pname | uname | uphase | utf8)*),
-        v*,
-        element sl:inherited {
-          element sl:iv {
-            attribute n { text }
-          }+
-        }?
-      }*,
-      element sl:qs {
-        element sl:q {
-          attribute base { text }?,
-          attribute o { xsd:NCName }?,
-          attribute p { xsd:NCName }?,
-          attribute qm { text }?,
-          attribute qn { text },
-          attribute type { xsd:NCName }
-        }+
-      }?
-    }+
+    attribute project { text },
+    element sl:letter {
+      attribute name { xsd:NMTOKEN },
+      attribute title { xsd:NMTOKEN },
+      attribute xml:id { xsd:NCName },
+      element sl:signs {
+        attribute name { text },
+        attribute title { text },
+        element sl:sign {
+          attribute deprecated { xsd:integer }?,
+          attribute n { text },
+          attribute xml:id { xsd:NCName },
+          sl.name,
+          sl.sort?,
+          (sl.inote
+           | sl.list
+           | sl.note
+           | sl.pname
+           | sl.uname
+           | sl.uphase
+           | sl.utf8
+           | element sl:unote { text })*,
+          sl.v*,
+          element sl:form {
+            attribute n { text },
+            attribute ref { xsd:NCName }?,
+            attribute var { text },
+            attribute varid { xsd:NCName },
+            attribute xml:id { xsd:NCName }?,
+            sl.name,
+            sl.sort?,
+            (sl.proof
+             | (sl.inote
+                | sl.list
+                | sl.note
+                | sl.pname
+                | sl.uname
+                | sl.uphase
+                | sl.utf8)*),
+            sl.v*,
+            element sl:inherited {
+              element sl:iv {
+                attribute n { text }
+              }+
+            }?
+          }*,
+          element sl:qs {
+            element sl:q {
+              attribute base { text }?,
+              attribute o { xsd:NCName }?,
+              attribute p { xsd:NCName }?,
+              attribute qm { text }?,
+              attribute qn { text },
+              attribute type { xsd:NCName }
+            }+
+          }?
+        }*
+      }*
+    }*
   }
-sort =
+sl.name =
+  element sl:name {
+    (text
+     | element g:nonw {
+         attribute type { xsd:NCName },
+         attribute xml:lang { xsd:NCName },
+         element g:p {
+           attribute g:status { xsd:NCName },
+           attribute g:type { text },
+           attribute g:utf8 { text }
+         }
+       }
+     | element g:w {
+         attribute form { text },
+         attribute xml:lang { xsd:NCName },
+         (g.gg | g.s)?,
+         g.d?,
+         (g.c | g.n)?,
+         element g:q {
+           attribute form { text },
+           attribute g:delim { xsd:NMTOKEN },
+           attribute g:status { xsd:NCName },
+           attribute g:utf8 { text },
+           g.v,
+           g.s
+         }?,
+         g.v*
+       }
+     | element n:w {
+         attribute form { xsd:NCName },
+         attribute g:delim { text }?,
+         attribute xml:lang { xsd:NCName },
+         element n:s {
+           attribute g:delim { xsd:NMTOKEN }?,
+           xsd:NCName
+         }+,
+         g.d?
+       })+
+  }
+sl.sort =
   element sl:sort {
     attribute bau { xsd:integer },
     attribute elles { xsd:integer },
     attribute hzl { xsd:integer },
-    attribute kw { xsd:integer },
     attribute kwu { xsd:integer },
     attribute lak { xsd:integer },
     attribute mzl { xsd:integer },
@@ -62,34 +118,96 @@ sort =
     attribute sllha { xsd:integer },
     attribute zatu { xsd:integer }
   }
-pname =
-  element sl:pname {
-    attribute n { text }
-  }
-utf8 =
+sl.utf8 =
   element sl:utf8 {
     attribute hex { xsd:NCName },
     text
   }
-uphase = element sl:uphase { xsd:NMTOKEN }
-\list =
+sl.inote = element sl:inote { text }
+sl.uphase = element sl:uphase { xsd:NMTOKEN }
+sl.uname = element sl:uname { text }
+sl.note = element sl:note { text }
+sl.list =
   element sl:list {
-    attribute n { text },
-    attribute name { xsd:integer }?
+    attribute n { text }
   }
-note = element sl:note { text }
-inote = element sl:inote { text }
-uname = element sl:uname { text }
-v =
+sl.pname =
+  element sl:pname {
+    attribute n { text }
+  }
+sl.v =
   element sl:v {
     attribute comment { xsd:NCName }?,
     attribute deprecated { xsd:NCName }?,
     attribute n { text },
     attribute type { xsd:NCName }?,
     attribute uncertain { xsd:NCName }?,
-    attribute lang { text }?,
-    uphase?,
-    proof?,
-    (inote | note)*
+    attribute xml:lang { text }?,
+    sl.name,
+    sl.uphase?,
+    sl.proof?,
+    (sl.inote | sl.note)*
   }
-proof = element sl:proof { text }
+sl.proof = element sl:proof { text }
+g.d =
+  element g:d {
+    attribute g:pos { xsd:NCName },
+    attribute g:role { xsd:NCName },
+    (g.gg | g.v)
+  }
+g.gg =
+  element g:gg {
+    attribute g:type { xsd:NCName },
+    g.s,
+    g.n?
+  }
+g.s =
+  element g:s {
+    attribute form { text }?,
+    attribute g:accented { text }?,
+    attribute g:delim { text }?,
+    attribute g:logolang { xsd:NCName }?,
+    attribute g:role { xsd:NCName }?,
+    attribute g:status { xsd:NCName }?,
+    attribute g:utf8 { text }?,
+    (text | g.a | g.b | g.m)+
+  }
+g.n =
+  element g:n {
+    attribute form { text },
+    attribute sexified { text }?,
+    attribute g:status { xsd:NCName }?,
+    attribute g:utf8 { text },
+    element g:r { text },
+    (g.s | g.v)?,
+    g.a?,
+    (g.c | g.m)?
+  }
+g.c =
+  element g:c {
+    attribute form { text },
+    attribute g:status { xsd:NCName }?,
+    attribute g:utf8 { text },
+    (g.m
+     | g.n
+     | g.o
+     | g.s
+     | element g:g { (g.o | g.s)+ })+
+  }
+g.v =
+  element g:v {
+    attribute form { text }?,
+    attribute g:accented { xsd:NCName }?,
+    attribute g:delim { xsd:NMTOKEN }?,
+    attribute g:status { xsd:NCName }?,
+    attribute g:utf8 { text }?,
+    (text | g.b | g.m)+
+  }
+g.m = element g:m { xsd:NMTOKEN }
+g.b = element g:b { text }
+g.a = element g:a { xsd:NCName }
+g.o =
+  element g:o {
+    attribute g:type { xsd:NCName },
+    text
+  }

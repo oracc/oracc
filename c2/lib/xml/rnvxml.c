@@ -103,6 +103,7 @@ void
 rnvxml_ea(const char *pname, struct rnvval_atts *ratts)
 {
   int i;
+  rnvval_ea(pname, ratts);
   fprintf(f_xml, "<%s", pname);
   if (xmlns_atts)
     {

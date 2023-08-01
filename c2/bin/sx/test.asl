@@ -23,5 +23,5 @@
 @form A@g
 @v	a₃
 @end form
-@form ~b BA
+@form BA
 @end sign

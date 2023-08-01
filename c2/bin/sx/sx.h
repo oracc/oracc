@@ -45,10 +45,6 @@ extern Hash *oid_sort_keys;
 extern void sx_xml(struct sl_signlist *sl);
 extern void sx_xml_init(void);
 
-extern struct sx_functions *sx_w_asl_init(FILE *fp, const char *fname);
-/*extern struct sx_functions *sx_asl_init(FILE *fp, const char *fname);*/
-extern struct sx_functions *sx_sll_init(FILE *fp, const char *fname);
-
 extern void sx_compounds(struct sl_signlist *sl);
 extern void sx_compound_digests(struct sl_signlist *sl);
 extern void sx_homophones(struct sl_signlist *sl);
@@ -60,6 +56,10 @@ extern void sx_values_parents(struct sl_signlist *sl);
 extern void sx_values_parents_dump(struct sl_signlist *sl);
 
 extern void sx_walk(struct sx_functions *f, struct sl_signlist *sl);
+
+extern struct sx_functions *sx_w_asl_init(FILE *fp, const char *fname);
+extern struct sx_functions *sx_w_xml_init(FILE *fp, const char *fname);
+extern struct sx_functions *sx_sll_init(FILE *fp, const char *fname);
 extern void sx_s_sll(FILE *f, struct sl_signlist *sl);
 
 #endif/*SX_H_*/
