@@ -155,7 +155,9 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
       unsigned char *letter = NULL;
       List *gslist; /* group signs */
       int code = -1;
+#if 0
       unsigned char *group_orig = group;
+#endif
       char *at = NULL;
       unsigned char *slist = (ucp)sll_is_signlist((ccp)group);
       
@@ -243,9 +245,11 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 	      letter = (ucp)"N";
 	    }
 	}
-      
+
+#if 0
       fprintf(stderr, "[asl] letter %s group %s -> %s\n", letter, group_orig, group);
-      
+#endif
+
       /* This is where the structure of the signlist is built */
 
       /* remember the letter */	  
