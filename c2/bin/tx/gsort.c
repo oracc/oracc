@@ -35,7 +35,7 @@ gsort_create(unsigned const char *g, unsigned const char *r)
   Gitem *gp = memo_new(m_gsort_item);
 
   gp->g = g;
-  gp->b = g_base_of(g);
+  gp->b = pool_copy(g_base_of(g), gspool);
   gp->k = collate_makekey(pool_copy(gp->b, gspool));
   gp->x = g_index_of(g, gp->b);
   if (r)
@@ -115,4 +115,55 @@ gsort_show(Tree *tp)
 	}
       fputc('\n', stdout);
     }
+}
+
+int
+gsort_cmp(void *v1, void *v2)
+{
+  Gsort *g1 = *(Gsort**)v1;
+  Gsort *g2 = *(Gsort**)v2;
+  int i, ret;
+  
+  for (i = 0; i < g1->n && i < g2->n; ++i)
+    {
+      /* if it's numeric force it to compare after other signs */
+      if (g1->r > 0)
+	{
+	  if ((ret = g1->r - g2->r))
+	    return ret;
+	  else if ((ret = strcmp(g1->b, g2->b)))
+	    return ret;
+	  if ((ret = g1->x - g2->x))
+	    return ret;
+	}
+      else if (g2->r > 0)
+	{
+	  if ((ret = g2->r - g1->r))
+	    return ret;
+	  else if ((ret = strcmp(g2->b, g1->b)))
+	    return ret;
+	  if ((ret = g2->x - g1->x))
+	    return ret;
+	}
+      else
+	{
+	  /* compare grapheme base */
+	  if ((ret = strcmp(g1->b, g2->b)))
+	    return ret;
+	  /* compare index */
+	  if ((ret = g1->x - g2->x))
+	    return ret;
+	}
+    }
+  if (i < g2->n)
+    return -1;
+  else if (i < g1->n)
+    return 1;
+
+  /* straight comparison of the graphemes (or delimiters) */
+  for (i = 0; i < g1->n && i < g2->n; ++i)
+    if ((ret = strcmp(g1->g, g2->g)))
+      return ret;
+  
+  return 0;
 }
