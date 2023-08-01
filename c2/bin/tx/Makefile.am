@@ -31,7 +31,7 @@ catx_LDADD = $(xLDADD)
 
 catx_DEPENDENCIES = $(xLDADD)
 
-gdlx_SOURCES=gdlx.c gsort.c
+gdlx_SOURCES=gdlx.c
 
 gdlx_LDADD = $(xLDADD)
 

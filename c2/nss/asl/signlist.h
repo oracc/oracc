@@ -6,6 +6,7 @@
 #include <pool.h>
 #include <tree.h>
 #include <mesg.h>
+#include <gsort.h>
 
 struct sl_inst;
 
@@ -66,6 +67,8 @@ struct sl_signlist
 struct sl_token
 {
   const unsigned char *t;	/* sign/form/value/list name token */
+  Node *gdl;			/* token as GDL */
+  GS_head *gsh;			/* GDL gsort data */
   int s;			/* sort code for token */
 };
 
@@ -197,7 +200,6 @@ struct sl_sign
   struct sl_signlist *sl;
   const unsigned char *name;
   int name_is_listnum;
-  Node *gdl;
   Hash *hlentry; 	/* All @list entries */
   Hash *hventry;	/* All @v entries */
   Hash *hvbases;	/* All @v bases; used only for checking duplicates like a₂ and a₃ within a @sign */
@@ -245,7 +247,6 @@ struct sl_form
 {
   const unsigned char *name;
   const unsigned char *pname;
-  Node *gdl;
   struct sl_sign *sign; /* This always points to a sign that
 			   corresponds to the form; if the form
 			   doesn't occur as an @sign entry, the
@@ -277,7 +278,6 @@ struct sl_value
 {
   const unsigned char *name;
   const unsigned char *base; /* without index, e.g., for a₃ this is 'a' */
-  Node *gdl;
   const char *lang; 	  /* this is inline in the @v; it's an error
 			     for two @v to have different lang */
   struct sl_sign *sowner; /* for a value at the sign level, this is
@@ -317,7 +317,7 @@ extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char
 extern struct sl_signlist *asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 					    int list);
 extern void asl_bld_term(struct sl_signlist *);
-extern void asl_bld_token(struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t);
 
 extern void asl_bld_ucode(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_uphase(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);

@@ -101,51 +101,70 @@ asl_bld_singleton_string(Mloc *locp, const unsigned char *t, const char *tag, un
     }
 }
 
-void
-asl_bld_token(struct sl_signlist *sl, const unsigned char *t)
-{
-  if (!hash_find(sl->htoken, t))
-    {
-      struct sl_token *tp = memo_new(sl->m_tokens);
-      tp->t = t;
-      hash_add(sl->htoken, t, tp);
-    }
-}
-
-Tree *
-asl_bld_gdl(Mloc *locp, char *s)
+static Tree *
+asl_bld_gdl(Mloc *locp, unsigned char *s)
 {
   Tree *tp = NULL;
   mesg_init();
-  tp = gdlparse_string(locp, s);
+  tp = gdlparse_string(locp, (char*)s);
   gdlparse_reset();
   return tp;
+}
+
+void
+asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t)
+{
+  if (!hash_find(sl->htoken, t))
+    {
+      struct sl_token *tokp = memo_new(sl->m_tokens);
+      Tree *tp;
+      tokp->t = t;
+      tp = asl_bld_gdl(locp, t);
+      tokp->gdl = tp->root;
+      tokp->gsh = gsort_prep(tp);
+      hash_add(sl->htoken, t, tokp);
+    }
 }
 
 /* This routine builds the signlist tree of letter/group/signs */
 void
 asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 {
-  Tree *tp;
   struct sl_letter *lp;
-  unsigned const char *group;
+  struct sl_token *tokp;
+  unsigned char *group;
 
   s->sl = sl;
   
   if ('|' == *s->name)
     list_add(sl->compounds, (void*)s->inst);
 
+#if 0
   tp = asl_bld_gdl(locp, (char*)pool_copy(s->name,sl->p));
   s->gdl = tp->root;
+#endif
+
   /* get the group sign */
-  if ((group = gdl_first_s(s->gdl)))
+  tokp = hash_find(sl->htoken, s->name);
+  if ((group = pool_copy(gdl_first_s(tokp->gdl), sl->p)))
     {
       /* get the letter from the group sign */
       unsigned char *letter = NULL;
       List *gslist; /* group signs */
       int code = -1;
 
-      if (*group < 128)
+      if (isdigit(*group))
+	{
+	  letter = pool_alloc(2, sl->p);
+	  letter[0] = '0';
+	  letter[1] = '\0';
+	  code = 0xffffff; /* should be after last letter code */
+	  if (group[1] && isdigit(group[1]))
+	    group[2] = '\0';
+	  else
+	    group[1] = '\0';
+	}
+      else if (*group < 128)
 	{
 	  letter = pool_alloc(2, sl->p);
 	  letter[0] = *group;
@@ -198,7 +217,7 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
   sl->curr_value = NULL;
   check_flags((char*)n, &query, &literal);
 
-  asl_bld_token(sl, n);
+  asl_bld_token(locp, sl, (ucp)n);
 
   if (sl->curr_sign->hfentry && hash_find(sl->curr_sign->hfentry, n))
     {
@@ -317,7 +336,7 @@ asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
   int literal, query = 0;
 
   check_flags((char*)n, &query, &literal);
-  asl_bld_token(sl, n);
+  asl_bld_token(locp, sl, (ucp)n);
  
   if (sl->curr_form)
     asl_add_list(locp, sl, n, literal, query, minus_flag);
@@ -364,7 +383,7 @@ asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
   if (query)
     mesg_verr(locp, "'?' is ignored on @aka");
     
-  asl_bld_token(sl, t);
+  asl_bld_token(locp, sl, (ucp)t);
 
   if (sl->curr_form)
     {
@@ -393,7 +412,7 @@ asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
   if (query)
     mesg_verr(locp, "'?' is ignored on @pname");
     
-  asl_bld_token(sl, t);
+  asl_bld_token(locp, sl, (ucp)t);
 
   if (sl->curr_form)
     {
@@ -434,7 +453,7 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
     }
 
   check_flags((char*)n, &query, &literal);
-  asl_bld_token(sl, n);
+  asl_bld_token(locp, sl, (ucp)n);
 
   sl->curr_form = NULL;
   sl->curr_value = NULL;
@@ -580,7 +599,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	}
     }
 
-  asl_bld_token(sl, n);
+  asl_bld_token(locp, sl, (ucp)n);
   
   if (strlen((ccp)n) > 3)
     {
@@ -619,17 +638,11 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 
   if (!v && !(v = hash_find(sl->hventry, n)))
     {
-      Tree *tp = NULL;
       v = memo_new(sl->m_values);
       hash_add(sl->hventry, n, v);
       v->name = n;
       v->atf = atf_flag;
       v->unknown = uvalue;
-      if (!v->atf) /* should really parse ATF */
-	{
-	  tp = asl_bld_gdl(locp, (char*)pool_copy(v->name,sl->p));
-	  v->gdl = tp->root;
-	}
       if (lang)
 	v->lang = lang;
 

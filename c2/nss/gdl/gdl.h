@@ -4,6 +4,7 @@
 #include <pool.h>
 #include <tree.h>
 #include "gvl.h"
+#include "gsort.h"
 
 #ifndef uccp
 #define uccp unsigned const char *

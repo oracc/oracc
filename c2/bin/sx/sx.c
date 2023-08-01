@@ -41,8 +41,9 @@ main(int argc, char * const*argv)
 
   /* Initialize a dummy gvl with an empty hash instead of a signlist */
   (void)gvl_setup(NULL, NULL);
+  gsort_init();
   
-  options(argc, argv, "acirsStTx");
+  options(argc, argv, "acisStTx");
   asltrace = asl_flex_debug = trace_mode;
 
   if (argv[optind])
@@ -109,9 +110,11 @@ opts(int opt, char *arg)
     case 'i':
       asl_output = identity_mode = 1;
       break;
+#if 0
     case 'r':
       asl_raw_tokens = 1;
       break;
+#endif
     case 's':
       sll_output = 1;
       break;

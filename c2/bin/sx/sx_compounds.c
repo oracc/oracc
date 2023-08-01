@@ -39,9 +39,11 @@ sx_compounds(struct sl_signlist *sl)
   for (ip = list_first(sl->compounds); ip; ip = list_next(sl->compounds))
     {
       struct sl_sign *s = (ip->type == 's' ? ip->u.s : ip->u.f->sign);
+      struct sl_token *tokp;
       sxc_nth = 0;
       sl->curr_inst = ip;
-      sx_compound(sl, s->gdl, (ccp)s->name);
+      tokp = hash_find(sl->htoken, s->name);
+      sx_compound(sl, tokp->gdl, (ccp)s->name);
     }
 }
 

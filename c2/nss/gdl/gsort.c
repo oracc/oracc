@@ -163,6 +163,11 @@ gsort_item(unsigned const char *n, unsigned const char *g, unsigned const char *
 static void
 gsort_node(Node *np, List *lp)
 {
+  /* Ignore determinatives for now; should probably ensure that forms
+     with determinative sort in constant order */
+  if (!strcmp(np->name, "g:det"))
+    return;
+
   switch (np->name[2])
     {
     case 'l':

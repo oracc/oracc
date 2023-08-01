@@ -9,6 +9,8 @@ Hash *oids;
 Hash *oid_sort_keys;
 static struct sl_signlist *cmpsl = NULL;
 
+int sx_show_tokens = 1;
+
 int oid_char_cmp(const void *a, const void *b)
 {
   const char *cc1 = (*(char**)a);
@@ -223,10 +225,18 @@ static int signs_inst_cmp(const void *a, const void *b)
 
 static int toks_cmp(const void *a, const void *b)
 {
+#if 1
+  const char *cc1 = (*(char**)a);
+  const char *cc2 = (*(char**)b);
+  struct sl_token *t1 = hash_find(cmpsl->htoken, (uccp)cc1);
+  struct sl_token *t2 = hash_find(cmpsl->htoken, (uccp)cc2);
+  return gsort_cmp(&t1->gsh, &t2->gsh);
+#else
   unsigned const char *t_a = ((struct sl_token*)a)->t;
   unsigned const char *t_b = ((struct sl_token*)b)->t;
   /* This cast is a hack; collate_cmp_graphemes expects its args to be unsigned char ** */
   return collate_cmp_graphemes((ucp)&t_a, (ucp)&t_b);
+#endif
 }
 
 static int values_cmp(const void *a, const void *b)
@@ -283,7 +293,6 @@ sx_marshall(struct sl_signlist *sl)
       
       if (!(s = hash_find(sl->hsentry, (uccp)keys[i])))
 	s = form_as_sign(sl, hash_find(sl->hfentry, (uccp)keys[i]));
-      f->gdl = s->gdl;
       f->sign = s;
     }
 
@@ -291,13 +300,23 @@ sx_marshall(struct sl_signlist *sl)
   sx_compounds(sl);
   
   /* Sort the tokens and set the token sort codes */
+  cmpsl = sl;
   keys = hash_keys2(sl->htoken, &nkeys);
   qsort(keys, nkeys, sizeof(char*), (cmp_fnc_t)toks_cmp);
+  if (sx_show_tokens)
+    fprintf(stderr, "===sorted tokens===\n");
   for (i = 0; i < nkeys; ++i)
     {
       struct sl_token *tp = hash_find(sl->htoken, (ucp)keys[i]);
       tp->s = i;
+      if (sx_show_tokens)
+	{
+	  fprintf(stderr, "%d\t", tp->s);
+	  gsort_show(tp->gsh);
+	}
     }
+  if (sx_show_tokens)
+    fprintf(stderr, "===end sorted tokens===\n");
 
   /* Provide signs with sort codes base on token sort sequence; add oids while we are at it */
   keys = hash_keys2(sl->hsentry, &nkeys);
@@ -427,7 +446,6 @@ sx_marshall(struct sl_signlist *sl)
   qsort(sl->lists, sl->nlists, sizeof(struct sl_list*), (cmp_fnc_t)lists_cmp);
 
   /* Convert lv->hventry to lv->values */
-  cmpsl = sl;
   for (i = 0; i < sl->nforms; ++i)
     {
       if (sl->forms[i]->insts)
@@ -519,6 +537,11 @@ sx_marshall(struct sl_signlist *sl)
   qsort(lets, nlets, sizeof(const char*), (cmp_fnc_t)collate_cmp_graphemes);
   sl->letters = memo_new_array(sl->m_letters, nlets);
   sl->nletters = nlets;
+  if (nlets && *lets[0] == '0')
+    {
+      memmove(lets, &lets[1], sizeof(const char *));
+      lets[nlets-1] = "0";
+    }
   for (i = 0; i < nlets; ++i)
     {
       const char **grps = NULL;
