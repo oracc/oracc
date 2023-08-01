@@ -7,8 +7,9 @@
 #include "gdl.h"
 #include "gsort.h"
 
-static const char *gsort_show_key(unsigned const char *k);
+static GS_item *gsort_item(unsigned const char *n, unsigned const char *g, unsigned const char *r);
 static void gsort_node(Node *np, List *lp);
+static const char *gsort_show_key(unsigned const char *k);
 
 static Memo *m_headers = NULL;
 static Memo *m_items = NULL;
@@ -43,7 +44,7 @@ gsort_term()
 GS_head *
 gsort_prep(Tree *tp)
 {
-  if (tp && tp->root && tp->root->kids)
+  if (tp && tp->root)
     {
       GS_head *gs = memo_new(m_headers);
 
@@ -53,14 +54,24 @@ gsort_prep(Tree *tp)
 	{
 	  List *lp = list_create(LIST_SINGLE);
 	  gs = memo_new(m_headers);
-	  Node *np;
-	  for (np = tp->root->kids; np; np = np->next)
-	    gsort_node(np, lp);
-	  gs->n = list_len(lp);
-	  gs->i = (GS_item **)list2array(lp);
-	  list_free(lp, NULL);
-	  if (tp->root->text)
+	  if (tp->root->kids)
 	    {
+	      Node *np;
+	      for (np = tp->root->kids; np; np = np->next)
+		gsort_node(np, lp);
+	      gs->n = list_len(lp);
+	      gs->i = (GS_item **)list2array(lp);
+	      list_free(lp, NULL);
+	      if (tp->root->kids)
+		gs->s = (uccp)tp->root->text;
+	      hash_add(hheads, gs->s, gs);
+	    }
+	  else if (tp->root->text)
+	    {
+	      GS_item *gi = gsort_item((uccp)tp->root->text, (uccp)tp->root->text, NULL);
+	      gs->n = 1;
+	      gs->i = malloc(sizeof(GS_item*));
+	      *gs->i = gi;
 	      gs->s = (uccp)tp->root->text;
 	      hash_add(hheads, gs->s, gs);
 	    }

@@ -90,6 +90,15 @@ gdlparse_term(void)
   gdl_term();
 }
 
+Tree*
+gdl_literal(Mloc *m, char *s)
+{
+  Tree *tp = tree_init();
+  (void)tree_root(tp, NS_GDL, "g:gdl", 1, NULL);
+  tp->root->text = s;
+  return tp;
+}
+
 /***********************************************************************
  *
  * Utility routines for the tree-builder

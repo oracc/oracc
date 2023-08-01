@@ -317,7 +317,7 @@ extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char
 extern struct sl_signlist *asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 					    int list);
 extern void asl_bld_term(struct sl_signlist *);
-extern void asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t);
+extern void asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t, int literal);
 
 extern void asl_bld_ucode(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_uphase(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);

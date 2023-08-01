@@ -9,7 +9,7 @@ Hash *oids;
 Hash *oid_sort_keys;
 static struct sl_signlist *cmpsl = NULL;
 
-int sx_show_tokens = 1;
+int sx_show_tokens = 0;
 
 int oid_char_cmp(const void *a, const void *b)
 {
@@ -302,7 +302,8 @@ sx_marshall(struct sl_signlist *sl)
   /* Sort the tokens and set the token sort codes */
   cmpsl = sl;
   keys = hash_keys2(sl->htoken, &nkeys);
-  qsort(keys, nkeys, sizeof(char*), (cmp_fnc_t)toks_cmp);
+  if (nkeys > 1)
+    qsort(keys, nkeys, sizeof(char*), (cmp_fnc_t)toks_cmp);
   if (sx_show_tokens)
     fprintf(stderr, "===sorted tokens===\n");
   for (i = 0; i < nkeys; ++i)

@@ -56,6 +56,7 @@ extern void gdl_init(void);
 extern void gdl_term(void);
 
 extern void gdl_lex_init(const char *file, int line);
+extern Tree*gdl_literal(Mloc *m, char *s);
 extern void gdl_setup_buffer(char *buf);
 extern void gdl_set_tree(Tree *tp);
 extern Tree *gdlparse_string(Mloc *m, char *s);

@@ -112,14 +112,17 @@ asl_bld_gdl(Mloc *locp, unsigned char *s)
 }
 
 void
-asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t)
+asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t, int literal)
 {
   if (!hash_find(sl->htoken, t))
     {
       struct sl_token *tokp = memo_new(sl->m_tokens);
       Tree *tp;
       tokp->t = t;
-      tp = asl_bld_gdl(locp, t);
+      if (literal)
+	tp = gdl_literal(locp, (char*)t);
+      else
+	tp = asl_bld_gdl(locp, t);
       tokp->gdl = tp->root;
       tokp->gsh = gsort_prep(tp);
       hash_add(sl->htoken, t, tokp);
@@ -217,7 +220,7 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
   sl->curr_value = NULL;
   check_flags((char*)n, &query, &literal);
 
-  asl_bld_token(locp, sl, (ucp)n);
+  asl_bld_token(locp, sl, (ucp)n, 0);
 
   if (sl->curr_sign->hfentry && hash_find(sl->curr_sign->hfentry, n))
     {
@@ -336,8 +339,8 @@ asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
   int literal, query = 0;
 
   check_flags((char*)n, &query, &literal);
-  asl_bld_token(locp, sl, (ucp)n);
- 
+  asl_bld_token(locp, sl, (ucp)n, 1);
+
   if (sl->curr_form)
     asl_add_list(locp, sl, n, literal, query, minus_flag);
   else
@@ -383,7 +386,7 @@ asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
   if (query)
     mesg_verr(locp, "'?' is ignored on @aka");
     
-  asl_bld_token(locp, sl, (ucp)t);
+  asl_bld_token(locp, sl, (ucp)t, 0);
 
   if (sl->curr_form)
     {
@@ -412,7 +415,7 @@ asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
   if (query)
     mesg_verr(locp, "'?' is ignored on @pname");
     
-  asl_bld_token(locp, sl, (ucp)t);
+  asl_bld_token(locp, sl, (ucp)t, 0);
 
   if (sl->curr_form)
     {
@@ -453,7 +456,7 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
     }
 
   check_flags((char*)n, &query, &literal);
-  asl_bld_token(locp, sl, (ucp)n);
+  asl_bld_token(locp, sl, (ucp)n, 0);
 
   sl->curr_form = NULL;
   sl->curr_value = NULL;
@@ -599,7 +602,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	}
     }
 
-  asl_bld_token(locp, sl, (ucp)n);
+  asl_bld_token(locp, sl, (ucp)n, 0);
   
   if (strlen((ccp)n) > 3)
     {

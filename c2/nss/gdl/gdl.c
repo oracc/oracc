@@ -73,7 +73,15 @@ gdl_first_s_sub(Node *np)
 const unsigned char *
 gdl_first_s(Node *gdl)
 {
-  Node *np = gdl_first_s_sub(gdl);
+  Node *np = NULL;
+
+  /* If caller used gdl_literal this is sufficient; if gdl->kids is
+     NULL through user error this may not be correct but the error
+     needs to be fixed anyway */
+  if (!gdl->kids)
+    return (uccp)gdl->text;
+  
+  np = gdl_first_s_sub(gdl);
 
   if (!np)
     {

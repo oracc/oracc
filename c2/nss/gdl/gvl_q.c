@@ -179,7 +179,7 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
     }
   else if (q_bad)
     {
-      if (!gdl_corrq)
+      if (!gdl_corrq && !gvl_void_messages)
 	{
 	  /* If the q is unknown, report known q for v */
 	  unsigned const char *tmp2 = gvl_lookup(sll_tmp_key(vp->orig, "q"));
