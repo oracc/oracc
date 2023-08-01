@@ -117,6 +117,8 @@ gvl_q(Node *ynp)
       vq->mess = gvl_vmess("%s unable to attempt canonicalization", ynp->text);
     }
   ynp->user = vq;
+  if (vq->orig)
+    ynp->text = (ccp)vq->orig;
 }
 
 int

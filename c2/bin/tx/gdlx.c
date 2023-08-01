@@ -29,7 +29,7 @@ extern int deep_sig;
 int error_stdout = 0;
 const char *fname = NULL;
 int gdl_c10e_mode = 1;
-int gsort_mode = 1;
+int gsort_mode = 0;
 int identity_mode = 0;
 int ns_output = 0;
 int pedantic = 0;
@@ -39,6 +39,7 @@ int validate = 0;
 int wrapper = 0;
 
 FILE *fp;
+List *gslp;
 
 static void
 test_identity(char *s, Tree *t)
@@ -101,7 +102,11 @@ do_one(char *s)
   if (identity_mode)
     test_identity(s, tp);
   else if (gsort_mode)
-    gsort_show(tp);
+    {
+      GS_head *ghp;
+      list_add(gslp, (ghp = gsort_prep(tp)));
+      gsort_show(ghp);
+    }
   else if (!check_mode)
     {
       if (signatures)
@@ -164,7 +169,10 @@ main(int argc, char **argv)
   gdlparse_init();
 
   if (gsort_mode)
-    gsort_init();
+    {
+      gsort_init();
+      gslp = list_create(LIST_SINGLE);
+    }
   
   if (argv[optind])
     {
@@ -177,7 +185,17 @@ main(int argc, char **argv)
   else
     do_many("-");
 
+  if (gsort_mode)
+    {
+      GS_head ** ghp = (GS_head**)list2array(gslp);
+      int n = list_len(gslp), i;
+      qsort(ghp, n, sizeof(GS_head*), gsort_cmp);
+      for (i = 0; i < n; ++i)
+	fprintf(stdout, "%s\n", ghp[i]->s);
+    }
+
   gdlparse_term();
+
   return 0;
 }
 

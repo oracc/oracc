@@ -7,34 +7,157 @@
 #include "gdl.h"
 #include "gsort.h"
 
-void gsort_node(Node *np, List *lp);
+static const char *gsort_show_key(unsigned const char *k);
+static void gsort_node(Node *np, List *lp);
 
-Memo *m_gsort_header = NULL;
-Memo *m_gsort_item = NULL;
-Pool *gspool = NULL;
+static Memo *m_headers = NULL;
+static Memo *m_items = NULL;
+static Pool *gspool = NULL;
+static Hash *hitems = NULL;
+static Hash *hheads = NULL;
+
+static GS_item gsort_null_item = { (uccp)"\\0" , (uccp)"", (uccp)"", 0, -1 };
 
 void
 gsort_init()
 {
-  m_gsort_header = memo_init(sizeof(Gsort), 1024);
-  m_gsort_item = memo_init(sizeof(Gitem), 1024);
+  m_headers = memo_init(sizeof(GS_head), 1024);
+  m_items = memo_init(sizeof(GS_item), 1024);
   gspool = pool_init();
+  hitems = hash_create(1024);
+  hheads = hash_create(1024);
   collate_init((ucp)"unicode");
 }
 
 void
 gsort_term()
 {
-  memo_term(m_gsort_header);
-  memo_term(m_gsort_item);
+  memo_term(m_headers);
+  memo_term(m_items);
+  pool_term(gspool);
+  hash_free(hheads, NULL);
+  hash_free(hitems, NULL);
+  gsort_show_key(NULL);
 }
 
-Gitem *
-gsort_create(unsigned const char *g, unsigned const char *r)
+GS_head *
+gsort_prep(Tree *tp)
 {
-  Gitem *gp = memo_new(m_gsort_item);
+  if (tp && tp->root && tp->root->kids)
+    {
+      GS_head *gs = memo_new(m_headers);
 
-  gp->g = g;
+      if (tp->root->text && (gs = hash_find(hheads, (uccp)tp->root->text)))
+	return gs;
+      else
+	{
+	  List *lp = list_create(LIST_SINGLE);
+	  gs = memo_new(m_headers);
+	  Node *np;
+	  for (np = tp->root->kids; np; np = np->next)
+	    gsort_node(np, lp);
+	  gs->n = list_len(lp);
+	  gs->i = (GS_item **)list2array(lp);
+	  list_free(lp, NULL);
+	  if (tp->root->text)
+	    {
+	      gs->s = (uccp)tp->root->text;
+	      hash_add(hheads, gs->s, gs);
+	    }
+	  else
+	    gs->s = NULL;
+	  return gs;
+	}
+    }
+  return NULL;
+}
+
+void
+gsort_show(GS_head *gsp)
+{
+  if (gsp)
+    {
+      int i;
+      fputs((ccp)gsp->s, stderr);
+      fputc('\t', stderr);
+      for (i = 0; i < gsp->n; ++i)
+	{
+	  GS_item *gip = gsp->i[i];
+	  fprintf(stderr, "{%s; %s; %s; %d; %d}",
+		  gip->g, gip->b, gsort_show_key(gip->k), gip->x, gip->r);
+	}
+      fputc('\n', stderr);
+    }
+  else
+    fprintf(stderr, "(GS_head argument is NULL)\n");
+}
+
+static int
+gsort_cmp_item(GS_item *a, GS_item *b)
+{
+  int ret = 0;
+  /* force number graphemes to sort after other signs */
+  if (a->r > 0 || b->r > 0)
+    {
+      if (a->r > b->r)
+	return 1;
+      else if (b->r > a->r)
+	return -1;
+      else if ((ret = strcmp((ccp)a->k, (ccp)b->k)))
+	return ret;
+      if ((ret = a->x - b->x))
+	return ret;
+    }
+  else
+    {
+      /* compare grapheme base via the key */
+      if ((ret = strcmp((ccp)a->k, (ccp)b->k)))
+	return ret;
+      /* compare index */
+      if ((ret = a->x - b->x))
+	return ret;
+    }
+  return ret;
+}
+
+int
+gsort_cmp(const void *v1, const void *v2)
+{
+  GS_head *h1 = *(GS_head**)v1;
+  GS_head *h2 = *(GS_head**)v2;
+  int i, ret;
+  
+  for (i = 0; i < h1->n && i < h2->n; ++i)
+    if ((ret = gsort_cmp_item(h1->i[i], h2->i[i])))
+      return ret;
+
+  /* If all the members compared equal, the longer is later in sort order */
+  if (i < h2->n)
+    return -1;
+  else if (i < h1->n)
+    return 1;
+
+#if 0
+  /* straight comparison of the graphemes (or delimiters) */
+  for (i = 0; i < g1->n && i < g2->n; ++i)
+    if ((ret = strcmp(g1->g, g2->g)))
+      return ret;
+#endif
+
+  return 0;
+}
+
+static GS_item *
+gsort_item(unsigned const char *n, unsigned const char *g, unsigned const char *r)
+{
+  GS_item *gp = NULL;
+
+  if ((gp = hash_find(hitems, n)))
+    return gp;
+
+  gp = memo_new(m_items);
+
+  gp->g = n;
   gp->b = pool_copy(g_base_of(g), gspool);
   gp->k = collate_makekey(pool_copy(gp->b, gspool));
   gp->x = g_index_of(g, gp->b);
@@ -49,22 +172,32 @@ gsort_create(unsigned const char *g, unsigned const char *r)
     }
   else
     gp->r = -1;
+
+  hash_add(hitems, n, gp);
+  
   return gp;
 }
 
-void
+static void
 gsort_node(Node *np, List *lp)
 {
   switch (np->name[2])
     {
+    case 'l':
     case 'p':      
     case 's':
     case 'v':
     case 'd':
-      list_add(lp, gsort_create((uccp)np->text, NULL));
+      list_add(lp, gsort_item((uccp)np->text, (uccp)np->text, NULL));
       break;
     case 'n':
-      list_add(lp, gsort_create((uccp)np->kids->next->text, (uccp)np->kids->text));
+      list_add(lp, gsort_item((uccp)np->text,
+			      np->kids ? (uccp)np->kids->next->text : (uccp)np->text,
+			      np->kids ? (uccp)np->kids->text : (uccp)np->text));
+      break;
+    case 'm':
+      list_add(lp, &gsort_null_item);
+      list_add(lp, gsort_item((uccp)np->text, (uccp)np->text, NULL));
       break;
     case 'c':
     case 'g':
@@ -74,96 +207,54 @@ gsort_node(Node *np, List *lp)
 	  gsort_node(npp, lp);
       }
       break;
+    case 'q':
+      /* for qualified signs use the value, a NULL delimiter (which
+	 will sort before other delimiters) and the sign */
+      list_add(lp, gsort_item((uccp)np->text, (uccp)np->kids->text, NULL));
+      list_add(lp, &gsort_null_item);
+      {
+	Node *npp;
+	for (npp = np->kids->next; npp; npp = npp->next)
+	  gsort_node(npp, lp);
+      }
+      break;
     default:
       fprintf(stderr, "[gsort] unhandled name in gsort_node %s\n", np->name);
       break;
     }
 }
 
-Gsort *
-gsort(Tree *tp)
+static const char *
+gsort_show_key(unsigned const char *k)
 {
-  if (tp && tp->root && tp->root->kids)
-    {
-      List *lp = list_create(LIST_SINGLE);
-      Gsort *gs = memo_new(m_gsort_header);
-      Node *np;
-      for (np = tp->root->kids; np; np = np->next)
-	gsort_node(np, lp);
-      gs->n = list_len(lp);
-      gs->g = (Gitem **)list2array(lp);
-      list_free(lp, NULL);
-      return gs;
-    }
-  return NULL;
-}
+  static char *kk = NULL;
+  char *kp;
+  static int kk_len = 0;
+  int kk_need = 0;
 
-void
-gsort_show(Tree *tp)
-{
-  Gsort *gsp = NULL;
-  int i;
-  
-  gsp = gsort(tp);
-  if (gsp)
+  if (!k)
     {
-      for (i = 0; i < gsp->n; ++i)
-	{
-	  Gitem *gip = gsp->g[i];
-	  fprintf(stdout, "{g=%s; b=%s; k=\"%s\"; x=%d; r=%d}",
-		  gip->g, gip->b, gip->k, gip->x, gip->r);
-	}
-      fputc('\n', stdout);
+      kk_len = 0;
+      free(kk);
+      return (kk = NULL);
     }
-}
 
-int
-gsort_cmp(void *v1, void *v2)
-{
-  Gsort *g1 = *(Gsort**)v1;
-  Gsort *g2 = *(Gsort**)v2;
-  int i, ret;
+  kk_need = (2 * strlen((ccp)k))+1;
+
+  if (kk_need > kk_len)
+    kk = realloc(kk, 2*kk_need);
   
-  for (i = 0; i < g1->n && i < g2->n; ++i)
+  for (kp = kk; *k;)
     {
-      /* if it's numeric force it to compare after other signs */
-      if (g1->r > 0)
+      if (*k < 32)
 	{
-	  if ((ret = g1->r - g2->r))
-	    return ret;
-	  else if ((ret = strcmp(g1->b, g2->b)))
-	    return ret;
-	  if ((ret = g1->x - g2->x))
-	    return ret;
-	}
-      else if (g2->r > 0)
-	{
-	  if ((ret = g2->r - g1->r))
-	    return ret;
-	  else if ((ret = strcmp(g2->b, g1->b)))
-	    return ret;
-	  if ((ret = g2->x - g1->x))
-	    return ret;
+	  *kp++ = '\\';
+	  *kp++ = (*k++ + 'a');
 	}
       else
-	{
-	  /* compare grapheme base */
-	  if ((ret = strcmp(g1->b, g2->b)))
-	    return ret;
-	  /* compare index */
-	  if ((ret = g1->x - g2->x))
-	    return ret;
-	}
+	*kp++ = *k++;
     }
-  if (i < g2->n)
-    return -1;
-  else if (i < g1->n)
-    return 1;
-
-  /* straight comparison of the graphemes (or delimiters) */
-  for (i = 0; i < g1->n && i < g2->n; ++i)
-    if ((ret = strcmp(g1->g, g2->g)))
-      return ret;
+  *kp = '\0';
   
-  return 0;
+  return kk;
 }
