@@ -71,6 +71,23 @@ sx_w_x_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
 static void
 sx_w_x_group(struct sx_functions *f, struct sl_signlist *sl, struct sl_group *g, enum sx_pos_e p)
 {
+  static int in_group = 0;
+  xo_loc->file = "stdin"; xo_loc->line = 1;
+  if (p == sx_pos_inst)
+    {
+      if (in_group)
+	rnvxml_ee("sl:signs");
+	
+      ratts = rnvval_aa("x", "name", g->name, "title", g->name, NULL);
+      rnvxml_ea("sl:signs", ratts);
+      in_group = 1;
+    }
+  else if (p == sx_pos_term)
+    {
+      if (in_group)
+	rnvxml_ee("sl:signs");
+      in_group = 0;
+    }
 }
 
 static void
@@ -101,6 +118,33 @@ sx_w_x_letter(struct sx_functions *f, struct sl_signlist *sl, struct sl_letter *
 static void
 sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, enum sx_pos_e p)
 {
+  static int in_form = 0;
+
+  if (p == sx_pos_inst)
+    {
+      if (in_form)
+	{
+	  rnvxml_ee("sl:form");
+	  in_form = 0;
+	}
+
+      xo_loc->file = s->mloc.file; xo_loc->line = s->mloc.line;
+  
+      if (s->type == 'f')
+	{
+	  char scode[32];
+	  (void)sprintf(scode, "%d", s->u.f->sort);
+	  ratts = rnvval_aa("x", "n", s->u.f->name, "xml:id", s->u.f->oid, "sort", scode, NULL);
+	  rnvxml_ea("sl:form", ratts);
+	  in_form = 1;
+	}
+    }
+  else if (p == sx_pos_term)
+    {
+      if (in_form)
+	rnvxml_ee("sl:form");
+      in_form = 0;
+    }  
 }
 
 static void
@@ -111,6 +155,13 @@ sx_w_x_ivalue(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *v,
 static void
 sx_w_x_list(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *l, enum sx_pos_e p)
 {
+  if (p == sx_pos_inst)
+    {
+      char scode[32];
+      (void)sprintf(scode, "%d", l->u.l->sort);
+      ratts = rnvval_aa("x", "n", l->u.l->name, "sort", scode, NULL);
+      rnvxml_ec("sl:list", ratts);
+    }
 }
 
 static void
@@ -128,14 +179,64 @@ sx_w_x_qvs(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *vi, e
 static void
 sx_w_x_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, enum sx_pos_e p)
 {
+  static int in_sign = 0;
+
+  if (p == sx_pos_inst)
+    {
+      if (in_sign)
+	{
+	  rnvxml_ee("sl:sign");
+	  in_sign = 0;
+	}
+
+      xo_loc->file = s->mloc.file; xo_loc->line = s->mloc.line;
+  
+      if (s->type == 's')
+	{
+	  char scode[32];
+	  (void)sprintf(scode, "%d", s->u.s->sort);
+	  ratts = rnvval_aa("x", "n", s->u.s->name, "xml:id", s->u.s->oid, "sort", scode, NULL);
+	  rnvxml_ea("sl:sign", ratts);
+	  in_sign = 1;
+	}
+#if 0
+      else if (s->type == 'f')
+	{
+	  /* xref */
+	}
+      /* also handle compound-only here */
+#endif
+    }
+  else if (p == sx_pos_term)
+    {
+      if (in_sign)
+	rnvxml_ee("sl:sign");
+      in_sign = 0;
+    }  
 }
 
 static void
 sx_w_x_value(struct sx_functions *f, struct sl_signlist *s, struct sl_inst *v, enum sx_pos_e p)
 {
+  if (p == sx_pos_inst)
+    {
+      char scode[32];
+      (void)sprintf(scode, "%d", v->u.v->sort);
+      ratts = rnvval_aa("x", "n", v->u.v->name, "sort", scode, NULL);
+      rnvxml_ec("sl:v", ratts);
+    }
 }
 
 static void
 sx_w_x_unicode(struct sx_functions *f, struct sl_signlist *sl, struct sl_unicode *up)
 {
+  if (up->uname)
+    rnvxml_et("sl:uname", NULL, up->uname);
+  if (up->ucode)
+    {
+      ratts = rnvval_aa("x", "hex", up->ucode, NULL);
+      rnvxml_ec("sl:utf8", ratts);
+    }
+  if (up->uphase)
+    rnvxml_et("sl:uphase", NULL, up->uphase);
 }

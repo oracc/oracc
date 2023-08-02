@@ -15,9 +15,9 @@ start =
         element sl:sign {
           attribute deprecated { xsd:integer }?,
           attribute n { text },
+	  attribute sort { text }, 
           attribute xml:id { xsd:NCName },
-          sl.name,
-          sl.sort?,
+          sl.name?,
           (sl.inote
            | sl.list
            | sl.note
@@ -30,11 +30,9 @@ start =
           element sl:form {
             attribute n { text },
             attribute ref { xsd:NCName }?,
-            attribute var { text },
-            attribute varid { xsd:NCName },
+            attribute sort { text }, 
             attribute xml:id { xsd:NCName }?,
-            sl.name,
-            sl.sort?,
+            sl.name?,
             (sl.proof
              | (sl.inote
                 | sl.list
@@ -103,21 +101,6 @@ sl.name =
          g.d?
        })+
   }
-sl.sort =
-  element sl:sort {
-    attribute bau { xsd:integer },
-    attribute elles { xsd:integer },
-    attribute hzl { xsd:integer },
-    attribute kwu { xsd:integer },
-    attribute lak { xsd:integer },
-    attribute mzl { xsd:integer },
-    attribute obzl { xsd:integer },
-    attribute ogsl { xsd:integer },
-    attribute rec { xsd:integer },
-    attribute rsp { xsd:integer },
-    attribute sllha { xsd:integer },
-    attribute zatu { xsd:integer }
-  }
 sl.utf8 =
   element sl:utf8 {
     attribute hex { xsd:NCName },
@@ -129,7 +112,8 @@ sl.uname = element sl:uname { text }
 sl.note = element sl:note { text }
 sl.list =
   element sl:list {
-    attribute n { text }
+    attribute n { text },
+    attribute sort { text } 
   }
 sl.pname =
   element sl:pname {
@@ -140,10 +124,11 @@ sl.v =
     attribute comment { xsd:NCName }?,
     attribute deprecated { xsd:NCName }?,
     attribute n { text },
+    attribute sort { text }, 
     attribute type { xsd:NCName }?,
     attribute uncertain { xsd:NCName }?,
     attribute xml:lang { text }?,
-    sl.name,
+    sl.name?,
     sl.uphase?,
     sl.proof?,
     (sl.inote | sl.note)*
