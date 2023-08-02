@@ -89,7 +89,7 @@ struct sl_split_value
   const char *oid;
 };
 
-/* each of the lists in sl_any_note is a list of char; handlers should
+/* each of the lists in sl_any_note is a list of char*; handlers should
    be passed the owner sl_inst so an Mloc is available */
 struct sl_any_note
 {

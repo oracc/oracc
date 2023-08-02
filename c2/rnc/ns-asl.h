@@ -64,6 +64,7 @@ enum asl_e_type
   asl_e_sl_iv,
   asl_e_sl_letter,
   asl_e_sl_list,
+  asl_e_sl_lit,
   asl_e_sl_name,
   asl_e_sl_note,
   asl_e_sl_pname,

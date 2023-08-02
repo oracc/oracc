@@ -104,6 +104,7 @@ struct xnn_xname asl_enames[] =
   { "sl:iv", "http://oracc.org/ns/sl/1.0:iv" },
   { "sl:letter", "http://oracc.org/ns/sl/1.0:letter" },
   { "sl:list", "http://oracc.org/ns/sl/1.0:list" },
+  { "sl:lit", "http://oracc.org/ns/sl/1.0:lit" },
   { "sl:name", "http://oracc.org/ns/sl/1.0:name" },
   { "sl:note", "http://oracc.org/ns/sl/1.0:note" },
   { "sl:pname", "http://oracc.org/ns/sl/1.0:pname" },

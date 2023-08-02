@@ -20,6 +20,7 @@ start =
           sl.name?,
           (sl.inote
            | sl.list
+           | sl.lit
            | sl.note
            | sl.pname
            | sl.uname
@@ -36,6 +37,7 @@ start =
             (sl.proof
              | (sl.inote
                 | sl.list
+                | sl.lit
                 | sl.note
                 | sl.pname
                 | sl.uname
@@ -110,6 +112,7 @@ sl.inote = element sl:inote { text }
 sl.uphase = element sl:uphase { xsd:NMTOKEN }
 sl.uname = element sl:uname { text }
 sl.note = element sl:note { text }
+sl.lit = element sl:lit { text }
 sl.list =
   element sl:list {
     attribute n { text },
@@ -129,9 +132,8 @@ sl.v =
     attribute uncertain { xsd:NCName }?,
     attribute xml:lang { text }?,
     sl.name?,
-    sl.uphase?,
     sl.proof?,
-    (sl.inote | sl.note)*
+    (sl.inote | sl.lit | sl.note)*
   }
 sl.proof = element sl:proof { text }
 g.d =
