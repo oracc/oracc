@@ -2,7 +2,7 @@ include ../../../oracc-am-rules.txt
 
 noinst_LTLIBRARIES=libjsn.la
 
-libjsn_la_SOURCES = jsn.tab.c jsn-l.c
+libjsn_la_SOURCES = jsn.tab.c jsn-l.c jsn_writer.c jsonify.c
 
 YACC=bison
 

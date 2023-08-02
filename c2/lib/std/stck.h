@@ -1,6 +1,8 @@
 #ifndef STCK_H_
 #define STCK_H_
 
+#include <stdint.h>
+
 struct stck
 {
   uintptr_t *stack;

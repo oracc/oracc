@@ -24,7 +24,6 @@ stck_pop(Stck *s)
 void
 stck_push(Stck *s, uintptr_t tok)
 {
-  /* save curr_stream to stack */
   if (++s->top == s->alloced)
     stck_extend(s);
   s->stack[s->top] = tok;
