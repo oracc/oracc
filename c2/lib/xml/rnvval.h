@@ -11,6 +11,7 @@ extern void rnvval_init(struct xnn_data *xdp, const char *rncfile);
 extern void rnvval_term(void);
 extern void rnvval_free_atts(struct rnvval_atts *ratts);
 extern struct rnvval_atts *rnvval_aa(const char *pname, ...);
+extern struct rnvval_atts *rnvval_aa_ccpp(const char **a);
 extern struct rnvval_atts *rnvval_aa_qatts(char **atts, int natts);
 extern void rnvval_ch(const char *ch);
 extern void rnvval_ea(const char *pname, struct rnvval_atts *ratts);

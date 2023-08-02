@@ -2,6 +2,7 @@
 #include <ns-asl.h>
 #include <rnvif.h>
 #include <rnvxml.h>
+#include <gdl.h>
 #include <signlist.h>
 #include <sx.h>
 
@@ -139,7 +140,9 @@ sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
       if (s->type == 'f')
 	{
 	  char scode[32];
+	  struct sl_token *tp = NULL;
 	  (void)sprintf(scode, "%d", s->u.f->sort);
+	  tp = hash_find(sl->htoken, s->u.f->name);
 
 	  if (!s->u.f->sign->xref)
 	    id_or_ref = "ref";
@@ -153,6 +156,9 @@ sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	    
 	  ratts = rnvval_aa("x", "n", s->u.f->name, id_or_ref, s->u.f->oid, "sort", scode, NULL);
 	  rnvxml_ea("sl:form", ratts);
+	  rnvxml_ea("sl:name", NULL);
+	  grx_xml(tp->gdl, "g:w");
+	  rnvxml_ee("sl:name");
 	  in_form = 1;
 	}
     }
@@ -287,10 +293,18 @@ sx_w_x_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
       if (s->type == 's')
 	{
 	  char scode[32];
+	  struct sl_token *tp = NULL;
 	  (void)sprintf(scode, "%d", s->u.s->sort);
+	  tp = hash_find(sl->htoken, s->u.s->name);
 	  ratts = rnvval_aa("x", "n", s->u.s->name, "xml:id", s->u.s->oid, "sort", scode, NULL);
 	  rnvxml_ea("sl:sign", ratts);
 	  in_sign = 1;
+	  if (tp && tp->gdl)
+	    {
+	      rnvxml_ea("sl:name", NULL);
+	      grx_xml(tp->gdl, "g:w");
+	      rnvxml_ee("sl:name");
+	    }
 	}
 #if 0
       else if (s->type == 'f')
@@ -309,7 +323,7 @@ sx_w_x_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 }
 
 static void
-sx_w_x_value(struct sx_functions *f, struct sl_signlist *s, struct sl_inst *v, enum sx_pos_e p)
+sx_w_x_value(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *v, enum sx_pos_e p)
 {
   static int in_value = 0;
   
@@ -318,7 +332,9 @@ sx_w_x_value(struct sx_functions *f, struct sl_signlist *s, struct sl_inst *v, e
       if (!v->inherited)
 	{
 	  char scode[32];
+	  struct sl_token *tp = NULL;
 	  (void)sprintf(scode, "%d", v->u.v->sort);
+	  tp = hash_find(sl->htoken, v->u.v->name);
 	  
 	  if (in_value)
 	    rnvxml_ee("sl:v");
@@ -327,6 +343,9 @@ sx_w_x_value(struct sx_functions *f, struct sl_signlist *s, struct sl_inst *v, e
 	  
 	  ratts = rnvval_aa("x", "n", v->u.v->name, "sort", scode, NULL);
 	  rnvxml_ea("sl:v", ratts);
+	  rnvxml_ea("sl:name", NULL);
+	  grx_xml(tp->gdl, "g:w");
+	  rnvxml_ee("sl:name");
 	}
     }
   if (p == sx_pos_term)

@@ -159,6 +159,55 @@ rnvval_aa(const char *pname, ...)
   return ratts;
 }
 
+/**Make an rnvval_atts from a NULL terminated array of char *
+ *
+ */
+struct rnvval_atts *
+rnvval_aa_ccpp(const char **a)
+{
+  char **atts = NULL, **qatts = NULL;
+  int nargs = 0, atts_alloced = 32;
+  struct rnvval_atts *ratts = NULL;
+
+  if (!a || !*a)
+    return NULL;
+  
+  ratts = malloc(sizeof(struct rnvval_atts));
+
+  atts = malloc(atts_alloced * sizeof(char*));
+  qatts = malloc(atts_alloced * sizeof(char*));
+  pool_reset(rnv_pool);
+  
+  while (a[nargs])
+    {
+      const char *arg = a[nargs];
+      if (atts_alloced - nargs < 3)
+	{
+	  atts_alloced *= 2;
+	  atts = realloc(atts, atts_alloced * sizeof(char*));
+	  qatts = realloc(qatts, atts_alloced * sizeof(char*));
+	}
+      if ((nargs%2) == 0) /* even numbered args are names */
+	{
+	  char *qarg = hash_find(rnv_qanames, (ucp)arg);
+	  atts[nargs] = (char*)pool_copy((ucp)arg, rnv_pool);
+	  if (qarg)
+	    qatts[nargs] = (char*)pool_copy((ucp)qarg, rnv_pool);
+	  else
+	    qatts[nargs] = (char*)pool_copy((ucp)arg, rnv_pool);
+	}
+      else /* odd numbered args are values */
+	{
+	  qatts[nargs] = atts[nargs] = (char*)pool_copy(xmlify((ucp)arg), rnv_pool);
+	}
+      ++nargs;
+    }
+  atts[nargs] = qatts[nargs] = NULL;
+  ratts->atts = (const char **)atts;
+  ratts->qatts = (const char **)qatts;
+  return ratts;
+}
+
 /* rnvval_ea (element-attributes), rnvval_ee (end-element) , and
    rnvval_ch (characters) are the wrapper functions used for passing
    XML data to the rnv validator */

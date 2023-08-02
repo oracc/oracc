@@ -53,5 +53,6 @@ extern void prop_node_add(struct node *np, int ptype, int gtype, const char *key
 extern int prop_user_group(void);
 extern Prop*prop_find_pg(Prop *p, int ptype, int gtype);
 extern Prop*prop_find_kv(Prop *p, const char *key, const char *value);
+extern const char **prop_ccpp(Prop *p, int ptype, int gtype);
 
 #endif/*PROP_H_*/

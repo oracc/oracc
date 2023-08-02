@@ -117,6 +117,8 @@ extern void gdl_update_state(Node *np, gdlstate_t gs_tok);
 
 extern const char *gdlsig_str(Mloc *mp, unsigned char *atf, int frag_ok, int deep);
 
-const unsigned char *gdl_first_s(Node *gdl);
+extern const unsigned char *gdl_first_s(Node *gdl);
+
+extern void grx_xml(Node *np, const char *gdltag);
 
 #endif /*GDL_H_*/

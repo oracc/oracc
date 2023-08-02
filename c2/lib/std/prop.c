@@ -164,3 +164,27 @@ prop_find_kv(Prop *p, const char *key, const char *value)
   return NULL;  
 }
 
+const char **
+prop_ccpp(Prop *p, int ptype, int gtype)
+{
+  List *lp = list_create(LIST_SINGLE);
+  const char **pp = NULL;
+
+  if (gtype > 0 && gtype < PU_VOIDSTAR)
+    {
+      while (p)
+	{
+	  if (p->p == ptype && p->g == gtype)
+	    {
+	      list_add(lp, (void*)p->u.k->k);
+	      list_add(lp, (void*)p->u.k->v);
+	    }
+	  p = p->next;
+	}
+    }
+
+  if (list_len(lp))
+    pp = list2chars(lp);
+  list_free(lp, NULL);
+  return pp;
+}

@@ -423,5 +423,5 @@ list2chars(List *l)
   for (lnp = l->first; lnp; lnp = lnp->next)
     c[cindex++] = (char*)lnp->data;
   c[cindex] = NULL;
-  return c;
+  return (const char **)c;
 }

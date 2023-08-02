@@ -124,6 +124,9 @@ asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t, int literal)
       else
 	tp = asl_bld_gdl(locp, t);
       tokp->gdl = tp->root;
+      tokp->gdl->name = "g:w";
+      gdl_prop_kv(tokp->gdl, GP_ATTRIBUTE, PG_GDL_INFO, "form", tokp->gdl->text);
+      gdl_prop_kv(tokp->gdl, GP_ATTRIBUTE, PG_GDL_INFO, "xml:lang", "sux");
       tokp->gsh = gsort_prep(tp);
       hash_add(sl->htoken, t, tokp);
     }
