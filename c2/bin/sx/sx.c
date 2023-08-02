@@ -3,6 +3,7 @@
 #include <locale.h>
 #include <mesg.h>
 #include <tree.h>
+#include <json.h>
 #include <xml.h>
 #include <../../nss/asl/asl.h>
 #include <gdl.h>
@@ -19,6 +20,7 @@ int asltrace,rnvtrace;
 
 int asl_output = 0;
 int identity_mode = 0;
+int jsn_output = 0;
 int sll_output = 0;
 int sortcode_output = 0;
 int tree_output = 0;
@@ -43,7 +45,7 @@ main(int argc, char * const*argv)
   (void)gvl_setup(NULL, NULL);
   gsort_init();
   
-  options(argc, argv, "acisStTx");
+  options(argc, argv, "acijsStTx");
   asltrace = asl_flex_debug = trace_mode;
 
   if (argv[optind])
@@ -70,18 +72,14 @@ main(int argc, char * const*argv)
       if (asl_output)
 	sx_walk(sx_w_asl_init(stdout, "-"), sl);
 
+      if (jsn_output)
+	sx_walk(sx_w_jsn_init(stdout, "-"), sl);
+	
       if (sll_output)
 	sx_s_sll(stdout, sl);
       
       if (xml_output)
-	{
-#if 0
-	  struct sx_functions *f = sx_asl_init(stdout, "-");
-	  f->sll(f, sl);
-#else
-	  sx_walk(sx_w_xml_init(stdout, "_"), sl);
-#endif
-	}
+	sx_walk(sx_w_xml_init(stdout, "_"), sl);
     }
 
   gdl_term();
@@ -103,6 +101,9 @@ opts(int opt, char *arg)
       break;
     case 'i':
       asl_output = identity_mode = 1;
+      break;
+    case 'j':
+      jsn_output = 1;
       break;
 #if 0
     case 'r':
