@@ -45,7 +45,6 @@ enum asl_e_type
   asl_e_g_c,
   asl_e_g_d,
   asl_e_g_g,
-  asl_e_g_gg,
   asl_e_g_m,
   asl_e_g_n,
   asl_e_g_nonw,

@@ -80,14 +80,14 @@ sl.name =
      | element g:w {
          attribute form { text },
          attribute xml:lang { xsd:NCName },
-         (g.gg | g.s)?,
+         (g.g | g.s | element g:p { text })?,
          g.d?,
          (g.c | g.n)?,
          element g:q {
            attribute form { text },
-           attribute g:delim { xsd:NMTOKEN },
-           attribute g:status { xsd:NCName },
-           attribute g:utf8 { text },
+           attribute g:delim { xsd:NMTOKEN }?,
+           attribute g:status { xsd:NCName }?,
+           attribute g:utf8 { text }?,
            g.v,
            g.s
          }?,
@@ -141,13 +141,12 @@ g.d =
   element g:d {
     attribute g:pos { xsd:NCName },
     attribute g:role { xsd:NCName },
-    (g.gg | g.v)
+    (g.g | g.v)
   }
-g.gg =
-  element g:gg {
-    attribute g:type { xsd:NCName },
-    g.s,
-    g.n?
+g.g =
+  element g:g {
+    attribute g:type { xsd:NCName }?,
+    ( g.s | g.n)+
   }
 g.s =
   element g:s {
@@ -162,14 +161,19 @@ g.s =
   }
 g.n =
   element g:n {
-    attribute form { text },
+  (
+    (attribute form { "n" | "N" })
+  |
+    (attribute form { text },
     attribute sexified { text }?,
     attribute g:status { xsd:NCName }?,
-    attribute g:utf8 { text },
+    attribute g:utf8 { text }?,
     element g:r { text },
     (g.s | g.v)?,
     g.a?,
-    (g.c | g.m)?
+    (g.c | g.m)?,
+    g.a?)
+  )
   }
 g.c =
   element g:c {

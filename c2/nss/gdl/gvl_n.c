@@ -23,7 +23,10 @@ gvl_n(Node *ynp)
   /* make sure these are all fixed even if the num is in the hash */
   ynp->name = "g:n";
   ynp->kids->name = "g:r";
-  ynp->kids->next->name = ((sll_has_sign_indicator((uccp)ynp->kids->next->text) ? "g:s" : "g:v"));
+
+  /* WATCHME: is this coercion to g:s or g:v really safe? */
+  if (strcmp(ynp->kids->next->name, "g:c"))
+    ynp->kids->next->name = ((sll_has_sign_indicator((uccp)ynp->kids->next->text) ? "g:s" : "g:v"));
 
   if (!(nq = hash_find(curr_sl->h, p)))
     {
@@ -69,9 +72,15 @@ gvl_n(Node *ynp)
 	}
     }
   if (gdl_orig_mode)
-    ynp->text = (ccp)nq->orig;
+    {
+      ynp->text = (ccp)nq->orig;
+      gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO, "form", (ccp)nq->orig);
+    }
   else
-    ynp->text = (ccp)nq->c10e;
+    {
+      ynp->text = (ccp)nq->c10e;
+      gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO, "form", (ccp)nq->c10e);
+    }
   ynp->user = nq;
 }
 
@@ -135,7 +144,7 @@ gvl_n_sexify(Node *ynp)
 	  
 	  /* on the singleton or group set a property that this has been
 	     sexified and record the original number in the text field */
-	  gdl_prop(top, GP_IMPLICIT, PG_GDL_INFO);
+	  gdl_prop(top, GP_SEXIFY, PG_GDL_INFO);
 	  top->text = (void*)ynp->text;
 
 	  /* transfer any other properties from the original node to
@@ -153,6 +162,8 @@ gvl_n_sexify(Node *ynp)
 	     isn't a grapheme but it is a number */
 	}      
       else
-	/* n/N */;
+	{
+	  /* n/N */;
+	}
     }
 }

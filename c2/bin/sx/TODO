@@ -1,0 +1,22 @@
+
+c2/nss/asl , c2/nss/gdl , c2/bin/sx TODO list as of 2023-08-02
+==============================================================
+
+* values with ATF flag (u-gun₃, {kaš}ulušin) should be parsed as GDL
+
+* values with ATF flag are not yet output in XML version; they are
+  correctly excluded in SLL and correctly included in ASL outputs.
+
+* JSON output
+
+* validate and autogenerate @ucode entries
+
+* implement @cite tag and convert artificial @v x values to use it
+
+* implement @listdef tag and create entries for built-in lists (see
+  lib/sll/sll_signlist.g)
+
+* rnc/asl.rnc is wrong/too weak for g:g--needs fixing to correct GDL
+
+* GDL for '@form 15' is not quite right; needs sexified form attribute
+

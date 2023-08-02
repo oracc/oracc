@@ -258,7 +258,7 @@ gvl_compound(Node *ynp)
       else
 	{
 	  ynp->text = (ccp)cp->c10e;
-	  gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO, "form", (ccp)cp->orig);
+	  gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO, "form", (ccp)cp->c10e);
 	}
       if (cp->mess)
 	mesg_err(ynp->mloc, (ccp)cp->mess);

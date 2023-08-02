@@ -118,7 +118,10 @@ gvl_q(Node *ynp)
     }
   ynp->user = vq;
   if (vq->orig)
-    ynp->text = (ccp)vq->orig;
+    {
+      ynp->text = (ccp)vq->orig;
+      gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO, "form", (ccp)vq->orig);
+    }
 }
 
 int

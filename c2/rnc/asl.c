@@ -85,7 +85,6 @@ struct xnn_xname asl_enames[] =
   { "g:c", "http://oracc.org/ns/gdl/1.0:c" },
   { "g:d", "http://oracc.org/ns/gdl/1.0:d" },
   { "g:g", "http://oracc.org/ns/gdl/1.0:g" },
-  { "g:gg", "http://oracc.org/ns/gdl/1.0:gg" },
   { "g:m", "http://oracc.org/ns/gdl/1.0:m" },
   { "g:n", "http://oracc.org/ns/gdl/1.0:n" },
   { "g:nonw", "http://oracc.org/ns/gdl/1.0:nonw" },

@@ -119,7 +119,7 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 [^ \t]+"[...]"[^ \t\n]+[ \t]*/\n { aslsave; return ATF; }
 [^ \t]+"[...]"[ \t]*/\n       	{ aslsave; return ATF; }
 "[...]"[^ \t\n]*[ \t]*/\n 	{ aslsave; return ATF; }
-[^-_ \t]+[-_][^ \t\n]+		{ aslsave; return ATF; }
+[^-_ \t]+[-_\{\}][^ \t\n]+	{ aslsave; return ATF; }
 [^{} \t]*[{}][^ \t\n]*/\n      	{ aslsave; return ATF; }
 
 "%"[-a-z0-9]+("/n")?   		{ aslsave; return LANG; }

@@ -61,6 +61,7 @@ gvl_s(Node *ynp)
 	{
 	  gp->type = "n";
 	  ynp->name = "g:n";
+	  gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO, "form", ynp->text);
 	}	    
       gp->oid = (ccp)l;
       gp->sign = gvl_lookup(sll_tmp_key(l,""));
@@ -143,6 +144,7 @@ gvl_s(Node *ynp)
 		{
 		  gp->type = "n";
 		  ynp->name = "g:n";
+		  gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO, "form", ynp->text);
 		}
 	      else
 		{

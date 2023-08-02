@@ -332,7 +332,7 @@ sx_w_x_value(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *v, 
   
   if (p == sx_pos_inst)
     {
-      if (!v->inherited)
+      if (!v->inherited && !v->u.v->atf)
 	{
 	  char scode[32];
 	  struct sl_token *tp = NULL;
