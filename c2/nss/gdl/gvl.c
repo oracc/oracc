@@ -251,9 +251,15 @@ gvl_compound(Node *ynp)
 	}
       ynp->user = cp;
       if (gdl_orig_mode)
-	ynp->text = (ccp)cp->orig;
+	{
+	  ynp->text = (ccp)cp->orig;
+	  gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO, "form", (ccp)cp->orig);
+	}
       else
-	ynp->text = (ccp)cp->c10e;
+	{
+	  ynp->text = (ccp)cp->c10e;
+	  gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO, "form", (ccp)cp->orig);
+	}
       if (cp->mess)
 	mesg_err(ynp->mloc, (ccp)cp->mess);
     }
@@ -281,6 +287,9 @@ gvl_simplexg(Node *ynp)
   if (gp)
     {
       ynp->user = gp;
+      if (ynp->kids)
+	gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO, "form", (ccp)gp->orig);
+
       if (gp->mess)
 	mesg_err(ynp->mloc, (ccp)gp->mess);
     }

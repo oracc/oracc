@@ -127,9 +127,6 @@ rnvval_aa(const char *pname, ...)
   va_start(ap, pname);
   while ((arg = (char*)va_arg(ap, const char*)))
     {
-      if (NULL == arg)
-	break;
-
       if (atts_alloced - nargs < 3)
 	{
 	  atts_alloced *= 2;
@@ -151,6 +148,17 @@ rnvval_aa(const char *pname, ...)
 	  qatts[nargs] = atts[nargs] = (char*)pool_copy(xmlify((ucp)arg), rnv_pool);
 	}
       ++nargs;
+    }
+  if (NULL == arg)
+    {
+      if (nargs%2)
+	{
+	  fprintf(stderr, "rnvval: NULL value in rnvval_aa; returning NULL\n");
+	  free(atts);
+	  free(qatts);
+	  free(ratts);
+	  return NULL;
+	}
     }
   va_end(ap);
   atts[nargs] = qatts[nargs] = NULL;
@@ -189,12 +197,23 @@ rnvval_aa_ccpp(const char **a)
 	}
       if ((nargs%2) == 0) /* even numbered args are names */
 	{
-	  char *qarg = hash_find(rnv_qanames, (ucp)arg);
-	  atts[nargs] = (char*)pool_copy((ucp)arg, rnv_pool);
-	  if (qarg)
-	    qatts[nargs] = (char*)pool_copy((ucp)qarg, rnv_pool);
+	  if (a[nargs+1])
+	    {
+	      char *qarg = hash_find(rnv_qanames, (ucp)arg);
+	      atts[nargs] = (char*)pool_copy((ucp)arg, rnv_pool);
+	      if (qarg)
+		qatts[nargs] = (char*)pool_copy((ucp)qarg, rnv_pool);
+	      else
+		qatts[nargs] = (char*)pool_copy((ucp)arg, rnv_pool);
+	    }
 	  else
-	    qatts[nargs] = (char*)pool_copy((ucp)arg, rnv_pool);
+	    {
+	      fprintf(stderr, "rnvval: NULL value in rnvval_aa_ccpp; returning NULL\n");
+	      free(atts);
+	      free(qatts);
+	      free(ratts);
+	      return NULL;
+	    }
 	}
       else /* odd numbered args are values */
 	{

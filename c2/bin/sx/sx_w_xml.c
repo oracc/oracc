@@ -296,7 +296,10 @@ sx_w_x_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	  struct sl_token *tp = NULL;
 	  (void)sprintf(scode, "%d", s->u.s->sort);
 	  tp = hash_find(sl->htoken, s->u.s->name);
-	  ratts = rnvval_aa("x", "n", s->u.s->name, "xml:id", s->u.s->oid, "sort", scode, NULL);
+	  if (s->u.s->oid)
+	    ratts = rnvval_aa("x", "n", s->u.s->name, "xml:id", s->u.s->oid, "sort", scode, NULL);
+	  else
+	    ratts = rnvval_aa("x", "n", s->u.s->name, "sort", scode, NULL);
 	  rnvxml_ea("sl:sign", ratts);
 	  in_sign = 1;
 	  if (tp && tp->gdl)

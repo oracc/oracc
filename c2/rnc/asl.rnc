@@ -16,7 +16,7 @@ start =
           attribute deprecated { xsd:integer }?,
           attribute n { text },
 	  attribute sort { text }, 
-          attribute xml:id { xsd:NCName },
+          attribute xml:id { xsd:NCName }?,
           sl.name?,
           (sl.inote
            | sl.list
@@ -175,7 +175,7 @@ g.c =
   element g:c {
     attribute form { text },
     attribute g:status { xsd:NCName }?,
-    attribute g:utf8 { text },
+    attribute g:utf8 { text }?,
     (g.m
      | g.n
      | g.o
