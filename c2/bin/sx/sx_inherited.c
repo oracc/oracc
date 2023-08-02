@@ -85,11 +85,14 @@ sx_inherited(struct sl_signlist *sl)
 					b, sl->forms[i]->name, form_inst->parent_s->u.s->name);
 			      if (!form_inst->lv)
 				form_inst->lv = memo_new(sl->m_lv_data);
+#if 0
 			      if (!form_inst->lv->hivalues)
 				form_inst->lv->hivalues = hash_create(1);
+#endif
 			      if (itrace)
-				fprintf(ifp, "inherit: adding %s(%s) to form_inst->lv->hventry/hivalues\n", b, form_inst->u.f->name);
-			      hash_add(form_inst->lv->hivalues, (uccp)b, "");
+				fprintf(ifp, "inherit: adding %s(%s) to form_inst->lv->hventry with inherited=1\n", b, form_inst->u.f->name);
+			      /*hash_add(form_inst->lv->hivalues, (uccp)b, "");*/
+			      ++form_inst->lv->nivalues;
 			      hash_add(form_inst->lv->hventry, (uccp)b,
 				       clone_inherited(sl, hash_find(form_inst->parent_s->u.s->hventry, (uccp)b)));
 			      sx_v_fowner(sl, form_inst, b);
@@ -123,11 +126,14 @@ sx_inherited(struct sl_signlist *sl)
 			form_inst->lv = memo_new(sl->m_lv_data);
 		      if (!form_inst->lv->hventry)
 			form_inst->lv->hventry = hash_create(32);
+#if 0
 		      if (!form_inst->lv->hivalues)
 			  form_inst->lv->hivalues = hash_create(32);
+#endif
 		      if (itrace)
-			fprintf(ifp, "inherit: adding %s(%s) to form_inst->lv->hventry/hivalues\n", b, form_inst->u.f->name);
-		      hash_add(form_inst->lv->hivalues, (uccp)b, "");
+			fprintf(ifp, "inherit: adding %s(%s) to form_inst->lv->hventry with inherited=1\n", b, form_inst->u.f->name);
+		      /*hash_add(form_inst->lv->hivalues, (uccp)b, "");*/
+		      ++form_inst->lv->nivalues;
 		      hash_add(form_inst->lv->hventry, (uccp)b,
 			       clone_inherited(sl, hash_find(form_inst->parent_s->u.s->hventry, (uccp)b)));
 		      sx_v_fowner(sl, form_inst, b);

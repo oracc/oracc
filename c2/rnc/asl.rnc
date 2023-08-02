@@ -46,6 +46,7 @@ start =
             sl.v*,
             element sl:inherited {
               element sl:iv {
+                attribute sort { text }, 
                 attribute n { text }
               }+
             }?
@@ -53,11 +54,11 @@ start =
           element sl:qs {
             element sl:q {
               attribute base { text }?,
-              attribute o { xsd:NCName }?,
+              attribute o { xsd:NCName },
               attribute p { xsd:NCName }?,
               attribute qm { text }?,
-              attribute qn { text },
-              attribute type { xsd:NCName }
+              attribute qv { text },
+              attribute type { xsd:NCName }?
             }+
           }?
         }*

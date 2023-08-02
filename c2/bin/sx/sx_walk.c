@@ -26,12 +26,12 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 		  f->grp(f, sl, &sl->letters[i].groups[j], sx_pos_inst);
 		  if (sl->letters[i].groups[j].nsigns)
 		    {
-#define QV(vp) ((vp)->u.v->qvsign || (vp)->u.v->qvform || (vp)->u.v->qvmust)
-		      List *qv = list_create(LIST_SINGLE);
 		      int k;
-		      f->sgn(f, sl, NULL, sx_pos_init);
 		      for (k = 0; k < sl->letters[i].groups[j].nsigns; ++k)
 			{
+#define QV(vp) ((vp)->u.v->qvsign || (vp)->u.v->qvform || (vp)->u.v->qvmust)
+			  List *qv = list_create(LIST_SINGLE);
+			  f->sgn(f, sl, NULL, sx_pos_init);
 			  f->sgn(f, sl, sl->letters[i].groups[j].signs[k], sx_pos_inst);
 			  if ('s' == sl->letters[i].groups[j].signs[k]->type)
 			    {
@@ -96,12 +96,14 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 					    }
 					  f->val(f, sl, NULL, sx_pos_term);
 					}
+				      /* Inherited values are stored in lv->values but lv->nivalues
+					 has a count of them so we can avoid generating empty <inherited/> nodes */
 				      if (sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->nivalues)
 					{
 					  int m;
 					  f->inh(f, sl, NULL, sx_pos_init);
-					  for (m = 0; l < sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->nivalues; ++m)
-					    f->inh(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->ivalues[m],
+					  for (m = 0; m < sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->nvalues; ++m)
+					    f->inh(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->values[m],
 						   sx_pos_inst);
 					  f->inh(f, sl, NULL, sx_pos_term);
 					}
@@ -109,18 +111,18 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 				  f->frm(f, sl, NULL, sx_pos_term);
 				}
 			    }
-			}
 #undef QV
-		      if (list_len(qv))
-			{
-			  struct sl_inst *ip;
-			  f->qvs(f, sl, NULL, sx_pos_init);
-			  for (ip = list_first(qv); ip; ip = list_next(qv))
-			    f->qvs(f, sl, ip, sx_pos_inst);
-			  f->qvs(f, sl, NULL, sx_pos_term);
+			  if (list_len(qv))
+			    {
+			      struct sl_inst *ip;
+			      f->qvs(f, sl, NULL, sx_pos_init);
+			      for (ip = list_first(qv); ip; ip = list_next(qv))
+				f->qvs(f, sl, ip, sx_pos_inst);
+			      f->qvs(f, sl, NULL, sx_pos_term);
+			    }
+			  list_free(qv,NULL);
+			  f->sgn(f, sl, NULL, sx_pos_term);
 			}
-		      list_free(qv,NULL);
-		      f->sgn(f, sl, NULL, sx_pos_term);
 		    }
 		}
 	      f->grp(f, sl, NULL, sx_pos_term);

@@ -5,4 +5,6 @@
 
 #include <locale.h>
 
+extern int olocale(void);
+
 #endif/*ORACCLOCALE_H_*/

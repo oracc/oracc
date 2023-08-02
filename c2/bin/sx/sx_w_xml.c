@@ -167,6 +167,35 @@ sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 static void
 sx_w_x_ivalue(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *v, enum sx_pos_e p)
 {
+  static int in_value = 0;
+  
+  if (p == sx_pos_init)
+    {
+      rnvxml_ea("sl:inherited", NULL);
+    }
+  else if (p == sx_pos_inst)
+    {
+      if (v->inherited)
+	{
+	  char scode[32];
+	  (void)sprintf(scode, "%d", v->u.v->sort);
+	  
+	  if (in_value)
+	    rnvxml_ee("sl:iv");
+	  else
+	    in_value = 1;
+	  
+	  ratts = rnvval_aa("x", "n", v->u.v->name, "sort", scode, NULL);
+	  rnvxml_ea("sl:iv", ratts);
+	}
+    }
+  if (p == sx_pos_term)
+    {
+      if (in_value)
+	rnvxml_ee("sl:iv");
+      in_value = 0;
+      rnvxml_ee("sl:inherited");
+    }      
 }
 
 static void
@@ -195,6 +224,47 @@ sx_w_x_notes(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip)
 static void
 sx_w_x_qvs(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *vi, enum sx_pos_e p)
 {
+  static int in_qs = 0;
+  if (p == sx_pos_init)
+    {
+      /* don't open qs until we find a q to avoid <qs/> */
+    }
+  else if (p == sx_pos_inst)
+    {
+      char *qv = NULL;
+      const char *o = NULL;
+      unsigned const char *p = NULL;
+      int n = 0;
+
+      p = vi->parent_s ? vi->parent_s->u.s->name : vi->parent_f->u.f->name;
+      n += strlen((ccp)vi->u.v->name) + strlen((ccp)p) + 3;
+      qv = malloc(n);
+      sprintf(qv, "%s(%s)", vi->u.v->name, p);
+      o = vi->parent_s ? vi->parent_s->u.s->oid : vi->parent_f->u.f->oid;
+      if (!o)
+	o = "";
+      
+      ratts = NULL;
+      if (vi->u.v->qvmust)
+	ratts = rnvval_aa("x", "qv", qv, "o", o, NULL);
+      else if (vi->u.v->qvsign && vi->parent_s)
+	ratts = rnvval_aa("x", "qv", qv, "o", o, NULL);
+      else if (vi->u.v->qvform && vi->parent_f)
+	ratts = rnvval_aa("x", "qv", qv, "o", o, NULL);
+      if (ratts)
+	{
+	  if (!in_qs++)
+	    rnvxml_ea("sl:qs", NULL);
+
+	  rnvxml_ec("sl:q", ratts);
+	}
+    }
+  if (p == sx_pos_term)
+    {
+      if (in_qs)
+	rnvxml_ee("sl:qs");
+      in_qs = 0;
+    }
 }
 
 /** Because this is called when walking groups->signs \c sl_inst*s here can be a sign or form inst
@@ -245,16 +315,19 @@ sx_w_x_value(struct sx_functions *f, struct sl_signlist *s, struct sl_inst *v, e
   
   if (p == sx_pos_inst)
     {
-      char scode[32];
-      (void)sprintf(scode, "%d", v->u.v->sort);
-
-      if (in_value)
-	rnvxml_ee("sl:v");
-      else
-	in_value = 1;
-      
-      ratts = rnvval_aa("x", "n", v->u.v->name, "sort", scode, NULL);
-      rnvxml_ea("sl:v", ratts);
+      if (!v->inherited)
+	{
+	  char scode[32];
+	  (void)sprintf(scode, "%d", v->u.v->sort);
+	  
+	  if (in_value)
+	    rnvxml_ee("sl:v");
+	  else
+	    in_value = 1;
+	  
+	  ratts = rnvval_aa("x", "n", v->u.v->name, "sort", scode, NULL);
+	  rnvxml_ea("sl:v", ratts);
+	}
     }
   if (p == sx_pos_term)
     {
@@ -271,8 +344,13 @@ sx_w_x_unicode(struct sx_functions *f, struct sl_signlist *sl, struct sl_unicode
     rnvxml_et("sl:uname", NULL, up->uname);
   if (up->ucode)
     {
+      const char *u;
       ratts = rnvval_aa("x", "hex", up->ucode, NULL);
-      rnvxml_ec("sl:utf8", ratts);
+      if (up->uchar)
+	u = (ccp)up->uchar;
+      else
+	u = "";
+      rnvxml_et("sl:utf8", ratts, u);
     }
   if (up->uphase)
     rnvxml_et("sl:uphase", NULL, up->uphase);

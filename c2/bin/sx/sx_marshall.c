@@ -1,5 +1,6 @@
 #include <hash.h>
 #include <collate.h>
+#include <oraccsys.h>
 #include <signlist.h>
 #include <sx.h>
 
@@ -319,7 +320,7 @@ sx_marshall(struct sl_signlist *sl)
   if (sx_show_tokens)
     fprintf(stderr, "===end sorted tokens===\n");
 
-  /* Provide signs with sort codes base on token sort sequence; add oids while we are at it */
+  /* Provide signs with sort codes base on token sort sequence; add oids and uchar while we are at it */
   keys = hash_keys2(sl->hsentry, &nkeys);
   sl->signs = malloc(sizeof(struct sl_sign*) * nkeys);
   sl->nsigns = nkeys;
@@ -344,7 +345,7 @@ sx_marshall(struct sl_signlist *sl)
 	      if (!sl->signs[i]->oid)
 		mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
 	    }
-	  else
+	  if (sl->signs[i]->oid)
 	    {
 	      if (sortcode_output)
 		fprintf(stderr, "SIGN\t%s\t%d\n", sl->signs[i]->oid, sl->signs[i]->sort);
@@ -352,6 +353,9 @@ sx_marshall(struct sl_signlist *sl)
 	    }
 	}
 
+      if (!sl->signs[i]->U.uchar && sl->signs[i]->U.ucode)
+	sl->signs[i]->U.uchar = pool_copy(uhex2utf8((uccp)sl->signs[i]->U.ucode), sl->p);
+	
       if (sl->signs[i]->hventry)
 	{
 	  const char **vkeys = hash_keys2(sl->signs[i]->hventry, &sl->signs[i]->nvalues);
@@ -393,15 +397,18 @@ sx_marshall(struct sl_signlist *sl)
 	      mesg_verr(&inst->mloc, "OID needed for FORM %s", sl->forms[i]->name);
 	    }
 	}
-      else
+
+      if (sl->forms[i]->oid && !hash_find(oid_sort_keys, (uccp)sl->forms[i]->oid))
 	{
-	  if (!hash_find(oid_sort_keys, (uccp)sl->forms[i]->oid))
-	    {
-	      if (sortcode_output)
-		fprintf(stderr, "FORM\t%s\t%d\n", sl->forms[i]->oid, sl->forms[i]->sort);
-	      hash_add(oid_sort_keys, (uccp)sl->forms[i]->oid, (void*)(uintptr_t)sl->forms[i]->sort);
-	    }
+	  if (sortcode_output)
+	    fprintf(stderr, "FORM\t%s\t%d\n", sl->forms[i]->oid, sl->forms[i]->sort);
+	  hash_add(oid_sort_keys, (uccp)sl->forms[i]->oid, (void*)(uintptr_t)sl->forms[i]->sort);
+
 	}
+
+      if (!sl->forms[i]->U.uchar && sl->forms[i]->U.ucode)
+	sl->forms[i]->U.uchar = pool_copy(uhex2utf8((uccp)sl->forms[i]->U.ucode), sl->p);
+
     }
   /* Sort the forms */
   qsort(sl->forms, sl->nforms, sizeof(struct sl_form*), (cmp_fnc_t)forms_cmp);

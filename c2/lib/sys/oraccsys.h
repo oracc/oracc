@@ -43,6 +43,9 @@ extern wchar_t*wcs_ucase(wchar_t*ws);
 extern wchar_t*wcs_undet(wchar_t*ws);
 extern unsigned char *sexify(int n, const char *aszdisz);
 
+extern uint32_t hex2int(char *hex);
+extern unsigned char *uhex2utf8(unsigned const char *uhex);
+
 extern void help (void);
 extern int opts (int optchar, char *optarg);
 extern void options (int argc, char *const *argv, const char *optstr);

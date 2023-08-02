@@ -52,4 +52,3 @@ slix_SOURCES=slix.c
 slix_LDADD = $(yLDADD)
 
 slix_DEPENDENCIES = $(s_index_LDADD)
-
