@@ -1,0 +1,261 @@
+#include <signlist.h>
+#include <sx.h>
+
+static sx_signlist_f sx_w_a_signlist;
+static sx_letter_f sx_w_a_letter;
+static sx_group_f sx_w_a_group;
+static sx_sign_f sx_w_a_sign;
+static sx_form_f sx_w_a_form;
+static sx_list_f sx_w_a_list;
+static sx_value_f sx_w_a_ivalue;
+static sx_value_f sx_w_a_qvs;
+static sx_value_f sx_w_a_value;
+static sx_notes_f sx_w_a_notes;
+static sx_unicode_f sx_w_a_unicode;
+
+struct sx_functions sx_w_asl_fncs;
+
+struct sx_functions *
+sx_w_asl_init(FILE *fp, const char *fname)
+{
+  sx_w_asl_fncs.sll = sx_w_a_signlist;
+  sx_w_asl_fncs.let = sx_w_a_letter;
+  sx_w_asl_fncs.grp = sx_w_a_group;
+  sx_w_asl_fncs.sgn = sx_w_a_sign;
+  sx_w_asl_fncs.lst = sx_w_a_list;
+  sx_w_asl_fncs.frm = sx_w_a_form;
+  sx_w_asl_fncs.val = sx_w_a_value;
+  sx_w_asl_fncs.inh = sx_w_a_ivalue;
+  sx_w_asl_fncs.not = sx_w_a_notes;
+  sx_w_asl_fncs.uni = sx_w_a_unicode;
+  sx_w_asl_fncs.qvs = sx_w_a_qvs;
+  sx_w_asl_fncs.fp = fp;
+  sx_w_asl_fncs.fname = fname;
+  return &sx_w_asl_fncs;
+}
+
+static void
+sx_w_a_str_list(FILE *fp, const char *tag, List *lp)
+{
+  unsigned const char *t;
+  for (t = list_first(lp); t; t = list_next(lp))
+    fprintf(fp, "@%s\t%s\n", tag, t);
+}
+
+/* This is the entry point for asl output */
+static void
+sx_w_a_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
+{
+  if (sx_pos_init == p)
+    fprintf(f->fp, "@signlist %s\n\n", sl->project);
+}
+
+static void
+sx_w_a_group(struct sx_functions *f, struct sl_signlist *sl, struct sl_group *g, enum sx_pos_e p)
+{
+  if (sx_pos_inst == p && !identity_mode)
+    fprintf(f->fp, "@group\t%s\n", g->name);
+}
+
+static void
+sx_w_a_letter(struct sx_functions *f, struct sl_signlist *sl, struct sl_letter *l, enum sx_pos_e p)
+{
+  if (sx_pos_inst == p && !identity_mode)
+    fprintf(f->fp, "@letter\t%s\n", l->name);
+}
+
+static void
+sx_w_a_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, enum sx_pos_e p)
+{
+  static int in_form = 0;
+  if (sx_pos_inst == p)
+    {
+      const char *minus = "", *query = "", *ref = "", *refspace = "", *literal = "";
+      if (!s->valid)
+	minus = "-";
+      if (s->query)
+	query = "?";
+      if (s->literal)
+	literal = "=";
+      if (s->ref)
+	{
+	  refspace = " ";
+	  ref = (ccp)s->ref;
+	}
+
+      if (in_form)
+	{
+	  fprintf(f->fp, "@@\n");
+	  in_form = 0;
+	}
+
+      in_form = 1;
+      
+      fprintf(f->fp, "@form%s %s%s%s%s%s\n", minus, s->u.f->name, query, literal, refspace, ref);
+      if (s->u.f->pname)
+	fprintf(f->fp, "@pname\t%s\n", s->u.f->pname);
+      if (s->u.f->aka)
+	sx_w_a_str_list(f->fp, "aka", s->u.f->aka);
+    }
+  else if (sx_pos_term == p)
+    {
+      if (in_form)
+	{
+	  fprintf(f->fp, "@@\n");
+	  in_form = 0;
+	}
+    }
+}
+
+static void
+sx_w_a_ivalue(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *v, enum sx_pos_e p)
+{
+  if (!identity_mode)
+    f->val(f, sl, v, p);
+}
+
+static void
+sx_w_a_list(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *l, enum sx_pos_e p)
+{
+  if (sx_pos_inst == p)
+    fprintf(f->fp, "@list\t%s%s\n", l->u.l->name, l->query ? "?" : "");
+}
+
+static void
+sx_w_a_notes(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip)
+{
+  if (!ip->inherited)
+    {
+      if (ip->n.lit)
+	sx_w_a_str_list(f->fp, "lit", ip->n.lit);
+      if (ip->n.notes)
+	sx_w_a_str_list(f->fp, "note", ip->n.notes);
+      if (ip->n.inotes)
+	sx_w_a_str_list(f->fp, "inote", ip->n.inotes);
+    }
+}
+
+static void
+sx_w_a_qvs(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *vi, enum sx_pos_e p)
+{
+  if (!identity_mode && sx_pos_inst == p)
+    {
+      const unsigned char *pname;
+      const char *poid, *qvm;
+      if (vi->parent_f)
+	{
+	  pname = vi->parent_f->u.f->name;
+	  poid = vi->parent_f->u.f->oid;
+	}
+      else
+	{
+	  pname = vi->parent_s->u.s->name;
+	  poid = vi->parent_s->u.s->oid;
+	}
+      if (vi->u.v->qvmust)
+	qvm = "must";
+      else if (vi->u.v->qvsign)
+	qvm = "sign";
+      else if (vi->u.v->qvform)
+	qvm = "form";
+      fprintf(f->fp, "@qv [%s] %s(%s) %s\n", qvm, vi->u.v->name, pname, poid);
+    }
+}
+
+/** Because this is called when walking groups->signs this can be a sign or form inst
+ */
+static void
+sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, enum sx_pos_e p)
+{
+  const char *minus = "", *query = "", *literal = "";
+  static int in_sign = 0;
+
+  if (sx_pos_inst == p)
+    {
+      if (!s->valid)
+	minus = "-";
+      if (s->query)
+	query = "?";
+      if (s->literal)
+	literal = "=";
+
+      if (in_sign)
+	{
+	  fprintf(f->fp, "@end sign\n\n");
+	  in_sign = 0;
+	}
+      
+      if ('f' == s->type)
+	{
+	  struct sl_sign *fs = s->u.f->sign;
+	  if (fs->xref)
+	    {
+	      if (!identity_mode)
+		{
+		  int o;
+		  fprintf(f->fp, "@xref%s\t%s%s%s\n", minus, s->u.f->name, query, literal);
+		  for (o = 0; o < s->u.f->nowners; ++o)
+		    fprintf(f->fp, "@see %s\n", s->u.f->owners_sort[o]->name);
+		  fprintf(f->fp, "@end xref\n\n");
+		}
+	    }
+	}
+      else if (s->u.s->compound_only)
+	{
+	  fprintf(f->fp, "@comp\t%s\n", s->u.s->name);
+	}
+      else
+	{
+	  fprintf(f->fp, "@sign%s %s%s%s\n", minus, s->u.s->name, query, literal);
+	  if (s->u.s->fake)
+	    fprintf(f->fp, "@fake\t1\n");
+	  if (s->u.s->pname)
+	    fprintf(f->fp, "@pname\t%s\n", s->u.s->pname);
+	  if (s->u.s->aka)
+	    sx_w_a_str_list(f->fp, "aka", s->u.s->aka);
+	  in_sign = 1;
+	}
+    }
+  else if (sx_pos_term == p)
+    {
+      if (in_sign)
+	{
+	  fprintf(f->fp, "@end sign\n\n");
+	  in_sign = 0;
+	}
+    }
+}
+
+static void
+sx_w_a_value(struct sx_functions *f, struct sl_signlist *s, struct sl_inst *v, enum sx_pos_e p)
+{
+  if (sx_pos_inst == p && !v->inherited)
+    {
+      const char *minus = "", *query = "", *refspace = "", *ref = "";
+      if (!v->valid)
+	minus = "-";
+      if (v->query)
+	query = "?";
+      if (v->ref)
+	{
+	  refspace = " ";
+	  ref = (ccp)v->ref;
+	}
+      fprintf(f->fp, "@v%s\t%s%s%s%s\n", minus, v->u.v->name, query, refspace, ref);
+    }
+}
+
+static void
+sx_w_a_unicode(struct sx_functions *f, struct sl_signlist *sl, struct sl_unicode *up)
+{
+  if (up->uname)
+    fprintf(f->fp, "@uname\t%s\n", up->uname);
+  if (up->ucode)
+    fprintf(f->fp, "@ucode\t%s\n", up->ucode);
+  if (up->uchar)
+    fprintf(f->fp, "@uchar\t%s\n", up->uchar);
+  if (up->uphase)
+    fprintf(f->fp, "@uphase\t%s\n", up->uphase);
+  if (up->unotes)
+    sx_w_a_str_list(f->fp, "unote", up->unotes);
+}
