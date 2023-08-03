@@ -23,9 +23,21 @@ jw_term(void)
 }
 
 void
+jw_value(void)
+{
+  if (jelement == jstate)
+    fputc(',', jwfp);
+  else
+    jstate = jelement;
+}
+
+void
 jw_array_o(void)
 {
-  stck_push(jstack, jstate);
+  if (jelement == jstate)
+    fputc(',', jwfp);
+  else
+    stck_push(jstack, jelement);
   jstate = jarray;
   fputc('[', jwfp);
 }
@@ -40,7 +52,10 @@ jw_array_c(void)
 void
 jw_object_o(void)
 {
-  stck_push(jstack, jstate);
+  if (jelement == jstate)
+    fputc(',', jwfp);
+  else
+    stck_push(jstack, jelement);
   jstate = jobject;
   fputc('{', jwfp);
 }
@@ -55,8 +70,10 @@ jw_object_c(void)
 void
 jw_member(const char *name)
 {
-  if (jmember == jstate)
+  if (jelement == jstate)
     fputc(',', jwfp);
+  else
+    stck_push(jstack, jelement);
   fprintf(jwfp, "\"%s\" : ", name);
   jstate = jmember;
 }
@@ -64,49 +81,41 @@ jw_member(const char *name)
 void
 jw_string(const char *s)
 {
-  if (jelement == jstate)
-    fputc(',', jwfp);
+  jw_value();
   fprintf(jwfp, "\"%s\"", jsonify((const unsigned char *)s));
-  if (jarray == jstate)
-    jstate = jelement;
+}
+
+void
+jw_strmem(const char *m, const char *v)
+{
+  jw_member(m);
+  jw_string(v);
 }
 
 void
 jw_number(int i)
 {
-  if (jelement == jstate)
-    fputc(',', jwfp);
+  jw_value();
   fprintf(jwfp, "%d", i);
-  if (jarray == jstate)
-    jstate = jelement;
 }
 
 void
 jw_true(void)
 {
-  if (jelement == jstate)
-    fputc(',', jwfp);
+  jw_value();
   fputs("true", jwfp);
-  if (jarray == jstate)
-    jstate = jelement;
 }
 
 void
 jw_false(void)
 {
-  if (jelement == jstate)
-    fputc(',', jwfp);
+  jw_value();
   fputs("false", jwfp);
-  if (jarray == jstate)
-    jstate = jelement;
 }
 
 void
 jw_null(void)
 {
-  if (jelement == jstate)
-    fputc(',', jwfp);
+  jw_value();
   fputs("null", jwfp);
-  if (jarray == jstate)
-    jstate = jelement;
 }

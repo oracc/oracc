@@ -18,5 +18,6 @@ extern void jw_number(int i);
 extern void jw_true(void);
 extern void jw_false(void);
 extern void jw_null(void);
+extern void jw_strmem(const char *m, const char *v);
 
 #endif/*JSON_H_*/
