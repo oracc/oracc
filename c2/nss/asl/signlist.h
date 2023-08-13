@@ -10,10 +10,13 @@
 
 struct sl_inst;
 
+enum sx_tle { sx_tle_componly , sx_tle_formproxy , sx_tle_lref , sx_tle_sign , sx_tle_sref };
+
 struct sl_signlist
 {
   const char *project;
   struct sl_inst *notes;/* Allow inotes etc., after @signlist */
+  Hash *listdefs; 	/* Hash of signlist names; value is struct sl_listdef */
   Hash *htoken; 	/* Every token that is a sign/form/list/value
 			   as a struct sl_token * */
   Hash *hsentry; 	/* All the @sign/@sign- entries in the signlist */
@@ -62,6 +65,14 @@ struct sl_signlist
   Memo *m_parents;
   Pool *p;
   Mloc *mloc;
+};
+
+struct sl_listdef
+{
+  unsigned const char *name;
+  const char **names;
+  int nnames;
+  Hash *seen;
 };
 
 struct sl_token
@@ -238,6 +249,7 @@ struct sl_sign
   Boolean uphase;
   Boolean fake;
   Boolean compound_only;
+  enum sx_tle type;
 #if 0
   Mloc *mloc; /* Or: keep this as indicator of "defining instance" ? */
 #endif
@@ -305,6 +317,7 @@ struct sl_value
 };
 
 extern struct sl_signlist *asl_bld_init(void);
+extern void asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char *in);
 extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 			 int list, const unsigned char *ref, int minus_flag);
 extern void asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag);
@@ -312,6 +325,7 @@ extern void asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char 
 extern void asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
 
+extern void asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, enum sx_tle type);
 extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 			 int list, int minus_flag);
 extern struct sl_signlist *asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,

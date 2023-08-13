@@ -48,6 +48,7 @@ L		=?
 COMPOUND	"|"([a-zA-Z\x80-\xff]|[@~().%&+()0-9])+"|"{Q}{L}
 GRAPHEME 	((({G}|{N}){M})|"15"){Q}{L}
 PHONGRAPH	"/"{G}"/"
+LISTNAME	([A-Z]+)
 LISTNUM		([A-Z]+[0-9]+[()A-Z0-9a-z_'"+*/]*){M}{Q}{L}
 NUMGRAPH	[0-9nN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}{Q}{L}
 FRACTION	[0-9]\/[0-9]
@@ -77,7 +78,8 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 
 ^@@				{ /* no-op */ }
 ^@end/[ \t].*\n        	       	{ atcmd(END,E); }
-^@signlist/[ \t]       		{ atcmd(SIGNLIST,T); }
+^@signlist/[ \t]+      		{ atcmd(SIGNLIST,0); }
+^@listdef/[ \t]+       		{ atcmd(LISTDEF,T); }
 ^@sign-?/[ \t]       		{ atcmd(SIGN,0); }
 ^@aka/[ \t]       		{ atcmd(AKA,0); }
 ^@comp/[ \t]       		{ atcmd(COMP,0); }
@@ -98,6 +100,8 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 ^@unote/[ \t]+   		{ Tcmd(UNOTE,S); }
 ^@uphase/[ \t]+			{ Tcmd(UPHASE,S); }
 ^@fake[ \t]+1[ \t]*/\n		{ return FAKE; }
+^@lref/[ \t]+			{ atcmd(LREF,S); }
+^@sref/[ \t]+			{ atcmd(SREF,S); }
 
 ^@[a-z]+         		{ BEGIN 0; mesg_vwarning(curraslfile, asllineno,
 							"[asl] malformed or unknown @-line: %s", asltext); }
@@ -109,6 +113,8 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 				  return GVALUE; }
 
 {GRAPHEME}|{COMPOUND}          	{ aslsave; return asl_grapheme(asllval.text); }
+
+{LISTNAME}   	 	      	{ aslsave; BEGIN(T); return LISTNAME; }
 
 {LISTNUM}   	 	      	{ aslsave; return LISTNUM; }
 

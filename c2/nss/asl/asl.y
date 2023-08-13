@@ -32,6 +32,7 @@ int minus_flag = 0;
 		GBAD ATF LANG V VCMT VREF LIST LISTNUM
 		INOTE LIT NOTE TEXT END EBAD EFORM ESIGN
 		UCHAR UCODE UPHASE UNAME UNOTE SIGNLIST
+		LISTDEF LISTNAME LREF SREF
 
 %nterm  <text>  gname lang vref
 
@@ -62,7 +63,10 @@ line:	  atcmd		{ if (asltrace) fprintf(stderr, "atcmd/EOL: %s\n", asllval.text);
 
 atcmd:
 	  atsignlist
+	| atlistdef
 	| atsign
+        | atlref
+        | atsref
         | ataka
         | atcomp
         | atpname
@@ -79,6 +83,10 @@ atsignlist:
 	  SIGNLIST TEXT { asl_bld_signlist(&@1, curr_asl, (uccp)$2, 0); }
 	;
 
+atlistdef:
+	  LISTDEF LISTNAME TEXT { asl_bld_listdef(&@1, curr_asl, (ccp)$2, (ccp)$3); }
+	;
+
 atsign:
 	  SIGN gname	 { asl_bld_sign(&@1, curr_asl, (uccp)$2, 0, minus_flag); }
 	| SIGN LISTNUM 	 { asl_bld_sign(&@1, curr_asl, (uccp)$2, 1, minus_flag); }
@@ -87,15 +95,18 @@ atsign:
 
 atfake:   FAKE 		{ if (curr_asl->curr_sign && !curr_asl->curr_form) { curr_asl->curr_sign->fake = 1; }
 	    		  else { mesg_vwarning(curraslfile, asllineno, "asl: misplaced @fake line\n");  } }
+	;
 
 ataka:
 	  AKA GVALUE 	 { asl_bld_aka(&@1, curr_asl, (uccp)$2); }
 	| AKA GNAME 	 { asl_bld_aka(&@1, curr_asl, (uccp)$2); }
+	;
 
 atcomp:
-	  COMP GVALUE 	 { asl_bld_comp(&@1, curr_asl, (uccp)$2, 0); }
-	| COMP GNAME 	 { asl_bld_comp(&@1, curr_asl, (uccp)$2, 0); }
-	| COMP LISTNUM 	 { asl_bld_comp(&@1, curr_asl, (uccp)$2, 1); }
+	  COMP GVALUE 	 { asl_bld_tle(&@1, curr_asl, (uccp)$2, sx_tle_componly); }
+	| COMP GNAME 	 { asl_bld_tle(&@1, curr_asl, (uccp)$2, sx_tle_componly); }
+	| COMP LISTNUM 	 { asl_bld_tle(&@1, curr_asl, (uccp)$2, sx_tle_componly); }
+	;
 
 atpname:
 	  PNAME GVALUE 	 { asl_bld_pname(&@1, curr_asl, (uccp)$2); }
@@ -104,6 +115,14 @@ atpname:
 
 atlist:
         LIST LISTNUM	 { asl_bld_list(&@1, curr_asl, (uccp)$2, minus_flag); }
+	;
+
+atlref:
+	LREF LISTNUM 	 { asl_bld_tle(&@1, curr_asl, (uccp)$2, sx_tle_lref); }
+	;
+
+atsref:
+	SREF LISTNUM 	 { asl_bld_tle(&@1, curr_asl, (uccp)$2, sx_tle_sref); }
 	;
 
 atform:

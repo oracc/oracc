@@ -502,16 +502,21 @@ asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
     mesg_verr(locp, "misplaced @pname");
 }
 
+/* Top-level entities other than sign set sl->curr_inst to host
+   metadata but NULL-out sl->curr-sign because it's an error for them
+   to have values */
 void
-asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list)
+asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, enum sx_tle type)
 {
-  asl_bld_sign(locp, sl, n, list, 0);
-  sl->curr_sign->compound_only = 1;
+  asl_bld_sign(locp, sl, n, 0, 0);
+  sl->curr_sign->type = type;
+  sl->curr_inst = sl->curr_sign->inst;
   sl->curr_sign = NULL;
 }
 
-void
-asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list, int minus_flag)
+static void
+asl_bld_sign_sub(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
+		 int list, int minus_flag, enum sx_tle type)
 {
   int literal = 0, query = 0;
   struct sl_sign *s;
@@ -554,7 +559,14 @@ asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       hash_add(sl->hsentry, s->name, s);
       asl_register_sign(locp, sl, s);
     }
+  s->type = type;
   sl->curr_sign = s;
+}
+
+void
+asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list, int minus_flag)
+{
+  asl_bld_sign_sub(locp, sl, n, list, minus_flag, sx_tle_sign);
 }
 
 void
