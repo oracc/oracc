@@ -77,8 +77,10 @@ while (<>) {
 	    s/\.\.\./x/;
 	    s/\s*$/ₓ/;
 	    s/AŠ/aš/;
-	    warn "$orig => $_\n";
+	    # warn "$orig => $_\n";
 	}
+
+	s/\?ₓ/ₓ?/;
 	
 	print "$_\n";
     }

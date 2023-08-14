@@ -345,7 +345,7 @@ sx_marshall(struct sl_signlist *sl)
 		}
 	      if (!sl->signs[i]->oid)
 		{
-		  if (sl->signs[i]->type != sx_tle_lref && sl->signs[i]->type != sx_tle_sref)
+		  if (sl->signs[i]->inst->valid && sl->signs[i]->type != sx_tle_lref && sl->signs[i]->type != sx_tle_sref)
 		    mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
 		}
 	      else if (sl->signs[i]->U.ucode)
@@ -404,7 +404,8 @@ sx_marshall(struct sl_signlist *sl)
 	  else
 	    {
 	      struct sl_inst *inst = list_first(sl->forms[i]->insts);
-	      mesg_verr(&inst->mloc, "OID needed for FORM %s", sl->forms[i]->name);
+	      if (inst->valid)
+		mesg_verr(&inst->mloc, "OID needed for FORM %s", sl->forms[i]->name);
 	    }
 	}
 

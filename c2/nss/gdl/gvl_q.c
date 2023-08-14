@@ -268,13 +268,16 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 		     report known q for v */
 		  if ('v' == *vp->type)
 		    {
-		      unsigned const char *q_for_v = gvl_lookup(sll_tmp_key(vp->orig, "q"));
-		      if (q_for_v)
-			vq->mess = gvl_vmess("[vq] %s(%s): unknown. Known for %s: %s%s",
-					     vp->orig, qp->orig, vp->orig, q_for_v, QFIX);
-		      else
-			vq->mess = gvl_vmess("[vq] %s(%s): %s is %s%s",
-					     vp->orig, qp->orig, vp->orig, vp->sign, QFIX);
+		      if (!gvl_void_messages)
+			{
+			  unsigned const char *q_for_v = gvl_lookup(sll_tmp_key(vp->orig, "q"));
+			  if (q_for_v)
+			    vq->mess = gvl_vmess("[vq] %s(%s): unknown. Known for %s: %s%s",
+						 vp->orig, qp->orig, vp->orig, q_for_v, QFIX);
+			  else
+			    vq->mess = gvl_vmess("[vq] %s(%s): %s is %s%s",
+						 vp->orig, qp->orig, vp->orig, vp->sign, QFIX);
+			}
 		    }
 		  else if ('p' == *vp->type)
 		    {
