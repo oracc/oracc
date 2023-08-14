@@ -34,7 +34,7 @@ int minus_flag = 0;
 		UCHAR UCODE UPHASE UNAME UNOTE SIGNLIST
 		LISTDEF LISTNAME LREF SREF
 
-%nterm  <text>  gname lang vref
+%nterm  <text>  gname lang longtext vref
 
 %start fields
 
@@ -51,14 +51,17 @@ blank:  EOL
 	;
 
 field: 	  line EOL
-	| cont EOL
 	| line PAR	{ if (asltrace) fprintf(stderr, "PAR\n"); }
-	| cont PAR	{ if (asltrace) fprintf(stderr, "PAR\n"); }
 	| error EOL	{ yyerrok; }
 	;
 
 line:	  atcmd		{ if (asltrace) fprintf(stderr, "atcmd/EOL: %s\n", asllval.text); }
 	| CMT 		{ if (asltrace) fprintf(stderr, "comment/EOL: %s\n", asllval.text); }
+	;
+
+longtext:
+	  TEXT		{ longtext(curr_asl, $1, NULL); fprintf(stderr,"longtext TEXT %s\n",$1); }
+	| longtext TAB	{ longtext(curr_asl, $1, $2);   fprintf(stderr,"longtext TAB %s\n",$2); }
 	;
 
 atcmd:
@@ -84,7 +87,7 @@ atsignlist:
 	;
 
 atlistdef:
-	  LISTDEF LISTNAME TEXT { asl_bld_listdef(&@1, curr_asl, (ccp)$2, (ccp)$3); }
+	  LISTDEF LISTNAME longtext { asl_bld_listdef(&@1, curr_asl, (ccp)$2, (ccp)longtext(NULL,NULL,NULL)); }
 	;
 
 atsign:
@@ -198,10 +201,6 @@ atlit:
 atnote:
 	  NOTE	TEXT	{ asl_bld_note(&@1, curr_asl, (uccp)$2); }
         ;
-
-cont: 	TAB		{ if (asltrace) fprintf(stderr, "field/TAB: %s\n", asllval.text); }
-	| cont TAB
-	;
 
 lang:
 	  LANG

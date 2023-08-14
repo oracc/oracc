@@ -20,6 +20,7 @@ npad(int e)
     return 1;
   return 0;
 }
+
 /**return 0 on success, 1 on failure
  */
 void
@@ -61,7 +62,17 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
 		    {
 		      char *l = NULL;
 		      int n;
-		      if (x == pow10)
+		      if (x > pow10)
+			{
+			  /* for a range MZL 333-334 reset the padding
+			     to account for the start value */
+			  while (x > pow10)
+			    {
+			      pow10 *= 10;
+			      pad[strlen(pad)-1] = '\0';
+			    }
+			}
+		      else if (x == pow10)
 			{
 			  pow10 *= 10;
 			  pad[strlen(pad)-1] = '\0';

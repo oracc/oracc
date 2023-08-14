@@ -71,13 +71,11 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 
 <S>[ \t]+			{ BEGIN T; }
 
-<T>^[ \t]+.+/\n    		{ BEGIN 0; aslsave; pmatch("###TEXTCONT\n"); return TAB; }
-
-<T>^[^ \t\n@].*/\n	       	{ BEGIN 0; aslsave; pmatch("###TEXTBAD\n"); return TEXT; }
-
-<T>.*/\n	       		{ BEGIN 0; aslsave; pmatch("###TEXT\n"); return TEXT; }
-
-^[ \t]+.+/\n    		{ aslsave; pmatch("###tab\n"); return TAB; }
+<T>^[ \t]+.*/\n@          	{ BEGIN 0; aslsave; return TAB; }
+<T>^[ \t]+.*/\n			{ aslsave; return TAB; }
+<T>.+/\n@			{ BEGIN 0; aslsave; return TEXT; }
+<T>.+/\n			{ aslsave; return TEXT; }
+<T>\n				{ }
 
 ^@@				{ /* no-op */ }
 ^@end/[ \t].*\n        	       	{ atcmd(END,E); }

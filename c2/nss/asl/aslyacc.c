@@ -35,3 +35,25 @@ asl_grapheme(const char *gp)
   else
     return GVALUE;
 }
+
+/**If t and a are both NULL return n; else if a is NULL initialize to t; else append a to t.
+ */
+char *
+longtext(struct sl_signlist *sl, char *t, char *a)
+{
+  static char *n;
+  if (a)
+    {
+      char *n2;
+      while ('\t' == *a || ' ' == *a)
+	++a;
+      n2 = (char*)pool_alloc(strlen(t)+strlen(a)+2, sl->p);
+      strcpy(n2,n);
+      strcat(n2," ");
+      strcat(n2, a);
+      n = n2;
+    }
+  else if (t)
+    n = (char*)pool_copy((uccp)t, sl->p);
+  return n;
+}

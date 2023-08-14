@@ -1,5 +1,8 @@
 @signlist test
 
+@listdef LAK 101-102
+@listdef MZL 333-334
+
 @sign BA
 @uchar xBA
 @unote One note

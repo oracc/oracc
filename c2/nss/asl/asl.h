@@ -17,5 +17,6 @@ extern struct sl_signlist *aslyacc(const char *file);
 extern void asl_init(void);
 extern void asl_term(void);
 extern int aslparse(void);
+extern char *longtext(struct sl_signlist *sl, char *t, char *a);
 
 #endif
