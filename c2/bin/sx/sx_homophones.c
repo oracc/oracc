@@ -152,7 +152,7 @@ sx_xhomophones(struct sl_signlist *sl)
 		continue;
 	      
 	      struct sl_split_value *sp = memo_new(sl->m_split_v);
-	      const char *oid;
+	      const char *oid = NULL;
 	      *sp = sl->splitv[i];
 #if 0
 	      if ('s' == ip->type)
