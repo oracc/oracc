@@ -83,6 +83,9 @@ struct sl_token
   const unsigned char *t;	/* sign/form/value/list name token */
   Node *gdl;			/* token as GDL */
   GS_head *gsh;			/* GDL gsort data */
+  const char *gsig;		/* return value from gdlsig run on
+				   parsed GDL; NULL if the token was a
+				   literal l*/
   int s;			/* sort code for token */
 };
 

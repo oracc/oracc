@@ -14,6 +14,13 @@ static void check_flags(char *n, int *q, int *l);
 
 struct sl_signlist *curr_asl = NULL;
 
+extern Hash *oid_load(const char *domain);
+static Hash *oids;
+static unsigned const char *asl_oid_lookup(unsigned const char *key)
+{
+  return hash_find(oids, key);
+}
+
 struct sl_signlist *
 asl_bld_init(void)
 {
@@ -48,6 +55,11 @@ asl_bld_init(void)
   sl->notes->type = 'S';
   sl->notes->u.S = sl;
 
+  /* Preload the current set of SL oids */
+  oids = oid_load("sl");
+  (void)gvl_setup(NULL, NULL);
+  gvl_set_lookup_ptr(asl_oid_lookup);
+  
   return sl;
 }
 
@@ -121,16 +133,24 @@ asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t, int literal)
     {
       struct sl_token *tokp = memo_new(sl->m_tokens);
       Tree *tp;
+      const char *gsig = NULL;
       tokp->t = t;
       if (literal)
 	tp = gdl_literal(locp, (char*)t);
       else
-	tp = asl_bld_gdl(locp, t);
+	{
+	  extern int gdlsig_depth_mode;
+	  tp = asl_bld_gdl(locp, t);
+	  /* deep? or a special mode for unicode rendering? */
+	  gdlsig_depth_mode = -1;
+	  gsig = gdlsig(tp);
+	}
       tokp->gdl = tp->root;
       tokp->gdl->name = "g:w";
       gdl_prop_kv(tokp->gdl, GP_ATTRIBUTE, PG_GDL_INFO, "form", tokp->gdl->text);
       gdl_prop_kv(tokp->gdl, GP_ATTRIBUTE, PG_GDL_INFO, "xml:lang", "sux");
       tokp->gsh = gsort_prep(tp);
+      tokp->gsig = gsig;
       hash_add(sl->htoken, t, tokp);
     }
 }

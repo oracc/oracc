@@ -278,6 +278,9 @@ sx_marshall(struct sl_signlist *sl)
   int nlets = 0, i;
   collate_init((ucp)"unicode");
 
+  if (!sl->oid2ucode)
+    sl->oid2ucode = hash_create(1024);
+  
   oids = oid_load("sl");
   if (!oids)
     oids = hash_create(1);
@@ -345,6 +348,8 @@ sx_marshall(struct sl_signlist *sl)
 		  if (sl->signs[i]->type != sx_tle_lref && sl->signs[i]->type != sx_tle_sref)
 		    mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
 		}
+	      else if (sl->signs[i]->U.ucode)
+		hash_add(sl->oid2ucode, (uccp)sl->signs[i]->oid, (ucp)sl->signs[i]->U.ucode);
 	    }
 	  if (sl->signs[i]->oid)
 	    {
@@ -354,9 +359,11 @@ sx_marshall(struct sl_signlist *sl)
 	    }
 	}
 
+#if 0
       if (!sl->signs[i]->U.uchar && sl->signs[i]->U.ucode)
 	sl->signs[i]->U.uchar = pool_copy(uhex2utf8((uccp)sl->signs[i]->U.ucode), sl->p);
-	
+#endif
+      
       if (sl->signs[i]->hventry)
 	{
 	  const char **vkeys = hash_keys2(sl->signs[i]->hventry, &sl->signs[i]->nvalues);
@@ -391,6 +398,8 @@ sx_marshall(struct sl_signlist *sl)
 	    {
 	      if (sl->forms[i]->sign->xref)
 		sl->forms[i]->sign->oid = sl->forms[i]->oid;
+	      if (sl->forms[i]->U.ucode)
+		hash_add(sl->oid2ucode, (uccp)sl->forms[i]->oid, (ucp)sl->forms[i]->U.ucode);
 	    }
 	  else
 	    {
@@ -657,5 +666,7 @@ sx_marshall(struct sl_signlist *sl)
 
   sx_qualified(sl);
 
+  sx_unicode(sl);
+  
   /*collate_term();*/
 }

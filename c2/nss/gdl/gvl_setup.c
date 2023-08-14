@@ -56,7 +56,13 @@ gvl_setup(const char *project, const char *name)
 
   return ret;
 }
-      
+
+void
+gvl_set_lookup_ptr(gvl_lookup_ptr p)
+{
+  gvl_lookup = p;
+}
+
 void
 gvl_wrapup(const char *name)
 {

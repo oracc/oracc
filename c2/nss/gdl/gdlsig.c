@@ -3,7 +3,18 @@
 #include "tree.h"
 #include "gdl.h"
 
-int deep_sig = 0;
+/* 0 = shallow, -1 = mid, 1 = deep
+ *
+ * shallow means if a unit has no OID return error ("q99")
+ *
+ * mid means if a unit is a compound, use the OID for the compound if
+ * possible, otherwise descend into the compound and try to resolve
+ * via the components
+ *
+ * deep means always descend into compounds
+ *
+ */
+int gdlsig_depth_mode = 0;
 
 void gdlsig_descend(Node *np, List *lp);
 const char *gdlsig_sep(const char *sep);
@@ -12,15 +23,15 @@ const char *
 gdlsig_str(Mloc *mp, unsigned char *atf, int frag_ok, int deep)
 {
   Tree *tp = NULL;
-  int saved_deep = deep_sig;
+  int saved_deep = gdlsig_depth_mode;
   const char *sig = NULL;
   
-  deep_sig = deep;
+  gdlsig_depth_mode = deep;
   gdlparse_reset();
   tp = gdlparse_string(mp, (char*)atf);
   if (tp)
     sig = gdlsig(tp);
-  deep_sig = saved_deep; 
+  gdlsig_depth_mode = saved_deep; 
   return sig;
 }
 
@@ -30,10 +41,14 @@ gdlsig_addoid(Node *np, List *lp)
   if (np->user)
     {
       gvl_g *gp = np->user;
-      if (deep_sig && gp->deep)
+      if (!strcmp(np->name, "g:c")
+	  && (gdlsig_depth_mode > 0
+	      || (gdlsig_depth_mode < 0 && !gp->oid)))
+	{
+	  gdlsig_descend(np, lp);
+	}
+      else if (gdlsig_depth_mode && gp->deep)
 	gdlsig_descend(gp->deep, lp);
-      else if (deep_sig && !strcmp(np->name, "g:c"))
-	gdlsig_descend(np, lp);
       else if (gp->oid)
 	list_add(lp, (char*)gp->oid);
       else
@@ -57,7 +72,7 @@ gdlsig_oidnode(Node *np)
 	  break;
 	case 'q':
 	case 'n':
-	  return np->kids->next;
+	  return np->kids ? np->kids->next : NULL;
 	  break;
 	default:
 	  return NULL;

@@ -23,6 +23,8 @@ int c_delim_sentinel = 0;
 
 extern int curr_lang;
 
+gvl_lookup_ptr gvl_lookup = gvl_lookup_sl;
+
 unsigned char *gvl_v_from_h(const unsigned char *b, const unsigned char *qsub);
 unsigned char *gvl_val_base(const unsigned char *v);
 
@@ -168,7 +170,7 @@ gvl_is_value(unsigned const char *g)
 }
 
 unsigned const char *
-gvl_lookup(unsigned const char *key)
+gvl_lookup_sl(unsigned const char *key)
 {
   if (gvl_trace)
     {

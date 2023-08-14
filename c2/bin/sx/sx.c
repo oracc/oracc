@@ -45,8 +45,11 @@ main(int argc, char * const*argv)
   mesg_init();
   asl_flex_debug = gdl_flex_debug = 0;
 
-  /* Initialize a dummy gvl with an empty hash instead of a signlist */
+#if 0
+  /* Initialize a dummy gvl with an empty hash instead of a signlist ### NOW DONE IN asl_bld_init */
   (void)gvl_setup(NULL, NULL);
+#endif
+  
   gsort_init();
   
   options(argc, argv, "acijlm:MsStTx");

@@ -37,7 +37,6 @@ struct sx_functions
     const char *fname;
   };
 
-
 extern int identity_mode;
 extern Hash *oids;
 extern Hash *oid_sort_keys;
@@ -55,6 +54,7 @@ extern void sx_listdefs(struct sl_signlist *sl, const char *listnames);
 extern void sx_list_dump(struct sl_signlist *sl);
 extern void sx_marshall(struct sl_signlist *sl);
 extern void sx_qualified(struct sl_signlist *sl);
+extern void sx_unicode(struct sl_signlist *sl);
 extern void sx_values_by_oid(struct sl_signlist *sl);
 extern void sx_values_parents(struct sl_signlist *sl);
 extern void sx_values_parents_dump(struct sl_signlist *sl);

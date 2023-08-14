@@ -47,7 +47,11 @@ extern int gvl_void_messages;
 
 extern gvl_i *curr_sl;
 
-extern unsigned const char *gvl_lookup(unsigned const char *key);
+typedef unsigned const char *(*gvl_lookup_ptr)(unsigned const char *key);
+
+extern gvl_lookup_ptr gvl_lookup;
+
+extern unsigned const char *gvl_lookup_sl(unsigned const char *key);
 
 extern gvl_i *gvl_setup(const char *project, const char *name);
 extern void gvl_wrapup(const char *name);
@@ -90,5 +94,7 @@ extern unsigned char *gvl_vmess(char *s, ...);
 extern void gvl_compound(Node *ynp);
 extern void gvl_simplexg(Node *ynp);
 extern void gvl_valuqual(Node *ynp);
+
+extern void gvl_set_lookup_ptr(gvl_lookup_ptr p);
 
 #endif/*_GVL_H*/

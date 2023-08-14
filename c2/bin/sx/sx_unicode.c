@@ -1,10 +1,42 @@
+#include <oraccsys.h>
 #include <signlist.h>
 #include <sx.h>
 
 void
 sx_unicode(struct sl_signlist *sl)
 {
-
+  Hash *usigns = hash_create(1024);
+  /* Index the signs that have unames -- those are encoded so we treat
+     them as atoms even if they are compounds */
+  int i;  
+  for (i = 0; i < sl->nsigns; ++i)
+    {
+      struct sl_unicode *Up = (sl->signs[i]->xref ? &sl->signs[i]->xref->U : &sl->signs[i]->U);
+      if (Up->uname)
+	{
+	  if (Up->ucode)
+	    hash_add(usigns, (uccp)Up->uname, (ucp)Up->ucode);
+	  else
+	    mesg_verr(&sl->signs[i]->inst->mloc, "sign %s has uname but no ucode\n", sl->signs[i]->name);
+	}
+    }
+  
+  /* check the compounds by building ucode sequences for them:
+   *   if there is one in the signlist already, check that the newly built ucode is the same
+   *   else set the sign's U.ucode appropriately
+   */
+  struct sl_inst *ip;
+  for (ip = list_first(sl->compounds); ip; ip = list_next(sl->compounds))
+    {
+      unsigned const char *name = ip->type == 's' ? ip->u.s->name : ip->u.f->name;
+      struct sl_token *tp = hash_find(sl->htoken, name);
+#if 0
+      if (tp->gsig)
+	{
+	  fprintf(stderr, "sx_unicode: building @ucode for %s from sig %s\n", name, tp->gsig);
+	}
+#endif
+    }
   for (i = 0; i < sl->nsigns; ++i)
     {
       if (!sl->signs[i]->U.uchar && sl->signs[i]->U.ucode)
