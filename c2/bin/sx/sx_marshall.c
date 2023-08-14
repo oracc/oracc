@@ -483,7 +483,7 @@ sx_marshall(struct sl_signlist *sl)
 	    }
 	}
     }
-  cmpsl = NULL;
+  /*cmpsl = NULL;*/
 
   /* Create oid arrays for the list entries; used in sx_sll output */
   for (i = 0; i < sl->nlists; ++i)

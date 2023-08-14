@@ -64,7 +64,7 @@ struct sl_signlist
   Memo *m_digests;
   Memo *m_parents;
   Pool *p;
-  Mloc *mloc;
+  Mloc mloc;
 };
 
 struct sl_listdef

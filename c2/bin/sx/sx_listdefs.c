@@ -13,10 +13,10 @@ sx_listdefs_one(struct sl_signlist *sl, const char *listname)
       int i;
       for (i = 0; i < ldp->nnames; ++i)
 	if (!hash_find(ldp->seen, (uccp)ldp->names[i]))
-	  mesg_verr(sl->mloc, "list name %s not found in signlist", ldp->names[i]);
+	  mesg_verr(&sl->mloc, "list name %s not found in signlist", ldp->names[i]);
     }
   else
-    mesg_verr(sl->mloc, "request to check missing items in unknown list %s", listname);
+    mesg_verr(&sl->mloc, "request to check missing items in unknown list %s", listname);
 }
 
 /**sx_ld_count
@@ -32,7 +32,7 @@ sx_ld_count(const char *n)
     {
       while (',' == *n)
 	++n;
-      while (',' != *n)
+      while (*n && ',' != *n)
 	++n;
     }
   return i;
@@ -55,7 +55,7 @@ sx_listdefs(struct sl_signlist *sl, const char *listnames)
       int ncomma = sx_ld_count(listnames), i;
       char *n, *ln;
       ln = (char*)pool_copy((uccp)listnames, sl->p);
-      names = malloc(ncomma * sizeof(const char *));
+      names = malloc((ncomma+1) * sizeof(const char *));
       names[0] = ln;
       for (n = ln, i = 1; *n; ++n)
 	{

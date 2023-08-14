@@ -18,6 +18,7 @@ asl_bld_init(void)
 {
   struct sl_signlist *sl = calloc(1, sizeof(struct sl_signlist));
   sl->htoken = hash_create(4192);
+  sl->listdefs = hash_create(3);
   sl->hsentry = hash_create(2048);
   sl->hfentry = hash_create(1024);
   sl->hventry = hash_create(2048);
@@ -55,6 +56,7 @@ asl_bld_term(struct sl_signlist *sl)
   if (sl)
     {
       hash_free(sl->htoken, NULL);
+      hash_free(sl->listdefs, free);
       hash_free(sl->hsentry, NULL);
       hash_free(sl->hfentry, NULL);
       hash_free(sl->hventry, NULL);
@@ -392,7 +394,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
       if (end)
 	{
 	  struct sl_listdef *ldp = NULL;
-	  *end = '\0';
+	  *end = '\0';	  
 	  if ((ldp = hash_find(sl->listdefs, (uccp)name)))
 	    {
 	      if (!(hash_find(ldp->seen, l->name)))
@@ -618,6 +620,7 @@ void
 asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list)
 {
   curr_asl = asl_bld_init();
+  curr_asl->mloc = *locp;
   if (n)
     {
       while (isspace(*n))

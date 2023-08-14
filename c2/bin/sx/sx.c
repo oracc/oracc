@@ -48,7 +48,7 @@ main(int argc, char * const*argv)
   (void)gvl_setup(NULL, NULL);
   gsort_init();
   
-  options(argc, argv, "acijsStTx");
+  options(argc, argv, "acijm:MsStTx");
   asltrace = asl_flex_debug = trace_mode;
 
   if (argv[optind])
