@@ -691,7 +691,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
       unsigned const char *b = NULL;
       if (!minus_flag && sl->curr_form->lv && sl->curr_form->lv->hvbases && (b = hash_find(sl->curr_form->lv->hvbases, base)))
 	{
-	  mesg_verr(&sl->curr_inst->mloc, "form %s values %s and %s have the same base %s\n", sl->curr_form->u.f->name, b, n, base);
+	  mesg_verr(locp, "form %s values %s and %s have the same base %s\n", sl->curr_form->u.f->name, b, n, base);
 	  return;
 	}
       else if (!minus_flag) /* only add valid values to hvbases */
@@ -706,7 +706,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
       unsigned const char *b = NULL;
       if (!minus_flag && (b = hash_find(sl->curr_sign->hvbases, base)))
 	{
-	  mesg_verr(&sl->curr_inst->mloc, "sign %s values %s and %s have the same base %s\n", sl->curr_sign->name, b, n, base);
+	  mesg_verr(locp, "sign %s values %s and %s have the same base %s\n", sl->curr_sign->name, b, n, base);
 	  return;
 	}
       else if (!minus_flag)

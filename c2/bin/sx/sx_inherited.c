@@ -197,8 +197,13 @@ sx_v_fowner(struct sl_signlist *sl, struct sl_inst *ip, unsigned const char *v)
 static struct sl_inst *
 clone_inherited(struct sl_signlist *sl, struct sl_inst *ip)
 {
-  struct sl_inst *ip2 = memo_new(sl->m_insts);
-  *ip2 = *ip;
-  ip2->inherited = 1;
-  return ip2;
+  if (ip)
+    {
+      struct sl_inst *ip2 = memo_new(sl->m_insts);
+      *ip2 = *ip;
+      ip2->inherited = 1;
+      return ip2;
+    }
+  else
+    return NULL;
 }
