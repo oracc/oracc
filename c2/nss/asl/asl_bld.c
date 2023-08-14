@@ -5,6 +5,7 @@
 #include <oraccsys.h>
 #include <unidef.h>
 #include <gutil.h>
+#include <sll.h>
 #include <gdl.h>
 #include <asl.tab.h>
 #include "signlist.h"
@@ -400,7 +401,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
 	      if (!(hash_find(ldp->seen, l->name)))
 		hash_add(ldp->seen, l->name, l);
 	    }
-	  else
+	  else if (!sll_signlist(name,strlen(name)))
 	    mesg_verr(locp, "@list %s has unknown list-name part %s", n, name);
 	}
       else
@@ -540,12 +541,13 @@ asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
    metadata but NULL-out sl->curr-sign because it's an error for them
    to have values */
 void
-asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, enum sx_tle type)
+asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const unsigned char *m, enum sx_tle type)
 {
   asl_bld_sign(locp, sl, n, 0, 0);
   sl->curr_sign->type = type;
+  sl->curr_sign->pname = pool_copy(m, sl->p);
   sl->curr_inst = sl->curr_sign->inst;
-  sl->curr_sign = NULL;
+  sl->curr_sign = NULL;  
 }
 
 static void

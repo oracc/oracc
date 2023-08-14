@@ -78,5 +78,6 @@ extern unsigned const char *sll_ext_check(unsigned const char *k, enum sll_t t);
 extern List *sll_resolve(unsigned const char *g, const char *e, struct sllext *ep);
 
 extern const char *sll_is_signlist(const char *key);
+extern struct sll_signlist *sll_signlist (register const char *str, register size_t len);
 
 #endif /*SLL_H_*/

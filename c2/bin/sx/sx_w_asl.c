@@ -63,7 +63,8 @@ sx_w_a_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
 	  struct sl_listdef *ldp = hash_find(sl->listdefs, (uccp)n[i]);
 	  fprintf(f->fp, "@listdef %s %s\n", n[i], ldp->str);
 	}
-      fputc('\n', f->fp);
+      if (nn)
+	fputc('\n', f->fp);
     }
 }
 

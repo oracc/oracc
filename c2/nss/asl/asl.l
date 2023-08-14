@@ -37,6 +37,10 @@ static void check_minus(char *t);
 
 #define Tcmd(at,st) pmatch("###TCMD\n"); BEGIN((st)); return(at)
 
+#define no_comments(where) mesg_vwarning( \
+					  curraslfile, asllineno, \
+					  "[asl] #comments no longer allowed; use @inote, @v- or the like")
+
 %}
 
 S		\xe2\xb8[^\xa2-\xa5]
@@ -71,6 +75,8 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 
 <S>[ \t]+			{ BEGIN T; }
 
+<T>^"#".*/\n   			{ BEGIN 0; no_comments("text"); }
+<T>^"#".*/\n@   	       	{ BEGIN 0; no_comments("text"); }
 <T>^[ \t]+.*/\n@          	{ BEGIN 0; aslsave; return TAB; }
 <T>^[ \t]+.*/\n			{ aslsave; return TAB; }
 <T>.+/\n@			{ BEGIN 0; aslsave; return TEXT; }
@@ -83,7 +89,7 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 ^@listdef/[ \t]+       		{ atcmd(LISTDEF,L); }
 ^@sign-?/[ \t]       		{ atcmd(SIGN,0); }
 ^@aka/[ \t]       		{ atcmd(AKA,0); }
-^@comp/[ \t]       		{ atcmd(COMP,0); }
+^@compoundonly/[ \t]           	{ atcmd(COMP,0); }
 ^@pname/[ \t]       		{ atcmd(PNAME,0); }
 ^@nosign/[ \t]     		{ mesg_vwarning(curraslfile, asllineno, "[asl] '@nosign' has been replaced by '@sign-'");
 				  /*atcmd(SIGN,-1);*/ }
@@ -101,8 +107,8 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 ^@unote/[ \t]+   		{ Tcmd(UNOTE,S); }
 ^@uphase/[ \t]+			{ Tcmd(UPHASE,S); }
 ^@fake[ \t]+1[ \t]*/\n		{ return FAKE; }
-^@lref/[ \t]+			{ atcmd(LREF,S); }
-^@sref/[ \t]+			{ atcmd(SREF,S); }
+^@lref/[ \t]+			{ atcmd(LREF,0); }
+^@sref/[ \t]+			{ atcmd(SREF,0); }
 
 ^@[a-z]+         		{ BEGIN 0; mesg_vwarning(curraslfile, asllineno,
 							"[asl] malformed or unknown @-line: %s", asltext); }
@@ -131,16 +137,15 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 
 "~"[^ \t\n]+			{ mesg_vwarning(curraslfile, asllineno, "[asl] form variant tags like ~a are no longer used"); }
 
-^"#".*$				{ aslsave; return CMT; }
-
-"#"[^ \t\n]+			{ mesg_vwarning(curraslfile, asllineno,
-						"[asl] #comments no longer allowed in @v lines; use @inote or @v-"); }
+^"#".*/\n	       		{ no_comments("@v"); }
 
 "[".*/\n	       		{ aslsave; return VREF; }
 
 ^[^ \t\n@].*/\n			{ pmatch("###bad\n"); return BAD; }
 
 \n([ \t]*)+/\n			{ BEGIN 0; pmatch("###par\n"); return PAR; }
+
+"=>"				{ return GOESTO; }
 
 [ \t]+				{ }
 

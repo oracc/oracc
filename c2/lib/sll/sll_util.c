@@ -8,9 +8,6 @@
 #include <gutil.h>
 #include "sll.h"
 
-
-extern struct sll_signlist *sll_signlist (register const char *str, register size_t len);
-
 static int signindicator[256];
 
 int sll_raw_output = 0;

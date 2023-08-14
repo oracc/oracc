@@ -15,7 +15,7 @@
 @list MZL334
 @list LAK101
 @v baₓ
-@end form
+@@
 @form BI
 @inote A note on BI.
 @v baₓ
@@ -26,6 +26,6 @@
 @inote a note on @v
 @form A@g
 @v	a₃
-@end form
+@@
 @form BA
 @end sign

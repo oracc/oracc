@@ -111,10 +111,29 @@ gsort_cmp_item(GS_item *a, GS_item *b)
   /* force number graphemes to sort after other signs */
   if (a->r > 0 || b->r > 0)
     {
-      if (a->r > b->r)
-	return 1;
-      else if (b->r > a->r)
-	return -1;
+      if (a->r && b->r)
+	{
+	  /* for two numbers, compare via the grapheme so all AŠ, DIŠ,
+	     etc. sort together */
+	  /* compare grapheme base via the key */
+	  if ((ret = strcmp((ccp)a->k, (ccp)b->k)))
+	    return ret;
+	  /* 1(AŠ) sort before 2(AŠ) */
+	  if (a->r > b->r)
+	    return 1;
+	  else if (b->r > a->r)
+	    return -1;
+	  
+	  /* compare index */
+	  return a->x - b->x;
+	}
+      else
+	{
+	  if (a->r > b->r)
+	    return 1;
+	  else if (b->r > a->r)
+	    return -1;
+	}
     }
 
   /* compare grapheme base via the key */

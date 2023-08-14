@@ -232,7 +232,10 @@ struct sl_sign
   struct sl_inst **forms;
   int nforms;
   struct sl_unicode U;
-  const unsigned char *pname;
+  const unsigned char *pname; /* For type=sign this is the plus-name
+				 (e.g., |GA₂×A+HA| = |GA₂×(A.HA)|);
+				 for other types it is the map value
+				 from, e.g., @sref BA => BU */
   List *aka;		/* alternatively known as sign-names to support non-standard names */
   int sort;
   const char *oid;
@@ -327,7 +330,7 @@ extern void asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char 
 extern void asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
 
-extern void asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, enum sx_tle type);
+extern void asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const unsigned char *m, enum sx_tle type);
 extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 			 int list, int minus_flag);
 extern void asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,

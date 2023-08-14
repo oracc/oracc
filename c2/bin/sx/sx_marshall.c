@@ -341,7 +341,10 @@ sx_marshall(struct sl_signlist *sl)
 		      break;
 		}
 	      if (!sl->signs[i]->oid)
-		mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
+		{
+		  if (sl->signs[i]->type != sx_tle_lref && sl->signs[i]->type != sx_tle_sref)
+		    mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
+		}
 	    }
 	  if (sl->signs[i]->oid)
 	    {
