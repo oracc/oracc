@@ -55,6 +55,7 @@ FRACTION	[0-9]\/[0-9]
 PUNCT		("*"|:['".:]?|"/"){Q}{L}
 
 %s E
+%s L
 %s S
 %s T
 
@@ -65,6 +66,8 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 <E>"form"			{ fake_flag = 0; atcmd(EFORM,0); }
 
 <E>[^ \t]			{ fake_flag = 0; aslsave; fprintf(stderr, "###EBAD %s\n", asltext); return EBAD; }
+
+<L>{LISTNAME}/[ \t]+         	{ aslsave; BEGIN(S); return LISTNAME; }
 
 <S>[ \t]+			{ BEGIN T; }
 
@@ -78,8 +81,8 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 
 ^@@				{ /* no-op */ }
 ^@end/[ \t].*\n        	       	{ atcmd(END,E); }
-^@signlist/[ \t]+      		{ atcmd(SIGNLIST,0); }
-^@listdef/[ \t]+       		{ atcmd(LISTDEF,T); }
+^@signlist/[ \t]+      		{ atcmd(SIGNLIST,S); }
+^@listdef/[ \t]+       		{ atcmd(LISTDEF,L); }
 ^@sign-?/[ \t]       		{ atcmd(SIGN,0); }
 ^@aka/[ \t]       		{ atcmd(AKA,0); }
 ^@comp/[ \t]       		{ atcmd(COMP,0); }
@@ -113,8 +116,6 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 				  return GVALUE; }
 
 {GRAPHEME}|{COMPOUND}          	{ aslsave; return asl_grapheme(asllval.text); }
-
-{LISTNAME}   	 	      	{ aslsave; BEGIN(T); return LISTNAME; }
 
 {LISTNUM}   	 	      	{ aslsave; return LISTNUM; }
 

@@ -224,7 +224,7 @@ static int signs_inst_cmp(const void *a, const void *b)
     return 0;
 }
 
-static int toks_cmp(const void *a, const void *b)
+int toks_cmp(const void *a, const void *b)
 {
 #if 1
   const char *cc1 = (*(char**)a);

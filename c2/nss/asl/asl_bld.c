@@ -382,6 +382,37 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
 	}
     }
 
+  /* Check that the @list is valid against the signlists's listdefs
+     and register it as seen */
+  char name[32];
+  if (strlen((ccp)n) < 32)
+    {
+      strcpy(name, (ccp)n);
+      char *end = strpbrk(name, "0123456789");
+      if (end)
+	{
+	  struct sl_listdef *ldp = NULL;
+	  *end = '\0';
+	  if ((ldp = hash_find(sl->listdefs, (uccp)name)))
+	    {
+	      if (!(hash_find(ldp->seen, l->name)))
+		hash_add(ldp->seen, l->name, l);
+	    }
+	  else
+	    mesg_verr(locp, "@list %s has unknown list-name part %s", n, name);
+	}
+      else
+	{
+	  mesg_verr(locp, "@list %s has no digits", n);
+	  return;
+	}
+    }
+  else
+    {
+      mesg_verr(locp, "@list entry too long (max 31 characters)");
+      return;
+    }
+  
   i->u.l = l;
 
   if (sl->curr_form)
@@ -406,6 +437,7 @@ asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
   int literal, query = 0;
 
   check_flags((char*)n, &query, &literal);
+  
   asl_bld_token(locp, sl, (ucp)n, 1);
 
   if (sl->curr_form)
@@ -582,7 +614,7 @@ asl_bld_end_sign(Mloc *locp, struct sl_signlist *sl)
     mesg_verr(locp, "misplaced @end sign, not in an @sign");    
 }
 
-struct sl_signlist *
+void
 asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list)
 {
   curr_asl = asl_bld_init();
@@ -591,8 +623,7 @@ asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int
       while (isspace(*n))
 	++n;
       curr_asl->project = (ccp)n;
-    }  
-  return curr_asl;
+    }
 }
 
 void

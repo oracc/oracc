@@ -42,6 +42,8 @@ extern int identity_mode;
 extern Hash *oids;
 extern Hash *oid_sort_keys;
 
+extern int toks_cmp(const void *a, const void *b);
+
 extern void sx_xml(struct sl_signlist *sl);
 extern void sx_xml_init(void);
 
@@ -49,6 +51,7 @@ extern void sx_compounds(struct sl_signlist *sl);
 extern void sx_compound_digests(struct sl_signlist *sl);
 extern void sx_homophones(struct sl_signlist *sl);
 extern void sx_inherited(struct sl_signlist *sl);
+extern void sx_listdefs(struct sl_signlist *sl, const char *listnames);
 extern void sx_marshall(struct sl_signlist *sl);
 extern void sx_qualified(struct sl_signlist *sl);
 extern void sx_values_by_oid(struct sl_signlist *sl);

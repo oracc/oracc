@@ -8,16 +8,15 @@
 #include <signlist.h>
 
 static int
-npad(int b, int e)
+npad(int e)
 {
-  int d = e - b;
-  if (d > 10000)
+  if (e >= 10000)
     return 4;
-  else if (d > 1000)
+  else if (e >= 1000)
     return 3;
-  else if (d > 100)
+  else if (e >= 100)
     return 2;
-  else if (d > 10)
+  else if (e >= 10)
     return 1;
   return 0;
 }
@@ -53,7 +52,7 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
 	      if (end)
 		{
 		  int x, pow10 = 10;
-		  int zeroes = npad(rb,re);
+		  int zeroes = npad(re);
 		  char pad[zeroes+1];
 		  for (x = 0; x < zeroes; ++x)
 		    pad[x] = '0';
@@ -67,9 +66,10 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
 			  pow10 *= 10;
 			  pad[strlen(pad)-1] = '\0';
 			}
-		      n = snprintf(l, 0, "%s%s%d\n", name, pad, x);
+		      n = snprintf(l, 0, "%s%s%d", name, pad, x);
 		      l = (char*)pool_alloc(n+1, sl->p);
-		      snprintf(l, n+1, "%s%s%d\n", name, pad, x);
+		      snprintf(l, n+1, "%s%s%d", name, pad, x);
+		      asl_bld_token(locp, sl, (ucp)l, 1);
 		      list_add(nlist, l);
 		    }
 		  str = end;
@@ -105,7 +105,9 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
 		*ins++ = *str++;
 	    }
 	  *ins = '\0';
-	  list_add(nlist, pool_copy((uccp)buf, sl->p));
+	  ucp l = pool_copy((uccp)buf, sl->p);
+	  list_add(nlist, l);
+	  asl_bld_token(locp, sl, (ucp)l, 1);
 	}
       if ('\0' == *str)
 	break;
@@ -119,6 +121,7 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
 	  ldp->nnames = list_len(nlist);
 	  ldp->names = list2chars(nlist);
 	  ldp->seen = hash_create(128);
+	  hash_add(sl->listdefs, ldp->name, ldp);
 	}
       else
 	{
