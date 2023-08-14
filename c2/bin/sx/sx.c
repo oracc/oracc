@@ -21,6 +21,7 @@ int asltrace,rnvtrace;
 int asl_output = 0;
 int identity_mode = 0;
 int jsn_output = 0;
+int list_dump = 0;
 int listdef_check = 0;
 int sll_output = 0;
 int sortcode_output = 0;
@@ -48,7 +49,7 @@ main(int argc, char * const*argv)
   (void)gvl_setup(NULL, NULL);
   gsort_init();
   
-  options(argc, argv, "acijm:MsStTx");
+  options(argc, argv, "acijlm:MsStTx");
   asltrace = asl_flex_debug = trace_mode;
 
   if (argv[optind])
@@ -72,6 +73,11 @@ main(int argc, char * const*argv)
     {
       sx_marshall(sl);
 
+      if (list_dump)
+	{
+	  sx_list_dump(sl);
+	}
+      
       if (listdef_check)
 	sx_listdefs(sl, missing_lists);
       
@@ -110,6 +116,9 @@ opts(int opt, char *arg)
       break;
     case 'j':
       jsn_output = 1;
+      break;
+    case 'l':
+      list_dump = 1;
       break;
     case 'm':
       listdef_check = 1;

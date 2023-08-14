@@ -49,7 +49,7 @@ longtext(struct sl_signlist *sl, char *t, char *a)
 	++a;
       n2 = (char*)pool_alloc(strlen(t)+strlen(a)+2, sl->p);
       strcpy(n2,n);
-      strcat(n2," ");
+      strcat(n2,"\n\t");
       strcat(n2, a);
       n = n2;
     }

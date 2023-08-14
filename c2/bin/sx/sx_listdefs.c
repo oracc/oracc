@@ -1,6 +1,13 @@
 #include <signlist.h>
 #include <sx.h>
 
+void
+sx_listdefs_sort(struct sl_listdef *ldp)
+{
+  qsort(ldp->names, ldp->nnames, sizeof(const char *), toks_cmp);
+}
+		 
+
 static void
 sx_listdefs_one(struct sl_signlist *sl, const char *listname)
 {
@@ -8,8 +15,9 @@ sx_listdefs_one(struct sl_signlist *sl, const char *listname)
 
   if (ldp)
     {
-      /* sort the list's entries */
-      qsort(ldp->names, ldp->nnames, sizeof(const char *), toks_cmp);
+      /* sort the list's entries if necessary */
+      if (!ldp->sorted++)
+	sx_listdefs_sort(ldp);
       int i;
       for (i = 0; i < ldp->nnames; ++i)
 	if (!hash_find(ldp->seen, (uccp)ldp->names[i]))
@@ -82,4 +90,21 @@ sx_listdefs(struct sl_signlist *sl, const char *listnames)
     sx_listdefs_one(sl, names[i]);
 
   free(names);
+}
+
+void
+sx_list_dump(struct sl_signlist *sl)  
+{
+  const char **n = hash_keys(sl->listdefs);
+  int i;
+  for (i = 0; n[i]; ++i)
+    {
+      struct sl_listdef *ldp = hash_find(sl->listdefs, (uccp)n[i]);
+      /* sort the list's entries if necessary */
+      if (!ldp->sorted++)
+	sx_listdefs_sort(ldp);
+      int j;
+      for (j = 0; ldp->names[j]; ++j)
+	fprintf(stderr, "%s\n", ldp->names[j]);
+    }
 }

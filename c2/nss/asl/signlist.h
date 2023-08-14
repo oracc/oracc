@@ -72,6 +72,7 @@ struct sl_listdef
   unsigned const char *name;
   const char **names;
   int nnames;
+  int sorted;
   Hash *seen;
 };
 

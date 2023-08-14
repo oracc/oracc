@@ -119,6 +119,8 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
 	  ucp l = pool_copy((uccp)buf, sl->p);
 	  list_add(nlist, l);
 	  asl_bld_token(locp, sl, (ucp)l, 1);
+	  while (*str && isspace(str[1]))
+	    ++str;
 	}
       if ('\0' == *str)
 	break;
