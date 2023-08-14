@@ -42,7 +42,7 @@ extern int identity_mode;
 extern Hash *oids;
 extern Hash *oid_sort_keys;
 
-extern int toks_cmp(const void *a, const void *b);
+extern int via_tok_cmp(const void *a, const void *b);
 
 extern void sx_xml(struct sl_signlist *sl);
 extern void sx_xml_init(void);

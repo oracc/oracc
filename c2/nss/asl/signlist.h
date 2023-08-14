@@ -74,6 +74,7 @@ struct sl_listdef
   int nnames;
   int sorted;
   Hash *seen;
+  const char *str;
 };
 
 struct sl_token

@@ -42,12 +42,29 @@ sx_w_a_str_list(FILE *fp, const char *tag, List *lp)
     fprintf(fp, "@%s\t%s\n", tag, t);
 }
 
+static int
+cmpstringp(const void *p1, const void *p2)
+{
+  return strcmp(* (char * const *) p1, * (char * const *) p2);
+}
+
 /* This is the entry point for asl output */
 static void
 sx_w_a_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
 {
   if (sx_pos_init == p)
-    fprintf(f->fp, "@signlist %s\n\n", sl->project);
+    {
+      fprintf(f->fp, "@signlist %s\n\n", sl->project);
+      int nn, i;
+      const char **n = hash_keys2(sl->listdefs, &nn);
+      qsort(n, nn, sizeof(const char *), cmpstringp);
+      for (i = 0; i < nn; ++i)
+	{
+	  struct sl_listdef *ldp = hash_find(sl->listdefs, (uccp)n[i]);
+	  fprintf(f->fp, "@listdef %s %s\n", n[i], ldp->str);
+	}
+      fputc('\n', f->fp);
+    }
 }
 
 static void

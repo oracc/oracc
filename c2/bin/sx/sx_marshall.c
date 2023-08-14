@@ -224,7 +224,7 @@ static int signs_inst_cmp(const void *a, const void *b)
     return 0;
 }
 
-int toks_cmp(const void *a, const void *b)
+static int toks_cmp(const void *a, const void *b)
 {
 #if 1
   const char *cc1 = (*(char**)a);
@@ -252,8 +252,7 @@ static int values_cmp(const void *a, const void *b)
     return 0;
 }
 
-#if 0
-static int via_tok_cmp(const void *a, const void *b)
+int via_tok_cmp(const void *a, const void *b)
 {
   const char *cc1 = (*(char**)a);
   const char *cc2 = (*(char**)b);
@@ -268,7 +267,6 @@ static int via_tok_cmp(const void *a, const void *b)
   else
     return 0;
 }
-#endif
 
 void
 sx_marshall(struct sl_signlist *sl)

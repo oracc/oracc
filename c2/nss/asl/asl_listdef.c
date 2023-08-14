@@ -27,6 +27,7 @@ void
 asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char *in)
 {
   const char *str, *top;
+  const char *save = (ccp)pool_copy((uccp)in, sl->p);
   char buf[32], *end, *ins, *ins_base;
   int status = 0;
   List *nlist = NULL;
@@ -130,6 +131,7 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
       if (!hash_find(sl->listdefs, (uccp)name))
 	{
 	  struct sl_listdef *ldp = calloc(1, sizeof(struct sl_listdef));
+	  ldp->str = save;
 	  ldp->name = pool_copy((uccp)name, sl->p);
 	  ldp->nnames = list_len(nlist);
 	  ldp->names = list2chars(nlist);
