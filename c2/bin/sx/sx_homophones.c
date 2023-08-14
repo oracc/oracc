@@ -180,7 +180,7 @@ sx_xhomophones(struct sl_signlist *sl)
 	}
       else
 	{
-	  const char *oid;
+	  const char *oid = NULL;
 	  struct sl_inst *ip = NULL;
 	  if (sl->values[i]->sowner)
 	    ip = sl->values[i]->sowner->inst;
