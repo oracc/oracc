@@ -48,6 +48,7 @@ struct sl_signlist
   struct sl_inst *curr_value;
   struct sl_inst *curr_inst; /* used to attach meta to correct tag */
   List *compounds;
+  Hash *oid2ucode;
   Memo *m_tokens;
   Memo *m_letters;
   Memo *m_groups;

@@ -39,3 +39,4 @@
 (load-library "~/oracc-project.el")
 (load-library "~/oracc-defaults.el")
 
+(set-fontset-font "fontset-default" 'cuneiform "Noto Sans Cuneiform")

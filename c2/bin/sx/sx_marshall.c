@@ -406,9 +406,10 @@ sx_marshall(struct sl_signlist *sl)
 	  hash_add(oid_sort_keys, (uccp)sl->forms[i]->oid, (void*)(uintptr_t)sl->forms[i]->sort);
 
 	}
-
+#if 0
       if (!sl->forms[i]->U.uchar && sl->forms[i]->U.ucode)
 	sl->forms[i]->U.uchar = pool_copy(uhex2utf8((uccp)sl->forms[i]->U.ucode), sl->p);
+#endif
 
     }
   /* Sort the forms */

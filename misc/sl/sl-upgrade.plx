@@ -32,6 +32,9 @@ while (<>) {
     chomp;
     next if /^\@signlist/;
     next if /^\@end\s+form/;
+
+    s/OBZL/ABZL/g;
+    
 #    s/\@form\s+~\S+/\@form //;
 
     s/\@form\s+~[a-z]+/\@form/; # new convention, no ~tag with @form 
@@ -51,7 +54,7 @@ while (<>) {
 	s/\@noform/\@form-/;
 	s/\@nov/\@v-/;
 	s#\@v\s+(/.*?/)#\@inote MC: $1/#;
-	s#\@v-\s+/#\@inote MC:- /#;
+	s#\@v-\s+/#\@inote MC:- /# && s#//#/#;
 	if (/\@v\s+\?/) {
 	    my $tens = ($x / 10);
 	    my $units = ($x % 10);
