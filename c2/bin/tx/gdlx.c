@@ -25,7 +25,7 @@ extern int gdl_flex_debug, gdldebug, gdl_orig_mode;
 
 int bare_mode = 0;
 int check_mode = 0;
-extern int deep_sig;
+extern int gdlsig_depth_mode;
 int error_stdout = 0;
 const char *fname = NULL;
 int gdl_c10e_mode = 1;
@@ -65,15 +65,15 @@ do_one(char *s)
   static int saved_deep = -1;
 
   if (-1 == saved_deep)
-    saved_deep = deep_sig;
+    saved_deep = gdlsig_depth_mode;
   
   if (s[strlen(s)-1] == '\n')
     s[strlen(s)-1] = '\0';
   if (s[strlen(s)-1] == '+')
     {
       s[strlen(s)-1] = '\0';
-      saved_deep = deep_sig;
-      deep_sig = 1;
+      saved_deep = gdlsig_depth_mode;
+      gdlsig_depth_mode = 1;
     }
   ++ml.line;
   mesg_init();
@@ -124,7 +124,7 @@ do_one(char *s)
 	tree_xml(stdout, tp);
     }
   gdlparse_reset();
-  deep_sig = saved_deep;
+  gdlsig_depth_mode = saved_deep;
   /*tree_term(tp);*/
 }
 
@@ -211,7 +211,7 @@ opts(int opt, char *arg)
       check_mode = 1;
       break;
     case 'd':
-      deep_sig = 1;
+      gdlsig_depth_mode = 1;
       break;
     case 'e':
       error_stdout = 1;
