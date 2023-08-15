@@ -28,6 +28,8 @@ my $x = 1;
 
 print '@signlist ogsl', "\n";
 
+system 'cat', 'listdefs.txt';
+
 while (<>) {
     chomp;
     next if /^\@signlist/;

@@ -9,6 +9,7 @@
 #include <gsort.h>
 
 struct sl_inst;
+struct sl_listdef;
 
 enum sx_tle { sx_tle_componly , sx_tle_formproxy , sx_tle_lref , sx_tle_sign , sx_tle_sref };
 
@@ -66,16 +67,6 @@ struct sl_signlist
   Memo *m_parents;
   Pool *p;
   Mloc mloc;
-};
-
-struct sl_listdef
-{
-  unsigned const char *name;
-  const char **names;
-  int nnames;
-  int sorted;
-  Hash *seen;
-  const char *str;
 };
 
 struct sl_token
@@ -143,9 +134,10 @@ struct sl_lv_data
 
 struct sl_inst
 {
-  char type; /* S = signlist; s = sign; f = form; l = list; v = value */
+  char type; /* S = signlist; d = listdef; s = sign; f = form; l = list; v = value */
   union {
     struct sl_signlist *S;
+    struct sl_listdef *d;
     struct sl_sign *s;
     struct sl_form *f;
     struct sl_list *l;
@@ -165,6 +157,17 @@ struct sl_inst
   Boolean ucode;
   Boolean uname;
   Boolean uphase;
+};
+
+struct sl_listdef
+{
+  unsigned const char *name;
+  const char **names;
+  int nnames;
+  int sorted;
+  Hash *seen;
+  const char *str;
+  struct sl_inst inst;
 };
 
 struct sl_letter

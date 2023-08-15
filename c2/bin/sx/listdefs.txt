@@ -1,0 +1,37 @@
+
+@listdef  ABZ 1-10
+@lit	R. Borger, Assyrisch-babylonische Zeichenliste (AOAT 33; Neukirchen-Vluyn 1978)
+
+@listdef  BAU 1-10
+@lit	E. Burrows, Archaic Texts (UET 2; London 1935)
+
+@listdef  DSL 1-10
+@lit	A. Deimel, Šumerisches Lexikon
+
+@listdef  HZL 1-10
+@lit	C. Ruster and E. Neu, Hethitisches Zeichenlexikon (Harrassowitz Verlag 1989)
+
+@listdef  KWU 1-10
+@lit	N. Schneider, Die Keilschriftzeichen der Wirtschaftsurkunden von Ur III (Rome 1935)
+
+@listdef  LAK 1-10
+@lit	A. Deimel, Liste der archaischen Keilschriftzeichen (WVDOG 40; Berlin 1922)
+
+@listdef  MEA 1-10
+@lit	R. Labat, Manuel d'épigraphie akkadienne (6th ed. Paris 1988)
+
+@listdef  MZL 1-10
+@lit	R. Borger, Mesopotamisches Zeichenlexikon (AOAT 305; Ugarit-Verlag 2003)
+
+@listdef  REC 1-10
+@lit	F. Thureau-Dangin, Recherches sur l'origine de l'écriture cunéiforme (Paris 1898)
+
+@listdef  RSP 1-10
+@lit	Y. Rosengarten, Répertoire commenté des signes présargoniques sumériens de Lagash (Paris 1967)
+
+@listdef U+ 0x12000-0x12399 0x12400-0x1246E 0x12470-0x12474 0x12480-0x12543
+@lit 	The Unicode Standard, v. 15
+
+@listdef  ZATU 1-10
+@lit	M. Green and H. J. Nissen, Zeichenliste der Archaischen Texte aus Uruk (ATU 2; Berlin 1987)
+

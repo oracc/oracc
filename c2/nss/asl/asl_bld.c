@@ -489,7 +489,7 @@ asl_bld_lit(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
   if (sl->curr_inst)
     asl_bld_list_string(t, &sl->curr_inst->n.lit);
   else
-    mesg_verr(locp, "misplaced @inote");
+    mesg_verr(locp, "misplaced @lit");
 }
 
 void
@@ -498,7 +498,7 @@ asl_bld_note(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
   if (sl->curr_inst)
     asl_bld_list_string(t, &sl->curr_inst->n.notes);
   else
-    mesg_verr(locp, "misplaced @inote");
+    mesg_verr(locp, "misplaced @note");
 }
 
 void

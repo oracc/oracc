@@ -154,6 +154,10 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
 	  ldp->nnames = list_len(nlist);
 	  ldp->names = list2chars(nlist);
 	  ldp->seen = hash_create(128);
+	  ldp->inst.type = 'd';
+	  ldp->inst.u.d = ldp;
+	  sl->curr_inst = &ldp->inst;
+	  
 	  hash_add(sl->listdefs, ldp->name, ldp);
 	}
       else
