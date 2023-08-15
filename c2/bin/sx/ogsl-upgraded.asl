@@ -2208,7 +2208,7 @@
 @inote notation {mul}1(IKU){gana₂} in cams/gkab
 @form AŠ@c
 @list RSP024
-@list U+eb80
+@inote @ucode	xeb80
 @v	aš@c
 @v	1(aš@c)
 @form AŠ@c@90
@@ -4219,7 +4219,7 @@
 @v	1(barig)
 @v	1(bariga)
 @form DIŠ@c
-@list U+ebc2
+@inote @ucode	xebc2
 @v	1(diš@c)
 @v	diš@c
 @v	barig@c
@@ -17141,7 +17141,7 @@
 @v	inbir₂ [VAT 9541 = dcclt/signlists:P345960 o ii 4']
 @inote	salgues
 @form LU₂~v
-@list U+e001
+@inote @ucode xe001
 @end sign
 
 @sign	|LU₂.DIŠ|
@@ -18174,7 +18174,7 @@
 @v	maš [SF 16 = dcclt:P010588 o iv 7, su-la₂ MAŠ@t]
 @form 1/2(DIŠ@c)
 @list RSP036
-@list U+ebca
+@inote @ucode	xebca
 @v	1/2(diš@c)
 @end sign
 
@@ -18471,7 +18471,7 @@
 @v	šina
 @v	2(diš)
 @form 2(DIŠ@c)
-@list U+ebc3
+@inote @ucode	xebc3
 @v	2(diš@c)
 @end sign
 
@@ -20133,7 +20133,7 @@
 @list U+1225C
 @v	saₓ
 @form |NINDA₂×(ŠE.AŠ@c)|
-@list U+ebce
+@inote @ucode	xebce
 @end sign
 
 @sign	|NINDA₂×(ŠE.AŠ.AŠ)|
@@ -20145,7 +20145,7 @@
 @list U+1225D
 @v	saₓ
 @form |NINDA₂×(ŠE.AŠ@c.AŠ@c)|
-@list U+ebcf
+@inote @ucode	xebcf
 @end sign
 
 @sign	|NINDA₂×ŠID|
@@ -24004,7 +24004,7 @@
 @form ŠAR₂@c
 @list RSP030
 @list RSP031
-@list U+eba7
+@inote @ucode	xeba7
 @v	šar₂@c
 @v	1(šar₂@c)
 @form ŠAR₂@c@v
@@ -26647,7 +26647,7 @@
 @form U@c
 @list RSP028
 @list RSP029
-@list U+eb8b
+@inote @ucode	xeb8b
 @v	bur₃@c
 @v	1(bur₃@c)
 @v	u@c
@@ -27019,7 +27019,7 @@
 @v	2(u)
 @v	2(bur₃)
 @form 2(U@c)
-@list U+eb8c
+@inote @ucode	xeb8c
 @v	2(u@c)
 @v	2(bur₃@c)
 @end sign
@@ -27052,12 +27052,12 @@
 @v	3(bur₃)
 @form 3(AŠ@t)
 @form 3(U@c)
-@list U+eb8d
+@inote @ucode	xeb8d
 @v	3(u@c)
 @v	3(bur₃@c)
 @v	eše@c
 @form 3(U@c)@v
-@list U+eb8e
+@inote @ucode	xeb8e
 @v	3(u@c)@v
 @end sign
 
@@ -29343,8 +29343,6 @@
 @end sign
 
 @sign	X
-@list U+X
-@uphase	none
 @v	baniaₓ
 @v	x
 @end sign
@@ -29958,7 +29956,7 @@
 @v	2(aš)
 @v	2(iku)
 @form 2(AŠ@c)
-@list U+eb81
+@inote @ucode	xeb81
 @v	2(aš@c)
 @v	2(iku@c)
 @end sign
@@ -29974,7 +29972,7 @@
 @v	3(aš)
 @v	3(iku)
 @form 3(AŠ@c)
-@list U+eb82
+@inote @ucode	xeb82
 @v	3(aš@c)
 @v	3(iku@c)
 @end sign
@@ -29987,7 +29985,7 @@
 @v	4(aš)
 @v	4(iku)
 @form 4(AŠ@c)
-@list U+eb84
+@inote @ucode	xeb84
 @v	4(aš@c)
 @v	4(iku@c)
 @end sign
@@ -30001,7 +29999,7 @@
 @v	5(aš)
 @v	5(iku)
 @form 5(AŠ@c)
-@list U+eb86
+@inote @ucode	xeb86
 @v	5(aš@c)
 @v	5(iku@c)
 @end sign
@@ -30014,7 +30012,7 @@
 @list U+12404
 @v	6(aš)
 @form 6(AŠ@c)
-@list U+eb87
+@inote @ucode	xeb87
 @v	6(aš@c)
 @end sign
 
@@ -30026,7 +30024,7 @@
 @list U+12405
 @v	7(aš)
 @form 7(AŠ@c)
-@list U+eb88
+@inote @ucode	xeb88
 @v	7(aš@c)
 @end sign
 
@@ -30038,7 +30036,7 @@
 @list U+12406
 @v	8(aš)
 @form 8(AŠ@c)
-@list U+eb89
+@inote @ucode	xeb89
 @v	8(aš@c)
 @end sign
 
@@ -30050,7 +30048,7 @@
 @list U+12407
 @v	9(aš)
 @form 9(AŠ@c)
-@list U+eb8a
+@inote @ucode	xeb8a
 @v	9(aš@c)
 @form 9(AŠ@c@90)
 @v	9(aš@c@90)
@@ -30084,7 +30082,7 @@
 @list U+1243B
 @v	3(aš)@v
 @form 3(AŠ@c)@v
-@list U+eb83
+@inote @ucode	xeb83
 @v	3(aš@c)@v
 @v	3(iku)@v
 @v	eš₂₁
@@ -30099,7 +30097,7 @@
 @v	4(aš@v)
 @v	limmu₄
 @form 4(AŠ@c)@v
-@list U+eb85
+@inote @ucode	xeb85
 @v	4(aš@v@c)
 @end sign
 
@@ -30213,7 +30211,7 @@
 @v	1(ban₂)
 @form 1(BAN₂@c)
 @list RSP036bis
-@list U+ebbd
+@inote @ucode	xebbd
 @v	ban₂@c
 @v	1(ban₂@c)
 @form BAN₂@v
@@ -30234,7 +30232,7 @@
 @v	banmin
 @form 2(BAN₂@c)
 @list RSP036bis
-@list U+ebbe
+@inote @ucode	xebbe
 @v	2(ban₂@c)
 @end sign
 
@@ -30248,7 +30246,7 @@
 @v	3(ban₂)
 @form 3(BAN₂@c)
 @list RSP036bis
-@list U+ebbf
+@inote @ucode	xebbf
 @v	3(ban₂@c)
 @form 3(BAN₂@c)@v
 @v	3(ban₂@c)@v
@@ -30264,7 +30262,7 @@
 @v	4(ban₂)
 @form 4(BAN₂@c)
 @list RSP036bis
-@list U+ebc0
+@inote @ucode	xebc0
 @v	4(ban₂@c)
 @end sign
 
@@ -30278,7 +30276,7 @@
 @v	5(ban₂)
 @form 5(BAN₂@c)
 @list RSP036bis
-@list U+ebc1
+@inote @ucode	xebc1
 @v	5(ban₂@c)
 @end sign
 
@@ -30319,7 +30317,7 @@
 @v	1(burʾu)
 @form 1(BURU@c)
 @list RSP034
-@list U+ebb7
+@inote @ucode	xebb7
 @inote this is the new OGSL name for U@c×KASKAL
 @v	burʾu@c
 @v	1(burʾu@c)
@@ -30336,7 +30334,7 @@
 @v	nišₓ
 @v	2(burʾu)
 @form 2(BURU@c)
-@list U+ebb8
+@inote @ucode	xebb8
 @v	2(burʾu@c)
 @end sign
 
@@ -30347,7 +30345,7 @@
 @v	ušuₓ
 @v	3(burʾu)
 @form 3(BURU@c)
-@list U+ebb9
+@inote @ucode	xebb9
 @v	3(burʾu@c)
 @end sign
 
@@ -30358,7 +30356,7 @@
 @v	niminₓ
 @v	4(burʾu)
 @form 4(BURU@c)
-@list U+ebbb
+@inote @ucode	xebbb
 @v	4(burʾu@c)
 @end sign
 
@@ -30370,7 +30368,7 @@
 @v	ninnuₓ
 @v	5(burʾu)
 @form 5(BURU@c)
-@list U+ebbc
+@inote @ucode	xebbc
 @v	5(burʾu@c)
 @end sign
 
@@ -30380,7 +30378,7 @@
 @list U+12437
 @v	3(burʾu)@v
 @form 3(BURU@c)@v
-@list U+ebba
+@inote @ucode	xebba
 @v	3(burʾu@c)@v
 @end sign
 
@@ -30390,7 +30388,7 @@
 @list U+12423
 @v	2(šar₂)
 @form 2(ŠAR₂@c)
-@list U+eba8
+@inote @ucode	xeba8
 @v	2(šar₂@c)
 @end sign
 
@@ -30400,7 +30398,7 @@
 @list U+12424
 @v	3(šar₂)
 @form 3(ŠAR₂@c)
-@list U+eba9
+@inote @ucode	xeba9
 @v	3(šar₂@c)
 @end sign
 
@@ -30410,7 +30408,7 @@
 @list U+12426
 @v	4(šar₂)
 @form 4(ŠAR₂@c)
-@list U+ebab
+@inote @ucode	xebab
 @v	4(šar₂@c)
 @end sign
 
@@ -30420,7 +30418,7 @@
 @list U+12427
 @v	5(šar₂)
 @form 5(ŠAR₂@c)
-@list U+ebac
+@inote @ucode	xebac
 @v	5(šar₂@c)
 @end sign
 
@@ -30430,7 +30428,7 @@
 @list U+12428
 @v	6(šar₂)
 @form 6(ŠAR₂@c)
-@list U+ebad
+@inote @ucode	xebad
 @v	6(šar₂@c)
 @end sign
 
@@ -30440,7 +30438,7 @@
 @list U+12429
 @v	7(šar₂)
 @form 7(ŠAR₂@c)
-@list U+ebae
+@inote @ucode	xebae
 @v	7(šar₂@c)
 @end sign
 
@@ -30450,7 +30448,7 @@
 @list U+1242A
 @v	8(šar₂)
 @form 8(ŠAR₂@c)
-@list U+ebaf
+@inote @ucode	xebaf
 @v	8(šar₂@c)
 @end sign
 
@@ -30460,7 +30458,7 @@
 @list U+1242B
 @v	9(šar₂)
 @form 9(ŠAR₂@c)
-@list U+ebb0
+@inote @ucode	xebb0
 @v	9(šar₂@c)
 @end sign
 
@@ -30470,7 +30468,7 @@
 @list U+12425
 @v	3(šar₂)@v
 @form 3(ŠAR₂@c)@v
-@list U+ebaa
+@inote @ucode	xebaa
 @v	3(šar₂@c)@v
 @end sign
 
@@ -30487,7 +30485,7 @@
 @v	1(šarʾu)
 @form 1(ŠARU@c)
 @list RSP032
-@list U+ebb1
+@inote @ucode	xebb1
 @v	šaru@c
 @v	šarʾu@c
 @v	1(šaru@c)
@@ -30508,7 +30506,7 @@
 @v	2(šaru)
 @v	2(šarʾu)
 @form 2(ŠARU@c)
-@list U+ebb2
+@inote @ucode	xebb2
 @v	2(šaru@c)
 @v	2(šarʾu@c)
 @end sign
@@ -30523,7 +30521,7 @@
 @v	3(šaru)
 @v	3(šarʾu)
 @form 3(ŠARU@c)
-@list U+ebb3
+@inote @ucode	xebb3
 @v	3(šaru@c)
 @v	3(šarʾu@c)
 @end sign
@@ -30537,7 +30535,7 @@
 @v	4(šaru)
 @v	4(šarʾu)
 @form 4(ŠARU@c)
-@list U+ebb5
+@inote @ucode	xebb5
 @v	4(šaru@c)
 @v	4(šarʾu@c)
 @end sign
@@ -30551,7 +30549,7 @@
 @v	5(šaru)
 @v	5(šarʾu)
 @form 5(ŠARU@c)
-@list U+ebb6
+@inote @ucode	xebb6
 @v	5(šaru@c)
 @v	5(šarʾu@c)
 @end sign
@@ -30563,7 +30561,7 @@
 @v	3(šaru)@v
 @v	3(šarʾu)@v
 @form 3(ŠARU@c)@v
-@list U+ebb4
+@inote @ucode	xebb4
 @v	3(šaru@c)@v
 @v	3(šarʾu@c)@v
 @end sign
@@ -30620,10 +30618,10 @@
 @list U+12408
 @v	3(diš)
 @form 3(DIŠ@c)
-@list U+ebc4
+@inote @ucode	xebc4
 @v	3(diš@c)
 @form 3(DIŠ@c)@v
-@list U+ebc5
+@inote @ucode	xebc5
 @v	3(diš@c)@v
 @end sign
 
@@ -30640,7 +30638,7 @@
 @v	4(bariga)
 @inote #old nilimmu
 @form 4(DIŠ@c)
-@list U+ebc6
+@inote @ucode	xebc6
 @v	4(barig@c)
 @v	4(bariga@c)
 @v	4(diš@c)
@@ -30800,7 +30798,7 @@
 @list U+12458
 @v	1(eše₃)
 @form 1(EŠE₃@c)
-@list U+ebc7
+@inote @ucode	xebc7
 @v	eše₃@c
 @v	1(eše₃@c)
 @end sign
@@ -30813,7 +30811,7 @@
 @list U+12459
 @v	2(eše₃)
 @form 2(EŠE₃@c)
-@list U+ebc8
+@inote @ucode	xebc8
 @v	2(eše₃@c)
 @end sign
 
@@ -30832,7 +30830,7 @@
 @v	1(ŋeš₂)
 @form GEŠ₂@c
 @list RSP025
-@list U+eb96
+@inote @ucode	xeb96
 @v	geš₂@c
 @v	ŋeš₂@c
 @v	1(geš₂@c)
@@ -30852,7 +30850,7 @@
 @v	2(geš₂)
 @v	2(ŋeš₂)
 @form 2(GEŠ₂@c)
-@list U+eb97
+@inote @ucode	xeb97
 @v	2(geš₂@c)
 @end sign
 
@@ -30863,10 +30861,10 @@
 @v	3(geš₂)
 @v	3(ŋeš₂)
 @form 3(GEŠ₂@c)
-@list U+eb98
+@inote @ucode	xeb98
 @v	3(geš₂@c)
 @form 3(GEŠ₂@c)@v
-@list U+eb99
+@inote @ucode	xeb99
 @v	3(geš₂@c)@v
 @end sign
 
@@ -30877,10 +30875,10 @@
 @v	4(geš₂)
 @v	4(ŋeš₂)
 @form 4(GEŠ₂@c)
-@list U+eb9a
+@inote @ucode	xeb9a
 @v	4(geš₂@c)
 @form 4(GEŠ₂@c)@v
-@list U+eb9b
+@inote @ucode	xeb9b
 @v	4(geš₂@c)@v
 @end sign
 
@@ -30891,7 +30889,7 @@
 @v	5(geš₂)
 @v	5(ŋeš₂)
 @form 5(GEŠ₂@c)
-@list U+eb9c
+@inote @ucode	xeb9c
 @v	5(geš₂@c)
 @end sign
 
@@ -30902,7 +30900,7 @@
 @v	6(geš₂)
 @v	6(ŋeš₂)
 @form 6(GEŠ₂@c)
-@list U+eb9d
+@inote @ucode	xeb9d
 @v	6(geš₂@c)
 @end sign
 
@@ -30913,7 +30911,7 @@
 @v	7(geš₂)
 @v	7(ŋeš₂)
 @form 7(GEŠ₂@c)
-@list U+eb9e
+@inote @ucode	xeb9e
 @v	7(geš₂@c)
 @end sign
 
@@ -30924,7 +30922,7 @@
 @v	8(geš₂)
 @v	8(ŋeš₂)
 @form 8(GEŠ₂@c)
-@list U+eb9f
+@inote @ucode	xeb9f
 @v	8(geš₂@c)
 @end sign
 
@@ -30935,7 +30933,7 @@
 @v	9(geš₂)
 @v	9(ŋeš₂)
 @form 9(GEŠ₂@c)
-@list U+eba0
+@inote @ucode	xeba0
 @v	9(geš₂@c)
 @end sign
 
@@ -30952,7 +30950,7 @@
 @v	deššuₓ
 @form GEŠU@c
 @list RSP027
-@list U+eba1
+@inote @ucode	xeba1
 @v	gešʾu@c
 @v	ŋešʾu@c
 @v	1(gešu@c)
@@ -30973,7 +30971,7 @@
 @v	2(gešu)
 @v	2(gešʾu)
 @form 2(GEŠU@c)
-@list U+eba2
+@inote @ucode	xeba2
 @v	2(gešu@c)
 @v	2(gešʾu@c)
 @end sign
@@ -30985,11 +30983,11 @@
 @v	3(gešu)
 @v	3(gešʾu)
 @form 3(GEŠU@c)
-@list U+eba3
+@inote @ucode	xeba3
 @v	3(gešu@c)
 @v	3(gešʾu@c)
 @form 3(GEŠU@c)@v
-@list U+eba4
+@inote @ucode	xeba4
 @v	3(gešu@c)@v
 @v	3(gešʾu@c)@v
 @end sign
@@ -31001,7 +30999,7 @@
 @v	4(gešu)
 @v	4(gešʾu)
 @form 4(GEŠU@c)
-@list U+eba5
+@inote @ucode	xeba5
 @v	4(gešu@c)
 @v	4(gešʾu@c)
 @form 4(GEŠU@c)@v
@@ -31016,7 +31014,7 @@
 @v	5(gešu)
 @v	5(gešʾu)
 @form 5(GEŠU@c)
-@list U+eba6
+@inote @ucode	xeba6
 @v	5(gešu@c)
 @v	5(gešʾu@c)
 @end sign
@@ -31040,11 +31038,11 @@
 @v	4(u)
 @v	4(bur₃)
 @form 4(U@c)
-@list U+eb8f
+@inote @ucode	xeb8f
 @v	4(u@c)
 @v	4(bur₃@c)
 @form 4(U@c)@v
-@list U+eb90
+@inote @ucode	xeb90
 @v	4(u@c)@v
 @end sign
 
@@ -31073,7 +31071,7 @@
 @v	5(u)
 @v	5(bur₃)
 @form 5(U@c)
-@list U+eb91
+@inote @ucode	xeb91
 @v	5(u@c)
 @v	5(bur₃@c)
 @end sign
@@ -31095,7 +31093,7 @@
 @v	6(u)
 @v	6(bur₃)
 @form 6(U@c)
-@list U+eb92
+@inote @ucode	xeb92
 @v	6(u@c)
 @end sign
 
@@ -31109,7 +31107,7 @@
 @v	7(u)
 @v	7(bur₃)
 @form 7(U@c)
-@list U+eb93
+@inote @ucode	xeb93
 @v	7(u@c)
 @end sign
 
@@ -31123,7 +31121,7 @@
 @v	8(bur₃)
 @v	ussuₓ
 @form 8(U@c)
-@list U+eb94
+@inote @ucode	xeb94
 @v	8(u@c)
 @end sign
 
@@ -31137,7 +31135,7 @@
 @v	9(u)
 @v 	9(bur₃)
 @form 9(U@c)
-@list U+eb95
+@inote @ucode	xeb95
 @v	9(u@c)
 @end sign
 
@@ -31235,22 +31233,22 @@
 
 @sign	P₅
 @uphase	1.1
-@uname	CUNEIFORM PUNCTUATION SIGN DIAGONAL QUADCOLON
-@list U+E100
+@inote @uname	CUNEIFORM PUNCTUATION SIGN DIAGONAL QUADCOLON
+@inote @ucode	xE100
 @v	::
 @end sign
 
 @sign	|NINDA₂×ŠUŠANA@c|
 @list LAK106
 @list RSP106
-@list U+ebd0
+@inote @ucode	xebd0
 @v	1/3(diš@c)@v
 @end sign
 
 @sign	|NINDA₂×ŠANABI@c|
 @list LAK107
 @list RSP107
-@list U+ebd1
+@inote @ucode	xebd1
 @v	2/3(diš@c)@v
 @end sign
 

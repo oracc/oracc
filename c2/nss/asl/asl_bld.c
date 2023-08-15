@@ -467,6 +467,9 @@ asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
     asl_add_list(locp, sl, n, literal, query, minus_flag);
   else
     asl_add_list(locp, sl, n, literal, query, minus_flag);
+
+  if ('U' == n[0] && '+' == n[1])
+    asl_bld_ucode(locp, sl, n);
 }
 
 /* m for meta */

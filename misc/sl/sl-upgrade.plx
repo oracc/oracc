@@ -83,8 +83,12 @@ while (<>) {
 	if (/^\@ucode\s+(.*?)\s*$/) {
 	    my $u = $1;
 	    if ($u =~ tr/././ == 0) {
-		$u =~ s/^x//;
-		$_ = "\@list U+$u";
+		if ($u =~ /^x[eE]/) {
+		    s/^/\@inote /;
+		} else {
+		    $u =~ s/^x//;
+		    $_ = "\@list U+$u";
+		}
 	    } else {
 		s/ucode/usequence/;
 	    }
