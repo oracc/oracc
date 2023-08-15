@@ -52,8 +52,8 @@ L		=?
 COMPOUND	"|"([a-zA-Z\x80-\xff]|[@~().%&+()0-9])+"|"{Q}{L}
 GRAPHEME 	((({G}|{N}){M})|"15"){Q}{L}
 PHONGRAPH	"/"{G}"/"
-LISTNAME	([A-Z]+)
-LISTNUM		([A-Z]+[0-9]+[()A-Z0-9a-z_'"+*/]*){M}{Q}{L}
+LISTNAME	(U\+|[A-Z]+)
+LISTNUM		((U\+|[A-Z]+)[0-9]+[()A-Z0-9a-z_'"+*/]*){M}{Q}{L}
 NUMGRAPH	[0-9nN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}{Q}{L}
 FRACTION	[0-9]\/[0-9]
 PUNCT		("*"|:['".:]?|"/"){Q}{L}
@@ -102,7 +102,7 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 ^@lit/[ \t]+	       		{ Tcmd(LIT,S); }
 ^@note/[ \t]+       		{ Tcmd(NOTE,S); }
 ^@uchar/[ \t]+			{ Tcmd(UCHAR,S); }
-^@ucode/[ \t]+			{ Tcmd(UCODE,S); }
+^@usequence/[ \t]+     		{ Tcmd(UCODE,S); }
 ^@uname/[ \t]+			{ Tcmd(UNAME,S); }
 ^@unote/[ \t]+   		{ Tcmd(UNOTE,S); }
 ^@uphase/[ \t]+			{ Tcmd(UPHASE,S); }

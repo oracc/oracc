@@ -29,7 +29,7 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
   const char *str, *top;
   const char *save = (ccp)pool_copy((uccp)in, sl->p);
   char buf[32], *end, *ins, *ins_base;
-  int status = 0;
+  int status = 0, hexflag = 0;
   List *nlist = NULL;
   
   if (strlen(name) > 6)
@@ -46,11 +46,20 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
       if (strchr(str, '-'))
 	{
 	  int rb, re;
-	  rb = strtol(str,&end, 10);
+	  if ('0' == str[0] && 'x' == str[1])
+	    {
+	      rb = strtol(str, &end, 16);
+	      hexflag = 1;
+	    }
+	  else
+	    rb = strtol(str, &end, 10);
 	  if (end && '-' == *end)
 	    {
 	      str = end + 1;
-	      re = strtol(str, &end, 10);
+	      if ('0' == str[0] && 'x' == str[1])
+		re = strtol(str, &end, 16);
+	      else
+		re = strtol(str, &end, 10);
 	      if (end)
 		{
 		  int x, pow10 = 10;
@@ -78,9 +87,18 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
 			  pow10 *= 10;
 			  pad[strlen(pad)-1] = '\0';
 			}
-		      n = snprintf(l, 0, "%s%s%d", name, pad, x);
-		      l = (char*)pool_alloc(n+1, sl->p);
-		      snprintf(l, n+1, "%s%s%d", name, pad, x);
+		      if (hexflag)
+			{
+			  n = snprintf(l, 0, "%s%X", name, x);
+			  l = (char*)pool_alloc(n+1, sl->p);
+			  snprintf(l, n+1, "%s%X", name, x);
+			}
+		      else
+			{
+			  n = snprintf(l, 0, "%s%s%d", name, pad, x);
+			  l = (char*)pool_alloc(n+1, sl->p);
+			  snprintf(l, n+1, "%s%s%d", name, pad, x);
+			}
 		      asl_bld_token(locp, sl, (ucp)l, 1);
 		      list_add(nlist, l);
 		    }
