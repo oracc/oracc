@@ -173,6 +173,7 @@ sx_unicode(struct sl_signlist *sl)
  *   - remove enclosing |...|
  *   - map . to , 
  *   - map + to ;
+ *   - map ( and ) to < and >
  *   - adding a ',' at beginning and end
  *
  * The mangled string is added as a hash key to usigns--there's no
@@ -210,6 +211,16 @@ sx_unicode_rx_mangle(struct sl_signlist *sl, const char *g)
 	}
       else if ('|' == *src)
 	++src;
+      else if ('(' == *src)
+	{
+	  *dst++ = '<';
+	  ++src;
+	}
+      else if (')' == *src)
+	{
+	  *dst++ = '>';
+	  ++src;
+	}
       else
 	*dst++ = *src++;
     }
