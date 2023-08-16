@@ -121,11 +121,12 @@ struct sl_any_note
 
 struct sl_unicode
 {
-  const unsigned char *uchar;
-  const char *ucode;
-  const char *uphase;
-  const char *uname;
-  List *unotes;
+  const unsigned char *utf8; 	/* the character(s) in UTF-8 */
+  const char *uhex;		/* the U+HHHHH code for an encoded character */
+  const char *useq;		/* for characters not encoded as singletons, a sequence of hex values to render the sign name */
+  const char *urev; 		/* the Unicode revision */
+  const char *uname;		/* the Unicode name */
+  List *unotes;			/* Unicode-related notes on the character and possibly related characters */
 };
 
 /* List and value data for @form insts */
@@ -166,10 +167,11 @@ struct sl_inst
   Boolean inherited;
   Boolean literal;
   Boolean query;
-  Boolean uchar;
-  Boolean ucode;
+  Boolean utf8;
+  Boolean uhex;
+  Boolean useq;
   Boolean uname;
-  Boolean uphase;
+  Boolean urev;
 };
 
 struct sl_listdef
@@ -268,10 +270,6 @@ struct sl_sign
 			   once) so printed xrefs should use
 			   sign->xref->form->owners which should also
 			   be sorted before output */
-  Boolean uchar;
-  Boolean ucode;
-  Boolean uname;
-  Boolean uphase;
   Boolean fake;
   Boolean compound_only;
   enum sx_tle type;
@@ -358,11 +356,12 @@ extern void asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned 
 extern void asl_bld_term(struct sl_signlist *);
 extern void asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t, int literal);
 
-extern void asl_bld_ucode(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
-extern void asl_bld_uphase(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
-extern void asl_bld_unote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_uhex(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_urev(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_useq(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_utf8(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_uname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
-extern void asl_bld_uchar(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_unote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 			  const char *lang, const unsigned char *ref, int atf_flag, int minus_flag);
 extern void asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s);

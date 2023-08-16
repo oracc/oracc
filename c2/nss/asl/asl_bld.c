@@ -464,14 +464,17 @@ asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
   check_flags((char*)n, &query, &literal);
   
   asl_bld_token(locp, sl, (ucp)n, 1);
-
+  
   if (sl->curr_form)
     asl_add_list(locp, sl, n, literal, query, minus_flag);
   else
     asl_add_list(locp, sl, n, literal, query, minus_flag);
 
+  /* U+ list entries are both lists and uhex; they are specialcased on
+     output and emitted only as @list U+ but within the Unicode
+     block */
   if ('U' == n[0] && '+' == n[1])
-    asl_bld_ucode(locp, sl, n);
+    asl_bld_uhex(locp, sl, n);
 }
 
 /* m for meta */
@@ -482,12 +485,7 @@ asl_bld_note(Mloc *locp, struct sl_signlist *sl, const char *tag, const char *tx
   if (sl->curr_inst)
     {
       struct sl_note *n = memo_new(sl->m_notes);
-      if (*tag == 'n')
-	n->tag = "note";
-      else if (*tag == 'i')
-	n->tag = "inote";
-      else
-	n->tag = "lit";
+      n->tag = tag; /* tag is a constant from asl.y */
       n->txt = txt;
       if (!sl->curr_inst->notes)
 	sl->curr_inst->notes = list_create(LIST_SINGLE);
@@ -651,19 +649,27 @@ asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int
 }
 
 void
-asl_bld_uchar(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+asl_bld_uhex(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_singleton_string(locp, t, "uchar",
-			   sl->curr_form ? &sl->curr_form->u.f->U.uchar : &sl->curr_sign->U.uchar,
-			   sl->curr_form ? &sl->curr_form->uchar : &sl->curr_sign->uchar);
+  asl_bld_singleton_string(locp, t, "uhex",
+			   sl->curr_form ? (uccp*)&sl->curr_form->u.f->U.uhex : (uccp*)&sl->curr_sign->U.uhex,
+			   sl->curr_form ? &sl->curr_form->uhex : &sl->curr_sign->inst->uhex);
 }
 
 void
-asl_bld_ucode(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+asl_bld_utf8(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_singleton_string(locp, t, "ucode",
-			   (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.ucode : &sl->curr_sign->U.ucode),
-			   sl->curr_form ? &sl->curr_form->ucode : &sl->curr_sign->ucode);
+  asl_bld_singleton_string(locp, t, "utf8",
+			   sl->curr_form ? &sl->curr_form->u.f->U.utf8 : &sl->curr_sign->U.utf8,
+			   sl->curr_form ? &sl->curr_form->utf8 : &sl->curr_sign->inst->utf8);
+}
+
+void
+asl_bld_useq(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+  asl_bld_singleton_string(locp, t, "useq",
+			   (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.useq : &sl->curr_sign->U.useq),
+			   sl->curr_form ? &sl->curr_form->useq : &sl->curr_sign->inst->useq);
 }
 
 void
@@ -671,7 +677,7 @@ asl_bld_uname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
   asl_bld_singleton_string(locp, t, "uname",
 			   (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.uname : &sl->curr_sign->U.uname),
-			   sl->curr_form ? &sl->curr_form->uname : &sl->curr_sign->uname);
+			   sl->curr_form ? &sl->curr_form->uname : &sl->curr_sign->inst->uname);
 }
 
 void
@@ -681,11 +687,11 @@ asl_bld_unote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 }
 
 void
-asl_bld_uphase(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+asl_bld_urev(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_singleton_string(locp, t, "uphase",
-			   (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.uphase : &sl->curr_sign->U.uphase),
-			   sl->curr_form ? &sl->curr_form->uphase : &sl->curr_sign->uphase);
+  asl_bld_singleton_string(locp, t, "urev",
+			   (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.urev : &sl->curr_sign->U.urev),
+			   sl->curr_form ? &sl->curr_form->urev : &sl->curr_sign->inst->urev);
 }
 
 void

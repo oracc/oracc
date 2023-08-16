@@ -348,8 +348,8 @@ sx_marshall(struct sl_signlist *sl)
 		  if (sl->signs[i]->inst->valid && sl->signs[i]->type != sx_tle_lref && sl->signs[i]->type != sx_tle_sref)
 		    mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
 		}
-	      else if (sl->signs[i]->U.ucode)
-		hash_add(sl->oid2ucode, (uccp)sl->signs[i]->oid, (ucp)sl->signs[i]->U.ucode);
+	      else if (sl->signs[i]->U.uhex)
+		hash_add(sl->oid2ucode, (uccp)sl->signs[i]->oid, (ucp)sl->signs[i]->U.uhex);
 	    }
 	  if (sl->signs[i]->oid)
 	    {
@@ -398,8 +398,8 @@ sx_marshall(struct sl_signlist *sl)
 	    {
 	      if (sl->forms[i]->sign->xref)
 		sl->forms[i]->sign->oid = sl->forms[i]->oid;
-	      if (sl->forms[i]->U.ucode)
-		hash_add(sl->oid2ucode, (uccp)sl->forms[i]->oid, (ucp)sl->forms[i]->U.ucode);
+	      if (sl->forms[i]->U.uhex)
+		hash_add(sl->oid2ucode, (uccp)sl->forms[i]->oid, (ucp)sl->forms[i]->U.uhex);
 	    }
 	  else
 	    {

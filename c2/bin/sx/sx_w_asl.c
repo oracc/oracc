@@ -1,6 +1,5 @@
 #include <signlist.h>
 #include <sx.h>
-#include <xmlify.h>
 
 static sx_signlist_f sx_w_a_signlist;
 static sx_letter_f sx_w_a_letter;
@@ -63,9 +62,13 @@ sx_w_a_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
 	{
 	  struct sl_listdef *ldp = hash_find(sl->listdefs, (uccp)n[i]);
 	  fprintf(f->fp, "@listdef %s %s\n", n[i], ldp->str);
+	  sx_w_a_notes(f, sl, &ldp->inst);
+	  fputc('\n', f->fp);
 	}
+#if 0
       if (nn)
 	fputc('\n', f->fp);
+#endif
     }
 }
 
@@ -136,7 +139,7 @@ sx_w_a_ivalue(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *v,
 static void
 sx_w_a_list(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *l, enum sx_pos_e p)
 {
-  if (sx_pos_inst == p)
+  if (sx_pos_inst == p && strncmp((ccp)l->u.l->name,"U+",2))
     fprintf(f->fp, "@list\t%s%s\n", l->u.l->name, l->query ? "?" : "");
 }
 
@@ -147,7 +150,7 @@ sx_w_a_notes(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip)
     {
       struct sl_note *np;
       for (np = list_first(ip->notes); np; np = list_next(ip->notes))
-	fprintf(f->fp, "@%s\t%s\n", np->tag, xmlify((uccp)np->txt));
+	fprintf(f->fp, "@%s\t%s\n", np->tag, (uccp)np->txt);
     }
 }
 
@@ -216,9 +219,9 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 		}
 	    }
 	}
-      else if (s->u.s->compound_only)
+      else if (s->u.s->type == sx_tle_componly)
 	{
-	  fprintf(f->fp, "@comp\t%s\n", s->u.s->name);
+	  fprintf(f->fp, "@compoundonly\t%s\n", s->u.s->name);
 	}
       else
 	{
@@ -243,7 +246,7 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 }
 
 static void
-sx_w_a_value(struct sx_functions *f, struct sl_signlist *s, struct sl_inst *v, enum sx_pos_e p)
+sx_w_a_value(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *v, enum sx_pos_e p)
 {
   if (sx_pos_inst == p && !v->inherited)
     {
@@ -258,6 +261,7 @@ sx_w_a_value(struct sx_functions *f, struct sl_signlist *s, struct sl_inst *v, e
 	  ref = (ccp)v->ref;
 	}
       fprintf(f->fp, "@v%s\t%s%s%s%s\n", minus, v->u.v->name, query, refspace, ref);
+      /*sx_w_a_notes(f, sl, v);*/
     }
 }
 
@@ -266,12 +270,14 @@ sx_w_a_unicode(struct sx_functions *f, struct sl_signlist *sl, struct sl_unicode
 {
   if (up->uname)
     fprintf(f->fp, "@uname\t%s\n", up->uname);
-  if (up->ucode)
-    fprintf(f->fp, "@useq\t%s\n", up->ucode);
-  if (up->uchar)
-    fprintf(f->fp, "@utf8\t%s\n", up->uchar);
-  if (up->uphase)
-    fprintf(f->fp, "@uphase\t%s\n", up->uphase);
+  if (up->uhex)
+    fprintf(f->fp, "@list\t%s\n", up->uhex);
+  if (up->useq)
+    fprintf(f->fp, "@useq\t%s\n", up->useq);
+  if (up->utf8)
+    fprintf(f->fp, "@utf8\t%s\n", up->utf8);
+  if (up->urev)
+    fprintf(f->fp, "@urev\t%s\n", up->urev);
   if (up->unotes)
     sx_w_a_str_list(f->fp, "unote", up->unotes);
 }

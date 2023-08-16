@@ -47,6 +47,7 @@ sx_w_xml_init(FILE *fp, const char *fname)
   return &sx_w_xml_fncs;
 }
 
+#if 0
 static void
 sx_w_x_et_list(FILE *fp, const char *tag, List *lp)
 {
@@ -54,6 +55,7 @@ sx_w_x_et_list(FILE *fp, const char *tag, List *lp)
   for (s = list_first(lp); s; s = list_next(lp))
     rnvxml_et(tag, NULL, (ccp)xmlify((uccp)s));
 }
+#endif
 
 /* This is the entry point for xml output */
 static void
@@ -369,16 +371,16 @@ sx_w_x_unicode(struct sx_functions *f, struct sl_signlist *sl, struct sl_unicode
 {
   if (up->uname)
     rnvxml_et("sl:uname", NULL, up->uname);
-  if (up->ucode)
+  if (up->uhex || up->useq)
     {
       const char *u;
-      ratts = rnvval_aa("x", "hex", up->ucode, NULL);
-      if (up->uchar)
-	u = (ccp)up->uchar;
+      ratts = rnvval_aa("x", "hex", up->uhex ? up->uhex : up->useq, NULL);
+      if (up->utf8)
+	u = (ccp)up->utf8;
       else
 	u = "";
       rnvxml_et("sl:utf8", ratts, u);
     }
-  if (up->uphase)
-    rnvxml_et("sl:uphase", NULL, up->uphase);
+  if (up->urev)
+    rnvxml_et("sl:urev", NULL, up->urev);
 }

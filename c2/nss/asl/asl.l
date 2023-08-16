@@ -101,11 +101,12 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 ^@inote/[ \t]+       		{ Tcmd(INOTE,S); }
 ^@lit/[ \t]+	       		{ Tcmd(LIT,S); }
 ^@note/[ \t]+       		{ Tcmd(NOTE,S); }
-^@utf8/[ \t]+			{ Tcmd(UCHAR,S); }
-^@useq/[ \t]+     		{ Tcmd(UCODE,S); }
+^@utf8/[ \t]+			{ Tcmd(UTF8,S); }
+^@uhex/[ \t]+			{ mesg_vwarning(curraslfile, asllineno, "[asl] '@uhex' should not appear in a signlist; say @list U+HHHHH"); }
+^@useq/[ \t]+     		{ Tcmd(USEQ,S); }
 ^@uname/[ \t]+			{ Tcmd(UNAME,S); }
 ^@unote/[ \t]+   		{ Tcmd(UNOTE,S); }
-^@uphase/[ \t]+			{ Tcmd(UPHASE,S); }
+^@urev/[ \t]+			{ Tcmd(UREV,S); }
 ^@fake[ \t]+1[ \t]*/\n		{ return FAKE; }
 ^@lref/[ \t]+			{ atcmd(LREF,0); }
 ^@sref/[ \t]+			{ atcmd(SREF,0); }

@@ -96,6 +96,7 @@ while (<>) {
 	    }
 	}
 	s/uchar/utf8/;
+	s/uphase/urev/;
 	
 	s/\?ₓ/ₓ?/;
 	

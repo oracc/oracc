@@ -214,10 +214,12 @@ sx_s_str(FILE *fp, const char *tag, const unsigned char *s)
 static void
 sx_s_unicode(FILE *fp, struct sl_unicode *up)
 {
-  if (up->ucode)
-    sx_s_str(fp, "ucode", (uccp)up->ucode);
-  if (up->uchar)
-    sx_s_str(fp, "uchar", (uccp)up->uchar);
+  if (up->uhex)
+    sx_s_str(fp, "ucode", (uccp)up->uhex);
+  else if (up->useq)
+    sx_s_str(fp, "ucode", (uccp)up->useq);
+  if (up->utf8)
+    sx_s_str(fp, "uchar", (uccp)up->utf8);
 }
 
 static void

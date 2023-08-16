@@ -31,8 +31,8 @@ int minus_flag = 0;
 		GNAME GVALUE GVALUEX GOESTO
 		GBAD ATF LANG V VREF LIST LISTNUM
 		INOTE LIT NOTE TEXT END EBAD EFORM ESIGN
-		UCHAR UCODE UPHASE UNAME UNOTE SIGNLIST
-		LISTDEF LISTNAME LREF SREF
+		UREV USEQ UTF8 UNAME UNOTE 
+		SIGNLIST LISTDEF LISTNAME LREF SREF
 
 %nterm  <text>  anynote atftoken lang longtext token vref
 
@@ -157,32 +157,33 @@ atend:
 	| END EBAD
 	;
 
+/* There is no atuhex because we use @list U+ */
 atunicode:
-	  atuchar
-	| atucode
+	  aturev
+	| atuseq
+	| atutf8
 	| atuname
 	| atunote
-	| atuphase
 	;
 
-atuchar:
-	  UCHAR TEXT		{ asl_bld_uchar(&@1, curr_asl, (uccp)$2); }
+aturev:
+	  UREV TEXT		{ asl_bld_urev(&@1, curr_asl, (uccp)$2); }
 	;
 
-atucode:
-	  UCODE TEXT		{ asl_bld_ucode(&@1, curr_asl, (uccp)$2); }
+atuseq:
+	  USEQ TEXT		{ asl_bld_useq(&@1, curr_asl, (uccp)$2); }
+	;
+
+atutf8:
+	  UTF8 TEXT		{ asl_bld_utf8(&@1, curr_asl, (uccp)$2); }
 	;
 
 atuname:
-	  UNAME TEXT		{ asl_bld_uname(&@1, curr_asl, (uccp)$2); }
-	;
-
-atunote:
-	  UNOTE	TEXT		{ asl_bld_unote(&@1, curr_asl, (uccp)$2); }
+	  UNAME	TEXT		{ asl_bld_uname(&@1, curr_asl, (uccp)$2); }
         ;
 
-atuphase:
-	  UPHASE TEXT		{ asl_bld_uphase(&@1, curr_asl, (uccp)$2); }
+atunote:
+	  UNOTE TEXT		{ asl_bld_unote(&@1, curr_asl, (uccp)$2); }
 	;
 
 atmeta:
@@ -190,9 +191,9 @@ atmeta:
         ;
 
 anynote:
-	  INOTE
-	| LIT
-	| NOTE
+	  INOTE			{ $$ = "inote"; }
+	| LIT			{ $$ = "lit"; }
+	| NOTE			{ $$ = "note"; }
         ;
 
 lang:
