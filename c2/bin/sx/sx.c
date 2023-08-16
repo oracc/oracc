@@ -26,6 +26,7 @@ int listdef_check = 0;
 int sll_output = 0;
 int sortcode_output = 0;
 int tree_output = 0;
+int unicode_table = 0;
 int xml_output = 0;
 
 extern int asl_raw_tokens; /* ask asl to produce list of @sign/@form/@v tokens */
@@ -52,7 +53,7 @@ main(int argc, char * const*argv)
   
   gsort_init();
   
-  options(argc, argv, "acijlm:MsStTx");
+  options(argc, argv, "acijlm:MsStTux");
   asltrace = asl_flex_debug = trace_mode;
 
   if (argv[optind])
@@ -76,9 +77,28 @@ main(int argc, char * const*argv)
     {
       sx_marshall(sl);
 
+      if (unicode_table)
+	{
+	  FILE *f = fopen("sx-unicode.tab","w");
+	  if (f)
+	    {
+	      sx_unicode_table(f, sl);
+	      fclose(f);
+	    }
+	  else
+	    fprintf(stderr, "sx: unable to dump list data; can't write sx-listdata.out\n");
+	}
+      
       if (list_dump)
 	{
-	  sx_list_dump(sl);
+	  FILE *lfp = fopen("sx-listdata.out","w");
+	  if (lfp)
+	    {
+	      sx_list_dump(lfp, sl);
+	      fclose(lfp);
+	    }
+	  else
+	    fprintf(stderr, "sx: unable to dump list data; can't write sx-listdata.out\n");
 	}
       
       if (listdef_check)
@@ -147,6 +167,9 @@ opts(int opt, char *arg)
       break;
     case 'T':
       tree_output = 1;
+      break;
+    case 'u':
+      unicode_table = 1;
       break;
     case 'x':
       xml_output = 1;

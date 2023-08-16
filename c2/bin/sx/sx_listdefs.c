@@ -93,7 +93,7 @@ sx_listdefs(struct sl_signlist *sl, const char *listnames)
 }
 
 void
-sx_list_dump(struct sl_signlist *sl)  
+sx_list_dump(FILE *f, struct sl_signlist *sl)  
 {
   const char **n = hash_keys(sl->listdefs);
   int i;
@@ -105,6 +105,6 @@ sx_list_dump(struct sl_signlist *sl)
 	sx_listdefs_sort(ldp);
       int j;
       for (j = 0; ldp->names[j]; ++j)
-	fprintf(stderr, "%s\n", ldp->names[j]);
+	fprintf(f, "%s\n", ldp->names[j]);
     }
 }
