@@ -52,13 +52,78 @@ sx_unicode(struct sl_signlist *sl)
   fputc('\n', stderr);
 #endif
 
-  pcre2_code*cpat = pcre2_compile((PCRE2_SPTR)pat, strlen((ccp)pat),
-				  PCRE2_UTF, NULL, NULL, NULL);
+  int errornumber;
+  PCRE2_SIZE erroroffset;
+  pcre2_code*cpat = pcre2_compile((PCRE2_SPTR)pat, PCRE2_ZERO_TERMINATED,
+				  0, &errornumber, &erroroffset, NULL);
   if (cpat)
     {
+      int rc;
+      pcre2_match_data *match_data;
+      fprintf(stderr, "sx: pcre2_compile OK\n");
+      match_data = pcre2_match_data_create_from_pattern(re, NULL);
+
+      rc = pcre2_match(
+		       cpat,                   /* the compiled pattern */
+		       subject,              /* the subject string */
+		       subject_length,       /* the length of the subject */
+		       0,                    /* start at offset 0 in the subject */
+		       0,                    /* default options */
+		       match_data,           /* block for storing the result */
+		       NULL);                /* use default match context */
+      
+      /* Matching failed: handle error cases */
+      
+      if (rc < 0)
+	{
+	  switch(rc)
+	    {
+	    case PCRE2_ERROR_NOMATCH: printf("No match\n"); break;
+	      /*                                                                                                                           
+	       * Handle other special cases if you like                                                                                       
+	       */
+	    default: printf("Matching error %d\n", rc); break;
+	    }
+	  pcre2_match_data_free(match_data);   /* Release memory used for the match */
+	  pcre2_code_free(re);                 /* data and the compiled pattern. */
+	  return 1;
+	}
+      
+      /* Match succeded. Get a pointer to the output vector, where string offsets are                                                  
+	 stored. */
+      PCRE2_SIZE *ovector = pcre2_get_ovector_pointer(match_data);
+      printf("\nMatch succeeded at offset %d\n", (int)ovector[0]);
+
+      /*************************************************************************                                                       
+       * We have found the first match within the subject string. If the output *                                                       
+       * vector wasn't big enough, say so. Then output any substrings that were *                                                       
+       * captured.                                                              *                                                       
+       *************************************************************************/
+      
+      /* The output vector wasn't big enough. This should not happen, because we used                                                  
+	 pcre2_match_data_create_from_pattern() above. */
+      
+      if (rc == 0)
+	printf("ovector was not big enough for all the captured substrings\n");
+      
+      /* Show substrings stored in the output vector by number. Obviously, in a real                                                   
+	 application you might want to do things other than print them. */
+      
+      for (i = 0; i < rc; i++)
+	{
+	  PCRE2_SPTR substring_start = subject + ovector[2*i];
+	  size_t substring_length = ovector[2*i+1] - ovector[2*i];
+	  fprintf(stderr, "%2d: %.*s\n", i, (int)substring_length, (char *)substring_start);
+	}
     }
   else
-    fprintf(stderr, "sx: pcre2_compile failed\n");
+    {
+      fprintf(stderr, "sx: pcre2_compile failed\n");
+      PCRE2_UCHAR buffer[256];
+      pcre2_get_error_message(errornumber, buffer, sizeof(buffer));
+      fprintf(stderr, "PCRE2 compilation failed at offset %d: %s\n", (int)erroroffset,
+	     buffer);
+    }
   
   /* check the compounds by building ucode sequences for them:
    *   if there is one in the signlist already, check that the newly built ucode is the same
