@@ -28,15 +28,18 @@ sx_unicode(struct sl_signlist *sl)
   struct sl_inst *ip;
   for (ip = list_first(sl->compounds); ip; ip = list_next(sl->compounds))
     {
-#if 0
       unsigned const char *name = ip->type == 's' ? ip->u.s->name : ip->u.f->name;
-      struct sl_token *tp = hash_find(sl->htoken, name);
-      if (tp->gsig)
+      struct sl_unicode *Up = ip->type == 's' ? &ip->u.s->U : &ip->u.f->U;
+      if (!Up->uhex)
 	{
-	  fprintf(stderr, "sx_unicode: building @ucode for %s from sig %s\n", name, tp->gsig);
+	  /*struct sl_token *tp = hash_find(sl->htoken, name);*/
+	  if (Up->useq)
+	    fprintf(stderr, "sx_unicode: checking @useq %s for %s\n", Up->useq, name);
+	  else
+	    fprintf(stderr, "sx_unicode: building @useq for %s\n", name);
 	}
-#endif
     }
+
   for (i = 0; i < sl->nsigns; ++i)
     {
       if (!sl->signs[i]->U.utf8)
