@@ -1,40 +1,72 @@
 @signlist ogsl
 
-@listdef  ABZ 1-10
+@listdef  ABZ 1-598
 @lit	R. Borger, Assyrisch-babylonische Zeichenliste (AOAT 33; Neukirchen-Vluyn 1978)
 
-@listdef  BAU 1-10
+@listdef  ABZL 1-480 021a 021b 112a 112b 207a 207a/207b 221a 221b 227a 227b 239a 239b 291a 291b 401a 401b
+@lit	C. Mittermayer, Albtabylonishe Zeichenliste der sumerisch-literarischen Texte. (Fribourg, 2006).
+
+@listdef  BAU 1-420 082a 082b 103a 103c 146b 161a 161b 161c 198a 334bis 385a 385b 385c 386a 386b 387a 417a
 @lit	E. Burrows, Archaic Texts (UET 2; London 1935)
+@inote To be added: Appendices I-III lettered signs as, e.g., BAU000I.A, BAU00II.A, BAU0III.A, etc.
 
-@listdef  DSL 1-10
-@lit	A. Deimel, Šumerisches Lexikon
+@listdef  SLLHA 1-598 002a 007v 015x 016a 018v 018x 022x 022xn2 023n 024x 025b 025n 028n 031n1 031x
+	  032n1 032n2 032n3 033n 035n 036a 043v 046xxx 049x 052xv 054v 060+002 060+060 060+212 060+308 060a 060x
+	  063_27n 063a 063c 063d 066a 066b 066c 071n 072a 073av 074+471 074_182 074_238 074_335 085n2(v)
+	  087a 087c 087cn 092a 092b 092c 096a 099a1 099b1 099b2 099b3 099c 103v 104_6 105n2 105n3 107n
+	  115n 115n2 116n 120n 121_1 121_6 121_7 121_8 121n 122a 122b 122c 122d 124_42 124a 124n2
+	  125a 125b 125c 125d 125e 125f 125n 125v 126bv 126cv 126dv 126fv 131a 132n1 135a 139n2
+	  141a 142a 144f 144n 150v1 150v2 151v 151vn 152_14 152_16 152_4 152_4v 152_8 152_8b 152_9
+	  154_1n 165+165n1 165a 165b 165n1 165v 166+371 166+398 166a 166b 166e 166ee 166een 166f
+	  170an 177n 178aa 181n 181v 186a 186b 187v1 187v5 190an4 190kv 198a 200an 200c 200d 200v
+	  204a 204b 204c 204d 204n 204v 205a 206a 210a 211b 211n 211n2 214a 214c 219x 229n 231n2(v)
+	  233_22 244v 250b 250c 250d 250i 252_1 252_2 259n 261a 282a 288b 288c 288sub 292a 294a 294b 294d
+	  295k 295l 295m 296_1 296_2 296n2 299n 301n 308n 308n2 317a 319n 322n 325a 325an 325b 326a 326v
+	  329a 330_0 330_0n 330_6 330_60 330_60n2 330_60v 330_7 330_7a 330_7an1 330_7an2 330_7an3v
+	  330_7an4 330_7b 330_7bn 330_7c 330_7cn 330_7dn 330_8n 331a 331b 331c 331d 337xn1 337xx
+	  338n1 338n2 340v 341v 343+091 350_8 354b 354bv 359n1 361n 364n 366_87 371a 371n3 374_81 374_81n1
+	  375_45 375_46 376x 377n1 378an 379_2 382v 383n10(v) 383n2(v) 383n3(v) 383n4(v) 383n5(v) 383n6(v)
+	  383n7(v) 383n8(v) 383n9(v) 384a 384n 385n 386n 394b 394bx 394bxn 394c 394cxxx 394d 394d+411 394dn
+	  394dn2 394e 394en 395an 395v 396n3 398+166 398_64 398_72 399_51 399xn 399xx 404x_2 405v2 406v2
+	  408v 409a 409b 409c 409d 409e 411_167a 411_182a 415a 420_8 421a 421n2 434a 444n2 447a 449_145
+	  449_244 449_46 452v1 456a 459a 459an2 460n 460v 461x 462v 484a 488b 495a 499n 499v 515_9 529v2
+	  545a 546_6 551v 554n 555B 566b 575a 575b 580a 585a 585c 598a 598b 598c 598d 598e 598en 598n1 598n2
+@lit	A. Deimel, Šumerisches Lexikon [SL]
+@lit	R. Labat, Manuel d'épigraphie akkadienne (6th ed. Paris 1988) [L]
+@lit	F. Ellermeier and M. Studt, Handbuch Assur [HA; via https://en.wikipedia.org/wiki/List_of_cuneiform_signs]
 
-@listdef  HZL 1-10
+@listdef ELLES 1-397 006b 033a 033b 065a 195a 241a 244a 307b 317a 362a
+@lit	P. Mander, "Appendix E. Lista dei Segni dei testi lessicali di Ebla".
+	Pp. 285-382 in G. Pettinato, Testi Lessicali Monolingui della Biblioteca L. 2769 (MEE 3; Napoli 1981)
+
+@listdef  HZL 1-375 244A 256(1) 256(2)
 @lit	C. Ruster and E. Neu, Hethitisches Zeichenlexikon (Harrassowitz Verlag 1989)
 
-@listdef  KWU 1-10
+@listdef  KWU 1-927 482a 791a 795a
 @lit	N. Schneider, Die Keilschriftzeichen der Wirtschaftsurkunden von Ur III (Rome 1935)
+@inote Numeric signs at end of signlist are unnumbered and thus impractical to reference.
 
-@listdef  LAK 1-10
+@listdef  LAK 1-870 024b 046@v 046a 063b 072b 079a 081a 156b 162a 162b 171@s 207a 248@g 248b
+	  256@g 262@g 278a 278b 283a 304a 309a 340a 340b 350@90 368@s 407b 449b 455a 461a
+	  490@90 497a 497b 503a 503b 672a 672b 709a 709b 772b 784a 791a
 @lit	A. Deimel, Liste der archaischen Keilschriftzeichen (WVDOG 40; Berlin 1922)
 
-@listdef  MEA 1-10
-@lit	R. Labat, Manuel d'épigraphie akkadienne (6th ed. Paris 1988)
-
-@listdef  MZL 1-10
+@listdef  MZL 1-907 113b 115a 115b 146" 146' 146'' 527'
 @lit	R. Borger, Mesopotamisches Zeichenlexikon (AOAT 305; Ugarit-Verlag 2003)
+@inote TO-DO: rationalize primed numbers in OGSL
 
-@listdef  REC 1-10
+@listdef  REC 1-563
 @lit	F. Thureau-Dangin, Recherches sur l'origine de l'écriture cunéiforme (Paris 1898)
 
-@listdef  RSP 1-10
+@listdef  RSP 1-468 019bis 036bis 048bis 178bis 189* 339bis 361bis 380bis 426a 426b 460bis 468bis 468ter
 @lit	Y. Rosengarten, Répertoire commenté des signes présargoniques sumériens de Lagash (Paris 1967)
 
 @listdef U+ 0x12000-0x12399 0x12400-0x1246E 0x12470-0x12474 0x12480-0x12543
 @lit 	The Unicode Standard, v. 15
 
-@listdef  ZATU 1-10
+@listdef  ZATU 1-855
 @lit	M. Green and H. J. Nissen, Zeichenliste der Archaischen Texte aus Uruk (ATU 2; Berlin 1987)
+@inote	TO-DO: check numbers against volume
 
 @sign	A
 @list ELLES393

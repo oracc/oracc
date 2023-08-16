@@ -32,7 +32,7 @@ sx_unicode(struct sl_signlist *sl)
       struct sl_unicode *Up = ip->type == 's' ? &ip->u.s->U : &ip->u.f->U;
       if (!Up->uhex)
 	{
-	  /*struct sl_token *tp = hash_find(sl->htoken, name);*/
+	  struct sl_token *tp = hash_find(sl->htoken, name);
 	  if (Up->useq)
 	    fprintf(stderr, "sx_unicode: checking @useq %s for %s\n", Up->useq, name);
 	  else

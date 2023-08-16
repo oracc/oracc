@@ -42,18 +42,24 @@ char *
 longtext(struct sl_signlist *sl, char *t, char *a)
 {
   static char *n;
+  char *ret = NULL;
   if (a)
     {
       char *n2;
       while ('\t' == *a || ' ' == *a)
 	++a;
-      n2 = (char*)pool_alloc(strlen(t)+strlen(a)+2, sl->p);
+      n2 = (char*)pool_alloc(strlen(t)+strlen(a)+3, sl->p);
       strcpy(n2,n);
       strcat(n2,"\n\t");
       strcat(n2, a);
-      n = n2;
+      ret = n = n2;
     }
   else if (t)
-    n = (char*)pool_copy((uccp)t, sl->p);
-  return n;
+    ret = n = (char*)pool_copy((uccp)t, sl->p);
+  else
+    {
+      ret = n;
+      n = NULL;
+    }
+  return ret;
 }
