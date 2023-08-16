@@ -92,9 +92,10 @@ while (<>) {
 		    $_ = "\@list U+$u";
 		}
 	    } else {
-		s/ucode/usequence/;
+		s/ucode/useq/;
 	    }
 	}
+	s/uchar/utf8/;
 	
 	s/\?ₓ/ₓ?/;
 	

@@ -34,7 +34,7 @@ int minus_flag = 0;
 		UCHAR UCODE UPHASE UNAME UNOTE SIGNLIST
 		LISTDEF LISTNAME LREF SREF
 
-%nterm  <text>  atftoken lang longtext token vref
+%nterm  <text>  anynote atftoken lang longtext token vref
 
 %start fields
 
@@ -166,41 +166,33 @@ atunicode:
 	;
 
 atuchar:
-	  UCHAR TEXT	{ asl_bld_uchar(&@1, curr_asl, (uccp)$2); }
+	  UCHAR TEXT		{ asl_bld_uchar(&@1, curr_asl, (uccp)$2); }
 	;
 
 atucode:
-	  UCODE TEXT	{ asl_bld_ucode(&@1, curr_asl, (uccp)$2); }
+	  UCODE TEXT		{ asl_bld_ucode(&@1, curr_asl, (uccp)$2); }
 	;
 
 atuname:
-	  UNAME TEXT	{ asl_bld_uname(&@1, curr_asl, (uccp)$2); }
+	  UNAME TEXT		{ asl_bld_uname(&@1, curr_asl, (uccp)$2); }
 	;
 
 atunote:
-	  UNOTE	TEXT	{ asl_bld_unote(&@1, curr_asl, (uccp)$2); }
+	  UNOTE	TEXT		{ asl_bld_unote(&@1, curr_asl, (uccp)$2); }
         ;
 
 atuphase:
-	  UPHASE TEXT	{ asl_bld_uphase(&@1, curr_asl, (uccp)$2); }
+	  UPHASE TEXT		{ asl_bld_uphase(&@1, curr_asl, (uccp)$2); }
 	;
 
 atmeta:
-	  atinote
-	| atlit
-	| atnote
-	;
-
-atinote:
-	  INOTE	TEXT	{ asl_bld_inote(&@1, curr_asl, (uccp)$2); }
+	  anynote longtext	{ asl_bld_note(&@1, curr_asl, (ccp)$1, (ccp)$2); }
         ;
 
-atlit:
-	  LIT	TEXT	{ asl_bld_lit(&@1, curr_asl, (uccp)$2); }
-        ;
-
-atnote:
-	  NOTE	TEXT	{ asl_bld_note(&@1, curr_asl, (uccp)$2); }
+anynote:
+	  INOTE
+	| LIT
+	| NOTE
         ;
 
 lang:

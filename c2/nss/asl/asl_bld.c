@@ -48,6 +48,7 @@ asl_bld_init(void)
   sl->m_compounds = memo_init(sizeof(struct sl_compound), 512);
   sl->m_digests = memo_init(sizeof(struct sl_compound_digest), 512);
   sl->m_parents = memo_init(sizeof(struct sl_parents), 1024);
+  sl->m_notes = memo_init(sizeof(struct sl_note), 512);
   sl->p = pool_init();
   sl->compounds = list_create(LIST_SINGLE);
 
@@ -91,6 +92,7 @@ asl_bld_term(struct sl_signlist *sl)
       memo_term(sl->m_compounds);
       memo_term(sl->m_digests);
       memo_term(sl->m_parents);
+      memo_term(sl->m_notes);
       pool_term(sl->p);
       free(sl);
     }
@@ -475,30 +477,24 @@ asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
 /* m for meta */
 
 void
-asl_bld_inote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+asl_bld_note(Mloc *locp, struct sl_signlist *sl, const char *tag, const char *txt)
 {
   if (sl->curr_inst)
-    asl_bld_list_string(t, &sl->curr_inst->n.inotes);
+    {
+      struct sl_note *n = memo_new(sl->m_notes);
+      if (*tag == 'n')
+	n->tag = "note";
+      else if (*tag == 'i')
+	n->tag = "inote";
+      else
+	n->tag = "lit";
+      n->txt = txt;
+      if (!sl->curr_inst->notes)
+	sl->curr_inst->notes = list_create(LIST_SINGLE);
+      list_add(sl->curr_inst->notes, n);
+    }
   else
-    mesg_verr(locp, "misplaced @inote");
-}
-
-void
-asl_bld_lit(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
-{
-  if (sl->curr_inst)
-    asl_bld_list_string(t, &sl->curr_inst->n.lit);
-  else
-    mesg_verr(locp, "misplaced @lit");
-}
-
-void
-asl_bld_note(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
-{
-  if (sl->curr_inst)
-    asl_bld_list_string(t, &sl->curr_inst->n.notes);
-  else
-    mesg_verr(locp, "misplaced @note");
+    mesg_verr(locp, "misplaced @%s", tag);
 }
 
 void

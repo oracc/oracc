@@ -1,5 +1,6 @@
 #include <signlist.h>
 #include <sx.h>
+#include <xmlify.h>
 
 static sx_signlist_f sx_w_a_signlist;
 static sx_letter_f sx_w_a_letter;
@@ -142,14 +143,11 @@ sx_w_a_list(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *l, e
 static void
 sx_w_a_notes(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip)
 {
-  if (!ip->inherited)
+  if (ip && !ip->inherited && ip->notes)
     {
-      if (ip->n.lit)
-	sx_w_a_str_list(f->fp, "lit", ip->n.lit);
-      if (ip->n.notes)
-	sx_w_a_str_list(f->fp, "note", ip->n.notes);
-      if (ip->n.inotes)
-	sx_w_a_str_list(f->fp, "inote", ip->n.inotes);
+      struct sl_note *np;
+      for (np = list_first(ip->notes); np; np = list_next(ip->notes))
+	fprintf(f->fp, "@%s\t%s\n", np->tag, xmlify((uccp)np->txt));
     }
 }
 
@@ -269,9 +267,9 @@ sx_w_a_unicode(struct sx_functions *f, struct sl_signlist *sl, struct sl_unicode
   if (up->uname)
     fprintf(f->fp, "@uname\t%s\n", up->uname);
   if (up->ucode)
-    fprintf(f->fp, "@ucode\t%s\n", up->ucode);
+    fprintf(f->fp, "@useq\t%s\n", up->ucode);
   if (up->uchar)
-    fprintf(f->fp, "@uchar\t%s\n", up->uchar);
+    fprintf(f->fp, "@utf8\t%s\n", up->uchar);
   if (up->uphase)
     fprintf(f->fp, "@uphase\t%s\n", up->uphase);
   if (up->unotes)

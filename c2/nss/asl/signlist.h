@@ -65,6 +65,7 @@ struct sl_signlist
   Memo *m_compounds;
   Memo *m_digests;
   Memo *m_parents;
+  Memo *m_notes;
   Pool *p;
   Mloc mloc;
 };
@@ -97,6 +98,17 @@ struct sl_split_value
   const char *oid;
 };
 
+#if 1
+/* Note information is stored in a single list so that within a note
+   group the order is preserved in identity output; note groups may
+   move within a sign block because they are only attached to items
+   that are pointed to by sl->curr_inst */
+struct sl_note
+{
+  const char *tag;
+  const char *txt;
+};
+#else
 /* each of the lists in sl_any_note is a list of char*; handlers should
    be passed the owner sl_inst so an Mloc is available */
 struct sl_any_note
@@ -105,6 +117,7 @@ struct sl_any_note
   List *notes;
   List *inotes;
 };
+#endif
 
 struct sl_unicode
 {
@@ -142,12 +155,12 @@ struct sl_inst
     struct sl_form *f;
     struct sl_list *l;
     struct sl_value *v; } u;
-  struct sl_lv_data *lv; /* used by form instances */
-  const unsigned char *ref; /* this is inline in the @v */
-  const unsigned char *var; /* The variant code for a form instance, with tilde */
-  struct sl_inst *parent_s; /* The parent sign for a form or value instance; if NULL use parent_f */
-  struct sl_inst *parent_f; /* The parent form for a value instance */
-  struct sl_any_note n;
+  struct sl_lv_data *lv; 	/* used by form instances */
+  const unsigned char *ref; 	/* this is inline in the @v */
+  const unsigned char *var; 	/* The variant code for a form instance, with tilde */
+  struct sl_inst *parent_s; 	/* The parent sign for a form or value instance; if NULL use parent_f */
+  struct sl_inst *parent_f; 	/* The parent form for a value instance */
+  List *notes;			/* A list of struct sl_note * */
   Mloc mloc;
   Boolean valid; /* doesn't have a - after it */
   Boolean inherited;
@@ -354,9 +367,7 @@ extern void asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned cha
 			  const char *lang, const unsigned char *ref, int atf_flag, int minus_flag);
 extern void asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s);
 
-extern void asl_bld_inote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
-extern void asl_bld_lit(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
-extern void asl_bld_note(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_note(Mloc *locp, struct sl_signlist *sl, const char *tag, const char *txt);
 
 extern void asl_bld_end_sign(Mloc *locp, struct sl_signlist *sl);
 

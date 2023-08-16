@@ -29,8 +29,8 @@ sx_unicode(struct sl_signlist *sl)
   for (ip = list_first(sl->compounds); ip; ip = list_next(sl->compounds))
     {
       unsigned const char *name = ip->type == 's' ? ip->u.s->name : ip->u.f->name;
-      struct sl_token *tp = hash_find(sl->htoken, name);
 #if 0
+      struct sl_token *tp = hash_find(sl->htoken, name);
       if (tp->gsig)
 	{
 	  fprintf(stderr, "sx_unicode: building @ucode for %s from sig %s\n", name, tp->gsig);

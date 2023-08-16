@@ -101,8 +101,8 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 ^@inote/[ \t]+       		{ Tcmd(INOTE,S); }
 ^@lit/[ \t]+	       		{ Tcmd(LIT,S); }
 ^@note/[ \t]+       		{ Tcmd(NOTE,S); }
-^@uchar/[ \t]+			{ Tcmd(UCHAR,S); }
-^@usequence/[ \t]+     		{ Tcmd(UCODE,S); }
+^@utf8/[ \t]+			{ Tcmd(UCHAR,S); }
+^@useq/[ \t]+     		{ Tcmd(UCODE,S); }
 ^@uname/[ \t]+			{ Tcmd(UNAME,S); }
 ^@unote/[ \t]+   		{ Tcmd(UNOTE,S); }
 ^@uphase/[ \t]+			{ Tcmd(UPHASE,S); }

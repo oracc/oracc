@@ -219,12 +219,17 @@ sx_w_x_list(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *l, e
 static void
 sx_w_x_notes(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip)
 {
-  if (ip->n.inotes)
-    sx_w_x_et_list(f->fp, "sl:inote", ip->n.inotes);
-  if (ip->n.notes)
-    sx_w_x_et_list(f->fp, "sl:note", ip->n.notes);
-  if (ip->n.notes)
-    sx_w_x_et_list(f->fp, "sl:lit", ip->n.lit);
+  struct sl_note *np;
+  if (ip && ip->notes)
+    for (np = list_first(ip->notes); np; np = list_next(ip->notes))
+      {
+	const char *xtag = "sl:inote";
+	if (*np->tag == 'n')
+	  xtag = "sl:note";
+	else if (*np->tag == 'l')
+	  xtag = "sl:lit";
+	rnvxml_et(xtag, NULL, (ccp)xmlify((uccp)np->txt));
+      }
 }
 
 static void
