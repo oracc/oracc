@@ -8612,6 +8612,8 @@
 @v	šutumₓ
 @form	|U.GUD.GI.NA.AB.U.GUD|
 @inote REMOVE THIS IT IS JUST A TEST OF THE PCRE2IF
+@form	|U.GUD.U.GUD.U.GUD|
+@inote REMOVE THIS IT IS JUST A TEST OF THE PCRE2IF
 @end sign
 
 @sign-	|GI.PAD|
@@ -21576,7 +21578,6 @@
 @list MZL092
 @list ABZL249
 @list SLLHA060
-@list U+1227D
 @v	munuₓ
 @end sign
 
@@ -30127,14 +30128,14 @@
 
 @sign	3(AŠ~a)
 @inote @alias |AŠ&AŠ&AŠ|
-@inote double-encoded as x1203C
+@inote double-encoded as U+1243A 
 @list LAK133
 @list BAU084
 @list MZL505
 @list SLLHA325a
 @urev	1
 @uname	CUNEIFORM NUMERIC SIGN THREE VARIANT FORM ESH16
-@list U+1243A
+@list U+1203C
 @v	3(aš@v)
 @v	3(aš@v@c)
 @v	eš₁₆

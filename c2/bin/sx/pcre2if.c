@@ -42,7 +42,7 @@ pcre2if_set_pattern(unsigned const char *pattern)
 }
 
 List *
-pcre2if_match(pcre2_code *re, const unsigned char *subject, int find_all, Pool *poolp)
+pcre2if_match(pcre2_code *re, const unsigned char *subject, int find_all, Pool *poolp, char sentinel)
 {
   int i;
   int rc;
@@ -135,6 +135,12 @@ pcre2if_match(pcre2_code *re, const unsigned char *subject, int find_all, Pool *
 	  if (ovector[0] == subject_length) break;
 	  options = PCRE2_NOTEMPTY_ATSTART | PCRE2_ANCHORED;
 	}
+
+      /* If there is a sentinel char check that start_offset is
+	 looking at one and move back to restart the match against the
+	 final sentinel of the preceding match */
+      if (sentinel && sentinel != subject[start_offset])
+	--start_offset;
       
       /* Run the next matching operation */
       

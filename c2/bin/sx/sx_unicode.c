@@ -4,11 +4,19 @@
 #include <pcre2if.h>
 
 static Hash *usigns;
+static Hash *unames;
+static Hash *uneeds;
+static Hash *useqs;
+static Hash *utf8s;
+
 static const char *sx_unicode_rx_mangle(struct sl_signlist *sl, const char *g, int *multi);
 static const char *sx_unicode_useq(const char *m, Pool *p);
 static const char *sx_unicode_useq_m(const char *m, struct pcre2if_m *mp, Pool *p);
 static const char *sx_unicode_useq_r(const char *m, int from, int to, Pool *p);
 
+static int trace_mangling = 1;
+
+/* Longer strings sort first */
 static int cmp_by_len(const void *a, const void *b)
 {
   return strlen(*(char**)b) - strlen(*(char**)a);
@@ -18,18 +26,34 @@ void
 sx_unicode(struct sl_signlist *sl)
 {
   usigns = hash_create(1024);
+  unames = hash_create(1024);
+  uneeds = hash_create(512);
+  useqs = hash_create(512);
+  utf8s = hash_create(512);
+  
   /* Index the signs that have unames -- those are encoded so we treat
      them as atoms even if they are compounds */
   int i;  
   for (i = 0; i < sl->nsigns; ++i)
     {
-      struct sl_unicode *Up = (sl->signs[i]->xref ? &sl->signs[i]->xref->U : &sl->signs[i]->U);
-      if (Up->uname)
+      if (sl->signs[i]->inst->valid)
 	{
-	  if (Up->uhex)
-	    hash_add(usigns, sl->signs[i]->name, (ucp)Up->uhex);
-	  else
-	    mesg_verr(&sl->signs[i]->inst->mloc, "sign %s has uname but no uhex\n", sl->signs[i]->name);
+	  struct sl_unicode *Up = (sl->signs[i]->xref ? &sl->signs[i]->xref->U : &sl->signs[i]->U);
+	  if (Up->uname)
+	    {
+	      if (Up->uhex)
+		{
+		  hash_add(usigns, sl->signs[i]->name, (ucp)Up->uhex);
+		  hash_add(unames, sl->signs[i]->name, (ucp)Up->uname);
+		}
+	      else
+		mesg_verr(&sl->signs[i]->inst->mloc, "sign %s has uname but no uhex\n", sl->signs[i]->name);
+	    }
+	  else if (Up->uhex)
+	    {
+	      hash_add(usigns, sl->signs[i]->name, (ucp)Up->uhex);
+	      mesg_verr(&sl->signs[i]->inst->mloc, "sign %s has uhex but no uname\n", sl->signs[i]->name);
+	    }
 	}
     }
 
@@ -52,8 +76,12 @@ sx_unicode(struct sl_signlist *sl)
     }
   unsigned const char *pat = list_concat(kl);
 
-  fputs((ccp)pat, stderr);
-  fputc('\n', stderr);
+  if (trace_mangling)
+    {
+      fputs("sx_unicode mangle pat = \n", stderr);
+      fputs((ccp)pat, stderr);
+      fputc('\n', stderr);
+    }
 
   pcre2_code *comp_pat = pcre2if_set_pattern(pat);
   if (!comp_pat)
@@ -66,51 +94,90 @@ sx_unicode(struct sl_signlist *sl)
   struct sl_inst *ip;
   for (ip = list_first(sl->compounds); ip; ip = list_next(sl->compounds))
     {
-      unsigned const char *name = ip->type == 's' ? ip->u.s->name : ip->u.f->name;
-      struct sl_unicode *Up = ip->type == 's' ? &ip->u.s->U : &ip->u.f->U;
-      if (!Up->uhex)
+      if (ip->valid)
 	{
-	  int multi = 0;
-	  const char *m = sx_unicode_rx_mangle(sl, (ccp)name, &multi);
-	  if (multi)
+	  unsigned const char *name = ip->type == 's' ? ip->u.s->name : ip->u.f->name;
+	  struct sl_unicode *Up = ip->type == 's' ? &ip->u.s->U : &ip->u.f->U;
+	  if (!Up->uhex)
 	    {
-	      /*struct sl_token *tp = hash_find(sl->htoken, name);*/
-	      if (Up->useq)
-		fprintf(stderr, "sx_unicode: checking @useq %s for %s mangled to %s\n", Up->useq, name, m);
-	      else
-		fprintf(stderr, "sx_unicode: building @useq for %s mangled to %s\n", name, m);
-	      List *ml = pcre2if_match(comp_pat, (PCRE2_SPTR)m, 1, sl->p);
-	      if (ml)
+	      int multi = 0;
+	      const char *m = sx_unicode_rx_mangle(sl, (ccp)name, &multi);
+	      if (multi)
 		{
-		  List *bits = list_create(LIST_SINGLE);
-		  struct pcre2if_m *mp;
-		  int sofar = 0;
-		  fprintf(stderr, "sx_unicode: found %d match%s\n", (int)list_len(ml), list_len(ml)!=1 ? "es" : "");
-		  for (mp = list_first(ml); mp; mp = list_next(ml))
+		  /*struct sl_token *tp = hash_find(sl->htoken, name);*/
+		  if (trace_mangling)
 		    {
-		      /* for each match add material that precedes the match */
-		      if (mp->off > sofar)
-			{
-			  list_add(bits, (void*)sx_unicode_useq_r(m, sofar, strlen(m), sl->p));
-			  sofar = mp->off;
-			}
-		      /* then add the material belonging to the match */
-		      list_add(bits, (void*)sx_unicode_useq_m(m, mp, sl->p));
-		      sofar += mp->len;
+		      if (Up->useq)
+			fprintf(stderr, "sx_unicode: checking @useq %s for %s mangled to %s\n", Up->useq, name, m);
+		      else
+			fprintf(stderr, "sx_unicode: building @useq for %s mangled to %s\n", name, m);
 		    }
-		  /* add anything that follows the last match */
-		  if (sofar < strlen(m))
-		    list_add(bits, (void*)sx_unicode_useq_r(m, sofar, strlen(m), sl->p));
+		  List *ml = pcre2if_match(comp_pat, (PCRE2_SPTR)m, 1, sl->p, '#');
+		  if (ml)
+		    {
+		      List *bits = list_create(LIST_SINGLE);
+		      struct pcre2if_m *mp;
+		      int sofar = 0;
+		      if (1/*trace_mangling*/)
+			fprintf(stderr, "sx_unicode: found %d match%s\n", (int)list_len(ml), list_len(ml)!=1 ? "es" : "");
+		      for (mp = list_first(ml); mp; mp = list_next(ml))
+			{
+			  /* for each match add material that precedes the match */
+			  if (mp->off > sofar)
+			    {
+			      list_add(bits, (void*)sx_unicode_useq_r(m, sofar, mp->off, sl->p));
+			      sofar = mp->off;
+			    }
+			  /* then add the material belonging to the match */
+			  list_add(bits, (void*)sx_unicode_useq_m(m, mp, sl->p));
+			  sofar += mp->len;
+			}
+		      /* add anything that follows the last match */
+		      if (sofar < strlen(m))
+			list_add(bits, (void*)sx_unicode_useq_r(m, sofar, strlen(m), sl->p));
+		      const char *useq = (ccp)list_join(bits, ".");
+		      if (trace_mangling)
+			fprintf(stderr, "sx_unicode: %s => (via bits) %s => useq %s\n", name, m, useq);
+		      if (Up->useq)
+			{
+			  if (strcmp(Up->useq, useq))
+			    {
+			      mesg_verr(&ip->mloc, "generated @useq %s does not match given @useq %s\n", useq, Up->useq);
+			      hash_add(useqs, name, (void*)useq);
+			    }
+			}
+		      else
+			{
+			  Up->useq = useq;
+			  hash_add(useqs, name, (void*)useq);
+			}
+		    }
+		  else
+		    {
+		      const char *useq = sx_unicode_useq(m, sl->p);
+		      if (trace_mangling)
+			fprintf(stderr, "sx_unicode: %s => %s => useq %s\n", name, m, useq);
+		      if (Up->useq)
+			{
+			  if (strcmp(Up->useq, useq))
+			    {
+			      mesg_verr(&ip->mloc, "generated @useq %s does not match given @useq %s\n", useq, Up->useq);
+			      hash_add(useqs, name, (void*)useq);
+			    }
+			}
+		      else
+			{
+			  Up->useq = useq;
+			  hash_add(useqs, name, (void*)useq);
+			}
+		    }
 		}
 	      else
 		{
-		  const char *useq = sx_unicode_useq(m, sl->p);
-		  fprintf(stderr, "sx_unicode: %s => %s => useq %s\n", name, m, useq);
+		  if (trace_mangling)
+		    fprintf(stderr, "sx_unicode: %s is a singleton not in Unicode\n", name);
+		  hash_add(uneeds, name, "");
 		}
-	    }
-	  else
-	    {
-	      fprintf(stderr, "sx_unicode: %s is a singleton not in Unicode\n", name);
 	    }
 	}
     }
@@ -122,7 +189,11 @@ sx_unicode(struct sl_signlist *sl)
 	  if (sl->signs[i]->U.uhex)
 	    sl->signs[i]->U.utf8 = pool_copy(uhex2utf8((uccp)sl->signs[i]->U.uhex), sl->p);
 	  else if (sl->signs[i]->U.useq)
-	    sl->signs[i]->U.utf8 = pool_copy(uhex2utf8((uccp)sl->signs[i]->U.useq), sl->p);
+	    {
+	      sl->signs[i]->U.utf8 = pool_copy(uhex2utf8((uccp)sl->signs[i]->U.useq), sl->p);
+	      if (hash_find(useqs, (uccp)sl->signs[i]->name))
+		hash_add(utf8s, (uccp)sl->signs[i]->name, (void*)sl->signs[i]->U.utf8);
+	    }
 	}
     }
 
@@ -133,7 +204,11 @@ sx_unicode(struct sl_signlist *sl)
 	  if (sl->forms[i]->U.uhex)
 	    sl->forms[i]->U.utf8 = pool_copy(uhex2utf8((uccp)sl->forms[i]->U.uhex), sl->p);
 	  else if (sl->forms[i]->U.useq)
-	    sl->forms[i]->U.utf8 = pool_copy(uhex2utf8((uccp)sl->forms[i]->U.useq), sl->p);
+	    {
+	      sl->forms[i]->U.utf8 = pool_copy(uhex2utf8((uccp)sl->forms[i]->U.useq), sl->p);
+	      if (hash_find(useqs, (uccp)sl->forms[i]->name))
+		hash_add(utf8s, (uccp)sl->forms[i]->name, (void*)sl->forms[i]->U.utf8);
+	    }
 	}
     }
 
@@ -142,14 +217,13 @@ sx_unicode(struct sl_signlist *sl)
 /**Prepare a sign-name for use in pattern-matching:
  *
  *   - remove enclosing |...|
- *   - map . to , 
- *   - map + to ;
+ *   - map ./+/: to # if top-level; to , if within (...)
  *   - map ( and ) to < and >
- *   - adding a ',' at beginning and end
+ *   - adding a # at beginning and end
  *
  * The mangled string is added as a hash key to usigns--there's no
- * possibility of conflict because of the bracketing with ,..., so 'A'
- * is mangled to ',A,'.
+ * possibility of conflict because of the bracketing with #...# so #A#
+ * is mangled to #A#.
  *
  */
 static const char *
@@ -170,7 +244,9 @@ sx_unicode_rx_mangle(struct sl_signlist *sl, const char *g, int *multi)
   const char *src = g;
   char *dst = res;
   int nest = 0;
-  *dst++ = ',';
+  *dst++ = ','; 	/* place-holder because we want to check for
+			   real '#' to see if there are multiple
+			   elements in this sign */
   while (*src)
     {
       if ('.' == *src || '+' == *src || ':' == *src)
@@ -204,21 +280,15 @@ sx_unicode_rx_mangle(struct sl_signlist *sl, const char *g, int *multi)
     *multi = 1;
   else
     *multi = 0;
-  *res = '#';
+  *res = '#';		/* fix the place-holder to be a sentinel */
   *dst++ = '#';
   *dst = '\0';
-  fprintf(stderr, "%s mangled to %s\n", g-vbar, res);
+
+  if (trace_mangling)
+    fprintf(stderr, "%s mangled to %s\n", g-vbar, res);
+
   hash_add(usigns, (uccp)res, hash_find(usigns, (uccp)(g-vbar)));
   return res;
-}
-
-void
-sx_unicode_table(FILE *f, struct sl_signlist *sl)
-{
-  const char **u = hash_keys(usigns);
-  int i;
-  for (i = 0; u[i]; ++i)
-    fprintf(f, "%s\t%s\n", u[i], (char*)hash_find(usigns, (uccp)u[i]));
 }
 
 const char *
@@ -259,18 +329,28 @@ sx_unicode_useq(const char *m, Pool *p)
       if (!x)
 	{
 	  fprintf(stderr, "sx_unicode: element %s not found in usigns while processing mangled %s\n", s, m);
-	  x = (uccp)"U+0058";
+	  x = (uccp)"X";
 	}
       else
 	{
 	  fprintf(stderr, "sx_unicode: element %s => %s\n", s, x);
 	}
       /* append x to u */
-      if (strlen(u))
-	strcat(u, ".x");
+      if ('X' != *x)
+	{
+	  if (strlen(u))
+	    strcat(u, ".x");
+	  else
+	    strcpy(u, "x");
+	  strcat(u, (const char *)x+2);
+	}
       else
-	strcpy(u, "x");
-      strcat(u, (const char *)x+2);
+	{
+	  if (strlen(u))
+	    strcat(u, ".X");
+	  else
+	    strcpy(u, "X");
+	}
 
       if (save)
 	{
@@ -287,6 +367,7 @@ sx_unicode_useq(const char *m, Pool *p)
 static const char *
 sx_unicode_useq_m(const char *m, struct pcre2if_m *mp, Pool *p)
 {
+  
   return sx_unicode_useq_r(m, mp->off, mp->off + mp->len, p);
 }
 
@@ -297,11 +378,46 @@ sx_unicode_useq_r(const char *m, int from, int to, Pool *p)
 {
   /* excise the range-string from the subject */
   char *tmp = strdup(m+from);
-  tmp[to-from] = '\0';
+  int off = to - from;
+
+  if (to < strlen(m) && tmp[off-1] != '#')
+    ++off;	/* extend range by 1 to include a sentinel # if necessary */
+
+  tmp[off] = '\0';
 
   /* return the results of processing it */
-  const char *res = sx_unicode_useq(tmp, p);
-  free(tmp);
+  char *res = NULL;
 
+  /* avoid putting a matched multipart sign through the useq parser again */
+  if ((res = hash_find(usigns, (uccp)tmp)))
+    {
+      /* we have, e.g., U+12301 -- return x12301 */
+      res = (char*)pool_copy((uccp)res+1, p);
+      *res = 'x';
+    }
+  else
+    res = (char*)sx_unicode_useq(tmp, p);
+
+  free(tmp);
   return res;
+}
+
+void
+sx_unicode_table(FILE *f, struct sl_signlist *sl)
+{
+  const char **u;
+  int i;
+
+  u = hash_keys(usigns);
+  for (i = 0; u[i]; ++i)
+    if ('#' != u[i][0])
+      fprintf(f, "core\t%s\t%s\t%s\n", u[i], (char*)hash_find(usigns, (uccp)u[i]), (char*)hash_find(unames, (uccp)u[i]));
+
+  u = hash_keys(useqs);
+  for (i = 0; u[i]; ++i)
+    fprintf(f, "useq\t%s\t%s\t%s\n", u[i], (char*)hash_find(useqs, (uccp)u[i]), (char*)hash_find(utf8s, (uccp)u[i]));
+
+  u = hash_keys(uneeds);
+  for (i = 0; u[i]; ++i)
+    fprintf(f, "need\t%s\n", u[i]);
 }
