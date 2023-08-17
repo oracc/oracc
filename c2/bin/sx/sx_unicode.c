@@ -170,7 +170,7 @@ sx_unicode(struct sl_signlist *sl)
 			{
 			  if (strcmp(Up->useq, useq))
 			    {
-			      mesg_verr(&ip->mloc, "generated @useq %s does not match given @useq %s\n", useq, Up->useq);
+			      mesg_verr(&ip->mloc, "%s: generated @useq %s != %s\n", name, useq, Up->useq);
 			      hash_add(useqs, name, (void*)useq);
 			    }
 			}
