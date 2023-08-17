@@ -14,7 +14,7 @@ static const char *sx_unicode_useq(const char *m, Pool *p);
 static const char *sx_unicode_useq_m(const char *m, struct pcre2if_m *mp, Pool *p);
 static const char *sx_unicode_useq_r(const char *m, int from, int to, Pool *p);
 
-static int trace_mangling = 1;
+static int trace_mangling = 0;
 
 /* Longer strings sort first */
 static int cmp_by_len(const void *a, const void *b)
@@ -52,8 +52,10 @@ sx_unicode(struct sl_signlist *sl)
 	  else if (Up->uhex)
 	    {
 	      hash_add(usigns, sl->signs[i]->name, (ucp)Up->uhex);
-	      mesg_verr(&sl->signs[i]->inst->mloc, "sign %s has uhex but no uname\n", sl->signs[i]->name);
+	      mesg_verr(&sl->signs[i]->inst->mloc, "sign %s has uhex %s but no uname\n", sl->signs[i]->name, Up->uhex);
 	    }
+	  else
+	    hash_add(usigns, sl->signs[i]->name, "X"); /* Add components that aren't in Unicode yet as X */
 	}
     }
 
@@ -118,7 +120,7 @@ sx_unicode(struct sl_signlist *sl)
 		      List *bits = list_create(LIST_SINGLE);
 		      struct pcre2if_m *mp;
 		      int sofar = 0;
-		      if (1/*trace_mangling*/)
+		      if (trace_mangling)
 			fprintf(stderr, "sx_unicode: found %d match%s\n", (int)list_len(ml), list_len(ml)!=1 ? "es" : "");
 		      for (mp = list_first(ml); mp; mp = list_next(ml))
 			{
@@ -144,7 +146,7 @@ sx_unicode(struct sl_signlist *sl)
 			{
 			  if (strcmp(Up->useq, useq))
 			    {
-			      mesg_verr(&ip->mloc, "generated @useq %s does not match given @useq %s\n", useq, Up->useq);
+			      mesg_verr(&ip->mloc, "@useq %s generated for %s != @useq %s\n", useq, name, Up->useq);
 			      hash_add(useqs, (uccp)name, (void*)pool_copy((uccp)useq, sl->p));
 			    }
 			}
@@ -336,7 +338,8 @@ sx_unicode_useq(const char *m, Pool *p)
 	}
       else
 	{
-	  fprintf(stderr, "sx_unicode: element %s => %s\n", s, x);
+	  if (trace_mangling)
+	    fprintf(stderr, "sx_unicode: element %s => %s\n", s, x);
 	}
       /* append x to u */
       if ('X' != *x)

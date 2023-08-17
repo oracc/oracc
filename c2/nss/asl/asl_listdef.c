@@ -43,6 +43,8 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
   nlist = list_create(LIST_SINGLE);
   for (str = in; str; ++str)
     {
+      /* FIXME: This implmentation means that singleton items only
+	 work properly if they are given after all ranges */
       if (strchr(str, '-'))
 	{
 	  int rb, re;

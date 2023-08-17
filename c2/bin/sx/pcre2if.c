@@ -8,7 +8,7 @@
 #include <pool.h>
 #include <pcre2if.h>
 
-static int pcre2if_trace = 1;
+static int pcre2if_trace = 0;
 
 extern struct pcre2if_m *pcre2if_save_match(PCRE2_SPTR subject, PCRE2_SIZE *ovector, int i, Pool *poolp);
 

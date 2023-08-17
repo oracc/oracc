@@ -10,30 +10,44 @@
 @lit	E. Burrows, Archaic Texts (UET 2; London 1935)
 @inote To be added: Appendices I-III lettered signs as, e.g., BAU000I.A, BAU00II.A, BAU0III.A, etc.
 
-@listdef  SLLHA 1-598 002a 007v 015x 016a 018v 018x 022x 022xn2 023n 024x 025b 025n 028n 031n1 031x
-	  032n1 032n2 032n3 033n 035n 036a 043v 046xxx 049x 052xv 054v 060+002 060+060 060+212 060+308 060a 060x
-	  063_27n 063a 063c 063d 066a 066b 066c 071n 072a 073av 074+471 074_182 074_238 074_335 085n2(v)
-	  087a 087c 087cn 092a 092b 092c 096a 099a1 099b1 099b2 099b3 099c 103v 104_6 105n2 105n3 107n
-	  115n 115n2 116n 120n 121_1 121_6 121_7 121_8 121n 122a 122b 122c 122d 124_42 124a 124n2
-	  125a 125b 125c 125d 125e 125f 125n 125v 126bv 126cv 126dv 126fv 131a 132n1 135a 139n2
-	  141a 142a 144f 144n 150v1 150v2 151v 151vn 152_14 152_16 152_4 152_4v 152_8 152_8b 152_9
-	  154_1n 165+165n1 165a 165b 165n1 165v 166+371 166+398 166a 166b 166e 166ee 166een 166f
-	  170an 177n 178aa 181n 181v 186a 186b 187v1 187v5 190an4 190kv 198a 200an 200c 200d 200v
-	  204a 204b 204c 204d 204n 204v 205a 206a 210a 211b 211n 211n2 214a 214c 219x 229n 231n2(v)
-	  233_22 244v 250b 250c 250d 250i 252_1 252_2 259n 261a 282a 288b 288c 288sub 292a 294a 294b 294d
-	  295k 295l 295m 296_1 296_2 296n2 299n 301n 308n 308n2 317a 319n 322n 325a 325an 325b 326a 326v
-	  329a 330_0 330_0n 330_6 330_60 330_60n2 330_60v 330_7 330_7a 330_7an1 330_7an2 330_7an3v
-	  330_7an4 330_7b 330_7bn 330_7c 330_7cn 330_7dn 330_8n 331a 331b 331c 331d 337xn1 337xx
-	  338n1 338n2 340v 341v 343+091 350_8 354b 354bv 359n1 361n 364n 366_87 371a 371n3 374_81 374_81n1
-	  375_45 375_46 376x 377n1 378an 379_2 382v 383n10(v) 383n2(v) 383n3(v) 383n4(v) 383n5(v) 383n6(v)
-	  383n7(v) 383n8(v) 383n9(v) 384a 384n 385n 386n 394b 394bx 394bxn 394c 394cxxx 394d 394d+411 394dn
-	  394dn2 394e 394en 395an 395v 396n3 398+166 398_64 398_72 399_51 399xn 399xx 404x_2 405v2 406v2
-	  408v 409a 409b 409c 409d 409e 411_167a 411_182a 415a 420_8 421a 421n2 434a 444n2 447a 449_145
-	  449_244 449_46 452v1 456a 459a 459an2 460n 460v 461x 462v 484a 488b 495a 499n 499v 515_9 529v2
-	  545a 546_6 551v 554n 555B 566b 575a 575b 580a 585a 585c 598a 598b 598c 598d 598e 598en 598n1 598n2
+@listdef SLLHA 1-598 002a 007v 015x 016a 018v 018x 022x 022xn2 023n
+	  024x 025b 025n 028n 031n1 031x 032n1 032n2 032n3 033n 035n
+	  036a 043v 046xxx 049x 052xv 054v 060+002 060+060 060+212
+	  060+308 060a 060x 063_27n 063a 063c 063d 066a 066b 066c 071n
+	  072a 073av 074+471 074_182 074_238 074_335 085n2(v) 087a
+	  087c 087cn 092a 092b 092c 096a 099a1 099b1 099b2 099b3 099c
+	  103v 104_6 105n2 105n3 107n 115n 115n2 116n 120n 121_1 121_6
+	  121_7 121_8 121n 122a 122b 122c 122d 124_42 124a 124n2 125a
+	  125b 125c 125d 125e 125f 125n 125v 126bv 126cv 126dv 126fv
+	  131a 132n1 135a 139n2 141a 142a 144f 144n 150v1 150v2 151v
+	  151vn 152_14 152_16 152_4 152_4v 152_8 152_8b 152_9 154_1n
+	  165+165n1 165a 165b 165n1 165v 166+371 166+398 166a 166b
+	  166e 166ee 166een 166f 170an 177n 178aa 181n 181v 186a 186b
+	  187v1 187v5 190an4 190kv 198a 200an 200c 200d 200v 204a 204b
+	  204c 204d 204n 204v 205a 206a 210a 211b 211n 211n2 214a 214c
+	  219x 229n 231n2(v) 233_22 244v 250b 250c 250d 250i 252_1
+	  252_2 259n 261a 282a 288b 288c 288sub 292a 294a 294b 294d
+	  295k 295l 295m 296_1 296_2 296n2 299n 301n 308n 308n2 317a
+	  319n 322n 325a 325an 325b 326a 326v 329a 330_0 330_0n 330_6
+	  330_60 330_60n2 330_60v 330_7 330_7a 330_7an1 330_7an2
+	  330_7an3v 330_7an4 330_7b 330_7bn 330_7c 330_7cn 330_7dn
+	  330_8n 331a 331b 331c 331d 337xn1 337xx 338n1 338n2 340v
+	  341v 343+091 350_8 354b 354bv 359n1 361n 364n 366_87 371a
+	  371n3 374_81 374_81n1 375_45 375_46 376x 377n1 378an 379_2
+	  382v 383n10(v) 383n2(v) 383n3(v) 383n4(v) 383n5(v) 383n6(v)
+	  383n7(v) 383n8(v) 383n9(v) 384a 384n 385n 386n 394b 394bx
+	  394bxn 394c 394cxxx 394d 394d+411 394dn 394dn2 394e 394en
+	  395an 395v 396n3 398+166 398_64 398_72 399_51 399xn 399xx
+	  404x_2 405v2 406v2 408v 409a 409b 409c 409d 409e 411_167a
+	  411_182a 415a 420_8 421a 421n2 434a 444n2 447a 449_145
+	  449_244 449_46 452v1 456a 459a 459an2 460n 460v 461x 462v
+	  484a 488b 495a 499n 499v 515_9 529v2 545a 546_6 551v 554n
+	  555B 566b 575a 575b 580a 585a 585c 598a 598b 598c 598d 598e
+	  598en 598n1 598n2
 @lit	A. Deimel, Šumerisches Lexikon [SL]
 @lit	R. Labat, Manuel d'épigraphie akkadienne (6th ed. Paris 1988) [L]
-@lit	F. Ellermeier and M. Studt, Handbuch Assur [HA; via https://en.wikipedia.org/wiki/List_of_cuneiform_signs]
+@lit 	F. Ellermeier and M. Studt, Handbuch Assur [HA; via
+	 https://en.wikipedia.org/wiki/List_of_cuneiform_signs]
 
 @listdef ELLES 1-397 006b 033a 033b 065a 195a 241a 244a 307b 317a 362a
 @lit	P. Mander, "Appendix E. Lista dei Segni dei testi lessicali di Ebla".
@@ -61,7 +75,7 @@
 @listdef  RSP 1-468 019bis 036bis 048bis 178bis 189* 339bis 361bis 380bis 426a 426b 460bis 468bis 468ter
 @lit	Y. Rosengarten, Répertoire commenté des signes présargoniques sumériens de Lagash (Paris 1967)
 
-@listdef U+ 0x12000-0x12399 0x12400-0x1246E 0x12470-0x12474 0x12480-0x12543
+@listdef U+ 0x12000-0x1236E 0x12400-0x12462 0x12470-0x12473 0x1236F-0x12399 0x12463-0x1246E 0x12480-0x12543 0x12474
 @lit 	The Unicode Standard, v. 15
 
 @listdef  ZATU 1-855
@@ -5139,7 +5153,8 @@
 @v	uku
 @end sign
 
-@sign	DUN₃@g@g@s
+@sign-	DUN₃@g@g@s
+@inote this is encoded as DUN₄
 @urev 0
 @note	in |ŠU₂.DUN₃@g@g@s|
 @end sign
@@ -5155,7 +5170,6 @@
 @end sign
 
 @sign	DUN₄
-@aka DUN₃@g@g@s
 @list BAU156
 @list HZL088
 @list MZL557
@@ -7542,6 +7556,7 @@
 @end sign
 
 @sign	|GA₂×(NUN&NUN)|
+@inote @aka |GA₂×NUN&NUN|
 @list ELLES338
 @list LAK679
 @list RSP242
@@ -8611,10 +8626,6 @@
 @form	|E₂.GI.NA.TUM|
 @useq x1208D.x12100.x1223E.x12308
 @v	šutumₓ
-@form	|U.GUD.GI.NA.AB.U.GUD|
-@inote REMOVE THIS IT IS JUST A TEST OF THE PCRE2IF
-@form	|U.GUD.U.GUD.U.GUD|
-@inote REMOVE THIS IT IS JUST A TEST OF THE PCRE2IF
 @end sign
 
 @sign-	|GI.PAD|
@@ -15200,6 +15211,7 @@
 @end sign
 
 @sign	|LAGAB×(GUD&GUD).A|
+@inote @aka |LAGAB×(GUD.GUD).A|
 @pname	|LAGAB×(GUD+GUD).A|
 @useq	x121C7.x12000
 @v	uʾa
@@ -25573,6 +25585,7 @@
 @end sign
 
 @sign	|ŠU₂.DUN₄|
+@inote alias |ŠU₂.DUN₃@g@g@s|
 @list HZL251
 @list MZL869
 @list ABZL422
@@ -25770,8 +25783,8 @@
 @form |TA×IR|
 @v	gansis
 @form LAK654a
-@list LAK654a
-@inote TA@g with curviform final wedge = LAK654a in main box; cuneiform final wedge is LAK654 in secondary box
+@list LAK654
+@inote TA@g with curviform final wedge OGSL = LAK654a (main box); cuneiform final wedge OGSL = LAK654 (secondary box)
 @end sign
 
 @sign	TAB
@@ -30127,9 +30140,8 @@
 @v	9(aš@c@90)
 @end sign
 
-@sign	|AŠ&AŠ&AŠ|
-@inote @alias 3(AŠ~a)
-@inote double-encoded as U+1243A 
+@sign	 |AŠ&AŠ&AŠ|
+@inote @aka 3(AŠ~a)
 @list LAK133
 @list BAU084
 @list MZL505
@@ -30137,6 +30149,7 @@
 @urev	1
 @uname	CUNEIFORM NUMERIC SIGN THREE VARIANT FORM ESH16
 @list U+1203C
+@unote double-encoded as x1243A
 @v	3(aš@v)
 @v	3(aš@v@c)
 @v	eš₁₆
