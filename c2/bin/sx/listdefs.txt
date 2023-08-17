@@ -74,7 +74,7 @@
 @listdef  RSP 1-468 019bis 036bis 048bis 178bis 189* 339bis 361bis 380bis 426a 426b 460bis 468bis 468ter
 @lit	Y. Rosengarten, Répertoire commenté des signes présargoniques sumériens de Lagash (Paris 1967)
 
-@listdef U+ 0x12000-0x12399 0x12400-0x1246E 0x12470-0x12474 0x12480-0x12543
+@listdef U+ 0x12000-0x1236E 0x12400-0x12462 0x12470-0x12473 0x1236F-0x12398 0x12463-0x1246E 0x12474 0x12399 0x12480-0x12543
 @lit 	The Unicode Standard, v. 15
 
 @listdef  ZATU 1-855
