@@ -1,15 +1,19 @@
-/* Cut down and slightly refactored from pcre2demo.c */
+/* Cut down and slightly refactored from pcre2demo.c as accessed from github 20230816 */
 
 #define PCRE2_CODE_UNIT_WIDTH 8
 
 #include <stdio.h>
 #include <string.h>
-#include <pcre2.h>
 #include <list.h>
 #include <pool.h>
+#include <pcre2if.h>
+
+static int pcre2if_trace = 1;
+
+extern struct pcre2if_m *pcre2if_save_match(PCRE2_SPTR subject, PCRE2_SIZE *ovector, int i, Pool *poolp);
 
 pcre2_code *
-pcre2if_set_pattern(const char *pattern)
+pcre2if_set_pattern(unsigned const char *pattern)
 {
   pcre2_code *re;
   int errornumber;
@@ -26,11 +30,13 @@ pcre2if_set_pattern(const char *pattern)
   if (re == NULL)
     {
       PCRE2_UCHAR buffer[256];
-      pcre2_get_error_message(errornumber, buffer, sizeof(buffer));
+      pcre2_get_error_message(errornumber, buffer, sizeof(buffer));      
       fprintf(stderr, "[pcre2if] PCRE2 compilation failed at offset %d: %s\n",
 	      (int)erroroffset, buffer);
       return NULL;
     }
+  else if (pcre2if_trace)
+    fprintf(stderr, "[pcre2if] PCRE2 compilation succeeded\n");
   
   return re;
 }
@@ -64,14 +70,15 @@ pcre2if_match(pcre2_code *re, const unsigned char *subject, int find_all, Pool *
     {
       switch(rc)
 	{
-	case PCRE2_ERROR_NOMATCH: printf("No match\n"); break;
-	  /*
-	    Handle other special cases if you like
-	  */
-	default: printf("Matching error %d\n", rc); break;
+	case PCRE2_ERROR_NOMATCH:
+	  if (pcre2if_trace)
+	    fprintf(stderr, "[pcre2if] No match\n");
+	  break;
+	default:
+	  fprintf(stderr, "[pcre2if] Matching error %d\n", rc);
+	  break;
 	}
       pcre2_match_data_free(match_data);   /* Release memory used for the match */
-      pcre2_code_free(re);                 /* data and the compiled pattern. */
       return NULL;
     }
 
@@ -81,7 +88,8 @@ pcre2if_match(pcre2_code *re, const unsigned char *subject, int find_all, Pool *
      stored. */
   
   ovector = pcre2_get_ovector_pointer(match_data);
-  fprintf(stderr, "\nMatch succeeded at offset %d\n", (int)ovector[0]);
+  if (pcre2if_trace)
+    fprintf(stderr, "\n[pcre2if] Match succeeded at offset %d\n", (int)ovector[0]);
 
   /*************************************************************************
    * We have found the first match within the subject string. If the output *
@@ -92,24 +100,14 @@ pcre2if_match(pcre2_code *re, const unsigned char *subject, int find_all, Pool *
   /* The output vector wasn't big enough. This should not happen, because we used
      pcre2_match_data_create_from_pattern() above. */  
   if (rc == 0)
-    fprintf(stderr, "ovector was not big enough for all the captured substrings\n");
+    fprintf(stderr, "[pcre2if] ovector was not big enough for all the captured substrings\n");
   
   for (i = 0; i < rc; i++)
-    {
-      PCRE2_SPTR substring_start = subject + ovector[2*i];
-      size_t substring_length = ovector[2*i+1] - ovector[2*i];
-      char *m = (char*)pool_alloc(substring_length+1, poolp);
-      strncpy((char *)m, (ccp)substring_start, substring_length);
-      m[substring_length] = '\0';
-      list_add(ml, m);
-      fprintf(stderr, "%2d: %.*s\n", i, (int)substring_length, (char *)substring_start);
-    }
-
+    list_add(ml, pcre2if_save_match(subject, ovector, i, poolp));
 
   if (!find_all)
     {
       pcre2_match_data_free(match_data);
-      pcre2_code_free(re);
       return ml;
     }
 
@@ -160,8 +158,7 @@ pcre2if_match(pcre2_code *re, const unsigned char *subject, int find_all, Pool *
 	 There are two complications: (a) When CRLF is a valid newline sequence, and
 	 the current position is just before it, advance by an extra byte. (b)
 	 Otherwise we must ensure that we skip an entire UTF character if we are in
-	 UTF mode. */
-      
+	 UTF mode. */      
       if (rc == PCRE2_ERROR_NOMATCH)
 	{
 	  if (options == 0) break;                    /* All matches found */
@@ -181,41 +178,56 @@ pcre2if_match(pcre2_code *re, const unsigned char *subject, int find_all, Pool *
 	    }
 	  continue;    /* Go round the loop again */
 	}
-      
-      /* Other matching errors are not recoverable. */
-      
+
+      /* Other matching errors are not recoverable. */      
       if (rc < 0)
 	{
 	  printf("Matching error %d\n", rc);
 	  pcre2_match_data_free(match_data);
-	  pcre2_code_free(re);
 	  list_free(ml, NULL);
 	  return NULL;
 	}
       
       /* Match succeded */
       
-      fprintf(stderr, "\nMatch succeeded again at offset %d\n", (int)ovector[0]);
+      if (pcre2if_trace)
+	fprintf(stderr, "\n[pcre2if] Match succeeded again at offset %d\n", (int)ovector[0]);
       
       /* The match succeeded, but the output vector wasn't big enough. This
 	 should not happen. */
       
       if (rc == 0)
-	printf("ovector was not big enough for all the captured substrings\n");
+	printf("[pcre2if] ovector was not big enough for all the captured substrings\n");
       
       /* As before, show substrings stored in the output vector by number */
       for (i = 0; i < rc; i++)
-	{
-	  PCRE2_SPTR substring_start = subject + ovector[2*i];
-	  size_t substring_length = ovector[2*i+1] - ovector[2*i];
-	  fprintf(stderr, "%2d: %.*s\n", i, (int)substring_length, (char *)substring_start);
-	}
-    }      /* End of loop to find second and subsequent matches */
+	list_add(ml, pcre2if_save_match(subject, ovector, i, poolp));
+    }
 
-  fprintf(stderr, "\n");
+  if (pcre2if_trace)
+    fprintf(stderr, "\n");
+
   pcre2_match_data_free(match_data);
-  pcre2_code_free(re);
+
   return ml;
 }
 
-/* End of pcre2demo.c */
+struct pcre2if_m *
+pcre2if_save_match(PCRE2_SPTR subject, PCRE2_SIZE *ovector, int i, Pool *poolp)
+{
+  PCRE2_SPTR substring_start = subject + ovector[2*i];
+  size_t substring_length = ovector[2*i+1] - ovector[2*i];
+
+  struct pcre2if_m *pmp = calloc(1, sizeof(struct pcre2if_m));
+  pmp->mstr = (ucp)pool_alloc(substring_length+1, poolp);
+  strncpy((char *)pmp->mstr, (ccp)substring_start, substring_length);
+
+  pmp->mstr[substring_length] = '\0';
+  pmp->off = (size_t)ovector[2*i];
+  pmp->len = (size_t)substring_length;
+
+  if (pcre2if_trace)
+    fprintf(stderr, "[pcre2if] %2d: %.*s\n", i, (int)substring_length, (char *)substring_start);
+  
+  return pmp;
+}

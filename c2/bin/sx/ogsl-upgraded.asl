@@ -48,7 +48,7 @@
 
 @listdef  LAK 1-870 024b 046@v 046a 063b 072b 079a 081a 156b 162a 162b 171@s 207a 248@g 248b
 	  256@g 262@g 278a 278b 283a 304a 309a 340a 340b 350@90 368@s 407b 449b 455a 461a
-	  490@90 497a 497b 503a 503b 672a 672b 709a 709b 772b 784a 791a
+	  490@90 497a 497b 503a 503b 654a 672a 672b 709a 709b 772b 784a 791a
 @lit	A. Deimel, Liste der archaischen Keilschriftzeichen (WVDOG 40; Berlin 1922)
 
 @listdef  MZL 1-907 113b 115a 115b 146" 146' 146'' 527'
@@ -8610,6 +8610,8 @@
 @form	|E₂.GI.NA.TUM|
 @useq x1208D.x12100.x1223E.x12308
 @v	šutumₓ
+@form	|U.GUD.GI.NA.AB.U.GUD|
+@inote REMOVE THIS IT IS JUST A TEST OF THE PCRE2IF
 @end sign
 
 @sign-	|GI.PAD|
@@ -25766,8 +25768,8 @@
 @form |TA×IR|
 @v	gansis
 @form LAK654a
-@list LAK654
-@inote TA@g with curviform final wedge
+@list LAK654a
+@inote TA@g with curviform final wedge = LAK654a in main box; cuneiform final wedge is LAK654 in secondary box
 @end sign
 
 @sign	TAB
