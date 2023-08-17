@@ -47,7 +47,7 @@ sx_unicode(struct sl_signlist *sl)
 		  hash_add(unames, sl->signs[i]->name, (ucp)Up->uname);
 		}
 	      else
-		mesg_verr(&sl->signs[i]->inst->mloc, "sign %s has uname but no uhex\n", sl->signs[i]->name);
+		mesg_verr(&sl->signs[i]->inst->mloc, "sign %s has uname %s but no uhex\n", sl->signs[i]->name, Up->uname);
 	    }
 	  else if (Up->uhex)
 	    {
@@ -67,13 +67,17 @@ sx_unicode(struct sl_signlist *sl)
   List *kl = list_create(LIST_SINGLE);
   for (i = 0; i < nk; ++i)
     {
-      int multi = 0;
-      const char *m = sx_unicode_rx_mangle(sl, k[i], &multi);
-      if (multi)
+      const char *val = hash_find(usigns, (uccp)k[i]);
+      if ('X' != *val)
 	{
-	  if (i)
-	    list_add(kl, "|");
-	  list_add(kl, (void*)m);
+	  int multi = 0;
+	  const char *m = sx_unicode_rx_mangle(sl, k[i], &multi);
+	  if (multi)
+	    {
+	      if (list_len(kl))
+		list_add(kl, "|");
+	      list_add(kl, (void*)m);
+	    }
 	}
     }
   unsigned const char *pat = list_concat(kl);
@@ -146,7 +150,7 @@ sx_unicode(struct sl_signlist *sl)
 			{
 			  if (strcmp(Up->useq, useq))
 			    {
-			      mesg_verr(&ip->mloc, "@useq %s generated for %s != @useq %s\n", useq, name, Up->useq);
+			      mesg_verr(&ip->mloc, "%s: generated useq %s != %s\n", name, useq, Up->useq);
 			      hash_add(useqs, (uccp)name, (void*)pool_copy((uccp)useq, sl->p));
 			    }
 			}
