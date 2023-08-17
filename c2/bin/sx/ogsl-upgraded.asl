@@ -5155,6 +5155,7 @@
 @end sign
 
 @sign	DUN₄
+@aka DUN₃@g@g@s
 @list BAU156
 @list HZL088
 @list MZL557
@@ -7540,7 +7541,7 @@
 @inote P010918 o i' 6'
 @end sign
 
-@sign	|GA₂×NUN&NUN|
+@sign	|GA₂×(NUN&NUN)|
 @list ELLES338
 @list LAK679
 @list RSP242
@@ -15198,7 +15199,7 @@
 @v	waₓ
 @end sign
 
-@sign	|LAGAB×(GUD.GUD).A|
+@sign	|LAGAB×(GUD&GUD).A|
 @pname	|LAGAB×(GUD+GUD).A|
 @useq	x121C7.x12000
 @v	uʾa
@@ -25571,7 +25572,7 @@
 @list U+12536
 @end sign
 
-@sign	|ŠU₂.DUN₃@g@g@s|
+@sign	|ŠU₂.DUN₄|
 @list HZL251
 @list MZL869
 @list ABZL422
@@ -30126,8 +30127,8 @@
 @v	9(aš@c@90)
 @end sign
 
-@sign	3(AŠ~a)
-@inote @alias |AŠ&AŠ&AŠ|
+@sign	|AŠ&AŠ&AŠ|
+@inote @alias 3(AŠ~a)
 @inote double-encoded as U+1243A 
 @list LAK133
 @list BAU084

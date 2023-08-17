@@ -130,10 +130,12 @@ sx_unicode(struct sl_signlist *sl)
 			    }
 			  /* then add the material belonging to the match */
 			  list_add(bits, (void*)sx_unicode_useq_m(m, mp, sl->p));
-			  sofar += mp->len;
+			  /* mp->off + mp->len is the character after
+			     the match so we need to back up by 1 */
+			  sofar += (mp->len - 1);
 			}
-		      /* add anything that follows the last match */
-		      if (sofar < strlen(m))
+		      /* add anything that follows the last match but -1 for the final sentinel */
+		      if (sofar < (strlen(m)-1))
 			list_add(bits, (void*)sx_unicode_useq_r(m, sofar, strlen(m), sl->p));
 		      const char *useq = (ccp)list_join(bits, ".");
 		      if (trace_mangling)
@@ -143,14 +145,15 @@ sx_unicode(struct sl_signlist *sl)
 			  if (strcmp(Up->useq, useq))
 			    {
 			      mesg_verr(&ip->mloc, "generated @useq %s does not match given @useq %s\n", useq, Up->useq);
-			      hash_add(useqs, name, (void*)useq);
+			      hash_add(useqs, (uccp)name, (void*)pool_copy((uccp)useq, sl->p));
 			    }
 			}
 		      else
 			{
 			  Up->useq = useq;
-			  hash_add(useqs, name, (void*)useq);
+			  hash_add(useqs, (uccp)name, (void*)pool_copy((uccp)useq, sl->p));
 			}
+		      free((void*)useq);
 		    }
 		  else
 		    {
