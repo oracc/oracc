@@ -125,6 +125,8 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
       else
 	{
 	  ins = ins_base;
+	  if ('0' == str[0] && 'x' == str[1])
+	    str += 2;
 	  while (*str && !isspace(*str))
 	    {
 	      if (ins == top)

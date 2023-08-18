@@ -79,7 +79,13 @@ sx_unicode(struct sl_signlist *sl)
 	      list_add(kl, (void*)m);
 	    }
 	}
+      else
+	(void)sx_unicode_rx_mangle(sl, k[i], NULL); /* call for side effect of registering mangled form in usigns */
     }
+
+  if (trace_mangling)
+    fprintf(stderr, "###END OF MANGLE HASH BUILDING###\n");
+  
   unsigned const char *pat = list_concat(kl);
 
   if (trace_mangling)
@@ -285,10 +291,15 @@ sx_unicode_rx_mangle(struct sl_signlist *sl, const char *g, int *multi)
       else
 	*dst++ = *src++;
     }
-  if (strchr(res,'#'))
-    *multi = 1;
-  else
-    *multi = 0;
+
+  if (multi)
+    {
+      if (strchr(res,'#'))
+	*multi = 1;
+      else
+	*multi = 0;
+    }
+  
   *res = '#';		/* fix the place-holder to be a sentinel */
   *dst++ = '#';
   *dst = '\0';

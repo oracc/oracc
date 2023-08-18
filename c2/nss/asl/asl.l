@@ -15,6 +15,7 @@ extern Mloc asllloc;
 const char *aslfile = "<stdin>";
 const char *curraslfile = NULL;
 
+int endofinput = 0;
 int aslflextrace = 0;
 int fake_flag = 0;
 
@@ -157,6 +158,8 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 
 .				{ mesg_vwarning(curraslfile, asllineno,
 						"[asl] unmatched character %c", *asltext); }
+
+<T><<EOF>>			{ if (!endofinput++) return EOL; else yyterminate(); }
 
 %%
 

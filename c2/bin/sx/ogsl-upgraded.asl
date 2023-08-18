@@ -29887,7 +29887,7 @@
 @form |TUM.AŠ₂|
 @v    hašₓ
 @form |NINDA₂×(U.U.U)|
-@form |TUM.(U.U.U)|
+@form |TUM.U.U.U|
 @aka |TUM.EŠ|
 @v    kibₓ
 @end sign
@@ -31832,10 +31832,11 @@
 @v	guruₓ
 @end sign
 
-@sign |AK×ŠITA.GIŠ|
+@sign |AK×(ŠITA.GIŠ)|
 @aka |AK×ŠITA₂|
 @inote dcclt/signlists
-@v	meₓ
+@v	me₁₁
+@inote me₁₁ as @form under |AK×ERIN₂|
 @end sign
 
 @sign |IL₂.KID.DUB₂|
@@ -35242,3 +35243,149 @@
 @compoundonly ELLES214
 @compoundonly ASAL₂
 @compoundonly 1(N06)
+@compoundonly |AB₂×(BUR₂.LU₃)|
+@inote added during ogsl upgrade
+@compoundonly |AB₂×GU|
+@inote added during ogsl upgrade
+@compoundonly |AB₂×LA|
+@inote added during ogsl upgrade
+@compoundonly |AB₂×LU₃|
+@inote added during ogsl upgrade
+@compoundonly |AB₂×(LU₃.BUR₂)|
+@inote added during ogsl upgrade
+@compoundonly |AB₂×(LU₃.PAP.PAP)|
+@inote added during ogsl upgrade
+@compoundonly |AB₂×NI|
+@inote added during ogsl upgrade
+@compoundonly |AB₂×(U.U.U)|
+@inote added during ogsl upgrade
+@compoundonly |AN×MUŠ₃|
+@inote added during ogsl upgrade
+@compoundonly |ANŠE×IGI|
+@inote added during ogsl upgrade
+@compoundonly |DIM×KUR|
+@inote added during ogsl upgrade
+@compoundonly |DIŠ×A|
+@inote added during ogsl upgrade
+@compoundonly |DIŠ&DIŠ|
+@inote added during ogsl upgrade
+@compoundonly |DU&A|
+@inote added during ogsl upgrade
+@compoundonly |ERIN₂×(U.U.U)|
+@inote added during ogsl upgrade
+@compoundonly |(EŠ₂&EŠ₂)|
+@inote added during ogsl upgrade
+@compoundonly |GA₂×UŠ|
+@inote added during ogsl upgrade
+@compoundonly |GAD&GAD|
+@inote added during ogsl upgrade
+@compoundonly |GAR₃&GAR₃|
+@inote added during ogsl upgrade
+@compoundonly |GAR&GAR|
+@inote added during ogsl upgrade
+@compoundonly |GISAL×A|
+@inote added during ogsl upgrade
+@compoundonly |(GIŠ%GIŠ)@g|
+@inote added during ogsl upgrade
+@compoundonly |GU×KAK|
+@inote added during ogsl upgrade
+@compoundonly |HA@g×IGI|
+@inote added during ogsl upgrade
+@compoundonly |HI×KAK|
+@inote added during ogsl upgrade
+@compoundonly |HI×(NUN.ME)|
+@inote added during ogsl upgrade
+@compoundonly |HI×(NUN.ME.U)|
+@inote added during ogsl upgrade
+@compoundonly |IGI@g&IGI@g|
+@inote added during ogsl upgrade
+@compoundonly |KA×MU|
+@inote added during ogsl upgrade
+@compoundonly |KASKAL&KASKAL|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×(A.MAŠ)|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×AŠGAB|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×BALAG|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×EN|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×GA|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×GIR₂|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×LA|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×(LU₃.PAP.PAP)|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×(LU.GIR₂)|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×PAP|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×SA|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×ŠE|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×TAK₄|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×(TUG₂.HI)|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×U|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×U₂|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×(U₂.GIR₂)|
+@inote added during ogsl upgrade
+@compoundonly |KISIM₅×X|
+@inote added during ogsl upgrade
+@compoundonly |LAGAB&LAGAB|
+@inote added during ogsl upgrade
+@compoundonly |LAGAB×MU|
+@inote added during ogsl upgrade
+@compoundonly |LAGAB&ŠE|
+@inote added during ogsl upgrade
+@compoundonly |LAGAB&ZI|
+@inote added during ogsl upgrade
+@compoundonly |LAGAR×TAK₄|
+@inote added during ogsl upgrade
+@compoundonly |LAK648×A|
+@inote added during ogsl upgrade
+@compoundonly |NAGA×A|
+@inote added during ogsl upgrade
+@compoundonly |NAGA@ŠE|
+@inote added during ogsl upgrade
+@compoundonly |NAGA@U₂|
+@inote added during ogsl upgrade
+@compoundonly |NINDA₂@180×ZA|
+@inote added during ogsl upgrade
+@compoundonly |NU&NU|
+@inote added during ogsl upgrade
+@compoundonly |NUNUZ&NUNUZ|
+@inote added during ogsl upgrade
+@compoundonly |(PAN&PAN)|
+@inote added during ogsl upgrade
+@compoundonly |PA&PA|
+@inote added during ogsl upgrade
+@compoundonly |PAP×ŠE|
+@inote added during ogsl upgrade
+@compoundonly |PIRIG×PA|
+@inote added during ogsl upgrade
+@compoundonly |(ŠE.NUN&NUN)%(ŠE.NUN&NUN)|
+@inote added during ogsl upgrade
+@compoundonly |(ŠE%ŠE)|
+@inote added during ogsl upgrade
+@compoundonly |(ŠE&ŠE)|
+@inote added during ogsl upgrade
+@compoundonly |SIG₄%SIG₄|
+@inote added during ogsl upgrade
+@compoundonly |SUD&SUD|
+@inote added during ogsl upgrade
+@compoundonly |(SU.LU.EŠ₂.GAR)&(SU.LU.EŠ₂.GAR)|
+@inote added during ogsl upgrade
+@compoundonly |SU&ŠIR|
+@inote added during ogsl upgrade
+@compoundonly |(TA×HI)|
+@inote added during ogsl upgrade
+@compoundonly |UM×KUL|
+@inote added during ogsl upgrade
