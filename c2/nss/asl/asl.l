@@ -83,6 +83,7 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 <T>.+/\n@			{ BEGIN 0; aslsave; return TEXT; }
 <T>.+/\n			{ aslsave; return TEXT; }
 <T>\n				{ }
+<T><<EOF>>			{ if (!endofinput++) return EOL; else yyterminate(); }
 
 ^@@				{ /* no-op */ }
 ^@end/[ \t].*\n        	       	{ atcmd(END,E); }
@@ -159,7 +160,7 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 .				{ mesg_vwarning(curraslfile, asllineno,
 						"[asl] unmatched character %c", *asltext); }
 
-<T><<EOF>>			{ if (!endofinput++) return EOL; else yyterminate(); }
+<<EOF>>				{ if (!endofinput++) return EOL; else yyterminate(); }
 
 %%
 

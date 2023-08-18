@@ -14,6 +14,16 @@ GetOptions(
 
 # Update ogsl.asl to the new conventions used in the reimplementation
 
+# revised useqs from the new useq generator
+my %useq = ();
+open(U,'upgrade-useq.log') || die;
+while (<U>) {
+    chomp;
+    /generated useq (\S+) != (\S+)$/;
+    $useq{$2} = $1;
+}
+close(U);
+
 #load aka.tab to fix non-canonical compounds
 
 my @aka = `grep -v '#' aka.tab`; chomp @aka;
@@ -34,6 +44,8 @@ while (<>) {
     chomp;
     next if /^\@signlist/;
     next if /^\@end\s+form/;
+
+    s/\s+$//;
 
     s/OBZL/ABZL/g;
     
@@ -92,7 +104,12 @@ while (<>) {
 		    $_ = "\@list U+$u";
 		}
 	    } else {
-		s/ucode/useq/;
+		my ($useq) = (/\s(\S+)\s*$/);
+		if ($useq{$useq}) {
+		    $_ = "\@useq $useq{$useq}\n";
+		} else {
+		    s/ucode/useq/;
+		}
 	    }
 	}
 	s/uchar/utf8/;

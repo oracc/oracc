@@ -582,7 +582,8 @@
 @end sign
 
 @sign	|A.ŠE.NUN&NUN|
-@useq	x12000.x122BA.x1226A
+@useq x12000.x12301
+
 @v	asi
 @v	eša
 @v	eše₄
@@ -2041,7 +2042,8 @@
 @v	dussa₂
 @v	dusu₂
 @form |ANŠE.IGI.DIB|
-@useq	x12032.x12146.x12073
+@useq x12032.x12147
+
 @v	dusuₓ
 @form |IGI.EŠ₂|
 @list LAK434
@@ -4237,7 +4239,8 @@
 @end sign
 
 @sign	|DIN.ŠE.NUN&NUN|
-@useq	x12077.x122BA.x1226A
+@useq x12077.x12301
+
 @v	babilaₓ
 @v	din-tir
 @v	gamun
@@ -4342,7 +4345,8 @@
 @end sign
 
 @sign	|DIŠ.DIŠ.DIŠ.U.U|
-@useq	x12079.x12079.x12079.x1230B.x1230B
+@useq x12079.x12079.x12079.x12399
+
 @v	eššaba
 @v	eššana
 @v	iššebu
@@ -8610,14 +8614,16 @@
 @end sign
 
 @sign	|GI.NA.AB.U.GUD|
-@useq	x12100.x1223E.x1200A.x1230B.x1211E
+@useq x12100.x1223E.x1200A.x1230C
+
 @note  It is not clear whether to read šutum(|E₂.GI.NA.AB.U.GUD|) or rather e₂-šutum(|GI.NA.AB.U.GUD|) and šutum₂(|E₂.GI.NA.AB.TUM|) or rather e₂-šutum₂(|GI.NA.AB.TUM|). The latter option is chosen by Borger in MZL and is considered here the preferred one, because of the writing e₂-šu-tum in Ur III. The forms with E₂ are listed below in order to allow for the alternative option.
 @v     šutum
 @form	|GI.NA.AB.TUM|
 @useq	x12100.x1223E.x1200A.x12308
 @v     šutum₂
 @form	|E₂.GI.NA.AB.U.GUD|
-@useq	x1208D.x12100.x1223E.x1200A.x1230B.x1211E
+@useq x1208D.x12100.x1223E.x1200A.x1230C
+
 @v	šutumₓ
 @form	|E₂.GI.NA.AB.TUM|
 @useq	x1208D.x12100.x1223E.x1200A.x12308
@@ -11153,7 +11159,7 @@
 @list LAK433
 @inote |IGI.GA₂×PA|: sign description indicative not definitive
 @form |IGI.LU|
-@inote K 135+ P274788 NA but third millennium LAK775 style LU 
+@inote K 135+ P274788 NA but third millennium LAK775 style LU
 @end sign
 
 @sign	|IGI.DIM|
@@ -14349,7 +14355,7 @@
 @v	durunₓ
 @v	durunaₓ
 @v	eh₃
-@inote really DUR₂.DUR₂ 
+@inote really DUR₂.DUR₂
 @end sign
 
 @sign	|KU.KU.KU|
@@ -14740,7 +14746,7 @@
 @v egirₓ
 @form KWU734
 @inote NV in TCL 5, 6036 (P131750) counted per unit, in USC 6786 by weight.
-@inote NV KWU733 is often read egir (proper egir is KWU731) or egirₓ(KWU733). 
+@inote NV KWU733 is often read egir (proper egir is KWU731) or egirₓ(KWU733).
 @inote NV Schneider suggests dalla; Yildiz/Gomi UTI 3 2224 read zubi (both seem unlikely)
 @inote SJT egirₓ added for now to support ur3.atf; KWU734 probably graphic variant of KWU733
 @end sign
@@ -18354,7 +18360,8 @@
 @end sign
 
 @sign	|MAŠ.U.U.U|
-@useq	x12226.x1230B.x1230B.x1230B
+@useq x12226.x1230D
+
 @v	saŋeš	[CUSAS 12, JON 38 = dcclt:P414356 ii 12', |MAŠ.U.U.U| = tak-su-u]?
 @end sign
 
@@ -18817,7 +18824,8 @@
 @end sign
 
 @sign |MUŠ.DIN.ŠE.NUN&NUN.BALAG|
-@useq	x12232.x12077.x122BA.x1226A.x12046
+@useq x12232.x12077.x12301.x12046
+
 @lit  1984 M. Krebernik, BFE 298-300
 @v    irhanₓ
 @form |BU.DIN.BALAG.NUN|
@@ -19754,7 +19762,7 @@
 @v	emerahₓ
 @form |UD.NI.HUB₂|
 @end sign
- 
+
 @sign	|NI.NI|
 @useq	x1224C.x1224C
 @inote %akk/n ilī
@@ -24205,7 +24213,8 @@
 @end sign
 
 @sign	|ŠE.HU.TUR|
-@useq	x122BA.x12137.x12309
+@useq x122BB.x12309
+
 @v	bebad
 @inote	Attinger ~ bibad
 @v	bibad
@@ -24388,7 +24397,8 @@
 @end sign
 
 @sign	|ŠE.ŠE.NUN&NUN|
-@useq	x122BA.x122BA.x1226A
+@useq x122BA.x12301
+
 @v	ašnan
 @v	ašnana
 @v	ezennaₓ
@@ -24952,7 +24962,7 @@
 @end sign
 
 @sign	|ŠIM×HI|
-@inote ed3b collated from photo P250939 = CUSAS 35, 010 
+@inote ed3b collated from photo P250939 = CUSAS 35, 010
 @end sign
 
 @sign	|ŠIM×IGI|
@@ -25239,13 +25249,15 @@
 @end sign
 
 @sign	|ŠU.DI.U.U.U|
-@useq	x122D7.x12072.x1230B.x1230B.x1230B
+@useq x122D7.x12072.x1230D
+
 @v	sahab₂
 @v	suhub₄
 @v	šahab₂
 @v	šuhub₄
 @form |ŠU.U.U.U.DI|
-@useq x122D7.x1230B.x1230B.x1230B.x12072
+@useq x122D7.x1230D.x12072
+
 @v	suhubₓ
 @end sign
 
@@ -25657,7 +25669,8 @@
 @end sign
 
 @sign	|ŠU₂.U.U.U|
-@useq	x122D9.x1230B.x1230B.x1230B
+@useq x122D9.x1230D
+
 @v	lal₅?
 @v	lil₃
 @end sign
@@ -27169,7 +27182,8 @@
 @end sign
 
 @sign	|U.U.U.AŠ₃|
-@useq	x1230B.x1230B.x1230B.x1240B
+@useq x1230D.x1240B
+
 @v	bangašₓ
 @end sign
 
@@ -28442,7 +28456,7 @@
 @end sign
 
 @sign	|UR₂×AŠ₂|
-@inote hapax in Ur III Umma text in Istanbul with no photo/copy available P117909 = MVN 14, 0228 
+@inote hapax in Ur III Umma text in Istanbul with no photo/copy available P117909 = MVN 14, 0228
 @end sign
 
 @sign	|UR₂×(GI.IDIM)|
@@ -28895,7 +28909,6 @@
 
 @sign	|URU×MIN|
 @list ELLES314
-@list LAK648
 @list RSP269
 @list MZL080
 @list ABZL189
@@ -28944,7 +28957,7 @@
 @v	uru₁₇⁻
 @inote	Attinger
 @form |IM.LAK648|
-@useq x1214E.x12347
+@useq x1214E.x1250D
 @v	ulu₃
 @end sign
 
@@ -29123,7 +29136,8 @@
 @end sign
 
 @sign	|URUDA×U.U.U|
-@useq x12350.x1230B.x1230B
+@useq x12350.x12399
+
 @inote admin/ur3
 @end sign
 
@@ -31751,7 +31765,8 @@
 @end sign
 
 @sign |U.U.HUB₂|
-@useq	x1230B.x1230B.x12138
+@useq x12399.x12138
+
 @inote dcclt
 @v     emerahₓ
 @end sign
@@ -35288,7 +35303,8 @@
 @uname CUNEIFORM SIGN DAG3
 @end sign
 
-@sign	PEŠ*
+@sign	PEŠ₂~v
+@inote PEŠ₂* is not a valid OGSL sign name
 @list U+12394
 @uname CUNEIFORM SIGN PESH2 ASTERISK
 @end sign
@@ -35303,7 +35319,7 @@
 @uname CUNEIFORM SIGN AB2 TIMES A
 @end sign
 
-@sign	|AMAR×KUG|
+@sign	|AMAR×KU₃|
 @list U+12372
 @uname CUNEIFORM SIGN AMAR TIMES KUG
 @end sign
@@ -35328,7 +35344,7 @@
 @uname CUNEIFORM SIGN KA TIMES ASH3
 @end sign
 
-@sign	|KA×ŠUL|
+@sign	|KA×DUN|
 @list U+12385
 @uname CUNEIFORM SIGN KA TIMES SHUL
 @end sign

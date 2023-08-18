@@ -132,7 +132,9 @@ pcre2if_match(pcre2_code *re, const unsigned char *subject, int find_all, Pool *
       
       if (ovector[0] == ovector[1])
 	{
-	  if (ovector[0] == subject_length) break;
+	  /* For matches using sentinels if you get an empty match
+	     there can't be any more */
+	  if (ovector[0] == subject_length || sentinel) break;
 	  options = PCRE2_NOTEMPTY_ATSTART | PCRE2_ANCHORED;
 	}
 

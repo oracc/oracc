@@ -59,7 +59,7 @@ sx_unicode(struct sl_signlist *sl)
 	}
     }
 
-  /* Create a pattern to use for PCRE2 matching */
+  /* Create a pattern to use for PCRE2 matching of multi-component encoded signs like U.U.U */
   int nk;
   const char **k = hash_keys2(usigns, &nk);
   qsort(k, nk, sizeof(const char *), cmp_by_len);
@@ -114,6 +114,14 @@ sx_unicode(struct sl_signlist *sl)
 	    {
 	      int multi = 0;
 	      const char *m = sx_unicode_rx_mangle(sl, (ccp)name, &multi);
+
+#if 0
+	      if (!strcmp((ccp)name, "|DIŠ.DIŠ.DIŠ.U.U|"))
+		{
+		  fprintf(stderr, "found useq subject |DIŠ.DIŠ.DIŠ.U.U|\n");
+		}
+#endif
+
 	      if (multi)
 		{
 		  /*struct sl_token *tp = hash_find(sl->htoken, name);*/
@@ -143,7 +151,10 @@ sx_unicode(struct sl_signlist *sl)
 			  /* then add the material belonging to the match */
 			  list_add(bits, (void*)sx_unicode_useq_m(m, mp, sl->p));
 			  /* mp->off + mp->len is the character after
-			     the match so we need to back up by 1 */
+			     the match so we need to back up by 1 so
+			     we include the final sentinel of the
+			     match as the initial sentinel following
+			     the match */
 			  sofar += (mp->len - 1);
 			}
 		      /* add anything that follows the last match but -1 for the final sentinel */
@@ -166,6 +177,7 @@ sx_unicode(struct sl_signlist *sl)
 			  hash_add(useqs, (uccp)name, (void*)pool_copy((uccp)useq, sl->p));
 			}
 		      free((void*)useq);
+		      useq = NULL;
 		    }
 		  else
 		    {
@@ -197,6 +209,7 @@ sx_unicode(struct sl_signlist *sl)
 	}
     }
 
+  /* Set the utf8 fields for signs and forms as necessary */
   for (i = 0; i < sl->nsigns; ++i)
     {
       if (!sl->signs[i]->U.utf8)
@@ -410,7 +423,7 @@ sx_unicode_useq_r(const char *m, int from, int to, Pool *p)
   char *res = NULL;
 
   /* avoid putting a matched multipart sign through the useq parser again */
-  if ((res = hash_find(usigns, (uccp)tmp)))
+  if ((res = hash_find(usigns, (uccp)tmp)) && strcmp(res, "X"))
     {
       /* we have, e.g., U+12301 -- return x12301 */
       res = (char*)pool_copy((uccp)res+1, p);
