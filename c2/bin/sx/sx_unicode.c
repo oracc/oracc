@@ -116,9 +116,10 @@ sx_unicode(struct sl_signlist *sl)
 	      const char *m = sx_unicode_rx_mangle(sl, (ccp)name, &multi);
 
 #if 0
-	      if (!strcmp((ccp)name, "|DIŠ.DIŠ.DIŠ.U.U|"))
+	      const char *test = "|GUD.GIŠ×TAK₄.SI|";
+	      if (!strcmp((ccp)name, test))
 		{
-		  fprintf(stderr, "found useq subject |DIŠ.DIŠ.DIŠ.U.U|\n");
+		  fprintf(stderr, "found useq subject %s\n", test);
 		}
 #endif
 
@@ -173,8 +174,8 @@ sx_unicode(struct sl_signlist *sl)
 			}
 		      else
 			{
-			  Up->useq = useq;
-			  hash_add(useqs, (uccp)name, (void*)pool_copy((uccp)useq, sl->p));
+			  hash_add(useqs, (uccp)name, (ucp)(Up->useq = (ccp)pool_copy((uccp)useq, sl->p)));
+			  mesg_verr(&ip->mloc, "%s: adding useq %s\n", name, Up->useq);
 			}
 		      free((void*)useq);
 		      useq = NULL;
@@ -196,6 +197,7 @@ sx_unicode(struct sl_signlist *sl)
 			{
 			  Up->useq = useq;
 			  hash_add(useqs, name, (void*)useq);
+			  mesg_verr(&ip->mloc, "%s: adding useq %s\n", name, Up->useq);
 			}
 		    }
 		}
@@ -400,8 +402,7 @@ sx_unicode_useq(const char *m, Pool *p)
 /* Process the sign belonging to a match */
 static const char *
 sx_unicode_useq_m(const char *m, struct pcre2if_m *mp, Pool *p)
-{
-  
+{  
   return sx_unicode_useq_r(m, mp->off, mp->off + mp->len, p);
 }
 

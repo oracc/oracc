@@ -31,7 +31,7 @@ int minus_flag = 0;
 		GNAME GVALUE GVALUEX GOESTO
 		GBAD ATF LANG V VREF LIST LISTNUM
 		INOTE LIT NOTE TEXT END EBAD EFORM ESIGN
-		UREV USEQ UTF8 UNAME UNOTE 
+		UAGE USEQ UTF8 UNAME UNOTE 
 		SIGNLIST LISTDEF LISTNAME LREF SREF
 
 %nterm  <text>  anynote atftoken lang longtext token vref
@@ -159,15 +159,15 @@ atend:
 
 /* There is no atuhex because we use @list U+ */
 atunicode:
-	  aturev
+	  atuage
 	| atuseq
 	| atutf8
 	| atuname
 	| atunote
 	;
 
-aturev:
-	  UREV TEXT		{ asl_bld_urev(&@1, curr_asl, (uccp)$2); }
+atuage:
+	  UAGE TEXT		{ asl_bld_urev(&@1, curr_asl, (uccp)$2); }
 	;
 
 atuseq:

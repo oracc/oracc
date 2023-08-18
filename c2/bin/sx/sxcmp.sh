@@ -19,4 +19,4 @@ fi
 ./sxnorm.sh <$asl1 >$$-1.asl
 ./sxnorm.sh <$asl2 >$$-2.asl
 
-cmp $$-1.asl $$-2.asl || diff $$-[12].asl | less
+cmp $$-1.asl $$-2.asl || diff -a $$-[12].asl | less

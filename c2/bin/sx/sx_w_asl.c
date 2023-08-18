@@ -277,7 +277,7 @@ sx_w_a_unicode(struct sx_functions *f, struct sl_signlist *sl, struct sl_unicode
   if (up->utf8)
     fprintf(f->fp, "@utf8\t%s\n", up->utf8);
   if (up->urev)
-    fprintf(f->fp, "@urev\t%s\n", up->urev);
+    fprintf(f->fp, "@uage\t%s\n", up->urev);
   if (up->unotes)
     sx_w_a_str_list(f->fp, "unote", up->unotes);
 }

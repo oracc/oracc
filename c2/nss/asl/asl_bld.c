@@ -21,6 +21,17 @@ static unsigned const char *asl_oid_lookup(unsigned const char *key)
   return hash_find(oids, key);
 }
 
+static int
+asl_sign_guard(Mloc *locp, struct sl_signlist *sl, const char *tag)
+{
+  if (!sl->curr_sign)
+    {
+      mesg_verr(locp, "misplaced @%s--no @sign in effect", tag);
+      return 0;
+    }
+  return 1;
+}
+
 struct sl_signlist *
 asl_bld_init(void)
 {
@@ -492,7 +503,7 @@ asl_bld_note(Mloc *locp, struct sl_signlist *sl, const char *tag, const char *tx
       list_add(sl->curr_inst->notes, n);
     }
   else
-    mesg_verr(locp, "misplaced @%s", tag);
+    (void)asl_sign_guard(locp, sl, tag);
 }
 
 void
@@ -520,7 +531,7 @@ asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
       list_add(sl->curr_sign->aka, (void*)t);
     }
   else
-    mesg_verr(locp, "misplaced @aka");
+    (void)asl_sign_guard(locp, sl, "aka");
 }
 
 void
@@ -551,7 +562,7 @@ asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 	sl->curr_sign->pname = pool_copy(t, sl->p);
     }
   else
-    mesg_verr(locp, "misplaced @pname");
+    (void)asl_sign_guard(locp, sl, "pname");
 }
 
 /* Top-level entities other than sign set sl->curr_inst to host
@@ -651,47 +662,53 @@ asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int
 void
 asl_bld_uhex(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_singleton_string(locp, t, "uhex",
-			   sl->curr_form ? (uccp*)&sl->curr_form->u.f->U.uhex : (uccp*)&sl->curr_sign->U.uhex,
-			   sl->curr_form ? &sl->curr_form->uhex : &sl->curr_sign->inst->uhex);
+  if (asl_sign_guard(locp, sl, "uhex"))
+    asl_bld_singleton_string(locp, t, "uhex",
+			     sl->curr_form ? (uccp*)&sl->curr_form->u.f->U.uhex : (uccp*)&sl->curr_sign->U.uhex,
+			     sl->curr_form ? &sl->curr_form->uhex : &sl->curr_sign->inst->uhex);
 }
 
 void
 asl_bld_utf8(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_singleton_string(locp, t, "utf8",
-			   sl->curr_form ? &sl->curr_form->u.f->U.utf8 : &sl->curr_sign->U.utf8,
-			   sl->curr_form ? &sl->curr_form->utf8 : &sl->curr_sign->inst->utf8);
+  if (asl_sign_guard(locp, sl, "utf8"))
+    asl_bld_singleton_string(locp, t, "utf8",
+			     sl->curr_form ? &sl->curr_form->u.f->U.utf8 : &sl->curr_sign->U.utf8,
+			     sl->curr_form ? &sl->curr_form->utf8 : &sl->curr_sign->inst->utf8);
 }
 
 void
 asl_bld_useq(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_singleton_string(locp, t, "useq",
-			   (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.useq : &sl->curr_sign->U.useq),
-			   sl->curr_form ? &sl->curr_form->useq : &sl->curr_sign->inst->useq);
+  if (asl_sign_guard(locp, sl, "useq"))
+    asl_bld_singleton_string(locp, t, "useq",
+			     (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.useq : &sl->curr_sign->U.useq),
+			     sl->curr_form ? &sl->curr_form->useq : &sl->curr_sign->inst->useq);
 }
 
 void
 asl_bld_uname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_singleton_string(locp, t, "uname",
-			   (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.uname : &sl->curr_sign->U.uname),
-			   sl->curr_form ? &sl->curr_form->uname : &sl->curr_sign->inst->uname);
+  if (asl_sign_guard(locp, sl, "uname"))
+    asl_bld_singleton_string(locp, t, "uname",
+			     (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.uname : &sl->curr_sign->U.uname),
+			     sl->curr_form ? &sl->curr_form->uname : &sl->curr_sign->inst->uname);
 }
 
 void
 asl_bld_unote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_list_string(t, sl->curr_form ? &sl->curr_form->u.f->U.unotes : &sl->curr_sign->U.unotes);
+  if (asl_sign_guard(locp, sl, "unote"))
+    asl_bld_list_string(t, sl->curr_form ? &sl->curr_form->u.f->U.unotes : &sl->curr_sign->U.unotes);
 }
 
 void
 asl_bld_urev(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  asl_bld_singleton_string(locp, t, "urev",
-			   (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.urev : &sl->curr_sign->U.urev),
-			   sl->curr_form ? &sl->curr_form->urev : &sl->curr_sign->inst->urev);
+  if (asl_sign_guard(locp, sl, "urev"))
+    asl_bld_singleton_string(locp, t, "urev",
+			     (uccp*)(sl->curr_form ? &sl->curr_form->u.f->U.urev : &sl->curr_sign->U.urev),
+			     sl->curr_form ? &sl->curr_form->urev : &sl->curr_sign->inst->urev);
 }
 
 void
@@ -726,7 +743,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	  hash_add(sl->curr_form->lv->hvbases, pool_copy((uccp)base, sl->p), (void*)n);
 	}
     }
-  else
+  else if (sl->curr_sign)
     {
       unsigned const char *b = NULL;
       if (!minus_flag && (b = hash_find(sl->curr_sign->hvbases, base)))
@@ -741,7 +758,12 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	  hash_add(sl->curr_sign->hvbases, pool_copy((uccp)base, sl->p), (void*)n);
 	}
     }
-
+  else
+    {
+      (void)asl_sign_guard(locp, sl, "v");
+      return;
+    }
+  
   asl_bld_token(locp, sl, (ucp)n, 0);
   
   if (strlen((ccp)n) > 3)

@@ -382,5 +382,5 @@ sx_w_x_unicode(struct sx_functions *f, struct sl_signlist *sl, struct sl_unicode
       rnvxml_et("sl:utf8", ratts, u);
     }
   if (up->urev)
-    rnvxml_et("sl:urev", NULL, up->urev);
+    rnvxml_et("sl:uage", NULL, up->urev);
 }

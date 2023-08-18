@@ -108,7 +108,7 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 ^@useq/[ \t]+     		{ Tcmd(USEQ,S); }
 ^@uname/[ \t]+			{ Tcmd(UNAME,S); }
 ^@unote/[ \t]+   		{ Tcmd(UNOTE,S); }
-^@urev/[ \t]+			{ Tcmd(UREV,S); }
+^@uage/[ \t]+			{ Tcmd(UAGE,S); }
 ^@fake[ \t]+1[ \t]*/\n		{ return FAKE; }
 ^@lref/[ \t]+			{ atcmd(LREF,0); }
 ^@sref/[ \t]+			{ atcmd(SREF,0); }
