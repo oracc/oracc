@@ -1,1 +1,1 @@
-SUBDIRS=std sys cat jsn xml collate sll
+SUBDIRS=std sys cat jsn xml collate sll oid

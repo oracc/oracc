@@ -47,7 +47,7 @@ sx_SOURCES=sx.c sx_marshall.c sx_homophones.c sx_compounds.c sx_digests.c \
 
 sx_LDADD = $(xLDADD) -lpcre2-8
 
-sx_DEPENDENCIES = $(sx_LDADD)
+#sx_DEPENDENCIES = $(sx_LDADD)
 
 slix_SOURCES=slix.c
 

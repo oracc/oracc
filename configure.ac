@@ -247,6 +247,7 @@ AC_CONFIG_FILES([Makefile
 	c2/lib/cat/Makefile
 	c2/lib/collate/Makefile
 	c2/lib/jsn/Makefile
+	c2/lib/oid/Makefile
 	c2/lib/sll/Makefile
 	c2/lib/xml/Makefile
 	c2/lib/xml/expat/Makefile
