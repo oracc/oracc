@@ -18,7 +18,7 @@ parameters =
         element cuneify {
            attribute switcher { "yes" | "no" }, 
            attribute default  { "yes" | "no" }
-        }?, 
+        }?,
 	element common-headers { head.content }?,
 	element dc-id-prefix { text }?,
 	element main-menu-caption { text }?,

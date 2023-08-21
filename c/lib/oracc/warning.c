@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include <warning.h>
+
 #define NEW_ERROR_RECOVERY
 
-char *file = NULL;
+const char *file = NULL;
 int atf_cbd_err;
 int cbd_err_line = 0;
 int exit_status = 0;

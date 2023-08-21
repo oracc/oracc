@@ -6,6 +6,9 @@
 extern const char *textid;
 extern FILE *f_log;
 extern const char *file;
+
+#define phase c1_phase
+
 extern const char *phase;
 extern int lnum;
 extern int lstatus;

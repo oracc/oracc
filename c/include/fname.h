@@ -15,6 +15,20 @@
 #define	default_path(fn,fpath) new_path(fn, fpath, FALSE)
 #define	force_path(fn,fpath) new_path(fn, fpath, TRUE)
 
+#define oracc_builds 	c1_oracc_builds
+#define oracc_home	c1_oracc_home
+#define oracc_var	c1_oracc_var
+#define oracc_project_home c1_oracc_project_home
+#define new_ext		c1_new_ext
+#define find_ext	c1_find_ext
+#define new_ext_no_alloc c1_new_ext_no_alloc
+#define new_path	c1_new_path
+#define filename	c1_filename
+#define find_path	c1_find_path
+#define preslash	c1_preslash
+#define expand		c1_expand
+#define expand_xtr	c1_expand_xtr
+
 extern  const char *expand(const char *project,const char *pqid,const char *ext);
 extern const char *expand_xtr (const char *project, const char *pqid, const char *code, const char *lang);
 extern  char *l2_expand(const char *project,const char *pqid,const char *ext);

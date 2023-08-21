@@ -111,6 +111,8 @@ struct langatf
   const char *lang;
 };
 
+#define curr_lang c1_curr_lang
+
 extern struct lang_context *global_lang;
 extern struct lang_context *text_lang;
 extern struct lang_context *curr_lang;

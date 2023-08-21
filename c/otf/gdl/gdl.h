@@ -8,6 +8,13 @@
 #define GDL_FRAG_OK 1
 extern int gdl_fragment_ok;
 extern int use_unicode;
+
+#define c10e_compound 	c1_c10e_compound
+#define gdl_init 	c1_gdl_init
+#define gdl_sig		c1_gdl_sig
+#define gdl_string	c1_gdl_string
+#define gdl_term 	c1_gdl_term
+
 extern void gdl_init(void);
 extern void gdl_term(void);
 extern struct node *gdl(unsigned char *gdlin, int frag_ok);

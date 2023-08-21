@@ -40,6 +40,7 @@
 		    select="document ( concat ( $projesp, '/00web/', @file ) )"/>
       <xsl:if test="not ( string ( $page ) )">
 	<xsl:message>	WARNING! Page file '<xsl:value-of select="@file"/>' not found.</xsl:message>
+	<xsl:message>	WARNING! Looked for page '<xsl:value-of select="$page"/>'</xsl:message>
       </xsl:if>
       <xsl:if test="not($page/esp:page)">
 	<xsl:message>   WARNING! Page file '<xsl:value-of select="@file"/>' must begin with 'page' element in 'http://oracc.org/ns/esp/1.0' namespace.</xsl:message>

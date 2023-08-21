@@ -4,7 +4,9 @@ AM_CFLAGS=-ansi -pedantic -Wall -g
 SUBDIRS=
 noinst_LTLIBRARIES=libilem.la
 
-bin_PROGRAMS=lemprop
+bin_PROGRAMS=
+
+## lemprop
 
 ## ilem_lnode.c
 
@@ -16,10 +18,10 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include -I@top_srcdir@/c/expat/xmlparse \
 	-I@top_srcdir@/c/otf/{atf,chr,gdl,lib,lng} \
 	-I@top_srcdir@/c/l2/{form,link,ngram,prop,psus,sigs,word,xcl2,xli}
 
-lemprop_SOURCES = \
-	lemprop.c
+#lemprop_SOURCES = \
+#	lemprop.c
 
-lemprop_LDADD = \
-	@top_srcdir@/c/lib/liboracc.la ilem_props.o
+#lemprop_LDADD = \
+#	@top_srcdir@/c/lib/liboracc.la ilem_props.o
 
 EXTRA_DIST = *.h

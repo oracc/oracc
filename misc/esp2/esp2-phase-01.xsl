@@ -28,10 +28,12 @@
   <xsl:template match="struct:page[@file]">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
+      <xsl:variable name="pagename" select="concat ( $projesp, '/00web/', @file )"/>
       <xsl:variable name="page" 
-		    select="document ( concat ( $projesp, '/00web/', @file ) )"/>
+		    select="document ( $pagename )"/>
       <xsl:if test="string-length($page) = 0">
 	<xsl:message>	WARNING! Page file '<xsl:value-of select="@file"/>' not found.</xsl:message>
+	<xsl:message>	WARNING! (.xsl) Looked for page '<xsl:value-of select="$pagename"/>'</xsl:message>
       </xsl:if>
       <xsl:if test="not($page/esp:page)">
 	<xsl:message>   WARNING! Page file '<xsl:value-of select="@file"/>' must begin with 'page' element in 'http://oracc.org/ns/esp/1.0' namespace.</xsl:message>

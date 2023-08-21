@@ -54,12 +54,20 @@ my $wants = 0; # read cbdoid input and output the ones that are wanted
 my $xid_template = 'x0000000';
 my $xids = 0;
 
-my @domains = qw/sl sux akk arc egy grc hit qca qpc qpe elx peo plq qam qcu qeb qka xht xhu xur qur xlu hlu uga/;
+# remimplement this as a configuration file of the form:
+#
+# sl ogsl
+# sux epsd2
+# xco chorasmian
+# * neo
+#
+my @domains = qw/sl sux akk arc egy grc hit qca qpc qpe elx peo plq qam qcu qeb qka xco xht xhu xur qur xlu hlu uga/;
 my %domains = (); @domains{@domains} = ();
 
 my %domain_authorities = (
     sux => 'epsd2',
     sl  => 'ogsl',
+    xco => 'chorasmian',
     );
 
 my %typ_has_ext = (); @typ_has_ext{qw/form sense/} = (1,1);
@@ -103,7 +111,7 @@ sub oid_args {
 	chomp @edits;
     } else {
 	if ($keyfile) {
-	    open(K,$keyfile) || fail("can't open key file $keyfile");
+	    open(K,$keyfile) || oid_fail("can't open key file $keyfile");
 	    @keys = (<K>);
 	    chomp(@keys);
 	} else {

@@ -38,6 +38,8 @@ struct node
   struct grapheme *grapheme;
 };
 
+#define tree_init c1_tree_init
+
 #define firstChild(n) ((n&&n->children.lastused)?(n)->children.nodes[0]:NULL)
 void addToNodeList(struct nodelist*nl, void *vp);
 #define appendAttr(p,a) addToNodeList(&((p)->attr),a)

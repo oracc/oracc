@@ -146,6 +146,13 @@ gvl_is_sname(unsigned const char *g)
     return 0;
 }
 
+/* Backward compatibility so ox can work with c2/gdl  */
+int
+gvl_psl_lookup(unsigned const char *g)
+{
+  return gvl_lookup(g) != NULL;
+}
+
 int
 gvl_looks_like_sname(unsigned const char *g)
 {
