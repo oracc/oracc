@@ -24,9 +24,16 @@ Oids *
 oid_load(void)
 {
   Oids *o = calloc(1, sizeof(Oids));
-  o->oids = hash_create(2048);
   o->lines = loadfile_lines3((uccp)(o->file = oid_tab()), (size_t*)&o->nlines, &o->mem);
   qsort(o->lines, o->nlines, sizeof(unsigned char *), cmpstringp);
   return o;
 }
 
+Oids *
+oid_load_keys(const char *file)
+{
+  Oids *o = calloc(1, sizeof(Oids));
+  o->file = file;
+  o->lines = loadfile_lines3((uccp)o->file, (size_t*)&o->nlines, &o->mem);
+  return o;
+}

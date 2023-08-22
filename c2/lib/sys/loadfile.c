@@ -14,10 +14,16 @@ unsigned char **
 loadfile_lines3(unsigned const char *fname, size_t *nlines, unsigned char **fmem)
 {
   size_t i, j, n, l;
-  unsigned char *f = loadfile(fname,&n);
+  unsigned char *f = NULL;
   unsigned char **lp;
-  
+
+  if ('-' == *fname && !fname[1])
+    f = loadstdin(&n);
+  else
+    f = loadfile(fname,&n);
+
   *fmem = f;
+
   for (i = l = 0; i < n; ++i)
     if ('\n' == f[i])
       ++l;

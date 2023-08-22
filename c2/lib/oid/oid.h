@@ -14,8 +14,9 @@ struct oids
   unsigned char *mem;		/* memory allocated by loadfile */
   unsigned char **lines;	/* array of ptrs to lines */
   size_t nlines;		/* count of lines */
-  Hash *oids;			/* hash with key=oid and value=struct oid* */
+  Hash *h;			/* hash with key=oid and value=struct oid* */
   struct oid *o;		/* array of parsed oids */
+  struct oid **oo;		/* array of ptrs to the parsed oids */
 };
 
 typedef struct oids Oids;
@@ -40,7 +41,7 @@ struct oid
 				   is maintained by the OID system */
   const char *type;		/* The type for the OID--presently
 				   sign, word or sense */
-  const char *parent_id;	/* For sense this is the word OID the
+  const char *extension;	/* For sense this is the word OID the
 				   sense belongs to */
   struct oid_history *history;  /* List of changes for the OID encoded as history nodes */
 };
@@ -86,6 +87,7 @@ struct oid_history
 };
 
 extern Oids *oid_load(void);
+extern Oids *oid_load_keys(const char *file);
 extern int32_t oid_next_id(Oids *o);
 
 #endif/*OID_H_*/
