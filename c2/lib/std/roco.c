@@ -15,15 +15,15 @@ roco_load(const char *file)
   int i;
   for (i = 0; i < r->nlines; ++i)
     {
-      int ntab = 0;
+      int ncol = 1;
       unsigned char *s = r->lines[i];
       while (*s)
 	 {
 	  if ('\t' == *s)
-	    ++ntab;
+	    ++ncol;
 	  ++s;
 	}
-      r->rows[i] = calloc(ntab+2, sizeof(unsigned char *));
+      r->rows[i] = calloc(ncol+1, sizeof(unsigned char *));
       int col;
       for (col = 0, s = r->lines[i]; *s; ++col)
 	{
@@ -34,17 +34,12 @@ roco_load(const char *file)
 	  while (*s && '\t' != *s)
 	    ++s;
 	  if ('\t' == *s)
-	    {
-	      *s++ = '\0';
-	      if ('\0' == *s)
-		{
-		  /* line ends with tab; add an empty column and break
-		     out of loop */
-		  r->rows[i][++col] = (unsigned char *)"";
-		  break;
-		}
-	    }
+	    *s++ = '\0';
 	}
+
+      while (col < ncol)
+	r->rows[i][col++] = (unsigned char *)"";
+	
       r->rows[i][col] = NULL;
     }
   return r;
