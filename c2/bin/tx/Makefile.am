@@ -1,16 +1,16 @@
 include ../../../oracc-am-rules.txt
 
 noinst_PROGRAMS=catx
-bin_PROGRAMS=gdlx
+bin_PROGRAMS=gdlx rocox
 
 xLDADD=\
 	../../lib/cat/libcat.la \
 	../../nss/gdl/libgdl.la \
 	../../lib/sll/libsll.la \
-	../../lib/sys/libsys.la \
 	../../lib/collate/libcoll.la \
 	../../lib/xml/libxml.la \
 	../../lib/std/libstd.la \
+	../../lib/sys/libsys.la \
 	../../lib/xml/rnv/librnv.la \
 	../../rnc/librnc.la
 
@@ -36,3 +36,7 @@ gdlx_SOURCES=gdlx.c
 gdlx_LDADD = $(xLDADD)
 
 gdlx_DEPENDENCIES = $(xLDADD)
+
+rocox_SOURCES=rocox.c
+rocox_LDADD = $(xLDADD)
+rocox_DEPENDENCIES = $(xLDADD)

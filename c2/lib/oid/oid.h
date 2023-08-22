@@ -5,7 +5,6 @@
 #include <time.h>
 #include <hash.h>
 
-
 /* An Oids structure is the result of loading oid.tab or a key list of
    requests for OIDs */
 struct oids
@@ -18,7 +17,6 @@ struct oids
   struct oid *o;		/* array of parsed oids */
   struct oid **oo;		/* array of ptrs to the parsed oids */
 };
-
 typedef struct oids Oids;
 
 /* the main oid.tab is parsed into struct oid; when new oids are being
@@ -48,24 +46,22 @@ struct oid
 
 /* Argument to OID parser to tell it what to expect */
 enum oid_tab_t { ot_oids , ot_keys };
-
-/* History .tab has the following fields:
-
-   TIME OID ACTION REFOIDS
-
-   ACTION is one of:
-
-     delete merge rename split comment
-
-   REFOIDS is
-
-     empty for delete;
-     a singleton for merge and rename;
-     multiple for split
- */
      
 /* history operations */
-enum oid_what { ow_delete , ow_merge , ow_rename , ow_split };
+
+struct oid_edits
+{
+  const char *file;		/* source of oids */
+  unsigned char *mem;		/* memory allocated by loadfile */
+  unsigned char **lines;	/* array of ptrs to lines */
+  size_t nlines;		/* count of lines */
+  Hash *h;			/* hash with key=oid and value=struct oid_history * */
+  struct oid_history *o;	/* array of parsed oids */
+  struct oid_history **oo;	/* array of ptrs to the parsed oids */
+};
+typedef struct oid_edits Oide;
+
+enum oid_what { ow_add = '+' , ow_delete = '-' , ow_merge = '=' , ow_rename = '>' , ow_split = '|' };
 
 /* A simple linked list for use by oid_history */
 struct oid_list
@@ -74,16 +70,35 @@ struct oid_list
   struct oid_list *next;
 };
 
+/* An incoming edits file contains variable entries.
+ *
+ * All entries start with:
+ *
+ * WHEN OID KEY WHAT
+ *
+ * The WHEN field must be in ISO8601 YYYYMMDD format
+ *
+ * OID and KEY must match an entry in the relevant OID table; DOMAIN
+ * is unnecessary for edit operations.
+ *
+ * For WHAT = +  there are no more fields
+ * For WHAT = >  field 5 is a new KEY (rename)
+ * For WHAT = -  field 5 is a required comment which may or may not contain linkable OIDs
+ * For WHAT = =  fields 5-6 are an OID-KEY pair (merge);
+ * For WHAT = |  fields 3+2/4/6-etc .. 4+2/4/6-etc contain OID-KEY pairs (split)
+ *
+ */
 struct oid_history
 {
   const char *oid;		/* OID affected by change */
+  const unsigned char *key;	/* key for OID affected by change */
   enum oid_what what;		/* nature of change */
-  time_t when;			/* date of change */
+  struct oid_list *refs;	/* For a rename merge or split this is
+				   a list of one or more OIDs that the
+				   ref has moved to */
   struct oid_history *prev;	/* previous change to this OID */
-  struct oid_list *oids;	/* For a merge or split this is a list
-				   of one or more OIDs that the ref
-				   has moved to */
   unsigned char *comment;	/* Notes on the history action; optional */
+  time_t when;			/* date of change */
 };
 
 struct oid_domain
@@ -101,6 +116,7 @@ struct oid_type
 
 extern Oids *oid_load(void);
 extern Oids *oid_load_keys(const char *file);
+extern Oide *oid_load_edits(const char *file);
 extern const char *oid_next_oid(Oids *o);
 extern struct oid_domain *oid_domain (register const char *str, register size_t len);
 extern struct oid_type *oid_type (register const char *str, register size_t len);

@@ -710,8 +710,10 @@ assign_bins (Unsigned32 dsize)
   /*  bins[0].first_key = 0; */
   for (i = 0; i < tmp_dp->h.entry_count; ++i)
     {
+#if 0
       static Dbi_tnode*dtp;
       dtp = node_ptrs[i];
+#endif
       if (node_ptrs[i]->kcount)
 	{
 	  Unsigned32 new = ((node_ptrs[i]->kcount * TMP_FILE_OVERHEAD)

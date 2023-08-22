@@ -21,9 +21,7 @@ FILE *oo_out_fp = NULL;
 
 /* TO DO:
 
-   assign
    edits
-   wants
  */  
 
 int
@@ -49,9 +47,11 @@ main(int argc, char * const*argv)
     oid_set_oidtab("xid");
 
 #if 0
-  Oid_edits *e = NULL;
+  Oide *e = NULL;
   if (oo_edits)
-    e = oo_load_edits(oo_edits);
+    {
+      e = oid_load_edits(oo_edits);
+    }
 #endif
   
   if (oo_assign)

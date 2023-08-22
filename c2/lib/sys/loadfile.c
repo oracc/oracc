@@ -8,7 +8,13 @@
 #include <errno.h>
 #include "loadfile.h"
 
-extern const char *prog;
+static const char *prog = "<no-prog-set>";
+
+void
+loadfile_prog(const char *p)
+{
+  prog = p;
+}
 
 unsigned char **
 loadfile_lines3(unsigned const char *fname, size_t *nlines, unsigned char **fmem)
