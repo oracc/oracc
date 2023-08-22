@@ -6,4 +6,9 @@ AM_CPPFLAGS=-I../include \
 
 noinst_LTLIBRARIES=liboid.la
 
-liboid_la_SOURCES=oid.c
+liboid_la_SOURCES=oid_load.c
+
+noinst_PROGRAMS=oid
+
+oid_SOURCES=oid.c
+oid_LDADD=liboid.la ../std/libstd.la ../sys/libsys.la
