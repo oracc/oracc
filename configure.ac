@@ -265,6 +265,7 @@ AC_CONFIG_FILES([Makefile
 	c2/bin/ax/Makefile
 	c2/bin/cx/Makefile
 	c2/bin/gx/Makefile
+	c2/bin/ox/Makefile
 	c2/bin/sx/Makefile
 	c2/bin/tx/Makefile
 	c2/bin/xx/Makefile

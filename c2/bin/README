@@ -12,6 +12,7 @@ The following conversion programs are planned:
     cx	CDF (replaces 'ox')	
     gx	Glossary (replaces ORACC::CBD::*)
     mx  Metadata (replaces xmdmanager.plx)
+    ox  OIDs (replaces oid.plx and friends; main executable is oid not ox)
     sx	Signlist (replaces sl-xml.plx)
     tx	Test harnesses (e.g., gdlx)
     xx  Utility programs

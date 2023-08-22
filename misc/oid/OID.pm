@@ -116,8 +116,8 @@ sub oid_args {
 	    chomp(@keys);
 	} else {
 	    @keys = (<>);
+	    chomp @keys;
 	}
-	chomp @keys;
 	if ($xids) {
 	    $ids = 'xid';
 	    $oid_top = $xid_template;
