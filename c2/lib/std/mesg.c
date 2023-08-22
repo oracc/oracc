@@ -97,6 +97,15 @@ mesg_add(char *e)
   list_add(mesg_list, e);
 }
 
+Mloc *
+mesg_mloc(const char *file, size_t line)
+{
+  static Mloc m;
+  m.file = file;
+  m.line = line;
+  return &m;
+}
+
 char *
 mesg_loc(Mloc *locp)
 {

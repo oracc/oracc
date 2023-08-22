@@ -21,6 +21,7 @@ extern void mesg_init(void);
 extern void mesg_print(FILE *fp);
 extern void mesg_term(void);
 extern char *mesg_loc(Mloc *locp);
+extern Mloc *mesg_mloc(const char *file, size_t line);
 extern void mesg_err(Mloc *locp, const char *s);
 extern void mesg_verr(Mloc *locp, const char *s, ...);
 extern void mesg_averr(Mloc *locp, const char *s, va_list ap);

@@ -86,8 +86,25 @@ struct oid_history
   unsigned char *comment;	/* Notes on the history action; optional */
 };
 
+struct oid_domain
+{
+  const char *name;
+  const char *auth;
+};
+
+/* Oracc always uses --struct-type so we have to do this even when
+   there is no structure in the gperf hash */
+struct oid_type
+{
+  const char *name;
+};
+
 extern Oids *oid_load(void);
 extern Oids *oid_load_keys(const char *file);
 extern int32_t oid_next_id(Oids *o);
+extern struct oid_domain *oid_domain (register const char *str, register size_t len);
+extern struct oid_type *oid_type (register const char *str, register size_t len);
+extern int oid_parse(Oids *o, enum oid_tab_t t);
+
 
 #endif/*OID_H_*/

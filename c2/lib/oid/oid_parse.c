@@ -1,4 +1,11 @@
+#include <hash.h>
+#include <mesg.h>
 #include <oid.h>
+
+#undef ccp
+#undef uccp
+#define ccp 	const char *
+#define uccp 	const unsigned char *
 
 static unsigned char *
 nextfield(unsigned char *s)
@@ -14,11 +21,15 @@ nextfield(unsigned char *s)
     return NULL;
 }
 
-void
+#define op_error(x) mesg_verr(mesg_mloc(o->file,i),"oid parse error: "x),++op_status
+
+int
 oid_parse(Oids *o, enum oid_tab_t t)
 {
   size_t i;
-  
+  int op_status = 0;
+
+  o->h = hash_create(2048);
   o->o = calloc(o->nlines, sizeof(struct oid));
   o->oo = calloc(o->nlines, sizeof(struct oid *));
 
@@ -28,42 +39,48 @@ oid_parse(Oids *o, enum oid_tab_t t)
       o->oo[i] = &o->o[i];
       if (ot_oids == t)
 	{
-	  o->o[i]->id = s;
+	  o->oo[i]->id = (ccp)s;
 	  s = nextfield(s);
 
-	  if (hash_find(o->h, o->o[i]->id))
-	    mesg_verr(mesg_mloc(o->file,i), "duplicate OID %s", o->o[i]->id);
+	  if (hash_find(o->h, (uccp)o->oo[i]->id))
+	    mesg_verr(mesg_mloc(o->file,i), "duplicate OID %s", o->oo[i]->id), ++op_status;
 	  else
-	    hash_add(o->h, o->o[i]->id, o->oo[i]);
+	    hash_add(o->h, (uccp)o->oo[i]->id, o->oo[i]);
 	}
       if (s)
 	{
-	  o->o[i]->domain = s;
+	  o->oo[i]->domain = (ccp)s;
 	  s = nextfield(s);
 
-	  if (!oid_known_domain(o->o[i]->domain))
- 	    mesg_verr(mesg_mloc(o->file,i), "unknown DOMAIN %s", o->o[i]->domain);
+	  if (!oid_domain(o->oo[i]->domain, strlen(o->oo[i]->domain)))
+ 	    mesg_verr(mesg_mloc(o->file,i), "unknown DOMAIN %s", o->oo[i]->domain), ++op_status;
 
 	  if (s)
 	    {
-	      o->o[i]->key = s;
+	      o->oo[i]->key = s;
 	      s = nextfield(s);
 
-	      if (hash_find(o->h, o->o[i]->key))
-		mesg_verr(mesg_mloc(o->file,i), "duplicate KEY %s", o->o[i]->id);
+	      if (hash_find(o->h, o->oo[i]->key))
+		{
+		  if ('o' != *o->oo[i]->key && strcmp((ccp)o->oo[i]->key, "deleted"))
+		    mesg_verr(mesg_mloc(o->file,i), "duplicate KEY %s", o->oo[i]->id), ++op_status;		  
+		}
 	      else
-		hash_add(o->h, o->o[i]->key, o->oo[i]);
+		{
+		  if ('o' != *o->oo[i]->key && strcmp((ccp)o->oo[i]->key, "deleted"))
+		    hash_add(o->h, o->oo[i]->key, o->oo[i]);
+		}
 
 	      if (s)
 		{
-		  o->o[i]->type = s;
+		  o->oo[i]->type = (ccp)s;
 		  s = nextfield(s);
-		  if (!oid_known_type(o->o[i]->type))
-		    mesg_verr(mesg_mloc(o->file,i), "unknown TYPE %s", o->o[i]->type);
+		  if (!oid_type(o->oo[i]->type, strlen(o->oo[i]->type)))
+		    mesg_verr(mesg_mloc(o->file,i), "unknown TYPE %s", o->oo[i]->type), ++op_status;
 		    
 		  if (s)
 		    {
-		      o->[i]->extension = s;
+		      o->oo[i]->extension = (ccp)s;
 		      s = nextfield(s);
 		      /* split list and check they are all legal OIDs */
 		      if (s != NULL)
@@ -79,5 +96,6 @@ oid_parse(Oids *o, enum oid_tab_t t)
 	}
       else
 	op_error("expected DOMAIN");
-    }  
+    }
+  return op_status;
 }
