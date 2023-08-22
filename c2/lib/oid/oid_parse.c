@@ -44,7 +44,7 @@ oid_parse(Oids *o, enum oid_tab_t t)
 
 	  if (hash_find(o->h, (uccp)o->oo[i]->id))
 	    mesg_verr(mesg_mloc(o->file,i), "duplicate OID %s", o->oo[i]->id), ++op_status;
-	  else
+	  else if (t != ot_keys)
 	    hash_add(o->h, (uccp)o->oo[i]->id, o->oo[i]);
 	}
       if (s)
@@ -59,16 +59,17 @@ oid_parse(Oids *o, enum oid_tab_t t)
 	    {
 	      o->oo[i]->key = s;
 	      s = nextfield(s);
+	      const char *dk = oid_domainify(o->oo[i]->domain, (ccp)o->oo[i]->key);
 
-	      if (hash_find(o->h, o->oo[i]->key))
+	      if (hash_find(o->h, (uccp)dk))
 		{
-		  if ('o' != *o->oo[i]->key && strcmp((ccp)o->oo[i]->key, "deleted"))
-		    mesg_verr(mesg_mloc(o->file,i), "duplicate KEY %s", o->oo[i]->id), ++op_status;		  
+		  if ('o' != *o->oo[i]->key && 'x' != *o->oo[i]->key && strcmp((ccp)o->oo[i]->key, "deleted"))
+		    mesg_verr(mesg_mloc(o->file,i), "duplicate KEY %s:%s", o->oo[i]->domain, o->oo[i]->key), ++op_status;		  
 		}
 	      else
 		{
-		  if ('o' != *o->oo[i]->key && strcmp((ccp)o->oo[i]->key, "deleted"))
-		    hash_add(o->h, o->oo[i]->key, o->oo[i]);
+		  if (t != ot_keys && 'o' != *o->oo[i]->key && 'x' != *o->oo[i]->key &&strcmp((ccp)o->oo[i]->key, "deleted"))
+		    hash_add(o->h, (uccp)strdup(dk), o->oo[i]);
 		}
 
 	      if (s)

@@ -5,19 +5,41 @@
 #include <hash.h>
 #include <oid.h>
 
+static const char *oidtab = NULL;
+
 static int
 cmpstringp(const void *p1, const void *p2)
 {
   return strcmp(* (char * const *) p1, * (char * const *) p2);
 }
 
+void
+oid_set_oidtab(const char *s)
+{
+  oidtab = s;
+}
+
+static const char *
+oid_tab_path(const char *base)
+{
+  int len = strlen(oracc_home() + strlen("/oid/.tab") + strlen(base) + 1);
+  char *tmp = malloc(len);
+  sprintf(tmp, "%s/oid/%s.tab", oracc_home(), base);
+  return tmp;
+}
+
 static const char *
 oid_tab(void)
 {
-  int len = strlen(oracc_home() + strlen("/oid/oid.tab") + 1);
-  char *tmp = malloc(len);
-  sprintf(tmp, "%s%s", oracc_home(), "/oid/oid.tab");
-  return tmp;
+  if (oidtab)
+    {
+      if (!strcmp(oidtab, "xid"))
+	return oid_tab_path("xid");
+      else
+	return strdup(oidtab);
+    }
+  else
+    return oid_tab_path("oid");
 }
 
 Oids *

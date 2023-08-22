@@ -101,10 +101,14 @@ struct oid_type
 
 extern Oids *oid_load(void);
 extern Oids *oid_load_keys(const char *file);
-extern int32_t oid_next_id(Oids *o);
+extern const char *oid_next_oid(Oids *o);
 extern struct oid_domain *oid_domain (register const char *str, register size_t len);
 extern struct oid_type *oid_type (register const char *str, register size_t len);
 extern int oid_parse(Oids *o, enum oid_tab_t t);
-
+extern void oid_write(FILE *fp, Oids*o);
+extern void oid_set_oidtab(const char *s);
+extern List *oid_assign(Oids *o, Oids *k);
+extern const char *oid_domainify(const char *d, const char *k);
+extern List *oid_wants(Oids *o, Oids *k);
 
 #endif/*OID_H_*/
