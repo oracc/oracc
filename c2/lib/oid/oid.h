@@ -136,5 +136,7 @@ extern List *oid_wants(Oids *o, Oids *k);
 extern struct oid_ok_pair *oid_ok_pair_last(struct oid_ok_pair *lp);
 extern struct oid_ok_pair *oid_ok_pair(const char *oid, const char *key);
 extern Hash *oid_domain_hash(Oids *o, const char *tab, const char *domain);
+extern int oid_parse_edits(Oide *e);
+extern void oid_write_edits(FILE *fp, Oide *e);
 
 #endif/*OID_H_*/

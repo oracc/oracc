@@ -19,15 +19,11 @@ extern int oo_xids;
 
 FILE *oo_out_fp = NULL;
 
-/* TO DO:
-
-   edits
- */  
-
 int
 main(int argc, char * const*argv)
 {
   Oids *o = NULL, *k = NULL;
+  Oide *e = NULL;
 
   mesg_init();
 
@@ -46,13 +42,17 @@ main(int argc, char * const*argv)
   else if (oo_xids)
     oid_set_oidtab("xid");
 
-#if 0
-  Oide *e = NULL;
   if (oo_edits)
     {
       e = oid_load_edits(oo_edits);
+      oid_parse_edits(e);
+      if (oo_identity)
+	{
+	  oid_write_edits(stdout,e);
+	  /* don't output edits and oid in a single run */
+	  oo_identity = 0;
+	}
     }
-#endif
   
   if (oo_assign)
     {

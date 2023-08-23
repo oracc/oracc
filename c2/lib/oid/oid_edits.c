@@ -82,7 +82,13 @@ oid_parse_edits(Oide *e)
 	  break;
 	case ow_delete:
 	  if (r[4] && *r[4])
-	    e->ee[i]->comment = r[4];
+	    {
+	      /* delete can have either a comment or and OID-KEY pair */
+	      if (r[5] && *r[5])
+		e->ee[i]->refs = oid_ok_pair((ccp)r[4], (ccp)r[5]);
+	      else
+		e->ee[i]->comment = r[4];
+	    }
 	  else
 	    mesg_verr(mesg_mloc(e->r->file,i), "missing comment from 'delete'"), ++status;
 	  break;
@@ -133,4 +139,42 @@ oid_parse_edits(Oide *e)
 	}
     }
   return status;
+}
+
+void
+oid_write_edits(FILE *fp, Oide *e)
+{
+  size_t i;
+  for (i = 0; i < e->r->nlines; ++i)
+    {
+      fprintf(fp, "%s\t%s\t%s\t%c", e->ee[i]->ymd, e->ee[i]->oid, e->ee[i]->key, e->ee[i]->what);
+      switch (e->ee[i]->what)
+	{
+	case ow_add:
+	  /* nothing further */
+	  break;
+	case ow_delete:
+	  if (e->ee[i]->refs)
+	    fprintf(fp, "\t%s\t%s", e->ee[i]->refs->oid, e->ee[i]->refs->key);
+	  else
+	    fprintf(fp, "\t%s", e->ee[i]->comment);
+	  break;
+	case ow_merge:
+	  fprintf(fp, "\t%s\t%s", e->ee[i]->refs->oid, e->ee[i]->refs->key);
+	  break;
+	case ow_rename:
+	  fprintf(fp, "\t%s", e->ee[i]->refs->key);
+	  break;
+	case ow_split:
+	  {
+	    struct oid_ok_pair *okp;
+	    for (okp = e->ee[i]->refs; okp; okp = okp->next)
+	      fprintf(fp, "\t%s\t%s", okp->oid, okp->key);
+	  }
+ 	  break;
+ 	default:
+	  break;	  
+	}
+      fputc('\n', fp);
+    }
 }
