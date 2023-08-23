@@ -1,29 +1,25 @@
 #include <oraccsys.h>
 #include <hash.h>
+#include <oid.h>
 
 extern int verbose;
 
-const char *
-oid_tab_file(void)
-{
-  const char *obuilds = NULL;
-  char *fn = malloc(strlen((obuilds = oracc_builds()))+strlen("/oid/oid.tabX"));
-  (void)sprintf(fn, "%s%s", obuilds, "/oid/oid.tab");
-  return fn;
-}
-
 Hash *
-oid_load(const char *domain)
+oid_domain_hash(Oids *o, const char *otab, const char *domain)
 {
-  const char *oidfn = NULL;
-  unsigned char *oids = slurp("oid_load", (oidfn = oid_tab_file()), NULL);
   Hash *h = NULL;
-  if (oids)
+  if (!o)
     {
-      unsigned char *s;
+      oid_set_oidtab(otab);
+      o = oid_load();
+    }
+  if (o && o->nlines)
+    {
       h = hash_create(2048);
-      for (s = oids; *s; ++s)
+      int i;
+      for (i = 0; i < o->nlines; ++i)
 	{
+	  unsigned char *s = o->lines[i];
 	  unsigned char *t = (ucp)strchr((ccp)s, '\t');
 	  if (t)
 	    {
@@ -57,10 +53,7 @@ oid_load(const char *domain)
 		    s = k;
 		}		      
 	    }
-	  while (*s && '\n' != *s)
-	    ++s;
-	}      
+	}
     }
-  free((void*)oidfn);
   return h;
 }

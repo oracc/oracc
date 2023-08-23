@@ -3,7 +3,7 @@ include ../../../oracc-am-rules.txt
 noinst_LTLIBRARIES=libasl.la
 
 libasl_la_SOURCES = asl.tab.c asl-l.c aslyacc.c asl.c \
-		    asl_bld.c asl_listdef.c oid.c
+		    asl_bld.c asl_listdef.c
 
 # asltree.c
 
@@ -12,6 +12,7 @@ YACC=bison
 AM_CPPFLAGS=\
 	-I../../lib/include \
 	-I../../lib/cat \
+	-I../../lib/oid \
 	-I../../lib/std \
 	-I../../lib/sys \
 	-I../../lib/sll \

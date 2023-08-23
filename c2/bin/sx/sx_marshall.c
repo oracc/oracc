@@ -1,11 +1,11 @@
 #include <hash.h>
 #include <collate.h>
 #include <oraccsys.h>
+#include <oid.h>
 #include <signlist.h>
 #include <sx.h>
 
 extern int sortcode_output;
-extern Hash * oid_load(const char *domain);
 Hash *oids;
 Hash *oid_sort_keys;
 static struct sl_signlist *cmpsl = NULL;
@@ -281,7 +281,7 @@ sx_marshall(struct sl_signlist *sl)
   if (!sl->oid2ucode)
     sl->oid2ucode = hash_create(1024);
   
-  oids = oid_load("sl");
+  oids = oid_domain_hash(NULL, "oid", "sl");
   if (!oids)
     oids = hash_create(1);
   oid_sort_keys = hash_create(2048);

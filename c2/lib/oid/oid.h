@@ -135,5 +135,6 @@ extern const char *oid_domainify(const char *d, const char *k);
 extern List *oid_wants(Oids *o, Oids *k);
 extern struct oid_ok_pair *oid_ok_pair_last(struct oid_ok_pair *lp);
 extern struct oid_ok_pair *oid_ok_pair(const char *oid, const char *key);
+extern Hash *oid_domain_hash(Oids *o, const char *tab, const char *domain);
 
 #endif/*OID_H_*/

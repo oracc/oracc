@@ -18,5 +18,6 @@ extern void asl_init(void);
 extern void asl_term(void);
 extern int aslparse(void);
 extern char *longtext(struct sl_signlist *sl, char *t, char *a);
+extern Hash *asl_get_oids(void);
 
 #endif

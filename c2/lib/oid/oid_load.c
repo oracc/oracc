@@ -33,7 +33,9 @@ oid_tab(void)
 {
   if (oidtab)
     {
-      if (!strcmp(oidtab, "xid"))
+      if (!strcmp(oidtab, "oid"))
+	return oid_tab_path("oid");
+      else if (!strcmp(oidtab, "xid"))
 	return oid_tab_path("xid");
       else
 	return strdup(oidtab);

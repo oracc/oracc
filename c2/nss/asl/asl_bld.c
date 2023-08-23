@@ -14,11 +14,16 @@ static void check_flags(char *n, int *q, int *l);
 
 struct sl_signlist *curr_asl = NULL;
 
-extern Hash *oid_load(const char *domain);
 static Hash *oids;
 static unsigned const char *asl_oid_lookup(unsigned const char *key)
 {
   return hash_find(oids, key);
+}
+
+Hash *
+asl_get_oids(void)
+{
+  return oids;
 }
 
 static int
@@ -68,7 +73,8 @@ asl_bld_init(void)
   sl->notes->u.S = sl;
 
   /* Preload the current set of SL oids */
-  oids = oid_load("sl");
+  oids = oid_domain_hash(NULL, "oid", "sl");
+
   (void)gvl_setup(NULL, NULL);
   gvl_set_lookup_ptr(asl_oid_lookup);
   
