@@ -10,11 +10,13 @@
 #include <stdarg.h>
 #include "warning.h"
 #include "atffile.h"
+#include "gdl.h"
 #include "loadfile.h"
 #include "pool.h"
 #include "proj_context.h"
 #include "rnvif.h"
 #include "run.h"
+#include "tree.h"
 #include "cdf_rnc.h"
 #include "list.h"
 #include "globals.h"
@@ -152,6 +154,11 @@ main(int argc, char **argv)
   signals(argc, argv);
   run = run_init();
   pool_init();
+
+  /* needed for binding with c2; this will call c1_gdl_init */
+  tree_init();
+  gdl_init();
+
   no_gdl_xids = 0;
   if (!ox_options(argc,argv))
     {
