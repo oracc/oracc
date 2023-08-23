@@ -47,6 +47,24 @@ oid_domainify(const char *d, const char *k)
   return buf;
 }
 
+struct oid_ok_pair *
+oid_ok_pair(const char *oid, const char *key)
+{
+  struct oid_ok_pair *lp = calloc(1, sizeof(struct oid_ok_pair));
+  lp->oid = oid;
+  lp->key = key;
+  return lp;
+}
+
+/* lp argument must be non-NULL */
+struct oid_ok_pair *
+oid_ok_pair_last(struct oid_ok_pair *lp)
+{
+  while (lp->next)
+    lp = lp->next;
+  return lp;
+}
+
 static int32_t
 oid_next_idnum(Oids *o)
 {

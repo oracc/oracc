@@ -59,12 +59,3 @@ oid_load_keys(const char *file)
   o->lines = loadfile_lines3((uccp)o->file, (size_t*)&o->nlines, &o->mem);
   return o;
 }
-
-Oide *
-oid_load_edits(const char *file)
-{
-  Oide *e = calloc(1, sizeof(Oide));
-  e->file = file;
-  e->lines = loadfile_lines3((uccp)e->file, (size_t*)&e->nlines, &e->mem);
-  return e;
-}
