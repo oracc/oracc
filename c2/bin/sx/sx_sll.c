@@ -36,6 +36,7 @@ sx_s_sll(FILE *f, struct sl_signlist *sl)
   sx_s_values_by_oid(f, sl);
   sx_s_homophones(f, sl);
   sx_s_qualified(f, sl);
+  fputs("#letters\n", f);
   for (i = 0; i < sl->nletters; ++i)
     sx_s_letter(f, &sl->letters[i]);
 }

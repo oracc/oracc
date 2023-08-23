@@ -24,6 +24,28 @@ static List *mesg_list;
 static int msg_cmp(const void *pa, const void *pb);
 static char *nl(char *e);
 
+/* Incremented for each warning message; notice and vnotice do not
+   increment the mesg_status */
+static int mesg__status = 0;
+
+int
+mesg_status(void)
+{
+  return mesg__status;
+}
+
+void
+mesg_status_ignore_one(void)
+{
+  --mesg__status;
+}
+
+void
+mesg_status_reset(void)
+{
+  mesg__status = 0;
+}
+
 void
 mesg_init(void)
 {
@@ -95,6 +117,7 @@ void
 mesg_add(char *e)
 {
   list_add(mesg_list, e);
+  ++mesg__status;
 }
 
 Mloc *
@@ -193,6 +216,7 @@ mesg_notice(const char *file, int ln, const char *str)
   l.file = (char*)file;
   l.line = ln;
   mesg_err(&l,(char*)str);
+  mesg_status_ignore_one();
 }
 
 void
@@ -216,6 +240,7 @@ mesg_vnotice(const char *file, int ln, const char *s, ...)
       va_start(ap, s);
       mesg_averr(&l, s, ap);
       va_end(ap);
+      mesg_status_ignore_one();
     }
 }
 

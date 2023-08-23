@@ -43,6 +43,10 @@ extern void mloc_term(void);
 extern Mloc *mloc_file_line(const char *file, int line);
 extern Mloc *mloc_mloc(Mloc *arg_ml);
 
+extern int mesg_status(void);
+extern void mesg_status_ignore_one(void);
+extern void mesg_status_reset(void);
+
 /* Support for Yacc -- include mesg.h before xxx.tab.h and add
  *
  * #define XXXLTYPE Mloc

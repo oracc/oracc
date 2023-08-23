@@ -7,6 +7,7 @@
 #include <gutil.h>
 #include <sll.h>
 #include <gdl.h>
+#include <oid.h>
 #include <asl.tab.h>
 #include "signlist.h"
 

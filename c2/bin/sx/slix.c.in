@@ -14,13 +14,13 @@ main(int argc, char **argv)
 
   if (argc == 2)
     {
-      if (!strcmp(argv[1], "-boot"))
+      if (!strcmp(argv[1], "-b") || !strcmp(argv[1], "-boot"))
 	boot = 1;
     }
   else
     {
 #if 0
-      fprintf(stderr, "slix: must give output DB name or -boot option on command line\n");
+      fprintf(stderr, "slix: must give output DB name or -b option on command line\n");
       exit(1);
 #endif
     }

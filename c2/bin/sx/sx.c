@@ -15,8 +15,9 @@ Mloc *xo_loc;
 FILE *f_xml;
 const char *file;
 int verbose;
-int status;
 int asltrace,rnvtrace;
+
+int status = 0; /* for rnc; should be in library there */
 
 int asl_output = 0;
 int identity_mode = 0;
@@ -31,6 +32,7 @@ int xml_output = 0;
 
 extern int asl_raw_tokens; /* ask asl to produce list of @sign/@form/@v tokens */
 
+int boot_mode = 0;
 int check_mode = 0;
 int trace_mode = 0;
 extern int asl_flex_debug, gdl_flex_debug;
@@ -41,7 +43,8 @@ int
 main(int argc, char * const*argv)
 {
   struct sl_signlist *sl;
-
+  FILE *sllout = stdout;
+  
   xo_loc = malloc(sizeof(Mloc));
   mesg_init();
   asl_flex_debug = gdl_flex_debug = 0;
@@ -53,16 +56,35 @@ main(int argc, char * const*argv)
   
   gsort_init();
   
-  options(argc, argv, "acijlm:MsStTux");
+  options(argc, argv, "abcijlm:MsStTux");
   asltrace = asl_flex_debug = trace_mode;
 
-  if (argv[optind])
+  if (boot_mode)
     {
-      file = argv[optind];
+      sll_output = 1;
+      file = "00lib/ogsl.asl";
       if (!freopen(file, "r", stdin))
 	{
 	  fprintf(stderr, "sx: unable to read from %s\n", file);
 	  exit(1);
+	}
+      const char *outfile = "02pub/sl/sl.tsv"; /* FIXME: should be @@ORACC@@/ogsl ... */
+      if (!(sllout = fopen(outfile, "w")))
+	{
+	  fprintf(stderr, "sx: unable to write to %s\n", outfile);
+	  exit(1);
+	}
+    }
+  else
+    {
+      if (argv[optind])
+	{
+	  file = argv[optind];
+	  if (!freopen(file, "r", stdin))
+	    {
+	      fprintf(stderr, "sx: unable to read from %s\n", file);
+	      exit(1);
+	    }
 	}
     }
   
@@ -111,7 +133,7 @@ main(int argc, char * const*argv)
 	sx_walk(sx_w_jsn_init(stdout, "-"), sl);
 	
       if (sll_output)
-	sx_s_sll(stdout, sl);
+	sx_s_sll(sllout, sl);
       
       if (xml_output)
 	sx_walk(sx_w_xml_init(stdout, "_"), sl);
@@ -121,6 +143,7 @@ main(int argc, char * const*argv)
   asl_term();
   asl_bld_term(sl);
   mesg_print(stderr);
+  return mesg_status();
 }
 
 int
@@ -130,6 +153,9 @@ opts(int opt, char *arg)
     {
     case 'a':
       asl_output = 1;
+      break;
+    case 'b':
+      boot_mode = 1; /* write sll output to 02pub/sl/sl.tsv */
       break;
     case 'c':
       check_mode = 1;
