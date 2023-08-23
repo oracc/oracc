@@ -121,7 +121,8 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/l2 \
 	-I@top_srcdir@/c/l2/{bigrams,dsa,form,ilem,link,ngram,nsa,prop,psa,psus,sigs,word,xcl2,xli} \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
-	-I@top_srcdir@/c/lib/rnv
+	-I@top_srcdir@/c/lib/rnv \
+	-I@top_srcdir@/c2/lib/std 
 
 # data_DATA=ogsl.xml catpnums.vec
 

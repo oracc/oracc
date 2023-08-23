@@ -22,6 +22,8 @@
 #include "globals.h"
 #include <signal.h>
 
+#include <mesg.h>
+
 #include "ox.h"
 
 static char *crashbuf = NULL;
@@ -182,6 +184,8 @@ main(int argc, char **argv)
   if (!exit_status && lem_status)
     exit_status = 3; /* clean other than lemm errors */
 
+  mesg_print(stderr);
+  
   if (verbose)
     fprintf(stderr,"ox: exiting with status=%d\n",exit_status);
 
