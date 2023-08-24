@@ -18,35 +18,13 @@
 #include "charsets.h"
 #include "gdl.h"
 
-#define GVL_MODE 1
+#include "c1c2gvl.h"
 
-#ifdef GVL_MODE
-#include "gvl.h"
 #define psl_get_id (const char *)gvl_get_id
 #define psl_get_sname gvl_get_sname
 #define psl_is_sname gvl_psl_lookup
 #define psl_is_value gvl_is_value
 #define psl_looks_like_sname gvl_looks_like_sname
-#else
-#include "gsl.h"
-#endif
-
-/* Structure for simultaneous rendering of original grapheme form and
-   canonicalized form */
-
-#undef NEW_RENDER
-
-#if 0
-#define RBUF_MAX 1023
-
-static struct rbuf {
-  unsigned char obuf[RBUF_MAX+1]; /* original form */
-  unsigned char cbuf[RBUF_MAX+1]; /* canonicalized form */
-  unsigned char *oip;	    /* original buf insert point */
-  unsigned char *cip;       /* canonicalized buf insert point */
-} rbufs;
-static void rbuf_reset(struct rbuf *rbp);
-#endif
 
 static int cw_warned = 0;
 static int render_canonically = 0;
@@ -62,6 +40,8 @@ struct node *pending_disamb = NULL;
 
 int gvl_mode = 0;
 int gdl_strict_compound_warnings = 0;
+
+#if 0
 extern int gdl_grapheme_sigs;
 extern int gdl_grapheme_sign_names;
 extern List *gdl_sig_deep;
@@ -69,8 +49,8 @@ extern List *gdl_sig_list;
 extern List *gdl_sign_names;
 static List *cw_proper_c = NULL; /* List to build canonical (proper) version of compound */
 static unsigned char *proper_c = NULL;
-
 const unsigned char *cued_gdelim = NULL;
+#endif
 
 #define pool_copy(x) npool_copy((const unsigned char *)(x),graphemes_pool)
 
@@ -460,42 +440,6 @@ gclean(unsigned char *g)
   return b;
 }
 
-#ifndef GVL_MODE
-static int
-is_mixed(const unsigned char *g)
-{
-  if (*g > 127)
-    {
-      size_t len = 0;
-      wchar_t c1 = 0;
-      c1 = utf1char(g,&len);
-      if (c1 && len > 0)
-	{
-	  if (iswupper(c1))
-	    {
-	      g += len;
-	      c1 = utf1char(g,&len);
-	      if (c1)
-		return iswlower(c1);
-	    }
-	}
-    }
-  else
-    {
-      if (u_isupper(g))
-	{
-	  if ((g[0] == 'S' && (g[1] == 'Z' || g[1] == ','))
-	      || (g[0] == 'S' && g[1] == ','))
-	    g += 2;
-	  else
-	    mbincr(g);
-	  return u_islower(g);
-	}
-    }
-  return 0;
-}
-#endif
-
 static char *
 sname_to_check(const unsigned char *sn)
 {
@@ -564,6 +508,7 @@ unheth(const unsigned char *g)
   return NULL;
 }
 
+#if 0
 static unsigned char *
 unpipe(unsigned char *p)
 {
@@ -578,6 +523,7 @@ unpipe(unsigned char *p)
     }
   return ret;
 }
+#endif
 
 struct grapheme*
 gparse(register unsigned char *g, enum t_type type)
@@ -587,25 +533,14 @@ gparse(register unsigned char *g, enum t_type type)
   unsigned char *orig = pool_copy(g);
   const unsigned char *signified = NULL;
 
-#ifdef GVL_MODE
-  gvl_g *gg = NULL;
-#endif
-  
   render_canonically = compound_warnings;
 
-#ifdef GVL_MODE
-  {
-    if (curr_lang->signlist && '#' == *curr_lang->signlist && !gdl_bootstrap)
-      {
-	gg = gvl_validate(g);
-	if (gg && gg->mess)
-	  {
-	    if (!inner_qual && !inner_parse) /* || !strstr((const char *)gg->mess, "must be qualified")) */
-	      vwarning("(gvl) %s",gg->mess);
-	  }
-      }
-  }
-#endif
+  if (curr_lang->signlist && '#' == *curr_lang->signlist && !gdl_bootstrap)
+    {
+      const char *mess = gvl_legacy(file,lnum,g,0);
+      if (mess && !inner_qual && !inner_parse)
+	vwarning("(gvl) %s",mess);
+    }
   
   if (type == type_top)
     type = gtype(g);
@@ -638,10 +573,6 @@ gparse(register unsigned char *g, enum t_type type)
 	  gcheck = g2utf(gcheck);
 	if (is_xvalue(gcheck))
 	  {
-#ifndef GVL_MODE
-	    if (!inner_qual && !gdl_bootstrap)
-	      vwarning("%s: x-values must be qualified with sign name", gcheck);
-#endif
 	    gp = singleton(g,type);
 	  }
 	else if (curr_lang->signlist 
@@ -680,41 +611,21 @@ gparse(register unsigned char *g, enum t_type type)
 			  nodots = NULL;
 		      }
 		  }
-#ifndef GVL_MODE
-		if (!ok && (!mixed_case_ok || !is_mixed(g)))
+		if (g_ok)
+		  g_ok = pool_copy(g_ok);
+		if (noheth || nodots)
 		  {
-		    if (!ok && !gdl_bootstrap)
-		      {
-			const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalues/";
-			vwarning("%s: unknown grapheme. To request adding it please visit:\n\t%s",g,report);
-#ifdef NEW_ERROR_RECOVERY
-			exit_status = 1;
-			--status;
-			gp = singleton(g,g_v);
-			if (gp)
-			  gp->gflags |= GFLAGS_BAD;
-#endif
-		      }
+		    gp = singleton((unsigned char *)strdup((char*)(noheth ? noheth : nodots)),
+				   g_v);
+		    gp->raw = (unsigned char *)strdup((char*)g);
+		    if (noheth)
+		      gp->gflags |= GFLAGS_HETH;
+		    else
+		      gp->gflags |= GFLAGS_DOTS;
 		  }
 		else
-#endif
 		  {
-		    if (g_ok)
-		      g_ok = pool_copy(g_ok);
-		    if (noheth || nodots)
-		      {
-			gp = singleton((unsigned char *)strdup((char*)(noheth ? noheth : nodots)),
-				       g_v);
-			gp->raw = (unsigned char *)strdup((char*)g);
-			if (noheth)
-			  gp->gflags |= GFLAGS_HETH;
-			else
-			  gp->gflags |= GFLAGS_DOTS;
-		      }
-		    else
-		      {
-			gp = singleton(g,g_v);
-		      }
+		    gp = singleton(g,g_v);
 		  }
 	      }
 	  }
@@ -739,6 +650,7 @@ gparse(register unsigned char *g, enum t_type type)
 	      g_ok = pool_copy(g_ok);
 	    gp = singleton(g,type);
 	  }
+#if 0
 	if (g_ok)
 	  {
 	    if (cw_proper_c)
@@ -773,7 +685,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  }
 	else if (cw_proper_c)
 	  list_add(cw_proper_c, npool_copy(g, graphemes_pool));
-
+#endif
       }
       break;
     case g_n:
@@ -790,41 +702,15 @@ gparse(register unsigned char *g, enum t_type type)
 	      /* vnotice("coercing non-canonical sign-name %s to canonical %s", g, signified); */
 	      /* g = (unsigned char *)signified; */
 	    }
-	  if (cw_proper_c && signified && cw_surro != 1)
-	    {
-	      /* fprintf(stderr, "g_s: adding %s to cw_proper_c\n", signified); */
-	      list_add(cw_proper_c, unpipe(npool_copy(signified, graphemes_pool)));
-	    }
 	}
       
       if (is_signlist(g) && psl_is_sname(g))
 	{
-	  const char *gid = NULL;
 	  gp = singleton(g,type); /* FIXME?: should we preserve the info that
 				     this is a signlist sign name */
-	  if (gdl_grapheme_sign_names && !inner_qual)
-	    list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(g)));
-	  if ((gid = psl_get_id(g)))
-	    {
-	      if (gdl_grapheme_sigs && !inner_qual)
-		{
-		  /*fprintf(stderr, "[3] %s => %s\n", g_ok, gid);*/
-		  list_add(gdl_sig_list, (void*)gid);
-		  list_add(gdl_sig_deep, (void*)gid);
-		}
-	    }
-	  else
-	    {
-	      if (curr_lang->signlist && '#' == *curr_lang->signlist && !inner_qual && !gdl_bootstrap)
-		vwarning("sign list name %s not in OGSL", g);
-	    }
 	}
       else if (curr_lang->snames)
 	{
-#ifndef GVL_MODE
-	  if (is_xvalue(g) && !inner_qual && !gdl_bootstrap)
-	    vwarning("%s: x-values must be qualified with sign name", g);
-#endif
 	  if (!hash_find(curr_lang->snames,g))
 	    {
 	      const unsigned char *utf8g = g2utf(g), *lc;
@@ -861,13 +747,8 @@ gparse(register unsigned char *g, enum t_type type)
       else
 	{
 	  unsigned char *gcheck = g, *g_end,*g_utf;
-	  const unsigned char *noheth = NULL, *lc_noheth = NULL;
+	  const unsigned char *noheth = NULL;
 	  int len = 0;
-
-#ifndef GVL_MODE
-	  if (is_xvalue(g) && !inner_qual && !gdl_bootstrap)
-	    vwarning("%s: x-values must be qualified with sign name", g);
-#endif
 	  
 	  if (use_unicode)
 	    {
@@ -915,87 +796,12 @@ gparse(register unsigned char *g, enum t_type type)
 			  noheth = pool_copy(noheth);
 			  lc = utf_lcase(noheth);
 			  ok = (lc && psl_is_value(lc));
-			  if (ok)
-			    lc_noheth = pool_copy(lc);
 			}
 		    }
 		}
 	      if (!ok)
-		{
-#ifndef GVL_MODE		  
-		  const char *report = "http://oracc.museum.upenn.edu/ogsl/reportingnewvalues/";
-		  vwarning("%s: unknown sign-name grapheme. To request adding it please visit:\n\t%s",g,report);
-		  exit_status = 1;
-		  --status;
-		  bad_grapheme = 1;
-#endif
-		}
-	      else
-		{
-		  if (gdl_grapheme_sign_names && !inner_qual)
-		    {
-		      if (!suppress_psl_id)
-			{
-			  if (psl_is_sname(noheth))
-			    list_add(gdl_sign_names, (void*)pool_copy(g_utf));
-			  else
-			    {
-			      const unsigned char *sn = psl_get_sname(lc_noheth ? lc_noheth : noheth);
-			      if (sn)
-				list_add(gdl_sign_names, (void*)pool_copy(sn));
-			      else
-				vwarning("no sign name found for %s", noheth);
-			    }
-			}
-		    }
-		  else if (gdl_grapheme_sigs && !inner_qual)
-		    {
-		      const char *gid = psl_get_id(g_utf);
-		      /*fprintf(stderr, "[1] %s => %s\n", g_utf, gid);*/
-		      if (!suppress_psl_id)
-			list_add(gdl_sig_list, (void*)gid);
-		      list_add(gdl_sig_deep, (void*)gid);
-		    }
-		}
+		fprintf(stderr, "use_legacy !ok\n");
 	    }
-	  else
-	    {
-	      if (gdl_grapheme_sign_names && !inner_qual)
-		{
-		  if (!suppress_psl_id)
-		    {
-		      if (psl_is_sname(g_utf))
-			list_add(gdl_sign_names, (void*)pool_copy(g_utf));
-		      else
-			{
-			  const unsigned char *sn = psl_get_sname(gcheck);
-			  if (sn)
-			    list_add(gdl_sign_names, (void*)pool_copy(sn));
-			  else
-			    vwarning("no sign name found for %s", g_utf);
-			}
-		    }
-		}
-	      else if (gdl_grapheme_sigs && !inner_qual)
-		{
-		  const char *gid = psl_get_id(g_utf);
-		  if (gid)
-		    {
-		      /*fprintf(stderr, "[1] %s => %s\n", g_utf, gid);*/
-		      if (!suppress_psl_id)
-			list_add(gdl_sig_list, (void*)gid);
-		      list_add(gdl_sig_deep, (void*)gid);
-		    }
-		  else
-		    {
-		      vwarning("%s not found in OGSL", g_utf);
-		      if (!suppress_psl_id)
-			list_add(gdl_sig_list, "q99");
-		      list_add(gdl_sig_deep, "q99");
-		    }
-		}
-	    }
-
 	  if (noheth)
 	    {
 	      gp = singleton((unsigned char *)noheth,g_s);
@@ -1029,50 +835,6 @@ gparse(register unsigned char *g, enum t_type type)
   if (gp)
     {
       /* const unsigned char *h = NULL; */
-#ifndef GVL_MODE
-      if (gp->type == g_q)
-	{
-	  unsigned const char *value = gp->g.q.g->g.s.base;
-	  unsigned const char *qual = getAttr(gp->g.q.q->xml,"form");
-	  unsigned const char *vname = psl_get_sname(value);
-	  
-	  if (!*qual)
-	    qual = gp->g.q.q->g.s.base;
-	  
-	  if (vname && qual)
-	    {
-	      if (strstr((const char*)vname,(const char*)psl_bounded_sname(qual)))
-		{
-		  if (!x_value(value))
-		    {
-		      if (qualifier_warnings)
-			vnotice("value %s has redundant qualifier %s",value,qual);
-		      gp->gflags |= GFLAGS_REDUNDANT;
-		      gp->xml->user = (void*)1;
-		    }
-		}
-	      else
-		{
-		  if (qualifier_warnings)
-		    {
-		      if (strcmp((const char *)qual,(const char*)vname))
-			vnotice("value %s is qualified with %s but expected %s",
-				value,qual,vname);
-		    }
-		}
-	    }
-#if 0 /* this is redundant because of earlier sign name checks */
-	  else
-	    {
-	      if (qualifier_warnings)
-		vwarning("qualified value %s is not in OGSL",value);
-	      vname = psl_get_sname(qual);
-	      if (!vname && qualifier_warnings)
-		vwarning("qualifier %s is not a sign-name in OGSL",qual);
-	    }
-#endif
-	}
-#endif
       gp->atf = orig;
       if (gp->xml && (gp->gflags & GFLAGS_DOTS))
 	    gp->xml->grapheme = gp; /* give rendering process access to parent grapheme not just struct node */
@@ -1082,10 +844,6 @@ gparse(register unsigned char *g, enum t_type type)
 	  static unsigned char buf[1024];
 	  unsigned char *insertp = buf;
 	  unsigned char *cleang = orig; /*, *tmpcg = NULL;*/
-
-#ifdef NEW_RENDER
-	  rbuf_reset(rbuf);
-#endif
 
 	  if (strpbrk((const char *)orig,bad_cg_chars))
 	    /*tmpcg = */cleang = gclean(cleang);
@@ -1101,41 +859,10 @@ gparse(register unsigned char *g, enum t_type type)
 			     cleang,curr_lang->signlist);
 		}
 	    }
-#if 0
-	  if (tmpcg)
-	    {
-	      free(tmpcg);
-	      tmpcg = NULL;
-	    }
-#endif
 	  insertp = render_g(gp->xml, insertp, buf);
 	  *insertp = '\0';
 	  if (*buf)
 	    {
-	      if (gp->type == g_c && compound_warnings)
-		{
-		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
-		    {
-		      if (!psl_is_sname(buf))
-			{
-			  if (proper_c && strcmp((const char *)proper_c, (const char *)buf))
-			    {
-			      if (psl_is_sname(proper_c))
-				vwarning("compound %s should be %s", buf, proper_c);
-			      else
-				vwarning("no such compound as %s or %s", buf, proper_c);
-			      cw_warned = 1;
-			    }
-			}
-		    }
-		  else
-		    {
-		      if (!hash_find(curr_lang->snames,buf))
-			vwarning("%s: compound not in %s",
-				 buf,curr_lang->signlist);
-		    }
-		}
-
 	      /*h = unheth(buf);*/
 	      appendAttr(gp->xml,gattr(a_form, /* h ? h : */ buf));
 
@@ -1443,10 +1170,6 @@ graphemes_init()
   gtags[g_f] = e_g_f;
   gtags[g_g] = e_g_g;
   gtags[g_b] = e_g_b;
-
-#ifndef GVL_MODE
-  psl_init();
-#endif
 }
 
 void
@@ -1470,10 +1193,6 @@ graphemes_term()
     }
 
   npool_term(graphemes_pool);
-
-#ifndef GVL_MODE
-  psl_term();
-#endif
 }
 
 enum t_type
@@ -1531,14 +1250,8 @@ gtype(register unsigned char *g)
 unsigned char *
 c10e_compound(unsigned const char *g)
 {
-  int cw = compound_warnings;
-  unsigned char *g2 = (unsigned char *)strdup((const char *)g);
-  gvl_mode = 1; compound_warnings = 1;
-  (void)compound(g2);
-  compound_warnings = cw;
-  gvl_mode = 0;
-  free(g2);
-  return proper_c;
+  /* FIXME: need gdl_legacy_c10 */
+  return NULL;
 }
 
 static struct grapheme *
@@ -1548,16 +1261,11 @@ compound(register unsigned char *g)
   unsigned const char *gid = NULL;
   int status = 0;
   
-  if (compound_warnings)
-    {
-      cw_proper_c = list_create(LIST_SINGLE);
-      list_add(cw_proper_c, "|");
-    }
-  
   gp->type = g_c;
   gp->xml = gelem(gtags[g_c],NULL,lnum,GRAPHEME);
   if ((gid = (unsigned const char *)psl_get_id(g)))
     {
+#if 0
       if (gdl_grapheme_sign_names && !inner_qual)
 	list_add(gdl_sign_names, (void*)pool_copy(g));
       if (gdl_grapheme_sigs && !inner_qual)
@@ -1566,16 +1274,19 @@ compound(register unsigned char *g)
 	  list_add(gdl_sig_list, (void*)gid);
 	  /* don't add this to gdl_sig_deep */
 	}
+#endif
     }
   else
     {
       if (gdl_strict_compound_warnings)
 	vwarning("[cw2] unknown compound %s", g);
+#if 0
       if (gdl_grapheme_sigs && !inner_qual)
 	{
 	  list_add(gdl_sig_list, "q99");
 	  /* don't add this to gdl_sig_deep */
 	}
+#endif
     }
   suppress_psl_id = 1;
   status = cparse(gp->xml,g+1,'|',NULL);
@@ -1584,10 +1295,7 @@ compound(register unsigned char *g)
     {
       if (compound_warnings)
 	{
-	  list_add(cw_proper_c, "|");
-	  proper_c = list_concat(cw_proper_c);
-	  list_free(cw_proper_c, NULL);
-	  cw_proper_c = NULL;
+	  /* FIXME */
 	}
       
       if (gp->xml->children.lastused == 1)
@@ -1644,6 +1352,8 @@ cparse(struct node *parent, unsigned char *g, const char end,
 {
   struct node *last_g = NULL;
 
+  /* FIXME: call gvl_legacy here */
+  
   while (*g)
     {
       struct node *np = NULL;
@@ -1660,6 +1370,7 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	  /* 4xLU2 and the like is a rare construct; there is no need
 	     to worry about conserving nodes or efficiency here */
 	  unsigned char buf[2];
+#if 0	  
 	  /* stash these before punching holes in g and moving it */
 	  if (gdl_grapheme_sigs && !inner_qual)
 	    {
@@ -1668,14 +1379,9 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	      /*list_add(gdl_sig_list, p);*/ /* set in compound() */
 	      list_add(gdl_sig_deep, (void*)p);
 	    }
+#endif
 	  buf[0] = *g;
 	  buf[1] = '\0';
-
-	  if (cw_proper_c)
-	    {
-	      list_add(cw_proper_c, pool_copy(buf));
-	      list_add(cw_proper_c, "×");
-	    }
 
 	  last_g = np = gtextElem(e_g_o,NULL,lnum,GRAPHEME,buf);
 	  np->user = (void*)(uintptr_t)'x';
@@ -1698,10 +1404,10 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	      mbincr(endp);
 	      g = endp;
 	      appendChild(parent,np);
+#if 0
 	      if (gdl_grapheme_sigs)
 		list_add(gdl_sig_deep, "×");
-	      if (cw_proper_c)
-		list_add(cw_proper_c, "×");
+#endif
 	      continue;
 	    }
 	  else if (isdigit(*endp) || ('N' == *endp && '(' == endp[1]))
@@ -1796,15 +1502,9 @@ cparse(struct node *parent, unsigned char *g, const char end,
 	    case '(':
 	      last_g = np = gelem(gtags[g_g],NULL,lnum,GRAPHEME);
 
-	      if (cw_proper_c)
-		list_add(cw_proper_c,"(");
-
 	      if (!cparse(np,g+1,')',&eptr))
 		{
 		  unsigned char *mods = NULL;
-
-		  if (cw_proper_c)
-		    list_add(cw_proper_c,")");
 
 		  if (np->children.lastused == 1)
 		    {
@@ -1866,11 +1566,10 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		    ++g;
 		  }
 	      }
+#if 0
 	      if (gdl_grapheme_sigs)
 		list_add(gdl_sig_deep,"×");
-
-	      if (cw_proper_c)
-		list_add(cw_proper_c,"×");
+#endif
 		
 	      break;
 	    case '.':
@@ -1887,43 +1586,6 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		{
 		  vwarning("%c: compound grapheme must not end with boundary",
 			   g[0]);
-		}
-	      if (cw_proper_c)
-		{
-		  if (*g == '.' || *g == ':')
-		    list_add(cw_proper_c, ".");
-		  else
-		    {
-		      switch (*g)
-			{
-			case '+':
-			  list_add(cw_proper_c, "+");
-			  break;
-			case '&':
-			  list_add(cw_proper_c, "&");
-			  break;
-			case '@':
-			  list_add(cw_proper_c, "@");
-			  break;
-			case '%':
-			  list_add(cw_proper_c, "%");
-			  break;
-			default:
-			  break;
-			}
-		    }
-		}
-	      if (gdl_grapheme_sigs)
-		{
-		  if (')' == end && (*g == '.' || *g == ':' || *g == '+'))
-		      list_add(gdl_sig_deep, "+");
-		  if (*g == '&')
-		    list_add(gdl_sig_deep, "&");
-		  else if (*g == '@')
-		    list_add(gdl_sig_deep, "@");
-		  else if (*g == '%')
-		    list_add(gdl_sig_deep, "%");
-		    
 		}
 	      np = ops_by_char[*g];
 	      last_g = NULL;
@@ -2250,10 +1912,8 @@ static struct grapheme *
 numerical(register unsigned char *g)
 {
   struct grapheme*gp;
-  unsigned char *n, *q, *end = g+xxstrlen(g),*orig_g = g, *gdl_sig_str = NULL;
-  int cw_paren_pending = 0;
+  unsigned char *n, *q, *end = g+xxstrlen(g),*orig_g = g;
 
-  gdl_sig_str = pool_copy(g);
   while (*g && '(' != *g && '@' != *g && '~' != *g)
     ++g;
   
@@ -2270,12 +1930,6 @@ numerical(register unsigned char *g)
 	}
       *g++ = '\0';
       gp->g.n.r = pool_copy(orig_g); /*FIXME: HASH or ARRAY THESE REPEATERS*/
-      if (cw_proper_c)
-	{
-	  list_add(cw_proper_c, gp->g.n.r);
-	  list_add(cw_proper_c, "(");
-	  cw_paren_pending = 1;
-	}
 
       n = g;
       g = end;
@@ -2349,9 +2003,6 @@ numerical(register unsigned char *g)
       gp->type = g_n;
       gp->g.n.r = orig_g;
       r = gtextElem(e_g_r,NULL,lnum,GRAPHEME,gp->g.n.r);
-
-      if (cw_proper_c)
-	list_add(cw_proper_c, gp->g.n.r);
       
       /* build an elem with an empty text child */
       gp->xml = build_singleton((unsigned char*)"",g_n,0,NULL);
@@ -2373,8 +2024,6 @@ numerical(register unsigned char *g)
 	  gp->g.n.r = orig_g;
 
 	  g = orig_g;
-	  if (cw_proper_c)
-	    list_add(cw_proper_c, pool_copy(orig_g));
 	  while (is_grapheme_base[*g] || '/' == *g)
 	    ++g;
 	  if (*g)
@@ -2399,8 +2048,10 @@ numerical(register unsigned char *g)
 	      else
 		strcpy((char*)qnum, (char*)sx);
 	    }
+#if 0
 	  if (gdl_grapheme_sigs || gdl_sign_names)
 	    gdl_sig_str = pool_copy(qnum);
+#endif
 	  r = gtextElem(e_g_r,NULL,lnum,GRAPHEME,gp->g.n.r);
 	  gp->g.n.n = NULL;
 	  gp->xml = build_singleton((unsigned char*)"",g_n,nmods,modsbuf);
@@ -2424,6 +2075,7 @@ numerical(register unsigned char *g)
 	}
     }
 
+#if 0
   if (gdl_sign_names)
     {
       const unsigned char *sn = NULL;
@@ -2456,6 +2108,7 @@ numerical(register unsigned char *g)
 
   if (cw_paren_pending)
     list_add(cw_proper_c, ")");
+#endif
   
   return gp;
 }
@@ -2602,7 +2255,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	  {
 	    if (np->children.lastused)
 	      {
-		cued_gdelim = getAttr(np, "g:delim");
+		/*cued_gdelim = getAttr(np, "g:delim");*/
 		struct node *cp1 = np->children.nodes[0];
 		if (!strcmp((char*)getAttr(np,"g:role"),"sign"))
 		  *insertp++ = '$';
@@ -2888,6 +2541,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 			{
 			  if (!last_is_em(startp,insertp) && insertp[-1] != '-' && insertp[-1] != '.')
 			    {
+#if 0
 			      if (cued_gdelim)
 				{
 				  if (cued_gdelim[1])
@@ -2896,6 +2550,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 				    *insertp++ = *cued_gdelim;
 				}
 			      else
+#endif
 				*insertp++ = '-';
 			    }
 			}
@@ -3021,7 +2676,7 @@ signify(const unsigned char *utf)
   if (!utf)
     return NULL;
 
-#ifdef GVL_MODE
+#if 0 /* FIXME: need gvl_legacy_signify */
   {
     gvl_g *gp = gvl_validate(utf);
     if (gp)
@@ -3052,13 +2707,6 @@ signify(const unsigned char *utf)
 	  if (try)
 	    return try;
 	}
-#if 0
-      else
-	altname = utf;
-      withpipes = addpipes(altname);
-      if ((try = psl_cuneify(withpipes)))
-	return try;
-#endif
     }
   /* if we're still here, see if we can dig a sign name out of the qualification */
   if (utf[strlen((char*)utf)-1] == ')')

@@ -12,7 +12,7 @@
 #define GVL_CUNEIFY 1
 
 #ifdef GVL_CUNEIFY
-#include "gvl.h"
+#include "c1c2gvl.h"
 #else
 #include "cuneify.h"
 #endif

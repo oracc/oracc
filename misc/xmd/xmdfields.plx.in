@@ -10,7 +10,7 @@ my $bare = 0; # give bare field data, no prepended id_text and no field names ro
 my $fields = 0; # use -fields to output field names in row 1
 my $project = '';
 my $verbose = 0;
-my @default_fields = qw/designation museum_no excavation_no accession_no primary_publication publication_history genre subgenre period/;
+my @default_fields = qw/designation provenience museum_no excavation_no accession_no primary_publication publication_history genre subgenre period/;
 
 GetOptions(
     'bare'=>\$bare,
