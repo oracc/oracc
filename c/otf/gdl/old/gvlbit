@@ -1,0 +1,34 @@
+		  static unsigned const char *mess = NULL;
+		  static unsigned const char *v_val = NULL;
+		  static const char *v_oid = NULL, *q_oid = NULL;
+		  unsigned char *q_c10e = gvl_q_c10e(g_orig, &mess, &v_val, &v_oid, &q_oid);
+		  if (q_c10e)
+		    {
+		      g = gvl_tmp_key(q_c10e,"qv");
+		      if ((l = gvl_lookup(g)))
+			{
+			  gp->oid = (ccp)l;
+			  gp->sign = gvl_lookup(gvl_tmp_key(l,""));
+			}
+		      else
+			{
+			  if (!strcmp(v_oid, q_oid))
+			    {
+			      gp->oid = q_oid;
+			      gp->sign = gvl_lookup(gvl_tmp_key((uccp)q_oid,""));
+			      if (gvl_strict)
+				gp->mess = gvl_vmess("unnecessary qualifier on value: %s", g_orig);
+			    }
+			  else if (strcmp((ccp)g_orig, (ccp)q_c10e))
+			    gp->mess = gvl_vmess("unknown qualified value: %s (also tried %s)", g_orig, q_c10e);
+			  else
+			    {
+			      if (v_val && q_oid)
+				{
+				  /* CUT ;h BLOCK HERE */
+				}
+			      else
+				gp->mess = gvl_vmess("unknown qualified value: %s", g_orig);
+			    }
+			}
+		      free(q_c10e);
