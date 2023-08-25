@@ -48,7 +48,7 @@ gvl_q(Node *ynp)
       sprintf((char*)p, "%s(%s)", (ccp)vo, (ccp)qo);
     }
 
-  if (p && !(vq = hash_find(curr_sl->h, p)))
+  if (p && !(vq = hash_find(curr_sl->h,p)))
     {
       vq = memo_new(curr_sl->m);
       vq->type = "q";
@@ -124,6 +124,92 @@ gvl_q(Node *ynp)
     }
 }
 
+/* Find the property related to gp that has the most OIDs; fall back
+   on gp->oid if l/q/signs are all NULL */
+static const char *
+gvl_most_oids(gvl_g *gp)
+{
+  const char *l = NULL, *q = NULL, *signs = NULL, *most = NULL;
+
+  /* If gp is a pseudo-signname then c10e will have left oids in c10e */
+  if (gp->c10e && 'o' == *gp->c10e)
+    q = (ccp)gp->c10e;
+
+  /* if gp is a LISTNUM then ';l' will have one or more signs it can refer to */
+  l = (ccp)gvl_lookup(sll_tmp_key(gp->orig,"l"));
+
+  /* if gp is a FORM then ';signs' will have one or more signs that are parents */
+  signs = (ccp)gvl_lookup(sll_tmp_key((uccp)gp->oid,"signs"));
+
+  if (q && l && signs)
+    {
+      if (strlen(q) > strlen(l))
+	most = q;
+      else
+	most = l;
+      if (strlen(signs) > strlen(most))
+	most = signs;
+    }
+  else if (q && l)
+    {
+      if (strlen(q) > strlen(l))
+	most = q;
+      else
+	most = l;
+    }
+  else if (q && signs)
+    {
+      if (strlen(q) > strlen(signs))
+	most = q;
+      else
+	most = signs;
+    }
+  else if (l && signs)
+    {
+      if (strlen(l) > strlen(signs))
+	most = l;
+      else
+	most = signs;
+    }
+  else
+    {
+      most = (q ? q : (l ? l : (signs ? signs : gp->oid)));
+    }
+  return most;
+}
+
+static const char *
+gvl_common_oids(const char *o1, const char *o2)
+{
+  List *c = list_create(LIST_SINGLE);
+  const char *target, *test, *ret = NULL;
+  char *srch;
+  if (strlen(o1) > strlen(o2))
+    {
+      target = o1;
+      srch = strdup(o2);
+    }
+  else
+    {
+      target = o2;
+      srch = strdup(o1);
+    }
+  while ((test = strtok(srch, " ")))
+    {
+      if (strstr(target, test))
+	list_add(c, (void*)test);
+      if (srch)
+	srch = NULL;
+    }
+  free(srch);
+
+  if (list_len(c))
+    ret = (ccp)list_join(c, " ");
+  list_free(c, NULL);
+
+  return ret;  
+}
+
 int
 gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 {
@@ -175,9 +261,9 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 	     uppercase; then if value == qp->sign, elide the value and
 	     just print the qp-sign with no parens [FIRST ERROR MESSAGE MAY BE IN WRONG PLACE] */
 	  if (gvl_v_isupper(vp->orig) && !strcmp((ccp)(altindex=g_uc(altindex)), (ccp)qp->sign))
-	    vq->mess = gvl_vmess("%s: should be %s%s", vq->orig, qp->sign, QFIX);
+	    vq->mess = gvl_vmess("[sb1] %s: should be %s%s", vq->orig, qp->sign, QFIX);
 	  else if (strcmp((ccp)vp->orig,(ccp)altindex) || (ccp)q_fixed)
-	    vq->mess = gvl_vmess("%s: should be %s(%s)%s", vq->orig, altindex, qp->sign, QFIX);
+	    vq->mess = gvl_vmess("[sb2] %s: should be %s(%s)%s", vq->orig, altindex, qp->sign, QFIX);
 	}
     }
   else if (q_bad)
@@ -208,41 +294,64 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 	  vq->sign = gvl_lookup(sll_tmp_key((uccp)qp->oid,""));
 	  /* add gp->orig to g hash as key of tmp2 ? */
 	  if (gvl_strict && strcmp((ccp)vq->orig, (ccp)tmp2))
-	    vq->mess = gvl_vmess("[vq] %s(%s): should be %s%s", vp->orig, qp->orig, tmp2, QFIX);
+	    vq->mess = gvl_vmess("[sb3] %s(%s): should be %s%s", vp->orig, qp->orig, tmp2, QFIX);
 	  ret = 1;
 	}
       else if ('s' == *vp->type || 'c' == *vp->type)
 	{
 	  /* This is a qualified uppercase value like TA@g(LAK654a) */
-	  if (vp->oid && qp->oid && strcmp(vp->oid, qp->oid))
+	  if (vp->oid && qp->oid)
 	    {
-	      unsigned const char *parents = gvl_lookup(sll_tmp_key((uccp)qp->oid,"parents"));
-	      if (parents)
+	      if (strcmp(vp->oid, qp->oid))
 		{
-		  if (!strstr((ccp)parents, vp->oid))
+		  /* There could be ambiguity in either or both of vp and
+		   * qp because if either is a LISTNUM that could resolve
+		   * to multiple OIDs.  Similarly, if either resolves to a
+		   * value that has multiple forms, like ŠUŠₓ, that, too,
+		   * will have multiple OIDs.
+		   *
+		   * The solution is to find any possible OID lists for
+		   * the two parts and then see if they have a single OID
+		   * in common; if so, it's a legal match-up; if they have
+		   * multiple OIDs in common or no common OIDs, it's an
+		   * error.
+		   */
+		  const char *voids = NULL, *qoids = NULL, *common;
+		  voids = gvl_most_oids(vp);
+		  qoids = gvl_most_oids(qp);
+		  common = gvl_common_oids(voids, qoids);
+			
+		  if (!common)
 		    {
-		      unsigned char *snames = sll_snames_of(parents);
-		      vq->mess = gvl_vmess("[vq] %s(%s): bad qualifier: %s is a form of %s%s",
-					   vp->orig, qp->orig, qp->sign, snames, QFIX);
+		      vq->mess = gvl_vmess("[vq] %s(%s): value and qualifier are different signs (%s vs %s)%s",
+					   vp->orig, qp->orig, vp->sign, qp->sign, QFIX);
+		    }
+		  else if (strchr(common, ' '))
+		    {
+		      unsigned char *snames = sll_snames_of((uccp)common);
+		      vq->mess = gvl_vmess("[vq] %s(%s): could mean multiple possible signs: %s%s",
+					   vp->orig, qp->orig, snames, QFIX);
 		      free(snames);
+		    }
+		  else
+		    {
+		      /* We have a single legal OID--reset vp/qp/vq appropriately */
+		      const unsigned char *sign = gvl_lookup((uccp)common);
+		      if (vp->c10e && 'o' == *vp->c10e)
+			vp->c10e = vp->orig;
+		      vp->sign = qp->sign = vq->sign = sign;
+		      vp->oid = qp->oid = vq->oid = common;
 		    }
 		}
 	      else
-		vq->mess = gvl_vmess("[vq] %s(%s): value and qualifier are different signs (%s vs %s)%s",
-				     vp->orig, qp->orig, vp->sign, qp->sign, QFIX);
+		{
+		  /* vp and qp have same OID which is correct */
+		}
 	    }
 	  else
 	    {
-	      if (qp->oid)
-		{
-		  vq->oid = qp->oid;
-		  vq->sign = qp->sign;
-		}
-	      else
-		{
-		  vq->mess = gvl_vmess("[vq] %s(%s): failed to set OID on qualified sign%s",
-				       vp->orig, qp->orig, QFIX);
-		}
+	      /* vp or qp has NULL OID: "this can't happen" */
+	      abort();
 	    }
 	}
       else
@@ -264,66 +373,72 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 	      unsigned char *altindex = sll_try_h(qp->oid, vp->orig);
 	      if (!altindex)
 		{
-		  /* we know the q doesn't have a value which is correct except for the index;
-		     report known q for v */
-		  if ('v' == *vp->type)
+		  /* see if the q is known by other OIDs--this can
+		     happen if a LISTNUM is both a sign-name and a
+		     @list entry somewhere */
+		  const char *altoid = (ccp)gvl_lookup(sll_tmp_key(qp->orig, "l"));
+		  const char *newoid;
+		  if (altoid && vp->oid && (newoid = strstr(altoid,vp->oid)))
 		    {
-		      if (!gvl_void_messages)
-			{
-			  unsigned const char *q_for_v = gvl_lookup(sll_tmp_key(vp->orig, "q"));
-			  if (q_for_v)
-			    vq->mess = gvl_vmess("[vq] %s(%s): unknown. Known for %s: %s%s",
-						 vp->orig, qp->orig, vp->orig, q_for_v, QFIX);
-			  else
-			    vq->mess = gvl_vmess("[vq] %s(%s): %s is %s%s",
-						 vp->orig, qp->orig, vp->orig, vp->sign, QFIX);
-			}
+		      char *s = (char*)qp->oid;
+		      while (*newoid)
+			*s++ = *newoid++;
 		    }
-		  else if ('p' == *vp->type)
-		    {
-		      /* We retain a quirk of the original ATF
-			 specification which is that '*' is a wildcard
-			 punctuation; it defaults to DIŠ, but if
-			 qualified then the qualifier takes
-			 precedence.  No error here because it's
-			 allowable for v and q to be different
-			 signs */
-		      if ('*' != *vp->orig)
-			vq->mess = gvl_vmess("[vq] %s(%s): mismatched punctuation qualifier",
-					     vp->orig, qp->orig);
-		    }
-		  else if ('n' == *vp->type)
-		    {
-		      if (!gdl_corrq)
-			vq->mess = gvl_vmess("[vq] %s(%s): mismatched number qualifier",
-					     vp->orig, qp->orig);
-		    }
-#if 1
 		  else
 		    {
-		      mesg_vwarning(currgdlfile, gdllineno, "gvl: [vq] unhandled case for input %s(%s)\n",
-			      vp->orig, qp->orig);
-		    }
-#else
-		  else
-		    {
-		      unsigned const char *parents = gvl_lookup(sll_tmp_key((uccp)qp->oid,"parents"));
-		      if (parents)
+		      /* we know the q doesn't have a value which is
+			 correct except for the index and we can't find
+			 another OID for the q; report known q for v */
+		      if ('v' == *vp->type)
 			{
-			  unsigned char *snames = snames_of(parents);
-			  vq->mess = gvl_vmess("[vq] %s(%s): bad qualifier: %s is a form of %s",
-					       vp->orig, qp->orig, qp->sign, snames);
-			  free(snames);
+			  if (!gvl_void_messages)
+			    {
+			      unsigned const char *q_for_v = gvl_lookup(sll_tmp_key(vp->orig, "q"));
+			      if (q_for_v)
+				vq->mess = gvl_vmess("[vq] %s(%s): unknown. Known for %s: %s%s",
+						     vp->orig, qp->orig, vp->orig, q_for_v, QFIX);
+			      else
+				vq->mess = gvl_vmess("[vq] %s(%s): %s is %s not %s%s",
+						     vp->orig, qp->orig, vp->orig, vp->sign, qp->orig, QFIX);
+			    }
+			}
+		      else if ('p' == *vp->type)
+			{
+			  /* We retain a quirk of the original ATF
+			     specification which is that '*' is a wildcard
+			     punctuation; it defaults to DIŠ, but if
+			     qualified then the qualifier takes
+			     precedence.  No error here because it's
+			     allowable for v and q to be different
+			     signs */
+			  if ('*' != *vp->orig)
+			    vq->mess = gvl_vmess("[vq] %s(%s): mismatched punctuation qualifier",
+						 vp->orig, qp->orig);
+			}
+		      else if ('n' == *vp->type)
+			{
+			  if (!gdl_corrq)
+			    vq->mess = gvl_vmess("[vq] %s(%s): mismatched number qualifier",
+						 vp->orig, qp->orig);
+			}
+		      else
+			{
+			  mesg_vwarning(currgdlfile, gdllineno, "gvl: [vq] unhandled case for input %s(%s)\n",
+					vp->orig, qp->orig);
 			}
 		    }
-#endif
 		}
 	      else
 		{
 		  if (gvl_v_isupper(vp->orig) && !strcmp((ccp)(altindex=g_uc(altindex)), (ccp)qp->sign))
-		    vq->mess = gvl_vmess("%s: should be %s%s", vq->orig, qp->sign, QFIX);
-		  else if (strcmp((ccp)vp->orig,(ccp)altindex) || (ccp)q_fixed)
-		    vq->mess = gvl_vmess("%s: should be %s(%s)%s", vq->orig, altindex, qp->sign, QFIX);
+		    vq->mess = gvl_vmess("[sb4] %s: should be %s%s", vq->orig, qp->sign, QFIX);
+		  else if (strcmp((ccp)vp->orig,(ccp)altindex))
+			vq->mess = gvl_vmess("[sb5] %s: should be %s(%s)%s", vq->orig, altindex, qp->sign, QFIX);
+		  else if ((ccp)q_fixed)
+		    {
+		      if (gvl_strict)
+			vq->mess = gvl_vmess("[sb6] %s: should be %s(%s)%s", vq->orig, altindex, qp->sign, QFIX);
+		    }
 		}
 	    }
 	}

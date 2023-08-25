@@ -58,8 +58,12 @@ static void
 sx_s_aka(FILE *fp, const char *oid, List *aka)
 {
   const unsigned char *n;
+  /* 2023-8-25 removed ';aka' -- these are now non-reciprocal entries
+     and the status as an @aka can be determined by looking up the
+     OID, then looking up the OID's name, and comparing the first name
+     to the OID's name */
   for (n = list_first(aka); n; n = list_next(aka))
-    fprintf(fp, "%s;aka\t%s\n", n, oid);
+    fprintf(fp, "%s\t%s\n", n, oid);
 }
 
 static void
@@ -110,7 +114,7 @@ sx_s_values_by_oid(FILE *fp, struct sl_signlist *sl)
 static void
 sx_s_sign(FILE *f, struct sl_sign *s)
 {
-  if (!s->xref)
+  if (!s->xref && s->oid)
     {
       curr_oid = s->oid;
       fprintf(f, "%s\t%s\n", s->name, curr_oid);
@@ -126,7 +130,7 @@ sx_s_sign(FILE *f, struct sl_sign *s)
 	    {
 	      if (i)
 		fputc(' ', f);
-	      fprintf(f, "%s/%s", s->forms[i]->u.f->oid, s->forms[i]->var);
+	      fputs(s->forms[i]->u.f->oid, f);
 	    }
 	  fputc('\n', f);
 	}
@@ -148,8 +152,8 @@ sx_s_form(FILE *f, struct sl_form *s)
   if (s->sign->xref)
     {
       curr_oid = s->oid;
-      fprintf(f, "%s\t%s\n", s->name, s->sign->oid);
-      fprintf(f, "%s\t%s\n", s->sign->oid, s->name);
+      fprintf(f, "%s\t%s\n", s->name, s->oid);
+      fprintf(f, "%s\t%s\n", s->oid, s->name);
 
       sx_s_unicode(f, &s->U);
 
@@ -288,7 +292,11 @@ sx_s_qualified(FILE *fp, struct sl_signlist *sl)
 		    {
 		      if (j)
 			fputc(' ', fp);
+#if 1
+		      fputs(sl->values[i]->parents->qvoids[j], fp);
+#else
 		      fputs(hash_find(oids, (uccp)sl->values[i]->parents->qvoids[j]), fp);
+#endif
 		    }
 		  fputc('\n', fp);
 		}

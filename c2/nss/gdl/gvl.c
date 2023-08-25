@@ -16,6 +16,7 @@
 #include "gdl.h"
 #include "gvl.h"
 
+int gvl_no_mesg_add = 0;
 int gvl_sans_report = 0;
 int gvl_trace = 0;
 int gvl_strict = 0;
@@ -278,7 +279,7 @@ gvl_compound(Node *ynp)
 	  ynp->text = (ccp)cp->c10e;
 	  gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO, "form", (ccp)cp->c10e);
 	}
-      if (cp->mess)
+      if (cp->mess && !gvl_no_mesg_add)
 	mesg_err(ynp->mloc, (ccp)cp->mess);
     }
 }
@@ -308,7 +309,7 @@ gvl_simplexg(Node *ynp)
       if (ynp->kids)
 	gdl_prop_kv(ynp, GP_ATTRIBUTE, PG_GDL_INFO, "form", (ccp)gp->orig);
 
-      if (gp->mess)
+      if (gp->mess && !gvl_no_mesg_add)
 	mesg_err(ynp->mloc, (ccp)gp->mess);
     }
 }
@@ -335,7 +336,7 @@ gvl_valuqual(Node *vqnp)
 	{
 	  if (vqnp->user)
 	    {
-	      if (((gvl_g*)vqnp->user)->mess)
+	      if (((gvl_g*)vqnp->user)->mess && !gvl_no_mesg_add)
 		mesg_err(vqnp->mloc, (ccp)((gvl_g*)(vqnp->user))->mess);
 	    }
 	  else	

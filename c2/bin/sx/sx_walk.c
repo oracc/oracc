@@ -35,7 +35,6 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 			  f->sgn(f, sl, sl->letters[i].groups[j].signs[k], sx_pos_inst);
 			  if ('s' == sl->letters[i].groups[j].signs[k]->type)
 			    {
-			      f->uni(f, sl, &sl->letters[i].groups[j].signs[k]->u.s->U);
 			      if (sl->letters[i].groups[j].signs[k]->u.s->nlists)
 				{
 				  int l;
@@ -48,6 +47,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 				  f->lst(f, sl, NULL, sx_pos_term);
 				}
 			      f->not(f, sl, sl->letters[i].groups[j].signs[k]);
+			      f->uni(f, sl, &sl->letters[i].groups[j].signs[k]->u.s->U);
 			      if (sl->letters[i].groups[j].signs[k]->u.s->nvalues)
 				{
 				  int l;
@@ -68,7 +68,6 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 				  for (l = 0; l < sl->letters[i].groups[j].signs[k]->u.s->nforms; ++l)
 				    {
 				      f->frm(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l], sx_pos_inst);
-				      f->uni(f, sl, &sl->letters[i].groups[j].signs[k]->u.s->forms[l]->u.f->U);
 				      if (sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->nlists)
 					{
 					  int m;
@@ -82,6 +81,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 					  f->lst(f, sl, NULL, sx_pos_term);
 					}
 				      f->not(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]);
+				      f->uni(f, sl, &sl->letters[i].groups[j].signs[k]->u.s->forms[l]->u.f->U);
 				      if (sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->nvalues)
 					{
 					  int m;

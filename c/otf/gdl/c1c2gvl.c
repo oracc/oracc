@@ -17,22 +17,17 @@
 #include <warning.h>
 #include "c1c2gvl.h"
 
-extern int bad_grapheme, exit_status, status, nwarning;
-
 int c1c2_verbose = 0;
 
 const char *
-c1c2gvl(const char *f, size_t l, unsigned const char *g, int t)
+c1c2gvl(const char *f, size_t l, unsigned const char *g)
 {
   if (g)
     {
       const char *mess = NULL;
-      mess = gvl_bridge(f, l, g, 1);
+      mess = gvl_bridge(f, l, g);
       if (mess)
 	{
-	  exit_status = 1;
-	  bad_grapheme = 1;
-	  ++nwarning;
 	  return mess;
 	}
       else

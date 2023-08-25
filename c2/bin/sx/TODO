@@ -9,8 +9,6 @@ c2/nss/asl , c2/nss/gdl , c2/bin/sx TODO list as of 2023-08-02
 
 * JSON output
 
-* validate and autogenerate @ucode entries
-
 * implement @cite tag and convert artificial @v x values to use it
 
 * implement @listdef tag and create entries for built-in lists (see
@@ -19,4 +17,15 @@ c2/nss/asl , c2/nss/gdl , c2/bin/sx TODO list as of 2023-08-02
 * rnc/asl.rnc is wrong/too weak for g:g--needs fixing to correct GDL
 
 * GDL for '@form 15' is not quite right; needs sexified form attribute
+
+* Change output order for @sign to @aka @list @unicode-block
+
+* edit X.Y&X.Y to (X.Y)&(X.Y) and add @aka X.Y&X.Y
+
+* check that it is impossible for an @aka also to exist as a different
+  token type
+
+* related to removal of ';aka' : GVL should have option to report
+  matches made through an @aka
+
 
