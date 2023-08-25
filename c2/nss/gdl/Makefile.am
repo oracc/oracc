@@ -5,7 +5,7 @@ noinst_LTLIBRARIES=libgdl.la
 libgdl_la_SOURCES = gdl.tab.c gdl-l.c gdlyacc.c gdl.c gdlxml.c \
 	gvl.c gvl_setup.c gvl_util.c gvl_s.c gvl_c.c gvl_q.c gvl_n.c \
 	gdl_balance.c gdl_legacy.c gdl_lexfld.c gdl_mod.c gdlstate.c \
-	gdl_word.c gdlsig.c gsort.c gdl_rnv.c
+	gdl_word.c gdlsig.c gsort.c gdl_rnv.c gvl_bridge.c
 
 YACC=bison
 

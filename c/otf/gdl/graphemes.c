@@ -83,6 +83,7 @@ extern int in_split_word;
 
 /* if non-zero the gparse was called from cparse, qualified, etc. */
 int inner_parse = 0, inner_qual = 0, cw_surro = 0;
+int bad_grapheme = 0;
 
 static int is_bad_cg[256];
 static const char *bad_cg_chars = "[]<>{}#!?*";
@@ -529,7 +530,6 @@ struct grapheme*
 gparse(register unsigned char *g, enum t_type type)
 {
   struct grapheme *gp = NULL;
-  int bad_grapheme = 0;
   unsigned char *orig = pool_copy(g);
   const unsigned char *signified = NULL;
 
@@ -537,7 +537,7 @@ gparse(register unsigned char *g, enum t_type type)
 
   if (curr_lang->signlist && '#' == *curr_lang->signlist && !gdl_bootstrap)
     {
-      const char *mess = gvl_legacy(file,lnum,g,0);
+      const char *mess = c1c2gvl(file,lnum,g,0);
       if (mess && !inner_qual && !inner_parse)
 	vwarning("(gvl) %s",mess);
     }
@@ -799,8 +799,10 @@ gparse(register unsigned char *g, enum t_type type)
 			}
 		    }
 		}
+#if 0
 	      if (!ok)
 		fprintf(stderr, "use_legacy !ok\n");
+#endif
 	    }
 	  if (noheth)
 	    {
@@ -1170,6 +1172,8 @@ graphemes_init()
   gtags[g_f] = e_g_f;
   gtags[g_g] = e_g_g;
   gtags[g_b] = e_g_b;
+
+  gvl_bridge_init();
 }
 
 void

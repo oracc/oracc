@@ -96,5 +96,6 @@ extern void gvl_simplexg(Node *ynp);
 extern void gvl_valuqual(Node *ynp);
 
 extern void gvl_set_lookup_ptr(gvl_lookup_ptr p);
+extern gvl_g *gvl_make_gp(unsigned const char *g, unsigned const char *mess);
 
 #endif/*_GVL_H*/

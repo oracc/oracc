@@ -14,7 +14,12 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <warning.h>
 #include "c1c2gvl.h"
+
+extern int bad_grapheme, exit_status, status, nwarning;
+
+int c1c2_verbose = 0;
 
 const char *
 c1c2gvl(const char *f, size_t l, unsigned const char *g, int t)
@@ -22,14 +27,20 @@ c1c2gvl(const char *f, size_t l, unsigned const char *g, int t)
   if (g)
     {
       const char *mess = NULL;
-      int gspecial = (NULL == strpbrk((const char *)g, "()|@~"));
-      if (!t)
+      mess = gvl_bridge(f, l, g, 1);
+      if (mess)
 	{
-	  mess = gvl_legacy(f, l, g, 0);
-	  if (mess && !gspecial)
-	    return mess;
+	  exit_status = 1;
+	  bad_grapheme = 1;
+	  ++nwarning;
+	  return mess;
 	}
-      return gvl_legacy(f, l, g, 1);
+      else
+	{
+	  if (c1c2_verbose)
+	    vnotice("%s validated OK", g);
+	      return NULL;
+	}
     }
   else
     return "(no grapheme to check)";

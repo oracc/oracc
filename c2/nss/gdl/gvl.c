@@ -197,6 +197,15 @@ gvl_lookup_sl(unsigned const char *key)
 }
 
 gvl_g *
+gvl_make_gp(unsigned const char *g, unsigned const char *mess)
+{
+  gvl_g *gp = memo_new(curr_sl->m);
+  gp->orig = (uccp)pool_copy(g, curr_sl->p);
+  gp->mess = mess;
+  return gp;
+}
+
+gvl_g *
 gvl_validate(unsigned const char *g)
 {
   gvl_g *gp = NULL;
