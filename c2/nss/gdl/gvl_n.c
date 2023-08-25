@@ -87,12 +87,17 @@ gvl_n(Node *ynp)
 void
 gvl_n_sexify(Node *ynp)
 {
-  gvl_g *nq = NULL;
   unsigned char *p = (ucp)pool_alloc(strlen(ynp->text) + strlen("diš") + 3, curr_sl->p);
   sprintf((char*)p, "%s(%s)", ynp->text, "diš");
 
+#if 0
+  /* ignore caching for now because it's complicated to repeat the
+     actions here for subsequent occurrences of the same sexified
+     decimal */
+  gvl_g *nq = NULL;
   if (!(nq = hash_find(curr_sl->h, p)))
     {
+#endif
       Tree *ntp = tree_init();
       Node *top = NULL;
       int sexnum = atoi(ynp->text);
@@ -165,5 +170,7 @@ gvl_n_sexify(Node *ynp)
 	{
 	  /* n/N */;
 	}
+#if 0
     }
+#endif
 }
