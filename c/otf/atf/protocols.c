@@ -40,6 +40,7 @@ enum t_scope protocol_state = s_global;
 extern const unsigned char *default_ftype;
 extern int atf_needs_xmd;
 extern int has_links;
+extern int gdl_legacy;
 extern int lem_extended;
 extern int lem_props_yes;
 const char *lem_props_opt;
@@ -553,7 +554,7 @@ atf_handler(struct node *parent, enum t_scope scope,
       else if (!xstrncmp(l,"lemconv",7))
 	use_ilem_conv = 1;
       else if (!xstrncmp(l,"legacy",7))
-	use_legacy = 1;
+	gdl_legacy = use_legacy = 1;
       else if (!xstrncmp(l,"cuneiform",9))
 	do_cuneify = 1;
       else

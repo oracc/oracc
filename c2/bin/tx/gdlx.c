@@ -160,7 +160,7 @@ main(int argc, char **argv)
 {
   gdl_flex_debug = gdldebug = 0;
   
-  options(argc, argv, "bcdef:ginopstvw");
+  options(argc, argv, "bcdef:gilnopstvw");
 
   gdl_flex_debug = gdldebug = trace_mode;
   
@@ -226,6 +226,9 @@ opts(int opt, char *arg)
       break;
     case 'i':
       identity_mode = 1;
+      break;
+    case 'l':
+      gdl_legacy = 1;
       break;
     case 'n':
       ns_output = 1;

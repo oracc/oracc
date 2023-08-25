@@ -315,7 +315,7 @@ sll_snames_of(unsigned const char *oids)
 	*x++ = '\0';
       list_add(l,(void*)sll_lookup(xoid));
     }
-  ret = list_concat(l);
+  ret = list_join(l, " ");
   list_free(l,NULL);
   return ret;
 }
