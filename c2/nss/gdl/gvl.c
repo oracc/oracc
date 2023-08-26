@@ -254,8 +254,12 @@ gvl_compound(Node *ynp)
 	  cp->c10e = pool_copy(gvl_c_c10e(ynp), curr_sl->p);
 
 	  gvl_c(cp);
-	  
+
+#if 0
+	  /* temp? removal */
 	  hash_add(curr_sl->h, cp->orig, cp);
+#endif
+
 #if 0
 	  /*UPDATE: it's always an error to hash c10e in this way
 	    because after finding |MUL.BAR| input |3×AN.BAR| gets

@@ -54,7 +54,7 @@ gdl_mod(Tree *ytp, const char *data)
       np->mloc = np->rent->mloc;
       /*np->name = "g:b";*/
       /* This is done in a Bison rule which this node-copy won't be
-	 processed by so we have to unlegacy here */
+	 processed by, so we have to unlegacy here */
       if (gdl_legacy)
 	gdl_unlegacy(np);
     }
@@ -130,22 +130,24 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
     }
   c = list_concat(cp);
   o = list_concat(op);
+
+#if 0
   if (!(gp = hash_find(curr_sl->h,(uccp)c))
       && !(gp = hash_find(curr_sl->h,(uccp)o)))
-    {
-      ynp->user = gp = memo_new(curr_sl->m);
-      gp->type = ynp->name + 2;
-      ((gvl_g*)ynp->user)->c10e = pool_copy(c,curr_sl->p);
-      if (strcmp((ccp)c, (ccp)o))
-	((gvl_g*)ynp->user)->orig = pool_copy(o,curr_sl->p);
-      else
-	((gvl_g*)ynp->user)->orig = ((gvl_g*)ynp->user)->c10e;
-      if (gvl_lookup(c) && !gdl_orig_mode)
-	ynp->text = (ccp)((gvl_g*)ynp->user)->c10e;
-      else
-	ynp->text = (ccp)((gvl_g*)ynp->user)->orig;
-      /* need to review hash_add throughout */
-    }
+#endif
+    
+  ynp->user = gp = memo_new(curr_sl->m);
+  gp->type = ynp->name + 2;
+  ((gvl_g*)ynp->user)->c10e = pool_copy(c,curr_sl->p);
+  if (strcmp((ccp)c, (ccp)o))
+    ((gvl_g*)ynp->user)->orig = pool_copy(o,curr_sl->p);
+  else
+    ((gvl_g*)ynp->user)->orig = ((gvl_g*)ynp->user)->c10e;
+  if (gvl_lookup(c) && !gdl_orig_mode)
+    ynp->text = (ccp)((gvl_g*)ynp->user)->c10e;
+  else
+    ynp->text = (ccp)((gvl_g*)ynp->user)->orig;
+
   list_free(cp, NULL);
   list_free(op, NULL);
 

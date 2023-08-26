@@ -74,7 +74,11 @@ gvl_q(Node *ynp)
 	  const char *vs = NULL;
 	  const char *qs = NULL;
 	  if (ynp->kids->user)
-	    vs = (ccp)((gvl_g*)(ynp->kids->user))->c10e;
+	    {
+	      vs = (ccp)((gvl_g*)(ynp->kids->user))->c10e;
+	      if (!vs)
+		vs = (ccp)((gvl_g*)(ynp->kids->user))->orig;
+	    }
 	  else
 	    vs = ynp->kids->text;
 	  if (ynp->kids->next->user)
