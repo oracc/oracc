@@ -250,7 +250,7 @@ sx_w_a_value(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *v, 
 {
   if (sx_pos_inst == p && !v->inherited)
     {
-      const char *minus = "", *query = "", *refspace = "", *ref = "";
+      const char *minus = "", *query = "", *refspace = "", *ref = "", *lang = "", *langspace = "";
       if (!v->valid)
 	minus = "-";
       if (v->query)
@@ -260,7 +260,12 @@ sx_w_a_value(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *v, 
 	  refspace = " ";
 	  ref = (ccp)v->ref;
 	}
-      fprintf(f->fp, "@v%s\t%s%s%s%s\n", minus, v->u.v->name, query, refspace, ref);
+      if (v->u.v->lang)
+	{
+	  langspace = " ";
+	  lang = v->u.v->lang;
+	}
+      fprintf(f->fp, "@v%s\t%s%s%s%s%s%s\n", minus, lang, langspace, v->u.v->name, query, refspace, ref);
       /*sx_w_a_notes(f, sl, v);*/
     }
 }

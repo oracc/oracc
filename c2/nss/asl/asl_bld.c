@@ -816,7 +816,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
       v->atf = atf_flag;
       v->unknown = uvalue;
       if (lang)
-	v->lang = lang;
+	v->lang = lang+1; /* skip the % */
 
       v->insts = list_create(LIST_SINGLE);
       list_add(v->insts, i);

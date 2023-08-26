@@ -350,8 +350,10 @@ sx_w_x_value(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *v, 
 	    rnvxml_ee("sl:v");
 	  else
 	    in_value = 1;
-	  
-	  ratts = rnvval_aa("x", "n", v->u.v->name, "sort", scode, NULL);
+	  if (v->u.v->lang)
+	    ratts = rnvval_aa("x", "n", v->u.v->name, "xml:lang", v->u.v->lang, "sort", scode, NULL);
+	  else
+	    ratts = rnvval_aa("x", "n", v->u.v->name, "sort", scode, NULL);
 	  rnvxml_ea("sl:v", ratts);
 	  rnvxml_ea("sl:name", NULL);
 	  grx_xml(tp->gdl, "g:w");
