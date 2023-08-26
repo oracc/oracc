@@ -5,10 +5,17 @@ c2/nss/asl , c2/nss/gdl , c2/bin/sx TODO list as of 2023-08-02
 Implementation
 --------------
 
-* values with ATF flag (u-gun₃, {kaš}ulušin) should be parsed as GDL;
-  should they have their own @atf tag?
+* add @system vel sim to allow
+
+  @sys attinger guniŋₓ ~ buniŋₓ
+  @sys cdli du₁₁ ~ dug₄
+
+* Implement @upua
 
 * implement @ref tag and convert artificial @v x values to use it
+
+* values with ATF flag (u-gun₃, {kaš}ulušin) should be parsed as GDL;
+  should they have their own @atf tag?
 
 * GDL for '@form 15' is not quite right; needs sexified form attribute
 
@@ -20,15 +27,7 @@ Implementation
 * related to removal of ';aka' : GVL should have option to report
   matches made through an @aka
 
-* add @system vel sim to allow
-
-  @sys attinger guniŋₓ ~ buniŋₓ
-  @sys cdli du₁₁ ~ dug₄
-
-* Implement @upua
-
-* Add inote support to Unicode block (? or is this too fiddly?)
-
+* Check if notes can go with @signlist
 
 Schema
 ------
@@ -42,11 +41,15 @@ Output
 * values with ATF flag are not yet output in XML version; they are
   correctly excluded in SLL and correctly included in ASL outputs.
 
-* JSON output
+* Complete XML output for new tags
+
+* More better JSON output
 
 
 Documentation
 -------------
+
+* What happened with = for literal? Is it needed with @aka support?
 
 * Document differences
 
@@ -60,6 +63,9 @@ Documentation
 
 * Document maintainer notes for OID curation
 
+* List/need listnum pages
+
+* Unicode not-encoded pages
 
 OGSL Fixes
 ----------
@@ -70,6 +76,11 @@ OGSL Fixes
 
 * rewrite inline refs to @ref
 
+* re-generate ogsl.asl with new ordering
+
+* import @uphase 0 as @uage 0; add @uage 9 based on unicode-not-encoded status
+
+* rewrite Attinger values using @sys
 
 Future
 ------

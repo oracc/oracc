@@ -158,7 +158,7 @@ Notes
 Notes blocks may occur in several places in an ASL file and relate to
 the most recent instance of the following tags:
 
- @listdef @sign @form @v @compoundonly @lref @sref
+ @signlist @listdef @sysdef @sign @form @v @compoundonly @lref @sref
 
 A notes block cannot be attached to @list entries--the notes following
 @list entries at the beginning of a sign or form relate to the sign or
@@ -186,6 +186,10 @@ tag the inline equivalent is redundant.  Multiple @ref tags may be
 given, but it is also anticipated that larger-scale provision of this
 functionality will be provided computationally by linking the signlist
 to the corpus.
+
+At present the format of a @ref is not validated; it is implemented as
+a LONG-TEXT like other members of the notes group.  This is likely to
+change in the future.
 
 Unicode
 
@@ -224,8 +228,10 @@ following tags are provided:
 	For all signs
 
 	@utf8		The UTF-8 encoded version of @list U+, or @useq, @upua
-	@unote		A note related to Unicode cuneiform. These are printed,
-			so use @inote for internal notes.
+	@unote		A note related to Unicode cuneiform. These are internal
+			working notes which are not printed.  Notes intended for
+			printing can be given in the notes block for the sign
+			or form using @note.
 
 Unicode blocks may only occur once for each codepoint.  For a sign,
 the Unicode block should occur with the sign; for a form which is not
@@ -271,9 +277,26 @@ requires qualification or has an incorrect qualification.
 
 System
 
-The @sys tag binds VALUEs to transliteration systems. Systems must be
-defined with a @sysdef tag giving the system name, an optional
+ASL supports binding VALUEs to transliteration systems.
+
+Systems must be defined with a @sysdef tag giving the system name (a
+leading letter followed by hyphens, letters and/or numbers), an optional
 comment, and an optional notes block.
+
+The @sys tag must be followed by a defined system name and a value.
+It may optionally also have a GOESTO notation of the form '=> values'
+where values is one or more value that is equivalent to the value
+before the GOESTO.
+
+Examples:
+
+	@sysdef Attinger
+	@sysdef CDLI
+	...
+	@sys Attinger barim
+	@sys Attinger guniŋₓ => buniŋₓ
+	@sys CDLI du₁₁ => dug₄
+	@sys epsd-group zah₃ => sah₉ saha₇ zaha₃
 
 Forms
 

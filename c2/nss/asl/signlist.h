@@ -18,6 +18,7 @@ struct sl_signlist
   const char *project;
   struct sl_inst *notes;/* Allow inotes etc., after @signlist */
   Hash *listdefs; 	/* Hash of signlist names; value is struct sl_listdef */
+  Hash *sysdefs; 	/* Hash of system names; value is struct sl_sysdef */
   Hash *htoken; 	/* Every token that is a sign/form/list/value
 			   as a struct sl_token * */
   Hash *hsentry; 	/* All the @sign/@sign- entries in the signlist */
@@ -98,7 +99,6 @@ struct sl_split_value
   const char *oid;
 };
 
-#if 1
 /* Note information is stored in a single list so that within a note
    group the order is preserved in identity output; note groups may
    move within a sign block because they are only attached to items
@@ -108,22 +108,13 @@ struct sl_note
   const char *tag;
   const char *txt;
 };
-#else
-/* each of the lists in sl_any_note is a list of char*; handlers should
-   be passed the owner sl_inst so an Mloc is available */
-struct sl_any_note
-{
-  List *lit;
-  List *notes;
-  List *inotes;
-};
-#endif
 
 struct sl_unicode
 {
   const unsigned char *utf8; 	/* the character(s) in UTF-8 */
   const char *uhex;		/* the U+HHHHH code for an encoded character */
   const char *useq;		/* for characters not encoded as singletons, a sequence of hex values to render the sign name */
+  const char *upua; 		/* for unencoded character(s), the hex code for a PUA codepoint in the form xXXXXX */
   const char *urev; 		/* the Unicode revision */
   const char *uname;		/* the Unicode name */
   List *unotes;			/* Unicode-related notes on the character and possibly related characters */
@@ -148,17 +139,16 @@ struct sl_lv_data
 
 struct sl_inst
 {
-  char type; /* S = signlist; d = listdef; s = sign; f = form; l = list; v = value */
+  char type; /* S = signlist; d = listdef; y = sysdef; s = sign; f = form; l = list; v = value */
   union {
     struct sl_signlist *S;
     struct sl_listdef *d;
+    struct sl_sysdef *y;
     struct sl_sign *s;
     struct sl_form *f;
     struct sl_list *l;
     struct sl_value *v; } u;
   struct sl_lv_data *lv; 	/* used by form instances */
-  const unsigned char *ref; 	/* this is inline in the @v */
-  const unsigned char *var; 	/* The variant code for a form instance, with tilde */
   struct sl_inst *parent_s; 	/* The parent sign for a form or value instance; if NULL use parent_f */
   struct sl_inst *parent_f; 	/* The parent form for a value instance */
   List *notes;			/* A list of struct sl_note * */
@@ -167,6 +157,7 @@ struct sl_inst
   Boolean inherited;
   Boolean literal;
   Boolean query;
+  Boolean upua;
   Boolean utf8;
   Boolean uhex;
   Boolean useq;
@@ -182,6 +173,13 @@ struct sl_listdef
   int sorted;
   Hash *seen;
   const char *str;
+  struct sl_inst inst;
+};
+
+struct sl_sysdef
+{
+  unsigned const char *name;
+  const char *comment;
   struct sl_inst inst;
 };
 
@@ -341,16 +339,15 @@ struct sl_value
 
 extern struct sl_signlist *asl_bld_init(void);
 extern void asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char *in);
-extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
-			 int list, const unsigned char *ref, int minus_flag);
+extern void asl_bld_sysdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char *comment);
+extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,int minus_flag);
 extern void asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag);
 extern void asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
 
 extern void asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const unsigned char *m, enum sx_tle type);
-extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
-			 int list, int minus_flag);
+extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,int minus_flag);
 extern void asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 					    int list);
 extern void asl_bld_term(struct sl_signlist *);
@@ -359,11 +356,12 @@ extern void asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t, 
 extern void asl_bld_uhex(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_urev(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_useq(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_upua(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_utf8(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_uname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_unote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
-			  const char *lang, const unsigned char *ref, int atf_flag, int minus_flag);
+			  const char *lang, int atf_flag, int minus_flag);
 extern void asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s);
 
 extern void asl_bld_note(Mloc *locp, struct sl_signlist *sl, const char *tag, const char *txt);

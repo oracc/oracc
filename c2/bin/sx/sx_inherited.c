@@ -183,7 +183,6 @@ sx_v_fowner(struct sl_signlist *sl, struct sl_inst *ip, unsigned const char *v)
       ip2->u.v = vp;
       ip2->parent_s = NULL;
       ip2->parent_f = ip;
-      ip2->var = NULL;
       ip2->inherited = 1;
       if (!vp->fowners)
 	vp->fowners = list_create(LIST_SINGLE);

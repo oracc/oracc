@@ -21,6 +21,17 @@ npad(int e)
   return 0;
 }
 
+static int
+numrange(const char *s)
+{
+  while (*s && !isspace(*s))
+    if ('-' == *s)
+      return 1;
+    else
+      ++s;
+  return 0;
+}
+
 /**return 0 on success, 1 on failure
  */
 void
@@ -43,9 +54,7 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
   nlist = list_create(LIST_SINGLE);
   for (str = in; str; ++str)
     {
-      /* FIXME: This implmentation means that singleton items only
-	 work properly if they are given after all ranges */
-      if (strchr(str, '-'))
+      if (numrange(str))
 	{
 	  int rb, re;
 	  if ('0' == str[0] && 'x' == str[1])
@@ -174,14 +183,3 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
     list_free(nlist, NULL);
   return;
 }
-
-#if 0
-/* does not work with revised interface for use in nss/asl */
-int
-main(int argc, char **argv)
-{
-  const char *in = "1-110 11a 11b";
-
-  x("MZL", in);
-}
-#endif

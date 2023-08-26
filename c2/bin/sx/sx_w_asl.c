@@ -99,11 +99,6 @@ sx_w_a_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	query = "?";
       if (s->literal)
 	literal = "=";
-      if (s->ref)
-	{
-	  refspace = " ";
-	  ref = (ccp)s->ref;
-	}
 
       if (in_form)
 	{
@@ -255,11 +250,6 @@ sx_w_a_value(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *v, 
 	minus = "-";
       if (v->query)
 	query = "?";
-      if (v->ref)
-	{
-	  refspace = " ";
-	  ref = (ccp)v->ref;
-	}
       if (v->u.v->lang)
 	{
 	  langspace = " ";

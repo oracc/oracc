@@ -58,11 +58,12 @@ LISTNUM		((U\+|[A-Z]+)[0-9]+[()A-Z0-9a-z_'"+*/]*){M}{Q}{L}
 NUMGRAPH	[0-9nN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}{Q}{L}
 FRACTION	[0-9]\/[0-9]
 PUNCT		("*"|:['".:]?|"/"){Q}{L}
-
+SYSNAME		[a-zA-Z][a-zA-Z0-9]+
 %s E
 %s L
 %s S
 %s T
+%s Y
 
 %%
 
@@ -85,10 +86,13 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 <T>\n				{ }
 <T><<EOF>>			{ if (!endofinput++) return EOL; else yyterminate(); }
 
+<Y>{SYSNAME}/[ \t]+         	{ aslsave; BEGIN(S); return SYSNAME; }
+
 ^@@				{ /* no-op */ }
 ^@end/[ \t].*\n        	       	{ atcmd(END,E); }
 ^@signlist/[ \t]+      		{ atcmd(SIGNLIST,S); }
 ^@listdef/[ \t]+       		{ atcmd(LISTDEF,L); }
+^@sysdef/[ \t]+       		{ atcmd(SYSDEF,Y); }
 ^@sign-?/[ \t]       		{ atcmd(SIGN,0); }
 ^@aka/[ \t]       		{ atcmd(AKA,0); }
 ^@compoundonly/[ \t]           	{ atcmd(COMP,0); }
@@ -100,15 +104,18 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 ^@noform/[ \t]         		{ mesg_vwarning(curraslfile, asllineno, "[asl] '@noform' has been replaced by '@form-'");
 				  /* atcmd(FORM,-1);*/ }
 ^@v-?/[ \t]+	       		{ atcmd(V,0); }
+@sys/[ \t]+			{ atcmd(SYS,0); }
 ^@inote/[ \t]+       		{ Tcmd(INOTE,S); }
 ^@lit/[ \t]+	       		{ Tcmd(LIT,S); }
 ^@note/[ \t]+       		{ Tcmd(NOTE,S); }
+^@ref/[ \t]+	       		{ Tcmd(REF,S); }
 ^@utf8/[ \t]+			{ Tcmd(UTF8,S); }
 ^@uhex/[ \t]+			{ mesg_vwarning(curraslfile, asllineno, "[asl] '@uhex' should not appear in a signlist; say @list U+HHHHH"); }
 ^@useq/[ \t]+     		{ Tcmd(USEQ,S); }
 ^@uname/[ \t]+			{ Tcmd(UNAME,S); }
 ^@unote/[ \t]+   		{ Tcmd(UNOTE,S); }
 ^@uage/[ \t]+			{ Tcmd(UAGE,S); }
+^@upua/[ \t]+			{ Tcmd(UPUA,S); }
 ^@fake[ \t]+1[ \t]*/\n		{ return FAKE; }
 ^@lref/[ \t]+			{ atcmd(LREF,0); }
 ^@sref/[ \t]+			{ atcmd(SREF,0); }
@@ -141,8 +148,6 @@ PUNCT		("*"|:['".:]?|"/"){Q}{L}
 "~"[^ \t\n]+			{ mesg_vwarning(curraslfile, asllineno, "[asl] form variant tags like ~a are no longer used"); }
 
 ^"#".*/\n	       		{ no_comments("@v"); }
-
-"[".*/\n	       		{ aslsave; return VREF; }
 
 ^[^ \t\n@].*/\n			{ pmatch("###bad\n"); return BAD; }
 

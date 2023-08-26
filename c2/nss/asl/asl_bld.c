@@ -43,7 +43,8 @@ asl_bld_init(void)
 {
   struct sl_signlist *sl = calloc(1, sizeof(struct sl_signlist));
   sl->htoken = hash_create(4192);
-  sl->listdefs = hash_create(3);
+  sl->listdefs = hash_create(7);
+  sl->sysdefs = hash_create(3);
   sl->hsentry = hash_create(2048);
   sl->hfentry = hash_create(1024);
   sl->hventry = hash_create(2048);
@@ -89,6 +90,7 @@ asl_bld_term(struct sl_signlist *sl)
     {
       hash_free(sl->htoken, NULL);
       hash_free(sl->listdefs, free);
+      hash_free(sl->sysdefs, free);
       hash_free(sl->hsentry, NULL);
       hash_free(sl->hfentry, NULL);
       hash_free(sl->hventry, NULL);
@@ -322,8 +324,7 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 }
 
 void
-asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list,
-	     const unsigned char *ref, int minus_flag)
+asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag)
 {
   int literal, query;
   
@@ -345,7 +346,6 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
 	{
 	  f = memo_new(sl->m_forms);
 	  f->name = n;
-	  f->name_is_listnum = list;
 	  f->insts = list_create(LIST_SINGLE);
 	  list_add(f->insts, i);
 	  f->owners = list_create(LIST_SINGLE);
@@ -363,7 +363,6 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lis
       i->parent_s = sl->curr_sign->inst;
       i->type = 'f';
       i->u.f = f;
-      i->ref = ref;
       i->mloc = *locp;
       i->valid = (Boolean)!minus_flag;
       i->query = (Boolean)query;
@@ -435,7 +434,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
       if (end)
 	{
 	  struct sl_listdef *ldp = NULL;
-	  *end = '\0';	  
+	  *end = '\0';
 	  if ((ldp = hash_find(sl->listdefs, (uccp)name)))
 	    {
 	      if (!(hash_find(ldp->seen, l->name)))
@@ -495,7 +494,72 @@ asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
     asl_bld_uhex(locp, sl, n);
 }
 
-/* m for meta */
+void
+asl_bld_sysdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char *comment)
+{
+  if (!hash_find(sl->sysdefs, (uccp)name))
+    {
+      struct sl_sysdef *sdp = calloc(1, sizeof(struct sl_sysdef));
+      sdp->name = pool_copy((uccp)name, sl->p);
+      sdp->comment = (ccp)pool_copy((uccp)comment, sl->p);
+      sdp->inst.type = 'y';
+      sdp->inst.u.y = sdp;
+      sl->curr_inst = &sdp->inst;
+      hash_add(sl->sysdefs, sdp->name, sdp);
+    }
+  else
+    {
+      mesg_verr(locp, "repeated @sysdef %s\n", name);
+    }
+}
+
+static void
+asl_check_sys(Mloc *locp, struct sl_signlist *sl, const char *txt)
+{
+  /* NAME VALUE (=> VALUES)? */
+  char *c = strdup(txt), *s, *t;
+  enum sysstate { sys_name, sys_value, sys_goesto, sys_values };
+  enum sysstate currstate = sys_name;
+  s = c;
+  while ((t = strtok(s," \t\n")))
+    {
+      if (s)
+	s = NULL;
+      if (currstate == sys_name)
+	{
+	  if (!hash_find(sl->sysdefs, (uccp)t))
+	    {
+	      mesg_verr(locp, "undefined system name %s in @sys", t);
+	      return;
+	    }
+	  ++currstate;
+	}
+      else if (currstate == sys_value || currstate == sys_values)
+	{
+	  if (!hash_find(sl->hventry, (uccp)t))
+	    {
+	      mesg_verr(locp, "undefined value %s in @sys", t);
+	      return;
+	    }
+	  if (currstate == sys_value)
+	    ++currstate;
+	}
+      else if (currstate == sys_goesto)
+	{
+	  if (strcmp(t, "=>"))
+	    {
+	      mesg_verr(locp, "unexpected token in @sys %s; expected '=>'", t);
+	      return;
+	    }
+	  ++currstate;
+	}
+      else
+	{
+	  abort();
+	}
+    }
+  
+}
 
 void
 asl_bld_note(Mloc *locp, struct sl_signlist *sl, const char *tag, const char *txt)
@@ -508,6 +572,16 @@ asl_bld_note(Mloc *locp, struct sl_signlist *sl, const char *tag, const char *tx
       if (!sl->curr_inst->notes)
 	sl->curr_inst->notes = list_create(LIST_SINGLE);
       list_add(sl->curr_inst->notes, n);
+      /* @sys is implemented as a type of note but has special
+	 location and syntax rules which we check here rather than in
+	 the lexer/parser */
+      if (!strcmp(tag,"sys"))
+	{
+	  if (sl->curr_inst->type != 'v')
+	    mesg_verr(locp, "misplaced @sys -- must occur in the notes block belonging to an @v");
+	  else
+	    asl_check_sys(locp, sl, txt);
+	}
     }
   else
     (void)asl_sign_guard(locp, sl, tag);
@@ -578,7 +652,7 @@ asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 void
 asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const unsigned char *m, enum sx_tle type)
 {
-  asl_bld_sign(locp, sl, n, 0, 0);
+  asl_bld_sign(locp, sl, n, 0);
   sl->curr_sign->type = type;
   sl->curr_sign->pname = pool_copy(m, sl->p);
   sl->curr_inst = sl->curr_sign->inst;
@@ -587,7 +661,7 @@ asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const un
 
 static void
 asl_bld_sign_sub(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
-		 int list, int minus_flag, enum sx_tle type)
+		 int minus_flag, enum sx_tle type)
 {
   int literal = 0, query = 0;
   struct sl_sign *s;
@@ -618,7 +692,6 @@ asl_bld_sign_sub(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
       struct sl_inst *i = memo_new(sl->m_insts);
       s = memo_new(sl->m_signs);
       s->name = n;
-      s->name_is_listnum = list;
       s->inst = i;
       i->type = 's';
       i->mloc = *locp;
@@ -635,9 +708,9 @@ asl_bld_sign_sub(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 }
 
 void
-asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list, int minus_flag)
+asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag)
 {
-  asl_bld_sign_sub(locp, sl, n, list, minus_flag, sx_tle_sign);
+  asl_bld_sign_sub(locp, sl, n, minus_flag, sx_tle_sign);
 }
 
 void
@@ -667,12 +740,26 @@ asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int
 }
 
 void
+asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char *in)
+{
+}
+
+void
 asl_bld_uhex(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
   if (asl_sign_guard(locp, sl, "uhex"))
     asl_bld_singleton_string(locp, t, "uhex",
 			     sl->curr_form ? (uccp*)&sl->curr_form->u.f->U.uhex : (uccp*)&sl->curr_sign->U.uhex,
 			     sl->curr_form ? &sl->curr_form->uhex : &sl->curr_sign->inst->uhex);
+}
+
+void
+asl_bld_upua(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+  if (asl_sign_guard(locp, sl, "upua"))
+    asl_bld_singleton_string(locp, t, "upua",
+			     sl->curr_form ? (uccp*)&sl->curr_form->u.f->U.upua : (uccp*)&sl->curr_sign->U.upua,
+			     sl->curr_form ? &sl->curr_form->upua : &sl->curr_sign->inst->upua);
 }
 
 void
@@ -720,7 +807,7 @@ asl_bld_urev(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 
 void
 asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
-	      const char *lang, const unsigned char *ref, int atf_flag, int minus_flag)
+	      const char *lang, int atf_flag, int minus_flag)
 {
   struct sl_value *v;
   struct sl_inst *i = NULL; 
@@ -785,7 +872,6 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   i = memo_new(sl->m_insts);
   i->type = 'v';
   i->mloc = *locp;
-  i->ref = ref;
   i->valid = (Boolean)!minus_flag;
   i->query = (Boolean)query;
   if (sl->curr_form)
