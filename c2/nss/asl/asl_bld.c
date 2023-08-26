@@ -727,7 +727,7 @@ asl_bld_end_sign(Mloc *locp, struct sl_signlist *sl)
 }
 
 void
-asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list)
+asl_bld_signlist(Mloc *locp, const unsigned char *n, int list)
 {
   curr_asl = asl_bld_init();
   curr_asl->mloc = *locp;
@@ -737,11 +737,7 @@ asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int
 	++n;
       curr_asl->project = (ccp)n;
     }
-}
-
-void
-asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char *in)
-{
+  curr_asl->curr_inst = curr_asl->notes = memo_new(curr_asl->m_insts);
 }
 
 void
@@ -874,6 +870,8 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   i->mloc = *locp;
   i->valid = (Boolean)!minus_flag;
   i->query = (Boolean)query;
+  if (lang)
+    i->lang = lang+1; /* skip the % */
   if (sl->curr_form)
     i->parent_f = sl->curr_form;
   else
@@ -901,8 +899,6 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
       v->name = n;
       v->atf = atf_flag;
       v->unknown = uvalue;
-      if (lang)
-	v->lang = lang+1; /* skip the % */
 
       v->insts = list_create(LIST_SINGLE);
       list_add(v->insts, i);

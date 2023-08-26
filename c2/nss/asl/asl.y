@@ -84,7 +84,7 @@ atcmd:
         ;
 
 atsignlist:
-	  SIGNLIST TEXT { asl_bld_signlist(&@1, curr_asl, (uccp)$2, 0); }
+	  SIGNLIST TEXT { asl_bld_signlist(&@1, (uccp)$2, 0); }
 	;
 
 atlistdef:

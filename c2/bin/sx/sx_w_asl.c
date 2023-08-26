@@ -54,15 +54,24 @@ sx_w_a_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
 {
   if (sx_pos_init == p)
     {
-      fprintf(f->fp, "@signlist %s\n\n", sl->project);
+      fprintf(f->fp, "@signlist %s\n", sl->project);
+      sx_w_a_notes(f, sl, sl->notes);
       int nn, i;
       const char **n = hash_keys2(sl->listdefs, &nn);
       qsort(n, nn, sizeof(const char *), cmpstringp);
       for (i = 0; i < nn; ++i)
 	{
 	  struct sl_listdef *ldp = hash_find(sl->listdefs, (uccp)n[i]);
-	  fprintf(f->fp, "@listdef %s %s\n", n[i], ldp->str);
+	  fprintf(f->fp, "\n@listdef %s %s\n", n[i], ldp->str);
 	  sx_w_a_notes(f, sl, &ldp->inst);
+	}
+      n = hash_keys2(sl->sysdefs, &nn);
+      qsort(n, nn, sizeof(const char *), cmpstringp);
+      for (i = 0; i < nn; ++i)
+	{
+	  struct sl_sysdef *sdp = hash_find(sl->sysdefs, (uccp)n[i]);
+	  fprintf(f->fp, "\n@sysdef %s %s\n", n[i], sdp->comment);
+	  sx_w_a_notes(f, sl, &sdp->inst);
 	  fputc('\n', f->fp);
 	}
 #if 0
@@ -76,14 +85,14 @@ static void
 sx_w_a_group(struct sx_functions *f, struct sl_signlist *sl, struct sl_group *g, enum sx_pos_e p)
 {
   if (sx_pos_inst == p && !identity_mode)
-    fprintf(f->fp, "@group\t%s\n", g->name);
+    fprintf(f->fp, "\n@group\t%s\n", g->name);
 }
 
 static void
 sx_w_a_letter(struct sx_functions *f, struct sl_signlist *sl, struct sl_letter *l, enum sx_pos_e p)
 {
   if (sx_pos_inst == p && !identity_mode)
-    fprintf(f->fp, "@letter\t%s\n", l->name);
+    fprintf(f->fp, "\n@letter\t%s\n", l->name);
 }
 
 static void
@@ -195,10 +204,10 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 
       if (in_sign)
 	{
-	  fprintf(f->fp, "@end sign\n\n");
+	  fprintf(f->fp, "@end sign\n");
 	  in_sign = 0;
 	}
-      
+
       if ('f' == s->type)
 	{
 	  struct sl_sign *fs = s->u.f->sign;
@@ -207,20 +216,41 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	      if (!identity_mode)
 		{
 		  int o;
-		  fprintf(f->fp, "@xref%s\t%s%s%s\n", minus, s->u.f->name, query, literal);
+		  fprintf(f->fp, "\n@xref%s\t%s%s%s\n", minus, s->u.f->name, query, literal);
 		  for (o = 0; o < s->u.f->nowners; ++o)
 		    fprintf(f->fp, "@see %s\n", s->u.f->owners_sort[o]->name);
-		  fprintf(f->fp, "@end xref\n\n");
+		  fprintf(f->fp, "@end xref\n");
 		}
 	    }
 	}
       else if (s->u.s->type == sx_tle_componly)
 	{
-	  fprintf(f->fp, "@compoundonly\t%s\n", s->u.s->name);
+	  fprintf(f->fp, "\n@compoundonly\t%s\n", s->u.s->name);
+	}
+      else if (s->u.s->type == sx_tle_lref)
+	{
+	  const char *goesto = "", *dest = "";
+	  if (s->u.s->pname)
+	    {
+	      goesto = " => ";
+	      dest = (ccp)s->u.s->pname;
+	    }
+	  fprintf(f->fp, "\n@lref\t%s%s%s\n", s->u.s->name, goesto, dest);
+	}
+      else if (s->u.s->type == sx_tle_sref)
+	{
+	  
+	  const char *goesto = "", *dest = "";
+	  if (s->u.s->pname)
+	    {
+	      goesto = " => ";
+	      dest = (ccp)s->u.s->pname;
+	    }
+	  fprintf(f->fp, "\n@sref\t%s%s%s\n", s->u.s->name, goesto, dest);
 	}
       else
 	{
-	  fprintf(f->fp, "@sign%s %s%s%s\n", minus, s->u.s->name, query, literal);
+	  fprintf(f->fp, "\n@sign%s %s%s%s\n", minus, s->u.s->name, query, literal);
 	  if (s->u.s->fake)
 	    fprintf(f->fp, "@fake\t1\n");
 	  if (s->u.s->pname)
@@ -234,7 +264,7 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
     {
       if (in_sign)
 	{
-	  fprintf(f->fp, "@end sign\n\n");
+	  fprintf(f->fp, "@end sign\n");
 	  in_sign = 0;
 	}
     }
@@ -245,18 +275,18 @@ sx_w_a_value(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *v, 
 {
   if (sx_pos_inst == p && !v->inherited)
     {
-      const char *minus = "", *query = "", *refspace = "", *ref = "", *lang = "", *langspace = "";
+      const char *minus = "", *query = "", *langpct = "", *lang = "", *langspace = "";
       if (!v->valid)
 	minus = "-";
       if (v->query)
 	query = "?";
-      if (v->u.v->lang)
+      if (v->lang)
 	{
+	  langpct = "%";
 	  langspace = " ";
-	  lang = v->u.v->lang;
+	  lang = v->lang;
 	}
-      fprintf(f->fp, "@v%s\t%s%s%s%s%s%s\n", minus, lang, langspace, v->u.v->name, query, refspace, ref);
-      /*sx_w_a_notes(f, sl, v);*/
+      fprintf(f->fp, "@v%s\t%s%s%s%s%s\n", minus, langpct, lang, langspace, v->u.v->name, query);
     }
 }
 
@@ -269,6 +299,8 @@ sx_w_a_unicode(struct sx_functions *f, struct sl_signlist *sl, struct sl_unicode
     fprintf(f->fp, "@list\t%s\n", up->uhex);
   if (up->useq)
     fprintf(f->fp, "@useq\t%s\n", up->useq);
+  if (up->upua)
+    fprintf(f->fp, "@utf8\t%s\n", up->upua);
   if (up->utf8)
     fprintf(f->fp, "@utf8\t%s\n", up->utf8);
   if (up->urev)

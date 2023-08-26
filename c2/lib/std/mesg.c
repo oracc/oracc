@@ -29,6 +29,18 @@ static char *nl(char *e);
 static int mesg__status = 0;
 
 int
+mesg_last_line(void)
+{
+  if (mesg_list && list_len(mesg_list))
+    {
+      const char *m = list_last(mesg_list);
+      if ((m = strchr(m, ':')))
+	return (int)strtol(++m, NULL, 10);
+    }
+  return 0;
+}
+
+int
 mesg_status(void)
 {
   return mesg__status;

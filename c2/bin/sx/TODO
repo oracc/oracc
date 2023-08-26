@@ -72,10 +72,6 @@ OGSL Fixes
 
 * edit X.Y&X.Y to (X.Y)&(X.Y) and add @aka X.Y&X.Y
 
-* rewrite @inote %akk
-
-* rewrite inline refs to @ref
-
 * re-generate ogsl.asl with new ordering
 
 * import @uphase 0 as @uage 0; add @uage 9 based on unicode-not-encoded status

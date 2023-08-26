@@ -152,6 +152,7 @@ struct sl_inst
   struct sl_inst *parent_s; 	/* The parent sign for a form or value instance; if NULL use parent_f */
   struct sl_inst *parent_f; 	/* The parent form for a value instance */
   List *notes;			/* A list of struct sl_note * */
+  const char *lang; 	  	/* this is inline in the @v; an x-value could have a lang with one sign but not another */
   Mloc mloc;
   Boolean valid; /* doesn't have a - after it */
   Boolean inherited;
@@ -311,8 +312,6 @@ struct sl_value
 {
   const unsigned char *name;
   const unsigned char *base; /* without index, e.g., for a₃ this is 'a' */
-  const char *lang; 	  /* this is inline in the @v; it's an error
-			     for two @v to have different lang */
   struct sl_sign *sowner; /* for a value at the sign level, this is
 			     the sign it belongs to; may be NULL if
 			     value only occurs in forms */
@@ -348,8 +347,7 @@ extern void asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char
 
 extern void asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const unsigned char *m, enum sx_tle type);
 extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,int minus_flag);
-extern void asl_bld_signlist(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
-					    int list);
+extern void asl_bld_signlist(Mloc *locp, const unsigned char *n, int list);
 extern void asl_bld_term(struct sl_signlist *);
 extern void asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t, int literal);
 

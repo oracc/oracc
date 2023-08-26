@@ -162,8 +162,9 @@ SYSNAME		[a-zA-Z][a-zA-Z0-9]+
 \?				{ mesg_vwarning(curraslfile, asllineno,
 						"[asl] misplaced '?'; say, e.g., @v ba?", *asltext); }
 
-.				{ mesg_vwarning(curraslfile, asllineno,
-						"[asl] unmatched character %c", *asltext); }
+.				{ if (mesg_last_line()!=asllineno)
+				    mesg_vwarning(curraslfile, asllineno,
+						  "[asl] unmatched character %c", *asltext); }
 
 <<EOF>>				{ if (!endofinput++) return EOL; else yyterminate(); }
 
