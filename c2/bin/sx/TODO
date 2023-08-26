@@ -2,22 +2,17 @@
 c2/nss/asl , c2/nss/gdl , c2/bin/sx TODO list as of 2023-08-02
 ==============================================================
 
-* values with ATF flag (u-gun₃, {kaš}ulušin) should be parsed as GDL
+Implementation
+--------------
 
-* values with ATF flag are not yet output in XML version; they are
-  correctly excluded in SLL and correctly included in ASL outputs.
+* values with ATF flag (u-gun₃, {kaš}ulušin) should be parsed as GDL;
+  should they have their own @atf tag?
 
-* JSON output
-
-* implement @cite tag and convert artificial @v x values to use it
-
-* rnc/asl.rnc is wrong/too weak for g:g--needs fixing to correct GDL
+* implement @ref tag and convert artificial @v x values to use it
 
 * GDL for '@form 15' is not quite right; needs sexified form attribute
 
-* Change output order for @sign to @aka @list @unicode-block
-
-* edit X.Y&X.Y to (X.Y)&(X.Y) and add @aka X.Y&X.Y
+* Change output order for @sign to @aka @list @unicode-block -- done, CHECK
 
 * check that it is impossible for an @aka also to exist as a different
   token type
@@ -29,6 +24,55 @@ c2/nss/asl , c2/nss/gdl , c2/bin/sx TODO list as of 2023-08-02
 
   @sys attinger guniŋₓ ~ buniŋₓ
   @sys cdli du₁₁ ~ dug₄
+
+* Implement @upua
+
+* Add inote support to Unicode block (? or is this too fiddly?)
+
+
+Schema
+------
+
+* rnc/asl.rnc is wrong/too weak for g:g--needs fixing to correct GDL
+
+
+Output
+------
+
+* values with ATF flag are not yet output in XML version; they are
+  correctly excluded in SLL and correctly included in ASL outputs.
+
+* JSON output
+
+
+Documentation
+-------------
+
+* Document differences
+
+  - no inline refs
+  - ? always after value
+  - end form is now @@
+  - new tags signlist listdef ref lref sref
+  - Unicode tags revised
+    @ucode -> @list U+, @useq, @upua
+    @uchar -> @utf8
+
+* Document maintainer notes for OID curation
+
+
+OGSL Fixes
+----------
+
+* edit X.Y&X.Y to (X.Y)&(X.Y) and add @aka X.Y&X.Y
+
+* rewrite @inote %akk
+
+* rewrite inline refs to @ref
+
+
+Future
+------
 
 * how to encode splits and mergers?
 
@@ -43,5 +87,4 @@ c2/nss/asl , c2/nss/gdl , c2/bin/sx TODO list as of 2023-08-02
 
   @sign BA
   @split >NA> BA~a BA~b
-  
   

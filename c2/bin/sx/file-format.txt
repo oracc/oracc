@@ -1,0 +1,367 @@
+ASL FILE FORMAT
+
+Introduction
+
+The ASL file format is Oracc's document type for signlists of
+Sumero-Akkadian Cuneiform (SAC) and related scripts.
+
+The primary system signlist is OGSL: The Oracc GLobal Sign List, which
+is available online at http://oracc.org.  This document often
+references OGSL by name, but the definitions apply to any ASL file.
+
+The ASL structure is designed to support the way cuneiformists think
+about cuneiform signs and readings (values); OGSL is a working
+document which is intended to provide an exhaustive listing of signs
+and values.  It also provides concordances to all of the major SAC
+print signlists, as well as the Unicode standard.
+
+The main Oracc program for working with ASL files is the
+signlist-processor, 'sx', which is referenced occasionally below. One
+of the important uses of OGSL is to provide a control lists for
+transliteration on Oracc, both in the corpora and the glossaries.
+This is implemented using a library called GVL, the Grapheme
+Validation Library; again, occasional references to GVL are made
+below.
+
+Schema
+
+The following simplified schema is intended as an orientation to the
+document structure and is not a complete formal definition of ASL.
+
+	ASL		= signlist listdef* sysdef* top-level-tags
+
+	signlist	= @signlist PROJECT-NAME
+
+	listdef		= @listdef ABBREVIATION NUMBERS , notes
+
+	sysdef		= @sysdef NAME TEXT? , notes?
+
+	top-level-tags  = (signblock | compoundonly | listref | signref)*
+
+	compoundonly 	= @compoundonly SIGN-NAME , notes
+
+	listref 	= @lref LIST-NUM ('=>' TEXT)? , notes
+
+	signref 	= @sref SIGN-NAME '=>' SIGN-NAME , notes
+	
+	signblock 	= sign , names? , list* , notes? , unicode? ,
+			  value* , system*, formblock* , end
+
+	sign		= @sign '-'? SIGN-NAME
+
+	end		= @end 'sign'
+
+	names		= aka+ , pname?
+
+	aka		= @aka SIGN-NAME
+
+	pname		= @pname PLUSSED-SIGN-NAME
+
+	list		= @list LIST-NUM '?'?
+
+	notes		= (inote | lit | note | ref)*
+
+	inote		= @inote LONG-TEXT
+
+	lit		= @lit	 LONG-TEXT
+
+	note		= @note  LONG-TEXT
+
+	ref		= @ref	 REFERENCE
+
+	unicode		= uname? , (ulist | useq | upua)? , utf8 , uage? (unote | inote)*
+
+	uname		= @uname UNICODE-NAME
+
+	ulist		= @list U+CODEPOINT
+
+	useq		= @useq DOTTED-HEX-SEQUENCE
+
+	upua		= @upua HEX-CODE
+
+	uage		= '0' | '5.0' | '7.0' | '8.0' | 9
+
+	unote		= @unote LONG-TEXT
+
+	value		= (v , notes?)*
+
+	v		= @v '-'? vlang? VALUE '?'?
+
+	vlang		= '%' LANG-CODE
+
+	system		= @sys SYSTEM-NAME VALUE ('~' VALUE)?
+
+	formblock	= form , names? , list* , notes? , unicode? ,
+			  value* , endform
+
+	form		= @form '-'? SIGN-NAME
+
+	endform		= '@@'
+	
+Signlist
+
+Every ASL file must begin with @signlist followed by the name of the
+project of which it is part.
+
+Listdef
+
+The @listdef tag defines an abbreviation for a signlist followed by
+the allowed numbers for the signlist.  Numbers may be given as a range
+or as individual entries, the latter being useful for entries such as
+048bis.  A LIST-NUM is a combination of a list abbreviation and a
+number; the numbers in a @listdef are given without the abbreviation.
+
+Signs
+
+The bulk of a signlist is a collection of @sign entries.  A sign is
+referenced by a SIGN-NAME which is a modern, conventional labelling of
+the sign usually based on a common reading of the sign, on a
+description of the composition of the sign, or on a LIST-NUM.
+
+The rules for constructing a SIGN-NAME are given in the [GDL DOCUMENTATION].
+
+A sign can be marked as deprecated or for future removal with a minus
+sign after the tag, i.e., '@sign-'.  GVL errors when it encounters a
+deprecated sign.
+
+The sign block is ended by a line containing '@end sign'.
+
+Names
+
+Provision for alternative names for signs is given through the @aka
+and @pname tags.  The @pname tag may occur only once and provides an
+alternate notation for compound signs that would otherwise use
+parenthesis to indicate grouping, e.g.,
+
+	  @sign |DAG.KISIM₅×(A.MAŠ)|
+	  @pname  |DAG.KISIM₅×A+MAŠ|
+
+This alternate notation is subject to review and withdrawal as it is
+rarely, if ever, used.
+
+The @aka tag allows common transliteration practices to be used while
+retaining more rigid constraints in the OGSL naming scheme.  It also
+provides a mechanism for changing the SIGN-NAME of an @sign without
+breaking the corpora by adding @aka tags for backward compatibility.
+
+	 @sign |LAGAB×(GUD&GUD).A|
+	 @aka |LAGAB×(GUD.GUD).A|
+	 @pname  |LAGAB×(GUD+GUD).A|
+
+	 @form |TUM×(U.U.U)|
+	 @aka    |TUM×EŠ|
+
+GVL treats alternative names as equivalent to the primary sign-name.
+
+Notes
+
+Notes blocks may occur in several places in an ASL file and relate to
+the most recent instance of the following tags:
+
+ @listdef @sign @form @v @compoundonly @lref @sref
+
+A notes block cannot be attached to @list entries--the notes following
+@list entries at the beginning of a sign or form relate to the sign or
+form.
+
+Several types of note are supported in the notes block:
+
+	@note 	 A note which is included in print/web versions of the signlist
+
+	@inote 	 An internal note which is not included in print/web versions
+
+	@lit 	 A note which is a bibliographical reference to a work or discussion
+
+	@ref	 A note which is a reference to an occurence in the text-corpus
+
+The @note, @inote, and @lit tags may be formatted over more than one
+line, with continuation lines indicated by leading spaces.  The @ref
+tag should contain a location and optional citation of the text, e.g.:
+
+      VAT 9541 = dcclt:P345960 o iii 12', ba-ak DIŠ@k.DIŠ@k.DIŠ@k.DIŠ@k = %a šu-šu-ru
+
+It was formerly possible to give these references inline in a @v line,
+but this is no longer supported because with the advent of the @ref
+tag the inline equivalent is redundant.  Multiple @ref tags may be
+given, but it is also anticipated that larger-scale provision of this
+functionality will be provided computationally by linking the signlist
+to the corpus.
+
+Unicode
+
+The Unicode block may occur as part of a @sign or @form and includes
+information which is for the most part derived from the Unicode
+Character Database (UCD; from
+https://www.unicode.org/Public/15.0.0/ucd/ or later versions). The
+following tags are provided:
+
+	For encoded signs
+
+	@uname		The standard Unicode name for a character
+	@list U+XXXXX 	The codepoint, e.g, @list U+12000
+	@uage		When the character was added (from UCD DerivedAge.txt)
+
+	For unencoded signs
+
+	@uage		Either '0' meaning "should not be encoded"; 1
+			meaning "included in a forthcoming proposal;
+			or '9' meaning "possibly should be encoded"
+			(this does not mean that the sign will
+			necessarily be encoded).
+	@upua		A hexadecimal code in Private Use Area
+
+	For sign sequences
+
+	@useq
+
+			A sequence of hexadecimal numbers of the form
+			xXXXXX, joined with dots, giving the
+			codepoints that make up a compound sign, e.g.:
+
+			@sign |A.A|
+			@useq	x12000.x12000
+
+	For all signs
+
+	@utf8		The UTF-8 encoded version of @list U+, or @useq, @upua
+	@unote		A note related to Unicode cuneiform. These are printed,
+			so use @inote for internal notes.
+
+Unicode blocks may only occur once for each codepoint.  For a sign,
+the Unicode block should occur with the sign; for a form which is not
+also a sign, the Unicode block may occur with the form. This
+constraint is checked by sx which warns about multiple instances of
+the same Unicode data.
+
+Values
+
+Values are given with the @v tag.  A deprecated value may be given
+with '@v-'.  Values can optionally be preceded by an Oracc
+transliteration language code, e.g., '%akk'.  This is, however, a
+assertion of a restriction not a functional restriction that is
+managed by GVL, which allows all non-deprecated values in any language
+context that is using SAC script.
+
+Uncertain values can be marked with a query ('?') after the value, e.g.:
+
+	  @v	id₅?
+
+Values belonging to signs must be unique across the signlist, i.e.,
+any given value can belong to at most one @sign.  Values within a sign
+must be unique with respect to their bases, i.e., the part before the
+numerical subscript.  This means that a sign cannot have values gu₃
+and gu₇, for example.
+
+In transliteration, most values can be given as simple values--we call
+these "unqualified values".  OGSL's constraints ensure that any
+unqualified value can only refer to a single sign.
+
+Certain values must be expressed as "qualified values", i.e., they
+must have a sign name given in parentheses after the sign.  This is
+most common with x-values, those ending in ₓ, e.g.,
+subₓ(|KA×GAR|)--x-values always require qualification.
+
+It is also required, however, when a value occurs only within one or
+more forms, or if it occurs in a sign as well as one or more forms.
+In the latter case, the unqualified form by definition refers to the
+sign.
+
+These rules are enforced by GVL which emits warnings when a value
+requires qualification or has an incorrect qualification.
+
+System
+
+The @sys tag binds VALUEs to transliteration systems. Systems must be
+defined with a @sysdef tag giving the system name, an optional
+comment, and an optional notes block.
+
+Forms
+
+Variant forms of a sign are given with @form SIGN-NAME.  This may be
+marked as deprecated, as '@form-', or questionable, with a query
+following the SIGN-NAME.  A form block is terminated with a line
+consisting of '@@'.
+
+Forms have the same structure as signs but different uniqueness
+constraints, i.e., the SIGN-NAMEs of @sign tags must be unique within
+that set; SIGN-NAMEs of @form tags must be unique within each
+individual sign, but may occur as forms of more than one sign, or
+occur as signs. 
+
+Values belonging to forms must be unique within the form, may occur
+more than once across the signlist, under different forms and/or under a
+sign.
+
+Forms have two kinds of values: explicit and inherited.  Explicit
+values are those given under a form with an @v tag.  Inherited values
+are values which belong to the form's parent sign: all of the sign's
+values are inherited by all of its forms except those which cause a
+value-conflict.  A value-conflict is a situation in which two values
+in the form would have the same base, e.g.,
+
+A value-conflict can also occur when a sign is also a form of another
+sign, and sign-as-sign has a value with one index but the sign-as-form
+would inherit a value with a different index. E.g.:
+
+@sign |KA×GAR|
+...
+@v	gu₇
+...
+@form KA
+@v	gu₃
+@v	gu₇⁻
+...
+
+In this example, gu₇⁻ is a notation used in Attinger's system for an
+value written with an abbreviated sign.  OGSL does not use values with
+a superscript plus or minus, and would ordinarily use gu₇ as the
+complement to gu₇⁻.  The KA sign, however, has a value gu₃ and
+therefore cannot also have a gu₇ value.  Listing gu₃ explicitly
+suppresses an sx warning about the value-conflict.
+
+Lists
+
+Concordances of signlists are supported through the @listdef, @list,
+and @lref tags. The @list tag is followed by a LIST-NUM, i.e., a list
+abbreviation and a list number with no spaces. By convention, list
+numbers are padded with leading zeroes so that they all numbers for a
+given list have the same basic length. There must be at least one
+digit after the list abbreviation even if this results in contrivances
+such as BAU00I.A.
+
+It is not uncommon for LIST-NUMs to have letters or other forms of
+extension following the digits. These are sometimes based on usage in
+the list in question, and sometimes on later differentiations which
+are not present in the published list; hence there is no guarantee
+that an OGSL LIST-NUM will occur verbatim in the relevant list (though
+the vast majority do).
+
+Most signlists have entries that do not align with specific signs--a
+signlist may give a reduplicated form of a sign, for example, which is
+not recognized as a sign in OGSL. These are accommodated using the
+@lref tag, which must have a LIST-NUM, and may have a GOESTO notation
+of the form '=> TEXT'.  The TEXT will normally be ATF transliteration
+but this is not a requirement. @lref may be followed by an optional
+notes block.
+
+The actual LIST-NUM entries that occur in @list or @lref in OGSL are
+tracked by sx and compared to the numbers given in the @listdef. This
+allows a list list of missing numbers to be generated to help with
+ensuring complete coverage of a given list.
+
+Components Only in Compounds
+
+When validating compound signs, GVL requires that every component have
+an entry in OGSL, even those which do not occur independently.
+Because these have historically not been encoded in Unicode we keep
+them separated from regular signs in OGSL by defining them with the
+@compoundonly tag followed by an optional notes block.
+
+Sign References
+
+The @sref tag provides a cross-referencing facility for ASL. The tag
+consists of a SIGN-NAME and a GOESTO notation in which the destination
+portion must be a SIGN-NAME which occurs in the ASL signlist.  Since
+cross-references can be generated automatically by sx from @aka tags,
+for example, this is likely to be a rarely used facility.
+
