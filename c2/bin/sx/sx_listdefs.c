@@ -6,7 +6,6 @@ sx_listdefs_sort(struct sl_listdef *ldp)
 {
   qsort(ldp->names, ldp->nnames, sizeof(const char *), via_tok_cmp);
 }
-		 
 
 static void
 sx_listdefs_one(struct sl_signlist *sl, const char *listname)

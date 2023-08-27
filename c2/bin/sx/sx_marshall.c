@@ -416,6 +416,25 @@ sx_marshall(struct sl_signlist *sl)
 	  hash_add(oid_sort_keys, (uccp)sl->forms[i]->oid, (void*)(uintptr_t)sl->forms[i]->sort);
 
 	}
+
+      /* While we are iterating over forms, check to see if a form
+	 that has Unicode info also has a sign that is not a
+	 back-reference; if so we want the Unicode info on the sign,
+	 not the form (or the sign could be deleted from the
+	 signlist) */
+      struct sl_sign *sp = hash_find(sl->hsentry, sl->forms[i]->name);
+      if (sp && !sp->xref)
+	{
+	  if (sl->forms[i]->U.uhex || sl->forms[i]->U.uname)
+	    {
+	      if (sp->U.uhex || sp->U.uname)
+		; /*mesg_verr(&sp->inst->mloc, "Unicode data should only be here; also found on @form %s", sp->name);*/
+	      else
+		mesg_verr(&sp->inst->mloc, "move Unicode data from @form %s to here or delete @sign %s", sp->name, sp->name);
+	    }
+	  else
+	    ;/*fprintf(stderr, "form %s is also a sign\n", sl->forms[i]->name);*/
+	}
 #if 0
       if (!sl->forms[i]->U.uchar && sl->forms[i]->U.ucode)
 	sl->forms[i]->U.uchar = pool_copy(uhex2utf8((uccp)sl->forms[i]->U.ucode), sl->p);

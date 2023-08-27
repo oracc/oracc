@@ -476,22 +476,25 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
 void
 asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag)
 {
-  int literal, query = 0;
+  if (asl_sign_guard(locp, sl, "list"))
+    {
+      int literal, query = 0;
 
-  check_flags((char*)n, &query, &literal);
+      check_flags((char*)n, &query, &literal);
   
-  asl_bld_token(locp, sl, (ucp)n, 1);
+      asl_bld_token(locp, sl, (ucp)n, 1);
   
-  if (sl->curr_form)
-    asl_add_list(locp, sl, n, literal, query, minus_flag);
-  else
-    asl_add_list(locp, sl, n, literal, query, minus_flag);
+      if (sl->curr_form)
+	asl_add_list(locp, sl, n, literal, query, minus_flag);
+      else
+	asl_add_list(locp, sl, n, literal, query, minus_flag);
 
-  /* U+ list entries are both lists and uhex; they are specialcased on
-     output and emitted only as @list U+ but within the Unicode
-     block */
-  if ('U' == n[0] && '+' == n[1])
-    asl_bld_uhex(locp, sl, n);
+      /* U+ list entries are both lists and uhex; they are specialcased on
+	 output and emitted only as @list U+ but within the Unicode
+	 block */
+      if ('U' == n[0] && '+' == n[1])
+	asl_bld_uhex(locp, sl, n);
+    }
 }
 
 void

@@ -3,10 +3,12 @@
 #include <sx.h>
 #include <pcre2if.h>
 
-static Hash *usigns;
+static Hash *ucode;
 static Hash *unames;
 static Hash *uneeds;
+static Hash *urem;
 static Hash *useqs;
+static Hash *usigns;
 static Hash *utf8s;
 
 static const char *sx_unicode_rx_mangle(struct sl_signlist *sl, const char *g, int *multi);
@@ -25,9 +27,12 @@ static int cmp_by_len(const void *a, const void *b)
 void
 sx_unicode(struct sl_signlist *sl)
 {
+  ucode = hash_create(1024);
+  urem = hash_create(10);
+  uneeds = hash_create(512);
+
   usigns = hash_create(1024);
   unames = hash_create(1024);
-  uneeds = hash_create(512);
   useqs = hash_create(512);
   utf8s = hash_create(512);
   
@@ -44,18 +49,35 @@ sx_unicode(struct sl_signlist *sl)
 	      if (Up->uhex)
 		{
 		  hash_add(usigns, sl->signs[i]->name, (ucp)Up->uhex);
-		  hash_add(unames, sl->signs[i]->name, (ucp)Up->uname);
+		  hash_add(unames, (uccp)Up->uhex, (ucp)Up->uname);
+		  if (hash_find(ucode, (uccp)Up->uhex))
+		    mesg_verr(&sl->signs[i]->inst->mloc, "uhex %s used with more than one sign\n", Up->uhex);
+		  else
+		    hash_add(ucode, (uccp)Up->uhex, (ucp)sl->signs[i]->name);
 		}
 	      else
 		mesg_verr(&sl->signs[i]->inst->mloc, "sign %s has uname %s but no uhex\n", sl->signs[i]->name, Up->uname);
 	    }
 	  else if (Up->uhex)
 	    {
-	      hash_add(usigns, sl->signs[i]->name, (ucp)Up->uhex);
 	      mesg_verr(&sl->signs[i]->inst->mloc, "sign %s has uhex %s but no uname\n", sl->signs[i]->name, Up->uhex);
+	      hash_add(usigns, sl->signs[i]->name, (ucp)Up->uhex);
+	      if (hash_find(ucode, (uccp)Up->uhex))
+		mesg_verr(&sl->signs[i]->inst->mloc, "uhex %s used with more than one sign\n", Up->uhex);
+	      else
+		hash_add(ucode, (uccp)Up->uhex, (ucp)sl->signs[i]->name);
 	    }
 	  else
 	    hash_add(usigns, sl->signs[i]->name, "X"); /* Add components that aren't in Unicode yet as X */
+	}
+      else
+	{
+	  struct sl_unicode *Up = (sl->signs[i]->xref ? &sl->signs[i]->xref->U : &sl->signs[i]->U);
+	  if (Up->uhex)
+	    {
+	      hash_add(urem, (uccp)Up->uhex, (ucp)sl->signs[i]->name);
+	      hash_add(unames, (uccp)Up->uhex, (ucp)Up->uname);
+	    }
 	}
     }
 
@@ -441,13 +463,42 @@ void
 sx_unicode_table(FILE *f, struct sl_signlist *sl)
 {
   const char **u;
+  int nu;
   int i;
 
-  u = hash_keys(usigns);
+  u = hash_keys2(ucode, &nu);
+  qsort(u, nu, sizeof(const char *), cmpstringp);
   for (i = 0; u[i]; ++i)
-    if ('#' != u[i][0])
-      fprintf(f, "core\t%s\t%s\t%s\n", u[i], (char*)hash_find(usigns, (uccp)u[i]), (char*)hash_find(unames, (uccp)u[i]));
+    fprintf(f, "code\t%s\t%s\t%s\n", u[i], (char*)hash_find(ucode, (uccp)u[i]), (char*)hash_find(unames, (uccp)u[i]));
 
+  u = hash_keys2(urem, &nu);
+  qsort(u, nu, sizeof(const char *), cmpstringp);
+  for (i = 0; u[i]; ++i)
+    {
+      if (!hash_find(ucode, (uccp)u[i]))
+	fprintf(f, "depr\t%s\t%s\t%s\n", u[i], (char*)hash_find(urem, (uccp)u[i]), (char*)hash_find(unames, (uccp)u[i]));
+      else
+	{
+	  struct sl_sign *sp = hash_find(sl->hsentry, hash_find(urem, (uccp)u[i]));
+	  mesg_verr(&sp->inst->mloc, "Unicode value %s is in a valid sign and also an invalid one", u[i]);
+	}
+    }
+
+  struct sl_listdef *ldp = hash_find(sl->listdefs, (uccp)"U+");
+  if (ldp)
+    {
+      /* sort the list's entries if necessary */
+      if (!ldp->sorted++)
+	sx_listdefs_sort(ldp);
+      int i;
+      for (i = 0; i < ldp->nnames; ++i)
+	if (!hash_find(ldp->seen, (uccp)ldp->names[i]))
+	  fprintf(stdout,"miss\t%s\t\t\n", ldp->names[i]);
+    }
+  else
+    mesg_verr(&sl->mloc, "can't find U+ list while making unicode data table");
+
+#if 0
   u = hash_keys(useqs);
   for (i = 0; u[i]; ++i)
     fprintf(f, "useq\t%s\t%s\t%s\n", u[i], (char*)hash_find(useqs, (uccp)u[i]), (char*)hash_find(utf8s, (uccp)u[i]));
@@ -455,4 +506,5 @@ sx_unicode_table(FILE *f, struct sl_signlist *sl)
   u = hash_keys(uneeds);
   for (i = 0; u[i]; ++i)
     fprintf(f, "need\t%s\n", u[i]);
+#endif
 }
