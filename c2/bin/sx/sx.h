@@ -43,6 +43,8 @@ extern Hash *oid_sort_keys;
 
 extern int via_tok_cmp(const void *a, const void *b);
 
+extern int cmpstringp(const void *p1, const void *p2);
+
 extern void sx_xml(struct sl_signlist *sl);
 extern void sx_xml_init(void);
 
@@ -51,6 +53,7 @@ extern void sx_compound_digests(struct sl_signlist *sl);
 extern void sx_homophones(struct sl_signlist *sl);
 extern void sx_inherited(struct sl_signlist *sl);
 extern void sx_listdefs(struct sl_signlist *sl, const char *listnames);
+extern void sx_listdef_names(struct sl_signlist *sl);
 extern void sx_list_dump(FILE *f, struct sl_signlist *sl);
 extern void sx_unicode_table(FILE *f, struct sl_signlist *sl);
 extern void sx_marshall(struct sl_signlist *sl);

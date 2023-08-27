@@ -23,6 +23,7 @@ int asl_output = 0;
 int identity_mode = 0;
 int jsn_output = 0;
 int list_dump = 0;
+int list_names_mode = 0;
 int listdef_check = 0;
 int sll_output = 0;
 int sortcode_output = 0;
@@ -56,7 +57,7 @@ main(int argc, char * const*argv)
   
   gsort_init();
   
-  options(argc, argv, "abcijlm:MsStTux?");
+  options(argc, argv, "abcijlm:nMsStTux?");
   asltrace = asl_flex_debug = trace_mode;
 
   if (boot_mode)
@@ -97,6 +98,12 @@ main(int argc, char * const*argv)
 
   if (sl)
     {
+      if (list_names_mode)
+	{
+	  sx_listdef_names(sl);
+	  exit(0);
+	}
+
       sx_marshall(sl);
 
       if (unicode_table)
@@ -168,6 +175,9 @@ opts(int opt, char *arg)
       break;
     case 'l':
       list_dump = 1;
+      break;
+    case 'n':
+      list_names_mode = 1;
       break;
     case 'm':
       listdef_check = 1;
@@ -329,6 +339,7 @@ help(void)
   help_option("l", "list-dump: show all list entries in signlist");
   help_option("M", "missing-all: show missing entry information for all lists");
   help_option("m [LIST]", "missing [LIST]: show missing entry information for the LIST, e.g., -m MZL");
+  help_option("n", "names-of-lists: show list -names defined in signlist");
   help_option("u", "unicode: show a Unicode coverage data");
   help_str("",0);
 }

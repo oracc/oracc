@@ -42,7 +42,7 @@ sx_w_a_str_list(FILE *fp, const char *tag, List *lp)
     fprintf(fp, "@%s\t%s\n", tag, t);
 }
 
-static int
+int
 cmpstringp(const void *p1, const void *p2)
 {
   return strcmp(* (char * const *) p1, * (char * const *) p2);
