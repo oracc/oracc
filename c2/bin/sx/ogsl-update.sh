@@ -5,6 +5,8 @@ if [ $? == 0 ]; then
     sx -b
     slix -b
     chmod o+r 02pub/sl/*
+    sxmissing.sh
+    sxportal.sh >00web/list-data.xml
     echo "ogsl-update.sh: ogsl data updated; web portal unchanged."
 else
     echo "ogsl-update.sh: errors in ogsl processing. Stop."
