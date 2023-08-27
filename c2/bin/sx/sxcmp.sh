@@ -16,7 +16,7 @@ elif [ ! -r "$asl2" ]; then
     echo $0: .asl file $asl2 not found. Stop.
 fi
 
-./sxnorm.sh <$asl1 >$$-1.asl
-./sxnorm.sh <$asl2 >$$-2.asl
+sxnorm.sh <$asl1 >$$-1.asl
+sxnorm.sh <$asl2 >$$-2.asl
 
 cmp $$-1.asl $$-2.asl || diff -a -w $$-[12].asl | less
