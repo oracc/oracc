@@ -100,7 +100,7 @@ main(int argc, char * const*argv)
     {
       if (list_names_mode)
 	{
-	  sx_listdef_names(sl);
+	  sx_list_dump(stdout, sl);
 	  exit(0);
 	}
 
@@ -108,7 +108,7 @@ main(int argc, char * const*argv)
 
       if (unicode_table)
 	{
-	  FILE *f = fopen("sx-unicode.tab","w");
+	  FILE *f = stdout; /*fopen("sx-unicode.tab","w");*/
 	  if (f)
 	    {
 	      sx_unicode_table(f, sl);
@@ -120,7 +120,7 @@ main(int argc, char * const*argv)
       
       if (list_dump)
 	{
-	  FILE *lfp = fopen("sx-listdata.out","w");
+	  FILE *lfp = stdout; /*fopen("sx-listdata.out","w");*/
 	  if (lfp)
 	    {
 	      sx_list_dump(lfp, sl);

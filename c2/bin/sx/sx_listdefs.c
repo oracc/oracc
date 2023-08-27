@@ -58,6 +58,7 @@ void
 sx_listdefs(struct sl_signlist *sl, const char *listnames)  
 {
   const char **names;
+  int nnames;
   if (listnames)
     {
       int ncomma = sx_ld_count(listnames), i;
@@ -79,12 +80,15 @@ sx_listdefs(struct sl_signlist *sl, const char *listnames)
 	    }
 	}
       names[i] = NULL;
+      nnames = i;
     }
   else
     {
-      names = hash_keys(sl->listdefs);
+      names = hash_keys2(sl->listdefs, &nnames);
     }
 
+  qsort(names, nnames, sizeof(const char *), cmpstringp);  
+  
   int i;
   for (i = 0; names[i]; ++i)
     sx_listdefs_one(sl, names[i]);
@@ -92,31 +96,30 @@ sx_listdefs(struct sl_signlist *sl, const char *listnames)
   free(names);
 }
 
+/* Dump either the names in @listdef tags or the numbers defined in
+   all the listdefs */
 void
-sx_listdef_names(struct sl_signlist *sl)
+sx_list_dump(FILE *f, struct sl_signlist *sl)  
 {
+  extern int list_names_mode;
   const char **n = NULL;
   int nn;
   n = hash_keys2(sl->listdefs, &nn);
   qsort(n, nn, sizeof(const char *), cmpstringp);
   int i;
-  for (i = 0; i < nn; ++i)
-    fprintf(stdout, "%s\n", n[i]);
-}
-
-void
-sx_list_dump(FILE *f, struct sl_signlist *sl)  
-{
-  const char **n = hash_keys(sl->listdefs);
-  int i;
   for (i = 0; n[i]; ++i)
     {
-      struct sl_listdef *ldp = hash_find(sl->listdefs, (uccp)n[i]);
-      /* sort the list's entries if necessary */
-      if (!ldp->sorted++)
-	sx_listdefs_sort(ldp);
-      int j;
-      for (j = 0; ldp->names[j]; ++j)
-	fprintf(f, "%s\n", ldp->names[j]);
+      if (list_names_mode)
+	fprintf(stdout, "%s\n", n[i]);
+      else
+	{
+	  struct sl_listdef *ldp = hash_find(sl->listdefs, (uccp)n[i]);
+	  /* sort the list's entries if necessary */
+	  if (!ldp->sorted++)
+	    sx_listdefs_sort(ldp);
+	  int j;
+	  for (j = 0; ldp->names[j]; ++j)
+	    fprintf(f, "%s\n", ldp->names[j]);
+	}
     }
 }
