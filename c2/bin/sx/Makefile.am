@@ -1,7 +1,7 @@
 include ../../../oracc-am-rules.txt
 
 bin_PROGRAMS=sx slix slx
-bin_SCRIPTS=ogsl-update.sh sxcmp.sh sxnorm.sh
+bin_SCRIPTS=ogsl-update.sh sxcmp.sh sxnorm.sh sxclean.sh
 
 xLDADD=\
 	../../lem/lng/liblng.la \

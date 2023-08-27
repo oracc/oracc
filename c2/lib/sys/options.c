@@ -40,7 +40,7 @@ options (int argc, char *const *argv, const char *optstr)
     {
       if ('?' == c)
 	{
-	  fprintf(stderr, "%s: command line help:\n", argv[0]);
+	  /*fprintf(stderr, "%s: command line help:\n", argv[0]);*/
 	  help();
 	  exit(1);
 	}

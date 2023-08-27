@@ -56,7 +56,7 @@ main(int argc, char * const*argv)
   
   gsort_init();
   
-  options(argc, argv, "abcijlm:MsStTux");
+  options(argc, argv, "abcijlm:MsStTux?");
   asltrace = asl_flex_debug = trace_mode;
 
   if (boot_mode)
@@ -191,14 +191,20 @@ opts(int opt, char *arg)
     case 't':
       trace_mode = 1;
       break;
+#if 0
     case 'T':
       tree_output = 1;
       break;
+#endif
     case 'u':
       unicode_table = 1;
       break;
     case 'x':
       xml_output = 1;
+      break;
+    case '?':
+      help();
+      exit(1);
       break;
     default:
       return 1;
@@ -207,8 +213,122 @@ opts(int opt, char *arg)
   return 0;
 }
 
+FILE *hout = NULL;
+static int help_max_opt_len = 1;
+static int help_mode = 1; /* 1 = CRT ; 2 = XHTML DIV */
+static int help_one_nl = 0;
+
+#define help_str help_crt
+
+void
+help_longest_opt(const char *s)
+{
+  help_max_opt_len = strlen(s);
+}
+
+void
+help_crt(const char *s, int prenl)
+{
+  if (prenl > 0)
+    fputc('\n', hout);
+  fprintf(hout, "%s\n", s);
+  if (prenl > 1)
+    {
+      int i;
+      for (i = 0; i < strlen(s); ++i)
+	fputc(prenl == 2 ? '=' : '*', hout);
+      fputc('\n', hout);
+    }    
+}
+
+void
+help_tab(void)
+{
+  fputc('\t', hout);
+}
+
+void
+help_title(const char *s)
+{
+  hout = stdout;
+  help_str(s, 3);
+}
+
+void
+help_usage(const char *s)
+{
+  help_str(s, 1);
+}
+
+void
+help_heading(const char *s)
+{
+  help_str(s, 2);
+  help_one_nl = 1;
+}
+
+const char *
+help_tabs(const char *o)
+{
+  int olen = 3 + strlen(o);
+  int mlen = 3 + help_max_opt_len;
+
+  /* We don't want too much tabbing, so if mlen is excessively long we
+     still just do two tabs */
+  if (mlen >= 8 && olen < 8)
+    return "\t\t";
+  else
+    return "\t";
+}
+
+void
+help_option(const char *opt, const char *s)
+{
+  if (help_mode == 1)
+    {
+      char *x = NULL;
+      int i = 0;
+      const char *tabs = help_tabs(opt);
+      const char *hyph = (opt && *opt) ? "-" : "";
+      i = snprintf(x, 0, "  %s%s%s%s", hyph, opt, tabs, s);
+      x = malloc(++i);
+      i = snprintf(x, i, "  %s%s%s%s", hyph, opt, tabs, s);
+      help_str(x,help_one_nl--);
+      free(x);
+    }
+  else
+    {
+      /* help_mode == 2 == XHTML will be tabular */
+    }
+}
+
 void
 help(void)
 {
-  fprintf(stderr, "sx: read input from stdin; use -c to check only\n");
+  help_longest_opt("m [LIST]");
+  help_title("sx: The Oracc signlist processor for .asl files");
+  help_usage("  Usage: sx [OPTIONS] [ASL-FILE]");
+
+  help_heading("Mode Options");
+  help_option("b", "boot-mode: write signlist data output to 02pub/sl/sl.tsv");
+  help_option("c", "check-mode: check the signlist and exit");
+  help_option("i", "identity-mode: produce 'identity' .asl output.\n"
+	      	   "\t\tOutput may be re-sorted and/or have new @utf8 tags.");
+  help_option("t", "trace-mode: turn on tracing for debugging purposes");
+
+  help_heading("Output Options");
+  help_option("", "(All the following outputs are written to stdout)\n");
+  help_option("a", "asl-output: this adds @letter and @group tags. See also -i.");
+  help_option("j", "json-output: a JSON version of the signlist; beta");
+  help_option("s", "sll-output: data for the Sign-List-Library, sll, also used by GVL");
+  help_option("S", "Sortcode-output: show a list of OIDs and sort-codes");
+  help_option("x", "xml-output: an XML version of the signlist");
+  
+  help_heading("List and Coverage Options");
+  help_option("", "(All the following outputs are written to stdout)\n");
+  help_option("l", "list-dump: show all list entries in signlist");
+  help_option("M", "missing-all: show missing entry information for all lists");
+  help_option("m [LIST]", "missing [LIST]: show missing entry information for the LIST, e.g., -m MZL");
+  help_option("u", "unicode: show a Unicode coverage data");
+  help_str("",0);
 }

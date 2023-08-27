@@ -21,7 +21,7 @@ sx_listdefs_one(struct sl_signlist *sl, const char *listname)
       int i;
       for (i = 0; i < ldp->nnames; ++i)
 	if (!hash_find(ldp->seen, (uccp)ldp->names[i]))
-	  mesg_verr(&sl->mloc, "list name %s not found in signlist", ldp->names[i]);
+	  fprintf(stdout,"%s not found\n", ldp->names[i]);
     }
   else
     mesg_verr(&sl->mloc, "request to check missing items in unknown list %s", listname);
