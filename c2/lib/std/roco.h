@@ -21,5 +21,6 @@ typedef struct roco Roco;
 
 extern Roco *roco_load(const char *file);
 extern void roco_write(FILE *fp, Roco *r);
+extern void roco_write_trtd(FILE *fp, Roco *r);
 
 #endif/*ROCO_H_*/

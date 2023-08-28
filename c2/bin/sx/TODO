@@ -10,16 +10,10 @@ Implementation
   @sys attinger guniŋₓ ~ buniŋₓ
   @sys cdli du₁₁ ~ dug₄
 
-* Implement @upua
-
-* implement @ref tag and convert artificial @v x values to use it
-
 * values with ATF flag (u-gun₃, {kaš}ulušin) should be parsed as GDL;
   should they have their own @atf tag?
 
 * GDL for '@form 15' is not quite right; needs sexified form attribute
-
-* Change output order for @sign to @aka @list @unicode-block -- done, CHECK
 
 * check that it is impossible for an @aka also to exist as a different
   token type
@@ -27,7 +21,9 @@ Implementation
 * related to removal of ';aka' : GVL should have option to report
   matches made through an @aka
 
-* Check if notes can go with @signlist
+* BUG @aka |ŠE₃.TU.BU| occurs twice and is duplicated on output both times
+
+* Rename listdata files as ldata to align with udata
 
 Schema
 ------
@@ -65,7 +61,9 @@ Documentation
 
 * List/need listnum pages
 
-* Unicode not-encoded pages
+* Unicode deprecated/missing should have unote in last column about why
+
+* Unicode need should have citation and character image
 
 OGSL Fixes
 ----------
@@ -77,6 +75,10 @@ OGSL Fixes
 * import @uphase 0 as @uage 0; add @uage 9 based on unicode-not-encoded status
 
 * rewrite Attinger values using @sys
+
+* How to represent double-encoded Unicode characters like
+  U+1243A--they need to show up in the unicode data table in some
+  reasonable way
 
 Future
 ------

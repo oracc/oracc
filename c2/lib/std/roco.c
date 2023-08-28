@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <loadfile.h>
 #include <roco.h>
+#include <xmlify.h>
 
 #define uccp unsigned const char *
 
@@ -60,5 +61,24 @@ roco_write(FILE *fp, Roco *r)
 	    fputs((const char *)r->rows[i][j], fp);
 	}
       fputc('\n', fp);
+    }
+}
+
+void
+roco_write_trtd(FILE *fp, Roco *r)
+{
+  size_t i;
+  for (i = 0; i < r->nlines; ++i)
+    {
+      fprintf(fp, "<tr\n>");
+      int j;
+      for (j = 0; r->rows[i][j] != NULL; ++j)
+	{
+	  if (*r->rows[i][j])
+	    fprintf(fp, "<td>%s</td>", xmlify(r->rows[i][j]));
+	  else
+	    fputs("<td/>", fp);
+	}
+      fprintf(fp, "</tr\n>");
     }
 }

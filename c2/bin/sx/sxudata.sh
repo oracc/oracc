@@ -17,13 +17,14 @@ fi
 if [ "$asl" == "" ]; then
     asl=00lib/ogsl.asl
 fi
+sxudatacodes=$ORACC_BUILDS/lib/data/sx-udata-codes.tsv
 if [ -r $asl ]; then
-    sx -n $asl >$dir/listnames.lst
-    sx -M $asl >$dir/missing.out
-    lists=`cat $dir/listnames.lst`
-    for a in $lists; do
-	grep $a'[0-9]' $dir/missing.out | pr -t -5 -l 1000 >$dir/missing-$a.txt
+    sx -u $asl >$dir/u-data.tsv
+    tables=`cut -f1 $sxudatacodes | grep -v need`
+    for a in $tables; do
+	grep ^$a $dir/u-data.tsv | cut -f2- | rocox -t >$dir/udata-$a.xml
     done
+    grep ^need $dir/u-data.tsv | cut -f2 | pr -t -3 -w 200 -l 1000 | tr -s ' ' '\t' | rocox -t >$dir/udata-need.xml
     exit 0
 else
     echo "$0: .asl file $asl not found or not readable. Stop."

@@ -8,9 +8,9 @@ xLDADD=\
 	../../nss/gdl/libgdl.la \
 	../../lib/sll/libsll.la \
 	../../lib/collate/libcoll.la \
-	../../lib/xml/libxml.la \
 	../../lib/std/libstd.la \
 	../../lib/sys/libsys.la \
+	../../lib/xml/libxml.la \
 	../../lib/xml/rnv/librnv.la \
 	../../rnc/librnc.la
 

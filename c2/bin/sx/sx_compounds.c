@@ -57,7 +57,7 @@ sx_compound_init(struct sl_signlist *sl, Hash *h, const char *c)
 
 /* An earlier version of sx_compounds registered signs that were not
    themselves in OGSL but this caused problems so now we require any
-   compound element to be registered as a @sign or @comp and also
+   compound element to be registered as a @sign or @compoundonly and also
    require the use of @aka with sign-names that have non-standard name
    components. */
 static void /* struct sl_sign* */

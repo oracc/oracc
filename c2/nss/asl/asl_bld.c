@@ -187,7 +187,7 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 
   s->sl = sl;
   
-  if ('|' == *s->name)
+  if ('|' == *s->name && s->inst->valid)
     list_add(sl->compounds, (void*)s->inst);
 
 #if 0

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esp:page
+    xmlns:esp="http://oracc.org/ns/esp/1.0"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:xh="http://www.w3.org/1999/xhtml">
+  <esp:name>Unicode Data</esp:name>
+  <esp:title>Unicode Data</esp:title>
+  <html>
+    <head/>
+    <body>

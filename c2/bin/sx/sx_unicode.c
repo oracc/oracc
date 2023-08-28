@@ -193,6 +193,8 @@ sx_unicode(struct sl_signlist *sl)
 			      mesg_verr(&ip->mloc, "%s: generated useq %s != %s\n", name, useq, Up->useq);
 			      hash_add(useqs, (uccp)name, (void*)pool_copy((uccp)useq, sl->p));
 			    }
+			  else
+			    hash_add(useqs, (uccp)name, (void*)Up->useq);
 			}
 		      else
 			{
@@ -212,13 +214,15 @@ sx_unicode(struct sl_signlist *sl)
 			  if (strcmp(Up->useq, useq))
 			    {
 			      mesg_verr(&ip->mloc, "%s: generated @useq %s != %s\n", name, useq, Up->useq);
-			      hash_add(useqs, name, (void*)useq);
+			      hash_add(useqs, (uccp)name, (void*)pool_copy((uccp)useq, sl->p));
 			    }
+			  else
+			    hash_add(useqs, (uccp)name, (void*)Up->useq);
 			}
 		      else
 			{
 			  Up->useq = useq;
-			  hash_add(useqs, name, (void*)useq);
+			  hash_add(useqs, (uccp)name, (ucp)(Up->useq = (ccp)pool_copy((uccp)useq, sl->p)));
 			  mesg_verr(&ip->mloc, "%s: adding useq %s\n", name, Up->useq);
 			}
 		    }
@@ -382,19 +386,42 @@ sx_unicode_useq(const char *m, Pool *p)
 	  abort();
 	}
 
-      const unsigned char *x = hash_find(usigns, s);
-      if (!x)
+      const unsigned char *x = NULL;
+      /* X in the sign-name is mapped to O in the dotted-hex */
+      if (!strcmp((ccp)s, "#X#"))
 	{
-	  fprintf(stderr, "sx_unicode: element %s not found in usigns while processing mangled %s\n", s, m);
-	  x = (uccp)"X";
+	  x = (uccp)"O";
 	}
       else
 	{
-	  if (trace_mangling)
-	    fprintf(stderr, "sx_unicode: element %s => %s\n", s, x);
+	  x = hash_find(usigns, s);
+	  if (!x)
+	    {
+	      fprintf(stderr, "sx_unicode: element %s not found in usigns while processing mangled %s\n", s, m);
+	      x = (uccp)"X";
+	    }
+	  else
+	    {
+	      if (trace_mangling)
+		fprintf(stderr, "sx_unicode: element %s => %s\n", s, x);
+	    }
 	}
       /* append x to u */
-      if ('X' != *x)
+      if ('O' == *x)
+	{
+	  if (strlen(u))
+	    strcat(u, ".O");
+	  else
+	    strcpy(u, "O");
+	}
+      else if ('X' == *x)
+	{
+	  if (strlen(u))
+	    strcat(u, ".X");
+	  else
+	    strcpy(u, "X");
+	}
+      else
 	{
 	  if (strlen(u))
 	    strcat(u, ".x");
@@ -402,14 +429,7 @@ sx_unicode_useq(const char *m, Pool *p)
 	    strcpy(u, "x");
 	  strcat(u, (const char *)x+2);
 	}
-      else
-	{
-	  if (strlen(u))
-	    strcat(u, ".X");
-	  else
-	    strcpy(u, "X");
-	}
-
+      
       if (save)
 	{
 	  *e = save;
@@ -462,7 +482,7 @@ sx_unicode_useq_r(const char *m, int from, int to, Pool *p)
 void
 sx_unicode_table(FILE *f, struct sl_signlist *sl)
 {
-  const char **u;
+  const char **u, *x;
   int nu;
   int i;
 
@@ -498,13 +518,26 @@ sx_unicode_table(FILE *f, struct sl_signlist *sl)
   else
     mesg_verr(&sl->mloc, "can't find U+ list while making unicode data table");
 
-#if 0
-  u = hash_keys(useqs);
+  List *xseq = list_create(LIST_SINGLE);
+  u = hash_keys2(useqs, &nu);
+  qsort(u, nu, sizeof(const char *), cmpstringp);
+  
   for (i = 0; u[i]; ++i)
-    fprintf(f, "useq\t%s\t%s\t%s\n", u[i], (char*)hash_find(useqs, (uccp)u[i]), (char*)hash_find(utf8s, (uccp)u[i]));
+    {
+      x = hash_find(useqs, (uccp)u[i]);
+      if (strchr(x, 'X'))
+	list_add(xseq, (void*)u[i]);
+      else
+	fprintf(f, "useq\t%s\t%s\n", u[i], x);
+    }
 
-  u = hash_keys(uneeds);
+  for (x = list_first(xseq); x; x = list_next(xseq))
+    fprintf(f, "xseq\t%s\t%s\n", x, (char*)hash_find(useqs, (uccp)x));
+
+  list_free(xseq, NULL);
+  
+  u = hash_keys2(uneeds, &nu);
+  qsort(u, nu, sizeof(const char *), via_tok_cmp);
   for (i = 0; u[i]; ++i)
     fprintf(f, "need\t%s\n", u[i]);
-#endif
 }
