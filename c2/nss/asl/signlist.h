@@ -115,6 +115,7 @@ struct sl_unicode
   const char *uhex;		/* the U+HHHHH code for an encoded character */
   const char *useq;		/* for characters not encoded as singletons, a sequence of hex values to render the sign name */
   const char *upua; 		/* for unencoded character(s), the hex code for a PUA codepoint in the form xXXXXX */
+  const char *umap; 		/* map of current @sign or @form to another @sign or @form for obtaining Unicode info */
   const char *urev; 		/* the Unicode revision */
   const char *uname;		/* the Unicode name */
   List *unotes;			/* Unicode-related notes on the character and possibly related characters */
@@ -356,6 +357,7 @@ extern void asl_bld_urev(Mloc *locp, struct sl_signlist *sl, const unsigned char
 extern void asl_bld_useq(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_upua(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_utf8(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_umap(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_uname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_unote(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,

@@ -5,6 +5,8 @@ c2/nss/asl , c2/nss/gdl , c2/bin/sx TODO list as of 2023-08-02
 Implementation
 --------------
 
+* BUG @aka |ŠE₃.TU.BU| occurs twice and is duplicated on output both times
+
 * add @system vel sim to allow
 
   @sys attinger guniŋₓ ~ buniŋₓ
@@ -21,9 +23,17 @@ Implementation
 * related to removal of ';aka' : GVL should have option to report
   matches made through an @aka
 
-* BUG @aka |ŠE₃.TU.BU| occurs twice and is duplicated on output both times
-
 * Rename listdata files as ldata to align with udata
+
+* Write sxcheckudata.sh to ensure that list-dump and udata output have the same # of U+ signs
+
+* fix internal names of tag @utf8-related functions to match new name for tag which is @ucun
+
+* also fix SLL name for @utf8 -> @ucun, which is still uchar :( but should be ucun now
+
+* Fix utf8 in schema and in sx_w_xml.c; add umap to schema
+
+* validate umap targets as part of sx_marshall--must be valid names which have Unicode info
 
 Schema
 ------
@@ -79,6 +89,11 @@ OGSL Fixes
 * How to represent double-encoded Unicode characters like
   U+1243A--they need to show up in the unicode data table in some
   reasonable way
+
+* Reformat all the fields that use LONG-TEXT so they are at most, say,
+  80 characters long
+
+* OGSL and OIDs page (perhaps on Maintainer page)
 
 Future
 ------

@@ -109,7 +109,8 @@ SYSNAME		[a-zA-Z][a-zA-Z0-9]+
 ^@lit/[ \t]+	       		{ Tcmd(LIT,S); }
 ^@note/[ \t]+       		{ Tcmd(NOTE,S); }
 ^@ref/[ \t]+	       		{ Tcmd(REF,S); }
-^@utf8/[ \t]+			{ Tcmd(UTF8,S); }
+^@ucun/[ \t]+			{ Tcmd(UTF8,S); }
+^@umap/[ \t]+			{ Tcmd(UMAP,S); }
 ^@uhex/[ \t]+			{ mesg_vwarning(curraslfile, asllineno, "[asl] '@uhex' should not appear in a signlist; say @list U+HHHHH"); }
 ^@useq/[ \t]+     		{ Tcmd(USEQ,S); }
 ^@uname/[ \t]+			{ Tcmd(UNAME,S); }

@@ -300,9 +300,11 @@ sx_w_a_unicode(struct sx_functions *f, struct sl_signlist *sl, struct sl_unicode
   if (up->useq)
     fprintf(f->fp, "@useq\t%s\n", up->useq);
   if (up->upua)
-    fprintf(f->fp, "@utf8\t%s\n", up->upua);
+    fprintf(f->fp, "@upua\t%s\n", up->upua);
+  if (up->map)
+    fprintf(f->fp, "@umap\t%s\n", up->umap);
   if (up->utf8)
-    fprintf(f->fp, "@utf8\t%s\n", up->utf8);
+    fprintf(f->fp, "@ucun\t%s\n", up->utf8);
   if (up->urev)
     fprintf(f->fp, "@uage\t%s\n", up->urev);
   if (up->unotes)

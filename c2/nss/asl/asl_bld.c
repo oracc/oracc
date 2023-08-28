@@ -764,10 +764,19 @@ asl_bld_upua(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 void
 asl_bld_utf8(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
-  if (asl_sign_guard(locp, sl, "utf8"))
-    asl_bld_singleton_string(locp, t, "utf8",
+  if (asl_sign_guard(locp, sl, "ucun"))
+    asl_bld_singleton_string(locp, t, "ucun",
 			     sl->curr_form ? &sl->curr_form->u.f->U.utf8 : &sl->curr_sign->U.utf8,
 			     sl->curr_form ? &sl->curr_form->utf8 : &sl->curr_sign->inst->utf8);
+}
+
+void
+asl_bld_umap(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+  if (asl_sign_guard(locp, sl, "umap"))
+    asl_bld_singleton_string(locp, t, "umap",
+			     sl->curr_form ? &sl->curr_form->u.f->U.umap : &sl->curr_sign->U.umap,
+			     sl->curr_form ? &sl->curr_form->umap : &sl->curr_sign->inst->umap);
 }
 
 void

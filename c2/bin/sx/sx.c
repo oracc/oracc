@@ -323,7 +323,7 @@ help(void)
   help_option("b", "boot-mode: write signlist data output to 02pub/sl/sl.tsv");
   help_option("c", "check-mode: check the signlist and exit");
   help_option("i", "identity-mode: produce 'identity' .asl output.\n"
-	      	   "\t\tOutput may be re-sorted and/or have new @utf8 tags.");
+	      	   "\t\tOutput may be re-sorted and/or have new @ucun tags.");
   help_option("t", "trace-mode: turn on tracing for debugging purposes");
 
   help_heading("Output Options");

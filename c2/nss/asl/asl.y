@@ -31,7 +31,7 @@ int minus_flag = 0;
 		GNAME GVALUE GVALUEX GOESTO
 		GBAD ATF LANG V LIST LISTNUM
 		INOTE LIT NOTE REF TEXT END EBAD EFORM ESIGN
-		UAGE USEQ UTF8 UNAME UNOTE UPUA
+		UAGE USEQ UTF8 UMAP UNAME UNOTE UPUA
 		SIGNLIST LISTDEF LISTNAME LREF SREF
 		SYSDEF SYSNAME SYS
 
@@ -164,6 +164,7 @@ atunicode:
 	  atuage
 	| atuseq
 	| atutf8
+	| atumap
 	| atupua
 	| atuname
 	| atunote
@@ -179,6 +180,10 @@ atuseq:
 
 atutf8:
 	  UTF8 TEXT		{ asl_bld_utf8(&@1, curr_asl, (uccp)$2); }
+	;
+
+atutf8:
+	  UTF8 TEXT		{ asl_bld_umap(&@1, curr_asl, (uccp)$2); }
 	;
 
 atupua:
