@@ -35,6 +35,7 @@ Implementation
 
 * validate umap targets as part of sx_marshall--must be valid names which have Unicode info
 
+
 Schema
 ------
 
@@ -75,12 +76,13 @@ Documentation
 
 * Unicode need should have citation and character image
 
+
 OGSL Fixes
 ----------
 
-* edit X.Y&X.Y to (X.Y)&(X.Y) and add @aka X.Y&X.Y
-
 * re-generate ogsl.asl with new ordering
+
+* edit X.Y&X.Y to (X.Y)&(X.Y) and add @aka X.Y&X.Y
 
 * import @uphase 0 as @uage 0; add @uage 9 based on unicode-not-encoded status
 
@@ -90,10 +92,17 @@ OGSL Fixes
   U+1243A--they need to show up in the unicode data table in some
   reasonable way
 
+* OGSL and OIDs page (perhaps on Maintainer page)
+
+* add MURUB₄ @umap NISAG and DE₂ @umap |UMUM×KASKAL|
+
 * Reformat all the fields that use LONG-TEXT so they are at most, say,
   80 characters long
 
-* OGSL and OIDs page (perhaps on Maintainer page)
+* redo the OIDs and tag a baseline OGSL repo for future tracking
+
+* add @version/@date tags? determine and document release vs. updates
+
 
 Future
 ------
