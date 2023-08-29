@@ -70,9 +70,14 @@ sx_w_a_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
       for (i = 0; i < nn; ++i)
 	{
 	  struct sl_sysdef *sdp = hash_find(sl->sysdefs, (uccp)n[i]);
-	  fprintf(f->fp, "\n@sysdef %s %s\n", n[i], sdp->comment);
+	  const char *cspace = "", *ctext = "";
+	  if (sdp->comment)
+	    {
+	      cspace = " ";
+	      ctext = sdp->comment;
+	    }
+	  fprintf(f->fp, "\n@sysdef %s%s%s\n", n[i], cspace, ctext);
 	  sx_w_a_notes(f, sl, &sdp->inst);
-	  fputc('\n', f->fp);
 	}
 #if 0
       if (nn)
@@ -301,12 +306,12 @@ sx_w_a_unicode(struct sx_functions *f, struct sl_signlist *sl, struct sl_unicode
     fprintf(f->fp, "@useq\t%s\n", up->useq);
   if (up->upua)
     fprintf(f->fp, "@upua\t%s\n", up->upua);
-  if (up->map)
+  if (up->umap)
     fprintf(f->fp, "@umap\t%s\n", up->umap);
   if (up->utf8)
     fprintf(f->fp, "@ucun\t%s\n", up->utf8);
-  if (up->urev)
-    fprintf(f->fp, "@uage\t%s\n", up->urev);
   if (up->unotes)
     sx_w_a_str_list(f->fp, "unote", up->unotes);
+  if (up->urev)
+    fprintf(f->fp, "@uage\t%s\n", up->urev);
 }

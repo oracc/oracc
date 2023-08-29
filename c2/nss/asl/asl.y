@@ -77,6 +77,7 @@ atcmd:
 	| atfake
 	| atlist
 	| atv
+	| atsys
 	| atform
 	| atmeta
 	| atunicode
@@ -142,6 +143,16 @@ atv:
 	| V lang GBAD 
 	;
 
+atsys:
+          SYS SYSNAME
+	| SYS SYSNAME GVALUE GOESTO values
+        ;
+
+values:
+	  GVALUE
+	| values GVALUE
+	;
+
 atftoken:
 	  ATF
 	| GVALUE
@@ -182,8 +193,8 @@ atutf8:
 	  UTF8 TEXT		{ asl_bld_utf8(&@1, curr_asl, (uccp)$2); }
 	;
 
-atutf8:
-	  UTF8 TEXT		{ asl_bld_umap(&@1, curr_asl, (uccp)$2); }
+atumap:
+	  UMAP TEXT		{ asl_bld_umap(&@1, curr_asl, (uccp)$2); }
 	;
 
 atupua:

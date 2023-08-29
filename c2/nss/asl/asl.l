@@ -18,6 +18,7 @@ const char *curraslfile = NULL;
 int endofinput = 0;
 int aslflextrace = 0;
 int fake_flag = 0;
+int Ynext = 0;
 
 extern Pool *aslpool;
 #define xaslpool(s) (char*)pool_copy((const unsigned char*)(s),aslpool);
@@ -58,7 +59,8 @@ LISTNUM		((U\+|[A-Z]+)[0-9]+[()A-Z0-9a-z_'"+*/]*){M}{Q}{L}
 NUMGRAPH	[0-9nN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}{Q}{L}
 FRACTION	[0-9]\/[0-9]
 PUNCT		("*"|:['".:]?|"/"){Q}{L}
-SYSNAME		[a-zA-Z][a-zA-Z0-9]+
+SYSNAME		(U\+|[a-zA-Z]+)
+
 %s E
 %s L
 %s S
@@ -86,13 +88,14 @@ SYSNAME		[a-zA-Z][a-zA-Z0-9]+
 <T>\n				{ }
 <T><<EOF>>			{ if (!endofinput++) return EOL; else yyterminate(); }
 
-<Y>{SYSNAME}/[ \t]+         	{ aslsave; BEGIN(S); return SYSNAME; }
+<Y>{SYSNAME}/\n         	{ aslsave; BEGIN(Ynext); return SYSNAME; }
+<Y>{SYSNAME}/[ \t]+         	{ aslsave; BEGIN(Ynext); return SYSNAME; }
 
 ^@@				{ /* no-op */ }
 ^@end/[ \t].*\n        	       	{ atcmd(END,E); }
 ^@signlist/[ \t]+      		{ atcmd(SIGNLIST,S); }
 ^@listdef/[ \t]+       		{ atcmd(LISTDEF,L); }
-^@sysdef/[ \t]+       		{ atcmd(SYSDEF,Y); }
+^@sysdef/[ \t]+       		{ Ynext=S; atcmd(SYSDEF,Y); }
 ^@sign-?/[ \t]       		{ atcmd(SIGN,0); }
 ^@aka/[ \t]       		{ atcmd(AKA,0); }
 ^@compoundonly/[ \t]           	{ atcmd(COMP,0); }
@@ -104,7 +107,7 @@ SYSNAME		[a-zA-Z][a-zA-Z0-9]+
 ^@noform/[ \t]         		{ mesg_vwarning(curraslfile, asllineno, "[asl] '@noform' has been replaced by '@form-'");
 				  /* atcmd(FORM,-1);*/ }
 ^@v-?/[ \t]+	       		{ atcmd(V,0); }
-@sys/[ \t]+			{ atcmd(SYS,0); }
+@sys/[ \t]+			{ Ynext=0; atcmd(SYS,Y); }
 ^@inote/[ \t]+       		{ Tcmd(INOTE,S); }
 ^@lit/[ \t]+	       		{ Tcmd(LIT,S); }
 ^@note/[ \t]+       		{ Tcmd(NOTE,S); }
@@ -174,9 +177,9 @@ SYSNAME		[a-zA-Z][a-zA-Z0-9]+
 static void
 asl_user_action(void)
 {
-#if 0
-  if (aslflextrace)
-    fprintf(stderr, "%s:%d: asllex: text=::%s::\n", curraslfile, asllineno, asltext);
+#if 1
+  if (asl_flex_debug)
+    fprintf(stderr, "%s:%d: asllex: text=::%s::; start=%d\n", curraslfile, asllineno, asltext,yy_start);
 #endif
 
   asllloc.file = curraslfile;

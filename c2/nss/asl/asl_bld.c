@@ -775,7 +775,7 @@ asl_bld_umap(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
   if (asl_sign_guard(locp, sl, "umap"))
     asl_bld_singleton_string(locp, t, "umap",
-			     sl->curr_form ? &sl->curr_form->u.f->U.umap : &sl->curr_sign->U.umap,
+			     sl->curr_form ? (uccp*)&sl->curr_form->u.f->U.umap : (uccp*)&sl->curr_sign->U.umap,
 			     sl->curr_form ? &sl->curr_form->umap : &sl->curr_sign->inst->umap);
 }
 

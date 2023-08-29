@@ -162,6 +162,7 @@ struct sl_inst
   Boolean upua;
   Boolean utf8;
   Boolean uhex;
+  Boolean umap;
   Boolean useq;
   Boolean uname;
   Boolean urev;
