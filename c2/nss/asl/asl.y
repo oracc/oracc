@@ -35,7 +35,7 @@ int minus_flag = 0;
 		SIGNLIST LISTDEF LISTNAME LREF SREF
 		SYSDEF SYSNAME SYS
 
-%nterm  <text>  anynote atftoken lang longtext token
+%nterm  <text>  anynote atftoken lang longtext token values
 
 %start fields
 
@@ -144,8 +144,9 @@ atv:
 	;
 
 atsys:
-          SYS SYSNAME
-	| SYS SYSNAME GVALUE GOESTO values
+	  SYS SYSNAME GVALUE	{ asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, NULL); }
+	| SYS SYSNAME GVALUE GOESTO values {
+	    			  asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$4, NULL); }
         ;
 
 values:

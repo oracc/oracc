@@ -50,6 +50,8 @@ struct sl_signlist
   struct sl_inst *curr_value;
   struct sl_inst *curr_inst; /* used to attach meta to correct tag */
   List *compounds;
+  List *syslists; /* list of the lists of @sys that occur in sign or
+		     form, so we can generate system tables easily */
   Hash *oid2ucode;
   Memo *m_tokens;
   Memo *m_letters;
@@ -67,6 +69,7 @@ struct sl_signlist
   Memo *m_digests;
   Memo *m_parents;
   Memo *m_notes;
+  Memo *m_syss;
   Pool *p;
   Mloc mloc;
 };
@@ -153,6 +156,7 @@ struct sl_inst
   struct sl_inst *parent_s; 	/* The parent sign for a form or value instance; if NULL use parent_f */
   struct sl_inst *parent_f; 	/* The parent form for a value instance */
   List *notes;			/* A list of struct sl_note * */
+  List *sys;			/* A list of @sys in a sign or form */
   const char *lang; 	  	/* this is inline in the @v; an x-value could have a lang with one sign but not another */
   Mloc mloc;
   Boolean valid; /* doesn't have a - after it */
@@ -184,6 +188,13 @@ struct sl_sysdef
   unsigned const char *name;
   const char *comment;
   struct sl_inst inst;
+};
+
+struct sl_sys
+{
+  const char *name;
+  unsigned const char *v;
+  unsigned const char *vv;
 };
 
 struct sl_letter
@@ -292,6 +303,7 @@ struct sl_form
   int nowners;
   List *insts; 		/* this is a list of sl_inst* where the form occurs */
   List *aka;		/* alternatively known as form-names to support non-standard names */
+  List *sys; 		/* List of @sys entries in sign */
   int name_is_listnum;
   int sort;
   const char *oid;
@@ -350,6 +362,7 @@ extern void asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char
 extern void asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const unsigned char *m, enum sx_tle type);
 extern void asl_bld_sign(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,int minus_flag);
 extern void asl_bld_signlist(Mloc *locp, const unsigned char *n, int list);
+extern void asl_bld_sys(Mloc *locp, struct sl_signlist *sl, const char *sysname, unsigned const char *v, unsigned const char *vv);
 extern void asl_bld_term(struct sl_signlist *);
 extern void asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t, int literal);
 

@@ -27,6 +27,7 @@ sx_w_asl_init(FILE *fp, const char *fname)
   sx_w_asl_fncs.val = sx_w_a_value;
   sx_w_asl_fncs.inh = sx_w_a_ivalue;
   sx_w_asl_fncs.not = sx_w_a_notes;
+  sx_w_asl_fncs.sys = sx_w_a_syss;
   sx_w_asl_fncs.uni = sx_w_a_unicode;
   sx_w_asl_fncs.qvs = sx_w_a_qvs;
   sx_w_asl_fncs.fp = fp;
@@ -271,6 +272,23 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	{
 	  fprintf(f->fp, "@end sign\n");
 	  in_sign = 0;
+	}
+    }
+}
+
+static void
+sx_w_a_syss(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip)
+{
+  if (ip && !ip->inherited && ip->sys)
+    {
+      struct sl_sys *sp;
+      for (sp = list_first(ip->notes); sp; sp = list_next(ip->notes))
+	{
+	  fprintf(f->fp, "@sys\t%s", sp->v);
+	  if (sp->vv)
+	    fprintf(f->fp, " => %s\n", sp->vv);
+	  else
+	    fputc('\n',f->fp);
 	}
     }
 }

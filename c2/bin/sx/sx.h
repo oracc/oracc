@@ -32,6 +32,7 @@ struct sx_functions
     sx_value_f *	inh;
     sx_value_f *	qvs;
     sx_notes_f *	not;
+    sx_notes_f *	sys;
     sx_unicode_f *	uni;
     FILE *fp;
     const char *fname;

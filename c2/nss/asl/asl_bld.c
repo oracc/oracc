@@ -67,6 +67,7 @@ asl_bld_init(void)
   sl->m_digests = memo_init(sizeof(struct sl_compound_digest), 512);
   sl->m_parents = memo_init(sizeof(struct sl_parents), 1024);
   sl->m_notes = memo_init(sizeof(struct sl_note), 512);
+  sl->m_syss = memo_init(sizeof(struct sl_sys), 512);
   sl->p = pool_init();
   sl->compounds = list_create(LIST_SINGLE);
 
@@ -113,6 +114,7 @@ asl_bld_term(struct sl_signlist *sl)
       memo_term(sl->m_digests);
       memo_term(sl->m_parents);
       memo_term(sl->m_notes);
+      memo_term(sl->m_syss);
       pool_term(sl->p);
       free(sl);
     }
@@ -516,6 +518,7 @@ asl_bld_sysdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char 
     }
 }
 
+#if 0
 static void
 asl_check_sys(Mloc *locp, struct sl_signlist *sl, const char *txt)
 {
@@ -563,6 +566,7 @@ asl_check_sys(Mloc *locp, struct sl_signlist *sl, const char *txt)
     }
   
 }
+#endif
 
 void
 asl_bld_note(Mloc *locp, struct sl_signlist *sl, const char *tag, const char *txt)
@@ -575,6 +579,7 @@ asl_bld_note(Mloc *locp, struct sl_signlist *sl, const char *tag, const char *tx
       if (!sl->curr_inst->notes)
 	sl->curr_inst->notes = list_create(LIST_SINGLE);
       list_add(sl->curr_inst->notes, n);
+#if 0
       /* @sys is implemented as a type of note but has special
 	 location and syntax rules which we check here rather than in
 	 the lexer/parser */
@@ -585,6 +590,7 @@ asl_bld_note(Mloc *locp, struct sl_signlist *sl, const char *tag, const char *tx
 	  else
 	    asl_check_sys(locp, sl, txt);
 	}
+#endif
     }
   else
     (void)asl_sign_guard(locp, sl, tag);
@@ -744,6 +750,35 @@ asl_bld_signlist(Mloc *locp, const unsigned char *n, int list)
 }
 
 void
+asl_bld_sys(Mloc *locp, struct sl_signlist *sl, const char *sysname, unsigned const char *v, unsigned const char *vv)
+{
+  if (!sl->curr_inst || (sl->curr_inst->type != 's' && sl->curr_inst->type != 'f'))
+    mesg_verr(locp, "misplaced @sys: must belong to @sign or @form");
+  else
+    {
+      if (!hash_find(sl->sysdefs, (uccp)sysname))
+	{
+	  mesg_verr(locp, "undefined system name %s in @sys", sysname);
+	  return;
+	}
+      /* FIXME: need to validate values as well, but probably best
+	 done in sx_marshall when all values are known */
+      if (!sl->curr_inst->sys)
+	{
+	  sl->curr_inst->sys = list_create(LIST_SINGLE);
+	  if (!sl->syslists)
+	    sl->syslists = list_create(LIST_SINGLE);
+	  list_add(sl->syslists, sl->curr_inst->sys);
+	}
+      struct sl_sys *sp = memo_new(sl->m_syss);
+      sp->name = sysname;
+      sp->v = v;
+      sp->vv = vv;
+      list_add(sl->curr_inst->sys, sp);
+    }
+}
+
+void
 asl_bld_uhex(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
   if (asl_sign_guard(locp, sl, "uhex"))
@@ -899,7 +934,8 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
 	  if (!strcmp((ccp)v->sowner->name, (ccp)sl->curr_sign->name))
 	    mesg_verr(locp, "value %s occurs more than once in sign %s\n", n, sl->curr_sign->name);
 	  else
-	    mesg_verr(locp, "duplicate value %s in sign %s (first occurs in %s)\n", n, sl->curr_sign->name, v->sowner->name);
+	    mesg_verr(locp, "duplicate value %s in sign %s (first occurs in %s)\n",
+		      n, sl->curr_sign->name, v->sowner->name);
 	  return;
 	}
     }
