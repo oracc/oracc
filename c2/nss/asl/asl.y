@@ -146,12 +146,12 @@ atv:
 atsys:
 	  SYS SYSNAME GVALUE	{ asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, NULL); }
 	| SYS SYSNAME GVALUE GOESTO values {
-	    			  asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$4, NULL); }
+	  			  asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, (uccp)longtext(NULL,NULL,NULL)); }
         ;
 
 values:
-	  GVALUE
-	| values GVALUE
+	  GVALUE       	{ $$ = longtext(curr_asl, $1, NULL); }
+	| values GVALUE	{ $$ = longtext(curr_asl, $1, $2); }
 	;
 
 atftoken:

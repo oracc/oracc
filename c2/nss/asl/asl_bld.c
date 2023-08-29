@@ -752,9 +752,14 @@ asl_bld_signlist(Mloc *locp, const unsigned char *n, int list)
 void
 asl_bld_sys(Mloc *locp, struct sl_signlist *sl, const char *sysname, unsigned const char *v, unsigned const char *vv)
 {
-  if (!sl->curr_inst || (sl->curr_inst->type != 's' && sl->curr_inst->type != 'f'))
-    mesg_verr(locp, "misplaced @sys: must belong to @sign or @form");
+  struct sl_inst *ip = NULL;
+  if (sl->curr_form)
+    ip = sl->curr_form;
+  else if (sl->curr_sign)
+    ip = sl->curr_sign->inst;
   else
+    mesg_verr(locp, "misplaced @sys: must belong to @sign or @form");
+  if (ip)
     {
       if (!hash_find(sl->sysdefs, (uccp)sysname))
 	{
@@ -763,18 +768,18 @@ asl_bld_sys(Mloc *locp, struct sl_signlist *sl, const char *sysname, unsigned co
 	}
       /* FIXME: need to validate values as well, but probably best
 	 done in sx_marshall when all values are known */
-      if (!sl->curr_inst->sys)
+      if (!ip->sys)
 	{
-	  sl->curr_inst->sys = list_create(LIST_SINGLE);
+	  ip->sys = list_create(LIST_SINGLE);
 	  if (!sl->syslists)
 	    sl->syslists = list_create(LIST_SINGLE);
-	  list_add(sl->syslists, sl->curr_inst->sys);
+	  list_add(sl->syslists, ip->sys);
 	}
       struct sl_sys *sp = memo_new(sl->m_syss);
       sp->name = sysname;
       sp->v = v;
-      sp->vv = vv;
-      list_add(sl->curr_inst->sys, sp);
+      sp->vv = pool_copy(vv, sl->p);
+      list_add(ip->sys, sp);
     }
 }
 

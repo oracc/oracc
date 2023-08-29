@@ -11,6 +11,7 @@ static sx_value_f sx_w_a_ivalue;
 static sx_value_f sx_w_a_qvs;
 static sx_value_f sx_w_a_value;
 static sx_notes_f sx_w_a_notes;
+static sx_notes_f sx_w_a_syss;
 static sx_unicode_f sx_w_a_unicode;
 
 struct sx_functions sx_w_asl_fncs;
@@ -282,9 +283,9 @@ sx_w_a_syss(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip)
   if (ip && !ip->inherited && ip->sys)
     {
       struct sl_sys *sp;
-      for (sp = list_first(ip->notes); sp; sp = list_next(ip->notes))
+      for (sp = list_first(ip->sys); sp; sp = list_next(ip->sys))
 	{
-	  fprintf(f->fp, "@sys\t%s", sp->v);
+	  fprintf(f->fp, "@sys\t%s %s", sp->name, sp->v);
 	  if (sp->vv)
 	    fprintf(f->fp, " => %s\n", sp->vv);
 	  else

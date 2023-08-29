@@ -94,8 +94,8 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 					      f->val(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->values[m],
 						     sx_pos_inst);
 					      f->not(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->values[m]);
-					      if (sl->letters[i].groups[j].signs[k]->sys)
-						f->sys(f, sl, sl->letters[i].groups[j].signs[k]);
+					      if (sl->letters[i].groups[j].signs[k]->u.s->forms[l]->sys)
+						f->sys(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]);
 					      if (QV(sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->values[m]))
 						list_add(qv, sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->values[m]);
 					    }
