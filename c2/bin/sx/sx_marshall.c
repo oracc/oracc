@@ -1,4 +1,5 @@
 #include <hash.h>
+#include <list.h>
 #include <collate.h>
 #include <oraccsys.h>
 #include <oid.h>
@@ -268,6 +269,28 @@ int via_tok_cmp(const void *a, const void *b)
     return 0;
 }
 
+static List *
+sx_uniq_aka(List *aka)
+{
+  if (list_len(aka) > 1)
+    {
+      Hash *h = hash_create(5);
+      List *l = list_create(LIST_SINGLE);
+      Memo_str *a;
+      for (a = list_first(aka); a; a = list_next(aka))
+	if (!hash_find(h, a->s))
+	  {
+	    list_add(l, a);
+	    hash_add(h, a->s, "");
+	  }
+      hash_free(h,NULL);
+      list_free(aka,NULL);
+      return l;
+    }
+  else
+    return aka;
+}
+
 void
 sx_marshall(struct sl_signlist *sl)
 {
@@ -292,6 +315,9 @@ sx_marshall(struct sl_signlist *sl)
     {
       struct sl_sign *s;
       struct sl_form *f = hash_find(sl->hfentry, (uccp)keys[i]);
+
+      if (f->aka)
+	f->aka = sx_uniq_aka(f->aka);
       
       if (!(s = hash_find(sl->hsentry, (uccp)keys[i])))
 	s = form_as_sign(sl, hash_find(sl->hfentry, (uccp)keys[i]));
