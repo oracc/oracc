@@ -35,6 +35,7 @@ Implementation
 
 * validate umap targets as part of sx_marshall--must be valid names which have Unicode info
 
+* DN/GN etc. don't sort correctly
 
 Schema
 ------
@@ -80,13 +81,9 @@ Documentation
 OGSL Fixes
 ----------
 
-* re-generate ogsl.asl with new ordering
-
 * edit X.Y&X.Y to (X.Y)&(X.Y) and add @aka X.Y&X.Y
 
-* import @uphase 0 as @uage 0; add @uage 9 based on unicode-not-encoded status
-
-* rewrite Attinger values using @sys
+* edit LAK @sign names to use three-digit form and add @aka to revised @sign
 
 * How to represent double-encoded Unicode characters like
   U+1243A--they need to show up in the unicode data table in some
@@ -94,7 +91,7 @@ OGSL Fixes
 
 * OGSL and OIDs page (perhaps on Maintainer page)
 
-* add MURUB₄ @umap NISAG and DE₂ @umap |UMUM×KASKAL|
+* add DE₂ @umap |UMUM×KASKAL|
 
 * Reformat all the fields that use LONG-TEXT so they are at most, say,
   80 characters long

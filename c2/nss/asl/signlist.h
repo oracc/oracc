@@ -69,6 +69,7 @@ struct sl_signlist
   Memo *m_digests;
   Memo *m_parents;
   Memo *m_notes;
+  Memo *m_memostr;
   Memo *m_syss;
   Pool *p;
   Mloc mloc;
@@ -270,7 +271,7 @@ struct sl_sign
 				 (e.g., |GA₂×A+HA| = |GA₂×(A.HA)|);
 				 for other types it is the map value
 				 from, e.g., @sref BA => BU */
-  List *aka;		/* alternatively known as sign-names to support non-standard names */
+  List *aka;		/* alternatively known as sign-names to support non-standard names; data type is Memo_str */
   int sort;
   const char *oid;
   struct sl_inst *inst;
@@ -302,7 +303,7 @@ struct sl_form
   struct sl_sign **owners_sort; /* owners as sorted array */
   int nowners;
   List *insts; 		/* this is a list of sl_inst* where the form occurs */
-  List *aka;		/* alternatively known as form-names to support non-standard names */
+  List *aka;		/* alternatively known as form-names to support non-standard names, data type is Memo_str */
   List *sys; 		/* List of @sys entries in sign */
   int name_is_listnum;
   int sort;

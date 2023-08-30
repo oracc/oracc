@@ -207,7 +207,7 @@ atuname:
         ;
 
 atunote:
-	  UNOTE TEXT		{ asl_bld_unote(&@1, curr_asl, (uccp)$2); }
+	  UNOTE longtext		{ asl_bld_unote(&@1, curr_asl, (uccp)longtext(NULL,NULL,NULL)); }
 	;
 
 atmeta:

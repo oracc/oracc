@@ -104,7 +104,7 @@ form_as_sign(struct sl_signlist *sl, struct sl_form *f)
   
   s->inst = ip;
   s->name = f->name;
-  s->xref = f;  
+  s->xref = f;
   hash_add(sl->hsentry, s->name, s);
   asl_register_sign(&ip->mloc, sl, s);
   return s;
@@ -295,6 +295,17 @@ sx_marshall(struct sl_signlist *sl)
       
       if (!(s = hash_find(sl->hsentry, (uccp)keys[i])))
 	s = form_as_sign(sl, hash_find(sl->hfentry, (uccp)keys[i]));
+      else
+	{	  
+	  if (f->aka)
+	    {
+	      Memo_str *ms;
+	      for (ms = list_first(f->aka); ms; ms = list_next(f->aka))
+		mesg_verr(&ms->m, "@aka is only allowed on @form if the form does not also exist as a @sign\n");
+	      list_free(f->aka, NULL);
+	      f->aka = NULL;
+	    }
+	}
       f->sign = s;
     }
 
@@ -338,9 +349,9 @@ sx_marshall(struct sl_signlist *sl)
 	    {
 	      if (sl->signs[i]->aka)
 		{
-		  unsigned const char *a;
+		  Memo_str *a;
 		  for (a = list_first(sl->signs[i]->aka); a; a = list_next(sl->signs[i]->aka))
-		    if ((sl->signs[i]->oid = hash_find(oids, a)))
+		    if ((sl->signs[i]->oid = hash_find(oids, a->s)))
 		      break;
 		}
 	      if (!sl->signs[i]->oid)
@@ -389,9 +400,9 @@ sx_marshall(struct sl_signlist *sl)
 	{
 	  if (sl->forms[i]->aka)
 	    {
-	      unsigned const char *a;
+	      Memo_str *a;
 	      for (a = list_first(sl->forms[i]->aka); a; a = list_next(sl->forms[i]->aka))
-		if ((sl->forms[i]->oid = hash_find(oids, a)))
+		if ((sl->forms[i]->oid = hash_find(oids, a->s)))
 		  break;
 	    }
 	  if (sl->forms[i]->oid)

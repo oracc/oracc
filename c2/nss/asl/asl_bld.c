@@ -67,6 +67,7 @@ asl_bld_init(void)
   sl->m_digests = memo_init(sizeof(struct sl_compound_digest), 512);
   sl->m_parents = memo_init(sizeof(struct sl_parents), 1024);
   sl->m_notes = memo_init(sizeof(struct sl_note), 512);
+  sl->m_memostr = memo_init(sizeof(Memo_str), 512);
   sl->m_syss = memo_init(sizeof(struct sl_sys), 512);
   sl->p = pool_init();
   sl->compounds = list_create(LIST_SINGLE);
@@ -114,6 +115,7 @@ asl_bld_term(struct sl_signlist *sl)
       memo_term(sl->m_digests);
       memo_term(sl->m_parents);
       memo_term(sl->m_notes);
+      memo_term(sl->m_memostr);
       memo_term(sl->m_syss);
       pool_term(sl->p);
       free(sl);
@@ -605,20 +607,20 @@ asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
     mesg_verr(locp, "'*' is ignored on @aka");
   if (query)
     mesg_verr(locp, "'?' is ignored on @aka");
-    
+
   asl_bld_token(locp, sl, (ucp)t, 0);
 
   if (sl->curr_form)
     {
       if (!sl->curr_form->u.f->aka)
 	sl->curr_form->u.f->aka = list_create(LIST_SINGLE);
-      list_add(sl->curr_form->u.f->aka, (void*)t);
+      list_add(sl->curr_form->u.f->aka, memo_str(locp, t));
     }
   else if (sl->curr_sign)
     {
       if (!sl->curr_sign->aka)
 	sl->curr_sign->aka = list_create(LIST_SINGLE);
-      list_add(sl->curr_sign->aka, (void*)t);
+      list_add(sl->curr_sign->aka, memo_str(locp, t));
     }
   else
     (void)asl_sign_guard(locp, sl, "aka");

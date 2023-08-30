@@ -50,6 +50,14 @@ cmpstringp(const void *p1, const void *p2)
   return strcmp(* (char * const *) p1, * (char * const *) p2);
 }
 
+static void
+sx_w_a_aka_list(FILE *fp, List *a)
+{
+  Memo_str *m;
+  for (m = list_first(a); m; m = list_next(a))
+    fprintf(fp, "@aka\t%s\n", m->s);
+}
+
 /* This is the entry point for asl output */
 static void
 sx_w_a_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
@@ -57,6 +65,9 @@ sx_w_a_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
   if (sx_pos_init == p)
     {
       fprintf(f->fp, "@signlist %s\n", sl->project);
+      /* Normally no blank line before notes; @signlist is an exception */
+      if (sl->notes && list_len(sl->notes->notes))
+	fputc('\n', f->fp);
       sx_w_a_notes(f, sl, sl->notes);
       int nn, i;
       const char **n = hash_keys2(sl->listdefs, &nn);
@@ -128,7 +139,7 @@ sx_w_a_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
       if (s->u.f->pname)
 	fprintf(f->fp, "@pname\t%s\n", s->u.f->pname);
       if (s->u.f->aka)
-	sx_w_a_str_list(f->fp, "aka", s->u.f->aka);
+	sx_w_a_aka_list(f->fp, s->u.f->aka);
     }
   else if (sx_pos_term == p)
     {
@@ -263,7 +274,7 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	  if (s->u.s->pname)
 	    fprintf(f->fp, "@pname\t%s\n", s->u.s->pname);
 	  if (s->u.s->aka)
-	    sx_w_a_str_list(f->fp, "aka", s->u.s->aka);
+	    sx_w_a_aka_list(f->fp, s->u.s->aka);
 	  in_sign = 1;
 	}
     }

@@ -8,6 +8,8 @@ struct memo_block
   struct memo_block *next;
 };
 
+static Memo *memostr = NULL;
+
 Memo *
 memo_init (int element_size, int elements_per_alloc)
 {
@@ -162,3 +164,20 @@ memo_merge(Memo *any, size_t *nbytes)
   *nbytes = bytes;
   return m;
 }
+
+Memo_str *
+memo_str(Mloc *m, const unsigned char *s)
+{
+  Memo_str *ms = NULL;
+  if (m && s)
+    {
+      if (!memostr)
+	memostr = memo_init(sizeof(Memo_str), 128);
+      ms = memo_new(memostr);
+      ms->m = *m;
+      ms->s = s;
+    }
+  return ms;
+}
+
+  
