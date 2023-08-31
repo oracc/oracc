@@ -9,6 +9,7 @@
 extern int sortcode_output;
 Hash *oids;
 Hash *oid_sort_keys;
+Hash *oid_warned = NULL;
 static struct sl_signlist *cmpsl = NULL;
 
 int sx_show_tokens = 0;
@@ -82,7 +83,8 @@ sx_oid_array(struct sl_sign *s, List *o)
 	    {
 	      unsigned const char *sname = NULL;
 	      sname = (ip->type == 's' ? ip->u.s->name : ip->u.f->name);
-	      mesg_verr(&ip->mloc, "strange ... no OID for sign or form %s\n", sname);
+	      if (!hash_find(oid_warned, sname))
+		mesg_verr(&ip->mloc, "strange ... no OID for sign or form %s\n", sname);
 	    }
 	}
       noids = i;
@@ -308,6 +310,7 @@ sx_marshall(struct sl_signlist *sl)
   if (!oids)
     oids = hash_create(1);
   oid_sort_keys = hash_create(2048);
+  oid_warned = hash_create(64);
   
   /* Register forms that don't exist as signs as if they were signs */
   keys = hash_keys2(sl->hfentry, &nkeys);
@@ -383,7 +386,10 @@ sx_marshall(struct sl_signlist *sl)
 	      if (!sl->signs[i]->oid)
 		{
 		  if (sl->signs[i]->inst->valid && sl->signs[i]->type != sx_tle_lref && sl->signs[i]->type != sx_tle_sref)
-		    mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
+		    {
+		      mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
+		      hash_add(oid_warned, sl->signs[i]->name, "");
+		    }
 		}
 	      else if (sl->signs[i]->U.uhex)
 		hash_add(sl->oid2ucode, (uccp)sl->signs[i]->oid, (ucp)sl->signs[i]->U.uhex);
@@ -442,7 +448,10 @@ sx_marshall(struct sl_signlist *sl)
 	    {
 	      struct sl_inst *inst = list_first(sl->forms[i]->insts);
 	      if (inst->valid)
-		mesg_verr(&inst->mloc, "OID needed for FORM %s", sl->forms[i]->name);
+		{
+		  mesg_verr(&inst->mloc, "OID needed for FORM %s", sl->forms[i]->name);
+		  hash_add(oid_warned, sl->forms[i]->name, "");
+		}
 	    }
 	}
 

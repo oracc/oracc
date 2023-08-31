@@ -329,6 +329,7 @@ tokcheck_init()
 	  allow_token(t,agroupo);
 	  break;
 	case agroupc:
+	  allow_token(t,damagc);
 	  allow_group(t,g_boundary);
 	  allow_token(t,agroupc);
 	  break;

@@ -4,14 +4,6 @@ c2/nss/asl , c2/nss/gdl , c2/bin/sx TODO list as of 2023-08-02
 
 Implementation
 --------------
-
-* BUG @aka |ŠE₃.TU.BU| occurs twice and is duplicated on output both times
-
-* add @system vel sim to allow
-
-  @sys attinger guniŋₓ ~ buniŋₓ
-  @sys cdli du₁₁ ~ dug₄
-
 * values with ATF flag (u-gun₃, {kaš}ulušin) should be parsed as GDL;
   should they have their own @atf tag?
 
@@ -31,10 +23,9 @@ Implementation
 
 * also fix SLL name for @utf8 -> @ucun, which is still uchar :( but should be ucun now
 
-* Fix utf8 in schema and in sx_w_xml.c; add umap to schema
-
 * validate umap targets as part of sx_marshall--must be valid names which have Unicode info
 
+* validate @sys targets--the lead value is checked, but the list of GOESTO values is not currently checked
 * DN/GN etc. don't sort correctly
 
 Schema
@@ -69,10 +60,6 @@ Documentation
     @ucode -> @list U+, @useq, @upua
     @uchar -> @utf8
 
-* Document maintainer notes for OID curation
-
-* List/need listnum pages
-
 * Unicode deprecated/missing should have unote in last column about why
 
 * Unicode need should have citation and character image
@@ -91,8 +78,6 @@ OGSL Fixes
 
 * OGSL and OIDs page (perhaps on Maintainer page)
 
-* add DE₂ @umap |UMUM×KASKAL|
-
 * Reformat all the fields that use LONG-TEXT so they are at most, say,
   80 characters long
 
@@ -101,6 +86,7 @@ OGSL Fixes
 * add @version/@date tags? determine and document release vs. updates
 
 * BU@90 not in the needed list but should be
+
 
 Future
 ------

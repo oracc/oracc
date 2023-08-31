@@ -67,7 +67,7 @@ main(int argc, char **argv)
 	}
       else if ('#' != *k)
 	{
-	  fprintf(stderr, "slix: no tab in line\n");
+	  fprintf(stderr, "slix: no tab in line `%s'\n", k);
 	  exit(1);
 	}
     }

@@ -279,7 +279,7 @@ T, Ṭ
 @end chars
 
 @chars %qpc/g
-@allow ABDEGŊHḪIKLMNPRSṢŠTṬUWXYZ0123456789₀₁₂₃₄₅₆₇₈₉ₓ'ʾ
+@allow ABCDEGŊHḪIKLMNPRSṢŠTṬUWXYZ0123456789₀₁₂₃₄₅₆₇₈₉ₓ'ʾ
 @nokey Ḫ₀₁₂₃₄₅₆₇₈₉ₓ
 @trans
 J Ŋ

@@ -57,13 +57,13 @@ sx_s_letter(FILE *f, struct sl_letter *l)
 static void
 sx_s_aka(FILE *fp, const char *oid, List *aka)
 {
-  const unsigned char *n;
+  Memo_str *n;
   /* 2023-8-25 removed ';aka' -- these are now non-reciprocal entries
      and the status as an @aka can be determined by looking up the
      OID, then looking up the OID's name, and comparing the first name
      to the OID's name */
   for (n = list_first(aka); n; n = list_next(aka))
-    fprintf(fp, "%s\t%s\n", n, oid);
+    fprintf(fp, "%s\t%s\n", n->s, oid);
 }
 
 static void
