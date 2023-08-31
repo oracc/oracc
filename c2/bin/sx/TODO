@@ -87,6 +87,8 @@ OGSL Fixes
 
 * BU@90 not in the needed list but should be
 
+* get ATFU list from small mac air and figure out how/where to include it (could be in pcsl or ogsl)
+
 
 Future
 ------

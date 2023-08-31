@@ -32,13 +32,19 @@ fi
 if [[ $atf = "atf" ]]; then
     if [ -d "00atf" ]; then
 	batch=`oraccopt . atf-batch`
+	oxx=`oraccopt . atf-oxx`
+	if [ "$oxx" == "yes" ]; then
+	    oxexec=oxx
+	else
+	    oxexec=ox
+	fi
 	if [ "$batch" = "yes" ]; then
 	    for a in 01bld/atf-batch-*.lst ; do
-		ox -cm -I$a
+		$oxexec -cm -I$a
 	    done
 	else
 	    files=`find 00atf -type f | grep '.\(ods\|.atf\)$' | grep -v ods.atf`
-	    ox -cm $files
+	    $oxexec -cm $files
 	fi
     fi
 fi

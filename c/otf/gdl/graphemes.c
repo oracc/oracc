@@ -350,7 +350,7 @@ gmods(register unsigned char *g, struct mods *modsbuf)
 	    }
 	  else
 	    {
-	      while (*g < 128 && isalnum(*g) && 'x' != *g)
+	      while (*g < 128 && isalnum(*g)/* && 'x' != *g*/)
 		{
 		  /* FIXME: make this open-ended */
 		  if (datap - mp->data == MODS_MAX)
@@ -1522,7 +1522,7 @@ cparse(struct node *parent, unsigned char *g, const char end,
 		      while ('@' == *g || '~' == *g)
 			{
 			  ++g;
-			  while (*g < 128 && isalnum(*g) && 'x' != *g)
+			  while (*g < 128 && isalnum(*g) /*&& 'x' != *g*/)
 			    ++g;
 			}
 		    }

@@ -161,6 +161,11 @@ main(int argc, char **argv)
   tree_init();
   gdl_init();
 
+#if 1
+  if (strstr(argv[0], "oxx"))
+    fprintf(stderr, "ox running as oxx\n");
+#endif
+  
   no_gdl_xids = 0;
   if (!ox_options(argc,argv))
     {

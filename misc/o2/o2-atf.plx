@@ -16,6 +16,9 @@ GetOptions(
 
 sub xsystem;
 
+my $atf_oxx = `oraccopt $project atf-oxx`;
+$ox .= 'x' if $atf_oxx eq 'yes';
+
 # run atfsplit and update installation
 if ($batch) {
     atf_options();
