@@ -119,7 +119,7 @@ atpname:
 	;
 
 atlist:
-        LIST LISTNUM	 { asl_bld_list(&@1, curr_asl, (uccp)$2, minus_flag); }
+          LIST LISTNUM	 { asl_bld_list(&@1, curr_asl, (uccp)$2, minus_flag); }
 	;
 
 atlref:

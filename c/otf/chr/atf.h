@@ -98,6 +98,9 @@ struct langdata;
 extern const char *file;
 extern int lnum;
 
+#define atf2utf_init c1_atf2utf_init
+#define atf2utf c1_atf2utf
+
 extern unsigned char *atf2utf(register const unsigned char *s, int rx);
 extern void atf2utf_init(void);
 extern unsigned char * gatf2utf(const unsigned char *lem, const char *f, ssize_t ln);

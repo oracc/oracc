@@ -4,6 +4,7 @@
 #include <tree.h>
 #include <prop.h>
 #include <ctype128.h>
+#include <atf2utf.h>
 #include "gdl.tab.h"
 #include "gdlstate.h"
 #include "gdl.h"
@@ -120,13 +121,14 @@ gdl_node_type(Node *np, enum gdlpropvals p)
 #endif
 
 static Node *
-gdl_graph_node(Tree *ytp, const char *name, const char *data)
+gdl_graph_node(Mloc *locp, Tree *ytp, const char *name, const char *data)
 {
   Node *np = NULL;
   np = tree_add(ytp, NS_GDL, name, ytp->curr->depth, NULL);
   np->text = (ccp)pool_copy((uccp)data,gdlpool);
   lgp = np;
   prop_state(np, &gst);
+  np->mloc = mloc_mloc(locp);
   return np;
 }
 
@@ -196,11 +198,11 @@ gdl_remove_q_error(Mloc m, Node *ynp)
 
 /* Used when a number is not followed by a '('; need to sexify nums here */
 Node *
-gdl_barenum(Tree *ytp, const char *data)
+gdl_barenum(Mloc *locp, Tree *ytp, const char *data)
 {
   if (gdltrace)
     fprintf(stderr, "gt BARENUM: %s\n", data);
-  return gdl_graph_node(ytp, "g:B", data);
+  return gdl_graph_node(locp, ytp, "g:B", data);
 }
 
 void
@@ -274,21 +276,38 @@ gdl_field(Tree *ytp, const char *ftype)
 }
 
 Node *
-gdl_graph(Tree *ytp, const char *data)
+gdl_graph(Mloc *locp, Tree *ytp, const char *data)
 {
   extern int g_literal_flag, g_logoforce_flag;
   const char *gname = NULL;
+  uccp gatf = NULL;
   Node *ret = NULL;
 
   if (ytp->curr->kids && 'R' == ytp->curr->kids->name[2])
     gname = "g:N";
   else
     gname = "g:g";
+
+  if (!gdl_unicode)
+    {
+      uccp guni = atf2utf(locp,(uccp)data,0);
+      if (strcmp((ccp)guni,(ccp)data))
+	{
+	  gatf = (uccp)data;
+	  data = (ccp)pool_copy(guni,ytp->tm->pool);
+	}
+    }
   
   if (gdltrace)
     fprintf(stderr, "gt: GRAPH[%s]: %s\n", gname, data);
 
-  ret = gdl_graph_node(ytp, gname, data);
+  ret = gdl_graph_node(locp, ytp, gname, data);
+
+  /* If gatf is to be included in XML output then GP_ATTRIBUTE is
+     okay--otherwise some other prop-group will be needed */
+  if (gatf)
+    gdl_prop_kv(ret, GP_ATTRIBUTE, PG_GDL_INFO, "atf", (ccp)gatf);
+
   if (g_literal_flag)
     {
       gdl_update_state(ret, gs_force|gs_g_undefined);
@@ -315,36 +334,36 @@ gdl_lang(Tree *ytp, const char *data)
 }
 
 Node *
-gdl_listnum(Tree *ytp, const char *data)
+gdl_listnum(Mloc *locp, Tree *ytp, const char *data)
 {
   if (gdltrace)
     fprintf(stderr, "gt: LISTNUM: %s\n", data);
-  return gdl_graph_node(ytp, "g:l", data);
+  return gdl_graph_node(locp, ytp, "g:l", data);
 }
 
 Node *
-gdl_nongraph(Tree *ytp, const char *data)
+gdl_nongraph(Mloc *locp, Tree *ytp, const char *data)
 {
   if (gdltrace)
     fprintf(stderr, "gt: NONGRAPH: %s\n", data);
-  return gdl_graph_node(ytp, "g:x", data);
+  return gdl_graph_node(locp, ytp, "g:x", data);
 }
 
 /* This is triggered by [0-9]/( so we know its a repetition number */
 Node *
-gdl_number(Tree *ytp, const char *data)
+gdl_number(Mloc *locp, Tree *ytp, const char *data)
 {
   if (gdltrace)
     fprintf(stderr, "gt: NUMBER: %s\n", data);
-  return gdl_graph_node(ytp, "g:R", data);
+  return gdl_graph_node(locp, ytp, "g:R", data);
 }
 
 Node *
-gdl_punct(Tree *ytp, const char *data)
+gdl_punct(Mloc *locp, Tree *ytp, const char *data)
 {
   if (gdltrace)
     fprintf(stderr, "gt: PUNCT: %s\n", data);
-  return gdl_graph_node(ytp, "g:p", data);
+  return gdl_graph_node(locp, ytp, "g:p", data);
 }
 
 Node *

@@ -6,6 +6,7 @@
 #include <prop.h>
 #include <memo.h>
 #include <tree.h>
+#include <atf2utf.h>
 
 #include "gdl.h"
 #include "gdl.tab.h"
@@ -34,6 +35,8 @@ gdl_init(void)
   if (gdl_initted++)
     return;
 
+  atf2utf_init();
+  
   gdl_balance_init();
 
   gdl_lexfld_init();

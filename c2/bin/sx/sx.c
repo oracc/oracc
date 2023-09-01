@@ -36,7 +36,7 @@ extern int asl_raw_tokens; /* ask asl to produce list of @sign/@form/@v tokens *
 int boot_mode = 0;
 int check_mode = 0;
 int trace_mode = 0;
-extern int asl_flex_debug, gdl_flex_debug;
+extern int asl_flex_debug, gdl_flex_debug, gdl_unicode;
 
 const char *missing_lists = NULL;
 
@@ -49,12 +49,8 @@ main(int argc, char * const*argv)
   xo_loc = malloc(sizeof(Mloc));
   mesg_init();
   asl_flex_debug = gdl_flex_debug = 0;
+  gdl_unicode = 1;
 
-#if 0
-  /* Initialize a dummy gvl with an empty hash instead of a signlist ### NOW DONE IN asl_bld_init */
-  (void)gvl_setup(NULL, NULL);
-#endif
-  
   gsort_init();
   
   options(argc, argv, "abcijlm:nMsStTux?");

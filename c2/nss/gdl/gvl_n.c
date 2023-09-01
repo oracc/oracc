@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <tree.h>
+#include <mesg.h>
 #include <oraccsys.h>
 
 #include "sll.h"
@@ -135,11 +136,11 @@ gvl_n_sexify(Node *ynp)
 	      else
 		mesg_err(ynp->mloc, "internal error: sexify returned number without parens");	      
 	      gdl_push(ntp, "g:q");
-	      qnp = gdl_number(ntp, (ccp)pool_copy((uccp)n,ynp->tree->tm->pool));
+	      qnp = gdl_number(ynp->mloc, ntp, (ccp)pool_copy((uccp)n,ynp->tree->tm->pool));
 	      qnp = qnp->rent;
 
 	      if (*q)
-		gdl_graph(ntp,(ccp)pool_copy((uccp)q,ynp->tree->tm->pool));
+		gdl_graph(ynp->mloc,ntp,(ccp)pool_copy((uccp)q,ynp->tree->tm->pool));
 	      
 	      /* process each q-node as though it were a regular qualified number */
 	      gvl_n(qnp);
@@ -162,9 +163,14 @@ gvl_n_sexify(Node *ynp)
 	}
       else if (!strcmp(ynp->text, "00"))
 	{
+	  gvl_g*gp = memo_new(curr_sl->m);
 	  ynp->name = "g:n";
-	  /* for now leave this as a node with no gvl_g because 00
-	     isn't a grapheme but it is a number */
+	  gp->orig = (uccp)ynp->text;
+	  gp->type = ynp->name + 2;
+	  gp->oid = (ccp)gvl_lookup(gp->orig);
+	  gp->sign = gvl_lookup((uccp)gp->oid);
+	  gp->c10e = gp->orig;
+	  ynp->user = gp;
 	}      
       else
 	{

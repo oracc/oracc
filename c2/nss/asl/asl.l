@@ -3,6 +3,7 @@
 %option never-interactive noyywrap yylineno nounput
 
 %{
+#include <ctype.h>
 #include <oraccsys.h>
 #include <mesg.h>
 #include <pool.h>
@@ -23,7 +24,7 @@ int Ynext = 0;
 extern Pool *aslpool;
 #define xaslpool(s) (char*)pool_copy((const unsigned char*)(s),aslpool);
 static void asl_user_action(void);
-
+static int asl_grapheme(const char *gp);
 static void check_minus(char *t);
 
 /* #if 1 to print every matched rule */
@@ -53,13 +54,14 @@ Q		\??
 L		=?
 COMPOUND	"|"([a-zA-Z\x80-\xff]|[@~().%&+()0-9])+"|"{Q}{L}
 GRAPHEME 	((({G}|{N}){M})|"15"){Q}{L}
+ZERO		"00"(~[a-d])?
 PHONGRAPH	"/"{G}"/"
 LISTNAME	(U\+|[A-Z]+)
 LISTNUM		((U\+|[A-Z]+)[0-9]+[()A-Z0-9a-z_'"+*/]*){M}{Q}{L}
 NUMGRAPH	[0-9nN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}{Q}{L}
 FRACTION	[0-9]\/[0-9]
 PUNCT		("*"|:['".:]?|"/"){Q}{L}
-SYSNAME		(U\+|[a-zA-Z]+)
+SYSNAME		[a-zA-Z]+
 
 %s E
 %s L
@@ -127,6 +129,8 @@ SYSNAME		(U\+|[a-zA-Z]+)
 ^@[a-z]+         		{ BEGIN 0; mesg_vwarning(curraslfile, asllineno,
 							"[asl] malformed or unknown @-line: %s", asltext); }
 
+{ZERO}      			{ aslsave; return GNAME; }
+
 {NUMGRAPH}			{ aslsave; return asl_grapheme(asllval.text); }
 
 {FRACTION}			{ aslsave; mesg_vwarning(curraslfile, asllineno,
@@ -173,6 +177,23 @@ SYSNAME		(U\+|[a-zA-Z]+)
 <<EOF>>				{ if (!endofinput++) return EOL; else yyterminate(); }
 
 %%
+
+static int
+asl_grapheme(const char *gp)
+{
+  const char *gp_orig = gp;
+  while (*gp)
+    if (*gp <= 127 && islower(*gp))
+      return GVALUE;
+    else if (*gp <= 127 && isupper(*gp))
+      return GNAME;
+    else
+      ++gp;
+  if (!strcmp(gp_orig, "15") || ('0' == gp[0] && '0' == gp[1]))
+    return GNAME;
+  else
+    return GVALUE;
+}
 
 static void
 asl_user_action(void)

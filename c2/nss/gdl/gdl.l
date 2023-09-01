@@ -6,6 +6,7 @@
 #include <ctype.h>
 #include <mesg.h>
 #include <pool.h>
+#include <sll.h>
 
 #define GDLLTYPE Mloc
 #include "gdl.tab.h"
@@ -43,15 +44,15 @@ static int cvq_top = -1;
 static int cvq_pop(void);
 static int cvq_push(int);
 static void cvq_reset(void);
+/* LISTNUM		([A-Z][A-Z]+[0-9]+[A-Z0-9a-z_'"/+*]*) */
 %}
 
 B		("["|"]"|\xe2\xb8[\xa2-\xa5])
-S		\xe2\xb8[^\xa2-\xa5]
-G		([a-zA-Z'\x80-\xc2\xc4-\xe1\xe3-\xff]|{S}|\xc3[^\x97]|\xe2[^\xb8])+
+S		\xe2\xb8[^\xa2-\xa5]|[0-9]
+G		([a-ru-zA-RU-Z'\x80-\xc2\xc4-\xe1\xe3-\xff]|[stST],?|{S}|\xc3[^\x97]|\xe2[^\xb8])+
 M		([@~\\]([a-z]+[0-9]*|90|180|270))
 N		([N][0-9][0-9]?[ACF]?)
 GRAPHEME 	((({G}|{N}))|"15")
-LISTNUM		([A-Z][A-Z]+[0-9]+[A-Z0-9a-z_'"+*/]*)
 NUMGRAPH	[0-9XNn]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\)
 FRACTION	[0-9]\/[0-9]
 
@@ -156,8 +157,6 @@ _			{ gsave; return LANG_FLIP; }
 
 {M}			{ GIN=1; gsave; return MOD; }
 
-{LISTNUM}		{ GIN=1; gsave; return LISTNUM; }
-
 [#"=@^]/{G} 		{ gsave;
 			  if (gdl_lexical) {
 		       	    mesg_vwarning(currgdlfile, gdllineno,
@@ -221,6 +220,18 @@ gdl_grapheme_type(void)
   if (strlen(g) == 1
       && ('n' == *g || 'N' == *g))
     return NUMBER;
+  else if (isdigit(*g))
+    {
+      char *d = g+1;
+      while (*d && isdigit(*d))
+        ++d;
+      if (*d == '(')
+ 	return NUMBER;
+      else
+	return BARENUM;
+    }
+  else if (sll_is_signlist(g))
+    return LISTNUM;
   else
     return GRAPHEME;
 }

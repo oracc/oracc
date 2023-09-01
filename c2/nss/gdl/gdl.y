@@ -194,19 +194,19 @@ gflag:
 	;
 
 simplexg:
-	  s maybegflags	       			       	{ ynp->mloc = mloc_mloc(&@1);
+	  s maybegflags	       			       	{ /*ynp->mloc = mloc_mloc(&@1);*/ /*should now be covered in gdl_graph_node*/
            					          if (gdl_legacy) gdl_unlegacy(ynp);
 							  if (ynp->kids) gdl_mod_wrap(ynp, 1);
 	    			  			  gvl_simplexg(ynp); }
 	;
 
 s:
-	  GRAPHEME					{ ynp = gdl_graph(ytp, gdllval.text); }
-	| LISTNUM					{ ynp = gdl_listnum(ytp, gdllval.text); }
-	| NUMBER					{ ynp = gdl_number(ytp, gdllval.text); }
-	| BARENUM					{ ynp = gdl_barenum(ytp, gdllval.text); }
-	| PUNCT						{ ynp = gdl_punct(ytp, gdllval.text); }
-	| ELLIPSIS					{ ynp = gdl_nongraph(ytp, gdllval.text); }
+	  GRAPHEME					{ ynp = gdl_graph(&@1, ytp, gdllval.text); }
+	| LISTNUM					{ ynp = gdl_listnum(&@1, ytp, gdllval.text); }
+	| NUMBER					{ ynp = gdl_number(&@1, ytp, gdllval.text); }
+	| BARENUM					{ ynp = gdl_barenum(&@1, ytp, gdllval.text); }
+	| PUNCT						{ ynp = gdl_punct(&@1, ytp, gdllval.text); }
+	| ELLIPSIS					{ ynp = gdl_nongraph(&@1, ytp, gdllval.text); }
 	;
 
 compound:
@@ -228,7 +228,7 @@ cbits:
 	;
 
 cbit:
-	s	       			       		{ ynp->mloc = mloc_mloc(&@1);
+	s	       			       		{ /*ynp->mloc = mloc_mloc(&@1);*/
 	  						  if (gdl_legacy) gdl_unlegacy(ynp);
 							  gvl_simplexg(ynp); }
 	| gflag
@@ -301,8 +301,8 @@ meta:
 	| glosso
 	| statec
 	| stateo
-	| INDENT       					{ ynp = gdl_nongraph(ytp, ";"); }
-	| NEWLINE	       				{ ynp = gdl_nongraph(ytp, "//"); }
+	| INDENT       					{ ynp = gdl_nongraph(&@1, ytp, ";"); }
+	| NEWLINE	       				{ ynp = gdl_nongraph(&@1, ytp, "//"); }
 	| NOTEMARK					/*TODO*/
 	;
 

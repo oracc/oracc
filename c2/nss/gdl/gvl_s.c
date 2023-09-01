@@ -102,7 +102,7 @@ gvl_s(Node *ynp)
 	{
 	  gp->type = "l";
 	  gp->oid = (ccp)l;
-	  gp->sign = gvl_lookup(sll_tmp_key(l,""));
+	  gp->sign = gvl_lookup(l);
 	  gp->c10e = gp->orig;
 	}
       else

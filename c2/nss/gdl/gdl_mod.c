@@ -97,6 +97,10 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
   cp = list_create(LIST_SINGLE);
 
   gvl_simplexg(ynp->kids);
+
+  /* For 00~a ynp->name is "g:B" so we fix that here */
+  if (!strcmp(ynp->kids->name, "g:n"))
+    ynp->name = "g:n";
   
   for (np = ynp->kids; np; np = np->next)
     {
