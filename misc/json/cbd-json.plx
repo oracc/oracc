@@ -10,10 +10,13 @@ glossary_howtos();
 my $projcbd = shift @ARGV;
 my ($project,$lang) = split(/:/, $projcbd);
 
+die "cbd-json.plx: must give PROJECT:LANG on command line. Stop\n"
+    unless $project && $lang && length($lang)==3;
+
 #my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.xml";
 my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/articles-with-periods.xml";
 
-exit 1 unless -r $cbd_ns;
+die "cbd-json.plx: unable to locate glossary file $cbd_ns\n" unless -r $cbd_ns;
 
 my $xis_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.xis";
 my $sum_ns = "$ENV{'ORACC'}/www/$project/cbd/$lang/summaries.html";
