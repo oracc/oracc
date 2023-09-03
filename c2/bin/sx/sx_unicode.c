@@ -1,3 +1,4 @@
+#include <ctype128.h>
 #include <oraccsys.h>
 #include <signlist.h>
 #include <sx.h>
@@ -197,7 +198,7 @@ sx_unicode(struct sl_signlist *sl)
 			  else
 			    hash_add(useqs, (uccp)name, (void*)Up->useq);
 			}
-		      else
+		      else if (useq && *useq && !isspace(*useq))
 			{
 			  hash_add(useqs, (uccp)name, (ucp)(Up->useq = (ccp)pool_copy((uccp)useq, sl->p)));
 			  mesg_verr(&ip->mloc, "%s: adding useq %s\n", name, Up->useq);
@@ -222,9 +223,12 @@ sx_unicode(struct sl_signlist *sl)
 			}
 		      else
 			{
-			  Up->useq = useq;
-			  hash_add(useqs, (uccp)name, (ucp)(Up->useq = (ccp)pool_copy((uccp)useq, sl->p)));
-			  mesg_verr(&ip->mloc, "%s: adding useq %s\n", name, Up->useq);
+			  if (useq && *useq && !isspace(*useq))
+			    {
+			      Up->useq = useq;
+			      hash_add(useqs, (uccp)name, (ucp)(Up->useq = (ccp)pool_copy((uccp)useq, sl->p)));
+			      mesg_verr(&ip->mloc, "%s: adding useq %s\n", name, Up->useq);
+			    }
 			}
 		    }
 		}
