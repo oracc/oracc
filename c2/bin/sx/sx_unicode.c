@@ -55,8 +55,9 @@ sx_unicode(struct sl_signlist *sl)
 		  else
 		    hash_add(ucode, (uccp)Up->uhex, (ucp)sl->signs[i]->name);
 		}
-	      else
+	      else if (Up->urev && strchr(Up->urev, '.'))
 		mesg_verr(&sl->signs[i]->inst->mloc, "sign %s has uname %s but no uhex\n", sl->signs[i]->name, Up->uname);
+	      /* don't warn about uname but no uhex if @uage is not a Unicode age but is 0, 1, or 9 */
 	    }
 	  else if (Up->uhex)
 	    {

@@ -35,7 +35,7 @@ int minus_flag = 0;
 		SIGNLIST LISTDEF LISTNAME LREF SREF
 		SYSDEF SYSNAME SYS
 
-%nterm  <text>  anynote atftoken lang longtext token values
+%nterm  <text>  anynote atftoken lang longtext token tokens
 
 %start fields
 
@@ -144,24 +144,24 @@ atv:
 	;
 
 atsys:
-	  SYS SYSNAME GVALUE	{ asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, NULL); }
-	| SYS SYSNAME GVALUE GOESTO values {
+	  SYS SYSNAME token	{ asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, NULL); }
+	| SYS SYSNAME token GOESTO tokens {
 	  			  asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, (uccp)longtext(NULL,NULL,NULL)); }
         ;
 
-values:
-	  GVALUE       	{ $$ = longtext(curr_asl, $1, NULL); }
-	| values GVALUE	{ $$ = longtext(curr_asl, $1, $2); }
-	;
-
 atftoken:
 	  ATF
-	| GVALUE
 	| token
+	;
+
+tokens:
+	  token		{ $$ = longtext(curr_asl, $1, NULL); }
+	| tokens token  { $$ = longtext(curr_asl, $1, $2); }
 	;
 
 token:
 	  GNAME
+	| GVALUE
 	| LISTNUM
 	;
 
