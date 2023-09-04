@@ -284,13 +284,13 @@ sx_compound_node(Node *np, struct sl_signlist *sl, const char *sname)
 	  for (np = np->kids; np; np = np->next)
 	    sx_compound_node(np, sl, sname);
 	}
-      else if (!strcmp(np->name, "g:m"))
+      else if (!strcmp(np->name, "g:m") || !strcmp(np->name, "g:a"))
 	; /* ignore @g on |(LAK079&LAK079)@g| */
       else if (!strcmp(np->name, "g:r"))
 	; /* ignore repetition node on numbers */
       else
 	{
-	  fprintf(stderr, "sx: internal error: gvl node type %s not handled\n", np->name);
+	  mesg_verr(np->mloc, "sx: internal error: gvl node type %s not handled\n", np->name);
 	}
     }
 }

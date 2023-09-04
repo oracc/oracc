@@ -318,6 +318,12 @@ gvl_simplexg(Node *ynp)
     }
 }
 
+static int
+ndig(const char *text)
+{
+  return 'N' == *text && isdigit(text[1]);
+}
+
 void
 gvl_valuqual(Node *vqnp)
 {
@@ -331,7 +337,12 @@ gvl_valuqual(Node *vqnp)
     {
       vqnp->mloc = vqnp->kids->mloc;
       
-      if ('R' == vqnp->kids->name[2])
+      if ('R' == vqnp->kids->name[2]
+	  || 'n' == vqnp->kids->name[2]
+	  || 'N' == vqnp->kids->name[2]
+	  || (!strcmp(vqnp->kids->text, "X")
+	      && vqnp->kids->next && ndig(vqnp->kids->next->text))
+	  ) /* gvl_s make n or N type g:n */
 	gvl_n(vqnp);
       else
 	gvl_q(vqnp);

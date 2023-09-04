@@ -470,7 +470,7 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 			}
 		      else if ('n' == *vp->type)
 			{
-			  if (!gdl_corrq)
+			  if (!gdl_corrq && ('n' != *vp->orig && 'N' != *vp->orig))
 			    vq->mess = gvl_vmess("[vq] %s(%s): mismatched number qualifier",
 						 vp->orig, qp->orig);
 			}

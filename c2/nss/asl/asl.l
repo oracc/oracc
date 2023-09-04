@@ -49,7 +49,7 @@ static void check_minus(char *t);
 S		\xe2\xb8[^\xa2-\xa5]
 G		([a-zA-Z'\x80-\xc2\xc4-\xe1\xe3-\xff]|{S}|\xc3[^\x97]|\xe2[^\xb8])+
 M		([@~]([a-z]+[0-9]*|90|180|270))*
-N		(N[0-9]+)
+N		(N[0-9]+[ABC]?)
 Q		\??
 L		=?
 COMPOUND	"|"([a-zA-Z\x80-\xff]|[@~().%&+()0-9])+"|"{M}{Q}{L}

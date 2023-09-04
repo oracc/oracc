@@ -212,6 +212,7 @@ gsort_node(Node *np, List *lp)
 			      np->kids ? (uccp)np->kids->next->text : (uccp)np->text,
 			      np->kids ? (uccp)np->kids->text : (uccp)np->text));
       break;
+    case 'a':
     case 'm':
       list_add(lp, &gsort_null_item);
       list_add(lp, gsort_item((uccp)np->text, (uccp)np->text, NULL));

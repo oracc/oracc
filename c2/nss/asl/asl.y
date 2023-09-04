@@ -35,7 +35,7 @@ int minus_flag = 0;
 		SIGNLIST LISTDEF LISTNAME LREF SREF
 		SYSDEF SYSNAME SYS
 
-%nterm  <text>  anynote atftoken lang longtext token tokens
+%nterm  <text>  anynote atftoken atftokens lang longtext token
 
 %start fields
 
@@ -129,7 +129,7 @@ atlref:
 	;
 
 atsref:
-	SREF token GOESTO token { asl_bld_tle(&@1, curr_asl, (uccp)$2, (uccp)$3, sx_tle_sref); }
+	SREF atftoken GOESTO atftokens { asl_bld_tle(&@1, curr_asl, (uccp)$2, (uccp)$3, sx_tle_sref); }
 	;
 
 atform:
@@ -144,20 +144,27 @@ atv:
 	;
 
 atsys:
-	  SYS SYSNAME token	{ asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, NULL); }
-	| SYS SYSNAME token GOESTO tokens {
+	  SYS SYSNAME atftoken	{ asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, NULL); }
+	| SYS SYSNAME atftoken GOESTO atftokens {
 	  			  asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, (uccp)longtext(NULL,NULL,NULL)); }
         ;
+
+atftokens:
+	  atftoken		{ $$ = longtext(curr_asl, $1, NULL); }
+	| atftokens atftoken	{ $$ = longtext(curr_asl, $1, $2); }
+	;
 
 atftoken:
 	  ATF
 	| token
 	;
 
+/*
 tokens:
 	  token		{ $$ = longtext(curr_asl, $1, NULL); }
 	| tokens token  { $$ = longtext(curr_asl, $1, $2); }
 	;
+ */
 
 token:
 	  GNAME

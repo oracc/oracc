@@ -21,7 +21,7 @@ int verbose;
 int status;
 int rnvtrace;
 
-extern int gdl_flex_debug, gdldebug, gdl_orig_mode;
+extern int gdl_flex_debug, gdldebug, gdl_orig_mode, gdl_unicode;
 
 int bare_mode = 0;
 int check_mode = 0;
@@ -159,7 +159,7 @@ int
 main(int argc, char **argv)
 {
   gdl_flex_debug = gdldebug = 0;
-  
+  gdl_unicode = 1;
   options(argc, argv, "bcdef:gilnopstvw");
 
   gdl_flex_debug = gdldebug = trace_mode;
