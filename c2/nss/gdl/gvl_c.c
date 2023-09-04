@@ -166,14 +166,24 @@ gvl_c_node_gp_c(Node *np, void *user)
     list_add((List*)user, ")");
 }
 
+static int
+modslen(Node *np)
+{
+  int i = 0;
+  for (np = np->kids; np->next; np = np->next)
+    i += strlen(np->next->text) + 1;
+  return i;
+}
+
 static unsigned char *
 gvl_c_form(Node *ynp, void (*fnc)(Node *np, void *user))
 {
   List *lp = list_create(LIST_SINGLE);
+  int modlen = modslen(ynp);
   unsigned char *p = NULL, *s = NULL, *ret = NULL, *t = NULL;
   node_iterator(ynp, lp, fnc, gvl_c_node_gp_c);
-  p = s = list_concat(lp);
-  ret = t = pool_alloc(strlen((ccp)s)+3, curr_sl->p);
+  p = s = list_concat(lp);  
+  ret = t = pool_alloc(strlen((ccp)s)+3+modlen, curr_sl->p);
   *t++ = '|';
   while (*s)
     if ('|' == *s)
@@ -181,8 +191,15 @@ gvl_c_form(Node *ynp, void (*fnc)(Node *np, void *user))
     else
       *t++ = *s++;
   *t++ = '|';
-  *t = '\0';
+  *t = '\0';  
   free(p);
   list_free(lp, NULL);
+  Node *mnp;
+  for (mnp = ynp->kids; mnp->next; mnp = mnp->next)
+    {
+      char tp = mnp->next->name[2];
+      strcat((char*)t, (tp=='m' ? "@" : (tp=='a' ? "~" : "\\")));
+      strcat((char*)t, mnp->next->text);
+    }
   return ret;
 }

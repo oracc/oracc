@@ -187,6 +187,10 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
 	}
       ynp->rent->user = ng;
     }
+  else if (ynp->rent->name[2] == 'q')
+    {
+      fprintf(stderr, "gdl_mod_wrap with ynp->rent == %s\n", ynp->rent->name);
+    }
 }
 
 void
@@ -237,6 +241,15 @@ gdl_mod_wrap_q(Node *np)
   List *mp = list_create(LIST_SINGLE);
   const char *res = "";
   Node *tmp;
+
+  if (strcmp(np->name, "g:n"))
+    {
+      if (np->user)
+	((gvl_g*)(np->user))->mess = gvl_vmess("%s: modifiers are not allowed on qualified signs", np->text);
+      else
+	mesg_verr(np->mloc, "%s: modifiers are not allowed on qualified signs", np->text);
+      return;
+    }
   
   for (tmp = np->kids; tmp; tmp = tmp->next)
     {
@@ -304,4 +317,35 @@ gdl_mod_wrap_q(Node *np)
 	    }
 	}  
     }
+}
+
+Node *
+gdl_mod_cmod(Mloc *locp, Node *np, Node *mnp, const char *m)
+{
+  if (!mnp)
+    {
+      Node *cb = tree_node(np->tree, NS_GDL, "g:X", np->depth, NULL);
+      cb->mloc = mloc_mloc(locp);
+      cb->tree = np->tree;
+      np = node_insert(np->rent, cb);
+      np->name = "g:c";
+      np->kids->name = "g:b";
+      mnp = np->kids;
+      Node *mb = tree_node(np->tree, NS_GDL, "g:X", 1+np->depth, NULL);
+      mb->mloc = cb->mloc;
+      mb->name = (*m == '@' ? "g:m" : (*m == '~' ? "g:a" : "g:f"));
+      mb->text = (ccp)pool_copy((uccp)m+1,gdlpool);
+      mnp->next = mb;
+    }
+  else
+    {
+      Node *mb = tree_node(np->tree, NS_GDL, "g:X", 1+np->depth, NULL);
+      mb->tree = np->tree;
+      mb->mloc = mloc_mloc(locp);
+      mb->name = (*m == '@' ? "g:m" : (*m == '~' ? "g:a" : "g:f"));
+      mb->text = (ccp)pool_copy((uccp)m+1,gdlpool);
+      mnp->next = mb;
+      mnp = mb;
+    }
+  return mnp;
 }

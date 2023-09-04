@@ -106,6 +106,7 @@ extern void gdl_balance_flush(Mloc mlp);
 extern void gdl_gp_type(Tree *ytp, enum gdlpropvals p);
 extern const char *gdl_mod_cat(Node *np);
 extern void gdl_modq_add(Node *np);
+extern Node *gdl_mod_cmod(Mloc *locp, Node *np, Node *mnp, const char *m);
 extern void gdl_modq_flush(void);
 extern void gdl_modq_init(void);
 extern void gdl_modq_term(void);

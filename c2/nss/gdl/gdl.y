@@ -39,7 +39,7 @@ GDLLTYPE gdllloc;
 %token	<text> 	FTYPE LANG TEXT ENHYPHEN ELLIPSIS NOTEMARK CELLSPAN
 		GRAPHEME NUMBER BARENUM LISTNUM PUNCT MOD INDENT NEWLINE
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
-		C_TIMES C_4TIMES C_3TIMES
+		C_TIMES C_4TIMES C_3TIMES CMOD
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
 		',' LF_AT LF_CARET LF_EQUALS LF_HASH LF_QUOTE LF_TILDE LF_VBAR
 
@@ -51,7 +51,7 @@ GDLLTYPE gdllloc;
 		'{' DET_SEME DET_PHON '}'
 		PLUS_FLAG UFLAG1 UFLAG2 UFLAG3 UFLAG4 SPACE EOL END
 
-%nterm <text> 	field lexfld
+%nterm <text> 	field lexfld cmods
 
 %start line
 
@@ -210,7 +210,7 @@ s:
 	;
 
 compound:
-	  c maybegflags         			{ ynp->mloc = mloc_mloc(&@1);
+	  c cmaybemodflags         			{ ycp->mloc = ynp->mloc = mloc_mloc(&@1);
 	    						  gdl_modq_flush();
 							  gvl_compound(ycp);
 	    						  ynp = gdl_pop(ytp,"g:c"); }
@@ -262,6 +262,18 @@ cdelim:
 	| C_TIMES					{ ynp = gdl_delim(ytp, "×"); }
 	| C_3TIMES					{ ynp = gdl_delim(ytp, "3×"); }
 	| C_4TIMES					{ ynp = gdl_delim(ytp, "4×"); }
+	;
+
+cmaybemodflags:
+	  gflags
+	| cmods
+	| cmods gflags
+	| /* empty */
+	;
+
+cmods:
+	  MOD						{ mnp = gdl_mod_cmod(&@1, ynp, NULL, $1); }
+	| cmods MOD					{ (void)gdl_mod_cmod(&@1, ynp, mnp, $1); }
 	;
 
 valuqual:

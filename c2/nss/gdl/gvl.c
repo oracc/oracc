@@ -239,6 +239,11 @@ gvl_compound(Node *ynp)
   if (gvl_trace)
     fprintf(stderr, "gvl_compound: called\n");
 
+  /* In |A.A|~a ynp is currently at the g:b wrapper which is first
+     child of g:c node */
+  if (!strcmp(ynp->name, "g:b"))
+    ynp = ynp->rent;
+  
   if (!strcmp(ynp->name, "g:c"))
     {
       gvl_g *cp = NULL;
