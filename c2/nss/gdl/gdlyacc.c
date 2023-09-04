@@ -58,6 +58,9 @@ gdlparse_string(Mloc *m, char *s)
   strcat(s2, "\n");
 
   (void)tree_root(tp, NS_GDL, "g:gdl", 1, NULL);
+  if (tp->root)
+    tp->root->text = (ccp)pool_copy((uccp)s, gdlpool);
+  
   gdl_setup_buffer(s2);
   gdl_set_tree(tp);
   gdl_lex_init(m->file, m->line);
@@ -68,9 +71,6 @@ gdlparse_string(Mloc *m, char *s)
   if (deep_parse)
     tree_iterator(tp, m, gdlparse_deep, NULL);
 
-  if (tp->root)
-    tp->root->text = (ccp)pool_copy((uccp)s, gdlpool);
-  
   return tp;
 }
 

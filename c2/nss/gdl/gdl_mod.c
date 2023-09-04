@@ -187,10 +187,12 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
 	}
       ynp->rent->user = ng;
     }
+#if 0
   else if (ynp->rent->name[2] == 'q')
     {
       fprintf(stderr, "gdl_mod_wrap with ynp->rent == %s\n", ynp->rent->name);
     }
+#endif  
 }
 
 void

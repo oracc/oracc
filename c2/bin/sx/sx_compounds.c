@@ -279,7 +279,7 @@ sx_compound_node(Node *np, struct sl_signlist *sl, const char *sname)
 	    sx_compound_node(np, sl, sname);
 	  sxc_container_active = 0;
 	}
-      else if (!strcmp(np->name, "g:c"))
+      else if (!strcmp(np->name, "g:c") || !strcmp(np->name, "g:b"))
 	{
 	  for (np = np->kids; np; np = np->next)
 	    sx_compound_node(np, sl, sname);

@@ -170,8 +170,11 @@ static int
 modslen(Node *np)
 {
   int i = 0;
-  for (np = np->kids; np->next; np = np->next)
-    i += strlen(np->next->text) + 1;
+  if (np->kids && !strcmp(np->kids->name, "g:b"))
+    {
+      for (np = np->kids; np->next; np = np->next)
+	i += strlen(np->next->text) + 1;
+    }
   return i;
 }
 
@@ -194,12 +197,15 @@ gvl_c_form(Node *ynp, void (*fnc)(Node *np, void *user))
   *t = '\0';  
   free(p);
   list_free(lp, NULL);
-  Node *mnp;
-  for (mnp = ynp->kids; mnp->next; mnp = mnp->next)
+  if (!strcmp(ynp->kids->name, "g:b"))
     {
-      char tp = mnp->next->name[2];
-      strcat((char*)t, (tp=='m' ? "@" : (tp=='a' ? "~" : "\\")));
-      strcat((char*)t, mnp->next->text);
+      Node *mnp;
+      for (mnp = ynp->kids; mnp->next; mnp = mnp->next)
+	{
+	  char tp = mnp->next->name[2];
+	  strcat((char*)t, (tp=='m' ? "@" : (tp=='a' ? "~" : "\\")));
+	  strcat((char*)t, mnp->next->text);
+	}
     }
   return ret;
 }
