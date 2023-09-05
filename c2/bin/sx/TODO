@@ -28,6 +28,12 @@ Implementation
 * validate @sys targets--the lead value is checked, but the list of GOESTO values is not currently checked
 * DN/GN etc. don't sort correctly
 
+* add "..." to mean literal, e.g., @sys AP "ABxSZA3"
+
+* add support for setting gvl_bridge_lang from #atf: lang -- doesn't
+  need to be from lang shift yet; should be able to be set multiple
+  times without reloading sl.tsv
+
 Schema
 ------
 
