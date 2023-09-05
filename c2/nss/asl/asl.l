@@ -58,7 +58,7 @@ ZERO		"00"(~[a-d])?
 PHONGRAPH	"/"{G}"/"
 LISTNAME	(U\+|[A-Z]+)
 LISTNUM		((U\+|[A-Z]+)[0-9]+[()A-Z0-9a-z_'"+*/]*){M}{Q}{L}
-NUMGRAPH	[0-9nN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}{Q}{L}
+NUMGRAPH	[0-9XnN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}{Q}{L}
 FRACTION	[0-9]\/[0-9]
 PUNCT		("*"|:['".:]?|"/"){Q}{L}
 SYSNAME		[a-zA-Z]+
