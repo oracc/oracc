@@ -68,7 +68,7 @@ gvl_n(Node *ynp)
 	  else
 	    {
 	      if (!gvl_void_messages)
-		nq->mess = gvl_vmess("unknown numeric sign %s", p);
+		nq->mess = gvl_vmess("unknown numeric sign: %s", p);
 	    }
 	}
     }
