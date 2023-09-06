@@ -15,9 +15,6 @@ grx_node(Node *np)
   int need_closer = 1;
   const char *nodename = np->name;
 
-  if (!strcmp(np->name, "g:b"))
-    return;
-  
   if (!strcmp(np->name, "g:l"))
     nodename = "g:s";
   else if (!strcmp(np->name, "g:gp"))
@@ -77,6 +74,8 @@ grx_node(Node *np)
 		np->user ? (ccp)((gvl_g*)np->user)->orig : np->text);
       need_closer = 0;
     }
+  else if (!strcmp(np->name, "g:b")) /* drop g:b wrapper and just recurse into compound */
+    need_closer = 0;
   else
     rnvxml_ea(nodename, rnvval_aa_ccpp(prop_ccpp(np->props, GP_ATTRIBUTE, PG_GDL_INFO)));
 

@@ -161,7 +161,7 @@ g.d =
 g.g =
   element g:g {
     attribute g:type { xsd:NCName }?,
-    ( g.s | g.n)+
+    ( g.s | g.n )+
   }
 g.s =
   element g:s {
@@ -183,7 +183,7 @@ g.n =
     attribute sexified { text }?,
     attribute g:status { xsd:NCName }?,
     attribute g:utf8 { text }?,
-    element g:r { text },
+    element g:r { attribute form { text }? , text },
     (g.s | g.v)?,
     g.a?,
     (g.c | g.m)?,
@@ -199,8 +199,12 @@ g.c =
      | g.n
      | g.o
      | g.s
-     | element g:g { (g.o | g.s)+ })+
+     | g.g.c)+ ,
+    (g.m | g.a)*
   }
+
+g.g.c = element g:g { ((g.g.c , (g.m|g.a)*) | g.o | g.n | g.s)+ }
+
 g.v =
   element g:v {
     attribute form { text }?,
