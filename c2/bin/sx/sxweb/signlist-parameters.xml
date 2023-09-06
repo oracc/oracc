@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<param:parameters 
+	xmlns:param="http://oracc.org/ns/esp-param/1.0"
+        xmlns:esp="http://oracc.org/ns/esp/1.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+>
+  <param:title>Oracc Global Sign List</param:title><!-- used at head of page and in citations -->
+  <param:publisher>The OGSL Project</param:publisher><!-- used in citations -->
+  <param:host>http://build-oracc.museum.upenn.edu</param:host>
+  <param:root>/@@PROJECT@@/signlist</param:root>
+  <param:common-headers>
+    <meta name="DC.publisher" content="OGSL Project, Oracc"/>
+    <meta name="DC.language" scheme="ISO 639-2/T" content="eng"/>
+    <meta name="DC.rights.copyright" content="Copyright The OGSL Project; released under a CC-BY-SA 3.0 license"/>
+    <meta name="DC.type" scheme="DCTERMS.DCMIType" content="Text" />
+    <meta name="DC.format" content="text/html"/>
+    <link media="screen,projection" href="/@@PROJECT@@/signlist/css/projesp.css" type="text/css" rel="stylesheet"/>
+    <script type="text/javascript" src="/@@PROJECT@@/signlist/js/projesp.js"> </script>
+  </param:common-headers>
+  <param:top-content>
+  </param:top-content>
+  <param:dc-id-prefix>@@PROJECT@@-signlist-oracc-museum-upenn-edu/page/</param:dc-id-prefix>
+  <param:main-menu-caption>Main menu</param:main-menu-caption>
+  <param:footer>OGSL project</param:footer>
+  <param:cuneify default="false" switcher="no"/>
+</param:parameters>

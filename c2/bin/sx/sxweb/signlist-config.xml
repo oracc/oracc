@@ -1,0 +1,11 @@
+<project n="@@PROJECT@@/signlist" 
+    xmlns="http://oracc.org/ns/xpd/1.0"
+    xmlns:xpd="http://oracc.org/ns/xpd/1.0">
+  <name>OGSL/OGSL Signlist</name>
+  <abbrev>OGSL/signlist</abbrev>
+  <project-type>user</project-type>
+  <type>signlist</type>
+  <logo type="text">OGSL/signlist</logo>
+  <image>lak25.png</image>
+  <blurb>Browsable/searchable version of OGSL</blurb>
+</project>

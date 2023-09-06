@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<esp:page xmlns:esp="http://oracc.org/ns/esp/1.0"
+	  xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:xh="http://www.w3.org/1999/xhtml"
+	  xmlns:xpd="http://oracc.org/ns/xpd/1.0">
+  <esp:name>Home</esp:name>
+  <esp:title>OGSL Signlist</esp:title>
+  <html>
+    <head/>
+    <body>
+      <esp:image file="lak25.png" description=""/>
+      <p>Browsable/searchable version of OGSL: click on a letter to begin, or search for a sign or value in the form.</p>
+    </body>
+  </html>
+</esp:page>

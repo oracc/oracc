@@ -1,0 +1,7 @@
+#Content a { text-decoration: none; }
+
+#Content a { color: black; }
+
+#Content a:hover { background-color: #aaa; }
+
+.@@PROJECT@@-info h3 { font-style: normal; }
