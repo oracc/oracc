@@ -7,6 +7,9 @@
 #include <xnn.h>
 #include <ns-gdl.h>
 #include <gdl.h>
+#include <ns-asl.h>
+#include <rnvif.h>
+#include <rnvxml.h>
 #include <gvl.h>
 #include <gsort.h>
 
@@ -33,6 +36,7 @@ int gsort_mode = 0;
 int identity_mode = 0;
 int ns_output = 0;
 int pedantic = 0;
+int rnv_xml = 0;
 int signatures = 0;
 int trace_mode = 0;
 int validate = 0;
@@ -160,11 +164,21 @@ main(int argc, char **argv)
 {
   gdl_flex_debug = gdldebug = 0;
   gdl_unicode = 1;
-  options(argc, argv, "bcdef:gilnopstvw");
+  options(argc, argv, "bcdef:gilnoprstvw");
 
   gdl_flex_debug = gdldebug = trace_mode;
-  
-  gdlxml_setup();
+
+  if (ns_output)
+    {
+      extern int xml_printing;
+      xml_printing = 1;
+      rnvxml_init_err();
+      rnvif_init();
+      rnvxml_init(&asl_data, "gdl");
+      gdlxml_rnv_setup();
+    }
+  else
+    gdlxml_setup();
   gvl_setup("ogsl", "ogsl");
   gdlparse_init();
 
@@ -238,6 +252,9 @@ opts(int opt, char *arg)
       break;
     case 'p':
       gvl_strict = pedantic = 1;
+      break;
+    case 'r':
+      ns_output = rnv_xml = 1;
       break;
     case 's':
       signatures = 1;

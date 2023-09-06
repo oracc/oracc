@@ -12,6 +12,7 @@ struct rnvdata {
   int ns;
 };
 
+extern void rnc_default_verror_handler(int er_no,va_list ap);
 extern void rnvxml_init_err(void);
 extern void rnvxml_init_tree(Tree *tp, struct xnn_data *xdp, const char *rncbase);
 extern void rnvxml_init(struct xnn_data *xdp, const char *rncbase);

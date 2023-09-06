@@ -95,6 +95,7 @@ OGSL Fixes
 
 * get ATFU list from small mac air and figure out how/where to include it (could be in pcsl or ogsl)
 
+* does @sys take notes? if not, should it?
 
 Future
 ------

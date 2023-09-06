@@ -27,6 +27,7 @@ tree_xml_rnv_node(Node *np, void *user)
 	    tree_ns_xml_print(np->tree, xhp->fp);
 	  if (rnvd.ratts)
 	    xml_attr(rnvd.ratts->atts, xhp->fp);
+	  fputc('>', xhp->fp);
 	  if (rnvd.chardata)
 	    fputs((ccp)rnvd.chardata, xhp->fp);
 	}

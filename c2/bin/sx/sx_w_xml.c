@@ -20,6 +20,7 @@ static sx_value_f sx_w_x_ivalue;
 static sx_value_f sx_w_x_qvs;
 static sx_value_f sx_w_x_value;
 static sx_notes_f sx_w_x_notes;
+static sx_notes_f sx_w_x_syss;
 static sx_unicode_f sx_w_x_unicode;
 
 struct sx_functions sx_w_xml_fncs;
@@ -40,6 +41,7 @@ sx_w_xml_init(FILE *fp, const char *fname)
   sx_w_xml_fncs.val = sx_w_x_value;
   sx_w_xml_fncs.inh = sx_w_x_ivalue;
   sx_w_xml_fncs.not = sx_w_x_notes;
+  sx_w_xml_fncs.sys = sx_w_x_syss;
   sx_w_xml_fncs.uni = sx_w_x_unicode;
   sx_w_xml_fncs.qvs = sx_w_x_qvs;
   sx_w_xml_fncs.fp = fp;
@@ -67,6 +69,34 @@ sx_w_x_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
       ratts = rnvval_aa("x", "project", "ogsl", NULL);
       rnvxml_ea("sl:signlist", ratts);
       xidseen = hash_create(1024);
+      
+      sx_w_x_notes(f, sl, sl->notes);
+      int nn, i;
+      const char **n = hash_keys2(sl->listdefs, &nn);
+      qsort(n, nn, sizeof(const char *), cmpstringp);
+      for (i = 0; i < nn; ++i)
+	{
+	  struct sl_listdef *ldp = hash_find(sl->listdefs, (uccp)n[i]);
+	  ratts = rnvval_aa("x", "name", n[i], NULL);
+	  rnvxml_ea("sl:listdef", ratts);
+	  rnvxml_et("sl:info", NULL, (ccp)xmlify((uccp)ldp->str));
+	  sx_w_x_notes(f, sl, &ldp->inst);
+	  rnvxml_ee("sl:listdef");
+	}
+
+      n = hash_keys2(sl->sysdefs, &nn);
+      qsort(n, nn, sizeof(const char *), cmpstringp);
+      for (i = 0; i < nn; ++i)
+	{
+	  struct sl_sysdef *sdp = hash_find(sl->sysdefs, (uccp)n[i]);
+	  ratts = rnvval_aa("x", "name", n[i], NULL);
+	  rnvxml_ea("sl:sysdef", ratts);
+	  if (sdp->comment)
+	    rnvxml_et("sl:info", NULL, (ccp)xmlify((uccp)sdp->comment));
+	  sx_w_x_notes(f, sl, &sdp->inst);
+	  rnvxml_ee("sl:sysdef");
+	}
+
     }
   else if (p == sx_pos_term)
     {
@@ -170,6 +200,23 @@ sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	rnvxml_ee("sl:form");
       in_form = 0;
     }  
+}
+
+static void
+sx_w_x_syss(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip)
+{
+  if (ip && !ip->inherited && ip->sys)
+    {
+      struct sl_sys *sp;
+      for (sp = list_first(ip->sys); sp; sp = list_next(ip->sys))
+	{
+	  ratts = rnvval_aa("x", "name", sp->name, "token", sp->v, NULL);
+	  rnvxml_ea("sl:sys", ratts);
+	  if (sp->vv)
+	    rnvxml_ch((ccp)xmlify((uccp)sp->vv));
+	  rnvxml_ee("sl:sys");
+	}
+    }
 }
 
 static void
@@ -381,7 +428,7 @@ sx_w_x_unicode(struct sx_functions *f, struct sl_signlist *sl, struct sl_unicode
 	u = (ccp)up->utf8;
       else
 	u = "";
-      rnvxml_et("sl:utf8", ratts, u);
+      rnvxml_et("sl:ucun", ratts, u);
     }
   if (up->urev)
     rnvxml_et("sl:uage", NULL, up->urev);

@@ -66,6 +66,7 @@ extern void gdlparse_reset(void);
 extern void gdlparse_term(void);
 
 extern void gdlxml_setup(void);
+extern void gdlxml_rnv_setup(void);
 extern void gdl_xml_handler(Node *np, void *xhp);
 
 extern Node *gdl_pop(Tree *ytp, const char *s);

@@ -4,7 +4,10 @@ namespace sl = "http://oracc.org/ns/sl/1.0"
 
 start =
   element sl:signlist {
-    attribute project { text },
+    attribute project { text } ,
+    sl.notes ,
+    sl.listdef* ,
+    sl.sysdef* , 
     element sl:letter {
       attribute name { xsd:NMTOKEN },
       attribute title { xsd:NMTOKEN },
@@ -24,10 +27,11 @@ start =
            | sl.note
            | sl.pname
            | sl.uname
-           | sl.uphase
-           | sl.utf8
+           | sl.uage
+           | sl.ucun
            | element sl:unote { text })*,
           sl.v*,
+          sl.sys*,
           element sl:form {
             attribute n { text },
             attribute ref { xsd:NCName }?,
@@ -40,10 +44,12 @@ start =
                 | sl.lit
                 | sl.note
                 | sl.pname
+		| sl.sys
                 | sl.uname
-                | sl.uphase
-                | sl.utf8)*),
+                | sl.uage
+                | sl.ucun)*),
             sl.v*,
+            sl.sys*,
             element sl:inherited {
               element sl:iv {
                 attribute sort { text }, 
@@ -65,6 +71,15 @@ start =
       }*
     }*
   }
+
+sl.notes   = (sl.inote | sl.lit | sl.note)*
+
+sl.listdef = element sl:listdef { attribute name { xsd:NCName | "U+" } , element sl:info { text }? , sl.notes }
+
+sl.sysdef  = element sl:sysdef { attribute name { xsd:NCName } , element sl:info { text }? , sl.notes }
+
+sl.sys 	   = element sl:sys { attribute name { xsd:NCName } , attribute token { text } , text }
+
 sl.name =
   element sl:name {
     (text
@@ -104,13 +119,13 @@ sl.name =
          g.d?
        })+
   }
-sl.utf8 =
-  element sl:utf8 {
-    attribute hex { xsd:NCName },
+sl.ucun =
+  element sl:ucun {
+    attribute hex { text } ,
     text
   }
 sl.inote = element sl:inote { text }
-sl.uphase = element sl:uphase { xsd:NMTOKEN }
+sl.uage = element sl:uage { text }
 sl.uname = element sl:uname { text }
 sl.note = element sl:note { text }
 sl.lit = element sl:lit { text }

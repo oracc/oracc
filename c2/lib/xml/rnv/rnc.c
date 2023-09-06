@@ -7,6 +7,8 @@
 #include <errno.h> /*errno*/
 #include <assert.h> /*assert*/
 
+#include <stdio.h>
+
 #include "u.h"
 #include "xmlc.h"
 #include "m.h"
@@ -648,6 +650,7 @@ static void close_scope(struct rnc_source *sp) {
     if((j=sc_find(&defs,name))) {
       rn_pattern[refs.tab[i][1]+1]=defs.tab[j][1];
     } else {
+      fprintf(stderr, "close_scope: calling error on %s\n", rn_string+name);
       error(1,sp,RNC_ER_UNDEF,sp->fn,CUR(sp).line,CUR(sp).col,rn_string+name);
     }
   }

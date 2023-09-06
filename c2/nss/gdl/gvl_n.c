@@ -167,8 +167,10 @@ gvl_n_sexify(Node *ynp)
 	  ynp->name = "g:n";
 	  gp->orig = (uccp)ynp->text;
 	  gp->type = ynp->name + 2;
-	  gp->oid = (ccp)gvl_lookup(gp->orig);
-	  gp->sign = gvl_lookup((uccp)gp->oid);
+	  if ((gp->oid = (ccp)gvl_lookup(gp->orig)))
+	    gp->sign = gvl_lookup((uccp)gp->oid);
+	  else
+	    gp->sign = gp->orig;
 	  gp->c10e = gp->orig;
 	  ynp->user = gp;
 	}      

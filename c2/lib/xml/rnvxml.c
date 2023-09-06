@@ -38,6 +38,10 @@ static void xgi_verror_handler(int erno,va_list ap)
     {
       rnl_verror_handler(erno&~ERBIT_RNL,ap);
     }
+  else if (erno&ERBIT_RNC)
+    {
+      rnc_default_verror_handler(erno&!ERBIT_RNC,ap);
+    }
   else
     {
       const char *xphase = phase, *xm;

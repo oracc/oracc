@@ -53,7 +53,9 @@ formvar = element g:f { xsd:string { pattern = "[a-z0-9]+" } }
 # Compounds
 c.model  = (compound , (o.join , compound)+) | unary | binary | ternary | (g , mods+)
 
-c        = element g:c { form? , g.meta , c.model , mods* }
+c.b	 = element g:b { c.model }
+
+c        = element g:c { form? , g.meta , (c.b | c.model) , mods* }
 
 g        = element g:g { g.meta , c.model , mods* }
 

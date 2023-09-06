@@ -15,6 +15,9 @@ grx_node(Node *np)
   int need_closer = 1;
   const char *nodename = np->name;
 
+  if (!strcmp(np->name, "g:b"))
+    return;
+  
   if (!strcmp(np->name, "g:l"))
     nodename = "g:s";
   else if (!strcmp(np->name, "g:gp"))
