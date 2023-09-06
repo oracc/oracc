@@ -47,6 +47,7 @@ asl_bld_init(void)
   sl->sysdefs = hash_create(3);
   sl->hsentry = hash_create(2048);
   sl->hfentry = hash_create(1024);
+  sl->haka = hash_create(128);
   sl->hventry = hash_create(2048);
   sl->hlentry = hash_create(1024);
   sl->hsignvvalid = hash_create(1024);
@@ -95,6 +96,7 @@ asl_bld_term(struct sl_signlist *sl)
       hash_free(sl->sysdefs, free);
       hash_free(sl->hsentry, NULL);
       hash_free(sl->hfentry, NULL);
+      hash_free(sl->haka, NULL);
       hash_free(sl->hventry, NULL);
       hash_free(sl->hlentry, NULL);
       hash_free(sl->hsignvvalid, NULL);
@@ -615,12 +617,25 @@ asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
       if (!sl->curr_form->u.f->aka)
 	sl->curr_form->u.f->aka = list_create(LIST_SINGLE);
       list_add(sl->curr_form->u.f->aka, memo_str(locp, t));
+      if (sl->curr_form->u.f->sign->xref)
+	{
+	  if (!hash_find(sl->haka, t))
+	    hash_add(sl->haka, t, sl->curr_form->u.f->sign);
+	  else
+	    mesg_verr(locp, "duplicate @aka %s", t);
+	}
+      else
+	mesg_verr(locp, "@aka %s should be on @sign %s, not @form", t, sl->curr_form->u.f->sign->name);
     }
   else if (sl->curr_sign)
     {
       if (!sl->curr_sign->aka)
 	sl->curr_sign->aka = list_create(LIST_SINGLE);
       list_add(sl->curr_sign->aka, memo_str(locp, t));
+      if (!hash_find(sl->haka, t))
+	hash_add(sl->haka, t, (void*)sl->curr_sign);
+      else
+	mesg_verr(locp, "duplicate @aka %s", t);
     }
   else
     (void)asl_sign_guard(locp, sl, "aka");

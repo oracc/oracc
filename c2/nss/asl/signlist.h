@@ -23,6 +23,7 @@ struct sl_signlist
 			   as a struct sl_token * */
   Hash *hsentry; 	/* All the @sign/@sign- entries in the signlist */
   Hash *hfentry; 	/* All @form/@form- entries in signlist; host for sl_form* */
+  Hash *haka;		/* Hash of @aka entries pointing to sl_sign or sl_form */
   Hash *hventry; 	/* All @v/@v- entries in signlist; host for sl_value* */
   Hash *hlentry; 	/* All @list/@list- entries in signlist; host for sl_list* */
   Hash *hsignvvalid; 	/* All @v which belong to a @sign,

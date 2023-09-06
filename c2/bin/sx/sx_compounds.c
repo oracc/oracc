@@ -120,6 +120,8 @@ sx_compound_data(struct sl_signlist *sl, const char *sgnname, const char *cpdnam
   int new_sign = 0;
 
   sp = hash_find(sl->hsentry, (uccp)sgnname);
+  if (!sp)
+    sp = hash_find(sl->haka, (uccp)sgnname);
 
   if (!sp)
     {
