@@ -476,7 +476,7 @@ lem_f2_serialize(FILE *fp, struct f2 *f2)
   if (BIT_ISSET(f2->flags, F2_FLAGS_NOT_IN_SIGS)
       || (lem_autolem_NN_only
 	  && (f2->owner && f2->owner->literal && !strcmp((const char *)f2->owner->literal, "X")
-	      && (f2->pos && ((strlen(f2->pos) != 2) || f2->pos[1] != 'N')))))
+	      && (f2->pos && ((strlen((ccp)f2->pos) != 2) || f2->pos[1] != 'N')))))
     {
       if (f2->owner && f2->owner->literal)
 	fputs((char*)f2->owner->literal,fp);

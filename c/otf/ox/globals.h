@@ -100,4 +100,8 @@ extern FILE *f_unlemm;
 extern void msglist_warning(const char *file, int ln, const char *str);
 extern void msglist_vwarning(const char *file, int ln, const char *str, va_list ap);
 
+#define ccp const char *
+#define ucp unsigned char *
+#define uccp unsigned const char *
+
 #endif/*GLOBALS_H_*/

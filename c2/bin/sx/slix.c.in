@@ -1,52 +1,72 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <c2types.h>
+#include <oraccsys.h>
+#include "help.h"
 #include <dbi.h>
+
+int boot = 0;
+int no_output = 0;
+const char *project = NULL;
+int verbose = 0;
 
 int
 main(int argc, char **argv)
 {
   unsigned char *buf[20480], *k;
-  char dbname[_MAX_PATH], dbdir[_MAX_PATH];
-  int boot = 0;
+  char tsvfile[_MAX_PATH], dbname[_MAX_PATH], dbdir[_MAX_PATH];
   Dbi_index *dbi = NULL;
   FILE *infile;
 
-  if (argc == 2)
-    {
-      if (!strcmp(argv[1], "-b") || !strcmp(argv[1], "-boot"))
-	boot = 1;
-    }
-  else
-    {
-#if 0
-      fprintf(stderr, "slix: must give output DB name or -b option on command line\n");
-      exit(1);
-#endif
-    }
+  options(argc, argv, "bnp:v?");
 
   if (boot)
     {
       strcpy(dbname, "sl");
       strcpy(dbdir, "@@ORACC@@/pub/ogsl/sl");
-      if (!(infile = fopen("@@ORACC@@/pub/ogsl/sl/sl.tsv", "r")))
+      strcpy(tsvfile, "@@ORACC@@/pub/ogsl/sl/sl.tsv");
+      if (!(infile = fopen(tsvfile, "r")))
 	{
-	  fprintf(stderr, "slix: boot mode requires @@ORACC@@/pub/ogsl/sl.tsv\n");
+	  fprintf(stderr, "slix: -b (boot) mode requires %s\n", tsvfile);
 	  exit(1);
 	}
     }
+  else if (project)
+    {
+      strcpy(tsvfile, "@@ORACC@@/pub/");
+      strcat(tsvfile, project);
+      strcat(tsvfile, "/sl.tsv");
+      strcpy(dbname, "sl");
+      strcpy(dbdir, "@@ORACC@@/pub/");
+      strcat(dbdir, project);
+      strcat(dbdir, "/sl");
+      if (!(infile = fopen(tsvfile, "r")))
+	{
+	  fprintf(stderr, "slix: -p [PROJECT] mode requires %s\n", tsvfile);
+	  exit(1);
+	}
+    }  
   else
     {
       strcpy(dbname, "sl");
       strcpy(dbdir, "02pub/sl");
-      if (!(infile = fopen("02pub/sl/sl.tsv", "r")))
+      strcpy(tsvfile, "02pub/sl/sl.tsv");
+      if (!(infile = fopen(tsvfile, "r")))
 	{
-	  fprintf(stderr, "slix: can't index signlist without 02pub/sl/sl.tsv\n");
+	  fprintf(stderr, "slix: can't index signlist without %s\n", tsvfile);
 	  exit(1);
 	}
-      /*infile = stdin;*/
     }
 
+  if (verbose)
+    fprintf(stderr, "slix: indexing %s into dbdir %s\n", tsvfile, dbdir);
+
+  if (no_output)
+    {
+      fprintf(stderr, "slix: exiting without producing output\n");
+      exit(1);
+    }
+  
   dbi = dbi_create(dbname, dbdir, 0, 1, DBI_BALK);
   while ((k = (unsigned char *)fgets((char*)buf,20480,infile)))
     {
@@ -77,6 +97,36 @@ main(int argc, char **argv)
 
 const char *prog = "sl-index";
 int major_version = 1, minor_version = 0, verbose;
-const char *usage_string = " -boot | [SLDB_NAME]";
-int opts(int argc, char *arg){return 0;}
-void help (void){}
+const char *usage_string = "[ -b | -p [PROJECT] ]";
+
+int
+opts(int opt, char *arg)
+{
+  switch (opt)
+    {
+    case 'b':
+      boot = 1;
+      break;
+    case 'n':
+      no_output = 1;
+      break;
+    case 'p':
+      project = arg;
+      break;
+    case 'v':
+      verbose = 1;
+      break;
+    case '?':
+      help();
+      exit(1);
+      break;
+    default:
+      return 1;
+      break;
+    }
+  return 0;
+}
+
+void help (void)
+{
+}

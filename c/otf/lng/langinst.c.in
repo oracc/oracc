@@ -57,9 +57,10 @@ load_signs(struct lang_context *lp)
 	}
 #endif
     }
-  /* if not, then if the signlist member is "#" we are using the 
-     built-in sign list */
-  else if (!strcmp(lp->script,"020"))
+  /* if not, then if the signlist member is "#" we are using the
+     built-in sign list; the signlist loader has been hacked to load
+     pctc (pcsl) for script 900 */
+  else if (!strcmp(lp->script,"020") || !strcmp(lp->script, "900"))
     {
 #if 1
       lp->signlist = "#";
@@ -129,7 +130,7 @@ lang_load(struct proj_context *p, struct lang_tag *lt)
     lp->mode = m_alphabetic;
 
   /* Sumero-Akkadian Cuneiform may have its own sign list */
-  if (!strcmp(lp->script, "020"))
+  if (!strcmp(lp->script, "020") || !strcmp(lp->script, "900"))
     load_signs(lp);
 
   lp->cset = get_charset(lp->core->code,lp->mode);

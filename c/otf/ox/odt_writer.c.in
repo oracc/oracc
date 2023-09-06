@@ -410,7 +410,9 @@ preamble(void)
 {
   const char *xslpi = NULL;
   static char xslinc1[2048];
+#if 0
   static char xslinc2[2048];
+#endif
   if (odt_serial == 1)
     xslpi = "<?xml-stylesheet type=\"text/xml\" href=\"#otfODTstylerSerial\"?>";
   else if (odt_serial == 2)

@@ -137,13 +137,13 @@ process_file(struct run_context *run, const char *fname)
   if ('#' == ftext[0] && !strncmp((const char*)ftext, "##file ", 7))
     hash_hash_get_file(ftext);
 
-  file = errmsg_fn ? errmsg_fn : (hash_hash_file ? hash_hash_file : fname);
+  file = errmsg_fn ? errmsg_fn : (hash_hash_file ? (ccp)hash_hash_file : fname);
 
   if (!check_only && !perform_lem && !do_show_insts)
     {
       if (!one_big_file)
 	begin_file();
-      atf_file_pi(hash_hash_file ? hash_hash_file : fname);
+      atf_file_pi(hash_hash_file ? (ccp)hash_hash_file : fname);
     }
   ret = process_string(run, ftext, fsize);
   free(ftext);

@@ -37,8 +37,9 @@ main(int argc, char **argv)
       if (dbi_mode)
 	d = sll_init_d(project, name);
       else
-	h = sll_init_t(project, name);
-      
+	if (!(h = sll_init_t(project, name)))
+	  exit(1);
+
       if (key)
 	sll_cli_handler((uccp)key);
       else

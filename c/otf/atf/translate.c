@@ -14,6 +14,7 @@
 #include "label.h"
 #include "pool.h"
 #include "note.h"
+#include "globals.h"
 
 extern int note_index;
 extern void note_initialize_line(void);
@@ -635,9 +636,9 @@ int
 trans_hash_add(const char *t)
 {
   static int one = 1;
-  if (hash_find(trans_hash, t))
+  if (hash_find(trans_hash, (uccp)t))
     return 1;
-  hash_add(trans_hash,pool_copy(t), &one);
+  hash_add(trans_hash,pool_copy((uccp)t), &one);
   return 0;
 }
 void
@@ -1130,7 +1131,7 @@ trans_para(unsigned char **lines, unsigned char *s, struct node *p, int p_elem,
 	    {
 	      setClass(cc,"cell");
 	      if (need_dir_rtl)
-		appendAttr(cc,attr(a_dir,"rtl"));
+		appendAttr(cc,attr(a_dir,(uccp)"rtl"));
 	      appendAttr(cc,attr(a_xtr_span,ucc("1")));
 	    }
 	  if (init_cell)
@@ -1202,7 +1203,7 @@ trans_para(unsigned char **lines, unsigned char *s, struct node *p, int p_elem,
 	      cc = appendChild(p,elem(e_xh_span,NULL,lnum,CELL));
 	      setClass(cc,"cell");
 	      if (need_dir_rtl)
-		appendAttr(cc,attr(a_dir,"rtl"));
+		appendAttr(cc,attr(a_dir,(uccp)"rtl"));
 	      appendAttr(cc,attr(a_xtr_span,ucc("1")));
 	    }
 	  (void)trans_inline(cc,text,NULL,1);
@@ -1743,7 +1744,7 @@ trwords_w(struct node *p, unsigned char *s)
 {
   unsigned char *start = s,*backslash, *punct, punctsave;
   struct node *w = elem(e_xh_span,NULL,lnum,FIELD);
-  unsigned char wid[64];
+  unsigned char wid[512];
 
   sprintf((char*)wid,"%s.%d",trans_p_idbuf, trans_wid++);
   appendAttr(w,attr(a_class,ucc("w")));
@@ -1833,7 +1834,7 @@ trans_inter(unsigned char **lines)
 	    {
 	      unsigned char *lp = NULL;
 	      *t++ = '\0';
-	      lp = itrans->lang;
+	      lp = (ucp)itrans->lang;
 	      while (*lp)
 		{
 		  if (!islower(*lp) && '-' != *lp)

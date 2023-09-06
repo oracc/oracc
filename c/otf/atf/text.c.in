@@ -328,7 +328,7 @@ process_text(struct run_context *run, unsigned char **lines)
 	  curr_xmd = l2_xmd_load(project, textid);
 	  if (curr_xmd)
 	    {
-	      unsigned char *tname = hash_find(curr_xmd, "textname");
+	      unsigned char *tname = hash_find(curr_xmd, (uccp)"textname");
 	      if (tname && *tname)
 		setAttr(text,a_textname,ucc(tname));
 	    }

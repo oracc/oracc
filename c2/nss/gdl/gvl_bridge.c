@@ -6,12 +6,15 @@ static Hash *bridge_h = NULL;
 static Pool *bridge_p = NULL;
 extern int asl_flex_debug , gdl_flex_debug, nwarning;
 
-static const char *gb_lang = "sux";
-
 void
-gvl_bridge_lang(const char *l)
+gvl_bridge_qpc(void)
 {
-  gb_lang = l;
+  static int qpc_set = 0;
+  if (!qpc_set)
+    {
+      (void)gvl_setup("pctc", "pctc");
+      ++qpc_set;
+    }
 }
 
 void
@@ -19,10 +22,7 @@ gvl_bridge_init(void)
 {
   bridge_h = hash_create(1024);
   bridge_p = pool_init();
-  if (!strcmp(gb_lang, "qpc"))
-    (void)gvl_setup("pcsl", "pcsl");
-  else
-    (void)gvl_setup("ogsl", "ogsl");
+  (void)gvl_setup("ogsl", "ogsl");
   gdlparse_init();
   mesg_init();
   gdl_flex_debug = 0;

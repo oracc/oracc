@@ -29,7 +29,7 @@
 #include "key.h"
 #include "symbolattr.h"
 #include "globals.h"
-
+#include "c1c2gvl.h"
 
 #define OLDLEM 0
 
@@ -121,7 +121,7 @@ protocols(struct run_context *run,
 
 	  if (need_lemm)
 	    {
-	      manage_savebuf(*lines);
+	      manage_savebuf((ccp)*lines);
 	      xstrcpy(savebuf,*lines);
 	    }
 
@@ -166,7 +166,7 @@ protocols(struct run_context *run,
 	}
       if (need_lemm)
 	{
-	  manage_savebuf(*lines);
+	  manage_savebuf((ccp)*lines);
 	  xstrcpy(savebuf,*lines);
 	}
       if (*lines[0] 
@@ -449,7 +449,7 @@ protocol(struct run_context *run,
 	    {
 	      if (kp->url)
 		setAttr(e, a_url, (unsigned char*)kp->url);
-	      if (type && strcmp(type,kp->key))
+	      if (type && strcmp((ccp)type,kp->key))
 		setAttr(e, a_kkey, (unsigned char*)kp->key);
 	    }
 	  appendChild(e,cdata(kp ? (unsigned char*)kp->val : line));
@@ -513,6 +513,15 @@ atf_handler(struct node *parent, enum t_scope scope,
 	}
       if (*l)
 	{
+	  /* Temporary hack until ox rewrite to allow qpc to use pcsl for validation;
+	     this means you can't mix qpc and other languages in the same ATF run */
+	  static int qpc_set = 0;
+	  if (!strcmp((ccp)l, "qpc") && !qpc_set)
+	    {
+	      ++qpc_set;
+	      gvl_bridge_qpc();
+	    }
+	  
 	  if (!(text_lang = lang_switch(NULL, (char*)l, NULL, file, lnum)))
 	    curr_lang = text_lang = global_lang;
 	  if (altlang)
@@ -529,6 +538,7 @@ atf_handler(struct node *parent, enum t_scope scope,
     }
   else if (!xstrncmp(l,"use",3))
     {
+      extern int gdl_unicode;
       l+=4;
       while (isspace(*l))
 	++l;
@@ -550,7 +560,7 @@ atf_handler(struct node *parent, enum t_scope scope,
       else if (!xstrncmp(l,"math",4))
 	math_mode = 1;
       else if (!xstrncmp(l,"unicode",7))
-	use_unicode = 1;
+	gdl_unicode = use_unicode = 1;
       else if (!xstrncmp(l,"lemconv",7))
 	use_ilem_conv = 1;
       else if (!xstrncmp(l,"legacy",7))
@@ -709,7 +719,7 @@ project_handler(struct run_context *run, struct node *parent, enum t_scope scope
   cuneify_init(run->proj->xpd);
 
   lem_simplify_opt = xpd_option(run->proj->xpd,"lem-simplify");
-  atf_needs_xmd = xpd_option(run->proj->xpd, "atf-needs-cat");
+  atf_needs_xmd = (NULL != xpd_option(run->proj->xpd, "atf-needs-cat"));
   if (lem_simplify_opt && !strcmp(lem_simplify_opt, "yes"))
     lem_simplify = 1;
   lem_props_opt = xpd_option(run->proj->xpd,"lem-props");
