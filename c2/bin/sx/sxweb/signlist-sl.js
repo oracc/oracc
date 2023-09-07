@@ -1,5 +1,5 @@
 function slform() {
-    var form=document.getElementById('@@PROJECT@@form');
+    var form=document.getElementById('@@hproject@@form');
     if (document.getElementById('ext').value !== 'sign') {
 	form.setAttribute('target','sllist')
     } else {
@@ -8,5 +8,5 @@ function slform() {
 //    var ext=document.getElementById('ext');
 //    var val=ext.value;
 //    console.log('value='+val);
-//    return alert(document.getElementById('@@PROJECT@@form').getAttribute('target'));
+//    return alert(document.getElementById('@@project@@form').getAttribute('target'));
 }

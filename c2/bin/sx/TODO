@@ -30,9 +30,7 @@ Implementation
 
 * add "..." to mean literal, e.g., @sys AP "ABxSZA3"
 
-* add support for setting gvl_bridge_lang from #atf: lang -- doesn't
-  need to be from lang shift yet; should be able to be set multiple
-  times without reloading sl.tsv
+* BUG: sl:signlist/@project is always 'ogsl' :(
 
 Schema
 ------

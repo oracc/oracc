@@ -66,7 +66,7 @@ sx_w_x_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
   xo_loc->file = "stdin"; xo_loc->line = 1;
   if (p == sx_pos_init)
     {
-      ratts = rnvval_aa("x", "project", "ogsl", NULL);
+      ratts = rnvval_aa("x", "project", sl->project, NULL);
       rnvxml_ea("sl:signlist", ratts);
       xidseen = hash_create(1024);
       

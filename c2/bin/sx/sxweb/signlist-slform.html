@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>@@PROJECT@@ SL FORM</title>
+    <link rel="stylesheet" type="text/css" media="screen,projection" href="css/sl.css" />
+    <script type="text/javascript" src="js/sl.js">
+</script>
+  </head>
+  <body>
+    <form name="@@hproject@@form" id="@@hproject@@form" action="/@@project@@/sl" method="post" target="slmain"
+	  enctype="UTF-8" onsubmit="return slform()">
+      <input type="hidden" name="caller" value="esp" />
+      <input type="hidden" name="project" value="@@project@@" />
+      <input type="hidden" name="slmode" value="brief" />
+      <p class="unisearch">
+	<input type="submit" value="FIND:" name="x" />
+	<input type="text" size="10" name="k1" value="" />
+	<select id="ext" name="ext"> 
+	  <option selected="yes" value="sign">SIGN</option>
+	  <option value="forms">FORMS</option>
+	  <option value="h">HOMOPHONES</option>
+	  <option value="c">COMPOUNDS</option>
+	  <option value="cinit">INITIAL</option>
+	  <option value="clast">FINAL</option>
+	  <option value="contains">TIMES</option>
+	  <option value="contained">CONTAINED</option>
+	</select>
+      </p>
+    </form>
+  </body>
+</html>
+  

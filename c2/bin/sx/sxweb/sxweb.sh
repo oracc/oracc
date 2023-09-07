@@ -1,50 +1,67 @@
 #!/bin/sh
-function sxinst {
-    sed "s/@@PROJECT@@/$project/g" $1 >$2
+
+project=`oraccopt`
+
+if [ "$project" == "" ]; then
+    echo "$0: must be called in a project directory. Stop."
+    exit 1
+fi
+
+abbrev=`oraccopt . abbrev`
+hproject=`/bin/echo -n $project | tr / -`
+libdata=$ORACC_BUILDS/lib/data
+
+function sxinst {    
+    sed "s/@@PROJECT@@/$abbrev/g" $libdata/$1 \
+	| sed "s/@@project@@/$project/g" \
+	| sed "s/@@hproject@@/$hproject/g" \
+	      >$2
 }
 
 stats=$*
+
 rm -fr signlist ; mkdir signlist
-project=`oraccopt`
-(cd $ORACC ;
+
+(cd $ORACC_BUILDS ;
     mkdir -p bld/$project/signlist
     for a in xml www pub ; do
 	mkdir -p $a/$project/signlist
     done
 )
+
 (cd signlist ;
     mkdir -p 00lib ;
     mkdir -p 00res/css ;
     mkdir -p 00res/js ;
     mkdir -p 00web/00config ;
     mkdir -p 01tmp ;
-    ln -sf $ORACC/bld/$project/signlist 01bld
+    ln -sf $ORACC_BUILDS/bld/$project/signlist 01bld
     for a in xml www pub ; do
-	ln -sf $ORACC/$a/$project/signlist 02$a
+	ln -sf $ORACC_BUILDS/$a/$project/signlist 02$a
     done
     mkdir -p 01bld/www
 )
+
 sxinst signlist-config.xml signlist/00lib/config.xml
 sxinst signlist-parameters.xml signlist/00web/00config/parameters.xml
 sxinst signlist-home.xml signlist/00web/home.xml
-sxinst slform.html signlist/00web/
+sxinst signlist-slform.html signlist/00web/slform.html
 sxinst signlist-projesp.css signlist/00res/css/projesp.css
 sxinst signlist-sl.css signlist/00res/css/sl.css
 sxinst signlist-projesp.js signlist/00res/js/projesp.js
 sxinst signlist-sl.js signlist/00res/js/sl.js
 
-xsltproc $ORACC/lib/scripts/sl-ESP-structure.xsl 02xml/sl-grouped.xml >signlist/00web/00config/structure.xml
-xsltproc $ORACC/lib/scripts/sl-ESP-letters.xsl 02xml/sl-grouped.xml
+libscripts=$ORACC_BUILDS/lib/scripts
+
+xsltproc $libscripts/sxweb-structure.xsl 02xml/sl.xml >signlist/00web/00config/structure.xml
+
+xsltproc $libscripts/sxweb-letters.xsl 02xml/sl.xml
+
 if [ "$stats" = "with-stats" ]; then
     echo with-stats=true
-    xsltproc -stringparam with-stats yes -stringparam project $project $ORACC/lib/scripts/sl-ESP-signs.xsl 02xml/sl-grouped.xml
+    xsltproc -stringparam with-stats yes -stringparam project $project $libscripts/sxweb-signs.xsl 02xml/sl.xml
 else 
-    xsltproc -stringparam project $project $ORACC/lib/scripts/sl-ESP-signs.xsl 02xml/sl-grouped.xml
+    xsltproc -stringparam project $project $libscripts/sxweb-signs.xsl 02xml/sl.xml
 fi
+
 (cd signlist ; o2-portal.sh)
-if [ -r 00lib/signlist-index.html ]; then
-    (cd signlist/02www ; mv index.html home.html)
-    cp -af 00lib/signlist-index.html signlist/02www/index.html ; chmod o+r signlist/02www/index.html
-fi
-#sl-inner.sh
-#sl-brief.sh

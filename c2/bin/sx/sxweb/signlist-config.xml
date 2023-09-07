@@ -1,11 +1,11 @@
-<project n="@@PROJECT@@/signlist" 
+<project n="@@project@@/signlist" 
     xmlns="http://oracc.org/ns/xpd/1.0"
     xmlns:xpd="http://oracc.org/ns/xpd/1.0">
-  <name>OGSL/OGSL Signlist</name>
-  <abbrev>OGSL/signlist</abbrev>
+  <name>@@PROJECT@@/@@PROJECT@@ Signlist</name>
+  <abbrev>@@PROJECT@@/signlist</abbrev>
   <project-type>user</project-type>
   <type>signlist</type>
-  <logo type="text">OGSL/signlist</logo>
+  <logo type="text">@@PROJECT@@/signlist</logo>
   <image>lak25.png</image>
-  <blurb>Browsable/searchable version of OGSL</blurb>
+  <blurb>Browsable/searchable version of @@PROJECT@@</blurb>
 </project>

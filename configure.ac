@@ -8,11 +8,11 @@ AC_CONFIG_HEADERS(config.h)
 AM_CONDITIONAL(AMDEP,true)
 
 dnl Checks for programs.
-AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_MACRO_DIRS([m4])
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_YACC
-AM_PROG_LEX([noyywrap])
+AM_PROG_LEX
 LT_INIT
 AC_PROG_INSTALL
 AC_PROG_LN_S
@@ -267,6 +267,7 @@ AC_CONFIG_FILES([Makefile
 	c2/bin/gx/Makefile
 	c2/bin/ox/Makefile
 	c2/bin/sx/Makefile
+	c2/bin/sx/sxweb/Makefile
 	c2/bin/tx/Makefile
 	c2/bin/xx/Makefile
 	c2/bin/xx/j2x/Makefile
