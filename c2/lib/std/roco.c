@@ -7,12 +7,19 @@
 #define uccp unsigned const char *
 
 Roco *
-roco_load(const char *file)
+roco_load(const char *file, int fieldsr1,
+	  const char *xtag, const char *rtag, const char *ctag)
 {
   Roco *r = calloc(1, sizeof(Roco));
   r->file = file;
   r->lines = loadfile_lines3((uccp)r->file, (size_t*)&r->nlines, &r->mem);
   r->rows = calloc(r->nlines, sizeof(unsigned char **));
+  r->fields_from_row1 = fieldsr1;
+
+  r->xmltag = (xtag ? xtag : "x");
+  r->rowtag = (rtag ? rtag : "r");
+  r->celtag = (ctag ? ctag : "c");
+
   int i;
   for (i = 0; i < r->nlines; ++i)
     {
