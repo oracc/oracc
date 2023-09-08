@@ -257,7 +257,7 @@ res_is_list(const char *e)
     {
       while (*e && (isalnum(*e) || '-' == *e || '_' == *e))
 	++e;
-      if (*e == 0)
+      if (*e == 0 || !strcmp(e, ".tis"))
 	{
 	  char *lst = malloc(strlen("@@ORACC@@") + strlen("/www/lists/") + strlen(project)
 				   + strlen(init) + 2);
