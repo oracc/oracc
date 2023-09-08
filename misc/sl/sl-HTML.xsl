@@ -38,8 +38,6 @@
 <xsl:template match="sl:sign">
   <ex:document href="{concat('02www/signs/',@xml:id,'.html')}"
     method="xml" encoding="utf-8"
-    doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-    doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
     indent="yes">
     <xsl:call-template name="make-html">
       <xsl:with-param name="title" select="'OGSL'"/>
