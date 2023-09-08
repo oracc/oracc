@@ -36,7 +36,7 @@ if [ -d 01bld/lists ]; then
 fi
 
 if [ -d 01bld/tislists ]; then
-    cp -f 01bld/tislists/*.tis $webdir/lists
+    cp 01bld/tislists/*.tis $webdir/lists
 fi
 
 if [ -r 01bld/lists/outlined.lst ]; then

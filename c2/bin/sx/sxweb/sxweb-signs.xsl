@@ -62,6 +62,19 @@
   <xsl:call-template name="sign-or-form"/>
 </xsl:template>
 
+<xsl:template name="icount">
+  <xsl:if test="@icount">
+    <xsl:variable name="s">
+      <xsl:if test="not(@icount = '1')">
+	<xsl:text>s</xsl:text>
+      </xsl:if>
+    </xsl:variable>
+    <p><esp:link url="/{$project}/{@xml:id}.tis"><xsl:value-of select="@icount"/>
+    instance<xsl:value-of select="$s"/>
+    attested in project <xsl:value-of select="$project"/>.</esp:link></p>
+  </xsl:if>
+</xsl:template>
+
 <xsl:template name="sign-or-form">
   <div iclass="{$project}-{local-name(.)}">
     <xsl:if test="local-name() = 'form'">
@@ -79,16 +92,7 @@
 	</xsl:choose>
       </b></h2>
     </xsl:if>
-    <xsl:if test="@icount">
-      <xsl:variable name="s">
-	<xsl:if test="not(@icount = '1')">
-	  <xsl:text>s</xsl:text>
-	</xsl:if>
-      </xsl:variable>
-      <p><esp:link url="/{$project}/{@xml:id}.tis"><xsl:value-of select="@icount"/>
-      instance<xsl:value-of select="$s"/>
-      attested in project <xsl:value-of select="$project"/>.</esp:link></p>
-    </xsl:if>
+    <xsl:call-template name="icount"/>
     <div class="{$project}-info">
       <p style="font-size: 150%">
 	<xsl:for-each select="sl:name[1]//*">
