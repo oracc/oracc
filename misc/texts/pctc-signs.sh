@@ -1,7 +1,12 @@
 #!/bin/sh
-oxx 00atf/*.atf | xsltproc word-children.xsl - >w.tab
-echo 'sign	oid' >w-oid.tab
-cut -f2 w.tab | sort -u | slx -r -p pctc -n pctc >>w-oid.tab
-rocox -f -x sign2oids w-oid.tab >w-oid.xml
-concord -xwcl* w.tab >w.xml
-xsltproc pctc-add-oids.xsl w.xml >w-with-oids.xml
+if [ ! -d 01tmp ]; then
+    echo "$0: I only work when there is an 01tmp directory. Stop."
+    exit 1
+fi
+libscripts=$ORACC_BUILDS/lib/scripts
+oxx 00atf/*.atf | xsltproc $libscripts/word-children.xsl - >01tmp/w.tab
+echo 'sign	oid' >01tmp/w-oid.tab
+cut -f2 01tmp/w.tab | sort -u | slx -r -p pctc -n pctc >>01tmp/w-oid.tab
+rocox -f -x sign2oids <01tmp/w-oid.tab >01tmp/w-oid.xml
+concord -xwcl* <01tmp/w.tab >01tmp/w.xml
+xsltproc $libscripts/pctc-add-oids.xsl 01tmp/w.xml >01tmp/w-with-oids.xml

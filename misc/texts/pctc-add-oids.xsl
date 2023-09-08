@@ -14,7 +14,7 @@
     <xsl:copy-of select="@*"/>
     <xsl:variable name="s" select="text()"/>
     <xsl:variable name="oid">
-      <xsl:for-each select="document('w-oid.xml')">
+      <xsl:for-each select="document('w-oid.xml',/)">
 	<xsl:value-of select="key('oids',$s)/oid"/>
       </xsl:for-each>
     </xsl:variable>

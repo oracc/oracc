@@ -194,6 +194,14 @@ if ($rt{'prod'} eq 'list') {
 	} else {
 	    $p{'#coerce'} = 0;
 	}
+    } elsif ($p{'list'} =~ /\.tis$/) {
+	my $tis_file = "@@ORACC@@/www/$p{'project'}/lists/$p{'list'}";
+	xsystem 'cp', $tis_file, "$p{'tmpdir'}/results.lst";
+	$p{'#list'} = "$p{'tmpdir'}/results.lst";
+	$p{'uimode'} = 'mini';	
+	$rt{'cetype'} = $p{'p3cetype'};
+	$rt{'itemtype'} = $p{'itemtype'} = $rt{'#list_type'} = 'xtf';
+	set_list_items();
     } else {
 	$p{'#list'} = "@@ORACC@@/www/$p{'project'}/lists/$p{'list'}";
 	$rt{'#list_type'} = 'cat';
