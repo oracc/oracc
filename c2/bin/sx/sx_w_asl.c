@@ -275,6 +275,8 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	    fprintf(f->fp, "@pname\t%s\n", s->u.s->pname);
 	  if (s->u.s->aka)
 	    sx_w_a_aka_list(f->fp, s->u.s->aka);
+	  if (s->u.s->smap)
+	    fprintf(f->fp, "@smap\t%s\n", s->u.s->smap);
 	  in_sign = 1;
 	}
     }

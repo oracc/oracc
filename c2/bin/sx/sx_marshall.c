@@ -298,6 +298,7 @@ sx_marshall(struct sl_signlist *sl)
 {
   const char**keys = NULL;
   int nkeys;
+  List *smap_list = list_create(LIST_SINGLE);
 
   const char**lets = NULL;
   int nlets = 0, i;
@@ -372,6 +373,10 @@ sx_marshall(struct sl_signlist *sl)
       sl->signs[i] = hash_find(sl->hsentry, (ucp)keys[i]);
       tp = hash_find(sl->htoken, sl->signs[i]->name);
       sl->signs[i]->sort = tp->s;
+
+      if (sl->signs[i]->smap)
+	list_add(smap_list, sl->signs[i]);
+
       if (!sl->signs[i]->xref)
 	{
 	  if (!(sl->signs[i]->oid = hash_find(oids, sl->signs[i]->name)))
@@ -493,7 +498,7 @@ sx_marshall(struct sl_signlist *sl)
   /* add inherited values to forms: timing of this routine is important--don't move it! */
   sx_inherited(sl);
 
-  /* Sort form owners (sl_sign*) if there are any */
+ /* Sort form owners (sl_sign*) if there are any */
   for (i = 0; i < sl->nforms; ++i)
     {
       if (sl->forms[i]->owners)
@@ -724,6 +729,25 @@ sx_marshall(struct sl_signlist *sl)
 	}
     }
 
+  /* now that forms have oids and s->forms is set, resolve any smaps to oids */
+  struct sl_sign *s;
+  for (s = list_first(smap_list); s; s = list_next(smap_list))
+    {
+      struct sl_form *smapf = NULL;
+      int i;
+      for (i = 0; i < s->nforms; ++i)
+	if (!strcmp(s->smap, (ccp)s->forms[i]->u.f->name))
+	  {
+	    smapf = s->forms[i]->u.f;
+	    break;
+	  }
+      if (smapf)
+	s->smoid = smapf->oid;
+      else
+	mesg_verr(&s->inst->mloc, "%s in @smap does not point to a child-form of @sign %s", s->smap, s->name);
+    }
+  list_free(smap_list, NULL);
+ 
   sx_values_parents(sl);
 
   sx_values_parents_dump(sl);

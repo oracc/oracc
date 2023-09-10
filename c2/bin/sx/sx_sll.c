@@ -116,7 +116,11 @@ sx_s_sign(FILE *f, struct sl_sign *s)
 {
   if (!s->xref && s->oid)
     {
-      curr_oid = s->oid;
+      if (s->smoid)
+	curr_oid = s->smoid;
+      else
+	curr_oid = s->oid;
+
       fprintf(f, "%s\t%s\n", s->name, curr_oid);
       fprintf(f, "%s\t%s\n", curr_oid, s->name);
 
@@ -128,9 +132,12 @@ sx_s_sign(FILE *f, struct sl_sign *s)
 	  fprintf(f, "%s;forms\t", s->oid);
 	  for (i = 0; i < s->nforms; ++i)
 	    {
-	      if (i)
-		fputc(' ', f);
-	      fputs(s->forms[i]->u.f->oid, f);
+	      if (s->forms[i]->u.f->oid)
+		{
+		  if (i)
+		    fputc(' ', f);
+		  fputs(s->forms[i]->u.f->oid, f);
+		}
 	    }
 	  fputc('\n', f);
 	}

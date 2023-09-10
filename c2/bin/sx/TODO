@@ -4,6 +4,7 @@ c2/nss/asl , c2/nss/gdl , c2/bin/sx TODO list as of 2023-08-02
 
 Implementation
 --------------
+
 * values with ATF flag (u-gun₃, {kaš}ulušin) should be parsed as GDL;
   should they have their own @atf tag?
 
@@ -30,8 +31,6 @@ Implementation
 
 * add "..." to mean literal, e.g., @sys AP "ABxSZA3"
 
-* BUG: sl:signlist/@project is always 'ogsl' :(
-
 Schema
 ------
 
@@ -44,7 +43,7 @@ Output
 * values with ATF flag are not yet output in XML version; they are
   correctly excluded in SLL and correctly included in ASL outputs.
 
-* Complete XML output for new tags
+* Complete XML output for new tags; no @aka or @smap output yet
 
 * More better JSON output
 
@@ -94,6 +93,13 @@ OGSL Fixes
 * get ATFU list from small mac air and figure out how/where to include it (could be in pcsl or ogsl)
 
 * does @sys take notes? if not, should it?
+
+* check that searching for a @form in web signlist returns the sign's
+  page; may need additional 'OID;smap' entries in .sll output to point
+  to the specific @smap parent because OID;signs could point to a
+  series of signs where the @form occurs; could also have a validation
+  constraint that an @smap can only point to a @form that has a single
+  parent in the sign list
 
 Future
 ------

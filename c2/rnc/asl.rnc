@@ -20,6 +20,7 @@ start =
           attribute n { text },
 	  attribute sort { text }, 
           attribute xml:id { xsd:NCName }?,
+	  sl.smap?,
           sl.name?,
           (sl.inote
            | sl.list
@@ -79,6 +80,8 @@ sl.listdef = element sl:listdef { attribute name { xsd:NCName | "U+" } , element
 sl.sysdef  = element sl:sysdef { attribute name { xsd:NCName } , element sl:info { text }? , sl.notes }
 
 sl.sys 	   = element sl:sys { attribute name { xsd:NCName } , attribute token { text } , text }
+
+sl.smap    = element sl:smap { attribute oid { xsd:NCName } , text }
 
 sl.name =
   element sl:name {

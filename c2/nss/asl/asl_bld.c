@@ -642,6 +642,33 @@ asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 }
 
 void
+asl_bld_smap(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
+{
+  int literal, query;
+  check_flags((char*)t, &query, &literal);
+  if (literal)
+    mesg_verr(locp, "'*' is ignored on @smap");
+  if (query)
+    mesg_verr(locp, "'?' is ignored on @smap");
+
+  asl_bld_token(locp, sl, (ucp)t, 0);
+
+  if (sl->curr_form)
+    {
+      mesg_verr(locp, "@smap %s should be on @sign %s, not @form", t, sl->curr_form->u.f->sign->name);
+    }
+  else if (sl->curr_sign)
+    {
+      if (!sl->curr_sign->smap)
+	sl->curr_sign->smap = (ccp)t;
+      else
+	mesg_verr(locp, "duplicate @smap %s", t);
+    }
+  else
+    (void)asl_sign_guard(locp, sl, "smap");
+}
+
+void
 asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
   int literal, query;

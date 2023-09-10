@@ -33,7 +33,7 @@ int minus_flag = 0;
 		INOTE LIT NOTE REF TEXT END EBAD EFORM ESIGN
 		UAGE USEQ UTF8 UMAP UNAME UNOTE UPUA
 		SIGNLIST LISTDEF LISTNAME LREF SREF
-		SYSDEF SYSNAME SYS
+		SYSDEF SYSNAME SYS SMAP
 
 %nterm  <text>  anynote atftoken atftokens lang longtext token
 
@@ -72,6 +72,7 @@ atcmd:
         | atlref
         | atsref
         | ataka
+        | atsmap
         | atcomp
         | atpname
 	| atfake
@@ -108,6 +109,10 @@ atfake:   FAKE 		{ if (curr_asl->curr_sign && !curr_asl->curr_form) { curr_asl->
 
 ataka:
 	  AKA token 	 { asl_bld_aka(&@1, curr_asl, (uccp)$2); }
+	;
+
+atsmap:
+	  SMAP token 	 { asl_bld_smap(&@1, curr_asl, (uccp)$2); }
 	;
 
 atcomp:

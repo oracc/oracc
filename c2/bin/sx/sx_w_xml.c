@@ -355,6 +355,11 @@ sx_w_x_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	  else
 	    ratts = rnvval_aa("x", "n", s->u.s->name, "sort", scode, NULL);
 	  rnvxml_ea("sl:sign", ratts);
+	  if (s->u.s->smap)
+	    {
+	      ratts = rnvval_aa("x", "oid", s->u.s->smoid, NULL);
+	      rnvxml_et("sl:smap", ratts, s->u.s->smap);
+	    }
 	  in_sign = 1;
 	  if (tp && tp->gdl)
 	    {

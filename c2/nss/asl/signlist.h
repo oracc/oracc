@@ -268,22 +268,28 @@ struct sl_sign
   struct sl_inst **forms;
   int nforms;
   struct sl_unicode U;
-  const unsigned char *pname; /* For type=sign this is the plus-name
-				 (e.g., |GA₂×A+HA| = |GA₂×(A.HA)|);
-				 for other types it is the map value
-				 from, e.g., @sref BA => BU */
-  List *aka;		/* alternatively known as sign-names to support non-standard names; data type is Memo_str */
+  const unsigned char *pname; 	/* For type=sign this is the plus-name
+				   (e.g., |GA₂×A+HA| = |GA₂×(A.HA)|);
+				   for other types it is the map value
+				   from, e.g., @sref BA => BU */
+  List *aka;			/* alternatively known as sign-names
+				   to support non-standard names; data
+				   type is Memo_str */
   int sort;
   const char *oid;
+  const char *smap;	   	/* Must be a @form within this sign */
+  const char *smoid;	   	/* OID for @form in @smap */
   struct sl_inst *inst;
-  struct sl_form *xref; /* this sign is a header for the @form which
-			   defines the sign name; sort value is in
-			   sort sequence with signs; note that the
-			   form might occur in multiple signs (it will
-			   only get added to the global signs hash
-			   once) so printed xrefs should use
-			   sign->xref->form->owners which should also
-			   be sorted before output */
+  struct sl_form *xref;        	/* this sign is a header for the @form
+				   which defines the sign name; sort
+				   value is in sort sequence with
+				   signs; note that the form might
+				   occur in multiple signs (it will
+				   only get added to the global signs
+				   hash once) so printed xrefs should
+				   use sign->xref->form->owners which
+				   should also be sorted before
+				   output */
   Boolean fake;
   Boolean compound_only;
   enum sx_tle type;
@@ -358,6 +364,7 @@ extern void asl_bld_sysdef(Mloc *locp, struct sl_signlist *sl, const char *name,
 extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,int minus_flag);
 extern void asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag);
 extern void asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
+extern void asl_bld_smap(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);
 extern void asl_bld_comp(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int list);
 

@@ -100,6 +100,7 @@ SYSNAME		[a-zA-Z]+
 ^@sysdef/[ \t]+       		{ Ynext=S; atcmd(SYSDEF,Y); }
 ^@sign-?/[ \t]       		{ atcmd(SIGN,0); }
 ^@aka/[ \t]       		{ atcmd(AKA,0); }
+^@smap/[ \t]+			{ atcmd(SMAP,0); }
 ^@compoundonly/[ \t]           	{ atcmd(COMP,0); }
 ^@pname/[ \t]       		{ atcmd(PNAME,0); }
 ^@nosign/[ \t]     		{ mesg_vwarning(curraslfile, asllineno, "[asl] '@nosign' has been replaced by '@sign-'");
