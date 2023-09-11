@@ -114,13 +114,15 @@ sx_s_values_by_oid(FILE *fp, struct sl_signlist *sl)
 static void
 sx_s_sign(FILE *f, struct sl_sign *s)
 {
-  if (!s->xref && s->oid)
+  if (!s->xref && (s->oid || s->smoid))
     {
       if (s->smoid)
 	curr_oid = s->smoid;
       else
 	curr_oid = s->oid;
 
+      if (s->smoid)
+	fprintf(f, "%s\t%s\n", s->smap, curr_oid);
       fprintf(f, "%s\t%s\n", s->name, curr_oid);
       fprintf(f, "%s\t%s\n", curr_oid, s->name);
 
@@ -175,7 +177,10 @@ sx_s_form(FILE *f, struct sl_form *s)
 	{
 	  if (i)
 	    fputc(' ', f);
-	  fputs(s->owners_sort[i]->oid, f);
+	  if (s->owners_sort[i]->oid)
+	    fputs(s->owners_sort[i]->oid, f);
+	  else if (s->owners_sort[i]->smoid)
+	    fputs(s->owners_sort[i]->smoid, f);
 	}
       fputc('\n', f);
     }

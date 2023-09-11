@@ -43,6 +43,7 @@ if [ "$corpussignlist" == "yes" ]; then
 fi
 project=`oraccopt`
 if [ "$project" == "pctc" ]; then
+    echo 'Running o2-asl.sh in pctc'
     o2-asl.sh
 fi
 #o2-web.sh

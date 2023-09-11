@@ -166,7 +166,7 @@ asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t, int literal)
       const char *gsig = NULL;
       extern int asl_literal_flag;
       tokp->t = t;
-      if (asl_literal_flag)
+      if (literal || asl_literal_flag)
 	tp = gdl_literal(locp, (char*)t);
       else
 	{
@@ -627,15 +627,29 @@ asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 	m->user = &one;
       else
 	m->user = NULL;
-      if (sl->curr_form->u.f->sign->xref)
+      /* If @aka is on a @form check that the form doesn't have a
+	 parent sign; if it does, the @aka should be up there */
+      if (sl->curr_form->u.f->sign)
+	{
+	  if (!sl->curr_form->u.f->sign->xref)
+	    {
+	      mesg_verr(locp, "@aka %s should be on @sign %s, not @form", t, sl->curr_form->u.f->sign->name);
+	    }
+	  else
+	    {
+	      if (!hash_find(sl->haka, t))
+		hash_add(sl->haka, t, sl->curr_sign->inst);
+	      else
+		mesg_verr(locp, "duplicate @aka %s", t);
+	    }
+	}
+      else
 	{
 	  if (!hash_find(sl->haka, t))
-	    hash_add(sl->haka, t, sl->curr_form->u.f->sign);
+	    hash_add(sl->haka, t, sl->curr_form);
 	  else
 	    mesg_verr(locp, "duplicate @aka %s", t);
 	}
-      else
-	mesg_verr(locp, "@aka %s should be on @sign %s, not @form", t, sl->curr_form->u.f->sign->name);
     }
   else if (sl->curr_sign)
     {
