@@ -18,6 +18,7 @@ typedef struct memo Memo;
 struct memo_str
 {
   const unsigned char *s;
+  void *user;
   Mloc m;
 };
 typedef struct memo_str Memo_str;

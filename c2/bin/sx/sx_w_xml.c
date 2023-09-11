@@ -180,13 +180,16 @@ sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	    id_or_ref = "ref";
 	  else
 	    {
-	      if (hash_find(xidseen, (uccp)s->u.f->oid))
-		id_or_ref = "ref";
-	      else
-		hash_add(xidseen, (uccp)s->u.f->oid, "");
+	      if (s->u.f->oid)
+		{
+		  if (hash_find(xidseen, (uccp)s->u.f->oid))
+		    id_or_ref = "ref";
+		  else
+		    hash_add(xidseen, (uccp)s->u.f->oid, "");
+		}
 	    }
 	    
-	  ratts = rnvval_aa("x", "n", s->u.f->name, id_or_ref, s->u.f->oid, "sort", scode, NULL);
+	  ratts = rnvval_aa("x", "n", s->u.f->name, id_or_ref, s->u.f->oid ? s->u.f->oid : "", "sort", scode, NULL);
 	  rnvxml_ea("sl:form", ratts);
 	  rnvxml_ea("sl:name", NULL);
 	  grx_xml(tp->gdl, "g:w");

@@ -11,7 +11,9 @@
 #include <asl.tab.h>
 #include "signlist.h"
 
-static void check_flags(char *n, int *q, int *l);
+extern int asl_literal_flag;
+
+static void check_flags(Mloc* locp, char *n, int *q, int *l);
 
 struct sl_signlist *curr_asl = NULL;
 
@@ -162,8 +164,9 @@ asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t, int literal)
       struct sl_token *tokp = memo_new(sl->m_tokens);
       Tree *tp;
       const char *gsig = NULL;
+      extern int asl_literal_flag;
       tokp->t = t;
-      if (literal)
+      if (asl_literal_flag)
 	tp = gdl_literal(locp, (char*)t);
       else
 	{
@@ -181,6 +184,7 @@ asl_bld_token(Mloc *locp, struct sl_signlist *sl, unsigned char *t, int literal)
       tokp->gsig = gsig;
       hash_add(sl->htoken, t, tokp);
     }
+  asl_literal_flag = 0;
 }
 
 /* This routine builds the signlist tree of letter/group/signs */
@@ -335,7 +339,7 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
   int literal, query;
   
   sl->curr_value = NULL;
-  check_flags((char*)n, &query, &literal);
+  check_flags(locp, (char*)n, &query, &literal);
 
   asl_bld_token(locp, sl, (ucp)n, 0);
 
@@ -486,7 +490,7 @@ asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
     {
       int literal, query = 0;
 
-      check_flags((char*)n, &query, &literal);
+      check_flags(locp, (char*)n, &query, &literal);
   
       asl_bld_token(locp, sl, (ucp)n, 1);
   
@@ -604,19 +608,25 @@ void
 asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
   int literal, query;
-  check_flags((char*)t, &query, &literal);
-  if (literal)
-    mesg_verr(locp, "'*' is ignored on @aka");
+  static int one = 1;
+  Memo_str *m = NULL;
+
+  check_flags(locp, (char*)t, &query, &literal);
+
   if (query)
     mesg_verr(locp, "'?' is ignored on @aka");
 
-  asl_bld_token(locp, sl, (ucp)t, 0);
+  asl_bld_token(locp, sl, (ucp)t, literal);
 
   if (sl->curr_form)
     {
       if (!sl->curr_form->u.f->aka)
 	sl->curr_form->u.f->aka = list_create(LIST_SINGLE);
-      list_add(sl->curr_form->u.f->aka, memo_str(locp, t));
+      list_add(sl->curr_form->u.f->aka, (m = memo_str(locp, t)));
+      if (literal)
+	m->user = &one;
+      else
+	m->user = NULL;
       if (sl->curr_form->u.f->sign->xref)
 	{
 	  if (!hash_find(sl->haka, t))
@@ -631,7 +641,11 @@ asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
     {
       if (!sl->curr_sign->aka)
 	sl->curr_sign->aka = list_create(LIST_SINGLE);
-      list_add(sl->curr_sign->aka, memo_str(locp, t));
+      list_add(sl->curr_sign->aka, (m = memo_str(locp, t)));
+      if (literal)
+	m->user = &one;
+      else
+	m->user = NULL;
       if (!hash_find(sl->haka, t))
 	hash_add(sl->haka, t, (void*)sl->curr_sign);
       else
@@ -645,7 +659,7 @@ void
 asl_bld_smap(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
   int literal, query;
-  check_flags((char*)t, &query, &literal);
+  check_flags(locp, (char*)t, &query, &literal);
   if (literal)
     mesg_verr(locp, "'*' is ignored on @smap");
   if (query)
@@ -672,7 +686,7 @@ void
 asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
   int literal, query;
-  check_flags((char*)t, &query, &literal);
+  check_flags(locp, (char*)t, &query, &literal);
 
   if (literal)
     mesg_verr(locp, "'*' is ignored on @aka");
@@ -725,7 +739,7 @@ asl_bld_sign_sub(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
       exit(1);
     }
 
-  check_flags((char*)n, &query, &literal);
+  check_flags(locp, (char*)n, &query, &literal);
   asl_bld_token(locp, sl, (ucp)n, 0);
 
   sl->curr_form = NULL;
@@ -906,7 +920,7 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
   int literal = 0, xvalue = 0, uvalue = 0, query = 0;
   const unsigned char *base = NULL;
 
-  check_flags((char*)n, &query, &literal);
+  check_flags(locp, (char*)n, &query, &literal);
 
   base = g_base_of(n);
 
@@ -1073,18 +1087,23 @@ asl_bld_value(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,
  *   optional =
  */
 static void
-check_flags(char *n, int *q, int *l)
+check_flags(Mloc *locp, char *n, int *q, int *l)
 {
   char *last = (char*)(n + (strlen((ccp)n)-1));
   *l = *q = 0;
   if ('=' == *last)
     {
+      mesg_verr(locp, "literal strings are no longer marked with '='; enclose in \"...\" instead");
+#if 0      
       *last-- = '\0';
       *l = 1;
+#endif
     }
   if ('?' == *last)
     {
       *last = '\0';
       *q = 1;
     }
+  if (asl_literal_flag)
+    *l = 1;
 }

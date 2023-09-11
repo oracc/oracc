@@ -55,7 +55,12 @@ sx_w_a_aka_list(FILE *fp, List *a)
 {
   Memo_str *m;
   for (m = list_first(a); m; m = list_next(a))
-    fprintf(fp, "@aka\t%s\n", m->s);
+    {
+      if (m->user)	
+	fprintf(fp, "@aka\t\"%s\"\n", m->s);
+      else
+	fprintf(fp, "@aka\t%s\n", m->s);
+    }
 }
 
 /* This is the entry point for asl output */

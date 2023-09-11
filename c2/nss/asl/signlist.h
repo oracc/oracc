@@ -274,7 +274,8 @@ struct sl_sign
 				   from, e.g., @sref BA => BU */
   List *aka;			/* alternatively known as sign-names
 				   to support non-standard names; data
-				   type is Memo_str */
+				   type is Memo_str with literal flag
+				   stored in user ptr */
   int sort;
   const char *oid;
   const char *smap;	   	/* Must be a @form within this sign */

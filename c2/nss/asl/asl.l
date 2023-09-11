@@ -26,6 +26,7 @@ extern Pool *aslpool;
 static void asl_user_action(void);
 static int asl_grapheme(const char *gp);
 static void check_minus(char *t);
+static void strip_literal(char *t);
 
 /* #if 1 to print every matched rule */
 #if 0
@@ -34,7 +35,7 @@ static void check_minus(char *t);
 #define pmatch(m)
 #endif
 
-#define aslsave asllval.text=xaslpool(asltext)
+#define aslsave  asllval.text=xaslpool(asltext)
 
 #define atcmd(at,st) aslsave; check_minus(asllval.text); pmatch("###ATCMD\n"); BEGIN((st)); return(at)
 
@@ -68,6 +69,7 @@ SYSNAME		[a-zA-Z]+
 %s S
 %s T
 %s Y
+%x X
 
 %%
 
@@ -89,6 +91,9 @@ SYSNAME		[a-zA-Z]+
 <T>.+/\n			{ aslsave; return TEXT; }
 <T>\n				{ }
 <T><<EOF>>			{ if (!endofinput++) return EOL; else yyterminate(); }
+
+<X>([^"\n]|\\\")*\"?[ \t]*/\n   { BEGIN 0; aslsave; strip_literal(asllval.text); return LITERAL; }
+\"				{ BEGIN X; }
 
 <Y>{SYSNAME}/\n         	{ aslsave; BEGIN(Ynext); return SYSNAME; }
 <Y>{SYSNAME}/[ \t]+         	{ aslsave; BEGIN(Ynext); return SYSNAME; }
@@ -222,4 +227,19 @@ check_minus(char *t)
     }
   else
     minus_flag = 0;
+}
+
+static void
+strip_literal(char *t)
+{
+  char *e = t + strlen(t);
+  while (e > t && isspace(e[-1]))
+    --e;
+  if (e > t && e[-1] == '"')
+    e[-1] = '\0';
+  else
+    {
+      *e = '\0';
+      mesg_vwarning(curraslfile, asllineno, "[asl] missing closing \"-quote on LITERAL");
+    }
 }

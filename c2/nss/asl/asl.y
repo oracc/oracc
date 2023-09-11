@@ -20,6 +20,7 @@ extern int gdl_unicode;
 ASLLTYPE asllloc;
 
 int asl_raw_tokens = 0;
+int asl_literal_flag = 0;
 int minus_flag = 0;
  
 %}
@@ -33,7 +34,7 @@ int minus_flag = 0;
 		INOTE LIT NOTE REF TEXT END EBAD EFORM ESIGN
 		UAGE USEQ UTF8 UMAP UNAME UNOTE UPUA
 		SIGNLIST LISTDEF LISTNAME LREF SREF
-		SYSDEF SYSNAME SYS SMAP
+		SYSDEF SYSNAME SYS SMAP LITERAL
 
 %nterm  <text>  anynote atftoken atftokens lang longtext token
 
@@ -175,11 +176,12 @@ token:
 	  GNAME
 	| GVALUE
 	| LISTNUM
+	| LITERAL		{ asl_literal_flag = 1; }
 	;
 
 /* Possibly add EGROUP ELETTER ESECTION here; note: EFORM no longer used; on ESIGN we should NULL out sl->curr_sign/form/inst */
 atend:
-	  END ESIGN	    { asl_bld_end_sign(&@1, curr_asl); }
+	  END ESIGN	    	{ asl_bld_end_sign(&@1, curr_asl); }
 	| END EBAD
 	;
 
