@@ -4,7 +4,7 @@
         xmlns:esp="http://oracc.org/ns/esp/1.0"
 	xmlns="http://www.w3.org/1999/xhtml"
 >
-  <param:title>Oracc Global Sign List</param:title><!-- used at head of page and in citations -->
+  <param:title>@@PROJECT@@ Sign List</param:title><!-- used at head of page and in citations -->
   <param:publisher>The @@PROJECT@@ Project</param:publisher><!-- used in citations -->
   <param:host>http://build-oracc.museum.upenn.edu</param:host>
   <param:root>/@@project@@/signlist</param:root>

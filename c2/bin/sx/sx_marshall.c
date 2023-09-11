@@ -390,8 +390,9 @@ sx_marshall(struct sl_signlist *sl)
 		}
 	      if (!sl->signs[i]->oid)
 		{
+		  /* Signs that use @smap still need an OID for the parent sign */
 		  if (sl->signs[i]->inst->valid && sl->signs[i]->type != sx_tle_lref
-		      && sl->signs[i]->type != sx_tle_sref && !sl->signs[i]->smap)
+		      && sl->signs[i]->type != sx_tle_sref /*&& !sl->signs[i]->smap*/)
 		    {
 		      mesg_verr(&sl->signs[i]->inst->mloc, "OID needed for SIGN %s", sl->signs[i]->name);
 		      hash_add(oid_warned, sl->signs[i]->name, "");

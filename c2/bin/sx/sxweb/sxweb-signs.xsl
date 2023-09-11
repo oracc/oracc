@@ -37,9 +37,11 @@
       <esp:title>
 	<xsl:value-of select="$nn"/>
 	<xsl:if test="/*/@project='pcsl'">
-	  <xsl:text>: </xsl:text>
-	  <xsl:value-of select=".//sl:uname[1]"/>
-	  <xsl:value-of select="concat(' [',@xml:id,']')"/>
+	  <xsl:if test="not(sl:smap)">
+	    <xsl:text>: </xsl:text>
+	    <xsl:value-of select=".//sl:uname[1]"/>
+	    <xsl:value-of select="concat(' [',@xml:id,']')"/>
+	  </xsl:if>
 	</xsl:if>
       </esp:title>
       <esp:url><xsl:value-of select="@xml:id"/></esp:url>
@@ -103,7 +105,9 @@
 	</xsl:for-each>
       </p>
       <xsl:if test="/*/@project = 'pcsl'">
-	<esp:image file="../../../pctc/images/{@xml:id}.jpg" description="image of {sl:name[1]}"/>
+	<xsl:if test="not(sl:smap)">
+	  <esp:image file="../../../pctc/images/{@xml:id}.jpg" description="image of {sl:name[1]}"/>
+	</xsl:if>
       </xsl:if>
       <xsl:if test="sl:list">
 	<p>
@@ -168,7 +172,9 @@
     </xsl:if>
     <xsl:if test="sl:form">      
       <div class="{$project}-signforms">
-	<h2 class="sl-signforms">Variant sign-forms</h2>
+	<xsl:if test="not(/*/@project = 'pcsl')">
+	  <h2 class="sl-signforms">Variant sign-forms</h2>
+	</xsl:if>
 	<xsl:apply-templates select="sl:form"/>
       </div>
     </xsl:if>
@@ -201,7 +207,7 @@
   ></tr>
 </xsl:template>
 
-<xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note|sl:qs|sl:inherited|sl:uage|sl:sys"/>
+<xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note|sl:qs|sl:inherited|sl:uage|sl:sys|sl:smap"/>
 
 <xsl:template match="sl:sysdef"/>
 
@@ -210,7 +216,7 @@
 </xsl:template>
 
 <xsl:template mode="rest" match="*">
-  <xsl:message>tag <xsl:value-of select="local-name(.)"/> not handled</xsl:message>
+  <xsl:message>sxweb-signs.xsl: tag <xsl:value-of select="local-name(.)"/> not handled</xsl:message>
 </xsl:template>
 
 <xsl:template name="unicode-info">
