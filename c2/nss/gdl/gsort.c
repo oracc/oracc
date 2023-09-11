@@ -94,8 +94,8 @@ gsort_show(GS_head *gsp)
       for (i = 0; i < gsp->n; ++i)
 	{
 	  GS_item *gip = gsp->i[i];
-	  fprintf(stderr, "{%s; %s; %s; %d; %d}",
-		  gip->g, gip->b, gsort_show_key(gip->k), gip->x, gip->r);
+	  fprintf(stderr, "{%s; %s; %s; %s; %d; %d}",
+		  gip->g, gip->b, gsort_show_key(gip->k), gip->m, gip->x, gip->r);
 	}
       fputc('\n', stderr);
     }
@@ -139,9 +139,13 @@ gsort_cmp_item(GS_item *a, GS_item *b)
   /* compare grapheme base via the key */
   if ((ret = strcmp((ccp)a->k, (ccp)b->k)))
     return ret;
-
+  
   /* compare index */
-  return a->x - b->x;
+  if (a->x - b->x)
+    return a->x - b->x;
+
+  /* final check is mods */
+  return strcmp((ccp)a->m, (ccp)b->m);
 }
 
 int
@@ -163,16 +167,28 @@ static GS_item *
 gsort_item(unsigned const char *n, unsigned const char *g, unsigned const char *r)
 {
   GS_item *gp = NULL;
+  unsigned char *tmp;
 
   if ((gp = hash_find(hitems, n)))
     return gp;
 
   gp = memo_new(m_items);
-
   gp->g = n;
-  gp->b = pool_copy(g_base_of(g), gspool);
-  gp->k = collate_makekey(pool_copy(gp->b, gspool));
+  tmp = pool_copy(g_base_of(g), gspool);
+  gp->b = tmp;
   gp->x = g_index_of(g, gp->b);
+
+  if ((tmp = (ucp)strpbrk((ccp)gp->b, "~@")))
+    {
+      *tmp++ = '\0';
+      gp->m = tmp;
+    }
+  else
+    gp->m = (ucp)"";
+
+  gp->k = collate_makekey(pool_copy(gp->b, gspool));
+
+
   if (r)
     {
       if ('n' == *r)

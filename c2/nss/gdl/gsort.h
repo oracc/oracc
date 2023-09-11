@@ -5,7 +5,8 @@ struct GS_item
 {
   unsigned const char *g;	/* item grapheme */
   unsigned const char *b;	/* grapheme base */
-  unsigned const char *k;	/* grapheme key via lib/collate */
+  unsigned const char *k;	/* grapheme key via lib/collate; this is stripped of mods */
+  unsigned const char *m; 	/* mods for grapheme, "" if none */
   short x;			/* grapheme index */
   short r;			/* repeater for number graphemes, e.g., 3(diš) */
 };
