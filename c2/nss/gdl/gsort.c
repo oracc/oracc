@@ -17,7 +17,7 @@ static Pool *gspool = NULL;
 static Hash *hitems = NULL;
 static Hash *hheads = NULL;
 
-static GS_item gsort_null_item = { (uccp)"\\0" , (uccp)"", (uccp)"", 0, -1 };
+static GS_item gsort_null_item = { (uccp)"\\0" , (uccp)"", (uccp)"", (uccp)"", 0, -1 };
 
 void
 gsort_init()
@@ -187,7 +187,6 @@ gsort_item(unsigned const char *n, unsigned const char *g, unsigned const char *
     gp->m = (ucp)"";
 
   gp->k = collate_makekey(pool_copy(gp->b, gspool));
-
 
   if (r)
     {
