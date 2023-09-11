@@ -14,7 +14,7 @@ Oide *
 oid_load_edits(const char *file)
 {
   Oide *e = calloc(1, sizeof(Oide));
-  e->r = roco_load(file);
+  e->r = roco_load(file, 0, NULL, NULL, NULL);
   return e;
 }
 

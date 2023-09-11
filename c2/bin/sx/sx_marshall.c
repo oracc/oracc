@@ -352,7 +352,7 @@ sx_marshall(struct sl_signlist *sl)
   for (i = 0; i < nkeys; ++i)
     {
       struct sl_token *tp = hash_find(sl->htoken, (ucp)keys[i]);
-      tp->s = i;
+      tp->s = i+1;
       if (sx_show_tokens)
 	{
 	  fprintf(stderr, "%d\t", tp->s);

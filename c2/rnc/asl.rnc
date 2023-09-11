@@ -15,62 +15,101 @@ start =
       element sl:signs {
         attribute name { text },
         attribute title { text },
-        element sl:sign {
-          attribute deprecated { xsd:integer }?,
-          attribute n { text },
-	  attribute sort { text }, 
-          attribute xml:id { xsd:NCName }?,
-	  sl.smap?,
-          sl.name?,
-          (sl.inote
-           | sl.list
-           | sl.lit
-           | sl.note
-           | sl.pname
-           | sl.uname
-           | sl.uage
-           | sl.ucun
-           | element sl:unote { text })*,
-          sl.v*,
-          sl.sys*,
-          element sl:form {
-            attribute n { text },
-            attribute ref { xsd:NCName }?,
-            attribute sort { text }, 
-            attribute xml:id { xsd:NCName }?,
-            sl.name?,
-            (sl.proof
-             | (sl.inote
-                | sl.list
-                | sl.lit
-                | sl.note
-                | sl.pname
-		| sl.sys
-                | sl.uname
-                | sl.uage
-                | sl.ucun)*),
-            sl.v*,
-            sl.sys*,
-            element sl:inherited {
-              element sl:iv {
-                attribute sort { text }, 
-                attribute n { text }
-              }+
-            }?
-          }*,
-          element sl:qs {
-            element sl:q {
-              attribute base { text }?,
-              attribute o { xsd:NCName },
-              attribute p { xsd:NCName }?,
-              attribute qm { text }?,
-              attribute qv { text },
-              attribute type { xsd:NCName }?
-            }+
-          }?
-        }*
+	sl.tle*
       }*
     }*
+  }
+
+# Top-level-elements (i.e., top-level below grouping constructs)
+sl.tle     = (sl.compoundonly | sl.formproxy | sl.lref | sl.sign | sl.sref)
+
+sl.compoundonly =
+  element sl:compoundonly {
+    attribute n { text },
+    attribute sort { text }, 
+    attribute xml:id { xsd:NCName }?,
+    attribute cpd-refs { xsd:IDREFS }?,
+    sl.name?
+    }
+
+sl.formproxy =
+  element sl:formproxy {
+    attribute n { text },
+    attribute sort { text }, 
+    attribute xml:id { xsd:NCName }?,
+    sl.name?
+  }
+
+sl.lref =
+  element sl:lref {
+    attribute n { text },
+    attribute sort { text }, 
+    attribute xml:id { xsd:NCName }?,
+    sl.name?
+  }
+
+sl.sref =
+  element sl:sref {
+    attribute n { text },
+    attribute sort { text }, 
+    attribute xml:id { xsd:NCName }?,
+    sl.name?
+  }
+
+sl.sign    =
+  element sl:sign {
+    attribute deprecated { xsd:integer }?,
+    attribute n { text },
+	  attribute sort { text }, 
+    attribute xml:id { xsd:NCName }?,
+	  sl.smap?,
+    sl.name?,
+    (sl.inote
+     | sl.list
+     | sl.lit
+     | sl.note
+     | sl.pname
+     | sl.uname
+     | sl.uage
+     | sl.ucun
+     | element sl:unote { text })*,
+    sl.v*,
+    sl.sys*,
+    element sl:form {
+      attribute n { text },
+      attribute ref { xsd:NCName }?,
+      attribute sort { text }, 
+      attribute xml:id { xsd:NCName }?,
+      sl.name?,
+      (sl.proof
+       | (sl.inote
+          | sl.list
+          | sl.lit
+          | sl.note
+          | sl.pname
+		| sl.sys
+          | sl.uname
+          | sl.uage
+          | sl.ucun)*),
+      sl.v*,
+      sl.sys*,
+      element sl:inherited {
+        element sl:iv {
+          attribute sort { text }, 
+          attribute n { text }
+        }+
+      }?
+    }*,
+    element sl:qs {
+      element sl:q {
+        attribute base { text }?,
+        attribute o { xsd:NCName },
+        attribute p { xsd:NCName }?,
+        attribute qm { text }?,
+        attribute qv { text },
+        attribute type { xsd:NCName }?
+      }+
+    }?
   }
 
 sl.notes   = (sl.inote | sl.lit | sl.note)*

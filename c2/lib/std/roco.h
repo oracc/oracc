@@ -23,8 +23,9 @@ struct roco
 
 typedef struct roco Roco;
 
-extern Roco *roco_load(const char *file, int fieldsr1,
-		       const char *xtag, const char *rtag, const char *ctag);
+/* Keep this on one line so GCC errors show the whole prototype
+ */
+extern Roco *roco_load(const char *file, int fieldsr1, const char *xtag, const char *rtag, const char *ctag);
 extern void roco_write(FILE *fp, Roco *r);
 extern void roco_write_trtd(FILE *fp, Roco *r);
 extern void roco_write_xml(FILE *fp, Roco *r);

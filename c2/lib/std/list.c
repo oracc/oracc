@@ -47,7 +47,7 @@ list_join(List *l, const char *j)
 }
 
 void
-list_add (List *lp, void *data)
+list_add (List *lp, const void *data)
 {
   List_node *tmp = malloc (sizeof (List_node));
   if (!tmp)

@@ -1,3 +1,4 @@
+#include <list.h>
 #include <xml.h>
 #include <ns-asl.h>
 #include <rnvif.h>
@@ -330,40 +331,111 @@ sx_w_x_qvs(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *vi, e
     }
 }
 
+static const char *
+x_tle_tag(enum sx_tle t)
+{
+  switch (t)
+    {
+    case sx_tle_componly:
+      return "sl:compoundonly";
+    case sx_tle_formproxy:
+      return "sl:formproxy";
+    case sx_tle_lref:
+      return "sl:lref";
+    case sx_tle_sign:
+      return "sl:sign";
+    case sx_tle_sref:
+      return "sl:sref";
+    default:
+      return NULL;
+    }
+}
+
+static struct rnvval_atts *
+x_tle_atts(struct sl_signlist *sl, struct sl_inst *s)
+{
+  List *a = list_create(LIST_SINGLE);
+  const char **atts = NULL;
+  static char scode[32];
+  struct rnvval_atts *ratts = NULL;
+
+  list_add(a, "n");
+  list_add(a, s->u.s->name);
+  
+  if (s->u.s->oid)
+    {
+      list_add(a, "xml:id");
+      list_add(a, s->u.s->oid);
+    }
+
+  if (s->u.s->sort > 0)
+    (void)sprintf(scode, "%d", s->u.s->sort);
+  if (*scode)
+    {
+      list_add(a, "sort");
+      list_add(a, scode);
+    }
+
+  if (s->u.s->type == sx_tle_componly)
+    {
+      struct sl_compound_digest *cdp =  hash_find(s->u.s->hcompounds, (uccp)"#digest_by_oid");
+      if (cdp)
+	{
+	  unsigned char *oids;
+	  int len = 0;
+	  int i;
+	  for (i = 0; cdp->memb[i]; ++i)
+	    ;
+	  len = (i * (strlen("o1234567"+1)))+1;
+	  oids = pool_alloc(len, sl->p);
+	  *oids = '\0';
+	  for (i = 0; cdp->memb[i]; ++i)
+	    {
+	      strcat((char*)oids, cdp->memb[i]);
+	      strcat((char*)oids, " ");
+	    }
+	  oids[strlen((ccp)oids)-1] = '\0';
+	  /*fprintf(stderr, "%s:#digest_by_oid=%s\n", s->u.s->name, oids);*/
+	  list_add(a, "cpd-refs");
+	  list_add(a, oids);
+	}
+      else
+	fprintf(stderr, "%s:#digest_by_oid=%s\n", s->u.s->name, "[not found]");
+    }
+  atts = list2chars(a);
+  ratts = rnvval_aa_qatts((char**)atts, list_len(a)/2);
+  list_free(a, NULL);
+  return ratts;
+}
+
 /** Because this is called when walking groups->signs \c sl_inst*s here can be a sign or form inst
  */
 static void
 sx_w_x_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, enum sx_pos_e p)
 {
-  static int in_sign = 0;
+  static const char *in_sign = sx_tle_none;
 
   if (p == sx_pos_inst)
     {
       if (in_sign)
 	{
-	  rnvxml_ee("sl:sign");
-	  in_sign = 0;
+	  rnvxml_ee(in_sign);
+	  in_sign = NULL;
 	}
 
       xo_loc->file = s->mloc.file; xo_loc->line = s->mloc.line;
   
       if (s->type == 's')
 	{
-	  char scode[32];
 	  struct sl_token *tp = NULL;
-	  (void)sprintf(scode, "%d", s->u.s->sort);
 	  tp = hash_find(sl->htoken, s->u.s->name);
-	  if (s->u.s->oid)
-	    ratts = rnvval_aa("x", "n", s->u.s->name, "xml:id", s->u.s->oid, "sort", scode, NULL);
-	  else
-	    ratts = rnvval_aa("x", "n", s->u.s->name, "sort", scode, NULL);
-	  rnvxml_ea("sl:sign", ratts);
+	  ratts = x_tle_atts(sl, s);
+	  rnvxml_ea((in_sign = x_tle_tag(s->u.s->type)), ratts);	  
 	  if (s->u.s->smap)
 	    {
 	      ratts = rnvval_aa("x", "oid", s->u.s->smoid, NULL);
 	      rnvxml_et("sl:smap", ratts, s->u.s->smap);
 	    }
-	  in_sign = 1;
 	  if (tp && tp->gdl)
 	    {
 	      rnvxml_ea("sl:name", NULL);
@@ -382,9 +454,11 @@ sx_w_x_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
   else if (p == sx_pos_term)
     {
       if (in_sign)
-	rnvxml_ee("sl:sign");
-      in_sign = 0;
-    }  
+	{
+	  rnvxml_ee(in_sign);
+	  in_sign = NULL;
+	}
+    }
 }
 
 static void

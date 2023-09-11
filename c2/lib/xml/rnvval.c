@@ -92,18 +92,26 @@ rnvval_free_atts(struct rnvval_atts *ratts)
 /* Attributes are passed to rnv validation in an rnvval_atts
    structure.  This routine creates an rnvval_atts structure from a
    lengthed list of char * where even numbered (from 0) are names and
-   odd numbered are values */
+   odd numbered are values.
+
+   natts should be the number of attributes, not the number of char *
+   in atts.
+ */
 struct rnvval_atts *
 rnvval_aa_qatts(char **atts, int natts)
 {
   int i;
-  char **qatts = malloc((2*natts) * sizeof(char*));
+  char **qatts = malloc((1+(2*natts)) * sizeof(char*));
   struct rnvval_atts *ratts = malloc(sizeof(struct rnvval_atts));
+  pool_reset(rnv_pool);
+
   for (i = 0; i < natts; ++i)
     {
-      qatts[i*2] = hash_find(rnv_qanames, (ucp)atts[i*2]);
+      /* must copy rnv_qanames because they are in const storage */
+      qatts[i*2] = (char*)pool_copy(hash_find(rnv_qanames, (ucp)atts[i*2]), rnv_pool);
       qatts[1+(i*2)] = atts[1+(i*2)];
     }
+  qatts[i*2] = NULL;
   ratts->atts = (const char **)atts;
   ratts->qatts = (const char **)qatts;
   return ratts;

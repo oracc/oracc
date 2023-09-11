@@ -125,7 +125,10 @@ gsort_cmp_item(GS_item *a, GS_item *b)
 	    return -1;
 	  
 	  /* compare index */
-	  return a->x - b->x;
+	  if (a->x - b->x)
+	    return a->x - b->x;
+
+	  return strcmp((ccp)a->m, (ccp)b->m);
 	}
       else
 	{

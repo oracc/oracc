@@ -135,7 +135,7 @@ atlref:
 	;
 
 atsref:
-	SREF atftoken GOESTO atftokens { asl_bld_tle(&@1, curr_asl, (uccp)$2, (uccp)$3, sx_tle_sref); }
+	SREF atftoken GOESTO atftokens { asl_bld_tle(&@1, curr_asl, (uccp)$2, (uccp)longtext(NULL,NULL,NULL), sx_tle_sref); }
 	;
 
 atform:

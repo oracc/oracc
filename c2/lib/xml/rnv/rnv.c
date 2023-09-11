@@ -57,7 +57,9 @@ static void windup(void) {
 static char *qname_open(char **surip,char **snamep,char *name) {
   char *sep;
   if((sep=strrchr(name,':'))) {
-    *snamep=sep+1; *surip=name; *sep='\0';
+    *snamep=sep+1;
+    *surip=name;
+    *sep='\0';
   } else {
     *snamep=name; while(*name) ++name; *surip=name;
   }
