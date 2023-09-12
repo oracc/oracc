@@ -36,6 +36,7 @@ int gsort_mode = 0;
 int identity_mode = 0;
 int ns_output = 0;
 int pedantic = 0;
+const char *project = "ogsl"; /* use the signlist found in this project */
 int rnv_xml = 0;
 int signatures = 0;
 int trace_mode = 0;
@@ -164,7 +165,7 @@ main(int argc, char **argv)
 {
   gdl_flex_debug = gdldebug = 0;
   gdl_unicode = 1;
-  options(argc, argv, "bcdef:gilnoprstvw");
+  options(argc, argv, "bcdef:gilnop:Prstvw");
 
   gdl_flex_debug = gdldebug = trace_mode;
 
@@ -179,7 +180,7 @@ main(int argc, char **argv)
     }
   else
     gdlxml_setup();
-  gvl_setup("ogsl", "ogsl");
+  gvl_setup(project, project);
   gdlparse_init();
 
   if (gsort_mode)
@@ -251,6 +252,9 @@ opts(int opt, char *arg)
       gdl_orig_mode = 1;
       break;
     case 'p':
+      project = arg;
+      break;
+    case 'P':
       gvl_strict = pedantic = 1;
       break;
     case 'r':

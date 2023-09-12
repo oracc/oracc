@@ -24,8 +24,8 @@ for a in 01bld/*/*.g2x ; do
 	if [[ $lang == qpn-* ]]; then
 	    echo Skipping $lang--slice from main qpn glo instead
 	else
-	    echo Creating json for $lang glossary
-	    cbd-json.plx ${project}:$lang >01bld/json/gloss-$lang.json
+	    echo Creating json for $project:$lang glossary
+	    cbd-json.plx $project:$lang >01bld/json/gloss-$lang.json
 	    mangletab=02pub/cbd/$lang/mangle.tab
 	    dbi=02pub/cbd/$lang/cbd.dbi
 	    if [ -r $dbi ]; then

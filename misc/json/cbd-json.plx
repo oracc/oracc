@@ -11,7 +11,7 @@ my $projcbd = shift @ARGV;
 my ($project,$lang) = split(/:/, $projcbd);
 
 die "cbd-json.plx: must give PROJECT:LANG on command line. Stop\n"
-    unless $project && $lang && length($lang)==3;
+    unless $project && $lang;
 
 #my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/$lang.xml";
 my $cbd_ns = "$ENV{'ORACC'}/bld/$project/$lang/articles-with-periods.xml";

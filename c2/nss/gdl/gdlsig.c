@@ -70,8 +70,11 @@ gdlsig_oidnode(Node *np)
 	case 'c':
 	  return np;
 	  break;
-	case 'q':
 	case 'n':
+	  if (np->user && ((gvl_g*)np->user)->oid)
+	    return np;
+	  /* FALL THROUGH TO QUALIFIER PROCESSING */
+	case 'q':
 	  return np->kids ? np->kids->next : NULL;
 	  break;
 	default:
