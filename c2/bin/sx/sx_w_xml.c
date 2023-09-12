@@ -360,7 +360,7 @@ x_tle_atts(struct sl_signlist *sl, struct sl_inst *s)
   struct rnvval_atts *ratts = NULL;
 
   list_add(a, "n");
-  list_add(a, s->u.s->name);
+  list_add(a, xmlify(s->u.s->name));
   
   if (s->u.s->oid)
     {
