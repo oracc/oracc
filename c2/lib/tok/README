@@ -1,0 +1,28 @@
+TOKEN LISTS
+
+C2 indexing is built around token lists--a token list is a table of WID\tOID\tADD (.woa)
+
+WID is WORD-ID -- from the XTF file
+
+OID is Oracc ID -- from oid.tab
+
+ADD is ADDitional data, e.g., the full signature of a word instance
+
+PRIMARY INDEXING
+
+Primary indexing is done on everything with an OID:
+
+	words senses signs values
+
+(values do not yet have OIDs but they will)
+
+The new ax will generate token lists natively; with ox(x) we will use
+some built-in support and some expat-based programs to create
+WID\tDOM\tKEY\t lists (.wdk). The OID resolver will turn .dko into
+.woa.
+
+To manage PCSL vs OGSL we could define pc as an alias for sl in the
+DOM field, understanding that for sl we load ogsl and for pc we load
+pcsl; these are not yet split in the OID tab but they should be one
+day.
+
