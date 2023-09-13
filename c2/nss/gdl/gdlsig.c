@@ -65,9 +65,11 @@ gdlsig_oidnode(Node *np)
     {
       switch (np->name[2])
 	{
-	case 'v':
-	case 's':
 	case 'c':
+	case 'l':
+	case 'p':
+	case 's':
+	case 'v':
 	  return np;
 	  break;
 	case 'n':

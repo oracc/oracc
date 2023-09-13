@@ -43,16 +43,23 @@ gvl_n(Node *ynp)
       else
 	{
 	  const unsigned char *lg = utf_lcase(p);
-	  if ((l = gvl_lookup(lg)))
+	  if ((l = gvl_lookup(p)) || (l = gvl_lookup(lg)))
 	    {
 	      nq->oid = (ccp)l;
 	      nq->sign = gvl_lookup(sll_tmp_key(l,""));
 	    }
 	  else if ('n' == *lg)
 	    {
-	      char *oneify = strdup((ccp)lg);
+	      char *oneify = strdup((ccp)p);
 	      *oneify = '1';
-	      if ((l = gvl_lookup((uccp)oneify)))
+	      if (!(l = gvl_lookup((uccp)oneify)))
+		{
+		  free(oneify);
+		  oneify = strdup((ccp)l);
+		  *oneify = '1';
+		  l = gvl_lookup((uccp)oneify);
+		}
+	      if (l)
 		{
 		  nq->oid = (ccp)l;
 		  nq->sign = gvl_lookup(sll_tmp_key(l,""));
