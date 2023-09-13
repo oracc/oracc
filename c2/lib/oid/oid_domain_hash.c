@@ -2,7 +2,7 @@
 #include <hash.h>
 #include <oid.h>
 
-extern int verbose;
+extern int oo_verbose;
 
 Hash *
 oid_domain_hash(Oids *o, const char *otab, const char *domain)
@@ -43,8 +43,8 @@ oid_domain_hash(Oids *o, const char *otab, const char *domain)
 			  else
 			    ++e;
 			}
-		      if (verbose > 1)
-			fprintf(stderr, "oid_load adding %s <=> %s\n", s, k);
+		      if (oo_verbose > 1)
+			fprintf(stderr, "oid_domain_hash adding %s <=> %s\n", s, k);
 		      hash_add(h, s, k);
 		      hash_add(h, k, s);
 		      s = e;

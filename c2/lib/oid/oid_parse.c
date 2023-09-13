@@ -7,6 +7,8 @@
 #define ccp 	const char *
 #define uccp 	const unsigned char *
 
+extern int oo_verbose;
+
 static unsigned char *
 nextfield(unsigned char *s)
 {
@@ -69,7 +71,12 @@ oid_parse(Oids *o, enum oid_tab_t t)
 	      else
 		{
 		  if (t != ot_keys && 'o' != *o->oo[i]->key && 'x' != *o->oo[i]->key &&strcmp((ccp)o->oo[i]->key, "deleted"))
-		    hash_add(o->h, (uccp)strdup(dk), o->oo[i]);
+		    {
+		      if (oo_verbose > 1)
+			fprintf(stderr, "oid_parse adding %s <=> %s\n", dk, o->oo[i]->id);
+			
+		      hash_add(o->h, (uccp)strdup(dk), o->oo[i]);
+		    }
 		}
 
 	      if (s)

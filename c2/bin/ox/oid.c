@@ -12,12 +12,15 @@ const char *oo_keyfile = NULL;
 int oo_nowrite = 0;
 const char *oo_oidfile = NULL;
 const char *oo_outfile = NULL;
+int oo_tsv_mode = 0;
 const char *oo_project = NULL;
 int oo_verbose = 0;
 int oo_wants = 0;
 extern int oo_xids;
 
 FILE *oo_out_fp = NULL;
+
+char tbuf[16384];
 
 int
 main(int argc, char * const*argv)
@@ -27,7 +30,7 @@ main(int argc, char * const*argv)
 
   mesg_init();
 
-  options(argc, argv, "acd:e:ik:no:p:t:vwx");
+  options(argc, argv, "acd:e:f:ik:no:p:tvwx");
 
   if (oo_outfile)
     {
@@ -144,6 +147,38 @@ main(int argc, char * const*argv)
 		oid_write(oo_out_fp, o);
 	    }
 	}
+      else if (oo_tsv_mode)
+	{
+	  char *l;
+	  
+	  while ((l = fgets(tbuf, 16384, stdin)))
+	    {
+	      if ('\n' == l[strlen(l)-1])
+		{
+		  char tab = '\0';
+		  char *t = l;
+		  struct oid *op;
+		  while (*t && '\t' != *t)
+		    ++t;
+		  if (t)
+		    {
+		      tab = '\t';
+		      *t = '\0';
+		    }
+		  if ((op = hash_find(o->h, (uccp)oid_domainify(oo_domain, l))))
+		    fputs(op->id, stdout);
+		  else
+		    fprintf(stderr, "oid: key %s not found in domain %s\n", l, oo_domain);
+		  if (tab)
+		    *t = tab;
+		  fputc('\t', stdout);
+		}
+	      else
+		fprintf(stderr, "overlong line\n");
+	      fputs(l, stdout);
+	    }
+	}
+	       
     }
 }
 
@@ -167,6 +202,9 @@ opts(int opt, char *arg)
     case 'i':
       oo_identity = 1; /* replaces -dump in oid.plx */
       break;
+    case 'f':
+      oo_outfile = arg; /* replaces -output in oid.plx (f-for-file) */
+      break;
     case 'k':
       oo_keyfile = arg;
       break;
@@ -179,10 +217,10 @@ opts(int opt, char *arg)
       oo_project = arg;
       break;
     case 't':
-      oo_outfile = arg; /* replaces -output in oid.plx (to-file) */
+      oo_tsv_mode = 1; /* read tsv and prepend an OID column */
       break;
     case 'v':
-      oo_verbose = 1;
+      ++oo_verbose;
       break;
     case 'w':
       oo_wants = 1;
