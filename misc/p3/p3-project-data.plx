@@ -199,6 +199,7 @@ foreach my $tl (@translangs) {
 	$selected = " selected=\"selected\"";
     }
     if ($longlang{$tl}) {
+	warn "p3-project-data: adding longlang $tl as $longlang{$tl}\n";
 	print T "<option value=\"$tl\"$selected>$longlang{$tl}</option>";
     } else {
 	warn "p3-project-data.plx: no longlang for $tl\n";
