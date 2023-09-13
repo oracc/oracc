@@ -258,6 +258,8 @@ typedef struct tnode
    Oracc */
 int xml_output = 0;
 
+int sepchar = ' ';
+
 #if (MicrosoftC | MetawareC | LattVer3 | defined(linux))
 int main (int, char *[]);
 char *allocate (unsigned int);
@@ -787,8 +789,10 @@ getargs (argc, argv)		/* get arguments */
 		do_silent_running = 1;
 		break;
 	      case 'T':
-	      case 't':
 		do_TeX = 1;
+		break;
+	      case 't':
+		sepchar = '\t';
 		break;
 	      case 'x':
 		xml_output = 1;
@@ -1291,16 +1295,29 @@ treeout (wp)			/* output a tree element */
   Uchar numbuf[NUMSIZE], *nb;
   int linelen, numlen;
   LNUMPTR temp;
+  int suppress_one_space = 0;
 
   if (Dofreq)
     {
       if (xml_output)
 	fprintf(Outfile, "<e><w n=\"%u\">%s</w>", wp->count, xmlify(wp->word));
+      else if (sepchar == '\t')
+	{
+	  sprintf ((char *) Linebuf, "%s\t%u\t", wp->word, wp->count);
+	  suppress_one_space = 1;
+	}
       else
 	sprintf ((char *) Linebuf, "%s (%u)", wp->word, wp->count);
     }
   else
-    strcpy ((char *) Linebuf, (char *) wp->word);
+    {
+      strcpy ((char *) Linebuf, (char *) wp->word);
+      if (sepchar == '\t')
+	{
+	  strcat((char *) Linebuf, "\t");
+	  suppress_one_space = 1;
+	}
+    }
 #ifdef Oracc
   if (do_TeX)
     {
@@ -1345,7 +1362,10 @@ treeout (wp)			/* output a tree element */
 	    fprintf (Outfile, "<l>%s</l>", xmlify(nb));
 	  else
 	    {
-	      strcat ((char *) Linebuf, " ");
+	      if (suppress_one_space)
+		suppress_one_space = 0;
+	      else
+		strcat ((char *) Linebuf, " ");
 	      strcat ((char *) Linebuf, (char *) nb);
 	      linelen += numlen + 1;
 	    }
