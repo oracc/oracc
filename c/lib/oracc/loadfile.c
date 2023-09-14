@@ -127,6 +127,7 @@ loadstdin(size_t *nbytes)
 	}
       buf[n_read++] = ch;
     }
+  buf[n_read] = '\0';
   *nbytes = n_read;
   return buf;
 }

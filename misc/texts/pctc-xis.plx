@@ -24,8 +24,8 @@ while (<>) {
     my $inl = $i; $inl =~ tr/ /\n/;
     open(I,">$d/i.lst"); print I $inl; close I;
     my @x = `$obin/pg2 -s period -t -n 0 -P 1000000 <$d/i.lst`;
-    warn "$o $f\n";
-    warn @x;
+#    warn "$o $f\n";
+#    warn @x;
     my @stat = (0,0,0);
     foreach (@x) {
 	my ($p,$i) = split(/\t/, $_); $i =~ s/\s*$//;
