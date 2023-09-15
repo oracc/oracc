@@ -107,6 +107,7 @@
       <xsl:if test="/*/@project = 'pcsl'">
 	<xsl:if test="not(sl:smap)">
 	  <esp:image file="../../../pctc/images/{@xml:id}.jpg" description="image of {sl:name[1]}"/>
+	  <iframe src="/pctc/inst/{@xml:id}.html"/>
 	</xsl:if>
       </xsl:if>
       <xsl:if test="sl:list">

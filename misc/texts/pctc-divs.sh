@@ -2,7 +2,7 @@
 cd 01tmp/xis
 for a in o* ; do
     (cd $a ;
-     for t in *.tis ; do
+     for t in *_*.tis ; do
 	 d=`basename $t tis`div
 	 echo processing $t in $a with output to $d
 	 wm -l -p pctc <$t | ce_xtf -3 -p pctc -l | xis-xml-html.sh pctc >$d
