@@ -26,6 +26,8 @@
 <xsl:param name="snippets" select="'/Users/stinney/orc/emss/00etc/snippets.xml'"/>
 <xsl:param name="snippetdir" select="'/emss/snippets'"/>
 
+<xsl:key name="counts" match="r" use="o"/>
+
 <xsl:template match="sl:sign">
 <!--  <xsl:if test="$with-stats='yes'"><xsl:message>with-stats=yes</xsl:message></xsl:if> -->
   <ex:document href="{concat('signlist/00web/',@xml:id,'.xml')}"
@@ -109,7 +111,31 @@
 	  <table>
 	    <tr>
 	      <td width="30%" valign="top"><esp:image file="../../../pctc/images/{@xml:id}.jpg" description="image of {sl:name[1]}"/></td>
-	      <td width="70%"><iframe width="600" height="600" src="/pctc/inst/{@xml:id}.html"/></td>
+	      <td width="70%">
+		<xsl:variable name="o" select="@xml:id"/>
+		<xsl:for-each select="document('sl-corpus-counts.xml',/)">
+		  <xsl:variable name="c" select="key('counts', $o)"/>
+		  <xsl:message>c/o = <xsl:value-of select="$c/o"/></xsl:message>
+		  <xsl:choose>
+		    <xsl:when test="$c/t='0'">
+		      <p>(No attestations in corpus)</p>
+		    </xsl:when>
+		    <xsl:otherwise>
+		      <xsl:variable name="height">
+			<xsl:choose>
+			  <xsl:when test="$c/i &gt; 5">
+			    <xsl:value-of select="500"/>
+			  </xsl:when>
+			  <xsl:otherwise>
+			    <xsl:value-of select="300"/>
+			  </xsl:otherwise>
+			</xsl:choose>
+		      </xsl:variable>
+		      <iframe width="600" height="{$height}" src="/pctc/inst/{$o}.html"/>
+		    </xsl:otherwise>
+		  </xsl:choose>
+		</xsl:for-each>
+	      </td>
 	    </tr>
 	  </table>
 	</xsl:if>

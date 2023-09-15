@@ -121,6 +121,8 @@ struct oid_type
   const char *name;
 };
 
+extern int oo_verbose;
+
 extern Oids *oid_load(void);
 extern Oids *oid_load_keys(const char *file);
 extern Oide *oid_load_edits(const char *file);

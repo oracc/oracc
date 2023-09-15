@@ -1,2 +1,5 @@
 #!/bin/sh
-grep '	sl	' $ORACC_BUILDS/oid/oid.tab
+#
+# List all the signlist OIDs in oid.tab.
+#
+grep '	sl	' $ORACC_BUILDS/oid/oid.tab | cut -f1

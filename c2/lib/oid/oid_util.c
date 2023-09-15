@@ -5,6 +5,7 @@
 #include <oid.h>
 
 int oo_xids = 0;
+int oo_verbose = 0;
 
 /* The assignees, k, have already been checked by oid_wants so we know
    that anything without an id needs one */

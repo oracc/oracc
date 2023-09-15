@@ -51,7 +51,7 @@ if [[ "$ict" != "0" ]]; then
     fi
     
 cat >>$o <<EOF
-<h1 class="pcsl">$ict occurrence$s in PC corpus. <a href="/pctc/$oid.tis">See all instances.</a></h1>
+<h1 class="pcsl">$ict occurrence$s in PC corpus. <a href="/pctc/$oid.tis">See all instances</a></h1>
 EOF
 
 declare -a v=(V IV III)
@@ -66,7 +66,7 @@ do
 	    s="s"
 	fi
 	cat >>$o <<EOF
-<h2>${c[$i]} time$s in Uruk ${v[$i]}: <a href="/pctc/${oid}_$i.tis">see all Uruk ${v[i]} instances.</a> (up to 5 shown below).</h2>
+<h2>${c[$i]} time$s in Uruk ${v[$i]}: <a href="/pctc/${oid}_$i.tis">see all Uruk ${v[i]} instances</a> (up to 5 shown below).</h2>
 EOF
 cat "${oid}_$i.div" >>$o
     fi

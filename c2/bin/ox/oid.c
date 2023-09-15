@@ -14,7 +14,6 @@ const char *oo_oidfile = NULL;
 const char *oo_outfile = NULL;
 int oo_tsv_mode = 0;
 const char *oo_project = NULL;
-int oo_verbose = 0;
 int oo_wants = 0;
 extern int oo_xids;
 

@@ -31,3 +31,4 @@ pctc-divs.sh
      fi
  done
 )
+pctc-counts.sh
