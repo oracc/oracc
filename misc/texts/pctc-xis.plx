@@ -31,11 +31,11 @@ while (<>) {
     foreach (@x) {
 	my ($p,$i) = split(/\t/, $_); $i =~ s/\s*$//;
 	my $c = $i =~ tr/ /\n/ +1;
-	if ($c > 5) {
-	    my @i = split(/\n/, $i);
-	    $#i = 4;
-	    $i = join("\n", @i);
-	}
+	# if ($c > 5) {
+	#     my @i = split(/\n/, $i);
+	#     $#i = 4;
+	#     $i = join("\n", @i);
+	# }
 	if ($p =~ /^Uruk V/) {
 	    $stat[0] = $c;
 	    open(O,">$d/${o}_0.tis"); print O $i, "\n"; close O;

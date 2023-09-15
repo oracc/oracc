@@ -21,6 +21,13 @@ some built-in support and some expat-based programs to create
 WID\tDOM\tKEY\t lists (.wdk). The OID resolver will turn .dko into
 .woa.
 
+*** .dko and .woa should indicate restored/damaged/whole status for
+    each OID; when we want to display a subset of instances we could
+    prioritize whole/damaged/restored
+
+*** maybe something similar could support prioritizing translated
+    search results
+
 To manage PCSL vs OGSL we could define pc as an alias for sl in the
 DOM field, understanding that for sl we load ogsl and for pc we load
 pcsl; these are not yet split in the OID tab but they should be one

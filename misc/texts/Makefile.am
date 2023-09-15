@@ -14,7 +14,7 @@ bin_SCRIPTS = harvest-links.plx proj-linkbase.sh tlit-sort.sh cleanlinks.plx \
 	ngram-matches.plx ngram-html-report.plx ngram-log-err-format.plx \
 	wid2err.plx err-split.plx lex-provides-tab.plx lex-xincludes.plx \
 	gvl-ogsl-needs-uncomp.plx gvl-ogsl-needs-x.plx gvl-fix-should-be.plx \
-	pctc-signs.sh pctc-xis.plx pctc-divs.sh pctc-xis-data.sh
+	pctc-signs.sh pctc-xis.plx pctc-divs.sh pctc-xis-data.sh tmp-xis-web.sh
 
 data_DATA=pctc-xis-*.html
 

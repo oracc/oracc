@@ -20,12 +20,12 @@ if [ -r 00lib/$slname ]; then
 	echo "$0: indexing signs in PCTC"
 	pctc-signs.sh
     fi
-    if [ -r 02xml/sign-instances.xml ]; then
-	xsltproc $libscripts/sxweb-add-icounts.xsl 02xml/sl.xml >tmp.xml
-	mv tmp.xml 02xml/sl.xml
-	rm -fr 01bld/tislists
-	xsltproc $libscripts/sxweb-tis.xsl 02xml/sign-instances.xml
-    fi
+#    if [ -r 02xml/sign-instances.xml ]; then
+#	xsltproc $libscripts/sxweb-add-icounts.xsl 02xml/sl.xml >tmp.xml
+#	mv tmp.xml 02xml/sl.xml
+#	rm -fr 01bld/tislists
+#	xsltproc $libscripts/sxweb-tis.xsl 02xml/sign-instances.xml
+#   fi
     chmod -R o+r 02pub/sl 02xml/sl.xml
     sxweb.sh
 fi
