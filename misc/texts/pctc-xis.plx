@@ -24,7 +24,7 @@ while (<>) {
     system 'mkdir', '-p', $d;
     my $inl = $i; $inl =~ tr/ /\n/;
     open(I,">$t"); print I $inl; close I;
-    my @x = `$obin/pg2 -s period -t -n 0 -P 1000000 <$t`;
+    my @x = `$obin/pg2 -q -s period -t -n 0 -P 1000000 <$t`;
 #    warn "$o $f\n";
 #    warn @x;
     my @stat = (0,0,0);

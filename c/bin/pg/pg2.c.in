@@ -20,6 +20,7 @@ const char *config = NULL;
 int csi_debug = 0;
 int fragment = 0;
 int ood_mode = 0;
+int quiet = 0;
 int tis_mode = 0;
 FILE *fdbg = NULL;
 FILE *fpag = NULL;
@@ -388,6 +389,9 @@ opts(int argc, char *arg)
       project = arg;
       break;
     case 'q':
+      quiet = 1;
+      break;
+    case 'Q':
 #if 1
       /* FIXME: need to decide whether to drop the quick mode 
 	 altogether or ensure that XIS lists are correctly

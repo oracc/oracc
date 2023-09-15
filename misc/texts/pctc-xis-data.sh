@@ -44,8 +44,14 @@ sed "s/@@TITLE@@/$oid Instance/" <"$hh" >$o
 
 if [[ "$ict" != "0" ]]; then
 
+    if [[ "$ict" == "1" ]]; then
+	s=""
+    else
+	s="s"
+    fi
+    
 cat >>$o <<EOF
-<h1 class="pcsl">$oid Instance Data: count=$ict <a href="/pctc/$oid.tis">See all instances</a></h1>
+<h1 class="pcsl">$ict occurrence$s in PC corpus. <a href="/pctc/$oid.tis">See all instances.</a></h1>
 EOF
 
 declare -a v=(V IV III)
@@ -54,8 +60,13 @@ vlen=${#v[@]}
 for (( i=0; i<$vlen; ++i ));
 do
     if [[ "${c[$i]}" != "0" ]]; then
+	if [[ "${c[$i]}" == "1" ]]; then
+	    s=""
+	else
+	    s="s"
+	fi
 	cat >>$o <<EOF
-<h2>Uruk ${v[$i]}: count=${c[$i]} <a href="/pctc/${oid}_$i.tis">see all Uruk ${v[i]} instances</a></h2>
+<h2>${c[$i]} time$s in Uruk ${v[$i]}: <a href="/pctc/${oid}_$i.tis">see all Uruk ${v[i]} instances.</a> (up to 5 shown below).</h2>
 EOF
 cat "${oid}_$i.div" >>$o
     fi
@@ -63,7 +74,7 @@ done
 
 else
 
-    echo "<p>No instances attested.</p>"
+    echo "<p>Not attested in PC corpus.</p>"
 
 fi
 

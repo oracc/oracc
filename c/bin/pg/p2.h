@@ -12,6 +12,8 @@ struct p2_options
 
 #include "npool.h"
 
+extern int quiet;
+
 extern struct p2_options*p2_load(const char *project, const char *state, struct npool *pool);
 extern char *p2_maybe_append_designation(const char *s, struct npool *pool, struct p2_options *p2opts);
 
