@@ -37,7 +37,9 @@ fi
 
 if [ -d 01bld/tislists ]; then
     cp 01bld/tislists/*.tis $webdir/lists
-elif [ -d 01tmp/xis ]; then
+fi
+
+if [ -d 01tmp/xis ]; then
     tmp-xis-web.sh
 fi
 
