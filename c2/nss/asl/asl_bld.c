@@ -333,6 +333,20 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
     mesg_verr(locp, "no sign name found in GDL of %s", s->name);
 }
 
+struct sl_sign *
+asl_form_as_sign(struct sl_signlist *sl, struct sl_form *f)
+{
+  struct sl_sign *s = memo_new(sl->m_signs);
+  struct sl_inst *ip = list_first(f->insts);
+
+  s->inst = ip;
+  s->name = f->name;
+  s->xref = f;
+  hash_add(sl->hsentry, s->name, s);
+  asl_register_sign(&ip->mloc, sl, s);
+  return s;
+}
+
 void
 asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag)
 {
@@ -733,20 +747,27 @@ asl_bld_pname(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 void
 asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const unsigned char *m, enum sx_tle type)
 {
-  asl_bld_sign(locp, sl, n, 0);
-  if (type != sx_tle_componly)
-    sl->curr_sign->type = type;
-  else if (sl->curr_sign)
-    sl->curr_sign->type = sx_tle_fcomponly;
+  if (type == sx_tle_componly && sl->curr_sign)
+    {
+      /* We need to build a form here which has a sign->xref backref,
+	 like a form that doesn't also occur as a sign */
+      struct sl_form *f = NULL;
+      asl_bld_form(locp, sl, n, 0);
+      f = hash_find(sl->hfentry, n);
+      f->sign = asl_form_as_sign(sl, f);
+      f->sign->type = sx_tle_formproxy;
+      f->compoundonly = 1;
+    }
   else
-    sl->curr_sign->type = sx_tle_componly;
+    {
+      asl_bld_sign(locp, sl, n, 0);
+      sl->curr_sign->type = type;
+      sl->curr_sign->pname = pool_copy(m, sl->p);
+      sl->curr_inst = sl->curr_sign->inst;
 
-  sl->curr_sign->pname = pool_copy(m, sl->p);
-  sl->curr_inst = sl->curr_sign->inst;
-    
-  /*WRONG: @end sign nulls curr_sign; if tle is under @sign as equiv
-    of @form we don't want to NULL curr_sign */
-  /*sl->curr_sign = NULL;*/
+      /* There is no current sign in effect after a tle except for componly in a form */
+      sl->curr_sign = NULL;
+    }
 }
 
 static void

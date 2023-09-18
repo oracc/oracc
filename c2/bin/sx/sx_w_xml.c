@@ -396,8 +396,13 @@ x_tle_atts(struct sl_signlist *sl, struct sl_inst *s)
 	    }
 	  oids[strlen((ccp)oids)-1] = '\0';
 	  /*fprintf(stderr, "%s:#digest_by_oid=%s\n", s->u.s->name, oids);*/
-	  list_add(a, "cpd-refs");
-	  list_add(a, oids);
+	  if (oids && *oids)
+	    {
+	      list_add(a, "cpd-refs");
+	      list_add(a, oids);
+	    }
+	  else
+	    mesg_verr(&s->mloc, "@compoundonly entry %s not found in any compounds", s->u.s->name);
 	}
       else
 	fprintf(stderr, "%s:#digest_by_oid=%s\n", s->u.s->name, "[not found]");

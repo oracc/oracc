@@ -325,6 +325,7 @@ struct sl_form
   int sort;
   const char *oid;
   struct sl_unicode U;
+  Boolean compoundonly;
 };
 
 struct sl_list
@@ -399,5 +400,6 @@ extern void asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign
 extern void asl_bld_note(Mloc *locp, struct sl_signlist *sl, const char *tag, const char *txt);
 
 extern void asl_bld_end_sign(Mloc *locp, struct sl_signlist *sl);
+extern struct sl_sign *asl_form_as_sign(struct sl_signlist *sl, struct sl_form *f);
 
 #endif/*SIGNLIST_H_*/

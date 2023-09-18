@@ -139,10 +139,16 @@ sx_w_a_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	}
 
       in_form = 1;
-      
-      fprintf(f->fp, "@form%s %s%s%s%s%s\n", minus, s->u.f->name, query, literal, refspace, ref);
-      if (s->u.f->pname)
-	fprintf(f->fp, "@pname\t%s\n", s->u.f->pname);
+      if (s->u.f->compoundonly)
+	{
+	  fprintf(f->fp, "@compoundonly %s\n", s->u.f->name);
+	}
+      else
+	{
+	  fprintf(f->fp, "@form%s %s%s%s%s%s\n", minus, s->u.f->name, query, literal, refspace, ref);
+	  if (s->u.f->pname)
+	    fprintf(f->fp, "@pname\t%s\n", s->u.f->pname);
+	}
       if (s->u.f->aka)
 	sx_w_a_aka_list(f->fp, s->u.f->aka);
     }
@@ -257,7 +263,7 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	}
       else if (s->u.s->type == sx_tle_fcomponly)
 	{
-	  fprintf(f->fp, "\n@compoundonly\t%s\n@@\n", s->u.s->name);
+	  fprintf(f->fp, "\n@compoundonly\t%s\n", s->u.s->name);
 	}
       else if (s->u.s->type == sx_tle_lref)
 	{

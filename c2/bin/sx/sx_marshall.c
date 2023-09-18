@@ -95,24 +95,6 @@ sx_oid_array(struct sl_sign *s, List *o)
   return oids;
 }
 
-static struct sl_sign *
-form_as_sign(struct sl_signlist *sl, struct sl_form *f)
-{
-  struct sl_sign *s = memo_new(sl->m_signs);
-  struct sl_inst *ip = list_first(f->insts);
-
-#if 0
-  fprintf(stderr, "form_as_sign: %s; file=%s; line=%d\n", f->name, ip->mloc.file, ip->mloc.line);
-#endif
-  
-  s->inst = ip;
-  s->name = f->name;
-  s->xref = f;
-  hash_add(sl->hsentry, s->name, s);
-  asl_register_sign(&ip->mloc, sl, s);
-  return s;
-}
-
 static int forms_cmp(const void *a, const void *b)
 {
   int a1 = (*(struct sl_form**)a)->sort;
@@ -324,7 +306,7 @@ sx_marshall(struct sl_signlist *sl)
 	f->aka = sx_uniq_aka(f->aka);
       
       if (!(s = hash_find(sl->hsentry, (uccp)keys[i])))
-	s = form_as_sign(sl, hash_find(sl->hfentry, (uccp)keys[i]));
+	s = asl_form_as_sign(sl, hash_find(sl->hfentry, (uccp)keys[i]));
       else
 	{	  
 	  if (f->aka)
