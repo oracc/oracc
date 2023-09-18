@@ -697,7 +697,7 @@ asl_bld_smap(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 
   if (sl->curr_form)
     {
-      mesg_verr(locp, "@smap %s should be on @sign %s, not @form", t, sl->curr_form->u.f->sign->name);
+      mesg_verr(locp, "@smap %s should be on @sign %s, not @form", t, sl->curr_sign->name);
     }
   else if (sl->curr_sign)
     {

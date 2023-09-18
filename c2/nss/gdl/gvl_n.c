@@ -55,7 +55,7 @@ gvl_n(Node *ynp)
 	      if (!(l = gvl_lookup((uccp)oneify)))
 		{
 		  free(oneify);
-		  oneify = strdup((ccp)l);
+		  oneify = strdup((ccp)lg);
 		  *oneify = '1';
 		  l = gvl_lookup((uccp)oneify);
 		}
