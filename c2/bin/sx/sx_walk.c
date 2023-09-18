@@ -31,7 +31,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 			{
 #define QV(vp) ((vp)->u.v->qvsign || (vp)->u.v->qvform || (vp)->u.v->qvmust)
 			  List *qv = list_create(LIST_SINGLE);
-			  f->sgn(f, sl, NULL, sx_pos_init);
+			  f->sgn(f, sl, sl->letters[i].groups[j].signs[k], sx_pos_init);
 			  f->sgn(f, sl, sl->letters[i].groups[j].signs[k], sx_pos_inst);
 			  if ('s' == sl->letters[i].groups[j].signs[k]->type)
 			    {
@@ -112,7 +112,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 					  f->inh(f, sl, NULL, sx_pos_term);
 					}
 				    }
-				  f->frm(f, sl, NULL, sx_pos_term);
+				  f->frm(f, sl, sl->letters[i].groups[j].signs[k], sx_pos_term);
 				}
 			    }
 #undef QV
@@ -125,7 +125,7 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 			      f->qvs(f, sl, NULL, sx_pos_term);
 			    }
 			  list_free(qv,NULL);
-			  f->sgn(f, sl, NULL, sx_pos_term);
+			  f->sgn(f, sl, sl->letters[i].groups[j].signs[k], sx_pos_term);
 			}
 		    }
 		}

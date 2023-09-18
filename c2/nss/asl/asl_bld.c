@@ -359,7 +359,7 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
 	  f->insts = list_create(LIST_SINGLE);
 	  list_add(f->insts, i);
 	  f->owners = list_create(LIST_SINGLE);
-	  list_add(f->owners, sl->curr_sign); 		/* list of signs that have this n as a form */	  
+	  list_add(f->owners, sl->curr_sign); 		/* list of signs that have this n as a form */
 	  hash_add(sl->hfentry, (uccp)f->name, f); 	/* The forms that belong to the signlist are sl_form* */
 	}
       else
@@ -734,10 +734,19 @@ void
 asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const unsigned char *m, enum sx_tle type)
 {
   asl_bld_sign(locp, sl, n, 0);
-  sl->curr_sign->type = type;
+  if (type != sx_tle_componly)
+    sl->curr_sign->type = type;
+  else if (sl->curr_sign)
+    sl->curr_sign->type = sx_tle_fcomponly;
+  else
+    sl->curr_sign->type = sx_tle_componly;
+
   sl->curr_sign->pname = pool_copy(m, sl->p);
   sl->curr_inst = sl->curr_sign->inst;
-  sl->curr_sign = NULL;  
+    
+  /*WRONG: @end sign nulls curr_sign; if tle is under @sign as equiv
+    of @form we don't want to NULL curr_sign */
+  /*sl->curr_sign = NULL;*/
 }
 
 static void

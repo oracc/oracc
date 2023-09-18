@@ -11,7 +11,16 @@
 struct sl_inst;
 struct sl_listdef;
 
-enum sx_tle { sx_tle_none , sx_tle_componly , sx_tle_formproxy , sx_tle_lref , sx_tle_sign , sx_tle_sref };
+enum sx_tle
+  {
+    sx_tle_none ,
+    sx_tle_componly ,
+    sx_tle_fcomponly ,
+    sx_tle_formproxy ,
+    sx_tle_lref ,
+    sx_tle_sign ,
+    sx_tle_sref
+  };
 
 struct sl_signlist
 {
@@ -292,7 +301,6 @@ struct sl_sign
 				   should also be sorted before
 				   output */
   Boolean fake;
-  Boolean compound_only;
   enum sx_tle type;
 #if 0
   Mloc *mloc; /* Or: keep this as indicator of "defining instance" ? */

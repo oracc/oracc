@@ -227,8 +227,13 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 
       if (in_sign)
 	{
-	  fprintf(f->fp, "@end sign\n");
-	  in_sign = 0;
+	  if (s->u.s->type == sx_tle_fcomponly)
+	    fprintf(f->fp, "@@\n");
+	  else
+	    {
+	      fprintf(f->fp, "@end sign\n");
+	      in_sign = 0;
+	    }
 	}
 
       if ('f' == s->type)
@@ -249,6 +254,10 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
       else if (s->u.s->type == sx_tle_componly)
 	{
 	  fprintf(f->fp, "\n@compoundonly\t%s\n", s->u.s->name);
+	}
+      else if (s->u.s->type == sx_tle_fcomponly)
+	{
+	  fprintf(f->fp, "\n@compoundonly\t%s\n@@\n", s->u.s->name);
 	}
       else if (s->u.s->type == sx_tle_lref)
 	{
@@ -287,7 +296,7 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
     }
   else if (sx_pos_term == p)
     {
-      if (in_sign)
+      if (in_sign && s && s->u.s->type == sx_tle_sign)
 	{
 	  fprintf(f->fp, "@end sign\n");
 	  in_sign = 0;
