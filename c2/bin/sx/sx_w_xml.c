@@ -209,7 +209,7 @@ sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 		  list_add(a, oids);
 		}
 	      else
-		fprintf(stderr, "%s:#digest_by_oid=%s\n", s->u.f->name, "[not found]");
+		fprintf(stderr, "%s:#digest_by_oid=%s\n", s->u.f->name, " [not found]");
 	      atts = list2chars(a);
 	      ratts = rnvval_aa_qatts((char**)atts, list_len(a)/2);
 	      list_free(a, NULL);

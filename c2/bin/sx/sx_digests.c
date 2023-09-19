@@ -32,7 +32,11 @@ sx_compound_digests(struct sl_signlist *sl)
   int i;
   for (i = 0; i < sl->nsigns; ++i)
     if (sl->signs[i]->hcompounds)
-      sx_compound_digest(sl, sl->signs[i]->hcompounds);
+      {
+	if (ctrace)
+	  fprintf(stderr, "sx_compound_digests: calling sx_compound_digest from sign %s\n", sl->signs[i]->name);
+	sx_compound_digest(sl, sl->signs[i]->hcompounds);
+      }
 }
 
 static int sign_name_cmp(const void *a, const void *b)
@@ -76,7 +80,7 @@ sx_compound_digest(struct sl_signlist *sl, Hash *h)
       struct sl_sign *sp = hash_find(sl->hsentry, (uccp)keys[i]);
       if (ctrace)
 	fprintf(stderr, "sx_compound_digest: processing compound %s with sl_sign %s\n", keys[i], sp->name);
-      sx_compound_digest_oid(&cl, h, keys[i], sp->oid);
+      sx_compound_digest_oid(&cl, h, keys[i], sp->xref ? sp->xref->oid : sp->oid);
     }
 
   d = memo_new(sl->m_digests);
