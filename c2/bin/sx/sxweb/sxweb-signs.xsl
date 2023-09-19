@@ -110,21 +110,21 @@
 	<xsl:when test="@compoundonly='yes'">
 	  <xsl:variable name="s">
 	    <xsl:if test="contains(@cpd-refs, ' ')">
-	      <xsl:value-of select="s"/>
+	      <xsl:text>s</xsl:text>
 	    </xsl:if>
 	  </xsl:variable>
 	  <p>Occurs in the following compound<xsl:value-of select="$s"/>:
 	  <xsl:for-each select="id(@cpd-refs)">
 	    <xsl:text> </xsl:text>
-	    <esp:link page="{@xml:id}"><xsl:apply-templates select=".//sl:name[1]"/></esp:link>
+	    <esp:link page="{ancestor-or-self::sl:sign[1]/@xml:id}"><xsl:apply-templates select=".//sl:name[1]"/></esp:link>
 	  </xsl:for-each>
 	  <xsl:text>.</xsl:text>
 	  </p>
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:if test="/*/@project = 'pcsl'">
-	    <xsl:if test="not(sl:smap)">
-	      <table>
+	    <xsl:if test="not(sl:uage='0')">
+	      <table width="95%">
 		<tr>
 		  <td width="30%" valign="top"><esp:image file="../../../pctc/images/{@xml:id}.jpg" description="image of {sl:name[1]}"/></td>
 		  <td width="70%">
