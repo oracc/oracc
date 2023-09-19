@@ -63,6 +63,7 @@ sl.sign    =
 	  attribute sort { text }, 
     attribute xml:id { xsd:NCName }?,
 	  sl.smap?,
+    attribute cpd-refs { xsd:IDREFS }?,
     sl.name?,
     (sl.inote
      | sl.list
@@ -75,14 +76,13 @@ sl.sign    =
      | element sl:unote { text })*,
     sl.v*,
     sl.sys*,
-    (
-    sl.compoundonly
-    |
     element sl:form {
       attribute n { text },
       attribute ref { xsd:NCName }?,
       attribute sort { text }, 
       attribute xml:id { xsd:NCName }?,
+      attribute compoundonly { "yes"|"no" }?,
+      attribute cpd-refs { xsd:IDREFS }?,
       sl.name?,
       (sl.proof
        | (sl.inote
@@ -102,8 +102,7 @@ sl.sign    =
           attribute n { text }
         }+
       }?
-    }
-    )*,
+    }*,
     element sl:qs {
       element sl:q {
         attribute base { text }?,

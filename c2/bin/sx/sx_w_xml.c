@@ -202,6 +202,9 @@ sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 		  list_add(a, scode);
 		}
 
+	      list_add(a, "compoundonly");
+	      list_add(a, "yes");
+	      
 	      unsigned char *oids = x_cdp_refs(sl, s);
 	      if (oids)
 		{
@@ -210,14 +213,15 @@ sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 		}
 	      else
 		fprintf(stderr, "%s:#digest_by_oid=%s\n", s->u.f->name, " [not found]");
+
 	      atts = list2chars(a);
 	      ratts = rnvval_aa_qatts((char**)atts, list_len(a)/2);
 	      list_free(a, NULL);
-	      rnvxml_ea("sl:compoundonly", ratts);
+	      rnvxml_ea("sl:form", ratts);
 	      rnvxml_ea("sl:name", NULL);
 	      grx_xml(tp->gdl, "g:w");
 	      rnvxml_ee("sl:name");
-	      rnvxml_ee("sl:compoundonly");
+	      rnvxml_ee("sl:form");
 	      /* don't set in_form here */
 	    }
 	  else

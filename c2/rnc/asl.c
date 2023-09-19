@@ -18,6 +18,7 @@ struct xnn_xname asl_anames[] =
   { "xmlns:xml", "xmlns:xml" },
   { "base", "base" },
   { "comment", "comment" },
+  { "compoundonly", "compoundonly" },
   { "cpd-refs", "cpd-refs" },
   { "deprecated", "deprecated" },
   { "form", "form" },
@@ -53,6 +54,7 @@ struct xnn_attr asl_abases[] =
 {
   { { "base",NULL } , { "base",NULL } },
   { { "comment",NULL } , { "comment",NULL } },
+  { { "compoundonly",NULL } , { "compoundonly",NULL } },
   { { "cpd-refs",NULL } , { "cpd-refs",NULL } },
   { { "deprecated",NULL } , { "deprecated",NULL } },
   { { "form",NULL } , { "form",NULL } },

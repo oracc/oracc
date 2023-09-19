@@ -9,6 +9,7 @@ enum asl_a_type
   asl_n_xml,
   asl_a_base,
   asl_a_comment,
+  asl_a_compoundonly,
   asl_a_cpd_refs,
   asl_a_deprecated,
   asl_a_form,

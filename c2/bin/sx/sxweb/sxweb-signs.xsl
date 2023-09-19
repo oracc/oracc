@@ -106,40 +106,58 @@
 	  </xsl:choose>
 	</xsl:for-each>
       </p>
-      <xsl:if test="/*/@project = 'pcsl'">
-	<xsl:if test="not(sl:smap)">
-	  <table>
-	    <tr>
-	      <td width="30%" valign="top"><esp:image file="../../../pctc/images/{@xml:id}.jpg" description="image of {sl:name[1]}"/></td>
-	      <td width="70%">
-		<xsl:variable name="o" select="@xml:id"/>
-		<xsl:for-each select="document('sl-corpus-counts.xml',/)">
-		  <xsl:variable name="c" select="key('counts', $o)"/>
-		  <xsl:message>c/o = <xsl:value-of select="$c/o"/></xsl:message>
-		  <xsl:choose>
-		    <xsl:when test="$c/t='0'">
-		      <p>(No attestations in corpus)</p>
-		    </xsl:when>
-		    <xsl:otherwise>
-		      <xsl:variable name="height">
-			<xsl:choose>
-			  <xsl:when test="$c/i &gt; 5">
-			    <xsl:value-of select="500"/>
-			  </xsl:when>
-			  <xsl:otherwise>
-			    <xsl:value-of select="300"/>
-			  </xsl:otherwise>
-			</xsl:choose>
-		      </xsl:variable>
-		      <iframe width="600" height="{$height}" src="/pctc/inst/{$o}.html"/>
-		    </xsl:otherwise>
-		  </xsl:choose>
-		</xsl:for-each>
-	      </td>
-	    </tr>
-	  </table>
-	</xsl:if>
-      </xsl:if>
+      <xsl:choose>
+	<xsl:when test="@compoundonly='yes'">
+	  <xsl:variable name="s">
+	    <xsl:if test="contains(@cpd-refs, ' ')">
+	      <xsl:value-of select="s"/>
+	    </xsl:if>
+	  </xsl:variable>
+	  <p>Occurs in the following compound<xsl:value-of select="$s"/>:
+	  <xsl:for-each select="id(@cpd-refs)">
+	    <xsl:text> </xsl:text>
+	    <esp:link page="{@xml:id}"><xsl:apply-templates select=".//sl:name[1]"/></esp:link>
+	  </xsl:for-each>
+	  <xsl:text>.</xsl:text>
+	  </p>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:if test="/*/@project = 'pcsl'">
+	    <xsl:if test="not(sl:smap)">
+	      <table>
+		<tr>
+		  <td width="30%" valign="top"><esp:image file="../../../pctc/images/{@xml:id}.jpg" description="image of {sl:name[1]}"/></td>
+		  <td width="70%">
+		    <xsl:variable name="o" select="@xml:id"/>
+		    <xsl:for-each select="document('sl-corpus-counts.xml',/)">
+		      <xsl:variable name="c" select="key('counts', $o)"/>
+		      <xsl:message>c/o = <xsl:value-of select="$c/o"/></xsl:message>
+		      <xsl:choose>
+			<xsl:when test="$c/t='0'">
+			  <p>(No attestations in corpus)</p>
+			</xsl:when>
+			<xsl:otherwise>
+			  <xsl:variable name="height">
+			    <xsl:choose>
+			      <xsl:when test="$c/i &gt; 5">
+				<xsl:value-of select="500"/>
+			      </xsl:when>
+			      <xsl:otherwise>
+				<xsl:value-of select="300"/>
+			      </xsl:otherwise>
+			    </xsl:choose>
+			  </xsl:variable>
+			  <iframe width="600" height="{$height}" src="/pctc/inst/{$o}.html"/>
+			</xsl:otherwise>
+		      </xsl:choose>
+		    </xsl:for-each>
+		  </td>
+		</tr>
+	      </table>
+	    </xsl:if>
+	  </xsl:if>
+	</xsl:otherwise>
+      </xsl:choose>
       <xsl:if test="sl:list">
 	<p>
 	  List numbers: 
