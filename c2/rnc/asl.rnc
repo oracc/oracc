@@ -75,6 +75,9 @@ sl.sign    =
      | element sl:unote { text })*,
     sl.v*,
     sl.sys*,
+    (
+    sl.compoundonly
+    |
     element sl:form {
       attribute n { text },
       attribute ref { xsd:NCName }?,
@@ -99,7 +102,8 @@ sl.sign    =
           attribute n { text }
         }+
       }?
-    }*,
+    }
+    )*,
     element sl:qs {
       element sl:q {
         attribute base { text }?,

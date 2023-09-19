@@ -33,6 +33,7 @@ int unicode_table = 0;
 int xml_output = 0;
 
 extern int asl_raw_tokens; /* ask asl to produce list of @sign/@form/@v tokens */
+extern int ctrace;
 
 int boot_mode = 0;
 int check_mode = 0;
@@ -54,7 +55,7 @@ main(int argc, char * const*argv)
 
   gsort_init();
   
-  options(argc, argv, "abcijlm:nMsStTux?");
+  options(argc, argv, "abcCijlm:nMsStTux?");
   asltrace = asl_flex_debug = trace_mode;
 
   if (boot_mode)
@@ -164,6 +165,9 @@ opts(int opt, char *arg)
     case 'c':
       check_mode = 1;
       break;
+    case 'C':
+      ctrace = 1;
+      break;
     case 'i':
       asl_output = identity_mode = 1;
       break;
@@ -230,6 +234,7 @@ help(void)
   help_heading("Mode Options");
   help_option("b", "boot-mode: write signlist data output to 02pub/sl/sl.tsv");
   help_option("c", "check-mode: check the signlist and exit");
+  help_option("C", "ctrace-mode: trace compound processing for debugging purposes");
   help_option("i", "identity-mode: produce 'identity' .asl output.\n"
 	      	   "\t\tOutput may be re-sorted and/or have new @ucun tags.");
   help_option("t", "trace-mode: turn on tracing for debugging purposes");

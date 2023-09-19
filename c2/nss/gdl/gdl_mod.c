@@ -152,6 +152,11 @@ gdl_mod_wrap(Node *ynp, int sub_simplexg)
   else
     ynp->text = (ccp)((gvl_g*)ynp->user)->orig;
 
+  if ((gp->oid = (ccp)gvl_lookup(c)))
+    gp->sign = gp->c10e;
+  else if ((gp->oid = (ccp)gvl_lookup(o)))
+    gp->sign = gp->orig;
+  
   list_free(cp, NULL);
   list_free(op, NULL);
 

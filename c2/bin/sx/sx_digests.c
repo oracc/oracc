@@ -1,6 +1,8 @@
 #include <signlist.h>
 #include <sx.h>
 
+extern int ctrace;
+
 /* This module turns each sign's hash of compound-names with struct
    sl_compound* values into a collection of OID lists each implemented
    as a const char ** */
@@ -60,6 +62,9 @@ sx_compound_digest(struct sl_signlist *sl, Hash *h)
 
   keys = hash_keys2(h, &nkeys);
 
+  if (ctrace)
+    fprintf(stderr, "sx_compound_digest: processing %d keys\n", nkeys);
+  
   /* sort the compound names so that the lists we build are naturally in sorted order */
   cmpsl = sl;
   qsort(keys, nkeys, sizeof(const char*), sign_name_cmp);
@@ -69,6 +74,8 @@ sx_compound_digest(struct sl_signlist *sl, Hash *h)
   for (i = 0; i < nkeys; ++i)
     {
       struct sl_sign *sp = hash_find(sl->hsentry, (uccp)keys[i]);
+      if (ctrace)
+	fprintf(stderr, "sx_compound_digest: processing compound %s with sl_sign %s\n", keys[i], sp->name);
       sx_compound_digest_oid(&cl, h, keys[i], sp->oid);
     }
 

@@ -10,6 +10,7 @@
 extern Mloc *xo_loc;
 static struct rnvval_atts *ratts;
 Hash *xidseen = NULL;
+static unsigned char *x_cdp_refs(struct sl_signlist *sl, struct sl_inst *s);
 
 static sx_signlist_f sx_w_x_signlist;
 static sx_letter_f sx_w_x_letter;
@@ -169,7 +170,7 @@ sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	}
 
       xo_loc->file = s->mloc.file; xo_loc->line = s->mloc.line;
-  
+
       if (s->type == 'f')
 	{
 	  char scode[32];
@@ -177,25 +178,69 @@ sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	  (void)sprintf(scode, "%d", s->u.f->sort);
 	  tp = hash_find(sl->htoken, s->u.f->name);
 
-	  if (!s->u.f->sign->xref)
-	    id_or_ref = "ref";
-	  else
+	  if (s->u.f->compoundonly)
 	    {
+	      List *a = list_create(LIST_SINGLE);
+	      const char **atts = NULL;
+	      static char scode[32];
+	      struct rnvval_atts *ratts = NULL;
+
+	      list_add(a, "n");
+	      list_add(a, xmlify(s->u.f->name));
+  
 	      if (s->u.f->oid)
 		{
-		  if (hash_find(xidseen, (uccp)s->u.f->oid))
-		    id_or_ref = "ref";
-		  else
-		    hash_add(xidseen, (uccp)s->u.f->oid, "");
+		  list_add(a, "xml:id");
+		  list_add(a, s->u.f->oid);
 		}
+
+	      if (s->u.f->sort > 0)
+		(void)sprintf(scode, "%d", s->u.f->sort);
+	      if (*scode)
+		{
+		  list_add(a, "sort");
+		  list_add(a, scode);
+		}
+
+	      unsigned char *oids = x_cdp_refs(sl, s);
+	      if (oids)
+		{
+		  list_add(a, "cpd-refs");
+		  list_add(a, oids);
+		}
+	      else
+		fprintf(stderr, "%s:#digest_by_oid=%s\n", s->u.f->name, "[not found]");
+	      atts = list2chars(a);
+	      ratts = rnvval_aa_qatts((char**)atts, list_len(a)/2);
+	      list_free(a, NULL);
+	      rnvxml_ea("sl:compoundonly", ratts);
+	      rnvxml_ea("sl:name", NULL);
+	      grx_xml(tp->gdl, "g:w");
+	      rnvxml_ee("sl:name");
+	      rnvxml_ee("sl:compoundonly");
+	      /* don't set in_form here */
 	    }
-	    
-	  ratts = rnvval_aa("x", "n", s->u.f->name, id_or_ref, s->u.f->oid ? s->u.f->oid : "", "sort", scode, NULL);
-	  rnvxml_ea("sl:form", ratts);
-	  rnvxml_ea("sl:name", NULL);
-	  grx_xml(tp->gdl, "g:w");
-	  rnvxml_ee("sl:name");
-	  in_form = 1;
+	  else
+	    {
+	      if (!s->u.f->sign->xref)
+		id_or_ref = "ref";
+	      else
+		{
+		  if (s->u.f->oid)
+		    {
+		      if (hash_find(xidseen, (uccp)s->u.f->oid))
+			id_or_ref = "ref";
+		      else
+			hash_add(xidseen, (uccp)s->u.f->oid, "");
+		    }
+		}
+	      ratts = rnvval_aa("x", "n", s->u.f->name, id_or_ref, s->u.f->oid ? s->u.f->oid : "", "sort", scode, NULL);
+	      rnvxml_ea("sl:form", ratts);
+	      rnvxml_ea("sl:name", NULL);
+	      grx_xml(tp->gdl, "g:w");
+	      rnvxml_ee("sl:name");
+	      in_form = 1;
+	    }
 	}
     }
   else if (p == sx_pos_term)
@@ -350,6 +395,40 @@ x_tle_tag(enum sx_tle t)
       return NULL;
     }
 }
+static unsigned char *
+x_cdp_refs(struct sl_signlist *sl, struct sl_inst *s)
+{
+  struct sl_compound_digest *cdp = NULL;
+
+  if (s->type == 's')
+    cdp = hash_find(s->u.s->hcompounds, (uccp)"#digest_by_oid");
+  else if (s->type == 'f')
+    cdp = hash_find(s->u.f->sign->hcompounds, (uccp)"#digest_by_oid");
+  if (cdp)
+    {
+      unsigned char *oids;
+      int len = 0;
+      int i;
+      for (i = 0; cdp->memb[i]; ++i)
+	;
+      len = (i * (strlen("o1234567"+1)))+1;
+      oids = pool_alloc(len, sl->p);
+      *oids = '\0';
+      for (i = 0; cdp->memb[i]; ++i)
+	{
+	  strcat((char*)oids, cdp->memb[i]);
+	  strcat((char*)oids, " ");
+	}
+      oids[strlen((ccp)oids)-1] = '\0';
+      /*fprintf(stderr, "%s:#digest_by_oid=%s\n", s->u.s->name, oids);*/
+      if (oids && *oids)
+	return oids;
+      else
+	mesg_verr(&s->mloc, "@compoundonly entry %s not found in any compounds",
+		  s->type == 's' ? s->u.s->name : s->u.f->name);
+    }
+  return NULL;
+}
 
 static struct rnvval_atts *
 x_tle_atts(struct sl_signlist *sl, struct sl_inst *s)
@@ -378,31 +457,11 @@ x_tle_atts(struct sl_signlist *sl, struct sl_inst *s)
 
   if (s->u.s->type == sx_tle_componly)
     {
-      struct sl_compound_digest *cdp =  hash_find(s->u.s->hcompounds, (uccp)"#digest_by_oid");
-      if (cdp)
+      unsigned char *oids = x_cdp_refs(sl, s);
+      if (oids)
 	{
-	  unsigned char *oids;
-	  int len = 0;
-	  int i;
-	  for (i = 0; cdp->memb[i]; ++i)
-	    ;
-	  len = (i * (strlen("o1234567"+1)))+1;
-	  oids = pool_alloc(len, sl->p);
-	  *oids = '\0';
-	  for (i = 0; cdp->memb[i]; ++i)
-	    {
-	      strcat((char*)oids, cdp->memb[i]);
-	      strcat((char*)oids, " ");
-	    }
-	  oids[strlen((ccp)oids)-1] = '\0';
-	  /*fprintf(stderr, "%s:#digest_by_oid=%s\n", s->u.s->name, oids);*/
-	  if (oids && *oids)
-	    {
-	      list_add(a, "cpd-refs");
-	      list_add(a, oids);
-	    }
-	  else
-	    mesg_verr(&s->mloc, "@compoundonly entry %s not found in any compounds", s->u.s->name);
+	  list_add(a, "cpd-refs");
+	  list_add(a, oids);
 	}
       else
 	fprintf(stderr, "%s:#digest_by_oid=%s\n", s->u.s->name, "[not found]");
