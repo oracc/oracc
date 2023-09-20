@@ -15,19 +15,26 @@ roco_write_xml(FILE *fp, Roco *r)
     fprintf(fp, "<%s>", r->xmltag);
   for (i = start_row; i < r->nlines; ++i)
     {
-      fprintf(fp, "<%s\n>", r->rowtag);
-      int j;
-      for (j = 0; r->rows[i][j] != NULL; ++j)
+      if (row_format)
 	{
-	  if (ftags)
-	    ctag = ftags[j];
-	  if (*r->rows[i][j])
-	    fprintf(fp, "<%s>%s</%s>",
-		    ctag, xmlify(r->rows[i][j]), ctag);
-	  else
-	    fprintf(fp, "<%s/>", ctag);
+	  roco_row_format(fp, (uccp*)r->rows[i]);
 	}
-      fprintf(fp, "</%s\n>", r->rowtag);
+      else
+	{
+	  fprintf(fp, "<%s\n>", r->rowtag);
+	  int j;
+	  for (j = 0; r->rows[i][j] != NULL; ++j)
+	    {
+	      if (ftags)
+		ctag = ftags[j];
+	      if (*r->rows[i][j])
+		fprintf(fp, "<%s>%s</%s>",
+			ctag, xmlify(r->rows[i][j]), ctag);
+	      else
+		fprintf(fp, "<%s/>", ctag);
+	      fprintf(fp, "</%s\n>", r->rowtag);
+	    }
+	}
     }
   if ('-' != *r->xmltag)
     fprintf(fp, "</%s>", r->xmltag);

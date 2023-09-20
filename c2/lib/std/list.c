@@ -14,7 +14,7 @@ list_concat(List *l)
 {
   unsigned char *s = NULL;
   int len = 0;
-  unsigned char *n;
+  unsigned const char *n;
   for (n = list_first(l); n; n = list_next(l))
     len += strlen((const char *)n);
   s = malloc(len+1);
@@ -31,7 +31,7 @@ list_join(List *l, const char *j)
 {
   unsigned char *s = NULL;
   int len = 0;
-  unsigned char *n;
+  unsigned const char *n;
   for (n = list_first(l); n; n = list_next(l))
     len += (strlen((const char *)n) + strlen(j));
   s = malloc(len+1);
@@ -115,7 +115,7 @@ list_create (List_types_e type)
 }
 
 void
-list_delete (List *lp, List_node * to_delete, void (*del)(void *))
+list_delete (List *lp, List_node * to_delete, void (*del)(const void *))
 {
   int keep_rover = (lp->rover && lp->rover == to_delete);
 
@@ -152,10 +152,10 @@ list_delete (List *lp, List_node * to_delete, void (*del)(void *))
       lp->rover = lp->first;
 }
 
-void *
+const void *
 list_detach (List *lp, List_node * to_delete)
 {
-  void *data;
+  const void *data;
 
   if (lp == NULL || to_delete == NULL)
     return NULL;
@@ -168,7 +168,7 @@ list_detach (List *lp, List_node * to_delete)
 }
 
 void
-list_exec (List *lp, void (*fnc)(void*))
+list_exec (List *lp, void (*fnc)(const void*))
 {
   size_t i;
   List_node *lrover;
@@ -180,10 +180,10 @@ list_exec (List *lp, void (*fnc)(void*))
     fnc (lrover->data);
 }
 
-void *
+const void *
 list_find (List *lp, const void *eltp, int(*cmp)(const void*lelt, const void*celt))
 {
-  void *vp;
+  const void *vp;
 
   if (lp && list_len(lp))
     {
@@ -196,7 +196,7 @@ list_find (List *lp, const void *eltp, int(*cmp)(const void*lelt, const void*cel
 }
 
 void
-list_free (List *lp, void (*del)(void *))
+list_free (List *lp, void (*del)(const void *))
 {
   size_t i;
   List_node *lrover, *tmp;
@@ -286,7 +286,7 @@ list_reduce (Boolean invert, List * lp, int (*cmp)(const void*, const void*), vo
 }
 #endif
 
-void *
+const void *
 list_first (List *lp)
 {
   if (lp == NULL || lp->first == NULL || lp->count == 0)
@@ -298,7 +298,7 @@ list_first (List *lp)
     }
 }
 
-void*
+const void*
 list_next (List *lp)
 {
   if (lp->rover == lp->last)
@@ -315,10 +315,10 @@ list_next (List *lp)
     }
 }
 
-void *
+const void *
 list_pop (List *lp)
 {
-  void *data;
+  const void *data;
   List_node *tmp;
   if (NULL == lp || NULL == lp->first)
     return NULL;
@@ -382,7 +382,7 @@ list_to_str2(List *l, const char *sep)
 {
   unsigned char *s = NULL;
   int len = 0;
-  unsigned char *n;
+  unsigned const char *n;
   for (n = list_first(l); n; n = list_next(l))
     len += strlen((const char *)n);
   len += (list_len(l) * strlen(sep));
@@ -394,10 +394,10 @@ list_to_str2(List *l, const char *sep)
   return s;
 }
 
-void **
+const void **
 list2array(List *l)
 {
-  void **c = malloc((1+list_len(l))*sizeof(void*));
+  const void **c = malloc((1+list_len(l))*sizeof(void*));
   int cindex = 0;
   List_node *lnp;
 

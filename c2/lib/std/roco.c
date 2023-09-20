@@ -6,6 +6,8 @@
 
 #define uccp unsigned const char *
 
+const char *row_format = NULL;
+
 Roco *
 roco_load(const char *file, int fieldsr1,
 	  const char *xtag, const char *rtag, const char *ctag)
