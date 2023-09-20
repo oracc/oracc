@@ -35,6 +35,9 @@ if [[ "$III" == "" ]]; then
     III="0"
 fi
 
+
+itot=$(( $V + $IV + $III ))
+
 o="$oid.html"
 rm -fr $o
 hh="${ORACC_BUILDS}/lib/data/pctc-xis-h.html"
@@ -44,30 +47,45 @@ sed "s/@@TITLE@@/$oid Instance/" <"$hh" >$o
 
 if [[ "$ict" != "0" ]]; then
 
-    if [[ "$ict" == "1" ]]; then
-	s=""
-    else
-	s="s"
-    fi
+    if [[ $V -ge 6 || $IV -ge 6 || $III -ge 6 ]]; then
     
-cat >>$o <<EOF
+	if [[ "$ict" == "1" ]]; then
+	    s=""
+	else
+	    s="s"
+	fi
+	
+	cat >>$o <<EOF
 <h1 class="pcsl">$ict occurrence$s in PC corpus. <a href="/pctc/$oid.tis">See all instances</a></h1>
 EOF
-
+    else
+	echo "<p><b>(All $itot instances shown below)</b></p>">>$o
+    fi
+    
 declare -a v=(V IV III)
 declare -a c=($V $IV $III)
 vlen=${#v[@]}
 for (( i=0; i<$vlen; ++i ));
 do
     if [[ "${c[$i]}" != "0" ]]; then
+
 	if [[ "${c[$i]}" == "1" ]]; then
 	    s=""
 	else
 	    s="s"
 	fi
-	cat >>$o <<EOF
-<h2>${c[$i]} time$s in Uruk ${v[$i]}: <a href="/pctc/${oid}_$i.tis">see all Uruk ${v[i]} instances</a> (up to 5 shown below).</h2>
+
+	if [[ ${c[$i]} -ge 6 ]]; then
+	
+	    cat >>$o <<EOF
+<h2>${c[$i]} time$s in Uruk ${v[$i]}: <a href="/pctc/${oid}_$i.tis">see all Uruk ${v[i]} instances</a>.</h2>
 EOF
+	else
+	    cat >>$o <<EOF
+<h2>All ${c[$i]} Uruk ${v[$i]} instances:</h2>
+EOF
+	fi
+	
 cat "${oid}_$i.div" >>$o
     fi
 done
