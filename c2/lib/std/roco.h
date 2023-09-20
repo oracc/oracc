@@ -25,6 +25,7 @@ typedef struct roco Roco;
 
 extern const char *roco_format;
 extern int roco_newline;
+extern int roco_xmlify;
 
 /* Keep this on one line so GCC errors show the whole prototype
  */

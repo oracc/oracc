@@ -8,6 +8,7 @@
 
 const char *roco_format = NULL;
 int roco_newline = 0;
+int roco_xmlify = 1;
 
 Roco *
 roco_load(const char *file, int fieldsr1,

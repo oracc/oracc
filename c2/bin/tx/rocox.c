@@ -5,7 +5,6 @@
 #include <roco.h>
 
 int fields_from_row1 = 0;
-extern const char *row_format;
 int trtd_output = 0;
 int xml_output = 0;
 
@@ -16,7 +15,7 @@ main(int argc, char *const *argv)
 {
   Roco *r = NULL;
   
-  options(argc, argv, "c:fnr:R:tx:?");
+  options(argc, argv, "c:fnr:R:tx:X?");
 
   r = roco_load("-", fields_from_row1, xmltag, rowtag, celtag);
 
@@ -59,6 +58,9 @@ opts(int opt, char *arg)
     case 'x':
       xmltag = arg;
       xml_output = 1;
+      break;
+    case 'X':
+      roco_xmlify = 0;
       break;
     case '?':
       help();

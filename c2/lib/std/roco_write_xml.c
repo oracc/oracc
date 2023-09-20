@@ -29,7 +29,7 @@ roco_write_xml(FILE *fp, Roco *r)
 		ctag = ftags[j];
 	      if (*r->rows[i][j])
 		fprintf(fp, "<%s>%s</%s>",
-			ctag, xmlify(r->rows[i][j]), ctag);
+			ctag, roco_xmlify ? xmlify(r->rows[i][j]) : r->rows[i][j], ctag);
 	      else
 		fprintf(fp, "<%s/>", ctag);
 	      fprintf(fp, "</%s\n>", r->rowtag);
