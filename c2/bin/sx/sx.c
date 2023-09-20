@@ -26,6 +26,7 @@ int jsn_output = 0;
 int list_dump = 0;
 int list_names_mode = 0;
 int listdef_check = 0;
+int oid_list = 0;
 int sll_output = 0;
 int sortcode_output = 0;
 int tree_output = 0;
@@ -55,7 +56,7 @@ main(int argc, char * const*argv)
 
   gsort_init();
   
-  options(argc, argv, "abcCijlm:nMsStTux?");
+  options(argc, argv, "abcCijlm:nMosStTux?");
   asltrace = asl_flex_debug = trace_mode;
 
   if (boot_mode)
@@ -130,6 +131,9 @@ main(int argc, char * const*argv)
       
       if (listdef_check)
 	sx_listdefs(sl, missing_lists);
+
+      if (oid_list)
+	sx_oid_list(sl);
       
       if (asl_output)
 	sx_walk(sx_w_asl_init(stdout, "-"), sl);
@@ -187,6 +191,9 @@ opts(int opt, char *arg)
     case 'M':
       listdef_check = 1;
       missing_lists = NULL;
+      break;
+    case 'o':
+      oid_list = 1;
       break;
 #if 0
     case 'r':

@@ -71,5 +71,6 @@ extern struct sx_functions *sx_w_jsn_init(FILE *fp, const char *fname);
 extern struct sx_functions *sx_w_xml_init(FILE *fp, const char *fname);
 extern struct sx_functions *sx_sll_init(FILE *fp, const char *fname);
 extern void sx_s_sll(FILE *f, struct sl_signlist *sl);
+extern void sx_oid_list(struct sl_signlist *sl);
 
 #endif/*SX_H_*/
