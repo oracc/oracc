@@ -6,7 +6,8 @@
 
 #define uccp unsigned const char *
 
-const char *row_format = NULL;
+const char *roco_format = NULL;
+int roco_newline = 0;
 
 Roco *
 roco_load(const char *file, int fieldsr1,
@@ -61,15 +62,20 @@ roco_write(FILE *fp, Roco *r)
   size_t i;
   for (i = 0; i < r->nlines; ++i)
     {
-      int j;
-      for (j = 0; r->rows[i][j] != NULL; ++j)
+      if (roco_format)
+	roco_row_format(fp, (const unsigned char **)r->rows[i]);
+      else
 	{
-	  if (j)
-	    fputc('\t', fp);
-	  if (*r->rows[i][j])
-	    fputs((const char *)r->rows[i][j], fp);
+	  int j;
+	  for (j = 0; r->rows[i][j] != NULL; ++j)
+	    {
+	      if (j)
+		fputc('\t', fp);
+	      if (*r->rows[i][j])
+		fputs((const char *)r->rows[i][j], fp);
+	    }
+	  fputc('\n', fp);
 	}
-      fputc('\n', fp);
     }
 }
 

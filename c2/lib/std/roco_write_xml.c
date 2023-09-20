@@ -15,7 +15,7 @@ roco_write_xml(FILE *fp, Roco *r)
     fprintf(fp, "<%s>", r->xmltag);
   for (i = start_row; i < r->nlines; ++i)
     {
-      if (row_format)
+      if (roco_format)
 	{
 	  roco_row_format(fp, (uccp*)r->rows[i]);
 	}

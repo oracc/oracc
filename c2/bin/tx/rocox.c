@@ -16,14 +16,12 @@ main(int argc, char *const *argv)
 {
   Roco *r = NULL;
   
-  options(argc, argv, "c:fr:R:tx:?");
+  options(argc, argv, "c:fnr:R:tx:?");
 
   r = roco_load("-", fields_from_row1, xmltag, rowtag, celtag);
 
   if (xml_output)
     roco_write_xml(stdout, r);
-  else if (printf_format)
-    roco_printf(stdout, printf_format);
   else
     roco_write(stdout, r);
 }
@@ -43,8 +41,11 @@ opts(int opt, char *arg)
     case 'f':
       fields_from_row1 = 1;
       break;
+    case 'n':
+      roco_newline = 1;
+      break;
     case 'R':
-      row_format = arg;
+      roco_format = arg;
       break;
     case 'r':
       rowtag = arg;

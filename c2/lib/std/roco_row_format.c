@@ -36,7 +36,7 @@ pad(FILE *fp, int col, int num)
 void
 roco_row_format(FILE*fp, const unsigned char **row)
 {
-  const char *s = row_format;
+  const char *s = roco_format;
   while (*s)
     {
       if ('%' == *s)
@@ -48,6 +48,7 @@ roco_row_format(FILE*fp, const unsigned char **row)
 	    }
 	  else
 	    {
+	      ++s;
 	      if (isdigit(*s))
 		{
 		  int zeroes = 0;
@@ -66,17 +67,25 @@ roco_row_format(FILE*fp, const unsigned char **row)
 		    {
 		      long colval = strtoul((ccp)row[colnum], NULL, 10);
 		      if (colval >= 0)
-			pad(fp, colnum, colval);
-		      fputs((ccp)row[colnum], fp);
+			pad(fp, zeroes, colval);
+		      fputs((ccp)row[colnum-1], fp);
 		    }
 		  else
-		    fputs((ccp)row[colnum], fp);
+		    fputs((ccp)row[colnum-1], fp);
 		}
 	      else
 		{
 		  fprintf(stderr, "bad character after percent sign: must be digit or percent sign\n");
 		}
+	      ++s;
 	    }
 	}
+      else
+	{
+	  fputc(*s, fp);
+	  ++s;
+	}
     }
+  if (roco_newline)
+    fputc('\n', fp);
 }

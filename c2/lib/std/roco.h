@@ -23,7 +23,8 @@ struct roco
 
 typedef struct roco Roco;
 
-extern const char *row_format;
+extern const char *roco_format;
+extern int roco_newline;
 
 /* Keep this on one line so GCC errors show the whole prototype
  */
