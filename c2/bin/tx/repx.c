@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <oraccsys.h>
+#include <xsystem.h>
 #include <loadfile.h>
 #include <roco.h>
 
@@ -9,6 +10,7 @@
 
 const char *cfg = NULL;
 const char *infile = NULL;
+const char *outfile = NULL;
 
 int
 main(int argc, char *const *argv)
@@ -19,14 +21,27 @@ main(int argc, char *const *argv)
 
   if (cfg)
     {
-      r = roco_load(cfg, 0, NULL, NULL, NULL);
+      r = roco_load1(cfg);
       Hash *h = roco_hash(r);
       unsigned char *s = NULL;
-      if (infile)	
+      FILE *outfp = stdout;
+      
+      if (!infile)
+	infile = hash_find(h, (uccp)"infile");
+      
+      if (infile)
 	s = loadfile((uccp)infile, NULL);
       else
 	s = loadstdin(NULL);
-      strrep_f_h((ccp)s, stdout, h);
+
+      if (!outfile)
+	outfile = hash_find(h, (uccp)"outfile");
+
+      if (outfile)
+	outfp = xfopen(outfile, "w");
+
+      strrep_f_h((ccp)s, outfp, h);
+
       free(s);
     }
   else
@@ -50,6 +65,9 @@ opts(int opt, char *arg)
       break;
     case 'i':
       infile = arg;
+      break;
+    case 'o':
+      outfile = arg;
       break;
     case '?':
       help();

@@ -94,5 +94,6 @@ extern  void hash_xfree (void *vp);
 extern  void hash_freeable_data(Hash *h,int i);
 extern  List *hash2list(Hash *h, sort_cmp_func *cmp);
 extern  Hash *hash_from_var_char_star(const char *required, ...);
+extern void hash_merge(Hash *into, Hash *from);
 
 #endif /*HASH_H_*/

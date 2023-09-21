@@ -544,3 +544,11 @@ hash2list(Hash *htab, sort_cmp_func*cmp)
   
 }
 
+void
+hash_merge(Hash *into, Hash *from)
+{
+  const char **keys = hash_keys(from);
+  int i;
+  for (i = 0; keys[i]; ++i)
+    hash_add(into, (uccp)keys[i], hash_find(from, (uccp)keys[i]));
+}

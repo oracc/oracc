@@ -4,6 +4,9 @@
 #include <roco.h>
 #include <xmlify.h>
 
+/* FIXME: MEMORY MANAGEMENT -- keep roco list and delete or use static
+   Memo for Rocos */
+
 #define uccp unsigned const char *
 
 const char *roco_format = NULL;
@@ -61,9 +64,15 @@ Hash *
 roco_hash(Roco *r)
 {
   Hash *h = hash_create(r->nlines/2);
+  const char *inc = NULL;
   size_t i;
   for (i = 0; i < r->nlines; ++i)
     hash_add(h, r->rows[i][0], r->rows[i][1]);
+  if ((inc = hash_find(h, (uccp)"include")))
+    {
+      Hash *hi = roco_hash(roco_load1(inc));
+      hash_merge(h, hi);
+    }
   return h;
 }
 

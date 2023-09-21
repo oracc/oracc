@@ -38,4 +38,6 @@ extern void roco_write(FILE *fp, Roco *r);
 extern void roco_write_trtd(FILE *fp, Roco *r);
 extern void roco_write_xml(FILE *fp, Roco *r);
 
+#define roco_load1(x) roco_load((x),0,NULL,NULL,NULL)
+
 #endif/*ROCO_H_*/
