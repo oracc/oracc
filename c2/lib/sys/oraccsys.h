@@ -5,6 +5,7 @@
 #include <wctype.h>
 #include <sys/types.h>
 #include <c2types.h>
+#include <hash.h>
 
 extern unsigned char *slurp(const char *caller, const char *fname, ssize_t *fsizep);
 
@@ -54,5 +55,6 @@ extern void usage(void);
 extern int optind, opterr;
 extern char *optarg;
 extern void program_values(const char *name, int major, int minor, const char *usage, const char *copyright);
+extern void strrep_f_h(const char *str, FILE *fp, Hash*reps);
 
 #endif/*ORACCSYS_H_*/

@@ -57,6 +57,16 @@ roco_load(const char *file, int fieldsr1,
   return r;
 }
 
+Hash *
+roco_hash(Roco *r)
+{
+  Hash *h = hash_create(r->nlines/2);
+  size_t i;
+  for (i = 0; i < r->nlines; ++i)
+    hash_add(h, r->rows[i][0], r->rows[i][1]);
+  return h;
+}
+
 void
 roco_write(FILE *fp, Roco *r)
 {
