@@ -32,8 +32,8 @@ roco_write_xml(FILE *fp, Roco *r)
 			ctag, roco_xmlify ? xmlify(r->rows[i][j]) : r->rows[i][j], ctag);
 	      else
 		fprintf(fp, "<%s/>", ctag);
-	      fprintf(fp, "</%s\n>", r->rowtag);
 	    }
+	  fprintf(fp, "</%s\n>", r->rowtag);
 	}
     }
   if ('-' != *r->xmltag)

@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <oraccsys.h>
+#include <xmlify.h>
 #include <roco.h>
 
 int fields_from_row1 = 0;
+int suppress_xmlify = 0;
 int trtd_output = 0;
 int xml_output = 0;
 
@@ -15,7 +17,10 @@ main(int argc, char *const *argv)
 {
   Roco *r = NULL;
   
-  options(argc, argv, "c:C:fnr:R:tx:X?");
+  options(argc, argv, "c:C:fnr:R:tTx:X?");
+
+  if (!xmltag || suppress_xmlify)
+    xmlify = xmlify_not;
 
   r = roco_load("-", fields_from_row1, xmltag, rowtag, celtag);
 
@@ -52,8 +57,11 @@ opts(int opt, char *arg)
     case 'r':
       rowtag = arg;
       break;
+    case 'T':
+      xmltag = "table";
     case 't':
-      xmltag = "-";
+      if (!xmltag)
+	xmltag = "-";
       rowtag = "tr";
       celtag = "td";
       xml_output = 1;
@@ -63,7 +71,7 @@ opts(int opt, char *arg)
       xml_output = 1;
       break;
     case 'X':
-      roco_xmlify = 0;
+      suppress_xmlify = 1;
       break;
     case '?':
       help();

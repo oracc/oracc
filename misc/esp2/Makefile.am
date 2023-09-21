@@ -12,7 +12,7 @@ scriptdata_DATA = esp2-alphabet.xslt esp2-chars-iso-8859-1.xslt esp2-chars-marku
 	esp2-fix-sort.xsl esp2-params.xsl esp2-home.xsl \
 	esp2-phase-01.xsl esp2-for-json.xsl esp-HTML-div.xsl
 
-data_DATA = esp2-structure.xml
+data_DATA = esp2-structure.xml esp-*-template.xml
 
 java_DATA = ImageInfo.class
 

@@ -2,6 +2,8 @@
 #include <string.h>
 #include "xmlify.h"
 
+xmlify_ptr xmlify = xmlify_yes;
+
 static const char * const xmlch[128] =
   {
     NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, /* 0x00 */
@@ -23,7 +25,13 @@ static const char * const xmlch[128] =
   };
 
 const unsigned char *
-xmlify(const unsigned char *c)
+xmlify_not(const unsigned char *c)
+{
+  return c;
+}
+
+const unsigned char *
+xmlify_yes(const unsigned char *c)
 {
   static unsigned char *xbuf = NULL;
   static int xbuf_alloced = 0;

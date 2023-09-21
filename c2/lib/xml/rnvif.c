@@ -90,8 +90,8 @@ rnv_xmsg(void)
       }
     }
   }
-  ret = list_concat(x);
-  list_free(xm,free);
+  ret = (char*)list_concat(x);
+  list_free(xm,(void(*)(const void*))free);
   return ret;
 }
 

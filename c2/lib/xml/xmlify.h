@@ -5,6 +5,9 @@
 #define uccp unsigned const char *
 #endif
 
-extern const unsigned char *xmlify(const unsigned char *);
+typedef const unsigned char * (*xmlify_ptr)(const unsigned char *c);
+extern const unsigned char *xmlify_not(const unsigned char *c);
+extern const unsigned char *xmlify_yes(const unsigned char *c);
+extern xmlify_ptr xmlify;
 
 #endif /* XMLIFY_H_ */

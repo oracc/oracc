@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <ctype.h>
+#include <xmlify.h>
 #include <roco.h>
 
 #define ccp const char *
@@ -68,10 +69,10 @@ roco_row_format(FILE*fp, const unsigned char **row)
 		      long colval = strtoul((ccp)row[colnum], NULL, 10);
 		      if (colval >= 0)
 			pad(fp, zeroes, colval);
-		      fputs((ccp)row[colnum-1], fp);
+		      fputs((ccp)xmlify(row[colnum-1]), fp);
 		    }
 		  else
-		    fputs((ccp)row[colnum-1], fp);
+		    fputs((ccp)xmlify(row[colnum-1]), fp);
 		}
 	      else
 		{
