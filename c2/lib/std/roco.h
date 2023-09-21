@@ -32,6 +32,7 @@ extern int roco_xmlify;
 /* Keep this on one line so GCC errors show the whole prototype
  */
 extern Hash *roco_hash(Roco *r);
+extern void roco_hash_hash(Hash *h, Roco *r);
 extern Roco *roco_load(const char *file, int fieldsr1, const char *xtag, const char *rtag, const char *ctag);
 extern void roco_row_format(FILE*fp, const unsigned char **row);
 extern void roco_write(FILE *fp, Roco *r);

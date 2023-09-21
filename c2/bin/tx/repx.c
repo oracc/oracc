@@ -11,18 +11,27 @@
 const char *cfg = NULL;
 const char *infile = NULL;
 const char *outfile = NULL;
+const char *project = NULL;
 
 int
 main(int argc, char *const *argv)
 {
   Roco *r = NULL;
   
-  options(argc, argv, "c:i:?");
-
+  options(argc, argv, "c:i:p:?");
+  Hash *h = NULL;
+  Pool *p = pool_init();
+  struct xpd *xpd = NULL;
+  if (project)
+    {
+      xpd = xpd_init(project, p);
+      h = xpd->opts;
+    }
+  else
+    h = hash_create(10);
   if (cfg)
     {
-      r = roco_load1(cfg);
-      Hash *h = roco_hash(r);
+      roco_hash_hash(h, roco_load1(cfg));
       unsigned char *s = NULL;
       FILE *outfp = stdout;
       
@@ -68,6 +77,9 @@ opts(int opt, char *arg)
       break;
     case 'o':
       outfile = arg;
+      break;
+    case 'p':
+      project = arg;
       break;
     case '?':
       help();
