@@ -423,7 +423,7 @@ static int kid_cmp (const void *k1, const void *k2);
 static int off_cmp (const void *k1, const void *k2);
 static Unsigned16 open_bins (Unsigned16 start);
 static Unsigned16 assign_bins (Unsigned32 dsize);
-static void clash_free (void *vp);
+static void clash_free (const void *vp);
 static void clashes (void);
 static void hash_2_ptrs (void *p);
 static void into_bins (Unsigned32 data_size, Unsigned32 cache_size);
@@ -434,8 +434,8 @@ static void set_hash_vals (void);
 static void sort_and_dump_bin (Dbi_index *dip, Dbi_bin *dbp);
 static void sort_bins (Dbi_index * dp, Unsigned16 start, Unsigned16 to_do);
 static void transfer_bin (Dbi_index*dip, Dbi_bin*dbp);
-static void write_clash_hdr (void *vp);
-static void write_clash_indexes (void *vp);
+static void write_clash_hdr (const void *vp);
+static void write_clash_indexes (const void *vp);
 static void write_hash_table (void);
 static void write_multiple (Dbi_index * dp);
 static void write_single (Dbi_index * dp);
@@ -573,10 +573,10 @@ reinitialize ()
 }
 
 static void
-clash_free (void *vp)
+clash_free (const void *vp)
 {
   free (((Clash*)vp)->clashes);
-  free (vp);
+  free ((void*)vp);
 }
 
 /* This routine is overloaded to perform two quite separate tasks.
@@ -1148,7 +1148,7 @@ clashes ()
 }
 
 void
-set_clash_offset (void *vp)
+set_clash_offset (const void *vp)
 {
   ((Clash *) vp)->h.offset = clash_offset;
   clash_offset += ((Clash *) vp)->h.count;
@@ -1193,13 +1193,13 @@ set_hash_table_info (Dbi_index_hdr * hp)
 }
 
 static void
-write_clash_hdr (void *vp)
+write_clash_hdr (const void *vp)
 {
   xxfwrite (tmp_dp->h_fname, TRUE, &((Clash *) vp)->h, sizeof (Clash_hdr), 1, tmp_dp->h_fp);
 }
 
 static void
-write_clash_indexes (void *vp)
+write_clash_indexes (const void *vp)
 {
 #if VALIDATE_CLASH
   /* validate the clash list */

@@ -146,7 +146,7 @@ extern void	dbi_resume (Dbi_index *dp);
 extern void	dbi_sort (const char *dbname, int (*cmp) (const void *, const void *));
 extern void	dbi_suspend (Dbi_index *dp);
 extern void	hash_term (void);
-extern void	set_clash_offset (void *vp);
+extern void	set_clash_offset (const void *vp);
 extern void *	dbi_detach_data (Dbi_index *dp, Unsigned32 *count);
 extern void 	dbi_set_cache (Dbi_index *dp, size_t elt_count);
 extern void	dbi_set_user (Dbi_index *dp, Unsigned32 udata);

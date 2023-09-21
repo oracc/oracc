@@ -29,10 +29,15 @@ strrep_f_h(const char *str, FILE *fp, Hash*reps)
 		  strncpy(buf, s, e-s);
 		  buf[e-s] = '\0';
 		  const char *rep = hash_find(reps, (uccp)buf);
+		  if (!rep)
+		    rep = getenv(buf);
 		  if (rep)
 		    fputs(rep, fp);
 		  else
-		    fprintf(fp, "@@%s@@", buf);
+		    {
+		      fprintf(stderr, "strrep: replacement key %s not found\n", buf);
+		      fprintf(fp, "@@%s@@", buf);
+		    }
 		  s = e+2;
 		}
 	    }
