@@ -25,6 +25,7 @@ struct roco
 
 typedef struct roco Roco;
 
+extern const char *roco_colorder;
 extern const char *roco_format;
 extern int roco_newline;
 extern int roco_xmlify;

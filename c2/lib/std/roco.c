@@ -9,6 +9,7 @@
 
 #define uccp unsigned const char *
 
+const char *roco_colorder = NULL;
 const char *roco_format = NULL;
 int roco_newline = 0;
 int roco_xmlify = 1;
@@ -68,8 +69,8 @@ roco_hash_hash(Hash *h, Roco *r)
     {
       if ('#' != *r->rows[i][0])
 	{
-	  if (!strcmp(r->rows[i][0], ".include"))
-	    roco_hash_hash(h, roco_load1(r->rows[i][1]));      
+	  if (!strcmp((ccp)r->rows[i][0], ".include"))
+	    roco_hash_hash(h, roco_load1((ccp)r->rows[i][1]));      
 	  else
 	    hash_add(h, r->rows[i][0], r->rows[i][1]);
 	}
@@ -84,10 +85,31 @@ roco_hash(Roco *r)
   return h;
 }
 
+static const char *
+roco_co_fo()
+{
+  char buf[strlen(roco_colorder) * 4], *b = buf;
+  const char *s;
+  for (s = roco_colorder; *s; ++s)
+    {
+      *b++ = '%';
+      *b++ = *s;
+      if (s[1])
+	*b++ = '\t';
+    }
+  *b++ = '\n';
+  *b = '\0';
+  return strdup(buf);
+}
+
 void
 roco_write(FILE *fp, Roco *r)
 {
   size_t i;
+
+  if (roco_colorder)
+    roco_format = roco_co_fo();
+  
   for (i = 0; i < r->nlines; ++i)
     {
       if (roco_format)
@@ -103,7 +125,10 @@ roco_write(FILE *fp, Roco *r)
 		fputs((const char *)r->rows[i][j], fp);
 	    }
 	  fputc('\n', fp);
-	}
+	}      
     }
+
+  if (roco_colorder)
+    free((void*)roco_format);
 }
 

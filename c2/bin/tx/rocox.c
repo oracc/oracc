@@ -15,7 +15,7 @@ main(int argc, char *const *argv)
 {
   Roco *r = NULL;
   
-  options(argc, argv, "c:fnr:R:tx:X?");
+  options(argc, argv, "c:C:fnr:R:tx:X?");
 
   r = roco_load("-", fields_from_row1, xmltag, rowtag, celtag);
 
@@ -34,6 +34,9 @@ opts(int opt, char *arg)
 {
   switch (opt)
     {
+    case 'C':
+      roco_colorder = arg;
+      break;
     case 'c':
       celtag = arg;
       break;

@@ -6,17 +6,20 @@ bin_PROGRAMS=gdlx repx rocox
 xLDADD=\
 	../../lib/cat/libcat.la \
 	../../nss/gdl/libgdl.la \
+	../../nss/xpd/libxpd.la \
 	../../lib/sll/libsll.la \
 	../../lib/collate/libcoll.la \
 	../../lib/std/libstd.la \
 	../../lib/sys/libsys.la \
 	../../lib/xml/libxml.la \
 	../../lib/xml/rnv/librnv.la \
-	../../rnc/librnc.la
+	../../rnc/librnc.la \
+	../../lib/xml/expat/libexpat.la
 
 AM_CPPFLAGS=\
 	-I../../lib/include \
 	-I../../nss/gdl \
+	-I../../nss/xpd \
 	-I../../lib/collate \
 	-I../../lib/sll \
 	-I../../lib/std \

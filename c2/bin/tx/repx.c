@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <oraccsys.h>
+#include <pool.h>
+#include <xpd.h>
 #include <xsystem.h>
 #include <loadfile.h>
 #include <roco.h>
@@ -16,8 +18,6 @@ const char *project = NULL;
 int
 main(int argc, char *const *argv)
 {
-  Roco *r = NULL;
-  
   options(argc, argv, "c:i:p:?");
   Hash *h = NULL;
   Pool *p = pool_init();
