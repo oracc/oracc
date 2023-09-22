@@ -6,6 +6,7 @@
     xmlns:xh="http://www.w3.org/1999/xhtml"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:struct="http://oracc.org/ns/esp-struct/1.0"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
     exclude-result-prefixes="sl dc xh"
     version="1.0">
 
@@ -13,6 +14,9 @@
 
 <xsl:template match="/">
   <struct:page file="home.xml" id="home" type="page">
+    <xi:include href="00lib/signlist-structure-top.xml">
+      <xi:fallback/>
+    </xi:include>
     <xsl:for-each select="*/sl:letter">
       <struct:page file="{@xml:id}.xml" id="{@xml:id}" type="page">
 	<xsl:for-each select=".//sl:sign">
@@ -20,6 +24,9 @@
 	</xsl:for-each>
       </struct:page>
     </xsl:for-each>
+    <xi:include href="00lib/signlist-structure-bot.xml">
+      <xi:fallback/>
+    </xi:include>
   </struct:page>
 </xsl:template>
 

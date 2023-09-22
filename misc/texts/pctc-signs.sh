@@ -26,7 +26,7 @@ pctc-divs.sh
  for a in o* ; do
      if [ -d $a ]; then
 	 (cd $a ;
-	  echo pctc-xis-data.sh $a ...
+	  # echo pctc-xis-data.sh $a ...
 	  pctc-xis-data.sh )
      fi
  done

@@ -51,9 +51,13 @@ sxinst signlist-sl.css signlist/00res/css/sl.css
 sxinst signlist-projesp.js signlist/00res/js/projesp.js
 sxinst signlist-sl.js signlist/00res/js/sl.js
 
+cp -f 00lib/signlist-x-*.xml signlist/00web
+
 libscripts=$ORACC_BUILDS/lib/scripts
 
-xsltproc $libscripts/sxweb-structure.xsl 02xml/sl.xml >signlist/00web/00config/structure.xml
+xmllint --xinclude - < $libscripts/sxweb-structure.xsl >01tmp/sxweb-structure-xi.xsl
+
+xsltproc 01tmp/sxweb-structure-xi.xsl 02xml/sl.xml >signlist/00web/00config/structure.xml
 
 xsltproc $libscripts/sxweb-letters.xsl 02xml/sl.xml
 
