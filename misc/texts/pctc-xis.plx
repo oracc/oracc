@@ -27,7 +27,7 @@ while (<>) {
     my @x = `$obin/pg2 -q -s period -t -n 0 -P 1000000 <$t`;
 #    warn "$o $f\n";
 #    warn @x;
-    my @stat = (0,0,0);
+    my @stat = (0,0,0,0);
     foreach (@x) {
 	my ($p,$i) = split(/\t/, $_); $i =~ s/\s*$//;
 	my $c = $i =~ tr/ /\n/ +1;
@@ -45,10 +45,13 @@ while (<>) {
 	} elsif ($p =~ /^Uruk III/) {
 	    $stat[2] = $c;
 	    open(O,">$d/${o}_2.tis"); print O $i, "\n"; close O;
+	} elsif ($p =~ /^ED I-II/) {
+	    $stat[3] = $c;
+	    open(O,">$d/${o}_3.tis"); print O $i, "\n"; close O;
 	}
     }
     open(D,">$d/data");
-    print D "oid\t$o\ntotal\t$f\nV\t$stat[0]\nIV\t$stat[1]\nIII\t$stat[2]\n";
+    print D "oid\t$o\ntotal\t$f\nV\t$stat[0]\nIV\t$stat[1]\nIII\t$stat[2]\nI\t$stat[3]\n";
     close D;
 }
 

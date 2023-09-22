@@ -19,6 +19,9 @@ do
 	III)
 	    III=${a[$i+1]}
 	    ;;
+	I)
+	    III=${a[$i+1]}
+	    ;;
 	*)
 	    echo $0: unhandled case ${a[$i]}
     esac
@@ -34,9 +37,11 @@ fi
 if [[ "$III" == "" ]]; then
     III="0"
 fi
+if [[ "$I" == "" ]]; then
+    I="0"
+fi
 
-
-itot=$(( $V + $IV + $III ))
+itot=$(( $V + $IV + $III + $I))
 
 o="$oid.html"
 rm -fr $o
@@ -47,7 +52,7 @@ sed "s/@@TITLE@@/$oid Instance/" <"$hh" >$o
 
 if [[ "$ict" != "0" ]]; then
 
-    if [[ $V -ge 6 || $IV -ge 6 || $III -ge 6 ]]; then
+    if [[ $V -ge 6 || $IV -ge 6 || $III -ge 6 || $I -ge 6 ]]; then
     
 	if [[ "$ict" == "1" ]]; then
 	    s=""
@@ -62,8 +67,8 @@ EOF
 	echo "<p><b>(All $itot instances shown below)</b></p>">>$o
     fi
     
-declare -a v=(V IV III)
-declare -a c=($V $IV $III)
+declare -a v=(V IV III I)
+declare -a c=($V $IV $III I)
 vlen=${#v[@]}
 for (( i=0; i<$vlen; ++i ));
 do
@@ -75,14 +80,20 @@ do
 	    s="s"
 	fi
 
+	if [[ "${v[$i]}" == "I" ]]; then
+	    when="ED"
+	else
+	    when="Uruk"
+	fi
+
 	if [[ ${c[$i]} -ge 6 ]]; then
 	
 	    cat >>$o <<EOF
-<h2>${c[$i]} time$s in Uruk ${v[$i]}: <a href="/pctc/${oid}_$i.tis">see all Uruk ${v[i]} instances</a>.</h2>
+<h2>${c[$i]} time$s in $when ${v[$i]}: <a href="/pctc/${oid}_$i.tis">see all Uruk ${v[i]} instances</a>.</h2>
 EOF
 	else
 	    cat >>$o <<EOF
-<h2>All ${c[$i]} Uruk ${v[$i]} instances:</h2>
+<h2>All ${c[$i]} $when ${v[$i]} instances:</h2>
 EOF
 	fi
 	
