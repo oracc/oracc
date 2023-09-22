@@ -16,6 +16,32 @@
 	  <xsl:when test="@form">
 	    <xsl:value-of select="@form"/>
 	  </xsl:when>
+	  <xsl:when test="self::g:gg">
+	    <xsl:choose>
+	      <xsl:when test="@g:type='correction'">
+		<xsl:for-each select="*[1]">
+		  <xsl:choose>
+		    <xsl:when test="@form"><xsl:value-of select="@form"/></xsl:when>
+		    <xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise>
+		  </xsl:choose>
+		</xsl:for-each>
+	      </xsl:when>
+	      <xsl:when test="@g:type='ligature'">
+		<xsl:for-each select="*">
+		  <xsl:text>|</xsl:text>
+		  <xsl:choose>
+		    <xsl:when test="@form"><xsl:value-of select="@form"/></xsl:when>
+		    <xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise>
+		  </xsl:choose>
+		  <xsl:if test="not(position()=last())"><xsl:text>+</xsl:text></xsl:if>
+		</xsl:for-each>
+		<xsl:text>|</xsl:text>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<xsl:message>word-children.xsl: unhandled g:gg type '<xsl:value-of select="@g:type"/>'</xsl:message>
+	      </xsl:otherwise>
+	    </xsl:choose>
+	  </xsl:when>
 	  <xsl:otherwise>
 	    <xsl:value-of select="text()"/>
 	  </xsl:otherwise>
