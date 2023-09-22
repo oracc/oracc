@@ -27,8 +27,8 @@
 		</xsl:for-each>
 	      </xsl:when>
 	      <xsl:when test="@g:type='ligature'">
+		<xsl:text>|</xsl:text>
 		<xsl:for-each select="*">
-		  <xsl:text>|</xsl:text>
 		  <xsl:choose>
 		    <xsl:when test="@form"><xsl:value-of select="@form"/></xsl:when>
 		    <xsl:otherwise><xsl:value-of select="text()"/></xsl:otherwise>

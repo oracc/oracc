@@ -131,7 +131,7 @@
 		    <xsl:variable name="o" select="@xml:id"/>
 		    <xsl:for-each select="document('sl-corpus-counts.xml',/)">
 		      <xsl:variable name="c" select="key('counts', $o)"/>
-		      <xsl:message>c/o = <xsl:value-of select="$c/o"/></xsl:message>
+		      <!--<xsl:message>c/o = <xsl:value-of select="$c/o"/></xsl:message>-->
 		      <xsl:choose>
 			<xsl:when test="$c/t='0'">
 			  <p>(No attestations in corpus)</p>
