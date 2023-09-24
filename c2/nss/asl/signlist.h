@@ -189,6 +189,7 @@ struct sl_listdef
   const char **names;
   int nnames;
   int sorted;
+  Hash *known;
   Hash *seen;
   const char *str;
   struct sl_inst inst;
@@ -337,6 +338,7 @@ struct sl_list
   List *insts; 		/* signs or forms where this list occurs */
   const char **oids; 	/* NULL-terminated, sorted and uniqued list of
 			   sign/form names from the list's insts */
+  struct sl_inst *inst;
 };
 
 /* This is the global value information structure */

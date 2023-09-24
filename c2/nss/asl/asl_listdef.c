@@ -166,7 +166,10 @@ asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char
 	  ldp->name = pool_copy((uccp)name, sl->p);
 	  ldp->nnames = list_len(nlist);
 	  ldp->names = list2chars(nlist);
-	  ldp->seen = hash_create(128);
+	  ldp->known = hash_create(256);
+	  for (i = 0; i < ldp->nnames; ++i)
+	    hash_add(ldp->known, ldp->names[i], "");
+	  ldp->seen = hash_create(256);
 	  ldp->inst.type = 'd';
 	  ldp->inst.u.d = ldp;
 	  sl->curr_inst = &ldp->inst;

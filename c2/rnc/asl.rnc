@@ -45,8 +45,10 @@ sl.lref =
     attribute n { text },
     attribute sort { text }, 
     attribute xml:id { xsd:NCName }?,
-    sl.name?
+    sl.name?,
+    (sl.inote | sl.lit | sl.note)*
   }
+
 
 sl.sref =
   element sl:sref {

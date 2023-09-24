@@ -402,7 +402,7 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
 }
 
 static void
-asl_register_list_item(struct sl_signlist *sl, const char *n)
+asl_register_list_item(struct sl_signlist *sl, const char *n, struct sl_list *l)
 {
   /* Check that the @list is valid against the signlists's listdefs
      and register it as seen */
@@ -417,8 +417,15 @@ asl_register_list_item(struct sl_signlist *sl, const char *n)
 	  *end = '\0';
 	  if ((ldp = hash_find(sl->listdefs, (uccp)name)))
 	    {
-	      if (!(hash_find(ldp->seen, l->name)))
-		hash_add(ldp->seen, l->name, l);
+	      if (!(hash_find(ldp->known, l->name)))
+		{
+		  mesg_verr(locp, "%s is not a known item in list %s", n, name);
+		}
+	      else
+		{
+		  if (!(hash_find(ldp->seen, l->name)))
+		    hash_add(ldp->seen, l->name, l);
+		}
 	    }
 	  else if (!sll_signlist(name,strlen(name)))
 	    mesg_verr(locp, "@list %s has unknown list-name part %s", n, name);
@@ -484,7 +491,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
 	}
     }
 
-  asl_register_list_item(sl, n);
+  asl_register_list_item(sl, n, l);
   
   i->u.l = l;
 
@@ -773,9 +780,16 @@ asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const un
       sl->curr_inst = sl->curr_sign->inst;
 
       /* There is no current sign in effect after a tle except for componly in a form */
-      sl->curr_sign = NULL;
       if (type == sx_tle_lref)
-	asl_register_list_item(sl, n);
+	{
+	  struct sl_list *l = memo_new(sl->m_lists);
+	  l->name = n;
+	  asl_register_list_item(sl, n, l);
+	  sl->curr_inst = l->inst = memo_new(sl_insts);
+	}
+      else
+	sl->curr_inst = sl->curr_sign->inst;
+      sl->curr_sign = NULL;
     }
 }
 
