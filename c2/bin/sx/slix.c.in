@@ -2,8 +2,11 @@
 #include <stdlib.h>
 #include <c2types.h>
 #include <oraccsys.h>
-#include "help.h"
 #include <dbi.h>
+
+#ifdef HELP
+#include "help.h"
+#endif
 
 int boot = 0;
 int no_output = 0;

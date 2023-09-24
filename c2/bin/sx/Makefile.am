@@ -51,8 +51,9 @@ slx_DEPENDENCIES = $(slx_LDADD)
 
 sx_SOURCES=sx.c sx_marshall.c sx_homophones.c sx_compounds.c sx_digests.c \
 	sx_inherited.c sx_listdefs.c sx_values.c sx_qualified.c sx_unicode.c \
-	sx_walk.c sx_sll.c sx_w_asl.c sx_w_jsn.c sx_w_xml.c sx_oid_list.c \
-	help.c
+	sx_walk.c sx_sll.c sx_w_asl.c sx_w_jsn.c sx_w_xml.c sx_oid_list.c 
+
+#help.c
 
 sx_LDADD = $(xLDADD) -lpcre2-8
 

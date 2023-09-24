@@ -14,6 +14,7 @@
 extern int asl_literal_flag;
 
 static void check_flags(Mloc* locp, char *n, int *q, int *l);
+static void asl_register_list_item(struct sl_signlist *sl, const char *n);
 
 struct sl_signlist *curr_asl = NULL;
 
@@ -401,6 +402,41 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
 }
 
 static void
+asl_register_list_item(struct sl_signlist *sl, const char *n)
+{
+  /* Check that the @list is valid against the signlists's listdefs
+     and register it as seen */
+  char name[32];
+  if (strlen((ccp)n) < 32)
+    {
+      strcpy(name, (ccp)n);
+      char *end = strpbrk(name, "0123456789");
+      if (end)
+	{
+	  struct sl_listdef *ldp = NULL;
+	  *end = '\0';
+	  if ((ldp = hash_find(sl->listdefs, (uccp)name)))
+	    {
+	      if (!(hash_find(ldp->seen, l->name)))
+		hash_add(ldp->seen, l->name, l);
+	    }
+	  else if (!sll_signlist(name,strlen(name)))
+	    mesg_verr(locp, "@list %s has unknown list-name part %s", n, name);
+	}
+      else
+	{
+	  mesg_verr(locp, "@list %s has no digits", n);
+	  return;
+	}
+    }
+  else
+    {
+      mesg_verr(locp, "@list entry too long (max 31 characters)");
+      return;
+    }
+}
+
+static void
 asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit, int q, int m)
 {
   struct sl_list *l = NULL;
@@ -448,36 +484,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
 	}
     }
 
-  /* Check that the @list is valid against the signlists's listdefs
-     and register it as seen */
-  char name[32];
-  if (strlen((ccp)n) < 32)
-    {
-      strcpy(name, (ccp)n);
-      char *end = strpbrk(name, "0123456789");
-      if (end)
-	{
-	  struct sl_listdef *ldp = NULL;
-	  *end = '\0';
-	  if ((ldp = hash_find(sl->listdefs, (uccp)name)))
-	    {
-	      if (!(hash_find(ldp->seen, l->name)))
-		hash_add(ldp->seen, l->name, l);
-	    }
-	  else if (!sll_signlist(name,strlen(name)))
-	    mesg_verr(locp, "@list %s has unknown list-name part %s", n, name);
-	}
-      else
-	{
-	  mesg_verr(locp, "@list %s has no digits", n);
-	  return;
-	}
-    }
-  else
-    {
-      mesg_verr(locp, "@list entry too long (max 31 characters)");
-      return;
-    }
+  asl_register_list_item(sl, n);
   
   i->u.l = l;
 
@@ -767,6 +774,8 @@ asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const un
 
       /* There is no current sign in effect after a tle except for componly in a form */
       sl->curr_sign = NULL;
+      if (type == sx_tle_lref)
+	asl_register_list_item(sl, n);
     }
 }
 

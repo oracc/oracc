@@ -4,6 +4,7 @@ bin_PROGRAMS=oid
 
 xLDADD=\
 	../../lib/oid/liboid.la \
+	../../lib/xml/libxml.la \
 	../../lib/sys/libsys.la \
 	../../lib/std/libstd.la
 

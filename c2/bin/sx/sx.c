@@ -10,7 +10,10 @@
 #include <oraccsys.h>
 #include <oracclocale.h>
 #include "sx.h"
+
+#ifdef HELP
 #include "help.h"
+#endif
 
 Mloc *xo_loc;
 FILE *f_xml;
@@ -234,6 +237,7 @@ opts(int opt, char *arg)
 void
 help(void)
 {
+#ifdef HELP
   help_longest_opt("m [LIST]");
   help_title("sx: The Oracc signlist processor for .asl files");
   help_usage("  Usage: sx [OPTIONS] [ASL-FILE]");
@@ -262,4 +266,5 @@ help(void)
   help_option("n", "names-of-lists: show list -names defined in signlist");
   help_option("u", "unicode: show a Unicode coverage data");
   help_str("",0);
+#endif
 }
