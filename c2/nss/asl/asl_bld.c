@@ -14,7 +14,7 @@
 extern int asl_literal_flag;
 
 static void check_flags(Mloc* locp, char *n, int *q, int *l);
-static void asl_register_list_item(struct sl_signlist *sl, const char *n);
+static void asl_register_list_item(Mloc *locp, struct sl_signlist *sl, const char *n, struct sl_list *l);
 
 struct sl_signlist *curr_asl = NULL;
 
@@ -402,7 +402,7 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
 }
 
 static void
-asl_register_list_item(struct sl_signlist *sl, const char *n, struct sl_list *l)
+asl_register_list_item(Mloc *locp, struct sl_signlist *sl, const char *n, struct sl_list *l)
 {
   /* Check that the @list is valid against the signlists's listdefs
      and register it as seen */
@@ -491,7 +491,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
 	}
     }
 
-  asl_register_list_item(sl, n, l);
+  asl_register_list_item(locp, sl, n, l);
   
   i->u.l = l;
 
@@ -784,8 +784,9 @@ asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const un
 	{
 	  struct sl_list *l = memo_new(sl->m_lists);
 	  l->name = n;
-	  asl_register_list_item(sl, n, l);
-	  sl->curr_inst = l->inst = memo_new(sl_insts);
+	  sl->curr_inst = l->inst = memo_new(sl->m_insts);
+	  hash_add(sl->hlentry, n, l);
+	  asl_register_list_item(locp, sl, n, l);
 	}
       else
 	sl->curr_inst = sl->curr_sign->inst;

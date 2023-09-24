@@ -268,12 +268,15 @@ sx_w_a_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
       else if (s->u.s->type == sx_tle_lref)
 	{
 	  const char *goesto = "", *dest = "";
+	  struct sl_list *l = hash_find(sl->hlentry, s->u.s->name);
 	  if (s->u.s->pname)
 	    {
 	      goesto = " => ";
 	      dest = (ccp)s->u.s->pname;
 	    }
 	  fprintf(f->fp, "\n@lref\t%s%s%s\n", s->u.s->name, goesto, dest);
+	  if (l && l->inst)
+	    sx_w_a_notes(f, sl, l->inst);
 	}
       else if (s->u.s->type == sx_tle_sref)
 	{
