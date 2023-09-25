@@ -10,7 +10,7 @@ fi
 
 if [ -r 00lib/$slname ]; then
     mkdir -p 02pub/sl
-    sx -s 00lib/$slname >02pub/sl/sl.tsv
+    #sx -s 00lib/$slname >02pub/sl/sl.tsv
     if [ $? != 0 ]; then
        	exit
     fi

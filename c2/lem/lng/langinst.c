@@ -19,7 +19,7 @@ static int
 find_project_csl(const char *proj,const char*lang)
 {
   static char buf[128];
-  sprintf(buf,"/home/oracc/pub/%s/csl-%s.svl",proj,lang);
+  sprintf(buf,"/Users/stinney/orc/pub/%s/csl-%s.svl",proj,lang);
   return !xaccess(buf,R_OK,0);
 }
 
