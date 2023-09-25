@@ -9,8 +9,17 @@ jsn-l.c
 j2x
 .DS_Store
 concord
+junk
+testfiles
 ax
-sx
+*.edit
+oid
+repx
+rocox
+c2/bin/sx/sx
+c2/bin/sx/slix
+c2/bin/sx/slx
+sx_check.c
 catx
 gdlx
 asl-l.c
@@ -51,7 +60,6 @@ cbdpos.c
 cbdtags.c
 statis
 gx
-sx
 xtfsigs
 environment.py
 c/otf/lng/langrtl.c
