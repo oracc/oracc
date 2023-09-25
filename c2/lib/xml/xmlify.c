@@ -49,7 +49,7 @@ xmlify_yes(const unsigned char *c)
   if (!strpbrk((char*)c,"<>&\""))
     return c;
 
-  thislen = (5 * strlen((char*)c)) + 1; /* maximum possible expansion of string */
+  thislen = (6 * strlen((char*)c)) + 1; /* maximum possible expansion of string */
   if (xbuf_alloced < thislen)
     {
       if (!(xbuf = realloc(xbuf,thislen)))
