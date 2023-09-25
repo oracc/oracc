@@ -459,10 +459,12 @@ static const char *
 sx_unicode_useq_r(const char *m, int from, int to, Pool *p)
 {
   /* excise the range-string from the subject */
-  char *tmp = strdup(m+from);
+  char *tmp = NULL; 
   int off = to - from;
 
-  if (to < strlen(m) && tmp[off-1] != '#')
+  tmp = strdup(m+from);
+  
+  if (off && to < strlen(m) && tmp[off-1] != '#')
     ++off;	/* extend range by 1 to include a sentinel # if necessary */
 
   tmp[off] = '\0';

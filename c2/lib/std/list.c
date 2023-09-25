@@ -47,7 +47,7 @@ list_join(List *l, const char *j)
 }
 
 void
-list_add (List *lp, const void *data)
+list_add (List *lp, void *data)
 {
   List_node *tmp = malloc (sizeof (List_node));
   if (!tmp)
@@ -115,7 +115,7 @@ list_create (List_types_e type)
 }
 
 void
-list_delete (List *lp, List_node * to_delete, void (*del)(const void *))
+list_delete (List *lp, List_node * to_delete, void (*del)(void *))
 {
   int keep_rover = (lp->rover && lp->rover == to_delete);
 
@@ -152,10 +152,10 @@ list_delete (List *lp, List_node * to_delete, void (*del)(const void *))
       lp->rover = lp->first;
 }
 
-const void *
+void *
 list_detach (List *lp, List_node * to_delete)
 {
-  const void *data;
+  void *data;
 
   if (lp == NULL || to_delete == NULL)
     return NULL;
@@ -168,7 +168,7 @@ list_detach (List *lp, List_node * to_delete)
 }
 
 void
-list_exec (List *lp, void (*fnc)(const void*))
+list_exec (List *lp, void (*fnc)(void*))
 {
   size_t i;
   List_node *lrover;
@@ -180,10 +180,10 @@ list_exec (List *lp, void (*fnc)(const void*))
     fnc (lrover->data);
 }
 
-const void *
+void *
 list_find (List *lp, const void *eltp, int(*cmp)(const void*lelt, const void*celt))
 {
-  const void *vp;
+  void *vp;
 
   if (lp && list_len(lp))
     {
@@ -196,7 +196,7 @@ list_find (List *lp, const void *eltp, int(*cmp)(const void*lelt, const void*cel
 }
 
 void
-list_free (List *lp, void (*del)(const void *))
+list_free (List *lp, void (*del)(void *))
 {
   size_t i;
   List_node *lrover, *tmp;
@@ -286,7 +286,7 @@ list_reduce (Boolean invert, List * lp, int (*cmp)(const void*, const void*), vo
 }
 #endif
 
-const void *
+void *
 list_first (List *lp)
 {
   if (lp == NULL || lp->first == NULL || lp->count == 0)
@@ -298,7 +298,7 @@ list_first (List *lp)
     }
 }
 
-const void*
+void*
 list_next (List *lp)
 {
   if (lp->rover == lp->last)
@@ -315,10 +315,10 @@ list_next (List *lp)
     }
 }
 
-const void *
+void *
 list_pop (List *lp)
 {
-  const void *data;
+  void *data;
   List_node *tmp;
   if (NULL == lp || NULL == lp->first)
     return NULL;

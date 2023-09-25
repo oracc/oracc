@@ -186,12 +186,12 @@ sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, e
 	      struct rnvval_atts *ratts = NULL;
 
 	      list_add(a, "n");
-	      list_add(a, xmlify(s->u.f->name));
+	      list_add(a, (void*)xmlify(s->u.f->name));
   
 	      if (s->u.f->oid)
 		{
 		  list_add(a, "xml:id");
-		  list_add(a, s->u.f->oid);
+		  list_add(a, (void*)s->u.f->oid);
 		}
 
 	      if (s->u.f->sort > 0)
@@ -443,12 +443,12 @@ x_tle_atts(struct sl_signlist *sl, struct sl_inst *s)
   struct rnvval_atts *ratts = NULL;
 
   list_add(a, "n");
-  list_add(a, xmlify(s->u.s->name));
+  list_add(a, (void*)xmlify(s->u.s->name));
   
   if (s->u.s->oid)
     {
       list_add(a, "xml:id");
-      list_add(a, s->u.s->oid);
+      list_add(a, (void*)s->u.s->oid);
     }
 
   if (s->u.s->sort > 0)

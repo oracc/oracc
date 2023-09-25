@@ -1,6 +1,8 @@
 #ifndef XML_H_
 #define XML_H_	1
 
+#include <xmlify.h>
+
 #include <tree.h>
 #include <xnn.h>
 
@@ -24,7 +26,6 @@ extern void treexml_o_generic(Node *np, void *user);
 extern void treexml_c_generic(Node *np, void *user);
 extern void tree_ns_xml_print(Tree *tp, FILE *fp);
 extern Xmlhelper *xmlh_init(FILE *fp);
-extern const unsigned char *xmlify(const unsigned char *);
 extern void xml_attr(const char **atts, FILE *fp);
 extern void node_xml(FILE *fp, Node *np);
 extern void tree_xml(FILE *fp, Tree *tp);

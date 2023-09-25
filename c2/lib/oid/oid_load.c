@@ -22,7 +22,7 @@ oid_set_oidtab(const char *s)
 static const char *
 oid_tab_path(const char *base)
 {
-  int len = strlen(oracc_home() + strlen("/oid/.tab") + strlen(base) + 1);
+  int len = strlen(oracc_home()) + strlen("/oid/.tab") + strlen(base) + 1;
   char *tmp = malloc(len);
   sprintf(tmp, "%s/oid/%s.tab", oracc_home(), base);
   return tmp;

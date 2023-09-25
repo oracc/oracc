@@ -29,7 +29,8 @@ sl.compoundonly =
     attribute sort { text }, 
     attribute xml:id { xsd:NCName }?,
     attribute cpd-refs { xsd:IDREFS }?,
-    sl.name?
+    sl.name?,
+    (sl.inote | sl.lit | sl.note)*
     }
 
 sl.formproxy =
