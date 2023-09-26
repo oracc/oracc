@@ -20,7 +20,7 @@ do
 	    III=${a[$i+1]}
 	    ;;
 	I)
-	    III=${a[$i+1]}
+	    I=${a[$i+1]}
 	    ;;
 	*)
 	    echo $0: unhandled case ${a[$i]}
@@ -52,59 +52,66 @@ sed "s/@@TITLE@@/$oid Instance/" <"$hh" >$o
 
 if [[ "$ict" != "0" ]]; then
 
+    if [[ "$ict" == "1" ]]; then
+	s=""
+    else
+	s="s"
+    fi
+	
     if [[ $V -ge 6 || $IV -ge 6 || $III -ge 6 || $I -ge 6 ]]; then
     
-	if [[ "$ict" == "1" ]]; then
-	    s=""
-	else
-	    s="s"
-	fi
-	
 	cat >>$o <<EOF
 <h1 class="pcsl">$ict occurrence$s in PC corpus. <a href="/pctc/$oid.tis">See all instances</a></h1>
 EOF
     else
-	echo "<p><b>(All $itot instances shown below)</b></p>">>$o
+	if [[ "$ict" == "1" ]]; then
+	    echo "<p><b>(Sole instance shown below)</b></p>">>$o
+	else
+	    echo "<p><b>(All $itot instances shown below)</b></p>">>$o
+	fi
     fi
     
-declare -a v=(V IV III I)
-declare -a c=($V $IV $III I)
-vlen=${#v[@]}
-for (( i=0; i<$vlen; ++i ));
-do
-    if [[ "${c[$i]}" != "0" ]]; then
-
-	if [[ "${c[$i]}" == "1" ]]; then
-	    s=""
-	else
-	    s="s"
-	fi
-
-	if [[ "${v[$i]}" == "I" ]]; then
-	    when="ED"
-	else
-	    when="Uruk"
-	fi
-
-	if [[ ${c[$i]} -ge 6 ]]; then
-	
-	    cat >>$o <<EOF
-<h2>${c[$i]} time$s in $when ${v[$i]}: <a href="/pctc/${oid}_$i.tis">see all Uruk ${v[i]} instances</a>.</h2>
+    declare -a v=(V IV III I)
+    declare -a c=($V $IV $III $I)
+    vlen=${#v[@]}
+    for (( i=0; i<$vlen; ++i ));
+    do
+	if [[ "${c[$i]}" != "0" ]]; then
+	    
+	    if [[ "${c[$i]}" == "1" ]]; then
+		s=""
+	    else
+		s="s"
+	    fi
+	    
+	    if [[ "${v[$i]}" == "I" ]]; then
+		when="ED"
+	    else
+		when="Uruk"
+	    fi
+	    
+	    if [[ ${c[$i]} -ge 6 ]]; then
+		
+		cat >>$o <<EOF
+<h2>${c[$i]} time$s in $when ${v[$i]}: <a href="/pctc/${oid}_$i.tis">see all $when ${v[i]} instances</a>.</h2>
 EOF
-	else
-	    cat >>$o <<EOF
+	    elif [[ ${c[$i]} -gt 0 ]]; then
+		if [[ ${c[$i]} == 1 ]]; then
+		    cat >>$o <<EOF
+<h2>One $when ${v[$i]} instance:</h2>
+EOF
+		else
+		    cat >>$o <<EOF
 <h2>All ${c[$i]} $when ${v[$i]} instances:</h2>
 EOF
-	fi
+		fi
+	    fi
 	
-cat "${oid}_$i.div" >>$o
-    fi
-done
-
+	    cat "${oid}_$i.div" >>$o
+	fi
+    done    
 else
-
     echo "<p>Not attested in PC corpus.</p>"
-
 fi
 
 cat "$ht" >>$o
