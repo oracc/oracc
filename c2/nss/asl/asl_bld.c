@@ -443,6 +443,29 @@ asl_register_list_item(Mloc *locp, struct sl_signlist *sl, const char *n, struct
     }
 }
 
+/* Check for list/lref conflict; if there is no conflict return 0; if there is a conflict return 1
+ */
+ 
+static int
+asl_list_lref_guard(Mloc *locp, struct sl_signlist *sl, unsigned const char *n, enum sl_ll_type type)
+{
+  struct sl_list *lp = hash_find(sl->hlentry, n);
+  if (lp)
+    {
+      if ((lp->type == sl_ll_list && sl_ll_lref == type)
+	  || (type == sl_ll_list && sl_ll_lref == lp->type))
+	{
+	  mesg_verr(locp, "%s can't be @lref and @list; append letters to disambiguate if necessary", n);
+	  return 1;
+	}
+      else if (lp->type == sl_ll_lref && type == sl_ll_lref)
+	{
+	  mesg_verr(locp, "duplicate @lref %s (first occurrence at line %d", n, lp->inst->mloc.line);
+	  return 1;
+	}
+    }
+  return 0;
+}
 static void
 asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit, int q, int m)
 {
@@ -456,6 +479,9 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
   i->literal = (Boolean)lit;
   i->query = (Boolean)q;
   /*sl->curr_inst = i;*/
+
+  if (asl_list_lref_guard(locp, sl, n, sl_ll_list))
+    return;
 
   /* If this list is already in the lists hash for the sign or the form-instance it's an error */
   if (sl->curr_form)
@@ -480,7 +506,9 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
 	 sl_list* or add the inst to the existing sl_list* */
       struct sl_inst *parent_inst = (sl->curr_form ? sl->curr_form : sl->curr_sign->inst);
       if ((l = hash_find(sl->hlentry, n)))
-        list_add(l->insts, parent_inst);
+	{
+	  list_add(l->insts, parent_inst);
+	}
       else
 	{
 	  l = memo_new(sl->m_lists);
@@ -491,7 +519,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
 	}
     }
 
-  asl_register_list_item(locp, sl, n, l);
+  asl_register_list_item(locp, sl, (ccp)n, l);
   
   i->u.l = l;
 
@@ -782,11 +810,15 @@ asl_bld_tle(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, const un
       /* There is no current sign in effect after a tle except for componly in a form */
       if (type == sx_tle_lref)
 	{
-	  struct sl_list *l = memo_new(sl->m_lists);
-	  l->name = n;
-	  sl->curr_inst = l->inst = memo_new(sl->m_insts);
-	  hash_add(sl->hlentry, n, l);
-	  asl_register_list_item(locp, sl, n, l);
+	  if (!asl_list_lref_guard(locp, sl, n, sl_ll_lref))
+	    {
+	      struct sl_list *l = memo_new(sl->m_lists);
+	      l->name = n;
+	      l->type = sl_ll_lref;
+	      sl->curr_inst = l->inst = memo_new(sl->m_insts);
+	      hash_add(sl->hlentry, n, l);
+	      asl_register_list_item(locp, sl, (ccp)n, l);
+	    }
 	}
       else
 	sl->curr_inst = sl->curr_sign->inst;

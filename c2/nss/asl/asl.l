@@ -62,7 +62,7 @@ LISTNUM		((U\+|[A-Z]+)[0-9]+[()A-Z0-9a-z_'"+*/]*){M}{Q}{L}
 NUMGRAPH	[0-9XnN]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\){M}{Q}{L}
 FRACTION	[0-9]\/[0-9]
 PUNCT		("*"|:['".:]?|"/"){Q}{L}
-SYSNAME		[a-zA-Z]+
+SYSNAME		[a-zA-Z/-]+
 
 %s E
 %s L

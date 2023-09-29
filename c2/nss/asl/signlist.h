@@ -329,6 +329,7 @@ struct sl_form
   Boolean compoundonly;
 };
 
+enum sl_ll_type { sl_ll_none , sl_ll_list , sl_ll_lref };
 struct sl_list
 {
   const unsigned char *name;
@@ -339,6 +340,7 @@ struct sl_list
   const char **oids; 	/* NULL-terminated, sorted and uniqued list of
 			   sign/form names from the list's insts */
   struct sl_inst *inst;
+  enum sl_ll_type type; /* sl_ll_list or sl_ll_lref */
 };
 
 /* This is the global value information structure */
