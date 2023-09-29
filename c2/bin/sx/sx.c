@@ -59,7 +59,7 @@ main(int argc, char * const*argv)
 
   gsort_init();
   
-  options(argc, argv, "abcCijlm:nMosStTux?");
+  options(argc, argv, "abcCijlm:nMoOsStTux?");
   asltrace = asl_flex_debug = trace_mode;
 
   if (boot_mode)
@@ -194,6 +194,9 @@ opts(int opt, char *arg)
     case 'M':
       listdef_check = 1;
       missing_lists = NULL;
+      break;
+    case 'O':
+      oid_list = 2;
       break;
     case 'o':
       oid_list = 1;

@@ -132,7 +132,7 @@ atlist:
 atlref:
 	  LREF LISTNUM 	 { asl_bld_tle(&@1, curr_asl, (uccp)$2, NULL, sx_tle_lref); }
 	| LREF LISTNUM GOESTO atftoken
-			 { asl_bld_tle(&@1, curr_asl, (uccp)$2, (uccp)$3, sx_tle_lref); }
+			 { asl_bld_tle(&@1, curr_asl, (uccp)$2, (uccp)$4, sx_tle_lref); }
 	;
 
 atsref:

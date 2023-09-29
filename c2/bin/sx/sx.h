@@ -39,6 +39,7 @@ struct sx_functions
   };
 
 extern int identity_mode;
+extern int oid_list;
 extern Hash *oids;
 extern Hash *oid_sort_keys;
 

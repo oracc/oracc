@@ -415,7 +415,7 @@ x_cdp_refs(struct sl_signlist *sl, struct sl_inst *s)
       int i;
       for (i = 0; cdp->memb[i]; ++i)
 	;
-      len = (i * (strlen("o1234567"+1)))+1;
+      len = (i * (strlen("o1234567")+1))+1;
       oids = pool_alloc(len, sl->p);
       *oids = '\0';
       for (i = 0; cdp->memb[i]; ++i)
@@ -481,7 +481,7 @@ x_tle_atts(struct sl_signlist *sl, struct sl_inst *s)
 static void
 sx_w_x_sign(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, enum sx_pos_e p)
 {
-  static const char *in_sign = sx_tle_none;
+  static const char *in_sign = 0;
 
   if (p == sx_pos_inst)
     {
