@@ -34,7 +34,8 @@ int minus_flag = 0;
 		INOTE LIT NOTE REF TEXT END EBAD EFORM ESIGN
 		UAGE USEQ UTF8 UMAP UNAME UNOTE UPUA
 		SIGNLIST LISTDEF LISTNAME LREF SREF
-		SYSDEF SYSNAME SYS SMAP LITERAL
+		SYSDEF SYSNAME SYS SYSGOESTO SYSTEXT
+		SMAP LITERAL
 
 %nterm  <text>  anynote atftoken atftokens lang longtext token
 
@@ -96,7 +97,7 @@ atlistdef:
 
 atsysdef:
 	  SYSDEF SYSNAME	    { asl_bld_sysdef(&@1, curr_asl, (ccp)$2, NULL); }
-	| SYSDEF SYSNAME TEXT	    { asl_bld_sysdef(&@1, curr_asl, (ccp)$2, (ccp)$3); }
+	| SYSDEF SYSNAME SYSTEXT    { asl_bld_sysdef(&@1, curr_asl, (ccp)$2, (ccp)$3); }
 	;
 
 atsign:
@@ -150,9 +151,9 @@ atv:
 	;
 
 atsys:
-	  SYS SYSNAME atftoken	{ asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, NULL); }
-	| SYS SYSNAME atftoken GOESTO atftokens {
-	  			  asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, (uccp)longtext(NULL,NULL,NULL)); }
+	  SYS SYSNAME SYSTEXT	{ asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, NULL); }
+	| SYS SYSNAME SYSGOESTO SYSTEXT {
+	    			  asl_bld_sys(&@1, curr_asl, (ccp)$2, (uccp)$3, (uccp)$4); }
         ;
 
 atftokens:

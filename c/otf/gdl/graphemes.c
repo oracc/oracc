@@ -2485,7 +2485,11 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	/* Most languages won't use the ~-allographs in a way that affects
 	   the analysis of the form--we can't be certain that this is the case 
 	   in proto-cuneiform, and we may need to add more cases as well */
-	if (!rendering_word_form || curr_lang->core->code == c_qcu) {
+	if (!rendering_word_form
+	    || curr_lang->core->code == c_qcu
+	    || curr_lang->core->code == c_qpc
+	    || curr_lang->core->code == c_qpe
+	    ) {
 	  *insertp++ = '~';
 	  if (np->children.nodes)
 	    insertp = render_g_text(np->children.nodes[0], insertp, startp);

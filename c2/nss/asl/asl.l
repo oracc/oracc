@@ -68,7 +68,8 @@ SYSNAME		[a-zA-Z/-]+
 %s L
 %s S
 %s T
-%s Y
+%x Y
+%x Yt
 %x X
 
 %%
@@ -95,8 +96,11 @@ SYSNAME		[a-zA-Z/-]+
 <X>([^"\n]|\\\")*\"?[ \t]*/\n   { BEGIN 0; aslsave; strip_literal(asllval.text); return LITERAL; }
 \"				{ BEGIN X; }
 
-<Y>{SYSNAME}/\n         	{ aslsave; BEGIN(Ynext); return SYSNAME; }
-<Y>{SYSNAME}/[ \t]+         	{ aslsave; BEGIN(Ynext); return SYSNAME; }
+<Y>{SYSNAME}/\n         	{ aslsave; BEGIN Yt; return SYSNAME; }
+<Y>{SYSNAME}/[ \t]+         	{ aslsave; BEGIN Yt; return SYSNAME; }
+<Yt>([^= \n]|=[^>])+/"=>"     	{ aslsave; return SYSGOESTO; }
+<Yt>[^\n]+/\n			{ aslsave; BEGIN(0); return SYSTEXT; }
+<Y,Yt>[ \t]+   			{ }
 
 ^@@				{ /* no-op */ }
 ^@end/[ \t].*\n        	       	{ atcmd(END,E); }
@@ -151,9 +155,6 @@ SYSNAME		[a-zA-Z/-]+
 
 {PUNCT}				{ aslsave; return GVALUE; }
 
-[^ \t]+"[...]"[^ \t\n]+[ \t]*/\n { aslsave; return ATF; }
-[^ \t]+"[...]"[ \t]*/\n       	{ aslsave; return ATF; }
-"[...]"[^ \t\n]*[ \t]*/\n 	{ aslsave; return ATF; }
 [^-_ \t]+[-_\{\}][^ \t\n]+	{ aslsave; return ATF; }
 [^{} \t]*[{}][^ \t\n]*/\n      	{ aslsave; return ATF; }
 
