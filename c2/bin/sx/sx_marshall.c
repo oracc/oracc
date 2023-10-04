@@ -449,7 +449,6 @@ sx_marshall(struct sl_signlist *sl)
 	  if (sortcode_output)
 	    fprintf(stderr, "FORM\t%s\t%d\n", sl->forms[i]->oid, sl->forms[i]->sort);
 	  hash_add(oid_sort_keys, (uccp)sl->forms[i]->oid, (void*)(uintptr_t)sl->forms[i]->sort);
-
 	}
 
       /* While we are iterating over forms, check to see if a form
@@ -741,6 +740,8 @@ sx_marshall(struct sl_signlist *sl)
   sx_qualified(sl);
 
   sx_unicode(sl);
+
+  sx_images(sl);
   
   /*collate_term();*/
 }

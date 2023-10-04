@@ -97,6 +97,12 @@ sx_w_a_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
 	  fprintf(f->fp, "\n@sysdef %s%s%s\n", n[i], cspace, ctext);
 	  sx_w_a_notes(f, sl, &sdp->inst);
 	}
+      if (sl->images)
+	{
+	  Mloc *m;
+	  for (m = list_first(sl->images); m; m = list_next(sl->images))
+	    fprintf(f->fp, "@images %s", (char*)m->user);
+	}
 #if 0
       if (nn)
 	fputc('\n', f->fp);

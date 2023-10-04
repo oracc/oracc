@@ -15,6 +15,18 @@ int roco_newline = 0;
 int roco_xmlify = 1;
 
 Roco *
+roco_create(int rows, int cols)
+{
+  Roco *r = calloc(1, sizeof(Roco));
+  r->lines = calloc(rows, sizeof(const char **));
+  r->nlines = rows;
+  int i;
+  for (i = 0; i < r->nlines; ++i)
+    r->rows[i] = calloc(cols, sizeof(const char *));
+  return r;
+}
+
+Roco *
 roco_load(const char *file, int fieldsr1,
 	  const char *xtag, const char *rtag, const char *ctag)
 {

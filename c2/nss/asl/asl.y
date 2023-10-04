@@ -35,7 +35,7 @@ int minus_flag = 0;
 		UAGE USEQ UTF8 UMAP UNAME UNOTE UPUA
 		SIGNLIST LISTDEF LISTNAME LREF SREF
 		SYSDEF SYSNAME SYS SYSGOESTO SYSTEXT
-		SMAP LITERAL
+		SMAP LITERAL IMAGES
 
 %nterm  <text>  anynote atftoken atftokens lang longtext token
 
@@ -70,6 +70,7 @@ atcmd:
 	  atsignlist
 	| atlistdef
 	| atsysdef
+	| atimages
 	| atsign
         | atlref
         | atsref
@@ -88,16 +89,20 @@ atcmd:
         ;
 
 atsignlist:
-	  SIGNLIST TEXT { asl_bld_signlist(&@1, (uccp)$2, 0); }
+	  SIGNLIST TEXT 		{ asl_bld_signlist(&@1, (uccp)$2, 0); }
 	;
 
 atlistdef:
-	  LISTDEF LISTNAME longtext { asl_bld_listdef(&@1, curr_asl, (ccp)$2, (ccp)longtext(NULL,NULL,NULL)); }
+	  LISTDEF LISTNAME longtext 	{ asl_bld_listdef(&@1, curr_asl, (ccp)$2, (ccp)longtext(NULL,NULL,NULL)); }
 	;
 
 atsysdef:
-	  SYSDEF SYSNAME	    { asl_bld_sysdef(&@1, curr_asl, (ccp)$2, NULL); }
-	| SYSDEF SYSNAME SYSTEXT    { asl_bld_sysdef(&@1, curr_asl, (ccp)$2, (ccp)$3); }
+	  SYSDEF SYSNAME	    	{ asl_bld_sysdef(&@1, curr_asl, (ccp)$2, NULL); }
+	| SYSDEF SYSNAME SYSTEXT    	{ asl_bld_sysdef(&@1, curr_asl, (ccp)$2, (ccp)$3); }
+	;
+
+atimages:
+	  IMAGES TEXT 		    	{ asl_bld_images(&@1, curr_asl, (uccp)$2); }
 	;
 
 atsign:

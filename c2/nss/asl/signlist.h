@@ -60,8 +60,9 @@ struct sl_signlist
   struct sl_inst *curr_value;
   struct sl_inst *curr_inst; /* used to attach meta to correct tag */
   List *compounds;
-  List *syslists; /* list of the lists of @sys that occur in sign or
-		     form, so we can generate system tables easily */
+  List *images; 		/* list of names of image manifests as char * */
+  List *syslists; 		/* list of the lists of @sys that occur in sign or
+		     		   form, so we can generate system tables easily */
   Hash *oid2ucode;
   Memo *m_tokens;
   Memo *m_letters;
@@ -375,6 +376,7 @@ struct sl_value
 extern struct sl_signlist *asl_bld_init(void);
 extern void asl_bld_listdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char *in);
 extern void asl_bld_sysdef(Mloc *locp, struct sl_signlist *sl, const char *name, const char *comment);
+extern void asl_bld_images(Mloc *locp, struct sl_signlist *sl, const unsigned char *n);
 extern void asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n,int minus_flag);
 extern void asl_bld_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int minus_flag);
 extern void asl_bld_aka(Mloc *locp, struct sl_signlist *sl, const unsigned char *t);

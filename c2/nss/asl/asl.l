@@ -107,6 +107,7 @@ SYSNAME		[a-zA-Z][a-zA-Z0-9_-]+
 ^@signlist/[ \t]+      		{ atcmd(SIGNLIST,S); }
 ^@listdef/[ \t]+       		{ atcmd(LISTDEF,L); }
 ^@sysdef/[ \t]+       		{ Ynext=S; atcmd(SYSDEF,Y); }
+^@images/[ \t]+			{ atcmd(IMAGES,S); }
 ^@sign-?/[ \t]       		{ atcmd(SIGN,0); }
 ^@aka/[ \t]       		{ atcmd(AKA,0); }
 ^@smap/[ \t]+			{ atcmd(SMAP,0); }

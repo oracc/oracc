@@ -942,6 +942,23 @@ asl_bld_sys(Mloc *locp, struct sl_signlist *sl, const char *sysname, unsigned co
 }
 
 void
+asl_bld_images(Mloc *locp, struct sl_signlist *sl, const unsigned char *n)
+{
+  if (n)
+    {
+      while (isspace(*n))
+	++n;
+      Mloc *m = mloc_mloc(locp);
+      m->user = (void*)n;
+      if (!sl->images)
+	sl->images = list_create(LIST_SINGLE);
+      list_add(sl->images, m);
+    }
+  else
+    mesg_verr(locp, "@images has no image file name");
+}
+
+void
 asl_bld_uhex(Mloc *locp, struct sl_signlist *sl, const unsigned char *t)
 {
   if (asl_sign_guard(locp, sl, "uhex"))

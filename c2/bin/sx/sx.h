@@ -1,5 +1,6 @@
 #ifndef SX_H_
 #define SX_H_
+#include <roco.h>
 #include <asl.h>
 
 enum sx_pos_e { sx_pos_init , sx_pos_inst , sx_pos_term };
@@ -53,6 +54,7 @@ extern void sx_xml_init(void);
 extern void sx_compounds(struct sl_signlist *sl);
 extern void sx_compound_digests(struct sl_signlist *sl);
 extern void sx_homophones(struct sl_signlist *sl);
+extern Roco *sx_images(struct sl_signlist *sl);
 extern void sx_inherited(struct sl_signlist *sl);
 extern void sx_listdefs(struct sl_signlist *sl, const char *listnames);
 extern void sx_listdefs_sort(struct sl_listdef *ldp);
