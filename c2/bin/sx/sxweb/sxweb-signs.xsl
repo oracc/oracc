@@ -106,6 +106,17 @@
 	  </xsl:choose>
 	</xsl:for-each>
       </p>
+      <xsl:if test="sl:list">
+	<p>
+	  List numbers: 
+	  <xsl:for-each select="sl:list">
+	    <xsl:value-of select="@n"/>
+	    <xsl:if test="not(position()=last())">
+	      <xsl:text>; </xsl:text>
+	    </xsl:if>
+	  </xsl:for-each>
+	</p>
+      </xsl:if>
       <xsl:choose>
 	<xsl:when test="@compoundonly='yes'">
 	  <xsl:variable name="s">
@@ -126,8 +137,23 @@
 	    <xsl:if test="not(sl:uage='0')">
 	      <table width="95%">
 		<tr>
-		  <td width="30%" valign="top"><esp:image file="../../../pctc/images/{@xml:id}.jpg" description="image of {sl:name[1]}"/></td>
-		  <td width="70%">
+		  <td width="15%" valign="top">
+		    <xsl:choose>
+		      <xsl:when test="sl:images/sl:i[@loc]">
+			<xsl:variable name="base" select="'../../../pctc'"/>
+			<xsl:for-each select="sl:images/sl:i">
+			  <xsl:variable name="ref" select="@ref"/>
+			  <xsl:variable name="header" select="/*/sl:iheader[@xml:id=$ref]"/>
+			  <esp:image file="{$base}/{$header/@path}/{@loc}"
+				     description="{$header/@label} image of {ancestor::*[sl:name]/sl:name[1]}"/>
+			</xsl:for-each>
+		      </xsl:when>
+		      <xsl:otherwise>
+			<xsl:text>&#xa0;</xsl:text>
+		      </xsl:otherwise>
+		    </xsl:choose>
+		  </td>
+		  <td width="85%">
 		    <xsl:variable name="o" select="@xml:id"/>
 		    <xsl:for-each select="document('sl-corpus-counts.xml',/)">
 		      <xsl:variable name="c" select="key('counts', $o)"/>
@@ -147,7 +173,7 @@
 			      </xsl:otherwise>
 			    </xsl:choose>
 			  </xsl:variable>
-			  <iframe width="600" height="{$height}" src="/pctc/inst/{$o}.html"/>
+			  <iframe width="100%" height="{$height}" src="/pctc/inst/{$o}.html"/>
 			</xsl:otherwise>
 		      </xsl:choose>
 		    </xsl:for-each>
@@ -158,17 +184,6 @@
 	  </xsl:if>
 	</xsl:otherwise>
       </xsl:choose>
-      <xsl:if test="sl:list">
-	<p>
-	  List numbers: 
-	  <xsl:for-each select="sl:list">
-	    <xsl:value-of select="@n"/>
-	    <xsl:if test="not(position()=last())">
-	      <xsl:text>; </xsl:text>
-	    </xsl:if>
-	  </xsl:for-each>
-	</p>
-      </xsl:if>
       <xsl:variable name="oid" select="@xml:id"/>
       <xsl:if test="$project='emss'">
 	<xsl:for-each select="document($snippets)">
@@ -256,7 +271,7 @@
   ></tr>
 </xsl:template>
 
-<xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note|sl:qs|sl:inherited|sl:uage|sl:sys|sl:smap"/>
+<xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note|sl:qs|sl:inherited|sl:uage|sl:sys|sl:smap|sl:images"/>
 
 <xsl:template match="sl:sysdef"/>
 

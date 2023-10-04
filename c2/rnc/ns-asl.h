@@ -30,6 +30,7 @@ enum asl_a_type
   asl_a_oid,
   asl_a_order,
   asl_a_p,
+  asl_a_path,
   asl_a_period,
   asl_a_project,
   asl_a_qm,

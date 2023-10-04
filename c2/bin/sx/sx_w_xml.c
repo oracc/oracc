@@ -106,7 +106,12 @@ sx_w_x_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
 	  for (i = 0; i < list_len(sl->images); ++i)
 	    {
 	      const char *o = itoa(i);
-	      ratts = rnvval_aa("x", "xml:id", sl->iheaders[i].id, "order", o, "label", sl->iheaders[i].label, NULL);
+	      ratts = rnvval_aa("x",
+				"xml:id", sl->iheaders[i].id,
+				"path", sl->iheaders[i].path,
+				"order", o,
+				"label", sl->iheaders[i].label,
+				NULL);
 	      rnvxml_ec("sl:iheader", ratts);
 	    }
 	}

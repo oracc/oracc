@@ -29,6 +29,7 @@ struct sx_iheader
   int order;
   const char *id;
   const char *label;
+  const char *path;
   const char *period;
 };
 

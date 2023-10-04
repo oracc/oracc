@@ -189,15 +189,19 @@ sx_s_form(FILE *f, struct sl_form *s)
 static void
 sx_s_list(FILE *f, struct sl_list *s)
 {
-  int i;
-  fprintf(f, "%s;l\t", s->name);
-  for (i = 0; s->oids[i]; ++i)
+  /* @lrefs have no oids */
+  if (s->oids)
     {
-      if (i)
-	fputc(' ', f);
-      fputs(s->oids[i], f);
+      int i;
+      fprintf(f, "%s;l\t", s->name);
+      for (i = 0; s->oids[i]; ++i)
+	{
+	  if (i)
+	    fputc(' ', f);
+	  fputs(s->oids[i], f);
+	}
+      fputc('\n', f);
     }
-  fputc('\n', f);
 }
 
 static void

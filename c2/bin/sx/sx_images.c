@@ -44,6 +44,11 @@ sx_images(struct sl_signlist *sl)
 			  sl->iheaders[nm].label = (ccp)mr->rows[i][1];
 			  r->rows[0][nm+1] = (ucp)sl->iheaders[nm].label;
 			}
+		      else if (!strcmp((ccp)mr->rows[i][0], "@path"))
+			{
+			  sl->iheaders[nm].path = (ccp)mr->rows[i][1];
+			  r->rows[0][nm+1] = (ucp)sl->iheaders[nm].path;
+			}
 		      break;
 		    case '#':
 		      break;
@@ -69,6 +74,8 @@ sx_images(struct sl_signlist *sl)
 		    }
 		}
 	    }
+	  if (!sl->iheaders[nm].label || !sl->iheaders[nm].path)
+	    mesg_verr(m, "image table loaded via @images %s must contain both @label and @path lines", mr->file);
 	}
       sl->iarray = r;
     }
