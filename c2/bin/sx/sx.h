@@ -55,6 +55,7 @@ extern void sx_compounds(struct sl_signlist *sl);
 extern void sx_compound_digests(struct sl_signlist *sl);
 extern void sx_homophones(struct sl_signlist *sl);
 extern void sx_images(struct sl_signlist *sl);
+extern void sx_images_dump(struct sl_signlist *sl, FILE *fp);
 extern void sx_inherited(struct sl_signlist *sl);
 extern void sx_listdefs(struct sl_signlist *sl, const char *listnames);
 extern void sx_listdefs_sort(struct sl_listdef *ldp);

@@ -25,6 +25,7 @@ int status = 0; /* for rnc; should be in library there */
 
 int asl_output = 0;
 int identity_mode = 0;
+int images_dump = 0;
 int jsn_output = 0;
 int list_dump = 0;
 int list_names_mode = 0;
@@ -32,6 +33,7 @@ int listdef_check = 0;
 int oid_list = 0;
 int sll_output = 0;
 int sortcode_output = 0;
+int syss_dump == 0;
 int tree_output = 0;
 int unicode_table = 0;
 int xml_output = 0;
@@ -59,7 +61,7 @@ main(int argc, char * const*argv)
 
   gsort_init();
   
-  options(argc, argv, "abcCijlm:nMoOsStTux?");
+  options(argc, argv, "abcCd:ijm:nMoOsStTux?");
   asltrace = asl_flex_debug = trace_mode;
 
   if (boot_mode)
@@ -117,19 +119,30 @@ main(int argc, char * const*argv)
 	      fclose(f);
 	    }
 	  else
-	    fprintf(stderr, "sx: unable to dump list data; can't write sx-listdata.out\n");
+	    fprintf(stderr, "sx: unable to dump @list data; can't write sx-listdata.out\n");
 	}
       
       if (list_dump)
 	{
-	  FILE *lfp = stdout; /*fopen("sx-listdata.out","w");*/
+	  FILE *lfp = fopen("sx-lists.out","w");
 	  if (lfp)
 	    {
 	      sx_list_dump(lfp, sl);
 	      fclose(lfp);
 	    }
 	  else
-	    fprintf(stderr, "sx: unable to dump list data; can't write sx-listdata.out\n");
+	    fprintf(stderr, "sx: unable to dump list data; can't write sx-lists.out\n");
+	}
+      if (images_dump)
+	{
+	  FILE *ifp = fopen("sx-images.out","w");
+	  if (lfp)
+	    {
+	      sx_images_dump(lfp, sl);
+	      fclose(ifp);
+	    }
+	  else
+	    fprintf(stderr, "sx: unable to dump @image data; can't write sx-images.out\n");
 	}
       
       if (listdef_check)
@@ -174,6 +187,16 @@ opts(int opt, char *arg)
       break;
     case 'C':
       ctrace = 1;
+      break;
+    case 'd':
+      if (strstr(arg, "lists"))
+	list_dump = 1;
+      if (strstr(arg, "images"))
+	images_dump = 1;
+      if (strstr(arg, "sys"))
+	syss_dump = 1;
+      if (!list_dump && !images_dump && !syss_dump)
+	fprintf(stderr, "%s: the -d option must contain any or all of 'lists,images,sys'\n", prog);
       break;
     case 'i':
       asl_output = identity_mode = 1;

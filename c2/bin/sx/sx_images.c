@@ -59,7 +59,10 @@ sx_images(struct sl_signlist *sl)
 	}
       sl->iarray = r;
     }
-#if 0
-  roco_write(stdout, sl->iarray);
-#endif
+}
+
+void
+sx_images_dump(struct sl_signlist *sl, FILE *fp)
+{
+  roco_write(fp, sl->iarray);
 }
