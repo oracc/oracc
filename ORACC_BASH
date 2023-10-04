@@ -1,0 +1,1 @@
+MacOS install needs to link /opt/homebrew/bin/bash to $ORACC/bin and ensure $ORACC/bin is before $PATH
