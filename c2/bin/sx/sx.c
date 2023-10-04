@@ -33,7 +33,7 @@ int listdef_check = 0;
 int oid_list = 0;
 int sll_output = 0;
 int sortcode_output = 0;
-int syss_dump == 0;
+int syss_dump = 0;
 int tree_output = 0;
 int unicode_table = 0;
 int xml_output = 0;
@@ -135,11 +135,11 @@ main(int argc, char * const*argv)
 	}
       if (images_dump)
 	{
-	  FILE *ifp = fopen("sx-images.out","w");
+	  FILE *lfp = fopen("sx-images.out","w");
 	  if (lfp)
 	    {
 	      sx_images_dump(lfp, sl);
-	      fclose(ifp);
+	      fclose(lfp);
 	    }
 	  else
 	    fprintf(stderr, "sx: unable to dump @image data; can't write sx-images.out\n");
@@ -196,7 +196,7 @@ opts(int opt, char *arg)
       if (strstr(arg, "sys"))
 	syss_dump = 1;
       if (!list_dump && !images_dump && !syss_dump)
-	fprintf(stderr, "%s: the -d option must contain any or all of 'lists,images,sys'\n", prog);
+	fprintf(stderr, "sx: the -d option must contain any or all of 'lists,images,sys'\n");
       break;
     case 'i':
       asl_output = identity_mode = 1;

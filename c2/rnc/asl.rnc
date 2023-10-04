@@ -7,7 +7,8 @@ start =
     attribute project { text } ,
     sl.notes ,
     sl.listdef* ,
-    sl.sysdef* , 
+    sl.sysdef* ,
+    sl.iheader* ,
     element sl:letter {
       attribute name { xsd:NMTOKEN },
       attribute title { xsd:NMTOKEN },
@@ -79,6 +80,7 @@ sl.sign    =
      | element sl:unote { text })*,
     sl.v*,
     sl.sys*,
+    sl.images?,
     element sl:form {
       attribute n { text },
       attribute ref { xsd:NCName }?,
@@ -99,6 +101,7 @@ sl.sign    =
           | sl.ucun)*),
       sl.v*,
       sl.sys*,
+      sl.images?,
       element sl:inherited {
         element sl:iv {
           attribute sort { text }, 
@@ -125,6 +128,15 @@ sl.listdef = element sl:listdef { attribute name { xsd:NCName | "U+" } , element
 sl.sysdef  = element sl:sysdef { attribute name { xsd:NCName } , element sl:info { text }? , sl.notes }
 
 sl.sys 	   = element sl:sys { attribute name { xsd:NCName } , attribute token { text } , text }
+
+sl.iheader = element sl:iheader { attribute xml:id { xsd:NCName } ,
+	     	     		  attribute label { text } ,
+	     	     		  attribute order { xsd:string { pattern="[0-9]+" } } ,
+				  attribute period { text }? }
+
+sl.images = element sl:images {
+            	    element sl:i { (attribute ref { xsd:NCName } , attribute loc { text })? }*
+      	    }
 
 sl.smap    = element sl:smap { attribute oid { xsd:NCName } , text }
 

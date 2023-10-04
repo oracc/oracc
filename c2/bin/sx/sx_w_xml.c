@@ -5,6 +5,7 @@
 #include <rnvxml.h>
 #include <gdl.h>
 #include <signlist.h>
+#include <oraccsys.h>
 #include <sx.h>
 
 extern Mloc *xo_loc;
@@ -23,6 +24,7 @@ static sx_value_f sx_w_x_qvs;
 static sx_value_f sx_w_x_value;
 static sx_notes_f sx_w_x_notes;
 static sx_notes_f sx_w_x_syss;
+static sx_notes_f sx_w_x_images;
 static sx_unicode_f sx_w_x_unicode;
 
 struct sx_functions sx_w_xml_fncs;
@@ -44,6 +46,7 @@ sx_w_xml_init(FILE *fp, const char *fname)
   sx_w_xml_fncs.inh = sx_w_x_ivalue;
   sx_w_xml_fncs.not = sx_w_x_notes;
   sx_w_xml_fncs.sys = sx_w_x_syss;
+  sx_w_xml_fncs.img = sx_w_x_images;
   sx_w_xml_fncs.uni = sx_w_x_unicode;
   sx_w_xml_fncs.qvs = sx_w_x_qvs;
   sx_w_xml_fncs.fp = fp;
@@ -98,7 +101,15 @@ sx_w_x_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
 	  sx_w_x_notes(f, sl, &sdp->inst);
 	  rnvxml_ee("sl:sysdef");
 	}
-
+      if (sl->iheaders)
+	{
+	  for (i = 0; i < list_len(sl->images); ++i)
+	    {
+	      const char *o = itoa(i);
+	      ratts = rnvval_aa("x", "xml:id", sl->iheaders[i].id, "order", o, "label", sl->iheaders[i].label, NULL);
+	      rnvxml_ec("sl:iheader", ratts);
+	    }
+	}
     }
   else if (p == sx_pos_term)
     {
@@ -154,6 +165,41 @@ sx_w_x_letter(struct sx_functions *f, struct sl_signlist *sl, struct sl_letter *
     }
 }
 
+static void
+sx_w_x_images(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip)
+{
+  if (ip && !ip->inherited)
+    {
+      const char *oid = (ip->type == 's' ? ip->u.s->oid : ip->u.f->oid);
+      if (oid)
+	{
+	  int index = (uintptr_t)hash_find(oid_sort_keys, (uccp)oid);
+	  if (index)
+	    {
+	      if (sl->iarray->rows[index])
+		{
+		  int i;
+		  int n = list_len(sl->images)+1;
+		  rnvxml_ea("sl:images", NULL);
+		  for (i = 1; i < n; ++i)
+		    {
+		      if (sl->iarray->rows[index][i])
+			{
+			  struct rnvval_atts *ratts = NULL;
+			  ratts = rnvval_aa("x", "ref", sl->iheaders[i-1].id, "loc", sl->iarray->rows[index][i], NULL);
+			  rnvxml_ec("sl:i", ratts);
+			}
+		      else
+			{
+			  rnvxml_ec("sl:i", NULL);
+			}					  
+		    }
+		  rnvxml_ee("sl:images");
+		}
+	    }
+	}
+    }
+}
 static void
 sx_w_x_form(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *s, enum sx_pos_e p)
 {

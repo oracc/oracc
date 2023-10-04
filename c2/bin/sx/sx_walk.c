@@ -63,6 +63,8 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 				}
 			      if (sl->letters[i].groups[j].signs[k]->sys)
 				f->sys(f, sl, sl->letters[i].groups[j].signs[k]);
+			      if (sl->images)
+				f->img(f, sl, sl->letters[i].groups[j].signs[k]);
 			      if (sl->letters[i].groups[j].signs[k]->u.s->nforms)
 				{
 				  int l;
@@ -100,6 +102,8 @@ sx_walk(struct sx_functions *f, struct sl_signlist *sl)
 					}
 				      if (sl->letters[i].groups[j].signs[k]->u.s->forms[l]->sys)
 					f->sys(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]);
+				      if (sl->images)
+					f->img(f, sl, sl->letters[i].groups[j].signs[k]->u.s->forms[l]);
 				      /* Inherited values are stored in lv->values but lv->nivalues
 					 has a count of them so we can avoid generating empty <inherited/> nodes */
 				      if (sl->letters[i].groups[j].signs[k]->u.s->forms[l]->lv->nivalues)
