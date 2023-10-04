@@ -168,12 +168,14 @@ sx_w_x_letter(struct sx_functions *f, struct sl_signlist *sl, struct sl_letter *
 static void
 sx_w_x_images(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip)
 {
-  enum sx_tle type;
+  int skip_tle = 0;
   if (ip->type == 's')
-    type=ip->u.s->type;
+    skip_tle = (ip->u.s->type == sx_tle_componly
+		|| ip->u.s->type == sx_tle_lref
+		|| ip->u.s->type == sx_tle_sref);
   else
-    type=ip->u.f->sign->type;
-  if (ip && !ip->inherited && type != sx_tle_componly)
+    skip_tle = ip->u.f->compoundonly;
+  if (ip && !ip->inherited && !skip_tle)
     {
       const char *oid = (ip->type == 's' ? ip->u.s->oid : ip->u.f->oid);
       if (oid)
@@ -189,16 +191,10 @@ sx_w_x_images(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip
 		  rnvxml_ea("sl:images", NULL);
 		  for (i = 1; i < n; ++i)
 		    {
+		      struct rnvval_atts *ratts = NULL;
 		      if (sl->iarray->rows[index][i])
-			{
-			  struct rnvval_atts *ratts = NULL;
-			  ratts = rnvval_aa("x", "ref", sl->iheaders[i-1].id, "loc", sl->iarray->rows[index][i], NULL);
-			  rnvxml_ec("sl:i", ratts);
-			}
-		      else
-			{
-			  rnvxml_ec("sl:i", NULL);
-			}					  
+			ratts = rnvval_aa("x", "ref", sl->iheaders[i-1].id, "loc", sl->iarray->rows[index][i], NULL);
+		      rnvxml_ec("sl:i", ratts);
 		    }
 		  rnvxml_ee("sl:images");
 		}
