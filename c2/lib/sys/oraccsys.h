@@ -57,4 +57,6 @@ extern char *optarg;
 extern void program_values(const char *name, int major, int minor, const char *usage, const char *copyright);
 extern void strrep_f_h(const char *str, FILE *fp, Hash*reps);
 
+extern const char *itoa(int i);
+
 #endif/*ORACCSYS_H_*/

@@ -23,10 +23,13 @@ enum sx_tle
     sx_tle_sref
   };
 
-struct sx_iconfig
+struct sx_iheader
 {
   Roco *r;
+  int order;
+  const char *id;
   const char *label;
+  const char *period;
 };
 
 struct sl_signlist
@@ -70,7 +73,7 @@ struct sl_signlist
   List *syslists; 		/* list of the lists of @sys that occur in sign or
 		     		   form, so we can generate system tables easily */
   List *images; 		/* list of names of image manifests as char * */
-  struct sx_iconfig *ic;	/* array of config data read from @cmds in image manifests */
+  struct sx_iheader *iheaders;	/* array of header data read from @cmds in image manifests */
   Roco *iarray;			/* images data read into a Roco array */  
   Hash *oid2ucode;
   Memo *m_tokens;
