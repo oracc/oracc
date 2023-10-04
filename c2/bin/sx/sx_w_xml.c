@@ -168,14 +168,20 @@ sx_w_x_letter(struct sx_functions *f, struct sl_signlist *sl, struct sl_letter *
 static void
 sx_w_x_images(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip)
 {
-  if (ip && !ip->inherited)
+  enum sx_tle type;
+  if (ip->type == 's')
+    type=ip->u.s->type;
+  else
+    type=ip->u.f->sign->type;
+  if (ip && !ip->inherited && type != sx_tle_componly)
     {
       const char *oid = (ip->type == 's' ? ip->u.s->oid : ip->u.f->oid);
       if (oid)
 	{
-	  int index = (uintptr_t)hash_find(oid_sort_keys, (uccp)oid);
+	  int index = (uintptr_t)hash_find(sl->oidindexes, (uccp)oid);
 	  if (index)
 	    {
+	      --index; /* oidindexes stores index+1 */
 	      if (sl->iarray->rows[index])
 		{
 		  int i;

@@ -5,9 +5,9 @@
 /**sx_images -- load the image manifests into a Roco
  *
  * -the number of columns is the number of image manifests;
- * -the number of rows is the number of OIDs referenced in oid_sort_keys
- * -the value of oid_sort_keys{OID} is the integer index into the rows
- * -each entry in a manifest is stored in row[oid-sort-key][manifest-index]
+ * -the number of rows is the number of OIDs referenced in oidindexes
+ * -the value of oidindexes{OID} is the integer index into the rows
+ * -each entry in a manifest is stored in row[oidindexes{OID}][manifest-index]
  *
  */
 void
@@ -16,7 +16,7 @@ sx_images(struct sl_signlist *sl)
   if (sl->images)
     {
       int ncols = list_len(sl->images)+1;
-      int nrows = oid_sort_keys->key_count+1;
+      int nrows = sl->oidindexes->key_count+1;
       Roco *r = roco_create(nrows, ncols+1); /* we added one for the OID;
 						this +1 is for the NULL
 						term on each row of cols */
@@ -30,7 +30,7 @@ sx_images(struct sl_signlist *sl)
 	  char buf[16];
 	  sprintf(buf, "i%d", nm);
 	  sl->iheaders[nm].r = mr;
-	  sl->iheaders[nm].id = pool_copy(buf, sl->p);
+	  sl->iheaders[nm].id = (ccp)pool_copy((uccp)buf, sl->p);
 	  if (mr)
 	    {
 	      int i;
@@ -50,21 +50,21 @@ sx_images(struct sl_signlist *sl)
 		    default:
 		      {
 			int s = 0;
-			if ((s = (uintptr_t)hash_find(oid_sort_keys, mr->rows[i][0])))
+			if ((s = (uintptr_t)hash_find(sl->oidindexes, mr->rows[i][0])))
 			  {
-			    if (!r->rows[s][0])
-			      r->rows[s][0] = mr->rows[i][0];
-			    r->rows[s][nm+1] = mr->rows[i][1];
+			    if (!r->rows[s-1][0])
+			      r->rows[s-1][0] = mr->rows[i][0];
+			    r->rows[s-1][nm+1] = mr->rows[i][1];
 			  }
-			else if ((s = (uintptr_t)hash_find(oid_sort_keys, mr->rows[i][1])))
+			else if ((s = (uintptr_t)hash_find(sl->oidindexes, mr->rows[i][1])))
 			  {
-			    if (!r->rows[s][0])
-			      r->rows[s][0] = mr->rows[i][1];
-			    r->rows[s][nm+1] = mr->rows[i][0];
+			    if (!r->rows[s-1][0])
+			      r->rows[s-1][0] = mr->rows[i][1];
+			    r->rows[s-1][nm+1] = mr->rows[i][0];
 			  }
 			else
-			  fprintf(stderr, "%s:%d: no OID found for %s or %s\n",
-				  mr->file, i, (char*)mr->rows[0], (char*)mr->rows[1]);
+			  fprintf(stderr, "%s:%d: no OID found for %s or %s; s=%d\n",
+				  mr->file, i, (char*)mr->rows[i][0], (char*)mr->rows[i][1], s);
 		      }
 		    }
 		}

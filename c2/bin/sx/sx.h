@@ -45,6 +45,7 @@ extern int oid_list;
 extern Hash *oids;
 extern Hash *oid_sort_keys;
 
+int oid_char_cmp(const void *a, const void *b);
 extern int via_tok_cmp(const void *a, const void *b);
 
 extern int cmpstringp(const void *p1, const void *p2);

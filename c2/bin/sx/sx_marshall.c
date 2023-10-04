@@ -253,6 +253,19 @@ int via_tok_cmp(const void *a, const void *b)
     return 0;
 }
 
+/* NOTE: oidindexes stores index+1 so that 0 return from hash_find means not-in-hash */
+static void
+sx_oid_indexes(struct sl_signlist *sl)
+{
+  int nk;
+  const char **k = hash_keys2(oid_sort_keys, &nk);
+  qsort(k, nk, sizeof(char*), oid_char_cmp);
+  sl->oidindexes = hash_create(1024);
+  int i;
+  for (i = 0; k[i]; ++i)
+    hash_add(sl->oidindexes, (uccp)k[i], (void*)(uintptr_t)(i+1));
+}
+
 static List *
 sx_uniq_aka(List *aka)
 {
@@ -730,7 +743,9 @@ sx_marshall(struct sl_signlist *sl)
 	mesg_verr(&s->inst->mloc, "%s in @smap does not point to a child-form of @sign %s", s->smap, s->name);
     }
   list_free(smap_list, NULL);
- 
+
+  sx_oid_indexes(sl);
+  
   sx_values_parents(sl);
 
   sx_values_parents_dump(sl);

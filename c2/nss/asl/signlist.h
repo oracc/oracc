@@ -52,6 +52,7 @@ struct sl_signlist
 			   x-values include the 'ₓ' in their base */
   Hash *hcompoundnew;	/* Signs reported in sx_compound_new_sign to prevent multiple error messages */
   Hash *values_by_oid;
+  Hash *oidindexes;
   Hash *hletters;
   struct sl_token **tokens; /* sorted htoken */
   struct sl_sign  **signs;  /* sorted hsentry */
