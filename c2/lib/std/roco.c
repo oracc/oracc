@@ -18,8 +18,8 @@ Roco *
 roco_create(int rows, int cols)
 {
   Roco *r = calloc(1, sizeof(Roco));
-  r->lines = calloc(rows, sizeof(const char **));
   r->nlines = rows;
+  r->rows = calloc(rows, sizeof(const char **));
   int i;
   for (i = 0; i < r->nlines; ++i)
     r->rows[i] = calloc(cols, sizeof(const char *));

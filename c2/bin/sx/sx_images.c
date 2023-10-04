@@ -10,19 +10,24 @@
  * -each entry in a manifest is stored in row[oid-sort-key][manifest-index]
  *
  */
-Roco *
+void
 sx_images(struct sl_signlist *sl)
 {
-  Roco *r = NULL;
   if (sl->images)
     {
       int ncols = list_len(sl->images)+1;
       int nrows = oid_sort_keys->key_count;
-      r = roco_create(nrows, ncols);
+      Roco *r = roco_create(nrows, ncols+1); /* we added one for the OID;
+						this +1 is for the NULL
+						term */
       Mloc *m;
-      for (m = list_first(sl->images); m; m = list_next(sl->images))
+      int nm;
+      sl->ic = calloc(list_len(sl->images), sizeof(struct sx_iconfig));
+
+      for (m = list_first(sl->images), nm=0; m; m = list_next(sl->images), ++nm)
 	{
 	  Roco *mr = roco_load(m->user, 0, NULL, NULL, NULL);
+	  sl->iconfig[nm].r = mr;
 	  if (mr)
 	    {
 	      int i;
@@ -32,17 +37,29 @@ sx_images(struct sl_signlist *sl)
 		    {
 		      int s = 0;
 		      if ((s = (uintptr_t)hash_find(oid_sort_keys, mr->rows[i][0])))
-			r->rows[i][s] = mr->rows[i][1];
+			{
+			  if (!r->rows[s-1][0])
+			    r->rows[s-1][0] = mr->rows[i][0];
+			  r->rows[s-1][nm+1] = mr->rows[i][1];
+			}
 		      else if ((s = (uintptr_t)hash_find(oid_sort_keys, mr->rows[i][1])))
-			r->rows[i][s] = mr->rows[i][0];
+			{
+			  if (!r->rows[s-1][0])
+			    r->rows[s-1][0] = mr->rows[i][1];
+			  r->rows[s-1][nm+1] = mr->rows[i][0];
+			}
 		      else
 			fprintf(stderr, "%s:%d: no OID found for %s or %s\n",
 				mr->file, i, (char*)mr->rows[0], (char*)mr->rows[1]);
 		    }
+		  else if (!strcmp(mr->rows[i][0], "@label"))
+		    sl->ic[nm].label = mr->rows[i][1];
 		}
 	    }
 	}
+      sl->iarray = r;
     }
-  roco_write(stdout, r);
-  return r;
+#if 0
+  roco_write(stdout, sl->iarray);
+#endif
 }

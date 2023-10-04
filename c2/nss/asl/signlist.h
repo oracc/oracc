@@ -3,6 +3,7 @@
 
 #include <hash.h>
 #include <list.h>
+#include <roco.h>
 #include <pool.h>
 #include <tree.h>
 #include <mesg.h>
@@ -21,6 +22,12 @@ enum sx_tle
     sx_tle_sign ,
     sx_tle_sref
   };
+
+struct sx_iconfig
+{
+  Roco *r;
+  const char *label;
+};
 
 struct sl_signlist
 {
@@ -60,9 +67,11 @@ struct sl_signlist
   struct sl_inst *curr_value;
   struct sl_inst *curr_inst; /* used to attach meta to correct tag */
   List *compounds;
-  List *images; 		/* list of names of image manifests as char * */
   List *syslists; 		/* list of the lists of @sys that occur in sign or
 		     		   form, so we can generate system tables easily */
+  List *images; 		/* list of names of image manifests as char * */
+  struct sx_iconfig *ic;	/* array of config data read from @cmds in image manifests */
+  Roco *iarray;			/* images data read into a Roco array */  
   Hash *oid2ucode;
   Memo *m_tokens;
   Memo *m_letters;
