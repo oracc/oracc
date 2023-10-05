@@ -195,8 +195,10 @@
 		    <td width="93%" class="ii-insts">
 		      <xsl:variable name="o" select="@xml:id"/>
 		      <xsl:for-each select="document('sl-corpus-counts.xml',/)">
-			<xsl:variable name="c" select="key('counts', $o)"/>
+			<xsl:variable name="c" select="id($o)"/>
+
 			<!--<xsl:message>c/o = <xsl:value-of select="$c/o"/></xsl:message>-->
+			REFACTOR W NEW sl-corpus-counts.xml
 			<xsl:choose>
 			  <xsl:when test="$c/t='0'">
 			    <p>(No attestations in corpus)</p>
