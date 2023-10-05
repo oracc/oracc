@@ -59,8 +59,8 @@
 </xsl:template>
 
 <xsl:template name="navbar">
-  <xsl:variable name="prev" select="preceding-sibling::sl:sign[last()]"/>
-  <xsl:variable name="next" select="following-sibling::sl:sign[1]"/>
+  <xsl:variable name="prev" select="preceding::sl:sign[1]"/>
+  <xsl:variable name="next" select="following::sl:sign[1]"/>
   <xsl:if test="$prev|$next">
     <div class="navbar">
       <xsl:choose>

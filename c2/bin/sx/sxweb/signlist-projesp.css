@@ -6,11 +6,12 @@
 
 .@@hproject@@-info h3 { font-style: normal; }
 
-.navbar { border: red; }
+.navbar { border-style: outset; border-width: 2px; border-color: red; margin-bottom: 10px; }
 
-.tdsigns { margin-right: 5px; }
+.navbar p { margin: 0px !important; }
 
-iframe { margin-width: 3px; }
+iframe { margin-width: 10px; border: none; }
 
-.ii-signs { margin-right: 5px; }
+.ii-signs { margin-right: 10px; padding-right: 10px; padding-left: 0px; margin-left: 0px; }
 
+.ce { margin: 0px; }
