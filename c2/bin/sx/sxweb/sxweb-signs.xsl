@@ -39,7 +39,7 @@
       <esp:title>
 	<xsl:value-of select="$nn"/>
 	<xsl:if test="/*/@project='pcsl'">
-	  <xsl:if test="not(sl:smap)">
+	  <xsl:if test="not(sl:smap) and not(sl:uage='0')">
 	    <xsl:text>: </xsl:text>
 	    <xsl:value-of select=".//sl:uname[1]"/>
 	    <xsl:value-of select="concat(' [',@xml:id,']')"/>
@@ -140,7 +140,7 @@
       </p>
       <xsl:if test="sl:list">
 	<p>
-	  List numbers: 
+	  Lists:
 	  <xsl:for-each select="sl:list">
 	    <xsl:value-of select="@n"/>
 	    <xsl:if test="not(position()=last())">
@@ -176,6 +176,7 @@
 			<xsl:when test="sl:images/sl:i[@loc]">
 			  <xsl:variable name="base" select="'../../../pctc'"/>
 			  <xsl:for-each select="sl:images/sl:i[@loc]">
+			    <hr/>
 			    <p>
 			      <xsl:variable name="ref" select="@ref"/>
 			      <xsl:variable name="header" select="/*/sl:iheader[@xml:id=$ref]"/>
@@ -183,7 +184,7 @@
 			      <esp:image width="100%" file="{$base}/{$header/@path}/{@loc}"
 					 description="{$header/@label} image of {ancestor::*[sl:name]/sl:name[1]}"/>
 			    </p>
-			    <xsl:if test="not(position()=last())"><hr/></xsl:if>
+			    <!--<xsl:if test="not(position()=last())"><hr/></xsl:if>-->
 			  </xsl:for-each>
 			</xsl:when>
 			<xsl:otherwise>
