@@ -118,7 +118,20 @@ sx_list_dump(FILE *f, struct sl_signlist *sl)
 	    sx_listdefs_sort(ldp);
 	  int j;
 	  for (j = 0; ldp->names[j]; ++j)
-	    fprintf(f, "%s\n", ldp->names[j]);
+	    {
+	      struct sl_list *lp = hash_find(sl->hlentry, (uccp)ldp->names[j]);
+	      if (lp)
+		{
+		  struct sl_inst *ip;
+		  for (ip = list_first(lp->insts); ip; ip = list_next(lp->insts))
+		    {
+		      fprintf(f, "%s\t%s\n", ldp->names[j],
+			      ip->type == 's' ? ip->u.s->oid : ip->u.f->oid);
+		    }
+		}
+	      else
+		fprintf(f, "%s\t\n", ldp->names[j]);
+	    }
 	}
     }
 }

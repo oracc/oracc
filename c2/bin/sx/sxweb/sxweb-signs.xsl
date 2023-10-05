@@ -137,15 +137,19 @@
 	    <xsl:if test="not(sl:uage='0')">
 	      <table width="95%">
 		<tr>
-		  <td width="15%" valign="top">
+		  <td width="5%" valign="top">
 		    <xsl:choose>
 		      <xsl:when test="sl:images/sl:i[@loc]">
 			<xsl:variable name="base" select="'../../../pctc'"/>
-			<xsl:for-each select="sl:images/sl:i">
-			  <xsl:variable name="ref" select="@ref"/>
-			  <xsl:variable name="header" select="/*/sl:iheader[@xml:id=$ref]"/>
-			  <esp:image file="{$base}/{$header/@path}/{@loc}"
-				     description="{$header/@label} image of {ancestor::*[sl:name]/sl:name[1]}"/>
+			<xsl:for-each select="sl:images/sl:i[@loc]">
+			  <p>
+			    <xsl:variable name="ref" select="@ref"/>
+			    <xsl:variable name="header" select="/*/sl:iheader[@xml:id=$ref]"/>
+			    <span class="im-label"><xsl:value-of select="$header/@label"/>:</span><br/><br/>
+			    <esp:image width="100%" file="{$base}/{$header/@path}/{@loc}"
+				       description="{$header/@label} image of {ancestor::*[sl:name]/sl:name[1]}"/>
+			  </p>
+			  <xsl:if test="not(position()=last())"><hr/></xsl:if>
 			</xsl:for-each>
 		      </xsl:when>
 		      <xsl:otherwise>
@@ -153,7 +157,7 @@
 		      </xsl:otherwise>
 		    </xsl:choose>
 		  </td>
-		  <td width="85%">
+		  <td width="93%">
 		    <xsl:variable name="o" select="@xml:id"/>
 		    <xsl:for-each select="document('sl-corpus-counts.xml',/)">
 		      <xsl:variable name="c" select="key('counts', $o)"/>
