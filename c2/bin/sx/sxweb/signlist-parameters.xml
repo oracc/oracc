@@ -19,6 +19,7 @@
   </param:common-headers>
   <param:top-content>
   </param:top-content>
+  <param:navbar>yes</param:navbar>
   <param:dc-id-prefix>@@hproject@@-signlist-oracc-org/page/</param:dc-id-prefix>
   <param:main-menu-caption>Main menu</param:main-menu-caption>
   <param:footer>@@PROJECT@@ project</param:footer>

@@ -50,16 +50,48 @@
       <html>
 	<head/>
 	<body>
-<!--
-	  <xsl:call-template name="form-div">
-	    <xsl:with-param name="caller" select="'esp'"/>
-	  </xsl:call-template>
- -->
+	  <xsl:call-template name="navbar"/>
 	  <xsl:call-template name="sign-or-form"/>
 	</body>
       </html>
     </esp:page>
   </ex:document>
+</xsl:template>
+
+<xsl:template name="navbar">
+  <xsl:variable name="prev" select="preceding-sibling::sl:sign[last()]"/>
+  <xsl:variable name="next" select="following-sibling::sl:sign[1]"/>
+  <xsl:if test="$prev|$next">
+    <div class="navbar">
+      <xsl:choose>
+	<xsl:when test="$prev and $next">
+	  <p style="text-align-last: justify">
+	    <xsl:text>«</xsl:text>
+	    <esp:link page="{$prev/@xml:id}"><xsl:value-of select="$prev/@n"/></esp:link>
+	    <xsl:text>«</xsl:text>
+	    <xsl:text> </xsl:text>
+	    <xsl:text>»</xsl:text>
+	    <esp:link page="{$next/@xml:id}"><xsl:value-of select="$next/@n"/></esp:link>
+	    <xsl:text>»</xsl:text>
+	  </p>
+	</xsl:when>
+	<xsl:when test="$prev">
+	  <p>
+	    <xsl:text>«</xsl:text>
+	    <esp:link page="{$prev/@xml:id}"><xsl:value-of select="$prev/@n"/></esp:link>
+	    <xsl:text>«</xsl:text>
+	  </p>
+	</xsl:when>
+	<xsl:otherwise>
+	  <p style="text-align-last: right">
+	    <xsl:text>»</xsl:text>
+	    <esp:link page="{$next/@xml:id}"><xsl:value-of select="$next/@n"/></esp:link>
+	    <xsl:text>»</xsl:text>
+	  </p>
+	</xsl:otherwise>
+      </xsl:choose>
+    </div>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="sl:form">
@@ -127,7 +159,8 @@
 	  <p>Occurs in the following compound<xsl:value-of select="$s"/>:
 	  <xsl:for-each select="id(@cpd-refs)">
 	    <xsl:text> </xsl:text>
-	    <esp:link page="{ancestor-or-self::sl:sign[1]/@xml:id}"><xsl:apply-templates select=".//sl:name[1]"/></esp:link>
+	    <esp:link page="{ancestor-or-self::sl:sign[1]/@xml:id}"
+		      ><xsl:apply-templates select=".//sl:name[1]"/></esp:link>
 	  </xsl:for-each>
 	  <xsl:text>.</xsl:text>
 	  </p>
@@ -135,55 +168,57 @@
 	<xsl:otherwise>
 	  <xsl:if test="/*/@project = 'pcsl'">
 	    <xsl:if test="not(sl:uage='0')">
-	      <table width="95%">
-		<tr>
-		  <td width="5%" valign="top">
-		    <xsl:choose>
-		      <xsl:when test="sl:images/sl:i[@loc]">
-			<xsl:variable name="base" select="'../../../pctc'"/>
-			<xsl:for-each select="sl:images/sl:i[@loc]">
-			  <p>
-			    <xsl:variable name="ref" select="@ref"/>
-			    <xsl:variable name="header" select="/*/sl:iheader[@xml:id=$ref]"/>
-			    <span class="im-label"><xsl:value-of select="$header/@label"/>:</span><br/><br/>
-			    <esp:image width="100%" file="{$base}/{$header/@path}/{@loc}"
-				       description="{$header/@label} image of {ancestor::*[sl:name]/sl:name[1]}"/>
-			  </p>
-			  <xsl:if test="not(position()=last())"><hr/></xsl:if>
-			</xsl:for-each>
-		      </xsl:when>
-		      <xsl:otherwise>
-			<xsl:text>&#xa0;</xsl:text>
-		      </xsl:otherwise>
-		    </xsl:choose>
-		  </td>
-		  <td width="93%">
-		    <xsl:variable name="o" select="@xml:id"/>
-		    <xsl:for-each select="document('sl-corpus-counts.xml',/)">
-		      <xsl:variable name="c" select="key('counts', $o)"/>
-		      <!--<xsl:message>c/o = <xsl:value-of select="$c/o"/></xsl:message>-->
+	      <div class="image-insts">
+		<table width="95%">
+		  <tr>
+		    <td width="5%" valign="top" class="ii-signs">
 		      <xsl:choose>
-			<xsl:when test="$c/t='0'">
-			  <p>(No attestations in corpus)</p>
+			<xsl:when test="sl:images/sl:i[@loc]">
+			  <xsl:variable name="base" select="'../../../pctc'"/>
+			  <xsl:for-each select="sl:images/sl:i[@loc]">
+			    <p>
+			      <xsl:variable name="ref" select="@ref"/>
+			      <xsl:variable name="header" select="/*/sl:iheader[@xml:id=$ref]"/>
+			      <span class="im-label"><xsl:value-of select="$header/@label"/>:</span><br/><br/>
+			      <esp:image width="100%" file="{$base}/{$header/@path}/{@loc}"
+					 description="{$header/@label} image of {ancestor::*[sl:name]/sl:name[1]}"/>
+			    </p>
+			    <xsl:if test="not(position()=last())"><hr/></xsl:if>
+			  </xsl:for-each>
 			</xsl:when>
 			<xsl:otherwise>
-			  <xsl:variable name="height">
-			    <xsl:choose>
-			      <xsl:when test="$c/i &gt; 5">
-				<xsl:value-of select="500"/>
-			      </xsl:when>
-			      <xsl:otherwise>
-				<xsl:value-of select="300"/>
-			      </xsl:otherwise>
-			    </xsl:choose>
-			  </xsl:variable>
-			  <iframe width="100%" height="{$height}" src="/pctc/inst/{$o}.html"/>
+			  <xsl:text>&#xa0;</xsl:text>
 			</xsl:otherwise>
 		      </xsl:choose>
-		    </xsl:for-each>
-		  </td>
-		</tr>
-	      </table>
+		    </td>
+		    <td width="93%" class="ii-insts">
+		      <xsl:variable name="o" select="@xml:id"/>
+		      <xsl:for-each select="document('sl-corpus-counts.xml',/)">
+			<xsl:variable name="c" select="key('counts', $o)"/>
+			<!--<xsl:message>c/o = <xsl:value-of select="$c/o"/></xsl:message>-->
+			<xsl:choose>
+			  <xsl:when test="$c/t='0'">
+			    <p>(No attestations in corpus)</p>
+			  </xsl:when>
+			  <xsl:otherwise>
+			    <xsl:variable name="height">
+			      <xsl:choose>
+				<xsl:when test="$c/i &gt; 5">
+				  <xsl:value-of select="500"/>
+				</xsl:when>
+				<xsl:otherwise>
+				  <xsl:value-of select="300"/>
+				</xsl:otherwise>
+			      </xsl:choose>
+			    </xsl:variable>
+			    <iframe width="100%" height="{$height}" src="/pctc/inst/{$o}.html"/>
+			  </xsl:otherwise>
+			</xsl:choose>
+		      </xsl:for-each>
+		    </td>
+		  </tr>
+		</table>
+	      </div>
 	    </xsl:if>
 	  </xsl:if>
 	</xsl:otherwise>

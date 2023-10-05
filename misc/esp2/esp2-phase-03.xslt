@@ -130,6 +130,12 @@
             </p>
           </div>
         </xsl:if>
+
+	<!-- navbar to go back/forward for signlists -->
+	<xsl:if test="$parameters/param:navbar='yes'">
+	  <xsl:copy-of select="div[@class='navbar']"/>
+	</xsl:if>
+      
         <!-- breadcrumb (screen only) -->
         <xsl:if test="count ( $current-page/ancestor::struct:page )">
           <div id="Breadcrumb">
@@ -544,6 +550,8 @@
   <span class="obfuscatedEmailExplanation"> (because JavaScript is not available in your browser, you are seeing this email address in a form altered to prevent spamming: you will need to read it backwards and make appropriate substitutions)</span>-->
   </xsl:template>
 
+  <xsl:template match="div[@class='navbar']"/>
+  
   <!-- copy the rest unchanged -->
   <xsl:template match="*">
     <xsl:param name="cnode" select="."/>
