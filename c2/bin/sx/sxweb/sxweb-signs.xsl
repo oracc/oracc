@@ -111,6 +111,75 @@
   </xsl:if>
 </xsl:template>
 
+<xsl:template name="compute-iframe-height">
+  <xsl:param name="c"/>
+  <xsl:variable name="total" select="$c/c/r[1]/c[2]"/>
+  <xsl:variable name="nsubh" select="count($c/c/r[position()>1]/c[2][not(text()='0')])"/>
+  <xsl:variable name="ncite">
+    <xsl:choose>
+      <xsl:when test="$total > 30">
+	<!-- we are in selective mode; up to 5 instances from each period are shown -->
+	<xsl:variable name="V">
+	  <xsl:choose>
+	    <xsl:when test="$c/c/r[2]/c[2] > 4">
+	      <xsl:text>5</xsl:text>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="$c/c/r[2]/c[2]"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="IV">
+	  <xsl:choose>
+	    <xsl:when test="$c/c/r[3]/c[2] > 4">
+	      <xsl:text>5</xsl:text>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="$c/c/r[3]/c[2]"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="III">
+	  <xsl:choose>
+	    <xsl:when test="$c/c/r[4]/c[2] > 4">
+	      <xsl:text>5</xsl:text>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="$c/c/r[4]/c[2]"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:variable>
+	<xsl:variable name="I">
+	  <xsl:choose>
+	    <xsl:when test="$c/c/r[5]/c[2] > 4">
+	      <xsl:text>5</xsl:text>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="$c/c/r[5]/c[2]"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:variable>
+	<xsl:value-of select="$V+$IV+$III+$I"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<!-- we are in inclusive mode; all the instances are shown -->
+	<xsl:value-of select="$c/c/r[2]/c[2]+$c/c/r[3]/c[2]+$c/c/r[4]/c[2]+$c/c/r[5]/c[2]"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:variable name="ncite" select=
+  <xsl:variable name="subtot" select="$nsubh + $ncite"/>
+  <xsl:message><xsl:value-of select="$c/@xml:id"/> subtot = <xsl:value-of select="$subtot"/></xsl:message>
+  <xsl:choose>
+    <xsl:when test="$total > 30">
+      <xsl:value-of select="$subtot+1"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="$subtot"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="sign-or-form">
   <div iclass="{$project}-{local-name(.)}">
     <xsl:if test="local-name() = 'form'">
@@ -197,22 +266,21 @@
 		      <xsl:for-each select="document('sl-corpus-counts.xml',/)">
 			<xsl:variable name="c" select="id($o)"/>
 
-			<!--<xsl:message>c/o = <xsl:value-of select="$c/o"/></xsl:message>-->
-			REFACTOR W NEW sl-corpus-counts.xml
+			<!--
+			<xsl:message><xsl:value-of select="$o"/>:
+			node-count=<xsl:value-of select="count($c/*)"/>:
+			<xsl:value-of select="$c/c/r[1]/c[1]"/>=<xsl:value-of select="$c/c/r[1]/c[2]"/></xsl:message>
+			-->
+			
 			<xsl:choose>
-			  <xsl:when test="$c/t='0'">
+			  <xsl:when test="count($c/*)=0 or $c/c/r[1]/c[2]='0'">
 			    <p>(No attestations in corpus)</p>
 			  </xsl:when>
 			  <xsl:otherwise>
 			    <xsl:variable name="height">
-			      <xsl:choose>
-				<xsl:when test="$c/i &gt; 5">
-				  <xsl:value-of select="500"/>
-				</xsl:when>
-				<xsl:otherwise>
-				  <xsl:value-of select="300"/>
-				</xsl:otherwise>
-			      </xsl:choose>
+			      <xsl:call-template name="compute-iframe-height">
+				<xsl:with-param name="c" select="$c"/>
+			      </xsl:call-template>
 			    </xsl:variable>
 			    <iframe width="100%" height="{$height}" src="/pctc/inst/{$o}.html"/>
 			  </xsl:otherwise>
