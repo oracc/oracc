@@ -10,7 +10,7 @@ function div_data {
     if [[ $itot -gt $allthresh ]]; then
 	allmode=0
 	cat >>$o <<EOF
-<h1 class="pcsl">$ict occurrence$s in PC corpus. <a href="/pctc/$oid.tis">See all instances</a></h1>
+<h1 class="pcsl border-top heading sl-inst-h">$ict occurrence$s in PC corpus. <a href="/pctc/$oid.tis">See all instances</a></h1>
 EOF
     else
 	allmode=1
@@ -42,22 +42,22 @@ EOF
 
 		if [[ $allmode == 1 ]]; then
 		    cat >>$o <<EOF
-<h2>${c[$i]} time$s in $when ${v[$i]}:</h2>
+<h2 class="border-top heading sl-inst-sh">${c[$i]} time$s in $when ${v[$i]}:</h2>
 EOF
 		else
 		    cat >>$o <<EOF
-<h2>${c[$i]} time$s in $when ${v[$i]}: <a href="/pctc/${oid}_$i.tis">see all $when ${v[i]} instances</a>.</h2>
+<h2 class="border-top heading sl-inst-sh">${c[$i]} time$s in $when ${v[$i]}: <a href="/pctc/${oid}_$i.tis">see all $when ${v[i]} instances</a>.</h2>
 EOF
 		fi
 
 	    elif [[ ${c[$i]} -gt 0 ]]; then
 		if [[ ${c[$i]} == 1 ]]; then
 		    cat >>$o <<EOF
-<h2>1 time in $when ${v[$i]}:</h2>
+<h2 class="border-top heading sl-inst-sh">1 time in $when ${v[$i]}:</h2>
 EOF
 		else
 		    cat >>$o <<EOF
-<h2>${c[$i]} times in $when ${v[$i]}:</h2>
+<h2 class="border-top heading sl-inst-sh">${c[$i]} times in $when ${v[$i]}:</h2>
 EOF
 		fi
 	    fi

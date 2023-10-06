@@ -339,6 +339,9 @@
      <xsl:if test="not(esp:link)">
        <img src="{$src}" alt="{@description}">
 	 <xsl:copy-of select="@class"/>
+	 <xsl:if test="@height">
+	   <xsl:attribute name="height"><xsl:value-of select="@height"/></xsl:attribute>
+	 </xsl:if>
 	 <xsl:if test="@width">
 	   <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
 	 </xsl:if>

@@ -183,21 +183,49 @@
 </xsl:template>
 
 <xsl:template name="sign-or-form">
-  <div iclass="{$project}-{local-name(.)}">
+  <div class="{$project}-{local-name(.)}">
     <xsl:if test="local-name() = 'form'">
-      <h2><b>
-	<xsl:choose>
-	  <xsl:when test="/*/@project='pcsl'">
-	    <xsl:value-of select="@n"/>
-	    <xsl:text>: </xsl:text>
-	    <xsl:value-of select=".//sl:uname"/>
-	    <xsl:value-of select="concat(' [',@xml:id,']')"/>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:apply-templates select="sl:name[1]"/>
-	  </xsl:otherwise>
-	</xsl:choose>
-      </b></h2>
+      <xsl:attribute name="id">
+	<xsl:value-of select="concat('form',count(preceding-sibling::sl:form))"/>
+      </xsl:attribute>
+      <h2>
+	<b>
+	  <xsl:choose>
+	    <xsl:when test="/*/@project='pcsl'">
+	      <xsl:value-of select="@n"/>
+	      <xsl:text>: </xsl:text>
+	      <xsl:value-of select=".//sl:uname"/>
+	      <xsl:value-of select="concat(' [',@xml:id,']')"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:apply-templates select="sl:name[1]"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</b>
+      </h2>
+    </xsl:if>
+    <xsl:if test="count(sl:form) > 1">
+      <div class="formjumps">
+	<p>
+	  <xsl:text>Jump to form: </xsl:text>
+	  <xsl:for-each select="sl:form">
+	    <esp:link bookmark="form{count(preceding-sibling::sl:form)}">
+	      <xsl:value-of select="@n"/>
+	      <xsl:if test="sl:images/sl:i[@loc]">
+		<xsl:text> = </xsl:text>
+		<xsl:variable name="base" select="'../../../pctc'"/>
+		<xsl:for-each select="sl:images/sl:i[@loc][1]">
+		  <xsl:variable name="ref" select="@ref"/>
+		  <xsl:variable name="header" select="/*/sl:iheader[@xml:id=$ref]"/>
+		  <esp:image height="40px" file="{$base}/{$header/@path}/{@loc}"
+			     description="{$header/@label} image of {ancestor::*[sl:name]/sl:name[1]}"/>
+		</xsl:for-each>
+	      </xsl:if>
+	    </esp:link>
+	    <xsl:if test="not(position()=last())"><xsl:text>; </xsl:text></xsl:if>
+	  </xsl:for-each>
+	</p>
+      </div>
     </xsl:if>
     <xsl:call-template name="icount"/>
     <div class="{$project}-info">
@@ -346,7 +374,7 @@
 	</xsl:for-each>
       </div>
     </xsl:if>
-    <xsl:if test="sl:form">      
+    <xsl:if test="sl:form">
       <div class="{$project}-signforms">
 	<xsl:if test="not(/*/@project = 'pcsl')">
 	  <h2 class="sl-signforms">Variant sign-forms</h2>
