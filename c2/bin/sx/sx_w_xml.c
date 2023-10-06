@@ -198,8 +198,16 @@ sx_w_x_images(struct sx_functions *f, struct sl_signlist *sl, struct sl_inst *ip
 		    {
 		      struct rnvval_atts *ratts = NULL;
 		      if (sl->iarray->rows[index][i])
-			ratts = rnvval_aa("x", "ref", sl->iheaders[i-1].id, "loc", sl->iarray->rows[index][i], NULL);
-		      rnvxml_ec("sl:i", ratts);
+			{
+			  Link *lp;
+			  for (lp = (Link*)sl->iarray->rows[index][i]; lp; lp = lp->next)
+			    {
+			      ratts = rnvval_aa("x", "ref", sl->iheaders[i-1].id, "loc", lp->data, NULL);
+			      rnvxml_ec("sl:i", ratts);
+			    }
+			}
+		      else
+			rnvxml_ec("sl:i", NULL);
 		    }
 		  rnvxml_ee("sl:images");
 		}

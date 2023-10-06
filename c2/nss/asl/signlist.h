@@ -96,6 +96,7 @@ struct sl_signlist
   Memo *m_notes;
   Memo *m_memostr;
   Memo *m_syss;
+  Memo *m_links;
   Pool *p;
   Mloc mloc;
 };

@@ -13,6 +13,12 @@
 #include <string.h>
 #include <c2types.h>
 
+typedef struct Link
+{
+  void *data;
+  struct Link *next;
+} Link;
+
 struct List_node
 {
   void *data;

@@ -73,6 +73,7 @@ asl_bld_init(void)
   sl->m_notes = memo_init(sizeof(struct sl_note), 512);
   sl->m_memostr = memo_init(sizeof(Memo_str), 512);
   sl->m_syss = memo_init(sizeof(struct sl_sys), 512);
+  sl->m_links = memo_init(sizeof(Link), 512);
   sl->p = pool_init();
   sl->compounds = list_create(LIST_SINGLE);
 
@@ -122,6 +123,7 @@ asl_bld_term(struct sl_signlist *sl)
       memo_term(sl->m_notes);
       memo_term(sl->m_memostr);
       memo_term(sl->m_syss);
+      memo_term(sl->m_links);
       pool_term(sl->p);
       free(sl);
     }
@@ -528,14 +530,14 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
       if (!sl->curr_form->lv->hlentry)
 	sl->curr_form->lv->hlentry = hash_create(1);
       hash_add(sl->curr_form->lv->hlentry, l->name, i);
-      list_add(l->insts, sl->curr_form);
+      /*list_add(l->insts, sl->curr_form);*/
     }
   else
     {
       if (!sl->curr_sign->hlentry)
 	sl->curr_sign->hlentry = hash_create(1);
       hash_add(sl->curr_sign->hlentry, l->name, i);
-      list_add(l->insts, sl->curr_sign->inst);
+      /*list_add(l->insts, sl->curr_sign->inst);*/
     }
 }
 

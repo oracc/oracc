@@ -21,6 +21,7 @@ struct roco
   const char *xmltag;    /* tag to wrap XML output */
   const char *rowtag;    /* tag to wrap row output */
   const char *celtag;    /* tag to wrap cell output */
+  int linkcells;	 /* The cells are Link* not char * */
 };
 
 typedef struct roco Roco;

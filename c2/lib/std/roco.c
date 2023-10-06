@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <loadfile.h>
+#include <list.h>
 #include <roco.h>
 #include <xmlify.h>
 
@@ -134,7 +135,20 @@ roco_write(FILE *fp, Roco *r)
 	      if (j)
 		fputc('\t', fp);
 	      if (*r->rows[i][j])
-		fputs((const char *)r->rows[i][j], fp);
+		{
+		  if (r->linkcells)
+		    {
+		      Link *lp;
+		      for (lp = (Link*)r->rows[i][j]; lp; lp = lp->next)
+			{
+			  fputs((const char *)lp->data, fp);
+			  if (lp->next)
+			    fputc('#', fp);
+			}
+		    }
+		  else
+		    fputs((const char *)r->rows[i][j], fp);
+		}
 	    }
 	  fputc('\n', fp);
 	}      

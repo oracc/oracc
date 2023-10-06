@@ -123,6 +123,8 @@ sx_list_dump(FILE *f, struct sl_signlist *sl)
 	      if (lp)
 		{
 		  struct sl_inst *ip;
+		  if (!strcmp(ldp->names[j], "BAU114"))
+		    fprintf(stderr, "BAU114\n");
 		  for (ip = list_first(lp->insts); ip; ip = list_next(lp->insts))
 		    {
 		      fprintf(f, "%s\t%s\n", ldp->names[j],

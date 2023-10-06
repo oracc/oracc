@@ -23,7 +23,12 @@ sx_images(struct sl_signlist *sl)
       Mloc *m;
       int nm;
       sl->iheaders = calloc(list_len(sl->images), sizeof(struct sx_iheader));
-      r->rows[0][0] = (ucp)"OID";
+      r->linkcells = 1;
+#if 0
+      Link *lp = memo_new(sl->m_links);
+      lp->data = "OID";
+      r->rows[0][0] = (ucp)lp;
+#endif
       for (m = list_first(sl->images), nm=0; m; m = list_next(sl->images), ++nm)
 	{
 	  Roco *mr = roco_load(m->user, 0, NULL, NULL, NULL);
@@ -42,12 +47,20 @@ sx_images(struct sl_signlist *sl)
 		      if (!strcmp((ccp)mr->rows[i][0], "@label"))
 			{
 			  sl->iheaders[nm].label = (ccp)mr->rows[i][1];
-			  r->rows[0][nm+1] = (ucp)sl->iheaders[nm].label;
+#if 0
+			  lp = memo_new(sl->m_links);
+			  lp->data = (void*)sl->iheaders[nm].label;
+			  r->rows[0][nm+1] = (ucp)lp;
+#endif
 			}
 		      else if (!strcmp((ccp)mr->rows[i][0], "@path"))
 			{
 			  sl->iheaders[nm].path = (ccp)mr->rows[i][1];
-			  r->rows[0][nm+1] = (ucp)sl->iheaders[nm].path;
+#if 0
+			  lp = memo_new(sl->m_links);
+			  lp->data = (void*)sl->iheaders[nm].path;
+			  r->rows[0][nm+1] = (ucp)lp;
+#endif
 			}
 		      break;
 		    case '#':
@@ -57,15 +70,23 @@ sx_images(struct sl_signlist *sl)
 			int s = 0;
 			if ((s = (uintptr_t)hash_find(sl->oidindexes, mr->rows[i][0])))
 			  {
+			    Link *lp = memo_new(sl->m_links);
 			    if (!r->rows[s-1][0])
-			      r->rows[s-1][0] = mr->rows[i][0];
-			    r->rows[s-1][nm+1] = mr->rows[i][1];
-			  }
-			else if ((s = (uintptr_t)hash_find(sl->oidindexes, mr->rows[i][1])))
-			  {
-			    if (!r->rows[s-1][0])
-			      r->rows[s-1][0] = mr->rows[i][1];
-			    r->rows[s-1][nm+1] = mr->rows[i][0];
+			      {
+				lp->data = mr->rows[i][0];
+				r->rows[s-1][0] = (ucp)lp;
+			      }
+			    lp = memo_new(sl->m_links);
+			    lp->data = mr->rows[i][1];
+			    if (r->rows[s-1][nm+1])
+			      {
+				Link *xp = (Link*)r->rows[s-1][nm+1];
+				while (xp->next)
+				  xp = xp->next;
+				xp->next = lp;
+			      }
+			    else
+			      r->rows[s-1][nm+1] = (ucp)lp;
 			  }
 			else
 			  fprintf(stderr, "%s:%d: no OID found for %s or %s; s=%d\n",
