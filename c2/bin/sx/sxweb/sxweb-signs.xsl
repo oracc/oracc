@@ -26,7 +26,10 @@
 <xsl:param name="snippets" select="'/Users/stinney/orc/emss/00etc/snippets.xml'"/>
 <xsl:param name="snippetdir" select="'/emss/snippets'"/>
 
-<xsl:key name="counts" match="r" use="o"/>
+<xsl:template match="sl:signlist">
+  <xsl:message>sxweb-signs.xsl processing <xsl:value-of select="count(sl:letter/sl:signs/sl:sign)"/> signs</xsl:message>
+  <xsl:apply-templates select="sl:letter/sl:signs/sl:sign"/>
+</xsl:template>
 
 <xsl:template match="sl:sign">
 <!--  <xsl:if test="$with-stats='yes'"><xsl:message>with-stats=yes</xsl:message></xsl:if> -->
@@ -167,15 +170,14 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <xsl:variable name="ncite" select=
   <xsl:variable name="subtot" select="$nsubh + $ncite"/>
-  <xsl:message><xsl:value-of select="$c/@xml:id"/> subtot = <xsl:value-of select="$subtot"/></xsl:message>
+  <!--<xsl:message><xsl:value-of select="$c/@xml:id"/> subtot = <xsl:value-of select="$subtot"/></xsl:message>-->
   <xsl:choose>
     <xsl:when test="$total > 30">
-      <xsl:value-of select="$subtot+1"/>
+      <xsl:value-of select="40*($subtot+1)"/>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="$subtot"/>
+      <xsl:value-of select="40*$subtot"/>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -383,10 +385,16 @@
 
 <xsl:template mode="rest" match="sl:v|sl:sort|sl:uphase|sl:utf8|sl:uname|sl:list|sl:name|sl:pname|sl:inote|sl:form|sl:unote|sl:note|sl:qs|sl:inherited|sl:uage|sl:sys|sl:smap|sl:images"/>
 
-<xsl:template match="sl:sysdef"/>
+<xsl:template match="sl:listdef|sl:sysdef|sl:images|sl:compoundonly|sl:iheader"/>
 
 <xsl:template match="sl:note">
   <p class="{$project}-note"><xsl:apply-templates/></p>
+</xsl:template>
+
+<xsl:template match="sl:inote"/>
+
+<xsl:template mode="rest" match="sl:lit">
+  <p class="{$project}-lit"><xsl:apply-templates/></p>
 </xsl:template>
 
 <xsl:template mode="rest" match="*">

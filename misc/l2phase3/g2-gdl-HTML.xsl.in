@@ -752,7 +752,7 @@
     </xsl:choose>
   </xsl:variable>
 <!--  <xsl:message><xsl:value-of select="$lsig"/></xsl:message> -->
-  <span class="{$w-class} {@xml:lang} {$cspos}" id="{@xml:id}">
+<span x="1" class="{$w-class} {@xml:lang} {$cspos}" id="{@xml:id}">
     <xsl:variable name="wid" select="@xml:id"/>
     <xsl:choose>
       <xsl:when test="self::norm:w">

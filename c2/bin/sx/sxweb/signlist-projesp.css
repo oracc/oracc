@@ -14,6 +14,10 @@ iframe { margin-width: 10px; border: none; border-left: 2px; }
 
 .ii-signs { margin-right: 10px; padding-right: 10px; padding-left: 0px; margin-left: 0px; }
 
+.ii-signs hr:first-child { margin-block-start: 0px; }
+
+.ii-signs p { margin: 0px; }
+
 .ii-insts { border-left: inset; padding-left: 10px; }
 
 .ce { margin: 0px; }
