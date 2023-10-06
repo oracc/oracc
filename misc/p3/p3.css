@@ -273,6 +273,25 @@ span.zz { }
 .transprint a:link[href] { background-color: black; color: white; }
 .transprint a:visited { background-color: black; color: white; }
 
+
+.sl-inst-h {
+    font-size: 90%;
+    line-height: 100%;
+    font-family: arial, sans-serif;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    margin-bottom: 5px;
+}
+
+.sl-inst-sh {
+    font-size: 90%;
+    line-height: 100%;
+    font-family: arial, sans-serif;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    margin-bottom: 5px;
+}
+
 /* .obf p.icount { margin: 0px; text-align: left;} */
 
 /*    

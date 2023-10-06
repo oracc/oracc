@@ -248,6 +248,7 @@
 	  </xsl:for-each>
 	</p>
       </xsl:if>
+      <xsl:if test="sl:form and count(preceding-sibling::sl:form) = 0"><hr/></xsl:if>
       <xsl:choose>
 	<xsl:when test="@compoundonly='yes'">
 	  <xsl:variable name="s">
@@ -258,8 +259,19 @@
 	  <p>Occurs in the following compound<xsl:value-of select="$s"/>:
 	  <xsl:for-each select="id(@cpd-refs)">
 	    <xsl:text> </xsl:text>
-	    <esp:link page="{ancestor-or-self::sl:sign[1]/@xml:id}"
-		      ><xsl:apply-templates select=".//sl:name[1]"/></esp:link>
+	    <esp:link page="{ancestor-or-self::sl:sign[1]/@xml:id}">
+	      <xsl:apply-templates select=".//sl:name[1]"/>
+	      <xsl:if test="sl:images/sl:i[@loc]">
+		<xsl:text> = </xsl:text>
+		<xsl:variable name="base" select="'../../../pctc'"/>
+		<xsl:for-each select="sl:images/sl:i[@loc][1]">
+		  <xsl:variable name="ref" select="@ref"/>
+		  <xsl:variable name="header" select="/*/sl:iheader[@xml:id=$ref]"/>
+		  <esp:image class="middle" height="30px" file="{$base}/{$header/@path}/{@loc}"
+			     description="{$header/@label} image of {ancestor::*[sl:name]/sl:name[1]}"/>
+		</xsl:for-each>
+	      </xsl:if>
+	    </esp:link>
 	  </xsl:for-each>
 	  <xsl:text>.</xsl:text>
 	  </p>

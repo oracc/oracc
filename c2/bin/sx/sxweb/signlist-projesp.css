@@ -24,25 +24,14 @@ iframe { margin-width: 10px; border: none; border-left: 2px; }
 
 .ce { margin: 0px; }
 
-.sl-inst-h {
-    font-size: 100%;
-    line-height: 100%;
-    font-family: arial, sans-serif;
-    margin-bottom: 2px;
-}
-
-.sl-inst-sh {
-    font-size: 100%;
-    line-height: 100%;
-    font-family: arial, sans-serif;
-    margin-bottom: 2px;
-}
-
 .formjumps p {
-    text-indent: -2in
+    text-indent: -2in;
     margin-left: 2.5in;
 }
 
 .formjumps img {
     vertical-align: middle;
 }
+
+.middle { vertical-align: middle; }
+
