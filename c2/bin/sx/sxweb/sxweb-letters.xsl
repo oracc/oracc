@@ -11,11 +11,11 @@
     extension-element-prefixes="ex"
     version="1.0">
 
-<!--<xsl:include href="formdiv.xsl"/>-->
+<xsl:include href="mcol.xsl"/>
 
 <xsl:output method="xml" indent="yes" encoding="utf-8"/>
 
-<xsl:template match="sl:letter">
+<xsl:template match="sl:letter[not(@num='1')]">
   <ex:document href="{concat('signlist/00web/',@xml:id,'.xml')}"
     method="xml" encoding="utf-8"
     indent="yes">
@@ -60,6 +60,20 @@
       </html>
     </esp:page>
   </ex:document>
+</xsl:template>
+
+<xsl:template mode="mcol" match="sl:sign">
+  <td><xsl:value-of select="@n"/></td>
+</xsl:template>
+
+<xsl:template match="sl:signlist">
+  <ex:document href="{'signlist/00web/number-grid.xml'}">
+    <xsl:call-template name="mcol">
+      <xsl:with-param name="columns" select="'4'"/>
+      <xsl:with-param name="nodes" select="sl:letter[@num='1']/*/sl:sign"/>
+    </xsl:call-template>
+  </ex:document>
+  <xsl:apply-templates select="sl:letter[not(@num='1')]"/>
 </xsl:template>
 
 <xsl:template match="text()"/>

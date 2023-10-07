@@ -1,7 +1,7 @@
 include ../../oracc-am-rules.txt
 
 bin_SCRIPTS = highchars.plx ltype.plx vg.sh xl
-scriptdata_DATA = findfile.xsl test-findfile.xsl
+scriptdata_DATA = findfile.xsl test-findfile.xsl mcol.xsl
 
 findfile.xsl: findfile.xsl.in
 	$(ORACCIFY) findfile.xsl.in

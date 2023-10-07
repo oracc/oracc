@@ -26,6 +26,7 @@ enum asl_a_type
   asl_a_loc,
   asl_a_n,
   asl_a_name,
+  asl_a_num,
   asl_a_o,
   asl_a_oid,
   asl_a_order,

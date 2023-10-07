@@ -162,7 +162,10 @@ sx_w_x_letter(struct sx_functions *f, struct sl_signlist *sl, struct sl_letter *
 	rnvxml_ee("sl:letter");
       if (l->name)
 	{
-	  ratts = rnvval_aa("x", "name", l->name, "title", l->name, "xml:id", idp, NULL);
+	  if (l->code == -1)
+	    ratts = rnvval_aa("x", "name", l->name, "title", l->name, "xml:id", idp, "num", "1", NULL);
+	  else
+	    ratts = rnvval_aa("x", "name", l->name, "title", l->name, "xml:id", idp, NULL);
 	  rnvxml_ea("sl:letter", ratts);
 	  in_letter = 1;
 	}
