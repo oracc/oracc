@@ -153,14 +153,21 @@ sx_w_x_letter(struct sx_functions *f, struct sl_signlist *sl, struct sl_letter *
   xo_loc->file = "stdin"; xo_loc->line = 1;
   if (p == sx_pos_inst)
     {
-      char id[6];
-      sprintf(id, "l%04d", l->code);
+      char id[6], *idp;
+      if (l->lname)
+	idp = l->lname;
+      else
+	sprintf((idp=id), "l%04d", l->code);
       if (in_letter)
 	rnvxml_ee("sl:letter");
-	
-      ratts = rnvval_aa("x", "name", l->name, "title", l->name, "xml:id", id, NULL);
-      rnvxml_ea("sl:letter", ratts);
-      in_letter = 1;
+      if (l->name)
+	{
+	  ratts = rnvval_aa("x", "name", l->name, "title", l->name, "xml:id", idp, NULL);
+	  rnvxml_ea("sl:letter", ratts);
+	  in_letter = 1;
+	}
+      else
+	fprintf(stderr, "letter has no name/id\n");
     }
   else if (p == sx_pos_term)
     {

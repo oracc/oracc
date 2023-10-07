@@ -197,6 +197,7 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
   struct sl_letter *lp;
   struct sl_token *tokp;
   unsigned char *group;
+  int number_group = 0;
 
   s->sl = sl;
   
@@ -221,28 +222,52 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 #endif
       char *at = NULL;
       unsigned char *slist = (ucp)sll_is_signlist((ccp)group);
-      
-      if ((at = strchr((ccp)group, '@')))
-	*at = '\0';
-      else if ((at = strchr((ccp)group, '/')))
-	*at = '\0';
-      else if ('O' == *group)
-	group[1] = '\0';
+
+      if (!isdigit(*group))
+	{
+	  if ((at = strchr((ccp)group, '@')))
+	    *at = '\0';
+	  else if ((at = strchr((ccp)group, '/')))
+	    *at = '\0';
+	  else if ('O' == *group)
+	    group[1] = '\0';
+	}
       
       group = pool_copy(g_base_of_preserve_case(group), sl->p);
  
       if (isdigit(*group))
 	{
-	  letter = pool_alloc(2, sl->p);
-	  letter[0] = '0';
-	  letter[1] = '\0';
-	  code = 0; /* generates a letter code 'l0000' */
+	  unsigned char *n = group;
+	  while (*n && '(' != *n)
+	    ++n;
+	  if (*n)
+	    {
+	      unsigned char *p = group = pool_copy(n, sl->p);
+	      *p = '0';
+	      while (*p && ')' != *p)
+		++p;
+	      if (*p)
+		*p = '\0';
+	      letter = group;
+	      code = -1;
+	      number_group = 1;
+	    }
+	  else
+	    {
+	      letter = pool_alloc(2, sl->p);
+	      letter[0] = '0';
+	      letter[1] = '\0';
+	      code = 0; /* generates a letter code 'l0000' */
+	    }
 	  if (!slist)
 	    {
-	      if (group[1] && isdigit(group[1]))
-		group[2] = '\0';
-	      else
-		group[1] = '\0';
+	      if (!number_group)
+		{
+		  if (group[1] && isdigit(group[1]))
+		    group[2] = '\0';
+		  else
+		    group[1] = '\0';
+		}
 	    }
 	}
       else if (*group < 128)
@@ -298,12 +323,19 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 	group = slist;
       else
 	{
-	  if (isdigit(group[0]))
-	    group = (ucp)"0";
-	  else if (!strchr("AEIU", group[0]) && 'N' == group[1])
+	  if (number_group)
 	    {
-	      group = (ucp)"NN";
-	      letter = (ucp)"N";
+	      
+	    }
+	  else
+	    {
+	      if (isdigit(group[0]))
+		group = (ucp)"0";
+	      else if (!strchr("AEIU", group[0]) && 'N' == group[1])
+		{
+		  group = (ucp)"NN";
+		  letter = (ucp)"N";
+		}
 	    }
 	}
 
@@ -320,8 +352,27 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 	  lp = memo_new(sl->m_letters);
 	  lp->name = letter;
 	  lp->code = code;
+	  if (code == -1)
+	    {
+	      char *dest, *src, *tmp;
+	      int llen = strlen(letter);
+	      tmp = pool_alloc(llen+1, sl->p);
+	      *tmp = 'l';
+	      strcat(tmp, letter+1);
+	      src = tmp;
+	      if ((dest = strchr(src, '~')))
+		*dest = '\0';
+	      dest = src;
+	      while (*src)
+		if ('@' == *src)
+		  ++src;
+		else
+		  *dest++ = *src++;
+	      *dest = '\0';
+	      lp->lname = tmp;
+	    }
 	  lp->hgroups = hash_create(32);
-	  hash_add(sl->hletters, letter, lp);
+	  hash_add(sl->hletters, lp->lname ? lp->lname : letter, lp);
 	}
       
       /* remember the group belongs to the letter */

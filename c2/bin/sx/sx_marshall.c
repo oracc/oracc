@@ -624,34 +624,48 @@ sx_marshall(struct sl_signlist *sl)
   sl->letters = memo_new_array(sl->m_letters, nlets);
   sl->nletters = nlets;
 
-  /* 0 sorts to first letter so we manually move it to last */
+  /* 0[LN]XXX sort to start so we manually move them to the end */
   if (nlets && *lets[0] == '0')
     {
-      memmove(lets, &lets[1], (nlets-1)*sizeof(const char *));
-      lets[nlets-1] = "0";
+      int nzero = 0;
+      while (nzero < nlets && *lets[nzero] == '0')
+	++nzero;
+      const char **tmp = malloc(nzero*sizeof(const char*));
+      memmove(tmp, lets, nzero*sizeof(const char *));
+      memmove(lets, &lets[nzero], (nlets-nzero)*sizeof(const char *));
+      memmove(&lets[nlets-nzero], tmp, nzero*sizeof(const char *));
+      free(tmp);
     }
+
+#if 0
+000ab
+0123
+ab000
+#endif
   
   for (i = 0; i < nlets; ++i)
     {
       const char **grps = NULL;
       int ngrps = 0, j;
       struct sl_letter *letterp = hash_find(sl->hletters, (uccp)lets[i]);
-      sl->letters[i] = *letterp;
-      grps = hash_keys2(sl->letters[i].hgroups, &ngrps); /* obtain list of groups in letter from AB2 */
-      qsort(grps, ngrps, sizeof(const char*), (cmp_fnc_t)collate_cmp_graphemes);
-      sl->letters[i].groups = memo_new_array(sl->m_groups, ngrps);
-      sl->letters[i].ngroups = ngrps;
-
-      for (j = 0; j < ngrps; ++j)
+      if (letterp)
 	{
-	  List *slist = hash_find(sl->letters[i].hgroups, (ucp)grps[j]); /* obtain list of signs in group from AB3 */
-	  sl->letters[i].groups[j].name = (ucp)grps[j];
-	  sl->letters[i].groups[j].nsigns = list_len(slist);
-	  sl->letters[i].groups[j].signs = memo_new_array(sl->m_signs_p,
-							  sl->letters[i].groups[j].nsigns);
-	  sl->letters[i].groups[j].signs = (struct sl_inst **)list2array(slist);
-	  qsort(sl->letters[i].groups[j].signs,
-		sl->letters[i].groups[j].nsigns, sizeof(void*), (cmp_fnc_t)signs_inst_cmp);
+	  sl->letters[i] = *letterp;
+	  grps = hash_keys2(sl->letters[i].hgroups, &ngrps); /* obtain list of groups in letter from AB2 */
+	  qsort(grps, ngrps, sizeof(const char*), (cmp_fnc_t)collate_cmp_graphemes);
+	  sl->letters[i].groups = memo_new_array(sl->m_groups, ngrps);
+	  sl->letters[i].ngroups = ngrps;
+	  for (j = 0; j < ngrps; ++j)
+	    {
+	      List *slist = hash_find(sl->letters[i].hgroups, (ucp)grps[j]); /* obtain list of signs in group from AB3 */
+	      sl->letters[i].groups[j].name = (ucp)grps[j];
+	      sl->letters[i].groups[j].nsigns = list_len(slist);
+	      sl->letters[i].groups[j].signs = memo_new_array(sl->m_signs_p,
+							      sl->letters[i].groups[j].nsigns);
+	      sl->letters[i].groups[j].signs = (struct sl_inst **)list2array(slist);
+	      qsort(sl->letters[i].groups[j].signs,
+		    sl->letters[i].groups[j].nsigns, sizeof(void*), (cmp_fnc_t)signs_inst_cmp);
+	    }
 	}
     }
 

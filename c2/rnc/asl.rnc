@@ -10,8 +10,8 @@ start =
     sl.sysdef* ,
     sl.iheader* ,
     element sl:letter {
-      attribute name { xsd:NMTOKEN },
-      attribute title { xsd:NMTOKEN },
+      attribute name { text },
+      attribute title { text },
       attribute xml:id { xsd:NCName },
       element sl:signs {
         attribute name { text },

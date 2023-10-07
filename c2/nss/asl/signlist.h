@@ -231,6 +231,7 @@ struct sl_letter
   int code; 		/* integer of first character; used in
 			   directory names, e.g., l0065, l0352, but
 			   not suitable for sorting */
+  const char *lname;	/* letter name set for number_group */
   Hash *hgroups;	/* hash of groups used while building structure */
   struct sl_group *groups;
   int ngroups;
