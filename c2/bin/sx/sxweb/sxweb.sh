@@ -61,6 +61,9 @@ xsltproc 01tmp/sxweb-structure-xi.xsl 02xml/sl.xml >signlist/00web/00config/stru
 
 xsltproc $libscripts/sxweb-letters.xsl 02xml/sl.xml
 
+xsltproc $libscripts/sxweb-atoms.xsl 02xml/sl.xml \
+    | xsltproc $libscripts/sxweb-overview.xsl - >signlist/00web/overview.xml
+
 if [ "$stats" = "with-stats" ]; then
     echo with-stats=true
     xsltproc -stringparam with-stats yes -stringparam project $project $libscripts/sxweb-signs.xsl 02xml/sl.xml

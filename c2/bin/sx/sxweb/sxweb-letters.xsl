@@ -13,7 +13,7 @@
     version="1.0">
 
 <xsl:include href="mcol.xsl"/>
-<xsl:include href="sxweb-esp-sign-image.xsl"/>
+<xsl:include href="sxweb-util.xsl"/>
 
 <xsl:output method="xml" indent="yes" encoding="utf-8"/>
 
@@ -32,7 +32,6 @@
 	    <xsl:with-param name="columns" select="'4'"/>
 	    <xsl:with-param name="nodes" select="sl:letter[@num='1']"/>
 	    <xsl:with-param name="class" select="'pretty'"/>
-	    <xsl:with-param name="tag" select="'letter'"/>
 	  </xsl:call-template>
 	</body>
       </html>
@@ -114,22 +113,6 @@
 	<xsl:call-template name="esp-sign-image">
 	  <xsl:with-param name="height" select="'40px'"/>
 	</xsl:call-template>
-      </xsl:for-each>
-    </esp:link>
-  </td>
-</xsl:template>
-
-<xsl:template mode="mcol" match="sl:sign">
-  <xsl:message>sl:sign <xsl:value-of select="@n"/></xsl:message>
-  <td class="name-sign">
-    <esp:link page="{@xml:id}">
-      <p class="sl-td-name"><xsl:value-of select="@n"/></p>
-      <xsl:for-each select="(.//sl:images/sl:i[@loc])[1]">
-	<p class="sl-td-sign">
-	  <xsl:call-template name="esp-sign-image">
-	    <xsl:with-param name="height" select="'40px'"/>
-	  </xsl:call-template>
-	</p>
       </xsl:for-each>
     </esp:link>
   </td>

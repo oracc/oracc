@@ -40,3 +40,6 @@ table.pretty { background-color: white; }
 .sl-td-name { font-size: 80%; font-family: arial,sans-serif; }
 
 .sl-td-sign { text-align: center; }
+
+td.name-sign { width: 10%; }
+td.name-sign img { }

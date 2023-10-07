@@ -16,7 +16,7 @@
 
 <xsl:include href="lex-sign-lookup.xsl"/>
 <xsl:include href="g2-gdl-HTML.xsl"/>
-<xsl:include href="sxweb-esp-sign-image.xsl"/>
+<xsl:include href="sxweb-util.xsl"/>
 
 <xsl:output method="xml" indent="yes" encoding="utf-8"/>
 
