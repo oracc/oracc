@@ -35,3 +35,8 @@ iframe { margin-width: 10px; border: none; border-left: 2px; }
 
 .middle { vertical-align: middle; }
 
+table.pretty { background-color: white; }
+
+.sl-td-name { font-size: 80%; font-family: arial,sans-serif; }
+
+.sl-td-sign { text-align: center; }

@@ -16,6 +16,7 @@
 
 <xsl:include href="lex-sign-lookup.xsl"/>
 <xsl:include href="g2-gdl-HTML.xsl"/>
+<xsl:include href="sxweb-esp-sign-image.xsl"/>
 
 <xsl:output method="xml" indent="yes" encoding="utf-8"/>
 
@@ -27,8 +28,8 @@
 <xsl:param name="snippetdir" select="'/emss/snippets'"/>
 
 <xsl:template match="sl:signlist">
-  <xsl:message>sxweb-signs.xsl processing <xsl:value-of select="count(sl:letter/sl:signs/sl:sign)"/> signs</xsl:message>
-  <xsl:apply-templates select="sl:letter/sl:signs/sl:sign"/>
+  <xsl:message>sxweb-signs.xsl processing <xsl:value-of select="count(sl:letter/sl:sign)"/> signs</xsl:message>
+  <xsl:apply-templates select="sl:letter/sl:sign"/>
 </xsl:template>
 
 <xsl:template match="sl:sign">
@@ -45,7 +46,7 @@
 	  <xsl:if test="not(sl:smap) and not(sl:uage='0')">
 	    <xsl:text>: </xsl:text>
 	    <xsl:value-of select=".//sl:uname[1]"/>
-	    <xsl:value-of select="concat(' [',@xml:id,']')"/>
+	    <!--<xsl:value-of select="concat(' [',@xml:id,']')"/>-->
 	  </xsl:if>
 	</xsl:if>
       </esp:title>
@@ -195,7 +196,7 @@
 	      <xsl:value-of select="@n"/>
 	      <xsl:text>: </xsl:text>
 	      <xsl:value-of select=".//sl:uname"/>
-	      <xsl:value-of select="concat(' [',@xml:id,']')"/>
+	      <!--<xsl:value-of select="concat(' [',@xml:id,']')"/>-->
 	    </xsl:when>
 	    <xsl:otherwise>
 	      <xsl:apply-templates select="sl:name[1]"/>
@@ -204,11 +205,11 @@
 	</b>
       </h2>
     </xsl:if>
-    <xsl:if test="count(sl:form) > 1">
+    <xsl:if test="count(sl:form) > 0">
       <div class="formjumps">
 	<p>
 	  <xsl:text>Jump to form: </xsl:text>
-	  <xsl:for-each select="sl:form">
+	  <xsl:for-each select="self::*[not(sl:uage='0')]|sl:form">
 	    <esp:link bookmark="form{count(preceding-sibling::sl:form)}">
 	      <xsl:value-of select="@n"/>
 	      <xsl:if test="sl:images/sl:i[@loc]">
@@ -263,12 +264,8 @@
 	      <xsl:apply-templates select=".//sl:name[1]"/>
 	      <xsl:if test="sl:images/sl:i[@loc]">
 		<xsl:text> = </xsl:text>
-		<xsl:variable name="base" select="'../../../pctc'"/>
 		<xsl:for-each select="sl:images/sl:i[@loc][1]">
-		  <xsl:variable name="ref" select="@ref"/>
-		  <xsl:variable name="header" select="/*/sl:iheader[@xml:id=$ref]"/>
-		  <esp:image class="middle" height="30px" file="{$base}/{$header/@path}/{@loc}"
-			     description="{$header/@label} image of {ancestor::*[sl:name]/sl:name[1]}"/>
+		  <xsl:call-template name="esp-sign-image"/>
 		</xsl:for-each>
 	      </xsl:if>
 	    </esp:link>

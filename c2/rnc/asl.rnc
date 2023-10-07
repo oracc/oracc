@@ -14,11 +14,13 @@ start =
       attribute title { text },
       attribute xml:id { xsd:NCName },
       attribute num { xsd:string { pattern="[01]" } }?,
+      (sl.tle*
+      |
       element sl:signs {
         attribute name { text },
         attribute title { text },
 	sl.tle*
-      }*
+      }*)
     }*
   }
 

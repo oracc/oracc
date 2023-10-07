@@ -8,6 +8,8 @@
 #include <oraccsys.h>
 #include <sx.h>
 
+int slgroups = 0;
+
 extern Mloc *xo_loc;
 static struct rnvval_atts *ratts;
 Hash *xidseen = NULL;
@@ -126,22 +128,25 @@ sx_w_x_signlist(struct sx_functions *f, struct sl_signlist *sl, enum sx_pos_e p)
 static void
 sx_w_x_group(struct sx_functions *f, struct sl_signlist *sl, struct sl_group *g, enum sx_pos_e p)
 {
-  static int in_group = 0;
-  xo_loc->file = "stdin"; xo_loc->line = 1;
-  if (p == sx_pos_inst)
+  if (slgroups)
     {
-      if (in_group)
-	rnvxml_ee("sl:signs");
-	
-      ratts = rnvval_aa("x", "name", g->name, "title", g->name, NULL);
-      rnvxml_ea("sl:signs", ratts);
-      in_group = 1;
-    }
-  else if (p == sx_pos_term)
-    {
-      if (in_group)
-	rnvxml_ee("sl:signs");
-      in_group = 0;
+      static int in_group = 0;
+      xo_loc->file = "stdin"; xo_loc->line = 1;
+      if (p == sx_pos_inst)
+	{
+	  if (in_group)
+	    rnvxml_ee("sl:signs");
+	  
+	  ratts = rnvval_aa("x", "name", g->name, "title", g->name, NULL);
+	  rnvxml_ea("sl:signs", ratts);
+	  in_group = 1;
+	}
+      else if (p == sx_pos_term)
+	{
+	  if (in_group)
+	    rnvxml_ee("sl:signs");
+	  in_group = 0;
+	}
     }
 }
 

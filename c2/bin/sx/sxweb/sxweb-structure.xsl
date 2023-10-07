@@ -17,13 +17,24 @@
     <xi:include href="00lib/signlist-structure-top.xml">
       <xi:fallback/>
     </xi:include>
-    <xsl:for-each select="*/sl:letter">
+    <hr/>
+    <xsl:for-each select="*/sl:letter[not(@num='1')]">
       <struct:page file="{@xml:id}.xml" id="{@xml:id}" type="page">
-	<xsl:for-each select=".//sl:sign">
+	<xsl:for-each select="sl:sign">
 	  <struct:page file="{@xml:id}.xml" id="{@xml:id}" type="page" hide-menu-link="yes"/>
 	</xsl:for-each>
       </struct:page>
     </xsl:for-each>
+    <struct:page file="numbers.xml" id="numbers" type="page">
+      <xsl:for-each select="*/sl:letter[@num='1']">
+	<struct:page file="{@xml:id}.xml" id="{@xml:id}" type="page" hide-menu-link="yes">
+	  <xsl:for-each select="sl:sign">
+	    <struct:page file="{@xml:id}.xml" id="{@xml:id}" type="page" hide-menu-link="yes"/>
+	  </xsl:for-each>
+	</struct:page>
+    </xsl:for-each>
+    </struct:page>
+    <hr/>
     <xi:include href="00lib/signlist-structure-bot.xml">
       <xi:fallback/>
     </xi:include>
