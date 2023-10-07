@@ -421,51 +421,55 @@ asl_bld_form(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int min
 {
   int literal, query;
   
-  sl->curr_value = NULL;
-  check_flags(locp, (char*)n, &query, &literal);
-
-  asl_bld_token(locp, sl, (ucp)n, 0);
-
-  if (sl->curr_sign->hfentry && hash_find(sl->curr_sign->hfentry, n))
+  if (asl_sign_guard(locp, sl, "form"))
     {
-      mesg_verr(locp, "duplicate form %s in sign %s\n", n, sl->curr_sign->name);
-    }
-  else
-    {
-      struct sl_form *f = NULL;
-      struct sl_inst *i = memo_new(sl->m_insts);
+  
+      sl->curr_value = NULL;
+      check_flags(locp, (char*)n, &query, &literal);
 
-      if (!(f = hash_find(sl->hfentry, n)))
+      asl_bld_token(locp, sl, (ucp)n, 0);
+
+      if (sl->curr_sign->hfentry && hash_find(sl->curr_sign->hfentry, n))
 	{
-	  f = memo_new(sl->m_forms);
-	  f->name = n;
-	  f->insts = list_create(LIST_SINGLE);
-	  list_add(f->insts, i);
-	  f->owners = list_create(LIST_SINGLE);
-	  list_add(f->owners, sl->curr_sign); 		/* list of signs that have this n as a form */
-	  hash_add(sl->hfentry, (uccp)f->name, f); 	/* The forms that belong to the signlist are sl_form* */
+	  mesg_verr(locp, "duplicate form %s in sign %s\n", n, sl->curr_sign->name);
 	}
       else
 	{
-	  list_add(f->owners, sl->curr_sign); 		/* list of signs that have this n as a form */	  
-	  list_add(f->insts, i);
-	}
+	  struct sl_form *f = NULL;
+	  struct sl_inst *i = memo_new(sl->m_insts);
 
-      sl->curr_form = sl->curr_inst = i;
+	  if (!(f = hash_find(sl->hfentry, n)))
+	    {
+	      f = memo_new(sl->m_forms);
+	      f->name = n;
+	      f->insts = list_create(LIST_SINGLE);
+	      list_add(f->insts, i);
+	      f->owners = list_create(LIST_SINGLE);
+	      list_add(f->owners, sl->curr_sign); 		/* list of signs that have this n as a form */
+	      hash_add(sl->hfentry, (uccp)f->name, f); 	/* The forms that belong to the signlist are sl_form* */
+	    }
+	  else
+	    {
+	      list_add(f->owners, sl->curr_sign); 		/* list of signs that have this n as a form */	  
+	      list_add(f->insts, i);
+	    }
 
-      i->parent_s = sl->curr_sign->inst;
-      i->type = 'f';
-      i->u.f = f;
-      i->mloc = *locp;
-      i->valid = (Boolean)!minus_flag;
-      i->query = (Boolean)query;
-      i->literal = literal;
-      i->lv = memo_new(sl->m_lv_data);
+	  sl->curr_form = sl->curr_inst = i;
+
+	  i->parent_s = sl->curr_sign->inst;
+	  i->type = 'f';
+	  i->u.f = f;
+	  i->mloc = *locp;
+	  i->valid = (Boolean)!minus_flag;
+	  i->query = (Boolean)query;
+	  i->literal = literal;
+	  i->lv = memo_new(sl->m_lv_data);
       
-      if (!sl->curr_sign->hfentry)
-	sl->curr_sign->hfentry = hash_create(128);
+	  if (!sl->curr_sign->hfentry)
+	    sl->curr_sign->hfentry = hash_create(128);
 
-      hash_add(sl->curr_sign->hfentry, f->name, i); /* The forms that belong to signs are sl_inst* */
+	  hash_add(sl->curr_sign->hfentry, f->name, i); /* The forms that belong to signs are sl_inst* */
+	}
     }
 }
 
