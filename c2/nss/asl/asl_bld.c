@@ -345,42 +345,57 @@ asl_register_sign(Mloc *locp, struct sl_signlist *sl, struct sl_sign *s)
 
       /* This is where the structure of the signlist is built */
 
+      /* Recompute "letter" based on N01 style numbering */
+      if (code == -1)
+	{
+	  char *dest, *src, *tmp;
+	  int llen = strlen(letter);
+	  tmp = pool_alloc(llen+1, sl->p);
+	  *tmp = 'l';
+	  strcat(tmp, letter+1);
+	  src = tmp;
+	  if ((dest = strchr(src, '~')))
+	    *dest = '\0';
+	  dest = src;
+	  while (*src)
+	    if ('@' == *src)
+	      ++src;
+	    else
+	      *dest++ = *src++;
+	  *dest = '\0';
+	  letter = group = tmp;
+	}
+
+      char *lname = NULL;
+      if (code == -1)
+	{
+	  lname = pool_copy(letter, sl->p);
+	  *letter = '0';
+	  *group = '0';
+	}
+
       /* remember the letter */	  
       if (!(lp = hash_find(sl->hletters, letter)))/* AB1: hash of letters in signlist;
 						     value is struct sl_letter* */
 	{
 	  lp = memo_new(sl->m_letters);
+
+	  hash_add(sl->hletters, letter, lp);
+	  
 	  lp->name = letter;
+	  lp->lname = lname;
 	  lp->code = code;
-	  if (code == -1)
-	    {
-	      char *dest, *src, *tmp;
-	      int llen = strlen(letter);
-	      tmp = pool_alloc(llen+1, sl->p);
-	      *tmp = 'l';
-	      strcat(tmp, letter+1);
-	      src = tmp;
-	      if ((dest = strchr(src, '~')))
-		*dest = '\0';
-	      dest = src;
-	      while (*src)
-		if ('@' == *src)
-		  ++src;
-		else
-		  *dest++ = *src++;
-	      *dest = '\0';
-	      lp->lname = tmp;
-	    }
 	  lp->hgroups = hash_create(32);
-	  hash_add(sl->hletters, lp->lname ? lp->lname : letter, lp);
 	}
+      else if (code == -1)
+	*group = '0';
       
       /* remember the group belongs to the letter */
       if (!(gslist = hash_find(lp->hgroups, group)))	      
 	hash_add(lp->hgroups, group,
 		 (gslist = list_create(LIST_SINGLE)));  /* AB2: hash of groups in letter;
 							   value is list of struct sl_sign * */
-      list_add(gslist, s->inst); 			/* AB3: list of signs in group,
+      list_add(gslist, s->inst);			/* AB3: list of signs in group,
 					   		   data member is struct sl_inst* */ /* WHAT ABOUT @comp ? */
     }
   else
