@@ -14,7 +14,7 @@
 
 <xsl:template match="/">
   <struct:page file="home.xml" id="home" type="page">
-    <xi:include href="00lib/signlist-structure-top.xml">
+    <xi:include xml:base="." href="00lib/signlist-structure-top.xml" xpointer="xpointer(/*/*)">
       <xi:fallback/>
     </xi:include>
     <hr/>
@@ -36,7 +36,7 @@
     </xsl:for-each>
     </struct:page>
     <hr/>
-    <xi:include href="00lib/signlist-structure-bot.xml">
+    <xi:include xml:base="." href="00lib/signlist-structure-bot.xml" xpointer="xpointer(/*/*)">
       <xi:fallback/>
     </xi:include>
   </struct:page>
