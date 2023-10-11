@@ -46,7 +46,7 @@
 	  <xsl:if test="not(sl:smap) and not(sl:uage='0')">
 	    <xsl:text>: </xsl:text>
 	    <xsl:value-of select=".//sl:uname[1]"/>
-	    <!--<xsl:value-of select="concat(' [',@xml:id,']')"/>-->
+	    <span class="pcsl-oid"><xsl:value-of select="concat(' [',@xml:id,']')"/></span>
 	  </xsl:if>
 	</xsl:if>
       </esp:title>
@@ -196,7 +196,7 @@
 	      <xsl:value-of select="@n"/>
 	      <xsl:text>: </xsl:text>
 	      <xsl:value-of select=".//sl:uname"/>
-	      <!--<xsl:value-of select="concat(' [',@xml:id,']')"/>-->
+	      <span class="pcsl-oid"><xsl:value-of select="concat(' [',@xml:id,']')"/></span>
 	    </xsl:when>
 	    <xsl:otherwise>
 	      <xsl:apply-templates select="sl:name[1]"/>
