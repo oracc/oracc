@@ -44,4 +44,4 @@ table.pretty { background-color: white; }
 td.name-sign { width: 10%; }
 td.name-sign img { }
 
-pcsl-oid { font-weight: normal; font-size: 80%; }
+.pcsl-oid { font-weight: normal; font-size: 80%; }
