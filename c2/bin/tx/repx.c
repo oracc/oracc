@@ -11,6 +11,7 @@
 #define REPS_BUF_MAX_ 4196
 
 const char *cfg = NULL;
+int env = 0;
 const char *infile = NULL;
 const char *outfile = NULL;
 const char *project = NULL;
@@ -18,10 +19,12 @@ const char *project = NULL;
 int
 main(int argc, char *const *argv)
 {
-  options(argc, argv, "c:i:p:?");
+  options(argc, argv, "c:ei:p:?");
   Hash *h = NULL;
   Pool *p = pool_init();
   struct xpd *xpd = NULL;
+  int status = 1;
+  
   if (project)
     {
       xpd = xpd_init(project, p);
@@ -29,11 +32,16 @@ main(int argc, char *const *argv)
     }
   else
     h = hash_create(10);
-  if (cfg)
+  if (cfg)   
+    roco_hash_hash(h, roco_load1(cfg));
+  else if (!env)
+    fprintf(stderr, "repx: must give -c [CONFIG_FILE] or -e command-line. Stop.\n");
+  else
     {
-      roco_hash_hash(h, roco_load1(cfg));
       unsigned char *s = NULL;
       FILE *outfp = stdout;
+
+      status = 0;
       
       if (!infile)
 	infile = hash_find(h, (uccp)"infile");
@@ -53,11 +61,7 @@ main(int argc, char *const *argv)
 
       free(s);
     }
-  else
-    {
-      fprintf(stderr, "repx: must give configuration file on command-line. Stop.\n");
-      exit(1);
-    }
+  return status;
 }
 
 const char *prog = "rocox";
@@ -71,6 +75,9 @@ opts(int opt, char *arg)
     {
     case 'c':
       cfg = arg;
+      break;
+    case 'e':
+      env = 1;
       break;
     case 'i':
       infile = arg;

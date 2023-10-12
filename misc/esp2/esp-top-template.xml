@@ -3,8 +3,8 @@
     xmlns:esp="http://oracc.org/ns/esp/1.0"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:xh="http://www.w3.org/1999/xhtml">
-  <esp:name>@@esp-name@@</esp:name>
-  <esp:title>@@esp-title@@</esp:title>
+  <esp:name>@@esp_name@@</esp:name>
+  <esp:title>@@esp_title@@</esp:title>
   <html>
     <head/>
     <body>
