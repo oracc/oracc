@@ -123,16 +123,52 @@ sx_list_dump(FILE *f, struct sl_signlist *sl)
 	      if (lp)
 		{
 		  struct sl_inst *ip;
-		  if (!strcmp(ldp->names[j], "BAU114"))
-		    fprintf(stderr, "BAU114\n");
-		  for (ip = list_first(lp->insts); ip; ip = list_next(lp->insts))
+		  unsigned const char *name = (uccp)"", *note = (uccp)"";
+		  if (lp->insts)
 		    {
-		      fprintf(f, "%s\t%s\n", ldp->names[j],
-			      ip->type == 's' ? ip->u.s->oid : ip->u.f->oid);
+		      for (ip = list_first(lp->insts); ip; ip = list_next(lp->insts))
+			{
+			  if (lp->type == sl_ll_list)
+			    name = (ip->type == 's') ? ip->u.s->name : ip->u.f->name;
+			  else if (lp->type == sl_ll_lref)
+			    mesg_verr(&lp->inst->mloc, "strange: @lref has instances more than just its own (this can't happen)");
+			  else
+			    mesg_verr(&ip->mloc, "untyped @list or @lref");
+			  fprintf(f, "%s\t%s\t%s\t%s\n", ldp->names[j],
+				  ip->type == 's' ? ip->u.s->oid : ip->u.f->oid,
+				  name , note);
+			}
+		    }
+		  else if (lp->inst)
+		    {
+		      if (lp->type == sl_ll_list)
+			mesg_verr(&lp->inst->mloc, "strange: @list has no instances (this can't happen)");
+		      else if (lp->type == sl_ll_lref)
+			{
+			  if (lp->inst->notes)
+			    {
+			      note = (uccp)((struct sl_note*)list_first(lp->inst->notes))->txt;
+			      if (note && *note)
+				{
+				  if ('-' == *note && '\0' == note[1])
+				    note = (uccp)"";
+				}
+			      else
+				mesg_verr(&lp->inst->mloc, "strange: @lref @note is NULL");
+			    }
+			  else
+			    mesg_verr(&lp->inst->mloc, "@lref requires @note (use '@note -' to suppress this message)");
+			}
+		      else
+			mesg_verr(&ip->mloc, "untyped @list or @lref");
+		      fprintf(f, "%s\t%s\t%s\t%s\n", ldp->names[j], "", name , note);
 		    }
 		}
 	      else
-		fprintf(f, "%s\t\n", ldp->names[j]);
+		{
+		  mesg_verr(&sl->mloc, "list entry %s missing (no @list or @lref)", ldp->names[j]);
+		  fprintf(f, "%s\t\t\t\n", ldp->names[j]);
+		}
 	    }
 	}
     }

@@ -40,7 +40,7 @@ struct sx_functions
     const char *fname;
   };
 
-extern int identity_mode;
+extern int identity_mode, listdef_check;
 extern int oid_list;
 extern Hash *oids;
 extern Hash *oid_sort_keys;

@@ -586,6 +586,7 @@ asl_add_list(Mloc *locp, struct sl_signlist *sl, const unsigned char *n, int lit
 	  l = memo_new(sl->m_lists);
 	  l->name = n;
 	  l->insts = list_create(LIST_SINGLE);
+	  l->type = sl_ll_list;
 	  list_add(l->insts, parent_inst);
 	  hash_add(sl->hlentry, n, l);
 	}

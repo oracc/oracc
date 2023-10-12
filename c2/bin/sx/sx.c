@@ -145,7 +145,7 @@ main(int argc, char * const*argv)
 	    fprintf(stderr, "sx: unable to dump @image data; can't write sx-images.out\n");
 	}
       
-      if (listdef_check)
+      if (listdef_check && !list_dump)
 	sx_listdefs(sl, missing_lists);
 
       if (oid_list)
