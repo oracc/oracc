@@ -71,3 +71,11 @@ xmlify_yes(const unsigned char *c)
 
   return xbuf;
 }
+
+const char *
+xmlify_char(int c)
+{
+  if (c < 128 && xmlch[c])
+    return xmlch[c];
+  return NULL;
+}

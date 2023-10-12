@@ -2,7 +2,7 @@ SUBDIRS=j2x
 
 include ../../../oracc-am-rules.txt
 
-bin_PROGRAMS=concord tlitsig
+bin_PROGRAMS=concord tlitsig xmlify
 
 xLDADD=\
 	../../lem/lng/liblng.la \
@@ -27,13 +27,15 @@ AM_CPPFLAGS=\
 	-I../../../c/lib/collate
 
 concord_SOURCES = concord.c
-
 concord_LDADD = $(xLDADD)
-
 concord_DEPENDENCIES = $(xLDADD)
 
 tlitsig_SOURCES = tlitsig.c
-
 tlitsig_LDADD = $(xLDADD)
-
 tlitsig_DEPENDENCIES = $(xLDADD)
+
+
+xmlify_SOURCES = xmlify.c
+xmlify_LDADD = $(xLDADD)
+xmlify_DEPENDENCIES = $(xLDADD)
+
