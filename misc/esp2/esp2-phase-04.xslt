@@ -296,7 +296,7 @@
   <xsl:variable name="linked-page-URL">
     <xsl:if test="$id">
 	<xsl:if test="not ( $linked-page )">
-	  <xsl:message>	WARNING! Broken internal link: no page is defined with id '<xsl:value-of select="$id"/>'</xsl:message>
+	  <xsl:message><xsl:value-of select="ancestor::struct:page[1]/@file"/>: broken internal link: no page is defined with id '<xsl:value-of select="$id"/>'</xsl:message>
 	</xsl:if>
 
       <xsl:call-template name="maybe-local-url">

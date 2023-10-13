@@ -274,7 +274,7 @@
       </xsl:call-template>
     </xsl:variable>
     <xsl:if test="not ( @description )">
-      <xsl:message>  WARNING! Image tag lacking description (name: <xsl:value-of select="@name"/>) -- page will fail WAI compliance test!</xsl:message>
+      <xsl:message><xsl:value-of select="ancestor::struct:page[1]/@file"/>: image tag lacks description (name: <xsl:value-of select="@name"/>) -- page will fail WAI compliance test</xsl:message>
     </xsl:if>
     <xsl:variable name="src" select="if ( @file ) then concat ( $relpath, '/images/', @file ) else @url"/>
 

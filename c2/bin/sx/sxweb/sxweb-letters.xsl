@@ -32,6 +32,7 @@
 	    <xsl:with-param name="columns" select="'4'"/>
 	    <xsl:with-param name="nodes" select="sl:letter[@num='1']"/>
 	    <xsl:with-param name="class" select="'pretty'"/>
+	    <xsl:with-param name="tag" select="'letter'"/>
 	  </xsl:call-template>
 	</body>
       </html>

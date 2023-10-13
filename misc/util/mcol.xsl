@@ -17,7 +17,7 @@
     <xsl:if test="string-length($width)>0"><xsl:attribute name="width"><xsl:value-of select="$width"/></xsl:attribute></xsl:if>
     <xsl:if test="string-length($class)>0"><xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute></xsl:if>
     <xsl:for-each select="$nodes[local-name()=$tag][(position() - 1) mod $columns = 0]">
-      <xsl:message>mcol first @n = <xsl:value-of select="@n"/></xsl:message>
+      <!--<xsl:message>mcol first @n = <xsl:value-of select="@n"/></xsl:message>-->
       <xsl:apply-templates select="." mode="mcol-first">
 	<xsl:with-param name="columns" select="$columns"/>
 	<xsl:with-param name="tag" select="$tag"/>
@@ -30,7 +30,8 @@
   <xsl:param name="columns"/>
   <xsl:param name="tag"/>
   <tr>
-    <xsl:apply-templates mode="mcol" select=".|following-sibling::*[local-name()=$tag][position() &lt; $columns]"/>
+    <xsl:apply-templates mode="mcol"
+			 select=".|following-sibling::*[local-name()=$tag][position() &lt; $columns]"/>
     <xsl:if test="count(following-sibling::*) &lt; ($columns - 1)">
       <xsl:call-template name="emptycell">
         <xsl:with-param name="cells" select="$columns - 1 - count(following-sibling::*[local-name()=$tag])"/>
@@ -39,21 +40,6 @@
   </tr>
 </xsl:template>
 
-<!--
-<xsl:template match="*" mode="mcol-first">
-  <xsl:param name="columns"/>
-  <xsl:param name="tag"/>
-  <xsl:variable name="up" select="generate-id(../..)"/>
-  <tr>
-    <xsl:apply-templates mode="mcol" select=".|following::*[generate-id(../..)=$up][local-name()=$tag][position() &lt; $columns]"/>
-    <xsl:if test="count(following::*[local-name()=$tag]) &lt; ($columns - 1)">
-      <xsl:call-template name="emptycell">
-        <xsl:with-param name="cells" select="$columns - 1 - count(following::*[generate-id(../..)=$up][local-name()=$tag])"/>
-      </xsl:call-template>
-    </xsl:if>
-  </tr>
-</xsl:template>
--->
 <xsl:template name="emptycell">
   <xsl:param name="cells"/>
   <td/>
