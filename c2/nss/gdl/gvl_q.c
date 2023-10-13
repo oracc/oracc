@@ -332,7 +332,7 @@ gvl_q_c10e(gvl_g *vp, gvl_g *qp, gvl_g *vq)
 		   * value that has multiple forms, like ŠUŠₓ, that, too,
 		   * will have multiple OIDs.
 		   *
-		   * The solution is to find any possible OID lists for
+		   * The solution is to find any-possible-OID lists for
 		   * the two parts and then see if they have a single OID
 		   * in common; if so, it's a legal match-up; if they have
 		   * multiple OIDs in common or no common OIDs, it's an

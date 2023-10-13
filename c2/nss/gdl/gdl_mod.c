@@ -249,15 +249,6 @@ gdl_mod_wrap_q(Node *np)
   const char *res = "";
   Node *tmp;
 
-  if (strcmp(np->name, "g:n"))
-    {
-      if (np->user)
-	((gvl_g*)(np->user))->mess = gvl_vmess("%s: modifiers are not allowed on qualified signs", np->text);
-      else
-	mesg_verr(np->mloc, "%s: modifiers are not allowed on qualified signs", np->text);
-      return;
-    }
-  
   for (tmp = np->kids; tmp; tmp = tmp->next)
     {
       if (tmp->name[2] == 'm' || tmp->name[2] == 'M')
@@ -289,6 +280,17 @@ gdl_mod_wrap_q(Node *np)
   if (res && *res)
     {
       unsigned char *o = NULL, *c = NULL;
+
+      /* 2023-10-13: Not clear that this is valid any more */
+      if (strcmp(np->name, "g:n"))
+	{
+	  if (np->user)
+	    ((gvl_g*)(np->user))->mess = gvl_vmess("%s: modifiers are not allowed on qualified signs", np->text);
+	  else
+	    mesg_verr(np->mloc, "%s: modifiers are not allowed on qualified signs", np->text);
+	  return;
+	}
+  
       if (np->user)
 	{
 	  gvl_g *ng = memo_new(curr_sl->m); /* update in a new gvl_g */

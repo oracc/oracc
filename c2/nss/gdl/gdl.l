@@ -45,15 +45,16 @@ static int cvq_pop(void);
 static int cvq_push(int);
 static void cvq_reset(void);
 /* LISTNUM		([A-Z][A-Z]+[0-9]+[A-Z0-9a-z_'"/+*]*) */
+/* NUMGRAPH	[0-9XNn]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\) */
 %}
 
 B		("["|"]"|\xe2\xb8[\xa2-\xa5])
 S		\xe2\xb8[^\xa2-\xa5]|[0-9]
 G		([a-ru-zA-RU-Z'\x80-\xc2\xc4-\xe1\xe3-\xff]|[stST],?|{S}|\xc3[^\x97]|\xe2[^\xb8])+
-M		([@~\\]([a-z]+[0-9]*|90|180|270))
-N		([N][0-9][0-9]?[ACF]?)
-GRAPHEME 	((({G}|{N}))|"15")
-NUMGRAPH	[0-9XNn]+(\/[0-9])?\(({GRAPHEME}|{COMPOUND})\)
+CG		([A-RU-Z'\x80-\xc2\xc4-\xe1\xe3-\xff]|[ST],?|{S}|\xc3[^\x97]|\xe2[^\xb8])+
+M		([@~\\]([a-wyz]+[0-9]*|90|180|270))
+NNUM		([N][0-9][0-9]?[ACF]?)
+GRAPHEME 	({G}|"15")
 FRACTION	[0-9]\/[0-9]
 
 L_UHS		"\xe2\xb8\xa2"
@@ -63,7 +64,7 @@ R_LHS		"\xe2\xb8\xa5"
 
 NOTEMARK	"^"[0-9]+"^"
 
-%s C
+%x C
 %s Q
 %s S
 %x TC
@@ -79,6 +80,11 @@ NOTEMARK	"^"[0-9]+"^"
 [=^][aeiuAEIU]		{ if (gdl_unicode) { mesg_vwarning(currgdlfile,gdllineno,
 						"non-Unicode accent codes %s",gdltext); }}
 
+<C>{NNUM}/{M} 		{ GIN=1; gsave; return NNUM; }
+<C>{NNUM} 		{ GIN=1; gsave; return NNUM; }
+<C>{CG}			{ GIN=1; gsave; return gdl_grapheme_type(); }
+<C>{M}			{ GIN=1; gsave; return MOD; }
+<C>[0-9nN]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
 <C>"."			{ GIN=0; return C_PERIOD; }
 <C>"+"			{ GIN=0; return C_PLUS; }
 <C>":"/"("	       	{ GIN=0; return C_COLON; }
@@ -89,6 +95,8 @@ NOTEMARK	"^"[0-9]+"^"
 <C>"4\xc3\x97"		{ GIN=0; return C_4TIMES; }
 <C>"3\xc3\x97"		{ GIN=0; return C_3TIMES; }
 <C>"\xc3\x97"	       	{ GIN=0; return C_TIMES; }
+<C>"x"	       		{ GIN=0; return C_TIMES; }
+<C>[a-wyz]    		{ GIN=0; mesg_vwarning(currgdlfile,gdllineno,"lowercase graphemes not allowed in |...|"); }
 <C>"("			{ return GIN ? QLP : CLP; }
 <C>")"			{ return CRP; }
 <C>[ \t]+	       	{ CIN=GIN=0; mesg_vwarning(currgdlfile,gdllineno,"missing '|' in compound");
@@ -148,6 +156,9 @@ _			{ gsave; return LANG_FLIP; }
 "/"/[ \t\n\(]		{ /*"*/ GIN=1; gsave; return PUNCT; }
 
 [0-9nN]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
+
+{NNUM}/{M}	       	{ GIN=1; gsave; return NNUM; }
+{NNUM} 			{ GIN=1; gsave; return NNUM; }
 
 [0-9]+(\/[0-9]+)?	{ GIN=1; gsave; return BARENUM; }
 
@@ -226,7 +237,7 @@ gdl_grapheme_type(void)
       while (*d && isdigit(*d))
         ++d;
       if (*d == '(')
- 	return NUMBER;
+        return NUMBER;
       else
 	return BARENUM;
     }

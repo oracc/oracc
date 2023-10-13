@@ -165,7 +165,7 @@ main(int argc, char **argv)
 {
   gdl_flex_debug = gdldebug = 0;
   gdl_unicode = 1;
-  options(argc, argv, "bcdef:gilnop:Prstvw");
+  options(argc, argv, "abcdef:gilnop:Prstvw");
 
   gdl_flex_debug = gdldebug = trace_mode;
 
@@ -219,6 +219,9 @@ opts(int opt, char *arg)
 {
   switch (opt)
     {
+    case 'a':
+      gdl_unicode = 0; /* defaults to 1; 0 forces atf2utf */
+      break;
     case 'b':
       bare_mode = 1;
       break;

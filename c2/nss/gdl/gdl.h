@@ -92,6 +92,7 @@ extern void gdl_lexfld_init(void);
 extern Node *gdl_mod(Tree *ytp, const char *data);
 extern Node *gdl_punct(Mloc *locp, Tree *ytp, const char *data);
 extern Node *gdl_listnum(Mloc *locp, Tree *ytp, const char *data);
+extern Node *gdl_nnum(Mloc *locp, Tree *ytp, const char *data);
 extern Node *gdl_number(Mloc *locp, Tree *ytp, const char *data);
 extern Node *gdl_barenum(Mloc *locp, Tree *ytp, const char *data);
 extern void gdl_unlegacy(Node *np);

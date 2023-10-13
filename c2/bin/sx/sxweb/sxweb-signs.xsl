@@ -275,61 +275,66 @@
 	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:if test="/*/@project = 'pcsl'">
-	    <xsl:if test="not(sl:uage='0')">
-	      <div class="image-insts">
-		<table width="95%">
-		  <tr>
-		    <td width="5%" valign="top" class="ii-signs">
-		      <xsl:choose>
-			<xsl:when test="sl:images/sl:i[@loc]">
-			  <xsl:variable name="base" select="'../../../pctc'"/>
-			  <xsl:for-each select="sl:images/sl:i[@loc]">
-			    <hr/>
-			    <p>
-			      <xsl:variable name="ref" select="@ref"/>
-			      <xsl:variable name="header" select="/*/sl:iheader[@xml:id=$ref]"/>
-			      <span class="im-label"><xsl:value-of select="$header/@label"/>:</span><br/><br/>
-			      <esp:image width="100%" file="{$base}/{$header/@path}/{@loc}"
-					 description="{$header/@label} image of {ancestor::*[sl:name]/sl:name[1]}"/>
-			    </p>
-			    <!--<xsl:if test="not(position()=last())"><hr/></xsl:if>-->
-			  </xsl:for-each>
-			</xsl:when>
-			<xsl:otherwise>
-			  <xsl:text>&#xa0;</xsl:text>
-			</xsl:otherwise>
-		      </xsl:choose>
-		    </td>
-		    <td width="93%" class="ii-insts">
-		      <xsl:variable name="o" select="@xml:id"/>
-		      <xsl:for-each select="document('sl-corpus-counts.xml',/)">
-			<xsl:variable name="c" select="id($o)"/>
-
-			<!--
-			<xsl:message><xsl:value-of select="$o"/>:
-			node-count=<xsl:value-of select="count($c/*)"/>:
-			<xsl:value-of select="$c/c/r[1]/c[1]"/>=<xsl:value-of select="$c/c/r[1]/c[2]"/></xsl:message>
-			-->
-			
+	    <xsl:choose>
+	      <xsl:when test="not(sl:uage='0')">
+		<div class="image-insts">
+		  <table width="95%">
+		    <tr>
+		      <td width="5%" valign="top" class="ii-signs">
 			<xsl:choose>
-			  <xsl:when test="count($c/*)=0 or $c/c/r[1]/c[2]='0'">
-			    <p>(No attestations in corpus)</p>
+			  <xsl:when test="sl:images/sl:i[@loc]">
+			    <xsl:variable name="base" select="'../../../pctc'"/>
+			    <xsl:for-each select="sl:images/sl:i[@loc]">
+			      <hr/>
+			      <p>
+				<xsl:variable name="ref" select="@ref"/>
+				<xsl:variable name="header" select="/*/sl:iheader[@xml:id=$ref]"/>
+				<span class="im-label"><xsl:value-of select="$header/@label"/>:</span><br/><br/>
+				<esp:image width="100%" file="{$base}/{$header/@path}/{@loc}"
+					   description="{$header/@label} image of {ancestor::*[sl:name]/sl:name[1]}"/>
+			      </p>
+			      <!--<xsl:if test="not(position()=last())"><hr/></xsl:if>-->
+			    </xsl:for-each>
 			  </xsl:when>
 			  <xsl:otherwise>
-			    <xsl:variable name="height">
-			      <xsl:call-template name="compute-iframe-height">
-				<xsl:with-param name="c" select="$c"/>
-			      </xsl:call-template>
-			    </xsl:variable>
-			    <iframe width="100%" height="{$height}" src="/pctc/inst/{$o}.html"/>
+			    <xsl:text>&#xa0;</xsl:text>
 			  </xsl:otherwise>
 			</xsl:choose>
-		      </xsl:for-each>
-		    </td>
-		  </tr>
-		</table>
-	      </div>
-	    </xsl:if>
+		      </td>
+		      <td width="93%" class="ii-insts">
+			<xsl:variable name="o" select="@xml:id"/>
+			<xsl:for-each select="document('sl-corpus-counts.xml',/)">
+			  <xsl:variable name="c" select="id($o)"/>
+
+			  <!--
+			      <xsl:message><xsl:value-of select="$o"/>:
+			      node-count=<xsl:value-of select="count($c/*)"/>:
+			      <xsl:value-of select="$c/c/r[1]/c[1]"/>=<xsl:value-of select="$c/c/r[1]/c[2]"/></xsl:message>
+			  -->
+			  
+			  <xsl:choose>
+			    <xsl:when test="count($c/*)=0 or $c/c/r[1]/c[2]='0'">
+			      <p>(No attestations in corpus)</p>
+			    </xsl:when>
+			    <xsl:otherwise>
+			      <xsl:variable name="height">
+				<xsl:call-template name="compute-iframe-height">
+				  <xsl:with-param name="c" select="$c"/>
+				</xsl:call-template>
+			      </xsl:variable>
+			      <iframe width="100%" height="{$height}" src="/pctc/inst/{$o}.html"/>
+			    </xsl:otherwise>
+			  </xsl:choose>
+			</xsl:for-each>
+		      </td>
+		    </tr>
+		  </table>
+		</div>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<p><xsl:text>(This entry is not marked for inclusion in Unicode [uage=0])</xsl:text></p>
+	      </xsl:otherwise>
+	    </xsl:choose>
 	  </xsl:if>
 	</xsl:otherwise>
       </xsl:choose>

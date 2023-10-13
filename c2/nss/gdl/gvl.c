@@ -345,7 +345,7 @@ gvl_valuqual(Node *vqnp)
       if ('R' == vqnp->kids->name[2]
 	  || 'n' == vqnp->kids->name[2]
 	  || 'N' == vqnp->kids->name[2]
-	  || (!strcmp(vqnp->kids->text, "X")
+	  || (vqnp->kids->text && !strcmp(vqnp->kids->text, "X")
 	      && vqnp->kids->next && ndig(vqnp->kids->next->text))
 	  ) /* gvl_s make n or N type g:n */
 	gvl_n(vqnp);

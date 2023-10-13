@@ -334,6 +334,14 @@ gdl_lang(Tree *ytp, const char *data)
 }
 
 Node *
+gdl_nnum(Mloc *locp, Tree *ytp, const char *data)
+{
+  if (gdltrace)
+    fprintf(stderr, "gt: LISTNUM: %s\n", data);
+  return gdl_graph_node(locp, ytp, "g:N", data);
+}
+
+Node *
 gdl_listnum(Mloc *locp, Tree *ytp, const char *data)
 {
   if (gdltrace)

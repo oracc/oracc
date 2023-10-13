@@ -37,7 +37,7 @@ GDLLTYPE gdllloc;
 %union { char *text; int i; }
 
 %token	<text> 	FTYPE LANG TEXT ENHYPHEN ELLIPSIS NOTEMARK CELLSPAN
-		GRAPHEME NUMBER BARENUM LISTNUM PUNCT MOD INDENT NEWLINE
+		GRAPHEME NNUM NUMBER BARENUM LISTNUM PUNCT MOD INDENT NEWLINE
 		C_O C_C C_PERIOD C_ABOVE C_CROSSING C_OPPOSING C_COLON C_PLUS
 		C_TIMES C_4TIMES C_3TIMES CMOD
 		L_inl_dol R_inl_dol L_inl_cmt R_inl_cmt
@@ -203,6 +203,7 @@ simplexg:
 s:
 	  GRAPHEME					{ ynp = gdl_graph(&@1, ytp, gdllval.text); }
 	| LISTNUM					{ ynp = gdl_listnum(&@1, ytp, gdllval.text); }
+	| NNUM						{ ynp = gdl_nnum(&@1, ytp, gdllval.text); }
 	| NUMBER					{ ynp = gdl_number(&@1, ytp, gdllval.text); }
 	| BARENUM					{ ynp = gdl_barenum(&@1, ytp, gdllval.text); }
 	| PUNCT						{ ynp = gdl_punct(&@1, ytp, gdllval.text); }
