@@ -43,12 +43,11 @@ tree_init(void)
   return tp;
 }
 
-#if 0
 void
-tree_term()
+tree_term(void)
 {
+  tmem_term();
 }
-#endif
 
 Node *
 tree_node(Tree *tp, nscode ns, const char *name, int depth, Mloc *loc)

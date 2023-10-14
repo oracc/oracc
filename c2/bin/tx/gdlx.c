@@ -32,6 +32,7 @@ extern int gdlsig_depth_mode;
 int error_stdout = 0;
 const char *fname = NULL;
 int gdl_c10e_mode = 1;
+int gdl_one_off_mode = 0;
 int gsort_mode = 0;
 int identity_mode = 0;
 int ns_output = 0;
@@ -165,9 +166,31 @@ main(int argc, char **argv)
 {
   gdl_flex_debug = gdldebug = 0;
   gdl_unicode = 1;
-  options(argc, argv, "abcdef:gilnop:Prstvw");
+  options(argc, argv, "1abcdef:gilnop:Prstvw");
 
   gdl_flex_debug = gdldebug = trace_mode;
+
+  if (gdl_one_off_mode)
+    {
+      if (argv[optind])
+	{
+	  char *res = gdl_one_off("<cli>",1,argv[optind], 1);
+	  if (res)
+	    {
+	      printf("%s\t%s\n", argv[optind], res);
+	    }
+	  else
+	    {
+	      fprintf(stderr, "gdlx: one-off mode returned NULL\n");
+	    }
+	  return 0;
+	}
+      else
+	{
+	  fprintf(stderr, "gdlx: -1 (one-off mode) requires a grapheme on the command line\n");
+	  return 1;
+	}
+    }
 
   if (ns_output)
     {
@@ -219,6 +242,9 @@ opts(int opt, char *arg)
 {
   switch (opt)
     {
+    case '1':
+      gdl_one_off_mode = 1;
+      break;
     case 'a':
       gdl_unicode = 0; /* defaults to 1; 0 forces atf2utf */
       break;

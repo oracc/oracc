@@ -3,12 +3,13 @@
 #include <oraccsys.h>
 #include <oracclocale.h>
 #include <sll.h>
+#include <gvl.h>
 
 const char *file = NULL;
 int lnum = 0;
 char *key = NULL;
-const char *name = NULL;
-const char *project = NULL;
+const char *name = "ogsl";
+const char *project = "ogsl";
 
 int dbi_mode = 0;
 int tsv_mode = 1;
@@ -35,10 +36,17 @@ main(int argc, char **argv)
   else
     {
       if (dbi_mode)
-	d = sll_init_d(project, name);
+	{
+	  d = sll_init_d(project, name);
+	  sll_cli_voidsl();
+	}
       else
-	if (!(h = sll_init_t(project, name)))
-	  exit(1);
+	{
+	  if (!(h = sll_init_t(project, name)))
+	    exit(1);
+	  else
+	    gvl_quick_setup(project, h);
+	}
 
       if (key)
 	sll_cli_handler((uccp)key);

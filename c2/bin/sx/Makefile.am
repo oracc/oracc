@@ -12,9 +12,9 @@ data_DATA=sx-list-*.xml sx-udata-*.xml sx-udata-codes.tsv
 xLDADD=\
 	../../lem/lng/liblng.la \
 	../../nss/asl/libasl.la \
-	../../nss/gdl/libgdl.la \
 	../../lib/collate/libcoll.la \
 	../../lib/sll/libsll.la \
+	../../nss/gdl/libgdl.la \
 	../../lib/jsn/libjsn.la \
 	../../lib/xml/libxml.la \
 	../../lib/xml/rnv/librnv.la \
@@ -45,7 +45,7 @@ AM_CPPFLAGS=\
 
 slx_SOURCES=slx.c
 
-slx_LDADD = $(xLDADD)
+slx_LDADD = $(xLDADD) 
 
 slx_DEPENDENCIES = $(slx_LDADD)
 

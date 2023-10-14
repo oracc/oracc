@@ -5,6 +5,7 @@
 #include <wchar.h>
 #include <wctype.h>
 #include <locale.h>
+#include <gdl.h>
 
 #include <oraccsys.h>
 #include <pool.h>
@@ -65,14 +66,23 @@ sll_web_handler(const char *wcall, const char *wproj, const char *wgraph, const 
 
   if (wextension && !strcmp(wextension, "#none"))
     wextension = NULL;
+
+  char *gdloo = gdl_one_off("<web>", 1, wgrapheme, 1);
   
-  if (wextension && !(ep = sllext(wextension, strlen(wextension))))
+  if (gdloo == NULL)
+    sll_web_error("invalid grapheme in search request");
+  else if (wextension && !(ep = sllext(wextension, strlen(wextension))))
     sll_web_error("error");
   else
     {
       Dbi_index *dbi = sll_init_d(wproject, NULL);
-      sll_web_output(sll_resolve((uccp)wgrapheme, wextension, ep));
-      sll_term_d(dbi);
+      if (dbi)
+	{
+	  sll_web_output(sll_resolve((uccp)gdloo, wextension, ep));
+	  sll_term_d(dbi);
+	}
+      else
+	sll_web_error("failed to open signlist database");
     }
   fflush(stdout);
   exit(0);

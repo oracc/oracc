@@ -45,6 +45,8 @@ extern void sll_term(void);
 extern Hash *sll_init_t(const char *project, const char *name);
 extern void sll_term_t(Hash *h);
 
+extern void sll_cli_voidsl(void);
+
 extern Dbi_index *sll_init_d(const char *project, const char *name);
 extern void sll_term_d(Dbi_index *d);
 
@@ -69,6 +71,7 @@ extern List *sll_get_cpd(const char *k);
 extern List *sll_get_forms(const char *k);
 extern List *sll_get_h(const char *k);
 extern List *sll_get_one(const char *k);
+extern List *sll_get_one_let(const char *k);
 extern List *sll_get_one_n(const char *k);
 extern List *sll_get_one_o(const char *k);
 

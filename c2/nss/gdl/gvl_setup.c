@@ -22,6 +22,13 @@ static void   gvl_i_term(const char *name);
 static gvl_i *sl = NULL; /* sl is always the head of the list of signlist datasets, not necessarily the current one */
 gvl_i *curr_sl = NULL; /* the sl that should be used for look up */
 
+void
+gvl_quick_setup(const char *name, Hash *h)
+{
+  (void)gvl_i_init_h(name, h);
+  sll_set_sl(h);
+}
+
 gvl_i*
 gvl_setup(const char *project, const char *name)
 {
@@ -66,7 +73,15 @@ gvl_set_lookup_ptr(gvl_lookup_ptr p)
 void
 gvl_wrapup(const char *name)
 {
-  gvl_i_term(name);
+  if (!name)
+    {
+      gvl_i_term("voidsl");
+      gvl_void_messages = 0;
+    }
+  else
+    gvl_i_term(name);
+  if (!sl)
+    sll_set_sl(NULL);
 }
 
 /* Don't error here; caller must decide if not finding the gvl is an error or not */

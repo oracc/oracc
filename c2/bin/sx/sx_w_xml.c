@@ -158,11 +158,8 @@ sx_w_x_letter(struct sx_functions *f, struct sl_signlist *sl, struct sl_letter *
   xo_loc->file = "stdin"; xo_loc->line = 1;
   if (p == sx_pos_inst)
     {
-      char id[6], *idp;
-      if (l->lname)
-	idp = l->lname;
-      else
-	sprintf((idp=id), "l%04d", l->code);
+      char id[32], *idp;
+      sprintf((idp=id), "l%04d", l->code);
       if (in_letter)
 	rnvxml_ee("sl:letter");
       if (l->name)

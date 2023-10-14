@@ -29,6 +29,7 @@ void
 sll_term(void)
 {
   pool_term(sllpool);
+  sll_set_sl(NULL);
 }
 
 unsigned const char *

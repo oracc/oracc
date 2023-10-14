@@ -137,6 +137,7 @@ sll_init_t(const char *project, const char *name)
 void
 sll_term_t(Hash *h)
 {
+  hash_free(h, NULL);
   sll_term();
 }
 

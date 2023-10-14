@@ -77,6 +77,14 @@ sll_get_one(const char *k)
 }
 
 List *
+sll_get_one_let(const char *k)
+{
+  List *r = list_create(LIST_SINGLE);
+  list_add(r, (void*)sll_lookup(sll_tmp_key((uccp)k,"let")));
+  return r;
+}
+
+List *
 sll_get_one_n(const char *k)
 {
   List *r = list_create(LIST_SINGLE);

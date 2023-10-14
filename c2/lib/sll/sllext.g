@@ -13,3 +13,4 @@ forms, "", " Forms", SLL_ID, sll_get_forms
 h, ""," Homophones", SLL_V, sll_get_h
 name, "", "", SLL_ANY, sll_get_one_n
 oid, "", "", SLL_ANY, sll_get_one_o
+let,"","",SLL_ANY, sll_get_one_let

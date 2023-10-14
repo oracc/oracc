@@ -5,7 +5,7 @@
 #include "resolver.h"
 #include "ccgi/ccgi.h"
 
-#define SLL2
+#define SLL2	1
 
 extern void dump_vl(CGI_varlist *vl);
 
@@ -94,6 +94,7 @@ sl(char *ctext)
 
   /* run signlist UI */
 #ifdef SLL2
+  fprintf(stderr, "@@ORACC_BUILDS@@/bin/slx -C %s -P %s -E %s -G %s\n", caller, project, extension, grapheme);
   execl("@@ORACC_BUILDS@@/bin/slx", "slx", "-C", caller, "-P", project, "-E", extension, "-G", grapheme, NULL);
   fprintf(stderr, "sl[3]: exec failed on @@ORACC_BUILDS@@/bin/slx -C %s -P %s -E %s -G %s\n", caller, project, extension, grapheme);
 #else
