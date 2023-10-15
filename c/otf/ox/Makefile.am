@@ -32,7 +32,6 @@ xLDADD = \
 	../lng/liblng.la \
 	@top_srcdir@/c/lib/liboracc.la \
 	@top_srcdir@/c2/nss/gdl/libgdl.la \
-	@top_srcdir@/c2/lib/sll/libsll.la \
 	@top_srcdir@/c2/lib/std/libstd.la \
 	@top_srcdir@/c2/lib/sys/libsys.la \
 	@top_srcdir@/c/lib/liboracc.la

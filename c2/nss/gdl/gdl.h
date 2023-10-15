@@ -3,6 +3,8 @@
 
 #include <pool.h>
 #include <tree.h>
+#include <hash.h>
+#include <sll.h>
 #include "gvl.h"
 #include "gsort.h"
 

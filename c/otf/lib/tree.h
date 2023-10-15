@@ -39,6 +39,7 @@ struct node
 };
 
 #define tree_init c1_tree_init
+#define tree_term c1_tree_term
 
 #define firstChild(n) ((n&&n->children.lastused)?(n)->children.nodes[0]:NULL)
 void addToNodeList(struct nodelist*nl, void *vp);

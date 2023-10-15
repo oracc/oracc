@@ -13,7 +13,6 @@ xLDADD=\
 	../../lem/lng/liblng.la \
 	../../nss/asl/libasl.la \
 	../../lib/collate/libcoll.la \
-	../../lib/sll/libsll.la \
 	../../nss/gdl/libgdl.la \
 	../../lib/jsn/libjsn.la \
 	../../lib/xml/libxml.la \
@@ -34,7 +33,6 @@ AM_CPPFLAGS=\
 	-I../../lib/collate \
 	-I../../lib/jsn \
 	-I../../lib/oid \
-	-I../../lib/sll \
 	-I../../lib/xml \
 	-I../../lib/collate \
 	-I../../lem/lng \

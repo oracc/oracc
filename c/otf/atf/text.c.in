@@ -617,9 +617,9 @@ andline(struct node *lnode, unsigned char *lp)
   unsigned char *s = lp+1;
   char *idbase = NULL;
   int equals_flag = 0;
-  extern int atf_needs_xmd;
+  extern int atf_needs_xmd, gdl_unicode;
   
-  next_trans_id = 0;
+  gdl_unicode = next_trans_id = 0;
 
   if (!lnode)
     return;
