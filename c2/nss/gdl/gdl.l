@@ -82,7 +82,9 @@ NOTEMARK	"^"[0-9]+"^"
 
 <C>{NNUM}/{M} 		{ GIN=1; gsave; return NNUM; }
 <C>{NNUM} 		{ GIN=1; gsave; return NNUM; }
-<C>{CG}			{ GIN=1; gsave; return gdl_grapheme_type(); }
+<C>{CG}			{ GIN=1; return gdl_grapheme_type(); }
+<C>{CG}({CG}|{B})*{CG}	{ GIN=1; return gdl_grapheme_type(); }
+<C>{CG}({CG}|{B})*/{M}	{ GIN=1; return gdl_grapheme_type(); }
 <C>{M}			{ GIN=1; gsave; return MOD; }
 <C>[0-9nN]+(\/[0-9]+)?/"("	{ GIN=1; gsave; return NUMBER; }
 <C>"."			{ GIN=0; return C_PERIOD; }
@@ -109,6 +111,17 @@ NOTEMARK	"^"[0-9]+"^"
 <Q>[ \t]+	       	{ QIN=GIN=0; mesg_vwarning(currgdlfile,gdllineno,"missing ')' in qv");
 			  cvq_reset(); }
 
+<INITIAL,C>"<<"		{ gconst; GIN=0; return L_dbl_ang; }
+<INITIAL,C>">>"		{ gconst; GIN=0; return R_dbl_ang; }
+<INITIAL,C>"<"		{ gconst; GIN=0; return '<'; }
+<INITIAL,C>">"		{ gconst; GIN=0; return '>'; }
+<INITIAL,C>"["		{ gconst; GIN=0; return yytext[0]; }
+<INITIAL,C>"]"		{ gconst; GIN=0; return yytext[0]; }
+<INITIAL,C>{L_UHS}	{ gsave; GIN=0; return L_uhs; }
+<INITIAL,C>{R_UHS}	{ gsave; GIN=0; return R_uhs; }
+<INITIAL,C>{L_LHS}	{ gsave; GIN=0; return L_lhs; }
+<INITIAL,C>{R_LHS}	{ gsave; GIN=0; return R_lhs; }
+
 "<("			{ gconst; GIN=0; return L_ang_par; }
 ")>"			{ gconst; GIN=0; return R_ang_par; }
 "{{"[0-9+]:	       	{ gconst; GIN=0; return L_dbl_cur; }
@@ -116,25 +129,14 @@ NOTEMARK	"^"[0-9]+"^"
 "}}"			{ gconst; GIN=0; return R_dbl_cur; }
 "{("			{ gconst; GIN=0; return L_cur_par; }
 ")}"			{ gconst; GIN=0; return R_cur_par; }
-"<<"			{ gconst; GIN=0; return L_dbl_ang; }
-">>"			{ gconst; GIN=0; return R_dbl_ang; }
 "("			{ gconst; if (GIN) { GIN=0; return QLP; } else { return yytext[0]; } }
 ")"			{ gconst; GIN=0; return yytext[0]; }
-"<"			{ gconst; GIN=0; return '<'; }
-">"			{ gconst; GIN=0; return '>'; }
-"["			{ gconst; GIN=0; return yytext[0]; }
-"]"			{ gconst; GIN=0; return yytext[0]; }
 "{"			{ gconst; GIN=0; return yytext[0]; }
 "{+"			{ gconst; GIN=0; return DET_PHON; }
 "{-"			{ gconst; GIN=0; return DET_SEME; }
 "}"			{ gconst; GIN=0; return yytext[0]; }
 
-{L_UHS}			{ gsave; GIN=0; return L_uhs; }
-{R_UHS}			{ gsave; GIN=0; return R_uhs; }
-{L_LHS}			{ gsave; GIN=0; return L_lhs; }
-{R_LHS}			{ gsave; GIN=0; return R_lhs; }
-
-%[-a-z0-9]+("/"[gn])?		{ gsave; return LANG; }
+%[-a-z0-9]+("/"[gn])?	{ gsave; return LANG; }
 _			{ gsave; return LANG_FLIP; }
 ,			{ return ','; }
 &[0-9]+			{ gsave; return CELLSPAN; }
@@ -143,10 +145,10 @@ _			{ gsave; return LANG_FLIP; }
 
 {NOTEMARK}		{ gsave; return NOTEMARK; }
 
-[!?]			{ gsave; return *yytext; }
-^[#"~=@^]	       	{ gsave; return gdl_lexfld[(int)*yytext]; }
-[#"~=@^]   		{ gsave; if (SIN) { SIN=0; return gdl_lexfld[(int)*yytext]; } else { return *yytext; } }
-"*"			{ /*"*/ gsave; if (GIN) { return(*yytext); } else { GIN=1; return(PUNCT); } }
+<INITIAL,C>[!?]		{ gsave; return *yytext; }
+<INITIAL,C>^[#"~=@^]	{ gsave; return gdl_lexfld[(int)*yytext]; }
+<INITIAL,C>[#"~=@^]   	{ gsave; if (SIN) { SIN=0; return gdl_lexfld[(int)*yytext]; } else { return *yytext; } }
+<INITIAL,C>"*"		{ /*"*/ gsave; if (GIN) { return(*yytext); } else { GIN=1; return(PUNCT); } }
 
 ":"/[ \t\n\(]  		{ /*"*/ GIN=1; gsave; return PUNCT; }
 ":."			{ /*"*/ GIN=1; gsave; return PUNCT; }
