@@ -8,4 +8,4 @@
 noinst_LTLIBRARIES=libexpat.la
 libexpat_la_SOURCES = lib/xmlparse.c  lib/xmlrole.c  lib/xmltok.c  lib/xmltok_impl.c  lib/xmltok_ns.c
 
-AM_CPPFLAGS = -I@top_srcdir@/c/lib/expat
+AM_CPPFLAGS = -I@top_srcdir@/c/lib/expat -I@top_srcdir@/c/include

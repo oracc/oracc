@@ -7,7 +7,7 @@
 
 ACLOCAL_AMFLAGS=-I m4
 #SUBDIRS = oracc-hyperestraier misc c doc
-SUBDIRS = misc c c2 doc
+SUBDIRS = misc c doc
 ORACCIFY = $(abs_top_builddir)/oracc-subst.sh $(DESTDIR)$(prefix)
 
 fix-oracc-path.sh: fix-oracc-path.sh.in

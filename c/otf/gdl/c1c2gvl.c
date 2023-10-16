@@ -20,12 +20,12 @@
 int c1c2_verbose = 0;
 
 const char *
-c1c2gvl(const char *f, size_t l, unsigned const char *g)
+c1c2gvl(const char *f, size_t l, unsigned const char *g, const char *s)
 {
   if (g)
     {
       const char *mess = NULL;
-      mess = gvl_bridge(f, l, g);
+      mess = gvl_bridge(f, l, g, s);
       if (mess)
 	{
 	  return mess;

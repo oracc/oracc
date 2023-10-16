@@ -537,7 +537,7 @@ gparse(register unsigned char *g, enum t_type type)
 
   if (curr_lang->signlist && '#' == *curr_lang->signlist && !gdl_bootstrap)
     {
-      const char *mess = c1c2gvl(file,lnum,g);
+      const char *mess = c1c2gvl(file,lnum,g,curr_lang->script);
       if (mess && !inner_qual && !inner_parse)
 	vwarning("(gvl) %s",mess);
     }
