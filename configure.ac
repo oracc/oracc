@@ -239,37 +239,5 @@ AC_CONFIG_FILES([Makefile
 	doc/ns/xdf/1.0/Makefile
 	doc/ns/xtf/1.0/Makefile
 	doc/ns/xse/1.0/Makefile
-	c2/Makefile
-	c2/rnc/Makefile
-	c2/lib/Makefile
-	c2/lib/sys/Makefile
-	c2/lib/std/Makefile
-	c2/lib/cat/Makefile
-	c2/lib/collate/Makefile
-	c2/lib/jsn/Makefile
-	c2/lib/oid/Makefile
-	c2/lib/sll/Makefile
-	c2/lib/xml/Makefile
-	c2/lib/xml/expat/Makefile
-	c2/lib/xml/rnv/Makefile
-	c2/lem/Makefile
-	c2/lem/frm/Makefile
-	c2/lem/lng/Makefile
-	c2/nss/Makefile
-	c2/nss/asl/Makefile
-	c2/nss/atf/Makefile
-	c2/nss/cbd/Makefile
-	c2/nss/gdl/Makefile
-	c2/nss/xpd/Makefile
-	c2/bin/Makefile
-	c2/bin/ax/Makefile
-	c2/bin/cx/Makefile
-	c2/bin/gx/Makefile
-	c2/bin/ox/Makefile
-	c2/bin/sx/Makefile
-	c2/bin/sx/sxweb/Makefile
-	c2/bin/tx/Makefile
-	c2/bin/xx/Makefile
-	c2/bin/xx/j2x/Makefile
 ])
 AC_OUTPUT

@@ -1,0 +1,9 @@
+OGSL GDL TEST SUITE
+
+Invoke ./o4g.sh in this directory to extract the current signs, forms,
+and values in OGSL and reduce them to the smallest test suite that
+exercises every combination of GDL features that occurs in OGSL.
+
+o4g.sh also runs ../gdlx -i -f ogsl-test.txt with output to stdout.
+Any lines output indicate GDL parse failures or, less often, OGSL
+encoding errors.
