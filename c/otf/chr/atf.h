@@ -98,19 +98,24 @@ struct langdata;
 extern const char *file;
 extern int lnum;
 
+#if 0
 #define atf2utf_init c1_atf2utf_init
 #define atf2utf c1_atf2utf
-
-extern unsigned char *atf2utf(register const unsigned char *s, int rx);
 extern void atf2utf_init(void);
 extern unsigned char * gatf2utf(const unsigned char *lem, const char *f, ssize_t ln);
+extern unsigned char *atf2utf(register const unsigned char *s, int rx);
+extern unsigned char *utf8_times(void);
+extern unsigned char *g_c10e(const unsigned char *g, int *err);
+extern const unsigned char *natf2utf(const char *str, const char *end, int rx, 
+				     const char *file, int lnum);
+#endif
+
 extern unsigned char *wcs2atf(wchar_t *wc, size_t len);
 extern unsigned char *wcs2utf(const wchar_t*ws, size_t len);
 extern wchar_t*wcs_lcase(wchar_t*ws);
 extern wchar_t*wcs_ucase(wchar_t*ws);
 extern wchar_t*wcs_undet(wchar_t*ws);
 extern unsigned char *remap_detchars(unsigned char *s);
-extern unsigned char *utf8_times(void);
 extern const unsigned char *utf_lcase(const unsigned char *s);
 extern const unsigned char *utf_ucase(const unsigned char *s);
 extern wchar_t utf1char(const unsigned char *src,size_t *len);
@@ -131,12 +136,6 @@ extern int is_signlist(register const unsigned char *s);
 extern unsigned char *accnum(const unsigned char *);
 extern unsigned char *numacc(const unsigned char *g);
 extern int hasacc(const unsigned char *g);
-
-extern unsigned char *g_c10e(const unsigned char *g, int *err);
-
-
-extern const unsigned char *natf2utf(const char *str, const char *end, int rx, 
-				     const char *file, int lnum);
 
 extern const unsigned char *atf_strip_base_chars(const unsigned char *u);
 

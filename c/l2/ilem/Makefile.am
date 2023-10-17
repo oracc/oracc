@@ -17,7 +17,8 @@ libilem_la_SOURCES=ilem_para.c ilem_parse.c \
 AM_CPPFLAGS=-I@top_srcdir@/c/include -I@top_srcdir@/c/expat/xmlparse \
 	-I@top_srcdir@/c/otf/{atf,chr,gdl,lib} \
 	-I@top_srcdir@/c/l2/{form,link,ngram,prop,psus,sigs,word,xcl2,xli} \
-	-I@top_srcdir@/../oracc2/lib/{std,lng}
+	-I@top_srcdir@/../oracc2/lib/{std,lng,sys} \
+	-I@top_srcdir@/../oracc2/include
 
 #lemprop_SOURCES = \
 #	lemprop.c

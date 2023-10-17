@@ -17,6 +17,8 @@
 #include "charsets.h"
 #include "memblock.h"
 
+#include <atf2utf.h>
+
 #undef curr_lang
 #define curr_lang curr_lang_ctxt
 
@@ -793,6 +795,7 @@ tokenize_reinit()
   medial_info_list = list_create(LIST_SINGLE);
 }
 
+#if 0
 /* Entries in table which have class text must be free'able;
    they can only be free'd at the end, because most of them are
    grapheme tokens which are may be reused repeatedly over the
@@ -823,6 +826,7 @@ text_free(void *vp)
       tp->data = NULL;
     }
 }
+#endif
 
 void
 tokenize_term()
@@ -1308,8 +1312,12 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      unsigned char *res = NULL;
 		      *following = '\0';
 		      if (!use_unicode)
+#if 1
+			res = atf2utf(mloc_file_line(file,lnum),g, 0);
+#else
 			res = (unsigned char*)natf2utf((char *)g,(char*)g+strlen((const char*)g),0,
 						       file, lnum);
+#endif
 		      else
 			res = g;
 		      /*FIXME: cache normalized toks in their own hash
@@ -1360,9 +1368,13 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      unsigned char *res = NULL;
 		      *following = '\0';
 		      if (!use_unicode)
+#if 1
+			res = atf2utf(mloc_file_line(file,lnum),g, 0);
+#else
 			res = (unsigned char *)natf2utf((char*)g,(char*)g+strlen((const char*)g),0,
 							file, lnum);
-		      else
+#endif
+			else
 			res = g;
 		      
 		      /*FIXME: cache alphabetic toks in their own hash
@@ -1844,11 +1856,17 @@ tokenize(register unsigned char *l,unsigned char *e)
 			*l++ = '\0';
 		      tokens[tokindex++] = clone_token(static_tokens[normo]);
 		      tokens[tokindex++] = create_token(text,norm,
+#if 1
+							pool_copy(use_unicode 
+								  ? atf2utf(mloc_file_line(file,lnum),np, 0)
+								  : np)
+#else
 							pool_copy(use_unicode 
 								  ? natf2utf((char *)np,
 									     (char*)np+strlen((const char *)np),
 									     0, file, lnum)
 								  : np)
+#endif
 							);
 		      tokens[tokindex++] = clone_token(static_tokens[normc]);
 		      continue;

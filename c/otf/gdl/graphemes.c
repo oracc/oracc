@@ -18,7 +18,11 @@
 #include "charsets.h"
 #include "gdl.h"
 
+#include <atf2utf.h>
+#include <sll_signlist.h>
 #include "c1c2gvl.h"
+
+#define is_signlist(s) sll_is_signlist((const char *)(s))
 
 #undef curr_lang
 #define curr_lang curr_lang_ctxt
@@ -189,9 +193,12 @@ g_reinit()
 const unsigned char *
 g2utf(const unsigned char *g)
 {
-  unsigned const char *g_dig = NULL, *g_end = NULL;
   const unsigned char *utf8g = NULL;
 
+#if 1
+  utf8g = atf2utf(mloc_file_line(file,lnum),g,0);
+#else
+  unsigned const char *g_dig = NULL, *g_end = NULL;
   /* mods and alts are not converted */
   g_end = g;
   while (*g_end && *g_end != '~' && *g_end != '\\'
@@ -209,13 +216,14 @@ g2utf(const unsigned char *g)
     --g_dig;
   utf8g = natf2utf((const char*)g,(const char *)g_dig,0,file,lnum);
 
-   if (utf8g && *g_dig)
+  if (utf8g && *g_dig)
     {
       if (!is_signlist(utf8g))
 	utf8g = subdig(g_dig,g_end);
       else
 	utf8g = cpydig(g_dig,g_end);
     }
+#endif
 
   return pool_copy(utf8g);
 }
@@ -792,20 +800,24 @@ gparse(register unsigned char *g, enum t_type type)
 	      && !psl_is_value(gcheck)
 	      && gcheck[len-1] != 'x')
 	    {
+#if 0
 	      int ok = 0;
+#endif
 	      if (use_legacy)
 		{
 		  noheth = unheth(g);
 		  if (noheth)
 		    {
 		      if (psl_is_sname(noheth))
-			ok = 1;
+			/*ok = 1*/;
 		      else
 			{
-			  const unsigned char *lc;
+			  /*const unsigned char *lc;*/
 			  noheth = pool_copy(noheth);
-			  lc = utf_lcase(noheth);
+			  /*lc =*/ (void) utf_lcase(noheth);
+#if 0
 			  ok = (lc && psl_is_value(lc));
+#endif
 			}
 		    }
 		}
@@ -2603,7 +2615,7 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	      {
 		if (!strcmp("repeated", (char*)getAttr(np, "g:type")))
 		  insertp = render_g_text(np->children.nodes[0], insertp, startp);
-		insertp += xxstrlen(xstrcpy(insertp, utf8_times()));
+		insertp += xxstrlen(xstrcpy(insertp, U_X_u8str ));
 	      }
 	    else
 	      *insertp++ = (char)(uintptr_t)np->user;

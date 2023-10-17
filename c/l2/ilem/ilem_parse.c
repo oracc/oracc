@@ -14,6 +14,7 @@
 #include "ilem_para.h"
 #include "props.h"
 #include <lng.h>
+#include <atf2utf.h>
 
 extern int bootstrap_mode;
 extern int ngram_obey_lines;
@@ -49,7 +50,11 @@ ilem_conv(struct xcl_l *l, const unsigned char *str)
       int entry_chartrie_er = chartrie_suppress_errors;
       curr_lang_ctxt = l->f->lang;
       chartrie_suppress_errors = 1;
+#if 1
+      x = atf2utf(mloc_file_line(l->xc->file,l->lnum), str,0);
+#else
       x = natf2utf((char*)str,(char*)str+strlen((char*)str),0,l->xc->file,l->lnum);
+#endif
       if (strcmp((char*)x,(char*)str))
 	str = npool_copy(x,l->xc->pool);
       chartrie_suppress_errors = entry_chartrie_er;
