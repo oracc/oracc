@@ -16,11 +16,11 @@
 #include <string.h>
 #include <warning.h>
 #include "c1c2gvl.h"
-
+#include <gvl_bridge.h>
 int c1c2_verbose = 0;
 
 const char *
-c1c2gvl(const char *f, size_t l, unsigned const char *g, const char *s)
+c1c2gvl(const char *f, size_t l, unsigned const char *g, int s)
 {
   if (g)
     {

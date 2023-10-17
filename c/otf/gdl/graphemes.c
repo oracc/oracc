@@ -537,10 +537,13 @@ gparse(register unsigned char *g, enum t_type type)
   const unsigned char *signified = NULL;
 
   render_canonically = compound_warnings;
-
+#if 1
+  if (curr_lang->core->sindex != -1 && !gdl_bootstrap)
+#else
   if (curr_lang->signlist && '#' == *curr_lang->signlist && !gdl_bootstrap)
+#endif
     {
-      const char *mess = c1c2gvl(file,lnum,g);
+      const char *mess = c1c2gvl(file,lnum,g,curr_lang->core->sindex);
       if (mess && !inner_qual && !inner_parse)
 	vwarning("(gvl) %s",mess);
     }

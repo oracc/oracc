@@ -122,12 +122,10 @@ AC_CONFIG_FILES([Makefile
 	   c/lib/skl/Makefile
 	   c/otf/Makefile
 	   c/otf/atf/Makefile
-	   c/otf/cbd/Makefile
 	   c/otf/chr/Makefile
 	   c/otf/gdl/Makefile
 	   c/otf/lib/Makefile
 	   c/otf/lib/mk_rnc.sh
-	   c/otf/lng/Makefile
 	   c/otf/otf/Makefile
 	   c/otf/ox/Makefile
 	   c/otf/prj/Makefile

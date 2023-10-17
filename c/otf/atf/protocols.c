@@ -513,6 +513,8 @@ atf_handler(struct node *parent, enum t_scope scope,
 	}
       if (*l)
 	{
+
+#if 0
 	  /* Temporary hack until ox rewrite to allow qpc to use pcsl for validation;
 	     this means you can't mix qpc and other languages in the same ATF run */
 	  static int qpc_set = 0;
@@ -521,7 +523,8 @@ atf_handler(struct node *parent, enum t_scope scope,
 	      ++qpc_set;
 	      gvl_bridge_qpc();
 	    }
-	  
+#endif
+
 	  if (!(text_lang = lang_switch(NULL, (char*)l, NULL, file, lnum)))
 	    curr_lang_ctxt = text_lang = global_lang;
 	  if (altlang)
