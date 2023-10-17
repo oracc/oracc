@@ -14,8 +14,9 @@ xli.c: xli_sux.c
 libxli_la_SOURCES=xli.c
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include -I@top_srcdir@/c/expat/xmlparse \
-	-I@top_srcdir@/c/otf/{lib,lng} \
-	-I@top_srcdir@/c/l2/{form,ilem,link,ngram,prop,psus,sigs,word,xcl2,xli}
+	-I@top_srcdir@/c/otf/lib \
+	-I@top_srcdir@/c/l2/{form,ilem,link,ngram,prop,psus,sigs,word,xcl2,xli} \
+	-I@top_srcdir@/../oracc2/lib/{std,lng}
 
 
 EXTRA_DIST = *.h xli_sux.c

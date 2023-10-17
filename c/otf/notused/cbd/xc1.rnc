@@ -1,0 +1,12 @@
+# Schema corresponding to the .cbd files that are built from .glo files in Oracc's l2phase2
+# Files of this kind are called [LANG].cbd, e.g., sux.cbd.
+
+default namespace = "http://oracc.org/ns/cbd/1.0"
+
+namespace cbd="http://oracc.org/ns/cbd/1.0"
+
+include "xci-core.rnc" inherit=cbd
+
+start |= cbd-entries.m
+
+cbd-entries.m = element cbd:entries { entries.a , entries.c }

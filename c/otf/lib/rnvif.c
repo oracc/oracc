@@ -6,7 +6,7 @@
 #include <errno.h>
 #include <assert.h>
 #include "tree.h"
-#include "list.h"
+#include "c1_list.h"
 #include "../rnv/m.h"
 #include "../rnv/s.h"
 #include "../rnv/erbit.h"

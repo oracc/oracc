@@ -8,7 +8,7 @@
 #include "tree.h"
 #include "tokenizer.h"
 #include "hash.h"
-#include "list.h"
+#include "c1_list.h"
 #include "warning.h"
 #include "graphemes.h"
 #include "npool.h"
@@ -16,6 +16,9 @@
 #include "atf.h"
 #include "charsets.h"
 #include "memblock.h"
+
+#undef curr_lang
+#define curr_lang curr_lang_ctxt
 
 #define NEW_ERROR_RECOVERY
 extern int gdl_fragment_ok;

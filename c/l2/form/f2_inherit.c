@@ -1,5 +1,5 @@
 #include <stddef.h>
-#include <lang.h>
+#include <lng.h>
 #include <f2.h>
 
 void

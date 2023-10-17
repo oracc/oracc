@@ -6,7 +6,7 @@
 #include "psd_base.h"
 #include "xsystem.h"
 #include "fname.h"
-#include "list.h"
+#include "c1_list.h"
 #include "loadfile.h"
 #include "npool.h"
 #include "cdt.h"

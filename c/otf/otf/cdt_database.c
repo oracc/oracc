@@ -3,7 +3,7 @@
 #include "cdt.h"
 #include "cdt_foreign.h"
 #include "xmlutil.h"
-#include "list.h"
+#include "c1_list.h"
 #include "scan.h"
 
 FILE *wfile;

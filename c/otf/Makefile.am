@@ -1,6 +1,6 @@
-SUBDIRS=../lib ../l2 chr gdl atf lib lng otf prj run ox
+SUBDIRS=../lib ../l2 chr gdl atf lib otf prj run ox
 
-# cbd
+# cbd lng 
 
 test:
 	(cd tests ; ./runtests.sh)

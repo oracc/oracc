@@ -1,0 +1,45 @@
+HEADER
+proplist, parse_proplist
+
+ENTRY_BLOCK
+parts, parse_parts
+alias, parse_alias
+bff, parse_bff
+file, parse_file
+disc, parse_disc
+
+LANG_BLOCK
+-BASE_BLOCK
+ allow, parse_allow
+ bases, parse_bases
+ phon, parse_phon
+ root, parse_root
+ stems, parse_stems
+form, parse_form
+equiv, parse_equiv
+isslp, parse_isslp
+inote, parse_inote
+
+NOTES
+bib, parse_bib
+note, parse_note
+
+SENSE_BLOCK
+sense, parse_sense
+form, parse_form
+equiv, parse_equiv
+inote, parse_inote
+disc, parse_disc
+
+META_BLOCK
+-PLEIADES_BLOCK
+ pl_coord, parse_pl_coord
+ pl_id, parse_pl_id
+ pl_uid, parse_pl_uid
+prop, parse_prop
+oid, parse_oid
+collo, parse_collo
+EMPTY
+
+---
+

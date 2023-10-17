@@ -3,7 +3,7 @@
 #include <ctype128.h>
 #include <fname.h>
 #include "loadfile.h"
-#include "list.h"
+#include "c1_list.h"
 #include "warning.h"
 #include "atffile.h"
 #include "globals.h"

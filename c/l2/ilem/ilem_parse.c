@@ -2,8 +2,6 @@
 #include <string.h>
 #include <ctype128.h>
 #include <psd_base.h>
-#include <hash.h>
-#include <list.h>
 #include "npool.h"
 #include "memblock.h"
 #include "atf.h"
@@ -15,6 +13,7 @@
 #include "ilem_form.h"
 #include "ilem_para.h"
 #include "props.h"
+#include <lng.h>
 
 extern int bootstrap_mode;
 extern int ngram_obey_lines;
@@ -48,7 +47,7 @@ ilem_conv(struct xcl_l *l, const unsigned char *str)
   if (str)
     {
       int entry_chartrie_er = chartrie_suppress_errors;
-      curr_lang = l->f->lang;
+      curr_lang_ctxt = l->f->lang;
       chartrie_suppress_errors = 1;
       x = natf2utf((char*)str,(char*)str+strlen((char*)str),0,l->xc->file,l->lnum);
       if (strcmp((char*)x,(char*)str))
@@ -383,7 +382,7 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi, int first_
 
 	  if (use_ilem_conv && curr_f->lang)
 	    {
-	      curr_lang = curr_f->lang;
+	      curr_lang_ctxt = curr_f->lang;
 	      if (!BIT_ISSET(curr_f->f2.flags,F2_FLAGS_CF_QUOTED))
 		curr_f->f2.cf = ilem_conv(lp,curr_f->f2.cf);
 	      curr_f->f2.norm = ilem_conv(lp,curr_f->f2.norm);

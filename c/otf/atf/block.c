@@ -10,7 +10,7 @@
 #include <unictype.h>
 #endif
 
-#include <list.h>
+#include <c1_list.h>
 #include "globals.h"
 #include "cdf.h"
 #include "run.h"
@@ -341,7 +341,7 @@ parse_block(struct run_context *run, struct node *text, unsigned char **lines)
 
   start_lnum = -1;
   transtype = 0;
-  curr_lang = global_lang;
+  curr_lang_ctxt = global_lang;
   fwhost = NULL;
   protocol_state = s_inter;
   current = text_element = text;
@@ -1796,7 +1796,7 @@ line_trans(unsigned char **lines, enum e_tu_types transtype)
 
   note_initialize_line();
   
-  curr_lang = text_lang;
+  curr_lang_ctxt = text_lang;
   protocol_state = s_intra;
   start_lnum = lnum;
 
@@ -1837,7 +1837,7 @@ line_mts(unsigned char *lp)
 
   already_lemmed = 0;
   bil_offset = exemplar_offset = 0;
-  curr_lang = text_lang;
+  curr_lang_ctxt = text_lang;
   protocol_state = s_intra;
 
   while (*s && !isspace(*s))

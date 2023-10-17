@@ -234,7 +234,7 @@ process_text(struct run_context *run, unsigned char **lines)
   auto_lg = 0;
   div_level = sparse_lem = status = 0;
   current_level = TEXT;
-  curr_lang = text_lang = global_lang;
+  curr_lang_ctxt = text_lang = global_lang;
   fwhost = NULL;
   protocol_state = s_text;
   has_links = header_id = line_id = sym_warning = use_legacy = gdl_legacy = 0;
@@ -302,7 +302,7 @@ process_text(struct run_context *run, unsigned char **lines)
 #if 0
       /* if we do the getAttr the xtf:transliteration tag always has xml:lang=sux */
       if (!*(getAttr(text,"xml:lang")))
-	setAttr(text,a_xml_lang,ucc(curr_lang->fulltag));
+	setAttr(text,a_xml_lang,ucc(curr_lang_ctxt->fulltag));
 #else
       if (text_lang && text_lang->fulltag)
 	setAttr(text,a_xml_lang,ucc(text_lang->fulltag));
@@ -624,7 +624,7 @@ andline(struct node *lnode, unsigned char *lp)
   if (!lnode)
     return;
 
-  curr_lang = global_lang;
+  curr_lang_ctxt = global_lang;
 
   while (*s && isspace(*s))
     ++s;

@@ -10,7 +10,7 @@
 #include "npool.h"
 #include "rnvif.h"
 #include "xcl.h"
-#include "list.h"
+#include "c1_list.h"
 #include "graphemes.h"
 #include "warning.h"
 

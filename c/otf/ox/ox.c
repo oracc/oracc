@@ -18,7 +18,7 @@
 #include "run.h"
 #include "tree.h"
 #include "cdf_rnc.h"
-#include "list.h"
+#include "c1_list.h"
 #include "globals.h"
 #include <signal.h>
 

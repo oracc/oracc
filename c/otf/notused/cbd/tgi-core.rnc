@@ -1,0 +1,114 @@
+start = cbd.m
+
+cgp.pat  = xsd:token { pattern="[^\[]+\[[^\]]+\].*" }
+pos.pat  = xsd:token { pattern="N|V/t|V/i|AJ" }
+mng.pat  = text
+lng.pat  = xsd:token { pattern="([a-z]{2})|([a-z]{3}(-x-[a-z]{6})?)" }
+pri.pat  = xsd:token { pattern="\S+" }
+pri-alt.pat = xsd:token { pattern="\S+\(.*\)" }
+
+cbd.m = element cbd { cbd.c }
+
+cbd.c = cbd-header , cbd-entries
+
+cbd-header = (project&lang&name) , props*
+project    = element project { text }
+lang 	   = element lang    { text }
+name 	   = element name    { text }
+props 	   = element props   { text }
+
+cbd-entries = (letter.m? , entries.m)*
+
+letter.m    = element letter { letter.c }
+letter.c    = text
+
+entries.m = entry.m*
+
+entry.m = element entry { entry.c }
+
+entry.c = cgp.m , entry.mod.m? , (aliases.m & dcf.m) , parts.m , bases.m ,
+	  forms.m , senses.m , meta.m
+
+cgp.m = element cgp { cgp.c }
+
+cgp.c = cgp.pat
+
+entry.mod.m = (add.m | (del.m,why.m) | ren.m | mrg.m)
+sense.mod.m = (add.m | del.m | ren.m | mrg.m)
+add.m = attribute add { "+" }
+del.m = attribute del { "-" }
+ren.m = element rename { ren.c }
+mrg.m = element merge  { mrg.c }
+why.m = element why    { text }
+
+ren.c = cgp.m | sns.req
+
+mrg.c = cgp.m | sns.req
+
+aliases.m = alias.m*
+alias.m = element alias { cgp.c }
+
+dcfs.m = dcf.m*
+dcf.m = element dcf { attribute xml:lang { lng.pat } ,
+      		      attribute n { xsd:NMTOKEN } ,
+      		      text }
+
+parts.m = parts.c
+parts.c = element parts { cgp.m+ }
+
+bases.m = element bases { base.m* }
+
+base.m  = element base  { base.c }
+
+base.c =  pri.pat | pri-alt.pat
+
+forms.m	    = element forms    { form.m* }
+form.m 	    = element form     { form.c }
+form.c      = (attribute form   { text } &
+	       attribute lang   { text } &
+	       attribute rws    { text } &
+	       attribute base   { text } &
+	       attribute stem   { text } &
+	       attribute cont   { text } &
+	       attribute morph  { text } &
+	       attribute morph2 { text } &
+	       attribute norm   { text } ) ,
+	       attribute bang   { text }?
+
+senses.m   = element senses    { sense.m* }
+sense.m	   = element sense     { sense.c }
+sense.c    = sense.d , sense.mod.m?
+sense.d    = sgw.m? , sns.req
+sgw.m	   = attribute sgw { text }?
+sns.req    = pos.m , mng.m
+pos.m	   = pos.pat
+mng.m	   = mng.pat
+
+meta.m	    = (equiv.m & pleiades.m & note.m & inote.m & isslp.m & bib.m & collo.m)*
+
+equiv.m	    = element equiv    { equiv.c }
+equiv.c     = text
+
+pleiades.m    = element pl_id    { pl_id.c } ,
+	        element pl_coord { pl_coord.c } ,
+	        pl_alias.m*
+pl_alias.m    = element pl_alias { pl_alias.c }
+pl_id.c	      = text
+pl_coord.c    = text
+pl_alias.c    = text
+
+note.m	    = element note     { note.c }
+note.c	    = text
+
+inote.m	    = element inote    { inote.c }
+inote.c	    = text
+
+isslp.m	    = element isslp    { isslp.c }
+isslp.c	    = text
+
+bib.m	    = element bib      { bib.c }
+bib.c	    = text
+
+collo.m	    = element collo   { collo.c }
+collo.c     = text
+

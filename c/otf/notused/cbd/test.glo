@@ -1,0 +1,49 @@
+@project epsd2
+@lang sux
+@name epsd2/sux
+
+@entry a [water] N
+@bases a (e₄, ea); |A.A|; A-A
+@form a /a #~
+@form a-a /e₄ #~,a
+@sense N water
+@end entry
+
++@entry a [arm] N
+@bases a₂ (e₄)
+@form a₂ /a₂ #~
+@sense N arm
+@end entry
+
+@entry Amar.ezina₃ [00] PN
+@bases amar-isin₂; amar-{d}ezina₃ (amar-{d}ašnanₓ(|ŠE.NUN&NUN|))
+@form amar-isin₂ %sux /amar-isin₂ #~
+@form amar-{d}ašnanₓ(|ŠE.NUN&NUN|) %sux /amar-{d}ezina₃ #~
+@form amar-{d}ezina₃ %sux /amar-{d}ezina₃ #~
+@sense PN 00
+@end entry
+
+@entry Nun.NI.RU.DA [00] PN
+@bases nun-|NI.RU.DA| (nun-NI-RU-DA)
+@form nun-NI-RU-DA %sux /nun-|NI.RU.DA| #~
+@form nun-|NI.RU.DA| %sux /nun-|NI.RU.DA| #~
+@sense PN 00
+@end entry
+
+@entry Larsam [1] SN
+@alias Ararma[1]SN
+@allow ararma = larsam
+@allow ararma{ki} = larsam{ki}
+@bases a-ra-ar-ma{ki}; ararma; ararma{ki}; larsam{ki}
+@form larsa{ki} %sux /larsam{ki} #~
+@form larsa{ki}-me %sux /larsam{ki} #~,meš
+@form larsa{ki}-še₃ %sux /larsam{ki} #~,eše
+@sense SN 1
+@end entry
+
+@entry UrBilgames [0] PN
+@bases ur-gilgameš₄ (ur-bil₃-ga-mes); ur-{d}gilgames₃; ur-{d}gilgameš₂; ur-{d}gilgameš₄ (ur-{d}bil₃-ga-mes)
+@form ur-bil₃-ga-mes %sux /ur-gilgameš₄ #~
+@form ur-{d}bil₃-ga-mes %sux /ur-{d}gilgameš₄ #~
+@sense PN 0
+@end entry

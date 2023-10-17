@@ -1,0 +1,17 @@
+relations file:
+
+nyms antonym synonym
+groups animals furniture
+order ur3woolqual
+comps suppletive.go suppletive.carry
+
+@rel [nym] [list]
+@rel group name description  /* unordered */
+@rel order name description  /* ordered */
+@rel comps name description  /* complementary items */
+@rel forms name description  /* byforms such as si mu-un-sa₂ vs. mu-un-si-sa₂ */
+@rel [group-name]
+@rel [order-name] [prev-sibling]?? [next-sibling]??
+@rel [comps-name] [conditions]
+@rel [forms-name]
+

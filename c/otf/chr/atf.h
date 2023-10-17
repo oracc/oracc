@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <sys/types.h>
 #include "atflocale.h"
-#include "lang.h"
+#include <lng.h>
 
 enum t_unicode 
 { 

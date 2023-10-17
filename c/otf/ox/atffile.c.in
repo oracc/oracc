@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <ctype128.h>
 
+#include <lng.h>
+
 #include "pool.h"
 #include "block.h"
 #include "tree.h"
@@ -189,7 +191,7 @@ process_string(struct run_context *run, unsigned char *ftext, ssize_t fsize)
 
   rest = lines = setup_lines(ftext_post_bom);
 
-  curr_lang = global_lang;
+  curr_lang_ctxt = global_lang;
   file_protocols = protocols(run, s_file, XTF, lines, &rest, NULL);
   if (!check_only && !perform_lem && !do_show_insts)
     {

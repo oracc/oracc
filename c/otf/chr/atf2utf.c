@@ -508,9 +508,9 @@ utf8_times(void)
 const unsigned char *
 natf2utf(const char *str, const char *end, int rx, const char *file, int lnum)
 {
-  if (curr_lang && curr_lang->cset)
-    return inctrie_map(curr_lang->cset->to_uni,str,end,rx,CHARSET_ERR_FUNC,
-		       curr_lang->cset,file,lnum);
+  if (curr_lang_ctxt && curr_lang_ctxt->cset)
+    return inctrie_map(curr_lang_ctxt->cset->to_uni,str,end,rx,CHARSET_ERR_FUNC,
+		       curr_lang_ctxt->cset,file,lnum);
   else
     return (const unsigned char *)str;
 }

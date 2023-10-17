@@ -523,7 +523,7 @@ atf_handler(struct node *parent, enum t_scope scope,
 	    }
 	  
 	  if (!(text_lang = lang_switch(NULL, (char*)l, NULL, file, lnum)))
-	    curr_lang = text_lang = global_lang;
+	    curr_lang_ctxt = text_lang = global_lang;
 	  if (altlang)
 	    {
 	      struct lang_context *tmp = lang_switch(NULL,(const char*)altlang,NULL,file,lnum);
@@ -531,7 +531,7 @@ atf_handler(struct node *parent, enum t_scope scope,
 		text_lang->altlang = (char*)altlang;
 	    }
 	  if (uscore_logo)
-	    curr_lang->underscore = m_logo;
+	    curr_lang_ctxt->underscore = m_logo;
 	}
       else
 	warning("atf protocol without argument");

@@ -20,6 +20,9 @@
 
 #include "c1c2gvl.h"
 
+#undef curr_lang
+#define curr_lang curr_lang_ctxt
+
 #define psl_get_id (const char *)gvl_get_id
 #define psl_get_sname gvl_get_sname
 #define psl_is_sname gvl_psl_lookup
@@ -537,7 +540,7 @@ gparse(register unsigned char *g, enum t_type type)
 
   if (curr_lang->signlist && '#' == *curr_lang->signlist && !gdl_bootstrap)
     {
-      const char *mess = c1c2gvl(file,lnum,g,curr_lang->script);
+      const char *mess = c1c2gvl(file,lnum,g);
       if (mess && !inner_qual && !inner_parse)
 	vwarning("(gvl) %s",mess);
     }
@@ -629,6 +632,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  }
 	      }
 	  }
+#if 0
 	else if (curr_lang->values
 		 && !hash_find(curr_lang->values,g))
 	  {
@@ -644,6 +648,7 @@ gparse(register unsigned char *g, enum t_type type)
 	      g_ok = pool_copy(g_ok);
 	    gp = singleton(g,g_v);
 	  }
+#endif
 	else
 	  {
 	    if (g_ok)
@@ -709,6 +714,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  gp = singleton(g,type); /* FIXME?: should we preserve the info that
 				     this is a signlist sign name */
 	}
+#if 0
       else if (curr_lang->snames)
 	{
 	  if (!hash_find(curr_lang->snames,g))
@@ -744,6 +750,7 @@ gparse(register unsigned char *g, enum t_type type)
 	    }
 	  gp = singleton(g,type);
 	}
+#endif
       else
 	{
 	  unsigned char *gcheck = g, *g_end,*g_utf;
@@ -849,7 +856,8 @@ gparse(register unsigned char *g, enum t_type type)
 
 	  if (strpbrk((const char *)orig,bad_cg_chars))
 	    /*tmpcg = */cleang = gclean(cleang);
-	  
+
+#if 0
 	  if (curr_lang->values && !hash_find(curr_lang->values,cleang))
 	    {
 	      if (!curr_lang->snames || !hash_find(curr_lang->snames,cleang))
@@ -861,6 +869,7 @@ gparse(register unsigned char *g, enum t_type type)
 			     cleang,curr_lang->signlist);
 		}
 	    }
+#endif
 	  insertp = render_g(gp->xml, insertp, buf);
 	  *insertp = '\0';
 	  if (*buf)

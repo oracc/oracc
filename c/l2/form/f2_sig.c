@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "list.h"
-#include "lang.h"
+#include <c1_list.h>
+#include <lng.h>
 #include "xcl.h"
 #include "ilem_form.h"
 #include "f2.h"

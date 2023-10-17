@@ -24,6 +24,9 @@
 char *strdup(const char*);
 #endif
 
+#undef curr_lang
+#define curr_lang curr_lang_ctxt
+
 extern char *new_note_id(int);
 
 int ods_cols = 0;

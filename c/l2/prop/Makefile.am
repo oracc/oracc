@@ -19,7 +19,8 @@ libprops_la_SOURCES=props_head.c props_link.c props_list.c \
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
-	-I@top_srcdir@/c/otf/{atf,cdf,lng} \
-	-I@top_srcdir@/c/l2/{form,ilem,xcl2,link,ngram,psus,sigs,word}
+	-I@top_srcdir@/c/otf/{atf,cdf} \
+	-I@top_srcdir@/c/l2/{form,ilem,xcl2,link,ngram,psus,sigs,word} \
+	-I@top_srcdir@/../oracc2/lib/{std,lng}
 
 EXTRA_DIST=props.h *.xml

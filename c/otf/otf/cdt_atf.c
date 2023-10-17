@@ -38,7 +38,7 @@ cdt_atf_init(const char *type)
       atfp->type = type;
       /*xtf_init();*/
       /*current_state = set_state(s_global,s_text);*/
-      curr_lang = text_lang = global_lang;
+      curr_lang_ctxt = text_lang = global_lang;
       if (!cdt_project)
 	cdt_project = "cdli";
 #if 0
