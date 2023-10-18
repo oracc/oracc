@@ -15,6 +15,7 @@
 #include "graphemes.h"
 
 extern int do_show_insts;
+extern void c1_gdl_init(void);
 
 void
 ox_init(void)
@@ -22,6 +23,7 @@ ox_init(void)
   pool_init();
   tree_init();
   galloc_init();
+  c1_gdl_init();
   gdl_init();
 
   text_vec_init();

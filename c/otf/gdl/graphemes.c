@@ -867,7 +867,17 @@ gparse(register unsigned char *g, enum t_type type)
 	}
       break;
     case g_c:
-      gp = compound(g);
+      if (gb_a2u)
+	{
+	  extern int gdl_unicode;
+	  int gu = gdl_unicode, uu = use_unicode;
+	  use_unicode = gdl_unicode = 1;
+	  gp = compound(pool_copy(gb_a2u));
+	  gdl_unicode = gu;
+	  use_unicode = uu;
+	}
+      else
+	gp = compound(g);
       break;
     case g_q:
       gp = qualified(g);
@@ -1324,13 +1334,6 @@ gtype(register unsigned char *g)
     return g_p;
   else
     return -1;
-}
-
-unsigned char *
-c10e_compound(unsigned const char *g)
-{
-  /* FIXME: need gdl_legacy_c10 */
-  return NULL;
 }
 
 static struct grapheme *
