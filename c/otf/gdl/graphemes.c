@@ -21,6 +21,7 @@
 #include <atf2utf.h>
 #include <sll_signlist.h>
 #include "c1c2gvl.h"
+#include <gvl_bridge.h>
 
 #define is_signlist(s) sll_is_signlist((const char *)(s))
 
@@ -146,7 +147,10 @@ static struct grapheme *punct(register unsigned char *g);
 static struct grapheme *qualified(register unsigned char *g);
 static struct grapheme *singleton(register unsigned char *g, enum t_type type);
 static struct grapheme *icmt_grapheme(const unsigned char *icmt);
+
+#if 0
 static const unsigned char *signify(const unsigned char *utf);
+#endif
 
 #if 0
 static struct
@@ -159,25 +163,30 @@ rbuf_reset(struct rbuf *rbp)
 }
 #endif
 
+extern void galloc_init(void);
+extern void galloc_term(void);
+extern struct grapheme * galloc(void);
+extern void g_reinit(void);
+
 /* These grapheme allocations are cleared after every text; if they
    need to be preserved across a run use a hash and new memory for the
    keys */
 struct mb *galloc_mb = NULL;
 void
-galloc_init()
+galloc_init(void)
 {
   if (!galloc_mb)
     galloc_mb = mb_init(sizeof(struct grapheme),4096);
 }
 void
-galloc_term()
+galloc_term(void)
 {
   if (galloc_mb)
     mb_free(galloc_mb);
   galloc_mb = NULL;
 }
 struct grapheme *
-galloc()
+galloc(void)
 {
   if (!galloc_mb)
     galloc_init();
@@ -185,7 +194,7 @@ galloc()
 }
 
 void
-g_reinit()
+g_reinit(void)
 {
   in_square = 0;
 }
@@ -459,11 +468,15 @@ sname_to_check(const unsigned char *sn)
     return (char*)utf_lcase(sn);
   else
     {
-      const unsigned char *utf8g = g2utf(sn);
+#if 1
+      return (char *)utf_lcase(sn);
+#else
+      const unsigned char *utf8g = (gb_a2u ? gb_a2u : g2utf(sn));
       if (utf8g)
 	return (char *)utf_lcase(utf8g);
       else
 	return (char *)utf_lcase(sn);
+#endif
     }
 }
 
@@ -542,7 +555,14 @@ gparse(register unsigned char *g, enum t_type type)
 {
   struct grapheme *gp = NULL;
   unsigned char *orig = pool_copy(g);
+
+#if 0
   const unsigned char *signified = NULL;
+#endif
+  
+  unsigned const char *gb_cun = NULL;
+  unsigned const char *gb_a2u = NULL;
+  unsigned const char *gb_signname = NULL;
 
   render_canonically = compound_warnings;
 #if 1
@@ -554,6 +574,9 @@ gparse(register unsigned char *g, enum t_type type)
       const char *mess = c1c2gvl(file,lnum,g,curr_lang->core->sindex);
       if (mess && !inner_qual && !inner_parse)
 	vwarning("(gvl) %s",mess);
+      gb_a2u = (unsigned const char *)gvl_bridge_atf2utf();
+      if (do_cuneify)
+	gb_cun = gvl_bridge_cuneify();
     }
   
   if (type == type_top)
@@ -584,7 +607,7 @@ gparse(register unsigned char *g, enum t_type type)
 	      gcheck = g = (unsigned char *)strdup((const char *)a2n);
 	  }
 	if (!use_unicode)
-	  gcheck = g2utf(gcheck);
+	  gcheck = (gb_a2u ? gb_a2u : g2utf(gcheck));
 	if (is_xvalue(gcheck))
 	  {
 	    gp = singleton(g,type);
@@ -710,6 +733,7 @@ gparse(register unsigned char *g, enum t_type type)
     case g_s:
       /* canonicalize sign names up here? */
       /*fprintf(stderr, "g_s: reached with g=%s; local_render=%d\n", g, local_render);*/
+#if 0
       if (compound_warnings)
 	{
 	  signified = signify(g);
@@ -719,7 +743,7 @@ gparse(register unsigned char *g, enum t_type type)
 	      /* g = (unsigned char *)signified; */
 	    }
 	}
-      
+#endif      
       if (is_signlist(g) && psl_is_sname(g))
 	{
 	  gp = singleton(g,type); /* FIXME?: should we preserve the info that
@@ -730,7 +754,7 @@ gparse(register unsigned char *g, enum t_type type)
 	{
 	  if (!hash_find(curr_lang->snames,g))
 	    {
-	      const unsigned char *utf8g = g2utf(g), *lc;
+	      const unsigned char *utf8g = (gb_a2u ? gb_a2u : g2utf(g)), *lc;
 	      if (utf8g)
 		{
 		  lc = utf_lcase(utf8g);
@@ -777,7 +801,7 @@ gparse(register unsigned char *g, enum t_type type)
 		gcheck = g;
 	    }
 	  else
-	    gcheck = (unsigned char *)g2utf(gcheck);
+	    gcheck = (unsigned char *)(gb_a2u ? gb_a2u : (unsigned char *)g2utf(gcheck));
 	  g_utf = gcheck;
 	  gcheck = (unsigned char *)sname_to_check(gcheck);
 	  if (gcheck)
@@ -894,6 +918,10 @@ gparse(register unsigned char *g, enum t_type type)
 
 	      if (do_cuneify && cuneifiable(curr_lang))
 		{
+#if 1
+		  if (gb_cun)
+		    appendAttr(gp->xml,gattr(a_g_utf8,gb_cun));
+#else
 		  static const unsigned char *cattr = NULL;
 		  if (gp->type == g_q)
 		    {
@@ -906,10 +934,17 @@ gparse(register unsigned char *g, enum t_type type)
 		    cattr = cuneify(buf);
 		  if (cattr)
 		    appendAttr(gp->xml,gattr(a_g_utf8,cattr));
+#endif
 		}
 
 	      if (do_signnames)
 		{
+#if 1
+		  if (gb_signname)
+		    appendAttr(gp->xml,gattr(a_g_sign,gb_signname));
+		  else if (gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
+		    vwarning("unable to signify %s", gp);
+#else
 		  static const unsigned char *cattr = NULL;
 		  const char *showerr = "yes";
 		  const unsigned char *input = NULL;
@@ -945,6 +980,7 @@ gparse(register unsigned char *g, enum t_type type)
 		    appendAttr(gp->xml,gattr(a_g_sign,psl_get_sname(cattr)));
 		  else if (showerr && gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
 		    vwarning("unable to signify %s", input);
+#endif
 		}
 
 	      if (!inner_parse && f_graphemes)
@@ -957,14 +993,22 @@ gparse(register unsigned char *g, enum t_type type)
 	    {
 	      static unsigned char buf[1024] = { '\0' };
 	      unsigned char *ibufp = NULL;
+#if 0
 	      const unsigned char *cattr = NULL;
-
+#endif
+	      
 	      ibufp = buf;
 	      ibufp = render_g(gp->xml,ibufp,ibufp);
 	      *ibufp = '\0';
 
 	      if (do_signnames)
 		{
+#if 1
+		  if (gb_signname)
+		    appendAttr(gp->xml,gattr(a_g_sign,gb_signname));
+		  else if (gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
+		    vwarning("unable to signify %s", gp);
+#else
 		  /*const char *showerr = "yes";*/
 		  const unsigned char *input = NULL;
 		  cattr = NULL;
@@ -1017,10 +1061,14 @@ gparse(register unsigned char *g, enum t_type type)
 		      else
 			vwarning("%s: sign name not in OGSL",buf);
 		    }
+#endif
 		}
 	      
 	      if (do_cuneify && cuneifiable(curr_lang))
 		{
+#if 1
+		  appendAttr(gp->xml,gattr(a_g_utf8,gb_cun));
+#else		  
 		  if (cbd_rules)
 		    {
 		      unsigned char *a = utf2atf(buf);
@@ -1054,6 +1102,7 @@ gparse(register unsigned char *g, enum t_type type)
 			    }
 			}
 		    }
+#endif
 		}
 	      if (f_graphemes)
 		{
@@ -1075,6 +1124,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  ibufp = ibuf;
 		  ibufp = render_g(gp->xml,ibufp,ibufp);
 		  *ibufp = '\0';
+#if 0
 		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
 		    {
 		      const unsigned char *cattr = signify(ibuf);
@@ -1093,6 +1143,7 @@ gparse(register unsigned char *g, enum t_type type)
 			    vwarning("%s: compound sign name element not in OGSL",ibuf);
 			}
 		    }
+#endif
 		}
 	    } 
 	    
@@ -1148,7 +1199,7 @@ set_128(int *start)
 }
 
 void
-graphemes_init()
+graphemes_init(void)
 {
   register int c;
 
@@ -1201,7 +1252,7 @@ graphemes_init()
 }
 
 void
-graphemes_term()
+graphemes_term(void)
 {
   register int c;
   for (c = 0; c < o_top; ++c)
@@ -2699,6 +2750,7 @@ icmt_grapheme(const unsigned char *icmt_tok)
   return g;
 }
 
+#if 0
 const unsigned char *
 signify(const unsigned char *utf)
 {
@@ -2768,6 +2820,7 @@ signify(const unsigned char *utf)
     }
   return ret;
 }
+#endif
 
 #ifdef TEST
 int

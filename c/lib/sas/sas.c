@@ -19,6 +19,17 @@ satisfies_constraint(struct sas_constraint *cp,
 		     const unsigned char *cf, const unsigned char *gw, 
 		     const unsigned char *pos);
 
+void
+sas_map_ids(struct sas_map *m)
+{
+  int i;
+  for (i = 0; m[i].v; ++i)
+    {
+      if (!(m[i].a = (unsigned char *)gvl_get_id(m[i].v)))
+	m[i].a = m[i].v;
+    }
+}
+
 struct sas_map *
 sas_map_form(const unsigned char *form, int *maplen)
 {

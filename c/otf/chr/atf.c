@@ -10,9 +10,10 @@ atf_init(void)
     if (!(l = setlocale(LC_ALL, "en_US.UTF-8")))
       if (!(l = setlocale(LC_ALL, "C")))
         fprintf(stderr, "ox: failed to setlocale to '%s', 'UTF-8', or 'C'\n", ORACC_LOCALE);
-
+#if 0
   if (l)
     atf2utf_init();
+#endif
 }
 
 void

@@ -567,7 +567,7 @@ atf_handler(struct node *parent, enum t_scope scope,
       else if (!xstrncmp(l,"lemconv",7))
 	use_ilem_conv = 1;
       else if (!xstrncmp(l,"legacy",7))
-	gdl_legacy = use_legacy = 1;
+	gdl_legacy = use_legacy = 1;      
       else if (!xstrncmp(l,"cuneiform",9))
 	do_cuneify = 1;
       else
@@ -719,8 +719,10 @@ project_handler(struct run_context *run, struct node *parent, enum t_scope scope
   /*system_project = (char*)xpd_option("atf-lem-system");*/
   /*lem_use_defsense = xpd_option_int("lem-default-sense");*/
 
+#if 0
   cuneify_init(run->proj->xpd);
-
+#endif
+  
   lem_simplify_opt = xpd_option(run->proj->xpd,"lem-simplify");
   atf_needs_xmd = (NULL != xpd_option(run->proj->xpd, "atf-needs-cat"));
   if (lem_simplify_opt && !strcmp(lem_simplify_opt, "yes"))

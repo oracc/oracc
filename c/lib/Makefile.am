@@ -9,12 +9,12 @@ AM_CFLAGS=-pedantic -Wall -g
 SUBDIRS=collate expat libstemmer_c gsl oracc rnv sas skl
 noinst_LTLIBRARIES=liboracc.la
 liboracc_la_LIBADD= \
-	collate/libcoll.la \
 	expat/libexpat.la \
 	oracc/liboracc.la \
-	gsl/libgsl.la \
 	libstemmer_c/libstemmer.la \
 	rnv/librnv.la \
 	sas/libsas.la
 
+#	collate/libcoll.la 
 #	skl/libskl.la
+#	gsl/libgsl.la 

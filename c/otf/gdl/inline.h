@@ -9,8 +9,8 @@ extern int ods_mode;
 extern struct node **line_words;
 extern int nline_words;
 extern void reset_forms_insertp(void);
-extern void forms_init();
-extern void forms_term();
+extern void forms_init(void);
+extern void forms_term(void);
 extern void inline_functions(void (*lemm_save_form_arg)(const char *,const char*,
 							const char*,struct lang_context *,
 							const char *field),

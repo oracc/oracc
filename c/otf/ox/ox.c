@@ -159,7 +159,10 @@ main(int argc, char **argv)
 
   /* needed for binding with c2; this will call c1_gdl_init */
   tree_init();
+
+#if 0
   gdl_init();
+#endif
 
 #if 1
   if (strstr(argv[0], "oxx"))

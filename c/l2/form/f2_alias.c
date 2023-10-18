@@ -63,8 +63,8 @@ f2_form_signs(const unsigned char *f1, const unsigned char *f2)
     ret = 0;
   else
     {
-      gsl_map_ids(m1);
-      gsl_map_ids(m2);
+      sas_map_ids(m1);
+      sas_map_ids(m2);
       
       for (i = 0; m1[i].v; ++i)
 	if (strcmp((const char *)m1[i].a, (const char *)m2[i].a))

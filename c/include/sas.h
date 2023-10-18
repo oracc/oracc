@@ -73,5 +73,7 @@ extern unsigned char * sas_alias_form(struct sas_info *sip, const unsigned char 
 				      const unsigned char *cf, const unsigned char *gw,
 				      const unsigned char *pos);
 extern struct sas_map *sas_map_form(const unsigned char *form, int *maplen);
+extern void sas_map_ids(struct sas_map *m);
+extern unsigned const char *gvl_get_id(unsigned const char *g);
 
 #endif/*_SAS_H*/
