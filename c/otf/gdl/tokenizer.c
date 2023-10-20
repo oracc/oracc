@@ -2373,7 +2373,16 @@ tokenize_grapheme(register unsigned char*l,
 		    }
 		  else
 		    *following = ++l;
-		}
+		  if ('(' == *l)
+		    {
+		      /* rare 3(AŠ)(LAK191) type */
+		      l = grapheme_parens(l, gp);
+		      if (NULL == *gp)
+			return l;
+		      else
+			*following = ++l;
+		    }
+		}	      
 	    }
 	  else if (l[-1] == 'n' || *tp == g_p)
 	    {
