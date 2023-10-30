@@ -39,7 +39,7 @@ sub load_langcore {
 	} elsif ($inlangs) {
 	    chomp;
 	    my %l = ();
-	    @l{qw/lang script logolang upper uscore enum feat/} = split(/,\s+/, $_);
+	    @l{qw/lang script sl logolang upper uscore enum feat/} = split(/,\s+/, $_);
 	    $l{'script'} =~ s/^\"(.*?)\"/$1/;
 	    $l{'logolang'} =~ s/^\"(.*?)\"/$1/;
 	    if ($l{'feat'}) {

@@ -24,4 +24,4 @@ o2-weblive.sh
 o2-prm.sh
 neo-cbd-json.sh
 #o2-json.sh
-neo-portals.sh
+#neo-portals.sh
