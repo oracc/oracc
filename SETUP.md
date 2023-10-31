@@ -156,6 +156,12 @@ conflicting libtool installation and conflicting Expat version.
     ./mac-config.sh
     ```
     
+    In case, if it complains about automake unable to create Makefile.in or ./compile not found, run the following command to 	fix it:
+    
+    ```commandline
+    automake --add-missing
+    ```
+    
     In case, if it complains about automake, run the following command to fix it:
     
     ```commandline
