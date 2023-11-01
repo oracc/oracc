@@ -338,7 +338,7 @@
      </xsl:for-each>
      <xsl:if test="not(esp:link)">
        <img src="{$src}" alt="{@description}">
-	 <xsl:copy-of select="@class"/>
+	 <xsl:copy-of select="@class|@id"/>
 	 <xsl:if test="@height">
 	   <xsl:attribute name="height"><xsl:value-of select="@height"/></xsl:attribute>
 	 </xsl:if>
