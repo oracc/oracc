@@ -40,7 +40,7 @@ oid(const char *e2)
     {
       const char *v;
       v = dbx_key(dbi, e2);
-      do302(v);
+      do301(v);
       dbx_term(dbi);
       exit(0);
     }

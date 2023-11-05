@@ -222,7 +222,7 @@
       <li>
 	<xsl:choose>	  
 	  <xsl:when test="starts-with(md:id_text,'P')">
-	    <a href="https://cdli.ucla.edu/{md:id_text/text()}" target="_blank">
+	    <a href="https://cdli.mpiwg-berlin.mpg.de/{md:id_text/text()}" target="_blank">
 	      <xsl:value-of select="concat('CDLI ', md:id_text)"/>
 	    </a>
 	  </xsl:when>

@@ -6,7 +6,8 @@ subdirs=ccgi
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include -Wall -pedantic
 
-cgibin_PROGRAMS=oracc-server
+#cgibin_PROGRAMS=oracc-server
+noinst_PROGRAMS=oracc-server
 
 # noinst_PROGRAMS=content_test
 # content_test_SOURCES=content_test.c content.c runexpat.c

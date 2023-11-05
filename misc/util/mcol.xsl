@@ -12,7 +12,7 @@
   <xsl:param name="width"/>
   <xsl:param name="class"/>
   <xsl:param name="tag" select="'sign'"/>
-  <xsl:message>mcol setting <xsl:value-of select="count($nodes)"/> nodes in <xsl:value-of select="$columns"/> columns</xsl:message>
+  <!--<xsl:message>mcol setting <xsl:value-of select="count($nodes)"/> nodes in <xsl:value-of select="$columns"/> columns</xsl:message>-->
   <table>
     <xsl:if test="string-length($width)>0"><xsl:attribute name="width"><xsl:value-of select="$width"/></xsl:attribute></xsl:if>
     <xsl:if test="string-length($class)>0"><xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute></xsl:if>
