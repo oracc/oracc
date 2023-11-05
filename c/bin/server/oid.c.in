@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <dbxlib.h>
 #include "resolver.h"
 #include "ccgi/ccgi.h"
 
@@ -34,11 +35,23 @@ glossary_article(const char *lng, const char *art)
 void
 oid(const char *e2)
 {
-  print_hdr();
-  execl("/usr/bin/perl", "perl", "@@ORACC_BUILDS@@/bin/oid-resolver.plx",
-	project,
-	e2,
-	NULL);
+  Dbi_index *dbi = dbx_proj_oid(project);
+  if (dbi)
+    {
+      const char *v;
+      v = dbx_key(dbi, e2);
+      do302(v);
+      dbx_term(dbi);
+      exit(0);
+    }
+  else
+    {
+      print_hdr();
+      execl("/usr/bin/perl", "perl", "@@ORACC_BUILDS@@/bin/oid-resolver.plx",
+	    project,
+	    e2,
+	    NULL);
+    }
 }
 
 static int

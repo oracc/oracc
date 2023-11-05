@@ -390,3 +390,17 @@ decompose_script_url(const char *su)
   else
     elements = NULL;
 }
+
+int
+opts(int argc, char *arg)
+{
+  return 0;
+}
+
+const char *prog = "oracc-server";
+int major_version = 1, minor_version = 0;
+const char *usage_string = "";
+void
+help ()
+{
+}

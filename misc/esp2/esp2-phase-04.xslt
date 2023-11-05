@@ -57,7 +57,9 @@
 <!-- add structure to <head> -->
 <xsl:template match="head">
   <xsl:variable name="relpath">
-    <xsl:call-template name="set-relpath"/>
+    <xsl:call-template name="set-relpath">
+      <xsl:with-param name="project" select="$project"/>
+    </xsl:call-template>
   </xsl:variable>
   <xsl:copy>
     <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
@@ -70,16 +72,8 @@
     </title>
 
     <!-- styles -->
-<!--    <link rel="stylesheet" type="text/css" href="/css/oraccbase.css"/> -->
     <link rel="stylesheet" type="text/css" media="print" href="{$relpath}/css/print.css"/>
-<!--    <link rel="stylesheet" type="text/css" media="handheld" href="{$relpath}/css/my-print.css"/> -->
-<!--    <link rel="stylesheet" type="text/css" media="handheld" href="{$relpath}/css/handheld.css"/> -->
-<!--    <link rel="stylesheet" type="text/css" media="handheld" href="{$relpath}/css/my-handheld.css"/> -->
     <link rel="stylesheet" type="text/css" media="screen,projection" href="{$relpath}/css/screen.css"/>
-    <!-- why were all the my-xxx.css files commented out? (because they don't seem to be used much [sjt]) -->
-<!--    <link rel="stylesheet" type="text/css" media="screen,projection" href="{$relpath}/css/my-screen.css"/> -->
-
-<!--    <link rel="stylesheet" type="text/css" media="browsers_that_ignore_the_media_type_attribute" href="{$relpath}/css/browsersthatsuck.css"/> -->
 
     <xsl:choose>
       <xsl:when test="string($parameters/param:cuneify/@default) = 'na'">

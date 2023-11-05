@@ -13,10 +13,17 @@ cgi_arg(const char *arg, const char *val)
 }
 
 void
-do400(const char *message)
+do302(const char *loc)
+{
+  printf("HTTP/1.1 302 Found\nLocation: %s\n\n", loc);
+  exit(0);
+}
+
+void
+do400(const char *msg400)
 {
   puts("HTTP/1.1 400 Bad Request\n");
-  puts(message);
+  puts(msg400);
   exit(0);
 }
 

@@ -3,7 +3,6 @@
 libscripts=$ORACC_BUILDS/lib/scripts
 project=`oraccopt`
 slname=`oraccopt . asl-signlist`
-
 if [[ "$slname" == "" ]]; then
     slname=project.asl
 fi

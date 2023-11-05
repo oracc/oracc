@@ -15,8 +15,13 @@ if (-r "$ENV{'ORACC_BUILDS'}/xml/$prj/config.xml") {
 	    my $o = `grep '^$oid' $idx`;
 	    if ($o) {
 		chomp $o;
+		my $three02 = ($o =~ s/\!$//);
 		$o =~ s#^.*?\t#$ENV{'ORACC_BUILDS'}/#;
-		system "sed 's#\@\@OB\@\@#$ENV{'ORACC_BUILDS'}#g' $o | xmllint --xinclude -";
+		if ($three02) {
+		    print "Status: 302 Found\nLocation: $o\n\n";
+		} else {
+		    system "sed 's#\@\@OB\@\@#$ENV{'ORACC_BUILDS'}#g' $o | xmllint --xinclude -";
+		}
 	    } else {
 		oid_404("OID $oid not found in project $prj");
 	    }

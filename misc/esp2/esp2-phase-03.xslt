@@ -270,7 +270,8 @@
     <xsl:param name="cnode" select="."/>
     <xsl:variable name="relpath">
       <xsl:call-template name="set-relpath">
-	<xsl:with-param name="context-node" select="$cnode"/>
+	<xsl:with-param name="project" select="$project"/>
+	<!--<xsl:with-param name="context-node" select="$cnode"/>-->
       </xsl:call-template>
     </xsl:variable>
     <xsl:if test="not ( @description )">

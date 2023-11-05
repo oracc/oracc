@@ -2,7 +2,7 @@ include ../../../oracc-am-rules.txt
 
 subdirs=ccgi
 
-	-I@top_srcdir@/c/lib/expat/xmlparse
+#	-I@top_srcdir@/c/lib/expat/xmlparse
 
 AM_CPPFLAGS=-I@top_srcdir@/c/include -Wall -pedantic
 
@@ -15,9 +15,9 @@ cgibin_PROGRAMS=oracc-server
 oracc_server_SOURCES=oracc-server.c or_builtins.c or_stable_uris.c \
 	selections.c builtins.c or_response.c or_common.c xmlrpc.c \
 	or_gdf.c or_pqx.c pqx_map.c pqx_h_tab.c ncname.c p3.c listdir.c \
-	sl.c content.c runexpat.c glob.c xff.c oid.c oai.c
+	sl.c content.c runexpat.c glob.c xff.c oid.c oai.c dbxlib.c
 
-oracc_server_LDADD=ccgi/libccgi.la -lexpat
+oracc_server_LDADD=ccgi/libccgi.la -lexpat @top_srcdir@/c/lib/liboracc.la
 
 ccgi/libccgi.la:
 	(cd ccgi ; make)
