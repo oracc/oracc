@@ -28,7 +28,7 @@ secbdx_LDADD = ../selib.o ../mm_any.o ../alias.o ../langmask.o \
 	../vid.o ../propmask.o ../signmap.o \
 	../rulestab.o ../keymangler.o ../v2.o \
 	@top_srcdir@/c/otf/chr/libchr.la \
-	@top_srcdir@/c/otf/lng/liblng.la \
-	@top_srcdir@/c/lib/liboracc.la
+	@top_srcdir@/c/lib/liboracc.la \
+	@top_srcdir@/../oracc2/lib/liboracc2.la
 
 EXTRA_DIST=fields.h

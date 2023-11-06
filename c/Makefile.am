@@ -5,3 +5,4 @@
 # 
 #  $Id: Makefile.am,v 0.6 1998/11/10 03:17:41 s Exp $
 SUBDIRS = include lib l2 otf bin
+

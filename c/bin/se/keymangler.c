@@ -1,6 +1,7 @@
 #include <string.h>
 #include <wchar.h>
 #include <wctype.h>
+#include "atf2utf.h"
 #include "libstemmer.h"
 #include "atf.h"
 #include "charsets.h"
@@ -43,7 +44,7 @@ keymangler(const unsigned char *key, int manglerules, char *f, size_t l, struct 
 	  chartrie_init(cset);
 	  if (manglerules&KM_GRAPHEME)
 	    {
-	      tmp = gatf2utf(key,f,l);
+	      tmp = atf2utf(NULL,key,0); /* f file l line */
 	    }
 	  else
 	    {

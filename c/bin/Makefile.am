@@ -4,7 +4,10 @@
 #  1997 under the GNU General Public License (see /psd/COPYING).
 # 
 #  $Id: Makefile.am,v 0.6 1998/11/10 03:17:41 s Exp $
-SUBDIRS = lemmer matrix pg rnv se server sort util
+SUBDIRS =  pg se sort util
+
+# needs porting:
+# lemmer matrix
 
 # obsolete
-# despatcher oraccd 
+# despatcher oraccd rnv server

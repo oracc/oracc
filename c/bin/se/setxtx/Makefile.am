@@ -21,7 +21,7 @@ setxtx_SOURCES=setxtx.c \
 setxtx_LDADD = ../selib.o ../mm_any.o ../alias.o ../langmask.o \
 	../propmask.o ../vid.o ../est.o ../keymangler.o ../signmap.o ../v2.o \
 	@top_srcdir@/c/otf/chr/libchr.la \
-	@top_srcdir@/c/otf/lng/liblng.la \
-	@top_srcdir@/c/lib/liboracc.la
+	@top_srcdir@/c/lib/liboracc.la \
+	@top_srcdir@/../oracc2/lib/liboracc2.la
 
 EXTRA_DIST=fields.h index.h addgraph.c
