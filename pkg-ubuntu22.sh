@@ -33,4 +33,5 @@ apt-get -y --autoremove upgrade \
     libxmlrpc-core-c3-dev \
     zip \
     cpanminus \
+    libpcre2-dev \
     plocate

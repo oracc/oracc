@@ -9,13 +9,12 @@
 #include <loadfile.h>
 #include <dbi.h>
 #include <locale.h>
+#include <atf2utf.h>
 #include "types.h"
 #include "se.h"
 #include "selib.h"
 #include "atflocale.h"
 #include "oracclocale.h"
-#include "charsets.h"
-#include "lang.h"
 #include "vid.h"
 
 int any_index = 0;
@@ -507,7 +506,7 @@ main(int argc, char * const*argv)
   if (doing_debug)
     f_log = fopen("se.dbg","w");
 
-  /*atf2utf8_init();*/
+  atf2utf_init();
   charsets_init();
   langtag_init();
   tokinit();
@@ -643,7 +642,7 @@ main(int argc, char * const*argv)
 	  pretrim_args = NULL;
 	}
     }
-  langtag_term();
+  /*langtag_term();*/
 
   return 0;
 }

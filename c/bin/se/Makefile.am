@@ -14,37 +14,17 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/libstemmer_c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/expat/xmlparse \
-	-I@top_srcdir@/c/otf/{chr,gdl,lib,lng,run} \
+	-I@top_srcdir@/c/otf/{chr,gdl,lib,run} \
+	-I@top_srcdir@/../oracc2/lib/{include,std,sys,lng}
 	-I/usr/local/include
-
 
 AM_LDFLAGS=-L/opt/local/lib
 
-sl-index.c: sl-index.c.in
-	$(ORACCIFY) sl-index.c.in
-
-bin_PROGRAMS=se masktest sedbg wmapper wmdebug wm ce_xtf ce2 sl sl-index
+bin_PROGRAMS=se masktest sedbg wmapper wmdebug wm ce_xtf ce2
 
 #v2
 #v2_SOURCES=v2.c
 #v2_LDADD=@top_srcdir@/c/lib/liboracc.la
-
-sl_SOURCES=sl.c \
-        @top_srcdir@/c/otf/atf/note.c \
-        @top_srcdir@/c/otf/ox/globals.c
-
-sl_LDADD=@top_srcdir@/c/otf/chr/libchr.la \
-	@top_srcdir@/c/otf/atf/libatf.la \
-	@top_srcdir@/c/otf/gdl/libgdl.la \
-	@top_srcdir@/c/otf/lib/libcdf.la \
-	@top_srcdir@/c/otf/chr/libchr.la \
-	@top_srcdir@/c/otf/lng/liblng.la \
-        @top_srcdir@/c/otf/prj/libprj.la \
-        @top_srcdir@/c/l2/libl2.la \
-	@top_srcdir@/c/lib/liboracc.la
-
-sl_index_SOURCES=sl-index.c
-sl_index_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 ce2_SOURCES=ce2.c ce_xmd2.c selib.c p2.c ce_gdf.c v2.c
 ce2_LDADD=@top_srcdir@/c/lib/liboracc.la
@@ -57,9 +37,8 @@ se_SOURCES=se.c setoks.c tokenize.c evaluate.c selib.c se_pcre.c binops.c \
 	xml.c binops24.c est.c signmap.c v2.c
 
 se_LDADD=@top_srcdir@/c/otf/chr/libchr.la \
-	 @top_srcdir@/c/otf/lng/liblng.la \
 	 @top_srcdir@/c/lib/liboracc.la \
-	-L/lib64 -lpcre
+	-L/lib64 -lpcre @top_srcdir@/../oracc2/lib/liboracc2.la
 
 sedbg_SOURCES = sedbg.c selib.c langmask.c mm_any.c rulestab.c vid.c v2.c
 sedbg_LDADD =  @top_srcdir@/c/lib/liboracc.la

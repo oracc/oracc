@@ -16,12 +16,12 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 
 bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
 	jpegsize linkfiles gdf labeltable unittable \
-	newext oraccopt pqunion sigfixer sigmap signiary xmlnl \
-	xmlns xmlsplit utf8v xalias xfrag filesize listdir \
+	newext oraccopt pqunion sigfixer sigmap xmlnl \
+	xmlns xmlsplit utf8v xfrag filesize listdir \
 	xns xisdb wid2err rootnode wid2lem xis2json linksets \
-	xtfsigs oxg pllcfg sas
+	xtfsigs oxg pllcfg
 
-#pqoutline pqsort xml2json
+#pqoutline pqsort xml2json signiary xalias sas
 
 xis2json_SOURCES=xis2json.c
 xis2json_LDADD=@top_srcdir@/c/lib/liboracc.la
@@ -36,7 +36,7 @@ sigmap.c: sigmap.c.in
 	$(ORACCIFY) sigmap.c.in
 
 concord_SOURCES=concord.c
-concord_LDADD=@top_srcdir@/c/lib/liboracc.la
+concord_LDADD=@top_srcdir@/c/lib/liboracc.la @top_srcdir@/../oracc2/lib/liboracc2.la 
 
 gdf_LDADD=@top_srcdir@/c/lib/liboracc.la
 
@@ -72,8 +72,8 @@ pqunion_SOURCES=pqunion.c
 pqxpand_SOURCES=pqxpand.c
 pqxpand_LDADD = @top_srcdir@/c/lib/liboracc.la
 
-signiary_SOURCES=signiary.c
-signiary_LDADD = @top_srcdir@/c/lib/liboracc.la
+#signiary_SOURCES=signiary.c
+#signiary_LDADD = @top_srcdir@/c/lib/liboracc.la
 
 sigfixer_SOURCES=sigfixer.c
 sigfixer_LDADD = @top_srcdir@/c/lib/liboracc.la
@@ -83,15 +83,15 @@ sigmap_LDADD = @top_srcdir@/c/lib/liboracc.la
 
 unittable_LDADD=@top_srcdir@/c/lib/liboracc.la
 
-xalias_SOURCES=xalias.c
-xalias_LDADD = @top_srcdir@/c/l2/libl2.la \
-	@top_srcdir@/c/otf/gdl/libgdl.la \
-	@top_srcdir@/c/lib/liboracc.la
+#xalias_SOURCES=xalias.c
+#xalias_LDADD = @top_srcdir@/c/l2/libl2.la \
+#	@top_srcdir@/c/otf/gdl/libgdl.la \
+#	@top_srcdir@/c/lib/liboracc.la
 
-sas_SOURCES=sas.c
-sas_LDADD = @top_srcdir@/c/l2/libl2.la \
-	@top_srcdir@/c/otf/gdl/libgdl.la \
-	@top_srcdir@/c/lib/liboracc.la
+# sas_SOURCES=sas.c
+# sas_LDADD = @top_srcdir@/c/l2/libl2.la \
+#	@top_srcdir@/c/otf/gdl/libgdl.la \
+#	@top_srcdir@/c/lib/liboracc.la
 
 rootnode_LDADD=@top_srcdir@/c/lib/liboracc.la
 

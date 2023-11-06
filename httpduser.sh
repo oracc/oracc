@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 u=`grep -q _www /etc/passwd && /bin/echo -n _www`
 if [ "$u" = "" ]; then
     u=`grep -q www-data /etc/passwd && /bin/echo -n www-data`

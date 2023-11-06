@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 if [ ! -r oraccenv.sh ]; then
     echo Oracc preconfiguration: please create oraccenv.sh before proceeding. Stop.
     exit 1

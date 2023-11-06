@@ -13,7 +13,6 @@
 #include "memblock.h"
 #include "atflocale.h"
 #include "oracclocale.h"
-#include "charsets.h"
 
 #include "fields.h"
 #include "property.h"
