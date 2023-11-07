@@ -41,26 +41,34 @@ foreach (<00lib/*.glo>) {
     ++$proj_sig_langs{$1} unless exists $proj_sig_langs{$1};
 }
 
-if ($unify) {
-    my @unify = split(/\s+/, $unify);
-    @unify{@unify} = ();
-
-    my @d = ();
-    foreach my $l (keys %proj_sig_langs) {
-	foreach my $u (keys %unify) {
-	    if ($l =~ /^$u-/) {
-		push @d, $l;
+if ($unify && $unify ne 'no') {
+    if ($unify eq 'yes') {
+	foreach my $l (keys %proj_sig_langs) {
+	    if ($l =~ s/-.*$//) {
+		++$proj_sig_langs{$l};
 	    }
 	}
-    }
-    if ($dropsub eq 'yes') {
-	foreach my $d (@d) {
-	    delete($proj_sig_langs{$d})
-		if $d =~ /-/;
+    } else {
+	my @unify = split(/\s+/, $unify);
+	@unify{@unify} = ();
+	
+	my @d = ();
+	foreach my $l (keys %proj_sig_langs) {
+	    foreach my $u (keys %unify) {
+		if ($l =~ /^$u-/) {
+		    push @d, $l;
+		}
+	    }
 	}
-    }
-    foreach my $u (keys %unify) {
-	++$proj_sig_langs{$u} unless exists $proj_sig_langs{$u};
+	if ($dropsub eq 'yes') {
+	    foreach my $d (@d) {
+		delete($proj_sig_langs{$d})
+		    if $d =~ /-/;
+	    }
+	}
+	foreach my $u (keys %unify) {
+	    ++$proj_sig_langs{$u} unless exists $proj_sig_langs{$u};
+	}
     }
 }
 
