@@ -15,5 +15,8 @@
  done
  echo '</counts>' >>$c
 )
-mv 01tmp/xis/counts.xml 02xml/sl-corpus-counts.xml
+mv  01tmp/xis/counts.xml 02xml/counts.xml
+xsltproc $ORACC_BUILDS/lib/scripts/sx-add-sort.xsl 02xml/counts.xml \
+	 >02xml/sl-corpus-counts.xml
 chmod o+r 02xml/sl-corpus-counts.xml
+rm -f 02xml/counts.xml

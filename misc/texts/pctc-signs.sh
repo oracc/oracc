@@ -19,6 +19,7 @@ concord -twcl* <01tmp/w-o.tab >01tmp/o-f-w.tab
 pctc-xis.plx <01tmp/o-f-w.tab
 #echo "$0: timing pctc-divs.sh ..."
 #time
+(cd 01tmp ; pctc-alldata.sh)
 pctc-divs.sh
 #echo "$0: timing pctc-xis-data.sh ..."
 #time 
