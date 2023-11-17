@@ -6,7 +6,7 @@
 #include <ctype128.h>
 #include <locale.h>
 #include <runexpat.h>
-#include "atflocale.h"
+/*#include "atflocale.h"*/
 #include "oracclocale.h"
 #include "../types.h"
 #include "../selib.h"

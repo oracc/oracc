@@ -25,7 +25,7 @@ $ORACC::SL::report_all = 0;
 #@ORACC::SL::fixes_needed = ();
 
 my $db_file = "@@ORACC@@/pub/ogsl/sl";
-my $db_name = 'ogsl';
+my $db_name = 'sl';
 
 my %db = ();
 my $deep = 0;
@@ -114,7 +114,7 @@ init {
 	$g = '';
         # check if the sldb exists
 	my $db_file = "@@ORACC@@/pub/ogsl/sl";
-	my $db_name = 'ogsl';
+	my $db_name = 'sl';
 	if (-r "$db_file/$db_name.dbh") {
 	    $loaded = 1;
 	} else {
@@ -123,7 +123,7 @@ init {
     }
 
     # open the signlist engine for write and read
-    $sl_pid = open2(\*SL_OUT, \*SL_IN, "@@ORACC@@/bin/sl$g");
+    $sl_pid = open2(\*SL_OUT, \*SL_IN, "@@ORACC@@/bin/slx -R -d"); #"@@ORACC@@/bin/sl$g");
     binmode SL_OUT, ':utf8';
     binmode SL_IN, ':utf8';
 
@@ -214,7 +214,8 @@ sign_of {
 	$xid = $tmp;
     }
 #    my $xid = ($_[0] =~ /^x/ ? $_[0] : xid("\L$_[0]"));
-    slse($xid.';name');
+    ###    slse($xid.';name');
+    slse($xid);
 }
 
 sub
@@ -777,19 +778,21 @@ sub slse { slseA(@_) };
 
 sub
 slseA {
-#    warn "slseA: trying $_[0]\n";
+    # warn "slseA: trying $_[0]\n";
     print SL_IN "$_[0]\n";
     my $res = <SL_OUT>;
     if (defined $res) {
 	chomp($res);
+	# warn "slseA: got '$res'\n";
     } else {
 	warn "slseA internal error on input $_[0]\n";
+	$res = '';
     }
     $res;
 }
 
 sub slseB {
-    my $res = `@@ORACC@@/bin/sl -k '$_[0]'`;
+    my $res = `@@ORACC@@/bin/slx -k '$_[0]'`; # bin/sl
     chomp($res);
 #    warn "slseB -k $_[0] => $res\n";
     $res;

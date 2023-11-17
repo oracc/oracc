@@ -1083,11 +1083,11 @@ keycompare (const struct line *a, const struct line *b)
 	      char savea = *lima, saveb = *limb;
 	      
 	      *lima = *limb = '\0';
-	      diff = collate_cmp_graphemes (texta, textb);
+	      diff = collate_cmp_graphemes_cc (texta, textb);
 	      *lima = savea, *limb = saveb;
 	    }
 	  else
-	    diff = collate_cmp_graphemes (texta, textb);
+	    diff = collate_cmp_graphemes_cc (texta, textb);
 	  
 	  if (diff)
 	    return key->reverse ? -diff : diff;

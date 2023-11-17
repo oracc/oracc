@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#exec >01log/l2p2.log ; exec 2>&1
+exec >01log/l2p2.log ; exec 2>&1
 
 project=`oraccopt`
 

@@ -101,7 +101,8 @@ sub cpd_add {
 sub cpd_check {
     my($proj,$lang,$err_file) = @_;
 
-    my $pedantic = ORACC::SL::BaseC::pedantic();
+    my $pedantic = 0; # no longer necessary
+#    my $pedantic = ORACC::SL::BaseC::pedantic();
 #    warn "called cpd_check with ORACC::SL::BaseC::Pedantic = $pedantic\n";
 #    warn Dumper \%cpd;
     

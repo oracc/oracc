@@ -6,5 +6,5 @@ autoheader
 automake --add-missing
 autoconf
 ./configure --prefix=$ORACC
-make $1
+#make $1
 #./create-oracc-vhost-conf.sh
