@@ -11,6 +11,7 @@ use warnings; use strict; use open 'utf8'; use utf8;
 
 use ORACC::CBD::PPWarn;
 use ORACC::CBD::Util;
+use ORACC::SL::Tlitsig;
 my $acd_rx = $ORACC::CBD::acd_rx;
 use Data::Dumper;
 
@@ -302,14 +303,14 @@ sub bases_init {
     if (-d '01tmp') {
 	$bases_outfile = "01tmp/$bases_outfile";
     }
-    ORACC::SL::BaseC::init();
+    ORACC::SL::Tlitsig::init();
     open(MAP_FH, ">>$bases_outfile");
     $map_fh = \*MAP_FH;
 }
 
 sub bases_term {
     close(MAP_FH);
-    ORACC::SL::BaseC::term();
+    ORACC::SL::Tlitsig::term();
 }
 
 sub allowed {
@@ -363,7 +364,7 @@ sub bases_merge {
 
  	} else { # primary in b2 isn't known in b1
 
-	    my $p2sig = ORACC::SL::BaseC::check(undef,$p2,1);
+	    my $p2sig = ORACC::SL::Tlitsig::sig(undef,$p2,1);
 	    my $p1 = ${$h1{'#sigs'}}{$p2sig};
 	    if ($p1 && !allowed($p2,$p1,%allow)) {
 		
@@ -517,7 +518,7 @@ sub bases_hash {
 			%{$vbases{$pri}} = ();
 			$vbases{"$pri#code"} = ++$pricode;
 			$vbases{"$pri#lang"} = $blang;
-			${$vbases{'#sigs'}}{ ORACC::SL::BaseC::check(undef,$pri, 1) } = $pri;
+			${$vbases{'#sigs'}}{ ORACC::SL::Tlitsig::sig(undef,$pri, 1) } = $pri;
 		    }
 		    foreach my $a (split(/,\s+/,$alt)) {
 			if ($a =~ /\s/ && !$is_compound) {
@@ -561,7 +562,7 @@ sub bases_hash {
 		    %{$vbases{$pri}} = ();
 		    $vbases{"$pri#code"} = ++$pricode;
 		    $vbases{"$pri#lang"} = $blang;
-		    ${$vbases{'#sigs'}}{ ORACC::SL::BaseC::check(undef, $pri, 1) } = $pri;
+		    ${$vbases{'#sigs'}}{ ORACC::SL::Tlitsig::sig(undef, $pri, 1) } = $pri;
 		}
 	    }
 	}

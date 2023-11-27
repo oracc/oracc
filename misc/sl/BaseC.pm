@@ -38,9 +38,11 @@ my $silent = 0;
 
 my $tlitsplit_orig = '';
 
-sub
-check {
-    tlit_sig(@_);
+my $ts_pid = 0;
+
+sub check {
+    warn "SL::BaseC::check is deprecated; revise code to use SL::Oracc2::o2tlitsig\n"
+#    tlit_sig(@_);
 #    my($context,$test,$deep) = @_;
 #    warn join(':',caller()), "\n";
 #    my $sig = _signature($context,tlitsplit($test,$deep));
@@ -128,14 +130,6 @@ init {
     binmode SL_IN, ':utf8';
 
     $loaded = 1;
-
-#    my $ogsl_db = "$dbdir/ogsl-db";
-#    $silent = 1 if defined $_[0];
-#    $loaded = 1;
-#    binmode STDERR, ':utf8';
-#    die "can't read $ogsl_db\n" unless (-r $ogsl_db || -r "$ogsl_db.db");
-#    tie (%db, 'NDBM_File', "$ogsl_db", O_RDONLY, 0640) or die;
-
 }
 
 sub
@@ -143,7 +137,6 @@ term {
     return unless $loaded;
     print SL_IN "\cD\n";
     $loaded = 0;
-#    untie %db;
 }
 
 sub
