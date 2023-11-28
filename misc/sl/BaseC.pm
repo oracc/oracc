@@ -778,7 +778,7 @@ slseA {
 	chomp($res);
 	# warn "slseA: got '$res'\n";
     } else {
-	warn "slseA internal error on input $_[0]\n";
+	warn "ORACC::SL::BaseC: slseA internal error on input $_[0]\n";
 	$res = '';
     }
     $res;

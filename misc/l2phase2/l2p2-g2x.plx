@@ -9,7 +9,7 @@ use ORACC::XML;
 use ORACC::OID;
 use ORACC::L2GLO::Builtins;
 use ORACC::L2GLO::Util;
-use ORACC::SL::BaseC;
+use ORACC::SL::Tlitsig;
 use Getopt::Long;
 
 use constant {
@@ -125,7 +125,7 @@ my %xrefs_infos = ();
 
 my %gdlme = (); my @gdlme = qw/base form/; push @gdlme, 'form-sans'; @gdlme{@gdlme} = ();
 
-ORACC::SL::BaseC::init();
+ORACC::SL::Tlitsig::init();
 
 $ORACC::L2GLO::Util::project = $project;
 
@@ -997,7 +997,7 @@ rewrite_bases {
     foreach my $b (keys %b) {
 	my $tmpb = $b;
 	$tmpb =~ s/%[-a-z0-9]+://g;
-	my $sig = ORACC::SL::BaseC::tlit_sig("$project/$input\:$tmpb", $tmpb);
+	my $sig = ORACC::SL::Tlitsig::tlitsigx("$project/$input\:$tmpb", $tmpb);
 	push @{$sig{$sig}}, $b;
     }
  

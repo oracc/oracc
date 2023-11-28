@@ -82,7 +82,7 @@ tlitsigx {
     if (defined $res) {
 	chomp($res);
     } else {
-	warn "tlitsig internal error on input $_[0]\n";
+	warn "ORACC::SL::Tlitsig: tlitsig internal error on input $_[0]\n";
     }
     $res;
 }
