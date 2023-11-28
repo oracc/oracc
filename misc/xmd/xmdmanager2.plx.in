@@ -1876,9 +1876,13 @@ xproject {
 	print LOCTAB "$pq\t$pl\n";
 	if ($pq =~ /(?:^|:)P/) {
 	    my $pname = $$r[$name_index];
-	    $pname =~ s/^\s*(.*?)\s*$/$1/;
-	    $pname =~ s/&apos;/'/g;
-	    $pname =~ s/&amp;/&/g;
+	    if ($pname) {
+		$pname =~ s/^\s*(.*?)\s*$/$1/;
+		$pname =~ s/&apos;/'/g;
+		$pname =~ s/&amp;/&/g;
+	    } else {
+		$pname = '';
+	    }
 	    $$r[$xprojects_index] = $xproject{$pq} || 'CDLI';
 	    print PNMTAB "$pq\t$pname\n";
 	    print PRITAB "$pq\t", strip0($$r[$pripub_index]),"\n"

@@ -11,6 +11,10 @@ my %fields = ();
 my $file;
 my $id_text_index = -1;
 my $period_index = -1;
+my $xmdline = 0;
+
+my $id_type = 'id_text';
+my $last_id = '';
 
 ##########################################################################
 
@@ -18,24 +22,38 @@ sub
 clean_periods {
     my $xmd = shift;
     for (my $i = 0; $i <= $#$xmd; ++$i) {
-	$$xmd[$i][$period_index] =~ s/\s+\([^\(]+\)?\s*$//;
+	
+	$$xmd[$i][$period_index] =~ s/\s+\([^\(]+\)?\s*$//
+					   if $$xmd[$i][$period_index];
     }
 }
 sub
 clean_id_text {
     my $xmd = shift;
+    my @new = ();
+    $xmdline = 1;
     for (my $i = 0; $i <= $#$xmd; ++$i) {
-	$$xmd[$i][$id_text_index] = fixup_P_id($$xmd[$i][$id_text_index]);
+	++$xmdline;
+	if ($$xmd[$i][$id_text_index]) {
+	    $$xmd[$i][$id_text_index] = fixup_P_id($$xmd[$i][$id_text_index]);
+	    push @new, $$xmd[$i];
+	} # silently delete records with empty id_text
     }
+    $xmd = [ @new ];
 }
 sub
 fixup_P_id {
     my $pqx = shift;
-    if ($pqx =~ /^\d/) {
+    if ($pqx !~ /^[PQX]\d{6}$/) {
 	my $nid = '';
-	$nid = 'P'.('0'x(6-length($pqx))).$pqx;
-#	print STDERR "TSV.pm: repairing P-ID from $pqx to $nid\n";
-	$pqx = $nid;
+	if ($pqx !~ /^\d+$/) {
+	    warn "TSV.pm: invalid $id_type '$pqx' at input line $xmdline; last valid id was $last_id\n";
+	} elsif ($pqx) {
+	    $last_id = $pqx;
+	    $nid = 'P'.('0'x(6-length($pqx))).$pqx;
+	    # warn "TSV.pm: repairing P-ID from $pqx to $nid\n";
+	    $pqx = $nid;
+	}
     }
     $pqx;
 }
@@ -52,12 +70,19 @@ internalize {
     my $xmd = $csv->getline_all($fh);
     my @xmd = @$xmd;
     my $fields_row = shift @xmd;
+    if ($$fields_row[0] eq 'artifact_id') {
+	warn "ORACC::XMD::TSV: remapping artifact_id to id_text\n";
+	$id_type = 'artifact_id';
+	$$fields_row[0] = 'id_text';
+	warn "ORACC::XMD::TSV: value of fields_row[0] is now $$fields_row[0]\n";
+    }
     $xmd = [ @xmd ];
 
     initialize_fields($fields_row);
 
     if ($id_text_index >= 0) {
-#	clean_id_text($xmd);
+	clean_id_text($xmd);
+	exit 1;
     } else {
 	warn "ORACC::XMD::TSV: no id_text_index found in $file\n";
     }
