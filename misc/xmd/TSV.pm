@@ -61,8 +61,8 @@ sub
 internalize {
     $file = shift;
     my @rows = ();
-    my $csv = Text::CSV_XS->new({ sep_char=>"\t" , auto_diag=>1 , allow_loose_quotes=>1 , 
-				  quote_char=>'' , escape_char=>'' });
+    my $csv = Text::CSV_XS->new({ sep_char=>"\t" , auto_diag=>1 , allow_loose_quotes=>0 , 
+				  quote_char=>'"' , escape_char=>'"'  , binary=>1 });
 
     open my $fh, "<:encoding(utf8)", $file 
 	or die "XMD::TSV: can't open CSV file '$file'\n";
@@ -82,7 +82,6 @@ internalize {
 
     if ($id_text_index >= 0) {
 	clean_id_text($xmd);
-	exit 1;
     } else {
 	warn "ORACC::XMD::TSV: no id_text_index found in $file\n";
     }

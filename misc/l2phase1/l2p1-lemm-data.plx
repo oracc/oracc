@@ -122,7 +122,7 @@ if ($update) {
 # Harvest freqs from the project.sig or the last set of lemm-data
 foreach my $l (@freq_files) {
     if (open(L,$l)) {
-	warn "harvesting sig frequencies from $l ...\n";    
+	warn "$0: harvesting sig frequencies from $l ...\n";    
 	while (<L>) {
 	    next if /^\s*$/ || m/^\@(?:project|name|lang)/;
 	    chomp;
