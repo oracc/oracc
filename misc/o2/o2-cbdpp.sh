@@ -30,8 +30,8 @@ if [ "$projtype" == "superglo" ]; then
 else
     for a in $libglo ; do
 	log=01log/`basename $a .glo`.log
-	exec 3>&1 4>&2 1>$log 2>&1
 	echo $0: running cbdpp.plx -sig -nopsus $a
+	exec 3>&1 4>&2 1>$log 2>&1
 	cbdpp.plx -sig -nopsus $a
 	exec 1>&3 2>&4
 	if [ -s $log ]; then

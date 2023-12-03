@@ -32,7 +32,7 @@
   <xsl:choose>
     <xsl:when test="string-length($res) > 0">
       <xsl:variable name="res-form">
-	<xsl:for-each select="document('@@ORACC_BUILDS@@/xml/ogsl/ogsl.xml')/*">
+	<xsl:for-each select="document('@@ORACC_BUILDS@@/xml/ogsl/sl.xml')/*">
 	  <xsl:value-of select="id($res)/@n"/>
 	</xsl:for-each>
       </xsl:variable>
@@ -98,7 +98,7 @@
 <!--  <xsl:message>body=<xsl:value-of select="$body"/>; vbody=<xsl:value-of select="$vbody"/>; res=<xsl:value-of select="$res"/></xsl:message>-->
   <xsl:choose>
     <xsl:when test="string-length($res)>0">
-      <xsl:for-each select="document('@@ORACC_BUILDS@@/xml/ogsl/ogsl.xml')/*">
+      <xsl:for-each select="document('@@ORACC_BUILDS@@/xml/ogsl/sl.xml')/*">
 	<xsl:value-of select="translate(id($res)/@n,'|','')"/>
       </xsl:for-each>
     </xsl:when>
@@ -110,7 +110,7 @@
 
 <xsl:template name="sign-node">
   <xsl:param name="n"/>
-  <xsl:for-each select="document('@@ORACC_BUILDS@@/xml/ogsl/ogsl.xml')/*">
+  <xsl:for-each select="document('@@ORACC_BUILDS@@/xml/ogsl/sl.xml')/*">
     <xsl:choose>
       <xsl:when test="count(key('signs',$n)) > 0">
 	<xsl:for-each select="key('signs',$n)[1]">
@@ -136,7 +136,7 @@
 
 <xsl:template name="value-node">
   <xsl:param name="n"/>
-  <xsl:for-each select="document('@@ORACC_BUILDS@@/xml/ogsl/ogsl.xml')/*">
+  <xsl:for-each select="document('@@ORACC_BUILDS@@/xml/ogsl/sl.xml')/*">
     <xsl:for-each select="key('values',$n)[1]">
       <xsl:choose>
 	<xsl:when test="string-length(ancestor-or-self::sl:form/@xml:id) > 0">

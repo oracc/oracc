@@ -90,7 +90,7 @@
       </xsl:otherwise>
     </xsl:choose>
 
-    <xsl:message>esp2-phase-04 head child count = <xsl:value-of select="count(*)"/></xsl:message>
+    <!--<xsl:message>esp2-phase-04 head child count = <xsl:value-of select="count(*)"/></xsl:message>-->
     <xsl:copy-of select="link[@rel='stylesheet']"/>
     
     <!-- javascript -->

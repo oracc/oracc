@@ -61,8 +61,7 @@ sub
 internalize {
     $file = shift;
     my @rows = ();
-    my $csv = Text::CSV_XS->new({ sep_char=>"\t" , auto_diag=>1 , allow_loose_quotes=>0 , 
-				  quote_char=>'"' , escape_char=>'"'  , binary=>1 });
+    my $csv = ($file =~ /cdli/ ? tsv_cdli() : tsv_default());
 
     open my $fh, "<:encoding(utf8)", $file 
 	or die "XMD::TSV: can't open CSV file '$file'\n";
@@ -103,6 +102,16 @@ initialize_fields {
 	$id_text_index = $i if $fields[$i] eq 'id_text';
 	$fields{$fields[$i]} = $i;
     }
+}
+
+sub tsv_cdli {
+    Text::CSV_XS->new({ sep_char=>"\t" , auto_diag=>1 , allow_loose_quotes=>0 , 
+			quote_char=>'"' , escape_char=>'"'  , binary=>1 });
+}
+
+sub tsv_default {
+    Text::CSV_XS->new({ sep_char=>"\t" , auto_diag=>1 , allow_loose_quotes=>1 , 
+			quote_char=>'' , escape_char=>'' });
 }
 
 1;

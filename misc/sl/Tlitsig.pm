@@ -67,7 +67,9 @@ term {
 
 sub
 tlitsigx {
-    print SL_IN "$_[0]\n";
+    my $t = $_[0];
+    $t =~ tr/°·//d;
+    print SL_IN "$t\n";
     my $res = undef;
     while (1) {
 	$res = <SL_OUT>;

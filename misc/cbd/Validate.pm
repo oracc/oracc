@@ -574,6 +574,13 @@ sub v_acd_ok {
     }
 }
 
+sub trsig {
+    my $t = shift;
+    $t =~ tr/+/./;
+    $t =~ s/\.\.+/\./;
+    $t;
+}
+
 sub v_bases {
     my($tag,$arg) = @_;
 
@@ -787,10 +794,14 @@ sub v_bases {
 		my $asig = ORACC::SL::Tlitsig::sig(undef,$a,1);
 		unless (pp_sl_messages()) {
 		    if ($asig) {
-			if ($prisig ne $asig) {
+			my $ptr = trsig($prisig);
+			my $atr = trsig($asig);
+			if ($ptr ne $atr) {
 			    my $pdeep = ORACC::SL::Tlitsig::sig(undef,"$p+");
 			    my $adeep = ORACC::SL::Tlitsig::sig(undef,"$a+");
-			    if ($pdeep ne $adeep) {
+			    $ptr = trsig($pdeep);
+			    $atr = trsig($adeep);
+			    if ($ptr ne $atr) {
 				pp_warn("(bases) primary '$p' and alt '$a' have different signs ($prisig ne $asig)");
 			    }
 			}
