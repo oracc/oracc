@@ -24,7 +24,7 @@ sub pp_collo {
     my ($args,$f,@cbd) = @_;
     my $ndir = projdir()."/02pub";
     system 'mkdir', '-p', $ndir;
-    open(COLLO, ">$ndir/coll-$$args{'lang'}.ngm");
+    open(COLLO, ">$ndir/coll-$$args{'lang'}.ngm") || die "$0: can't open COLLO output $ndir/coll-$$args{'lang'}.ngm\n";
     open(CLOG,">01tmp/collo.log");
     my %collo = ();
     foreach my $i (@{$ORACC::CBD::data{'collo'}}) {
