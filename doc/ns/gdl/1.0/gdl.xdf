@@ -1094,6 +1094,7 @@ hsqb_c = attribute g:hc    { "1" }
 emhyph = attribute g:em    { "1" }
 sign_attr = attribute g:sign  { text }
 utf8   = attribute g:utf8  { text }
+oid    = attribute oid  { text }
 delim  = attribute g:delim { text }
 varnum = (
   attribute g:varo { text }? , 

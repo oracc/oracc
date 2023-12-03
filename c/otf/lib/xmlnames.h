@@ -91,6 +91,7 @@ enum a_type
   a_note_mark,
   a_note_ref,
   a_o,
+  a_oid,
   a_p,
   a_place,
   a_plid,

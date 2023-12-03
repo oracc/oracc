@@ -98,6 +98,7 @@ struct xname anames[] =
   { "note:mark", "http://oracc.org/ns/note/1.0:mark" },
   { "note:ref", "http://oracc.org/ns/note/1.0:ref" },
   { "o", "o" },
+  { "oid", "oid" },
   { "p", "p" },
   { "place", "place" },
   { "plid", "plid" },
@@ -315,6 +316,7 @@ struct attr abases[] =
   { { anames[145].qname,NULL } , { anames[145].pname,NULL } },
   { { anames[146].qname,NULL } , { anames[146].pname,NULL } },
   { { anames[147].qname,NULL } , { anames[147].pname,NULL } },
+  { { anames[148].qname,NULL } , { anames[148].pname,NULL } },
 };
 struct xname enames[] =
 {

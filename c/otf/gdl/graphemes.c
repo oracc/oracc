@@ -562,6 +562,7 @@ gparse(register unsigned char *g, enum t_type type)
   
   unsigned const char *gb_cun = NULL;
   unsigned const char *gb_a2u = NULL;
+  const char *gb_oid = NULL;
   unsigned const char *gb_signname = NULL;
 
   render_canonically = compound_warnings;
@@ -572,6 +573,7 @@ gparse(register unsigned char *g, enum t_type type)
 #endif
     {
       const char *mess = c1c2gvl(file,lnum,g,curr_lang->core->sindex);
+      gb_oid = gvl_bridge_oid();
       if (mess && !inner_qual && !inner_parse)
 	vwarning("(gvl) %s",mess);
       gb_a2u = (unsigned const char *)gvl_bridge_atf2utf();
@@ -894,6 +896,10 @@ gparse(register unsigned char *g, enum t_type type)
     {
       /* const unsigned char *h = NULL; */
       gp->atf = orig;
+
+      if (gb_oid)
+	appendAttr(gp->xml,gattr(a_oid, gb_oid));
+
       if (gp->xml && (gp->gflags & GFLAGS_DOTS))
 	    gp->xml->grapheme = gp; /* give rendering process access to parent grapheme not just struct node */
       if (gp->xml && gp->xml->children.lastused > 0

@@ -157,6 +157,9 @@
   <define name="utf8">
     <attribute name="g:utf8"/>
   </define>
+  <define name="oid">
+    <attribute name="oid"/>
+  </define>
   <define name="delim">
     <attribute name="g:delim"/>
   </define>
