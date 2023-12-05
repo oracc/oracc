@@ -83,7 +83,7 @@ ox_term(void)
   gdl_term();
   pool_term();
   tree_term(1);
-  tree_gterm();
+  /*tree_gterm();*/
   cdfrnc_term();
   lemline_run_term();
   label_term();

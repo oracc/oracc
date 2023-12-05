@@ -24,11 +24,7 @@
 	    <xsl:otherwise>
 	      <esp:link page="{$first-link-page/@id}"
 	      		class="only" nesting="{count($current-page/ancestor::struct:page)}">
-		<xsl:if test="$first-link-page/@rootindex">
-		  <!--<xsl:message>setting target to _top</xsl:message>-->
-		  <xsl:attribute name="target"><xsl:text>_top</xsl:text></xsl:attribute>
-		</xsl:if>
-		<xsl:copy-of select="@type"/>
+		<xsl:copy-of select="@type|@target"/>
 	      </esp:link>
 	    </xsl:otherwise>
 	  </xsl:choose>
@@ -54,7 +50,7 @@
 	    </xsl:when>
 	    <xsl:otherwise>
 	      <esp:link page="{@id}" class="{$li-class}" nesting="{count($current-page/ancestor::struct:page)}">
-		<xsl:copy-of select="@type"/>
+		<xsl:copy-of select="@type|@target"/>
 	      </esp:link>
 	    </xsl:otherwise>
 	  </xsl:choose>
