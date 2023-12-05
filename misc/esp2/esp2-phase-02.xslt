@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform http://www.w3.org/2005/02/schema-for-xslt20.xsd"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:esp="http://oracc.org/ns/esp/1.0"
+	xmlns:param="http://oracc.org/ns/esp-param/1.0"
 	xmlns:struct="http://oracc.org/ns/esp-struct/1.0"
 	xmlns="http://www.w3.org/1999/xhtml"
 	version="2.0" 
@@ -16,6 +17,7 @@
 />
 <xsl:include href="esp2-functions.xslt"/>
 <xsl:param name="output-file"/>
+<xsl:param name="projesp"/>
 
 <xsl:template match="/">
 <!--	<xsl:message>Phase 2: Enhance and standardise source tree</xsl:message> -->
@@ -27,6 +29,12 @@
 <!-- add url attributes to esp:pages -->
 <xsl:template match="struct:page">
 	<xsl:copy>
+	  <xsl:if test="count(ancestor::struct:page)=0">
+	    <xsl:variable name="parameters" select="document ( concat($projesp, '/00web/00config/parameters.xml') )/param:parameters"/>
+	    <xsl:if test="$parameters/param:rootindex">
+	      <xsl:attribute name="rootindex"><xsl:value-of select="$parameters/param:rootindex"/></xsl:attribute>
+	    </xsl:if>
+	  </xsl:if>
 	    <xsl:if test="not(@url)">
 		<xsl:attribute name="url">
 			<xsl:text>/</xsl:text>

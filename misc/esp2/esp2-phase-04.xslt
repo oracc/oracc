@@ -355,36 +355,36 @@
   <xsl:if test="self::esp:link">
     <a href="{$linked-page-URL}{$anchor-name}">
       <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
-	<xsl:if test="string ( $link-title )">
-	  <xsl:attribute name="title" select="$link-title"/>
-	</xsl:if>
-	<xsl:if test="string ( $accesskey )">
-	  <xsl:attribute name="accesskey" select="$accesskey"/>
-	</xsl:if>
-	<xsl:if test="string ( $onclick )">
-	  <xsl:attribute name="onclick" select="$onclick"/>
-	  <xsl:attribute name="onkeypress" select="$onclick"/>
-	</xsl:if>
-	<xsl:if test="@name">
-	  <xsl:attribute name="name" select="@name"/>
-	  <xsl:attribute name="id" select="@name"/>
-	</xsl:if>
-	<xsl:copy-of select="@class"/>
-	<xsl:choose>
-	  <xsl:when test="$tag-has-content">
-	    <xsl:apply-templates mode="content"/>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:choose>
-	      <xsl:when test="$id">
-		<xsl:value-of select="$linked-page/esp:name"/>
-	      </xsl:when>
-	      <xsl:otherwise>
-		<xsl:value-of select="$current-page//esp:bookmark/@title [../@id = $bookmark]"/>
-	      </xsl:otherwise>
-	    </xsl:choose>
-	  </xsl:otherwise>
-	</xsl:choose>
+      <xsl:if test="string ( $link-title )">
+	<xsl:attribute name="title" select="$link-title"/>
+      </xsl:if>
+      <xsl:if test="string ( $accesskey )">
+	<xsl:attribute name="accesskey" select="$accesskey"/>
+      </xsl:if>
+      <xsl:if test="string ( $onclick )">
+	<xsl:attribute name="onclick" select="$onclick"/>
+	<xsl:attribute name="onkeypress" select="$onclick"/>
+      </xsl:if>
+      <xsl:if test="@name">
+	<xsl:attribute name="name" select="@name"/>
+	<xsl:attribute name="id" select="@name"/>
+      </xsl:if>
+      <xsl:copy-of select="@class|@target"/>
+      <xsl:choose>
+	<xsl:when test="$tag-has-content">
+	  <xsl:apply-templates mode="content"/>
+	</xsl:when>
+	<xsl:otherwise>
+	  <xsl:choose>
+	    <xsl:when test="$id">
+	      <xsl:value-of select="$linked-page/esp:name"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="$current-page//esp:bookmark/@title [../@id = $bookmark]"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</xsl:otherwise>
+      </xsl:choose>
     </a>
   </xsl:if>
   <xsl:if test="self::esp:area">

@@ -15,13 +15,19 @@
     <xsl:param name="first-link-page"/>
     <ul>
       <xsl:if test="$first-link-page">
+	<!--<xsl:message>processing first-link-page id=<xsl:value-of select="$first-link-page/@id"/></xsl:message>-->
 	<li class="only">
 	  <xsl:choose>
 	    <xsl:when test="$first-link-page/@id = $current-page/@id">
 	      <div id="SelfInMenu" class="only"><xsl:value-of select="$first-link-page/esp:name"/></div>
 	    </xsl:when>
 	    <xsl:otherwise>
-	      <esp:link page="{$first-link-page/@id}" class="only" nesting="{count($current-page/ancestor::struct:page)}">
+	      <esp:link page="{$first-link-page/@id}"
+	      		class="only" nesting="{count($current-page/ancestor::struct:page)}">
+		<xsl:if test="$first-link-page/@rootindex">
+		  <!--<xsl:message>setting target to _top</xsl:message>-->
+		  <xsl:attribute name="target"><xsl:text>_top</xsl:text></xsl:attribute>
+		</xsl:if>
 		<xsl:copy-of select="@type"/>
 	      </esp:link>
 	    </xsl:otherwise>

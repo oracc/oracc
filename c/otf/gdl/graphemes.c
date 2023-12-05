@@ -2566,6 +2566,8 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	  }
 	break;
       case 'a':
+	/* This approach breaks variant forms like limmuₓ(LIMMU~a) so it has to be abandoned */
+#if 0
 	/* Most languages won't use the ~-allographs in a way that affects
 	   the analysis of the form--we can't be certain that this is the case 
 	   in proto-cuneiform, and we may need to add more cases as well */
@@ -2574,10 +2576,13 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	    || curr_lang->core->code == c_qpc
 	    || curr_lang->core->code == c_qpe
 	    ) {
+#endif
 	  *insertp++ = '~';
 	  if (np->children.nodes)
 	    insertp = render_g_text(np->children.nodes[0], insertp, startp);
+#if 0
 	}
+#endif
 	break;
       case 'f':
 	; /* never render formvars */

@@ -140,7 +140,11 @@
         <xsl:if test="count ( $current-page/ancestor::struct:page )">
           <div id="Breadcrumb">
             <xsl:for-each select="$current-page/ancestor::struct:page">
-              <esp:link page="{@id}" nesting="{count($current-page/ancestor::struct:page)}"/>
+              <esp:link page="{@id}" nesting="{count($current-page/ancestor::struct:page)}">
+		<xsl:if test="@rootindex">
+		  <xsl:attribute name="target"><xsl:text>_top</xsl:text></xsl:attribute>
+		</xsl:if>
+	      </esp:link>
               <xsl:text> » </xsl:text>
             </xsl:for-each>
             <xsl:value-of select="$current-page/esp:name"/>

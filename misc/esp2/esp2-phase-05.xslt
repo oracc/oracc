@@ -44,7 +44,14 @@
 		<xsl:variable name="output-file">
 			<xsl:value-of select="$output-directory"/>
 			<xsl:value-of select="$current-page/@url"/>
-			<xsl:text>index.html</xsl:text>
+			<xsl:choose>
+			  <xsl:when test="ancestor::struct:page[1][@rootindex]">
+			    <xsl:value-of select="ancestor::struct:page[1]/@rootindex"/>
+			  </xsl:when>
+			  <xsl:otherwise>
+			    <xsl:text>index.html</xsl:text>
+			  </xsl:otherwise>
+			</xsl:choose>
 		</xsl:variable>
 		<xsl:message>ESP processing <xsl:value-of select="$output-file"/></xsl:message>
 		<xsl:result-document href="{$output-file}" format="xhtml">
