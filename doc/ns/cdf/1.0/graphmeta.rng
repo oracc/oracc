@@ -78,6 +78,9 @@
     <optional>
       <ref name="accented"/>
     </optional>
+    <optional>
+      <ref name="a_oid"/>
+    </optional>
   </define>
   <define name="accented">
     <attribute name="g:accented"/>
@@ -121,6 +124,9 @@
     <attribute name="g:statusEnd">
       <data type="IDREF"/>
     </attribute>
+  </define>
+  <define name="a_oid">
+    <attribute name="oid"/>
   </define>
   <define name="break">
     <attribute name="g:break">
