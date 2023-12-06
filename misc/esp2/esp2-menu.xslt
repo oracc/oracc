@@ -24,7 +24,7 @@
 	    <xsl:otherwise>
 	      <esp:link page="{$first-link-page/@id}"
 	      		class="only" nesting="{count($current-page/ancestor::struct:page)}">
-		<xsl:copy-of select="@type|@target"/>
+		<xsl:copy-of select="$first-link-page/@type|$first-link-page/@target"/>
 	      </esp:link>
 	    </xsl:otherwise>
 	  </xsl:choose>

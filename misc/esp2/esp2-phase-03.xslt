@@ -234,7 +234,14 @@
           <xsl:if test="position () != 1"> / </xsl:if>
           <xsl:choose>
             <xsl:when test="@id = $current-page/@id">
-              <xsl:value-of select="esp:name"/>
+	      <xsl:choose>
+		<xsl:when test="@purl">
+		  <xsl:value-of select="@purl"/>
+		</xsl:when>
+		<xsl:otherwise>
+		  <xsl:value-of select="@purl|esp:name"/>
+		</xsl:otherwise>
+	      </xsl:choose>
             </xsl:when>
             <xsl:otherwise>
               <esp:link page="{@id}" nesting="{count($current-page/ancestor::struct:page)}"/>
