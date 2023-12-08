@@ -237,6 +237,7 @@ c/otf/lng/langinst.c
 c/otf/otf/cdt_reader.c
 c/otf/ox/atffile.c
 c/otf/ox/gdlme2
+c/otf/ox/gdlme2x
 c/otf/ox/initterm.c
 c/otf/ox/log
 c/otf/ox/sigx

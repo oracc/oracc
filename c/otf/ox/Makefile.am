@@ -7,7 +7,7 @@
 include ../../../oracc-am-rules.txt
 
 SUBDIRS=
-bin_PROGRAMS=oxx
+bin_PROGRAMS=oxx gdlme2x
 
 bin_SCRIPTS=checksigs.sh
 
@@ -32,6 +32,24 @@ oxx_SOURCES = \
 
 oxx_LDADD = $(oxxLDADD)
 oxx_DEPENDENCIES = $(oxxLDADD)
+
+gdlme2x_SOURCES = gdlme2x.c globals.c
+gdlme2x_LDADD = \
+	../gdl/libgdl.la \
+	../atf/libatf.la \
+	../gdl/libgdl.la \
+	../atf/libatf.la \
+	../lib/libcdf.la \
+	../chr/libchr.la \
+	../otf/libotf.la \
+	../prj/libprj.la \
+	../run/librun.la \
+	@top_srcdir@/c/l2/libl2.la \
+	../chr/libchr.la \
+	@top_srcdir@/c/lib/liboracc.la \
+	@top_srcdir@/../oracc2/lib/liboracc2.la
+
+gdlme2x_DEPENDENCIES = $(gdlme2x_LDADD)
 
 atffile.c: atffile.c.in
 	$(ORACCIFY) atffile.c.in

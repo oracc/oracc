@@ -154,8 +154,10 @@ if ($have_disamb) {
 }
 
 system 'mkdir', '-p', "02pub/cbd/$header{'lang'}";
-open(XISTAB,">02pub/cbd/$header{'lang'}/$header{'lang'}.tis");
-open(XIS,">$dirname$header{'lang'}.xis");
+my $tisout = "02pub/cbd/$header{'lang'}/$header{'lang'}.tis";
+open(XISTAB,">$tisout") || die "$0: can't open $tisout for write\n";
+my $xisout = "$dirname$header{'lang'}.xis";
+open(XIS,">$xisout") || die "$0: can't open $xisout for write\n";
 print XIS '<?xml version="1.0" encoding="utf-8"?>', "\n";
 print XIS '<xisses xmlns="http://oracc.org/ns/xis/1.0" xmlns:xis="http://oracc.org/ns/xis/1.0">';
 

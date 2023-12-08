@@ -25,25 +25,25 @@ function cbd {
     if [[ $g2 == "yes" ]]; then
 	# it's OK for there to be no glossary in cbd=dynamic
 	if [ -r 01tmp/$l.glo ] ; then
-	    echo "g2=yes, creating $ldir/$l.cbd via 01tmp/$l.glo ..."
+	    echo $0: "g2=yes, creating $ldir/$l.cbd via 01tmp/$l.glo ..."
 	    l2-glomanager.plx -xml 01tmp/$l.glo -out $ldir/$l.cbd
 	elif [ -r 00lib/$l.glo ]; then
-	    echo "g2=yes, creating $ldir/$l.cbd via 01tmp/$l.glo ..."
+	    echo $0: "g2=yes, creating $ldir/$l.cbd via 01tmp/$l.glo ..."
 	    l2-glomanager.plx -xml 00lib/$l.glo -out $ldir/$l.cbd
 	else
-	    echo "g2=yes, no glossary found for $l"
+	    echo $0: "g2=yes, no glossary found for $l"
 	fi
     elif [ -r 01bld/$l.glo.norm ]; then
-	echo creating $ldir/$l.cbd via 01bld/$l.glo.norm ...
+	echo $0: creating $ldir/$l.cbd via 01bld/$l.glo.norm ...
 	l2-glomanager.plx -xml 01bld/$l.glo.norm -out $ldir/$l.cbd
     elif [ -r 00lib/$l.glo ]; then
-	echo creating $ldir/$l.cbd from 00lib/$l.glo ...
+	echo $0: creating $ldir/$l.cbd from 00lib/$l.glo ...
 	l2-glomanager.plx -xml 00lib/$l.glo -out $ldir/$l.cbd
     fi
 }
 
 function g2x {
-    echo creating $ldir/$l.g2x from $ldir/union.sig
+    echo $0: creating $ldir/$l.g2x from $ldir/union.sig
     withall=`oraccopt . cbd-with-all`
     if [ "$withall" = "yes" ]; then
 #	echo l2p2-g2x.plx -all -h $ldir/union.sig
@@ -54,9 +54,9 @@ function g2x {
     fi
     #    echo running xis $ldir $l
     if [ "$project" == "epsd2" ]; then
-	echo running emesalify for epsd2
+	echo $0: running emesalify for epsd2
 	emesalify.plx
-	echo emesalify done
+	echo $0: emesalify done
     fi
     xis $ldir $l
     if [ -s $ldir/$l.map ]; then
@@ -86,7 +86,7 @@ if [ "$projtype" == "superglo" ]; then
 	    mkdir -p $ldir
 	    cbd $l $ldir
 	    if [ -e 01bld/cancel ]; then
-		echo REBUILD CANCELLED
+		echo $0: REBUILD CANCELLED
 		exit 1
 	    fi
 	    echo l2p2.sh: processing sigs for superglo $a

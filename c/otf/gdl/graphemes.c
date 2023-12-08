@@ -576,9 +576,11 @@ gparse(register unsigned char *g, enum t_type type)
       gb_oid = gvl_bridge_oid();
       if (mess && !inner_qual && !inner_parse)
 	vwarning("(gvl) %s",mess);
-      gb_a2u = (unsigned const char *)gvl_bridge_atf2utf();
+      gb_a2u = gvl_bridge_atf2utf();
       if (do_cuneify)
 	gb_cun = gvl_bridge_cuneify();
+      if (do_signnames)
+	gb_signname = gvl_bridge_signname();
     }
   
   if (type == type_top)
@@ -955,48 +957,10 @@ gparse(register unsigned char *g, enum t_type type)
 
 	      if (do_signnames)
 		{
-#if 1
 		  if (gb_signname)
 		    appendAttr(gp->xml,gattr(a_g_sign,gb_signname));
 		  else if (gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
 		    vwarning("unable to signify %s", gp);
-#else
-		  static const unsigned char *cattr = NULL;
-		  const char *showerr = "yes";
-		  const unsigned char *input = NULL;
-
-		  if (gp->type == g_q)
-		    cattr = signify(input = gp->g.q.q->atf);
-		  else if (gp->type == g_n)
-		    {
-		      if (!strchr((char*)gp->atf,'('))
-			{
-			  int n = atoi((char*)gp->atf);
-			  unsigned char *sx = sexify(n,"disz");
-			  if (sx)
-			    input = sx;
-			  else
-			    input = gp->atf;
-			  /* sign "15" becomes "1(u) 5(disz)" which breaks signify for now */
-			  if (!strchr((char*)input, ' '))
-			    cattr = signify(input);
-			  else
-			    {
-			      showerr = NULL;
-			      cattr = NULL;
-			    }
-			}
-		      else
-			cattr = signify(input = buf);
-		    }
-		  else
-		    cattr = signify(input = buf);
-
-		  if (cattr)
-		    appendAttr(gp->xml,gattr(a_g_sign,psl_get_sname(cattr)));
-		  else if (showerr && gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
-		    vwarning("unable to signify %s", input);
-#endif
 		}
 
 	      if (!inner_parse && f_graphemes)
@@ -1019,71 +983,16 @@ gparse(register unsigned char *g, enum t_type type)
 
 	      if (do_signnames)
 		{
-#if 1
 		  if (gb_signname)
 		    appendAttr(gp->xml,gattr(a_g_sign,gb_signname));
 		  else if (gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
-		    vwarning("unable to signify %s", gp);
-#else
-		  /*const char *showerr = "yes";*/
-		  const unsigned char *input = NULL;
-		  cattr = NULL;
-
-		  /* fprintf(stderr, "do_signnames\n"); */
-
-		  if (gp->type == g_q)
-		    cattr = signify(gp->g.q.q->g.s.base);
-		  else if (gp->type == g_n)
-		    {
-		      if (!strchr((char*)gp->atf,'('))
-			{
-			  int n = atoi((char*)gp->atf);
-			  unsigned char *sx = sexify(n,"disz");
-			  if (sx)
-			    input = sx;
-			  else
-			    input = gp->atf;
-			  /* sign "15" becomes "1(u) 5(disz)" which breaks signify for now */
-			  if (!strchr((char*)input, ' '))
-			    cattr = signify(input);
-			  else
-			    {
-			      /*showerr = NULL;*/
-			      cattr = NULL;
-			    }
-			}
-		    }
-		  else
-		    cattr = signify(buf);
-		  
-		  if (cattr)
-		    {
-		      unsigned const char *sn = psl_get_sname(cattr);
-		      if (sn)
-			appendAttr(gp->xml,gattr(a_g_sign,sn));
-		    }
-
-		  if (gp->type == g_s)
-		    {
-		      if (cattr)
-			{
-			  /* fprintf(stderr, "signify(%s) => %s\n", buf, cattr); */
-			  if (strcmp((const char*)cattr,(const char*)buf)
-			      && compound_warnings) /* overload compound_warnings to cover sign names as well */
-			    {
-			      vwarning("%s: sign name should be %s", buf, cattr);
-			    }
-			}
-		      else
-			vwarning("%s: sign name not in OGSL",buf);
-		    }
-#endif
+		    vwarning("(inner) unable to signify %s", gp);
 		}
 	      
 	      if (do_cuneify && cuneifiable(curr_lang))
 		{
 #if 1
-		  appendAttr(gp->xml,gattr(a_g_utf8,gb_cun));
+		  appendAttr(gp->xml,gattr(a_g_utf8,gb_cun?gb_cun:"X"));
 #else		  
 		  if (cbd_rules)
 		    {

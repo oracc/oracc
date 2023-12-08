@@ -16,7 +16,7 @@ my $lang = shift @ARGV;
 my $out = '';
 my $project = `oraccopt`;
 my $suffix = '';
-my $verbose = 0;
+my $verbose = 1;
 my $warnings = 1;
 
 die "l2p2-g2x.plx: can't continue without project\n"
