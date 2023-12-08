@@ -18,7 +18,7 @@ sm_startElement(void *userData, const char *name, const char **atts)
   else if (!strcmp(name,"v"))
     {
       XML_Char *v = strdup(attr_by_name(atts,"n"));
-      if (!strstr(v,"\xe2\x82\x8a")) /* good enough as a test for sub-+*/
+      if (!strstr(v,"\xe2\x82\x93")) /* good enough as a test for sub-x */
 	{
 	  if (!hash_find(signmap,(const unsigned char *)v))
 	    {
@@ -52,7 +52,7 @@ signmap_init()
 {
   const char *mapfile[2] = 
     { 
-      "@@ORACC@@/xml/ogsl/ogsl-sl.xml", 
+      "@@ORACC@@/xml/ogsl/sl.xml", 
       NULL 
     };
   signmap = hash_create(8000);

@@ -157,7 +157,7 @@
 </xsl:template>
 
 <xsl:template name="call-back">
-  <xsl:message>cbd-use-epsd-oids = <xsl:value-of select="$cbd-use-epsd-oids"/></xsl:message>
+  <!--<xsl:message>cbd-use-epsd-oids = <xsl:value-of select="$cbd-use-epsd-oids"/></xsl:message>-->
   <xsl:apply-templates/>
 </xsl:template>
 

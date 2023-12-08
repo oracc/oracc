@@ -14,7 +14,7 @@ my %new_ids = ();
 # but testing for a .map file is really not the way to determine that.
 exit 0 unless -s "01bld/$lang/$lang.map";
 
-warn "$0: rewriting IDs for glossary 01bld/$lang/$lang.xml\n";
+#warn "$0: rewriting IDs for glossary 01bld/$lang/$lang.xml\n";
 
 system 'cp', "01bld/$lang/$lang.map", "01tmp/$lang-pre-rewrite-ids.map";
 system 'cp', "01bld/$lang/$lang.xml", "01tmp/$lang-pre-rewrite-ids.xml";
