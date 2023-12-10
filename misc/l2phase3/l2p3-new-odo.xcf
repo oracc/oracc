@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xcf xmlns="http://oracc.org/ns/xcf/1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- this is project-specific config info; we need to set it in the
+       project config and inherit from there -->
+  <set var="use_gw" to="yes"/>
+  <set var="proj_type" to="corpus"/>
+  <set var="scripts" to="$oracc/lib/scripts"/>
+  <set var="webtype" to="cbd"/>
+
+  <!-- webdir is set from l2-glomanager -->
+  <set var="webcbd" to="$webdir/cbd"/>
+
+  <!--processing phases-->
+
+  <set var="process">
+    <key k="action" to="mkdir -p $webcbd/$cbdlang"/>
+  </set>
+
+  <set var="process">
+    <key k="action"    to="$scripts/p2-summaries-HTML.xsl"/>
+    <key k="input"     to="01bld/$cbdlang/summaries.xml"/>
+    <key k="cbdresult" to="0"/>
+    <key k="output"    to="$webcbd/$cbdlang/toc.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"    to="$scripts/p2-overview-HTML.xsl"/>
+    <key k="input"     to="01bld/$cbdlang/summaries.xml"/>
+    <key k="cbdresult" to="0"/>
+    <key k="output"    to="$webcbd/$cbdlang/summaries.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/ns-g2-HTML-articles.xsl"/>
+    <key k="input"    to="01bld/$cbdlang/articles-with-periods.xml"/>
+    <key k="output"   to="$webcbd/$cbdlang/articles.html"/>
+    <key k="cbdresult" to="1"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/g2-split-html.xsl"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/cbd-HTML-OBF.xsl"/>
+    <key k="output"   to="$webcbd/$cbdlang/onebigfile.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/g2-chunk-html.xsl"/>
+    <key k="input"    to="$webcbd/$cbdlang/onebigfile.html"/>
+    <key k="output"   to="$webcbd/$cbdlang/toc.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"    to="$scripts/p2-cbd-toc.xsl"/>
+    <key k="input"     to="$webcbd/$cbdlang/toc.html"/>
+    <key k="output"    to="$webcbd/$cbdlang/p2-toc.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/ns-g2-forms-HTML.xsl"/>
+    <key k="input"    to="01bld/$cbdlang/articles.xml"/>
+    <key k="output"   to="01bld/$cbdlang/subpage-form.xml"/>
+  </set>
+
+  <set var="process">
+    <key k="input"    to="01bld/$cbdlang/subpage-form.xml"/>
+    <key k="action"   to="$scripts/g2-split-html.xsl"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/ns-g2-norms-HTML.xsl"/>
+    <key k="input"    to="01bld/$cbdlang/articles.xml"/>
+    <key k="output"   to="01bld/$cbdlang/subpage-norm.xml"/>
+  </set>
+
+  <set var="process">
+    <key k="input"    to="01bld/$cbdlang/subpage-norm.xml"/>
+    <key k="action"   to="$scripts/g2-split-html.xsl"/>
+  </set>
+
+  <set var="process">
+    <key k="action"   to="$scripts/ns-g2-morphs-HTML.xsl"/>
+    <key k="input"    to="01bld/$cbdlang/articles.xml"/>
+    <key k="output"   to="01bld/$cbdlang/subpage-morph.xml"/>
+  </set>
+
+  <set var="process">
+    <key k="input"    to="01bld/$cbdlang/subpage-morph.xml"/>
+    <key k="action"   to="$scripts/g2-split-html.xsl"/>
+  </set>
+
+</xcf>

@@ -12,7 +12,7 @@ scriptdata_DATA = g2-gdl-HTML.xsl g2-gdl-TeX.xsl g2-xtf-HTML.xsl cbd-HTML-OBF.xs
 	ns-g2-forms-HTML.xsl ns-g2-norms-HTML.xsl ns-g2-morphs-HTML.xsl \
 	div-ids.xsl g2-chunk-xml.xsl
 
-config_DATA = l2p3.xcf l2p3-newstyle.xcf
+config_DATA = l2p3.xcf l2p3-newstyle.xcf l2p3-odo.xcf l2p3-new-odo.xcf
 
 g2-HTML-articles.xsl: g2-HTML-articles.xsl.in
 	$(ORACCIFY) g2-HTML-articles.xsl.in
