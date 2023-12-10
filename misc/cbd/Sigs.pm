@@ -806,14 +806,14 @@ sub psu_marshall {
     my $coresigs_txt = "$ENV{'ORACC_BUILDS'}/$p/01bld/$l/coresigs.txt";
     my $from_glos = "$ENV{'ORACC_BUILDS'}/$p/01bld/$l/from_glo.sig";
     if (-r $coresigs_txt) {
-	warn "psu_marshall: loading $coresigs_txt\n";
+	# warn "psu_marshall: loading $coresigs_txt\n";
 	@core = `cat $coresigs_txt`; chomp @core;
     } else {
 	warn "psu_marshall: can't find $coresigs_txt\n";
 	return (undef,undef);
     }
     if (-r $from_glos) {
-	warn "psu_marshall: loading $from_glos\n";
+	# warn "psu_marshall: loading $from_glos\n";
 	open(S,$from_glos) || die;
 	while (<S>) {
 	    next if /^\{/;
