@@ -931,8 +931,10 @@ gparse(register unsigned char *g, enum t_type type)
 	  *insertp = '\0';
 	  if (*buf)
 	    {
-	      /*h = unheth(buf);*/
-	      appendAttr(gp->xml,gattr(a_form, /* h ? h : */ buf));
+	      unsigned char *h = NULL;
+	      if (use_legacy)
+		h = unheth(buf);
+	      appendAttr(gp->xml,gattr(a_form, h ? h : buf));
 
 	      if (do_cuneify && cuneifiable(curr_lang))
 		{
