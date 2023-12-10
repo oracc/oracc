@@ -2510,7 +2510,7 @@ finish_word(struct node *wp)
       if ((need_lemm || do_show_insts) && !suppress_lem)
 	(*lemm_save_form_p)((const char*)getAttr(wp,"xml:id"),
 			    (const char *)getAttr(wp,"xml:lang"),
-			    (in_split_word<=1)?(const char *)form:"-",
+			    (in_split_word<=1)?(const char *)getAttr(wp,"form"):"-",
 			    word_tokp ? word_tokp->lang : NULL,
 			    curr_field);
     }
