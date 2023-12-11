@@ -6,7 +6,7 @@ my $oracc = $ENV{'ORACC'};
 my $batch = 0;
 my $bin = "$oracc/bin";
 my $O2ARGS = '';
-my $ox = "$bin/ox";
+my $ox = "$bin/oxx";
 my $project = `oraccopt`;
 my $verbose = 1;
 
@@ -19,7 +19,7 @@ sub xsystem;
 #my $atf_oxx = `oraccopt $project atf-oxx`;
 #$ox .= 'x' if $atf_oxx eq 'yes';
 
-$ox = 'oxx';
+# $ox = 'oxx';
 
 # run atfsplit and update installation
 if ($batch) {
