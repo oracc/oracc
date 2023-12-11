@@ -164,7 +164,7 @@ main(int argc, char **argv)
   gdl_init();
 #endif
 
-#if 1
+#if 0
   if (strstr(argv[0], "oxx"))
     fprintf(stderr, "ox running as oxx\n");
 #endif

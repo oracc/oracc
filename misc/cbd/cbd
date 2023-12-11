@@ -447,7 +447,7 @@ sub cbd_warn {
 sub check {
     my $internal = shift @_;
     xsystem 'o2-atfsources.plx';
-    ++$noexit; xsystem 'ox', '-cvm', '-I01bld/atfsources.lst', '-lox.log';
+    ++$noexit; xsystem 'oxx', '-cvm', '-I01bld/atfsources.lst', '-lox.log';
     if ($?) {
 	if ($internal) {
 	    return 1;
@@ -599,7 +599,7 @@ sub fix {
 		## apply the fix tab
 		xsystem 'cbd-lem-fix-apply.plx', 'to-fix.tab';
 
-		++$noexit; xsystem 'ox', '-cvm', '-I01bld/atfsources.lst','-lfixcheck.log';
+		++$noexit; xsystem 'oxx', '-cvm', '-I01bld/atfsources.lst','-lfixcheck.log';
 
 		if ($?) {
 		    ## next=check the corpus and fix it manually until it's aligned w glossaries

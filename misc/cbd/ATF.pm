@@ -64,7 +64,7 @@ sub atf_check {
     my @atf = map { "$_. @{$atf{$_}}" } sort { $a <=> $b } keys %atf;
     print ATF uniq_by_line(@atf);
     close(ATF);
-    system 'ox', '-c6Q'.$compound_K, '-l', "01tmp/$lang-atf.log", "01tmp/$lang.atf";
+    system 'oxx', '-c6Q'.$compound_K, '-l', "01tmp/$lang-atf.log", "01tmp/$lang.atf";
 
     if (open(OX,"01tmp/$lang-atf.log") || die "cbdpp.plx: can't open 01tmp/$lang-atf.log\n") {
 	my $save = pp_line();
@@ -115,7 +115,7 @@ sub cpd_check {
     my @cpd = map { "$_. @{$cpd{$_}}" } sort { $a <=> $b } keys %cpd;
     print CPD uniq_by_line(@cpd);
     close(CPD);
-    system 'ox', '-f', '-x=', '-l', "01tmp/$lang-cpd.log", "01tmp/cpd-$lang.atf";
+    system 'oxx', '-f', '-x=', '-l', "01tmp/$lang-cpd.log", "01tmp/cpd-$lang.atf";
     system 'xsltproc', '-o', "01tmp/cpd-$lang.tab", "$ENV{'ORACC_BUILDS'}/lib/scripts/sl-compounds.xsl",
 	"01tmp/cpd-$lang.xml";
     my @cpd_err = `cat 01tmp/cpd-$lang.tab`; 
