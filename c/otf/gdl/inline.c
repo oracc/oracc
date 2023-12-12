@@ -2502,8 +2502,8 @@ finish_word(struct node *wp)
 	  unsigned char *h = NULL;
 	  if (use_legacy)
 	    {
-	      h = unheth(form);
-	      lemm_form = h;
+	      if ((h = unheth(form)))
+		lemm_form = h;
 	    }
 	  appendAttr(wp,attr(a_form, h ? h : form));
 	}
