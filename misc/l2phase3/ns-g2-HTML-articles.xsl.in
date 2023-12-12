@@ -291,7 +291,7 @@
 
     <xsl:apply-templates select="cbd:equivs"/>
 
-    <xsl:text>__LEXDATA__</xsl:text>
+    <LEXDATA xmlns=""/>
     
     <!--
     
