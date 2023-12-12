@@ -14,6 +14,8 @@
 
 extern int fuzzy_aliasing;
 
+static int multi_sub = 0;
+
 #if 0
 static void already_tried_aliasing_init(void);
 static void already_tried_aliasing_term(void);
@@ -570,7 +572,7 @@ sigs_lookup_sub_sub(struct xcl_context *xcp, struct xcl_l *l,
 	    }
 	}
 
-      if (nfinds > 1 && lem_autolem)
+      if (nfinds > 1 && (lem_autolem || multi_sub)) /* multi_sub is a hack that will go away when PSUs match SENSE as well as GW */
 	{
 	  nfinds = 1;
 	}
@@ -974,11 +976,13 @@ sigs_lookup_sub(struct xcl_context *xcp, struct xcl_l *l, struct siglook *look, 
 {
   if (ifp->multi)
     {
+      /* Check the COF tails first */
       struct ilem_form *mp;
 #if 0
       if (!ifp->f2.parts)
 	ifp->f2.parts = malloc(ifp->mcount * sizeof(struct f2*));
 #endif
+      multi_sub = 1;
       for (mp = ifp->multi; mp; mp = mp->multi)
 	{
 	  sigs_lookup_sub_sub(xcp, l, look, mp);
@@ -989,7 +993,9 @@ sigs_lookup_sub(struct xcl_context *xcp, struct xcl_l *l, struct siglook *look, 
 	    }
 	}
     }
+  /* Now check the COF head */
   sigs_lookup_sub_sub(xcp, l, look, ifp);
+  multi_sub = 0;
 }
 
 void
