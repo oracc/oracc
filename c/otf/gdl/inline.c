@@ -2493,13 +2493,18 @@ finish_word(struct node *wp)
       if (*form == '-' || *form == 0x1)
 	++form;
 
+      unsigned char *lemm_form = form;
+      
       /* This can happen when a word finishes inside a g:surro */
       if (wp->etype != e_g_gg)
 	{
 	  extern int use_legacy;
 	  unsigned char *h = NULL;
 	  if (use_legacy)
-	    h = unheth(form);
+	    {
+	      h = unheth(form);
+	      lemm_form = h;
+	    }
 	  appendAttr(wp,attr(a_form, h ? h : form));
 	}
 
@@ -2510,7 +2515,7 @@ finish_word(struct node *wp)
       if ((need_lemm || do_show_insts) && !suppress_lem)
 	(*lemm_save_form_p)((const char*)getAttr(wp,"xml:id"),
 			    (const char *)getAttr(wp,"xml:lang"),
-			    (in_split_word<=1)?(const char *)getAttr(wp,"form"):"-",
+			    (in_split_word<=1)?(const char *)lemm_form:"-",
 			    word_tokp ? word_tokp->lang : NULL,
 			    curr_field);
     }
