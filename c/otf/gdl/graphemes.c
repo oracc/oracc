@@ -900,7 +900,12 @@ gparse(register unsigned char *g, enum t_type type)
       gp->atf = orig;
 
       if (gb_oid)
-	appendAttr(gp->xml,gattr(a_oid, gb_oid));
+	{
+	  appendAttr(gp->xml,gattr(a_oid, gb_oid));
+	  const char *spoid = gvl_bridge_spoid();
+	  if (spoid)
+	    appendAttr(gp->xml,gattr(a_spoid, spoid));
+	}
 
       if (gp->xml && (gp->gflags & GFLAGS_DOTS))
 	    gp->xml->grapheme = gp; /* give rendering process access to parent grapheme not just struct node */

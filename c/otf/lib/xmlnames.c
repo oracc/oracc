@@ -117,6 +117,7 @@ struct xname anames[] =
   { "silent", "silent" },
   { "span", "span" },
   { "spanall", "spanall" },
+  { "spoid", "spoid" },
   { "state", "state" },
   { "strict", "strict" },
   { "subtype", "subtype" },
@@ -317,6 +318,7 @@ struct attr abases[] =
   { { anames[146].qname,NULL } , { anames[146].pname,NULL } },
   { { anames[147].qname,NULL } , { anames[147].pname,NULL } },
   { { anames[148].qname,NULL } , { anames[148].pname,NULL } },
+  { { anames[149].qname,NULL } , { anames[149].pname,NULL } },
 };
 struct xname enames[] =
 {

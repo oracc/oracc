@@ -1034,7 +1034,7 @@ g.meta =
   damageStart? , damageEnd? ,
   surroStart? , surroEnd? ,
   statusStart? , statusEnd? ,
-  accented? , a_oid?
+  accented? , a_oid? , a_spoid?
 
 accented = attribute g:accented { text }
 breakStart = attribute g:breakStart { "1" }
@@ -1047,6 +1047,7 @@ statusStart = attribute g:statusStart { "1" }
 statusEnd = attribute g:statusEnd { xsd:IDREF }
 
 a_oid = attribute oid { text }
+a_spoid = attribute spoid { text }
 
 </d:rnc>
 
