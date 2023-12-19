@@ -10,9 +10,10 @@ rm -f $GLOSSARIES
 for a in $g; do
     d=`dirname $a`
     l=`basename $d`
-    o=$wdg/gloss-$l.json.xz
+    o=$wdg/gloss-$l.json
     echo "running cbd-json.plx $p:$l >$o"
-    cbd-json.plx $p:$l | xz --stdout >$o
+    #    cbd-json.plx $p:$l | xz --stdout >$o
+    cbd-json.plx $p:$l >$o
     echo $o | sed 's#^02www#/neo#' >>$GLOSSARIES
 done
 chmod o+r $GLOSSARIES
