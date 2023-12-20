@@ -562,7 +562,7 @@ gparse(register unsigned char *g, enum t_type type)
   
   unsigned const char *gb_cun = NULL;
   unsigned const char *gb_a2u = NULL;
-  const char *gb_oid = NULL;
+  const char *gb_oid = NULL, *gb_spoid = NULL;
   unsigned const char *gb_signname = NULL;
 
   render_canonically = compound_warnings;
@@ -574,6 +574,8 @@ gparse(register unsigned char *g, enum t_type type)
     {
       const char *mess = c1c2gvl(file,lnum,g,curr_lang->core->sindex);
       gb_oid = gvl_bridge_oid();
+      gb_spoid = gvl_bridge_spoid();
+	  
       if (mess && !inner_qual && !inner_parse)
 	vwarning("(gvl) %s",mess);
       gb_a2u = gvl_bridge_atf2utf();
@@ -902,9 +904,8 @@ gparse(register unsigned char *g, enum t_type type)
       if (gb_oid)
 	{
 	  appendAttr(gp->xml,gattr(a_oid, gb_oid));
-	  const char *spoid = gvl_bridge_spoid();
-	  if (spoid)
-	    appendAttr(gp->xml,gattr(a_spoid, spoid));
+	  if (gb_spoid)
+	    appendAttr(gp->xml,gattr(a_spoid, gb_spoid));
 	}
 
       if (gp->xml && (gp->gflags & GFLAGS_DOTS))
