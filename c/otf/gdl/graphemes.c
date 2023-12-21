@@ -563,7 +563,6 @@ gparse(register unsigned char *g, enum t_type type)
   unsigned const char *gb_cun = NULL;
   unsigned const char *gb_a2u = NULL;
   const char *gb_oid = NULL, *gb_spoid = NULL;
-  unsigned const char *gb_signname = NULL;
 
   render_canonically = compound_warnings;
 #if 1
@@ -581,8 +580,10 @@ gparse(register unsigned char *g, enum t_type type)
       gb_a2u = gvl_bridge_atf2utf();
       if (do_cuneify)
 	gb_cun = gvl_bridge_cuneify();
+#if 0
       if (do_signnames)
 	gb_signname = gvl_bridge_signname();
+#endif
     }
   
   if (type == type_top)
@@ -903,9 +904,14 @@ gparse(register unsigned char *g, enum t_type type)
 
       if (gb_oid)
 	{
-	  appendAttr(gp->xml,gattr(a_oid, gb_oid));
+	  appendAttr(gp->xml,gattr(a_oid, (unsigned const char *)gb_oid));
+	  if (gb_oid && *gb_oid)
+	    appendAttr(gp->xml,gattr(a_g_sign, gvl_bridge_oid_name(gb_oid)));
 	  if (gb_spoid)
-	    appendAttr(gp->xml,gattr(a_spoid, gb_spoid));
+	    {
+	      appendAttr(gp->xml,gattr(a_spoid, (unsigned const char *)gb_spoid));
+	      appendAttr(gp->xml,gattr(a_spform, gvl_bridge_oid_name(gb_spoid)));
+	    }
 	}
 
       if (gp->xml && (gp->gflags & GFLAGS_DOTS))
@@ -937,7 +943,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  *insertp = '\0';
 	  if (*buf)
 	    {
-	      unsigned char *h = NULL;
+	      unsigned const char *h = NULL;
 	      if (use_legacy)
 		h = unheth(buf);
 	      appendAttr(gp->xml,gattr(a_form, h ? h : buf));
@@ -963,6 +969,7 @@ gparse(register unsigned char *g, enum t_type type)
 #endif
 		}
 
+#if 0
 	      if (do_signnames)
 		{
 		  if (gb_signname)
@@ -970,6 +977,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  else if (gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
 		    vwarning("unable to signify %s", gp);
 		}
+#endif
 
 	      if (!inner_parse && f_graphemes)
 		fprintf(f_graphemes,"%s ",buf);
@@ -989,6 +997,7 @@ gparse(register unsigned char *g, enum t_type type)
 	      ibufp = render_g(gp->xml,ibufp,ibufp);
 	      *ibufp = '\0';
 
+#if 0
 	      if (do_signnames)
 		{
 		  if (gb_signname)
@@ -996,11 +1005,12 @@ gparse(register unsigned char *g, enum t_type type)
 		  else if (gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
 		    vwarning("(inner) unable to signify %s", gp);
 		}
+#endif
 	      
 	      if (do_cuneify && cuneifiable(curr_lang))
 		{
 #if 1
-		  appendAttr(gp->xml,gattr(a_g_utf8,gb_cun?gb_cun:"X"));
+		  appendAttr(gp->xml,gattr(a_g_utf8,gb_cun?gb_cun:(unsigned const char *)"X"));
 #else		  
 		  if (cbd_rules)
 		    {
@@ -1027,12 +1037,14 @@ gparse(register unsigned char *g, enum t_type type)
 			  if (cattr)
 			    appendAttr(gp->xml,gattr(a_g_utf8,cattr));
 
+#if 0
 			  if (do_signnames)
 			    {
 			      cattr = signify(getAttr(gp->xml,"g:type"));
 			      if (cattr)
 				appendAttr(gp->xml,gattr(a_g_sign,cattr));
 			    }
+#endif
 			}
 		    }
 #endif
