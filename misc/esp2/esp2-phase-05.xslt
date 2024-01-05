@@ -53,7 +53,7 @@
 			  </xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:message>ESP processing <xsl:value-of select="$output-file"/></xsl:message>
+		<!--<xsl:message>ESP processing <xsl:value-of select="$output-file"/></xsl:message>-->
 		<xsl:result-document href="{$output-file}" format="xhtml">
 			<xsl:copy copy-namespaces="no" exclude-result-prefixes="esp">
 				<xsl:attribute name="xml:lang">en</xsl:attribute>
