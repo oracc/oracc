@@ -1320,23 +1320,27 @@ make_vcat {
 	$f =~ tr/\cM//d;
 	next unless $f;
 	my $xmd = '';
+#	if ($f =~ s/^(.*?):(.*?)\@(.*?)$/$2/) {
+#	    my $xmd_proj = '';
+#	    ($proj,$xmd_proj) = ($1,$3);
+#	    $xmd = expand_in_project(undef,"$f.xmd",$xmd_proj);
+#	    warn "no metadata for $f found in $xmd_proj\n" 
+#		and next unless -r $xmd;
+	#	} else {
+	my @xtrylist = @trylist;
 	if ($f =~ s/^(.*?):(.*?)\@(.*?)$/$2/) {
-	    my $xmd_proj = '';
-	    ($proj,$xmd_proj) = ($1,$3);
-	    $xmd = expand_in_project(undef,"$f.xmd",$xmd_proj);
-	    warn "no metadata for $f found in $xmd_proj\n" 
-		and next unless -r $xmd;
-	} else {
-	    $f =~ s/^.*?://; # reduce to PQX
-	    foreach my $p (@trylist) {
-		$proj = $p;
-		$xmd = expand_in_project(undef,"$f.xmd",$p);
-		last if $xmd && -r $xmd;
-	    }
-	    warn "no metadata for $f found in @trylist\n" 
-		and next unless -r $xmd;
-	    $proj = $project;
+	    unshift $3, @trylist;
 	}
+	$f =~ s/^.*?://; # reduce to PQX
+	foreach my $p (@trylist) {
+	    $proj = $p;
+	    $xmd = expand_in_project(undef,"$f.xmd",$p);
+	    last if $xmd && -r $xmd;
+	}
+	warn "no metadata for $f found in @xtrylist\n" 
+	    and next unless -r $xmd;
+	$proj = $project;
+#	}
 	$id_projects{$f} = $proj;
 	open(XMD,$xmd);
 	$_ = <XMD>;
