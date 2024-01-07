@@ -854,6 +854,7 @@ dump_xmd {
     # Note that we don't care about sort order any more because we build the
     # resultset in a hash and sort it on output
     foreach my $r (@$rows) {
+	next unless $$r[$item_index];
 	next unless $output_all || exists($output_records{$$r[$item_index]});
 	next if $seen{$$r[$item_index]}++;
 	next unless xmd_begin($$r[$item_index], $$r[$lang_index], $r);
@@ -1329,10 +1330,12 @@ make_vcat {
 	#	} else {
 	my @xtrylist = @trylist;
 	if ($f =~ s/^(.*?):(.*?)\@(.*?)$/$2/) {
-	    unshift $3, @trylist;
+	    unshift @xtrylist, $3;
+	} else {
+	    $f =~ s/^(.*?)://; # reduce to PQX;
+	    push @xtrylist, $1;
 	}
-	$f =~ s/^.*?://; # reduce to PQX
-	foreach my $p (@trylist) {
+	foreach my $p (@xtrylist) {
 	    $proj = $p;
 	    $xmd = expand_in_project(undef,"$f.xmd",$p);
 	    last if $xmd && -r $xmd;
@@ -1873,6 +1876,7 @@ xproject {
 
     foreach my $r (@$rows) {
 	my $pq = $$r[$item_index];
+	next unless $pq;
 	if ($$r[$period_index]) {
 	    print PERTAB "$pq\t$$r[$period_index]\n";
 	} else {
@@ -2213,7 +2217,7 @@ import_catd {
     my $rows = $$cat[2];
     foreach my $r (@$rows) {
 	my $r_id = $$r[$id_index];
-	if ($catd{$r_id}) {
+	if ($r_id && $catd{$r_id}) {
 	    my %c = %${$catd{$r_id}};
 	    foreach my $f (keys %c) {
 		my $ix = $field_indexes{$f};
