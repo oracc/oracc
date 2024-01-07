@@ -1284,11 +1284,13 @@ make_vcat {
     my $d = shift;
     my $cat_list = `oraccopt . catalog-build-list`;
 
-    return unless $cat_list && -s $cat_list;
+    # Now that there are separate 01bld/cat/proxy-[pqx].xml we default
+    # to using 00lib/proxy.lst but this can be overridden using
+    # catalog-build-list
+    my $list = $cat_list || '00lib/proxy.lst';
 
-    # Now that there are separate 01bld/cat/proxy-[pqx].xml resources we
-    # shouldn't default to building a dynamic-[pqx].xml from proxy-cat.
-    my $list = $cat_list; # || '01bld/lists/proxy-cat.lst';
+    return unless $list && -s $list;
+
     my $pcat = "01bld/cat/dynamic-p.xml";
     my $qcat = "01bld/cat/dynamic-q.xml";
     my $xcat = "01bld/cat/dynamic-x.xml";
