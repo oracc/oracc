@@ -6,7 +6,7 @@ norderyes=$norder.yes
 rm -f $nordertab $norderyes
 for a in `locate lists/have-lem.lst` ; do
     if [ -s $a ]; then
-	/bin/echo -n $a | sed 's#.*/bld/\(.*\)/lists/have-lem.lst#\1#' >>$norderlem
+	/bin/echo $a | sed 's#.*/bld/\(.*\)/lists/have-lem.lst#\1#' >>$norderlem
     fi
 done
 for a in `cat $norderlem` ; do
