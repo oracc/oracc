@@ -275,6 +275,15 @@ span.zz { }
 .transprint a:visited { background-color: black; color: white; }
 
 
+.tis h1,.tis h2 {
+    font-size: 90%;
+    line-height: 100%;
+    font-family: arial, sans-serif;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    margin-bottom: 5px;
+}
+
 .sl-inst-h {
     font-size: 90%;
     line-height: 100%;

@@ -41,11 +41,11 @@ if [ "$corpussignlist" == "yes" ]; then
     echo $0: running o2-corpus-signlist.sh
     o2-corpus-signlist.sh
 fi
-project=`oraccopt`
-if [ "$project" == "pctc" ]; then
-    echo 'Running o2-asl.sh in pctc'
-    o2-asl.sh
-fi
+#project=`oraccopt`
+#if [ "$project" == "pctc" ]; then
+#    echo 'Running o2-asl.sh in pctc'
+#    o2-asl.sh
+#fi
 #o2-web.sh
 o2-web-corpus.sh
 #o2-prm.sh

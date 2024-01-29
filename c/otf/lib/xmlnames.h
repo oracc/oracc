@@ -110,6 +110,8 @@ enum a_type
   a_silent,
   a_span,
   a_spanall,
+  a_spform,
+  a_spoid,
   a_state,
   a_strict,
   a_subtype,

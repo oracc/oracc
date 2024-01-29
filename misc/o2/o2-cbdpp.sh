@@ -3,6 +3,7 @@
 projtype=`oraccopt . type`
 rm -fr 01log/glo.err
 touch 01log/glo.err
+
 if [ -d "00src" ]; then
     srcglo=`ls -1 00src/*.glo | grep -v '~' | grep glo`
 else
@@ -24,6 +25,7 @@ for a in $srcglo ; do
 	cbdpp.plx -sig $a
     fi
 done
+
 libglo=`ls -1 00lib/*.glo | grep -v '~' | grep glo`
 if [ "$projtype" == "superglo" ]; then
     true
@@ -39,6 +41,7 @@ else
 	fi
     done
 fi
+
 for a in $libglo ; do
     globase=`basename $a`
     if [ ! -r "00src/$globase" ]; then
@@ -63,4 +66,5 @@ for a in $libglo ; do
 	fi
     fi
 done
+
 exit 0

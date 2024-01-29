@@ -13,8 +13,9 @@ if [ -r 00lib/$slname ]; then
     if [ $? != 0 ]; then
        	exit
     fi
-    slix -v
-    sx -x 00lib/$slname >02xml/sl.xml
+# PCTC is only buildable now under the odo system
+#    slix -v
+#    sx -x 00lib/$slname >02xml/sl.xml
     if [[ "$project" == "pctc" ]]; then
 	echo "$0: indexing signs in PCTC"
 	pctc-signs.sh
@@ -25,6 +26,6 @@ if [ -r 00lib/$slname ]; then
 #	rm -fr 01bld/tislists
 #	xsltproc $libscripts/sxweb-tis.xsl 02xml/sign-instances.xml
 #   fi
-    chmod -R o+r 02pub/sl 02xml/sl.xml
+#    chmod -R o+r 02pub/sl 02xml/sl.xml
     sxweb.sh
 fi

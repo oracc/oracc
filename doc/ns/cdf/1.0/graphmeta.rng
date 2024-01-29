@@ -81,6 +81,12 @@
     <optional>
       <ref name="a_oid"/>
     </optional>
+    <optional>
+      <ref name="a_spoid"/>
+    </optional>
+    <optional>
+      <ref name="a_spform"/>
+    </optional>
   </define>
   <define name="accented">
     <attribute name="g:accented"/>
@@ -127,6 +133,12 @@
   </define>
   <define name="a_oid">
     <attribute name="oid"/>
+  </define>
+  <define name="a_spoid">
+    <attribute name="spoid"/>
+  </define>
+  <define name="a_spform">
+    <attribute name="spform"/>
   </define>
   <define name="break">
     <attribute name="g:break">
