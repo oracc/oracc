@@ -34,4 +34,7 @@ fi
 oid=`oraccopt . cbd-oid`
 if [ "$oid" == "yes" ] ; then
     oid-index-cbd.sh `oraccopt`
+    mkdir -p 02pub/oid
+    dbix -d 02pub/oid -n oid 02pub/oid-index.tab
+    chmod -R o+r 02pub/oid
 fi
