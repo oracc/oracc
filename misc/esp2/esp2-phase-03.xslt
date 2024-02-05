@@ -48,6 +48,11 @@
       <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
 
       <div>
+
+	<xsl:if test="$parameters/param:menu-dropdown='yes'">
+	  <xsl:call-template name="insert-menu"/>
+	</xsl:if>
+
 	<xsl:choose>
 	  <xsl:when test="count(ancestor::struct:page)=1 and $parameters/param:banner">
 	    <xsl:attribute name="id"><xsl:text>Banner</xsl:text></xsl:attribute>
@@ -82,43 +87,9 @@
 	</xsl:choose>
       </div>
 
-      <!-- main menu (screen only) -->
-      <div id="Menu">
-	
-	<xsl:if test="$parameters/param:cuneify/@switcher='yes'">
-	  <p id="switcherul">
-	    <span id="CuneiformSwitcher">
-	    <xsl:text>Cuneiform script: </xsl:text>
-	    <span class="switcherlink" id="switcherOB">
-	      <a href="#" onclick="setActiveStyleSheet('oldbabylonian'); return false;" title="Old Babylonian script">&#160;OB&#160;</a>
-	    </span>
-	    <span class="switcherlink" id="switcherNA">
-	    <a href="#" onclick="setActiveStyleSheet('neoassyrian'); return false;" title="Neo Assyrian script">&#160;NA&#160;</a></span>
-	    </span>
-	  </p>
+      	<xsl:if test="not($parameters/param:menu-dropdown='yes')">
+	  <xsl:call-template name="insert-menu"/>
 	</xsl:if>
-
-        <xsl:if test="$parameters/param:main-menu-caption">
-          <div id="MenuCaption">
-            <xsl:copy-of select="$parameters/param:main-menu-caption/node()"/>
-          </div>
-        </xsl:if>
-        <!--<xsl:when test="$current-page/ancestor::struct:page[1]">
-        <div id="SelfInMenu" class="only"><xsl:value-of select="esp:name"/></div>
-      </xsl:when>
-      <xsl:otherwise>
-        <esp:link page="{$current-page/@id}" class="{$li-class}"/>
-      </xsl:otherwise>-->
-        <!--<xsl:variable name="home-page-only">
-        <esp:dummy><xsl:for-each select="/"><xsl:copy/></xsl:for-each></esp:dummy>
-      </xsl:variable>-->
-        <xsl:call-template name="menu">
-          <xsl:with-param name="menu-page" select="/struct:page"/>
-          <xsl:with-param name="current-page" select="$current-page" tunnel="yes"/>
-          <xsl:with-param name="first-link-page" select="/struct:page"/>
-        </xsl:call-template>
-
-      </div>
 
       <!-- content <div> -->
       <div id="Content">
@@ -580,6 +551,46 @@
 
 <xsl:template name="tab">
   <xsl:message>The 'tab' feature is no longer part of ESP; please revise your portal pages appropriately.</xsl:message>
+</xsl:template>
+
+<xsl:template name="insert-menu">
+  <!-- main menu (screen only) -->      
+  <div id="Menu">
+    
+    <xsl:if test="$parameters/param:cuneify/@switcher='yes'">
+      <p id="switcherul">
+	<span id="CuneiformSwitcher">
+	  <xsl:text>Cuneiform script: </xsl:text>
+	  <span class="switcherlink" id="switcherOB">
+	    <a href="#" onclick="setActiveStyleSheet('oldbabylonian'); return false;" title="Old Babylonian script">&#160;OB&#160;</a>
+	  </span>
+	  <span class="switcherlink" id="switcherNA">
+	  <a href="#" onclick="setActiveStyleSheet('neoassyrian'); return false;" title="Neo Assyrian script">&#160;NA&#160;</a></span>
+	</span>
+      </p>
+    </xsl:if>
+
+    <xsl:if test="$parameters/param:main-menu-caption">
+      <div id="MenuCaption">
+        <xsl:copy-of select="$parameters/param:main-menu-caption/node()"/>
+      </div>
+    </xsl:if>
+    <!--<xsl:when test="$current-page/ancestor::struct:page[1]">
+        <div id="SelfInMenu" class="only"><xsl:value-of select="esp:name"/></div>
+	</xsl:when>
+	<xsl:otherwise>
+        <esp:link page="{$current-page/@id}" class="{$li-class}"/>
+	</xsl:otherwise>-->
+    <!--<xsl:variable name="home-page-only">
+        <esp:dummy><xsl:for-each select="/"><xsl:copy/></xsl:for-each></esp:dummy>
+	</xsl:variable>-->
+    <xsl:call-template name="menu">
+      <xsl:with-param name="menu-page" select="/struct:page"/>
+      <xsl:with-param name="current-page" select="$current-page" tunnel="yes"/>
+      <xsl:with-param name="first-link-page" select="/struct:page"/>
+    </xsl:call-template>
+
+  </div>
 </xsl:template>
 
 </xsl:stylesheet>
