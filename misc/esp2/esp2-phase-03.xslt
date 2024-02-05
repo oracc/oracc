@@ -50,7 +50,9 @@
       <div>
 
 	<xsl:if test="$parameters/param:menu-dropdown='yes'">
-	  <xsl:call-template name="insert-menu"/>
+	  <xsl:call-template name="insert-menu">
+	    <xsl:with-param name="current-page" select="$current-page"/>
+	  </xsl:call-template>
 	</xsl:if>
 
 	<xsl:choose>
@@ -88,7 +90,9 @@
       </div>
 
       	<xsl:if test="not($parameters/param:menu-dropdown='yes')">
-	  <xsl:call-template name="insert-menu"/>
+	  <xsl:call-template name="insert-menu">
+	    <xsl:with-param name="current-page" select="$current-page"/>
+	  </xsl:call-template>
 	</xsl:if>
 
       <!-- content <div> -->
@@ -554,6 +558,7 @@
 </xsl:template>
 
 <xsl:template name="insert-menu">
+  <xsl:param name="current-page"/>
   <!-- main menu (screen only) -->      
   <div id="Menu">
     
