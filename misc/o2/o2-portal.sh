@@ -16,6 +16,10 @@ if [ -d 00web/00config ]; then
     echo calling esp2.sh `oraccopt` ...
     esp2.sh $project
     cp -a 00web/00html/* $webdir/
+    if [ "$project" = "ogsl" ]; then
+	cp 00etc/Oracc_OGSL.txt 02www/
+	chmod o+r 02www/Oracc_OGSL.txt
+    fi
     if [[ "$project" == "cdli" ]]; then
 	echo Skipping est processing for project CDLI
     elif [[ "$project" == "epsd2"* ]]; then
