@@ -49,12 +49,6 @@
       
       <div>
 
-	<xsl:if test="$parameters/param:menu-dropdown='yes'">
-	  <xsl:call-template name="insert-menu">
-	    <xsl:with-param name="current-page" select="$current-page"/>
-	  </xsl:call-template>
-	</xsl:if>
-
 	<xsl:choose>
 	  <xsl:when test="count(ancestor::struct:page)=1 and $parameters/param:banner">
 	    <xsl:attribute name="id"><xsl:text>Banner</xsl:text></xsl:attribute>
@@ -67,6 +61,12 @@
 	  </xsl:when>
 	  <xsl:otherwise>
 	    <xsl:attribute name="id"><xsl:text>Header</xsl:text></xsl:attribute>
+
+	    <xsl:if test="$parameters/param:menu-dropdown='yes'">
+	      <xsl:call-template name="insert-menu">
+		<xsl:with-param name="current-page" select="$current-page"/>
+	      </xsl:call-template>
+	    </xsl:if>	    
             <span id="HeadTitle">
 	      <xsl:choose>
 		<xsl:when test="$current-page/ancestor::struct:page[1]">
