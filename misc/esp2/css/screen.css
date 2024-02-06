@@ -279,6 +279,57 @@ a:visited:hover {
 	width: 100%;
 	text-align: center;
 }
+#Content {
+	margin-inline: 2.5em;
+	width: 90%;
+}
+
+#Menu a {
+	text-decoration: none;
+}
+#Menu a.open:hover,
+#Menu a.closed:hover {
+	color: $medium;
+	background-color: $light;
+}
+#Menu a.open {
+	background: $light;
+}
+
+#Menu ul {
+	padding: 0;
+	margin: 0;
+	display: none;
+	position: absolute;
+	color: #111;
+	background: #fff;
+	list-style-type: none;
+}
+/* this is for the dropdown */
+#MenuCaption:hover ~ ul,
+#Menu:hover ul {
+	display: block;
+	position: absolute;
+	border-radius: 5px;
+	background-color: #fcfaf1;
+}
+
+#Menu li {
+	padding: 0;
+	margin: 0;
+	list-style-image: url(/img/blank.gif);
+	/* IE Win does weird stuff with list-style-type: none */
+}
+#Menu li.only {
+	font-weight: normal;
+}
+
+#SelfInMenu {
+	font-weight: bold;
+}
+#SelfInMenu.open {
+	background-color: $light;
+}
 
 @file small-viewport.css
 @file large-viewport.css

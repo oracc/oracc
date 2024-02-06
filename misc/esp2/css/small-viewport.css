@@ -15,13 +15,6 @@
 	#Breadcrumb {
 		display: none;
 	}
-	#Content {
-		margin: 1em 5% 0 5%;
-		width: 90%;
-	}
-	body:dir(rtl) #Content {
-		margin: 1em 22% 0 3%;
-	}
 	#Banner {
 		text-align: center;
 	}
@@ -35,9 +28,6 @@
 	#HeadTitle {
 		font-size: 1.2em;
 		color: #ffffff; /* $page */
-	}
-	body:dir(rtl) #HeadTitle {
-		padding-right: 1.5em;
 	}
 	#HeadTitle a:link,
 	#HeadTitle a:visited {
@@ -55,7 +45,8 @@
 		width: 95%;
 		margin: 0.1px 0 0.1px 0;
 		padding: 0;
-		background: #ffffff; /* $page */
+		color: #fff;
+		position: relative;
 	}
 	#MenuCaption {
 		margin-left: 5%;
@@ -66,12 +57,8 @@
 		width: 95%;
 		border-bottom: 2px solid $light;
 	}
-	#Menu a {
-		text-decoration: none;
-	}
-	#Menu ul {
-		padding: 0;
-		margin: 0;
+	#MenuCaption::after {
+		content: "☰";
 	}
 	#Menu ul ul {
 		padding: 0.25em 0 0 4em;
@@ -83,15 +70,6 @@
 		border-right: 0;
 		padding: 0.25em 0 0 1em;
 	}
-	#Menu li {
-		padding: 0;
-		margin: 0;
-		list-style-image: url(/img/blank.gif);
-		/* IE Win does weird stuff with list-style-type: none */
-	}
-	#Menu li.only {
-		font-weight: normal;
-	}
 	#Menu ul a,
 	ul #SelfInMenu {
 		display: block;
@@ -102,20 +80,7 @@
 	ul ul #SelfInMenu {
 		padding: 0.35em 1em 0.35em 5%;
 	}
-	#Menu a.open:hover,
-	#Menu a.closed:hover {
-		color: $medium;
-		background-color: $light;
-	}
-	#Menu a.open {
-		background: $light;
-	}
-	#SelfInMenu {
-		font-weight: bold;
-	}
-	#SelfInMenu.open {
-		background-color: $light;
-	}
+
 	#AccessLinks {
 		display: none;
 	}
