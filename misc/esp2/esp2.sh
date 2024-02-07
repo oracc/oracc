@@ -118,9 +118,11 @@ xsltproc $XSL/esp2-fix-sort.xsl $XMLSAP/01tmp/source-tree-30.xml >$XMLSAP/01tmp/
 java -jar $SAXONJAR $XMLSAP/01tmp/source-tree-31.xml $XSL/esp2-phase-04.xslt \
     output-file=file:$XMLSAP/01tmp/source-tree-40.xml output-directory=file:$HTTPROOT $SAXONPARAMS
 
+cunhtmlx <$XMLSAP/01tmp/source-tree-40.xml >$XMLSAP/01tmp/source-tree-41.xml
+
 # echo phase 5
 
-java -jar $SAXONJAR $XMLSAP/01tmp/source-tree-40.xml $XSL/esp2-phase-05.xslt \
+java -jar $SAXONJAR $XMLSAP/01tmp/source-tree-41.xml $XSL/esp2-phase-05.xslt \
     output-directory=file:$HTTPROOT $SAXONPARAMS
 
 # echo Validation
