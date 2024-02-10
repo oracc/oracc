@@ -269,7 +269,7 @@ do_index (List *arglist)
     }
 
   iname = se_dir(project,indexname);
-  dip = dbi_open (idxbuf,iname);
+  dip = dbi_open (name ? name : idxbuf,iname);
 
   ret_type_rules = &rulestab[dip->h.ht_user];
 
@@ -350,6 +350,7 @@ help ()
   printf("  -b  brief output\n");
   printf("  -f  frequency output\n");
   printf("  -i  set index\n");
+  printf("  -n  set name; default is same as index arg\n");
   printf("  -p  set project\n");
   printf("\n");
   printf("If <keys> are given the output is restricted to those items.\n");
@@ -375,6 +376,9 @@ opts (int c, char *arg)
       break;
     case 'i':
       return_index = indexname = curr_index = arg;
+      break;
+    case 'n':
+      name = arg;
       break;
     case 'p':
       project = curr_project = arg;
