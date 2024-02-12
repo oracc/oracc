@@ -274,7 +274,6 @@ span.zz { }
 .transprint a:link[href] { background-color: black; color: white; }
 .transprint a:visited { background-color: black; color: white; }
 
-
 .tis h1,.tis h2 {
     font-size: 90%;
     line-height: 100%;

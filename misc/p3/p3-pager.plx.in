@@ -117,6 +117,10 @@ if ($rt{'prod'} eq 'list') {
 	    my $tis_file = "$pubcbdxdir/$p{'glos'}.tis";
 	    if (-r $tis_file) {
 		xsystem("@@ORACC@@/bin/xisdb $tis_file $p{'gxis'} >$p{'tmpdir'}/results.lst");
+	    } elsif ($p{'glos'} eq 'tok') {
+		# warn "TOK FOUND TOKID=$p{'gxis'}\n";
+		xsystem("@@ORACC@@/bin/dbx", '-w', '-d', "@@ORACC@@/pub/$p{'project'}/tok", '-n',
+			'tok', '-o', "$p{'tmpdir'}/results.lst", '-v', "$p{'gxis'}");
 	    } else {
 		xsystem("@@ORACC@@/bin/xis", '-f', 
 			"@@ORACC@@/bld/$p{'project'}/$p{'glos'}/$p{'glos'}.xis", '-i', $p{'gxis'}, 
