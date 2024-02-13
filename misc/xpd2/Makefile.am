@@ -6,7 +6,7 @@ bin_SCRIPTS = linkmap.plx non-dynamic-cat-ids.plx center-image.sh clean_nl.plx \
 	project-stats.plx xpq.sh oxc boo sips-thumb.sh ofs-createproj.plx
 
 css_DATA = stats.css
-scriptdata_DATA = subconfig.xsl config-inherit.xsl copy-options.xsl identity.xsl stats-HTML.xsl xpd.xsl xpd-JSON.xsl config-json.xsl
+scriptdata_DATA = subconfig.xsl config-inherit.xsl copy-options.xsl identity.xsl stats-HTML.xsl xpd-JSON.xsl config-json.xsl
 data_DATA = linkids.xml sll_link_ids.xml
 
 oxc: oxc.in

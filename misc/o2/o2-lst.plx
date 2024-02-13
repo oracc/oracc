@@ -427,7 +427,7 @@ update_lists {
 	if (-s '00lib/outlined.lst') {
 	    xsystem 'cp', '00lib/outlined.lst', $out_outlined;
 	} else {
-	    warning ("o2-lst.plx: build-outlined-policy=static but 00lib/outlined.lst is zero-length or non-existent\n");
+	    warn ("o2-lst.plx: build-outlined-policy=static but 00lib/outlined.lst is zero-length or non-existent\n");
 	}
     } elsif ($opt =~ /\.ol/) {
 	## ol('outlined.lst', $opt);

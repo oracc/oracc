@@ -44,7 +44,7 @@
   <xsl:template match="body">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
-      <xsl:message>menu-dropdown=<xsl:value-of select="$parameters/param:menu-dropdown"/></xsl:message>
+      <!--<xsl:message>menu-dropdown=<xsl:value-of select="$parameters/param:menu-dropdown"/></xsl:message>-->
       <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
       
       <div>
