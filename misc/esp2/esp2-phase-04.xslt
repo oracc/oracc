@@ -455,7 +455,10 @@
       <xsl:variable name="tag-has-content" select="count ( * | text() )"/>
       <xsl:variable name="processed-url" select="if ( substring ( @url, 1, 1 ) = '~' ) then concat ( '.', substring ( @url, 2 ) ) else @url"/>
       <xsl:if test="self::esp:link">
-	<a href="{$processed-url}" class="external" target="_blank">
+	<a href="{$processed-url}" class="external">
+	  <xsl:if test="not(@notarget='yes')">
+	    <xsl:attribute name="target">_blank</xsl:attribute>
+	  </xsl:if>
 	  <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
 	  <xsl:if test="string ( @accesskey )">
 	    <xsl:attribute name="accesskey" select="@accesskey"/>
