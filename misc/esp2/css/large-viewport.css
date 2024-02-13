@@ -74,13 +74,6 @@
 	dl {
 		margin: 1em 2em 1em 2em;
 	}
-	#Content {
-		margin: 1em 3% 0 22%;
-		width: 74%;
-	}
-	body:dir(rtl) #Content {
-		margin: 1em 22% 0 3%;
-	}
 	#Header {
 		padding: 0px;
 		background: $dark;
@@ -117,8 +110,9 @@
 		float: left;
 		width: 20%;
 		margin: 0.1px 0 0.1px 0;
-		padding: 0;
-		background: #ffffff; /* $page */
+		padding: 0 1em;
+		color: #fff;
+		position: relative;
 	}
 	body:dir(rtl) #Menu {
 		float: right;
@@ -135,12 +129,8 @@
 		width: 70%;
 		border-bottom: 2px solid $light;
 	}
-	#Menu a {
-		text-decoration: none;
-	}
-	#Menu ul {
-		padding: 0;
-		margin: 0;
+	#MenuCaption::after {
+		content: "Main menu";
 	}
 	#Menu ul ul {
 		padding: 0.25em 0 0 4em;
@@ -152,15 +142,6 @@
 		border-right: 0;
 		padding: 0.25em 0 0 1em;
 	}
-	#Menu li {
-		padding: 0;
-		margin: 0;
-		list-style-image: url(/img/blank.gif);
-		/* IE Win does weird stuff with list-style-type: none */
-	}
-	#Menu li.only {
-		font-weight: normal;
-	}
 	#Menu ul a,
 	ul #SelfInMenu {
 		display: block;
@@ -171,20 +152,7 @@
 	ul ul #SelfInMenu {
 		padding: 0.35em 1em 0.35em 1em;
 	}
-	#Menu a.open:hover,
-	#Menu a.closed:hover {
-		color: $medium;
-		background-color: $light;
-	}
-	#Menu a.open {
-		background-color: $light;
-	}
-	#SelfInMenu {
-		font-weight: bold;
-	}
-	#SelfInMenu.open {
-		background-color: $light;
-	}
+
 	#AccessLinks {
 		padding: 0 1em 0 4%;
 		float: left;
