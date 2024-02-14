@@ -561,7 +561,9 @@
   <xsl:param name="current-page"/>
   <!-- main menu (screen only) -->      
   <div id="Menu">
-    
+    <xsl:if test="$parameters/param:menu-dropdown='yes'">
+      <xsl:attribute name="class">dd</xsl:attribute>
+    </xsl:if>
     <xsl:if test="$parameters/param:cuneify/@switcher='yes'">
       <p id="switcherul">
 	<span id="CuneiformSwitcher">
