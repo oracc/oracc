@@ -66,25 +66,52 @@
 	      <xsl:call-template name="insert-menu">
 		<xsl:with-param name="current-page" select="$current-page"/>
 	      </xsl:call-template>
-	    </xsl:if>	    
-            <span id="HeadTitle">
-	      <xsl:choose>
-		<xsl:when test="$current-page/ancestor::struct:page[1]">
-		  <esp:link page="{/struct:page/@id}" nesting="{count($current-page/ancestor::struct:page)}">
-		    <xsl:copy-of select="$parameters/param:title/node()"/>
-		  </esp:link>
-		</xsl:when>
-		<xsl:otherwise>
-		  <xsl:copy-of select="$parameters/param:title/node()"/>
-		</xsl:otherwise>
-	      </xsl:choose>
-            </span>
-	    <xsl:if test="$parameters/param:subtitle">
-	      <br/>
-	      <span id="HeadSubtitle">
-		<xsl:copy-of select="$parameters/param:subtitle/node()"/>
-	      </span>
 	    </xsl:if>
+
+	    <xsl:choose>
+	      <xsl:when test="$parameters/param:slform='yes'">
+		<div id="HeadTitleForm">
+		  <div id="HeadTitle">
+		    <xsl:choose>
+		      <xsl:when test="$current-page/ancestor::struct:page[1]">
+			<esp:link page="{/struct:page/@id}" nesting="{count($current-page/ancestor::struct:page)}">
+			  <xsl:copy-of select="$parameters/param:title/node()"/>
+			</esp:link>
+		      </xsl:when>
+		      <xsl:otherwise>
+			<xsl:copy-of select="$parameters/param:title/node()"/>
+		      </xsl:otherwise>
+		    </xsl:choose>
+		    <xsl:text>: </xsl:text>
+		  </div>
+		  <div id="HeadForm">
+		    <form name="sl" id="sl" action="javascript://" onsubmit="return slpage();">
+		      <input type="text" size="20" id="k" name="k" value=""/>
+		    </form>
+		  </div>
+		</div>
+	      </xsl:when>
+	      <xsl:otherwise>
+		<span id="HeadTitle">
+		  <xsl:choose>
+		    <xsl:when test="$current-page/ancestor::struct:page[1]">
+		      <esp:link page="{/struct:page/@id}" nesting="{count($current-page/ancestor::struct:page)}">
+			<xsl:copy-of select="$parameters/param:title/node()"/>
+		      </esp:link>
+		    </xsl:when>
+		    <xsl:otherwise>
+		      <xsl:copy-of select="$parameters/param:title/node()"/>
+		    </xsl:otherwise>
+		  </xsl:choose>
+		</span>
+		<xsl:if test="$parameters/param:subtitle">
+		  <br/>
+		  <span id="HeadSubtitle">
+		    <xsl:copy-of select="$parameters/param:subtitle/node()"/>
+		  </span>
+		</xsl:if>
+	      </xsl:otherwise>
+	    </xsl:choose>
 	  </xsl:otherwise>
 	</xsl:choose>
       </div>
