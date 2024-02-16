@@ -21,15 +21,6 @@
   <xsl:value-of select="string ( $out-string )"/>
 </xsl:function>
 
-<!-- In the Oracc context relative paths are only necessary for
-     navigating within the document tree; for all of the uses that ESP
-     makes of set-relpath we can just use an absolute path starting
-     with the project -->
-<xsl:template name="set-relpath">
-  <xsl:param name="project"/>
-  <xsl:value-of select="concat('/',$project)"/>
-</xsl:template>
-
 <xsl:template name="xset-relpath">
   <xsl:param name="context-node" select="."/>
 <!--  <xsl:message>set-relpath current node=<xsl:value-of select="ancestor-or-self::*[@id]/@id"/></xsl:message> -->

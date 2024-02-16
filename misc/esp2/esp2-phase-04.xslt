@@ -27,6 +27,7 @@
     /><!-- for flash pages -->
 
 <xsl:include href="esp2-functions.xslt"/>
+<xsl:include href="esp2-head.xsl"/>
 
 <xsl:param name="oracc"/>
 <xsl:param name="project"/>
@@ -56,110 +57,15 @@
 
 <!-- add structure to <head> -->
 <xsl:template match="head">
-  <xsl:variable name="relpath">
-    <xsl:call-template name="set-relpath">
-      <xsl:with-param name="project" select="$project"/>
-    </xsl:call-template>
-  </xsl:variable>
   <xsl:copy>
-    <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
-    <!-- title -->
-    <title> 
-      <xsl:value-of select="$parameters/param:title"/> 
-      <xsl:if test="string-length($current-page/esp:title) > 0">
-	- <xsl:value-of select="$current-page/esp:title"/>
-      </xsl:if>
-    </title>
-
-    <!-- styles -->
-    <link rel="stylesheet" type="text/css" media="print" href="{$relpath}/css/print.css"/>
-    <link rel="stylesheet" type="text/css" media="screen,projection" href="{$relpath}/css/screen.css"/>
-
-    <xsl:choose>
-      <xsl:when test="string($parameters/param:cuneify/@default) = 'na'">
-	<link rel="stylesheet" type="text/css" media="screen,print" href="/css/cuneify-ob.css" title="oldbabylonian"/>
-	<link rel="stylesheet" type="text/css" media="screen,print" href="/css/cuneify-na.css" title="neoassyrian"/>
-      </xsl:when>
-      <xsl:when test="string($parameters/param:cuneify/@default) = 'ob'">
-	<link rel="stylesheet" type="text/css" media="screen,print" href="/css/cuneify-na.css" title="neoassyrian"/>
-	<link rel="stylesheet" type="text/css" media="screen,print" href="/css/cuneify-ob.css" title="oldbabylonian"/>
-      </xsl:when>
-      <xsl:otherwise>
-	<link rel="stylesheet" type="text/css" media="screen,print" href="/css/cuneify-ob.css" title="oldbabylonian"/>
-	<link rel="stylesheet" type="text/css" media="screen,print" href="/css/cuneify-na.css" title="neoassyrian"/>
-      </xsl:otherwise>
-    </xsl:choose>
-
-    <!--<xsl:message>esp2-phase-04 head child count = <xsl:value-of select="count(*)"/></xsl:message>-->
-    <xsl:copy-of select="link[@rel='stylesheet']"/>
-    
-    <!-- javascript -->
-    <script type="text/javascript"><esp:comment>
-	var sRoot = '<xsl:value-of select="$parameters/param:root"/>';
-    // </esp:comment></script>
-    <script type="text/javascript" src="/js/library.js"/>
-    <!-- ICRA tag (assert 'none of the above' in all categories) -->
-    <meta http-equiv="pics-label" content='(pics-1.1 "http://www.icra.org/ratingsv02.html" l gen true for "{$parameters/param:host}{$relpath}" r (nz 1 vz 1 lz 1 oz 1 cz 1))'/>
-    <!-- shortcut icon document relation -->
-    <link rel="shortcut icon" href="{$relpath}/favicon.ico" type="image/x-icon"/>
-    <!-- P3P policy document relation -->
-    <link rel="P3Pv1" href="{$relpath}/w3c/p3p.xml"/>
-    <!-- navigation document relations (screen only) -->
-    <xsl:if test="$current-page/ancestor::struct:page[1]">
-	<link rel="top" title="{/struct:page/esp:title}" href="{$relpath}{/struct:page/@url}"/>
-    </xsl:if>
-    <xsl:variable name="up" select="$current-page/ancestor::struct:page[1][not ( @hide-menu-link = 'yes' )][ancestor::struct:page[1]]"/>
-    <xsl:if test="$up">
-	<link rel="up" title="{$up/esp:title}" href="{$relpath}{$up/@url}"/>
-    </xsl:if>
-    <xsl:if test="not ( $current-page/@hide-menu-link = 'yes' )">
-	<xsl:variable name="prev" select="$current-page/preceding-sibling::struct:page[not ( @hide-menu-link )][1]"/>
-	<xsl:if test="$prev">
-	  <link rel="prev" title="{$prev/esp:title}" href="{$relpath}{$prev/@url}"/>
-	</xsl:if>
-	<xsl:variable name="next" select="$current-page/following-sibling::struct:page[not ( @hide-menu-link )][1]"/>
-	<xsl:if test="$next">
-	  <link rel="next" title="{$next/esp:title}" href="{$relpath}{$next/@url}"/>
-	</xsl:if>
-    </xsl:if>
-    <xsl:if test="$glossary-page and generate-id ( $glossary-page ) != generate-id ( $current-page )">
-	<link rel="glossary" title="{$glossary-page/esp:title}" href="{$relpath}{$glossary-page/@url}"/>
-    </xsl:if>
-    <xsl:if test="$techterms-page and generate-id ( $techterms-page ) != generate-id ( $current-page )">
-	<link rel="techterms" title="{$techterms-page/esp:title}" href="{$relpath}{$techterms-page/@url}"/>
-    </xsl:if>
-    <xsl:if test="$index-page and generate-id ( $index-page ) != generate-id ( $current-page )">
-	<link rel="index" title="{$index-page/esp:title}" href="{$relpath}{$index-page/@url}"/>
-    </xsl:if>
-    <xsl:if test="$site-map-page and generate-id ( $site-map-page ) != generate-id ( $current-page )">
-	<link rel="contents" title="{$site-map-page/esp:title}" href="{$relpath}{$site-map-page/@url}"/>
-    </xsl:if>
-    <!-- Yes, really, we emit a meta generator tag to make it easier to separate ESP html from non-ESP html -->
-    <meta name="generator" content="Oracc ESP"/>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <!-- Dublin Core metadata -->
-    <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"/>
-    <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/"/>
-    <meta name="DC.title" content="{$current-page/esp:title}"/>
-    <xsl:if test="$current-page/esp:title != $current-page/esp:name">
-	<meta name="DC.title.alternative" content="{$current-page/esp:name}"/>
-    </xsl:if>
-    <meta name="DC.identifier" scheme="DCTERMS.URI" content="{$parameters/param:host}{$relpath}{$current-page/@url}"/>
-    <meta name="DC.identifier" content="{$parameters/param:dc-id-prefix}{$current-page/@id}"/>
-    <!-- common headers -->
-    <xsl:copy-of select="$parameters/param:common-headers/node ()"/>
-    <!-- process rest of content (if any) -->
-    <xsl:apply-templates/>
-    <!-- add Google Analytics block -->
-<!-- Google tag (gtag.js) -->
-<script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-0QKC3P5HJ1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-0QKC3P5HJ1');
-</script>
+    <xsl:call-template name="esp2-head-content">
+      <xsl:with-param name="params" select="$parameters"/>
+      <xsl:with-param name="project" select="$project"/>
+      <xsl:with-param name="glossary-page" select="$glossary-page"/>
+      <xsl:with-param name="techterms-page" select="$techterms-page"/>
+      <xsl:with-param name="index-page" select="$index-page"/>
+      <xsl:with-param name="site-map-page" select="$site-map-page"/>
+    </xsl:call-template>
   </xsl:copy>
 </xsl:template>
 
@@ -457,7 +363,7 @@
       <xsl:if test="self::esp:link">
 	<a href="{$processed-url}" class="external">
 	  <xsl:if test="not(@notarget='yes')">
-	    <xsl:attribute name="target">_blank</xsl:attribute>
+	    <xsl:attribute name="target"><xsl:text>_blank</xsl:text></xsl:attribute>
 	  </xsl:if>
 	  <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
 	  <xsl:if test="string ( @accesskey )">

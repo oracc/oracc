@@ -11,7 +11,7 @@
   version="2.0"
   xpath-default-namespace="http://www.w3.org/1999/xhtml">
   <xsl:include href="esp2-functions.xslt"/>
-  <xsl:include href="esp2-menu.xslt"/>
+  <xsl:include href="esp2-head.xsl"/>
   <xsl:include href="esp2-references.xslt"/>
   <xsl:include href="esp2-alphabet.xslt"/>
   <xsl:include href="esp2-site-map.xslt"/>
@@ -34,6 +34,7 @@
   <xsl:variable name="images-info" select="document ( concat($projesp, '/01tmp/images-info.xml') )/esp:images-info"/>
 
   <xsl:key name="indices" match="esp:index" use="@term"/>
+
   <xsl:template match="/">
 <!--    <xsl:message>Phase 3: Process high-level mark-up (= mark-up giving rise to other mark-up needing processing), and add structural page components to body</xsl:message>-->
     <xsl:result-document href="{$output-file}">
@@ -44,77 +45,14 @@
   <xsl:template match="body">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
+
       <!--<xsl:message>menu-dropdown=<xsl:value-of select="$parameters/param:menu-dropdown"/></xsl:message>-->
       <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
-      
-      <div>
 
-	<xsl:choose>
-	  <xsl:when test="count(ancestor::struct:page)=1 and $parameters/param:banner">
-	    <xsl:attribute name="id"><xsl:text>Banner</xsl:text></xsl:attribute>
-	    <xsl:variable name="cnode" select="."/>
-	    <xsl:for-each select="$parameters/param:banner">
-	      <xsl:apply-templates>
-		<xsl:with-param name="cnode" select="$cnode"/>
-	      </xsl:apply-templates>
-	    </xsl:for-each>
-	  </xsl:when>
-	  <xsl:otherwise>
-	    <xsl:attribute name="id"><xsl:text>Header</xsl:text></xsl:attribute>
-
-	    <xsl:if test="$parameters/param:menu-dropdown='yes'">
-	      <xsl:call-template name="insert-menu">
-		<xsl:with-param name="current-page" select="$current-page"/>
-	      </xsl:call-template>
-	    </xsl:if>
-
-	    <xsl:choose>
-	      <xsl:when test="$parameters/param:slform='yes'">
-		<div id="HeadTitleForm">
-		  <div id="HeadTitle">
-		    <xsl:choose>
-		      <xsl:when test="$current-page/ancestor::struct:page[1]">
-			<esp:link page="{/struct:page/@id}" nesting="{count($current-page/ancestor::struct:page)}">
-			  <xsl:copy-of select="$parameters/param:title/node()"/>
-			</esp:link>
-		      </xsl:when>
-		      <xsl:otherwise>
-			<xsl:copy-of select="$parameters/param:title/node()"/>
-		      </xsl:otherwise>
-		    </xsl:choose>
-		    <xsl:text>: </xsl:text>
-		  </div>
-		  <div id="HeadForm">
-		    <form name="sl" id="sl" action="javascript://" onsubmit="return slpage();">
-		      <input type="text" size="20" id="k" name="k" value=""/>
-		    </form>
-		  </div>
-		</div>
-	      </xsl:when>
-	      <xsl:otherwise>
-		<span id="HeadTitle">
-		  <xsl:choose>
-		    <xsl:when test="$current-page/ancestor::struct:page[1]">
-		      <esp:link page="{/struct:page/@id}" nesting="{count($current-page/ancestor::struct:page)}">
-			<xsl:copy-of select="$parameters/param:title/node()"/>
-		      </esp:link>
-		    </xsl:when>
-		    <xsl:otherwise>
-		      <xsl:copy-of select="$parameters/param:title/node()"/>
-		    </xsl:otherwise>
-		  </xsl:choose>
-		</span>
-		<xsl:if test="$parameters/param:subtitle">
-		  <br/>
-		  <span id="HeadSubtitle">
-		    <xsl:copy-of select="$parameters/param:subtitle/node()"/>
-		  </span>
-		</xsl:if>
-	      </xsl:otherwise>
-	    </xsl:choose>
-	  </xsl:otherwise>
-	</xsl:choose>
-      </div>
+      <xsl:call-template name="esp2-banner-div">
+	<xsl:with-param name="parameters" select="$parameters"/>
+	<xsl:with-param name="current-page" select="$current-page"/>
+      </xsl:call-template>
 
       	<xsl:if test="not($parameters/param:menu-dropdown='yes')">
 	  <xsl:call-template name="insert-menu">
@@ -582,49 +520,6 @@
 
 <xsl:template name="tab">
   <xsl:message>The 'tab' feature is no longer part of ESP; please revise your portal pages appropriately.</xsl:message>
-</xsl:template>
-
-<xsl:template name="insert-menu">
-  <xsl:param name="current-page"/>
-  <!-- main menu (screen only) -->      
-  <div id="Menu">
-    <xsl:if test="$parameters/param:menu-dropdown='yes'">
-      <xsl:attribute name="class">dd</xsl:attribute>
-    </xsl:if>
-    <xsl:if test="$parameters/param:cuneify/@switcher='yes'">
-      <p id="switcherul">
-	<span id="CuneiformSwitcher">
-	  <xsl:text>Cuneiform script: </xsl:text>
-	  <span class="switcherlink" id="switcherOB">
-	    <a href="#" onclick="setActiveStyleSheet('oldbabylonian'); return false;" title="Old Babylonian script">&#160;OB&#160;</a>
-	  </span>
-	  <span class="switcherlink" id="switcherNA">
-	  <a href="#" onclick="setActiveStyleSheet('neoassyrian'); return false;" title="Neo Assyrian script">&#160;NA&#160;</a></span>
-	</span>
-      </p>
-    </xsl:if>
-
-    <xsl:if test="$parameters/param:main-menu-caption">
-      <div id="MenuCaption">
-        <xsl:copy-of select="$parameters/param:main-menu-caption/node()"/>
-      </div>
-    </xsl:if>
-    <!--<xsl:when test="$current-page/ancestor::struct:page[1]">
-        <div id="SelfInMenu" class="only"><xsl:value-of select="esp:name"/></div>
-	</xsl:when>
-	<xsl:otherwise>
-        <esp:link page="{$current-page/@id}" class="{$li-class}"/>
-	</xsl:otherwise>-->
-    <!--<xsl:variable name="home-page-only">
-        <esp:dummy><xsl:for-each select="/"><xsl:copy/></xsl:for-each></esp:dummy>
-	</xsl:variable>-->
-    <xsl:call-template name="menu">
-      <xsl:with-param name="menu-page" select="/struct:page"/>
-      <xsl:with-param name="current-page" select="$current-page" tunnel="yes"/>
-      <xsl:with-param name="first-link-page" select="/struct:page"/>
-    </xsl:call-template>
-
-  </div>
 </xsl:template>
 
 </xsl:stylesheet>

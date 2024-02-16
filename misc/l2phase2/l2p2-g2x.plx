@@ -26,6 +26,7 @@ my $curr_periods_int = 0;
 my %data = ();
 my $done = 0;
 my %entry_ids = ();
+my %entry_langs = ();
 my %entry_lines = ();
 my %entry_xis = ();
 my %entryformstems = ();
@@ -196,7 +197,12 @@ foreach my $lang (sort keys %data) {
 	}
 	my $entry_xid = $entry_ids{$entry};
 	my $oid = '';
-	$oid = oid_lookup($baselang, $entry) if $cbd_oid; # $baselang =~ /^sux/
+	my $siglang = $baselang;
+	if ('qpn' eq $baselang) {
+	    $siglang = $entry_langs{$entry};
+	}
+	warn "oid_lookup($siglang,$entry)\n";
+	$oid = oid_lookup($siglang, $entry) if $cbd_oid; # $baselang =~ /^sux/
 	my $xid = ($oid ? $oid : $entry_xid);
 	my ($letter) = ($entry =~ /^(.)/);
 #	push @{$letter_ids{&ORACC::L2GLO::Builtins::first_letter($letter)}}, $entry_xid;
@@ -482,6 +488,7 @@ add_sig {
     unless ($entry_ids{$entry}) {
 	$entry_ids{$entry} = next_xid();
 	$entry_lines{$entry} = $.;
+	$entry_langs{$entry} = $sig{'lang'};
     }
     if ($cof_norm) {
 #	warn "registering form_cof value $cof_norm for key $entry_ids{$entry}\:$sig{'form'}\n";
