@@ -11,6 +11,7 @@
     xmlns:h="http://www.w3.org/1999/xhtml"
     xmlns:ex="http://exslt.org/common"
     extension-element-prefixes="ex"
+    exclude-result-prefixes="esp param struct"
     version="1.0" 
     >
 
@@ -30,9 +31,12 @@
 <xsl:template name="esp2-banner-div">
   <xsl:param name="parameters"/>
   <xsl:param name="current-page"/>
+  <xsl:param name="nomenu" select="false()"/>
+  <!--<xsl:message>esp2-banner-div 1 slform=<xsl:value-of select="$parameters/param:slform"/></xsl:message>-->
   <div>
     <xsl:choose>
       <xsl:when test="count(ancestor::struct:page)=1 and $parameters/param:banner">
+	<!--<xsl:message>esp2-banner-div 2</xsl:message>-->
 	<xsl:attribute name="id"><xsl:text>Banner</xsl:text></xsl:attribute>
 	<xsl:variable name="cnode" select="."/>
 	<xsl:for-each select="$parameters/param:banner">
@@ -42,9 +46,10 @@
 	</xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
+	<!--<xsl:message>esp2-banner-div 3</xsl:message>-->
 	<xsl:attribute name="id"><xsl:text>Header</xsl:text></xsl:attribute>
 
-	<xsl:if test="$parameters/param:menu-dropdown='yes'">
+	<xsl:if test="not($nomenu) and $parameters/param:menu-dropdown='yes'">
 	  <xsl:call-template name="insert-menu">
 	    <xsl:with-param name="current-page" select="$current-page"/>
 	  </xsl:call-template>
@@ -63,7 +68,7 @@
 		  <xsl:otherwise>
 		    <xsl:copy-of select="$parameters/param:title/node()"/>
 		  </xsl:otherwise>
-		</xsl:choose>
+		  </xsl:choose>
 		<xsl:text>: </xsl:text>
 	      </div>
 	      <div id="HeadForm">
@@ -93,14 +98,14 @@
 	      </span>
 	    </xsl:if>
 	  </xsl:otherwise>
-	</xsl:choose>
+	  </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
-  </div>
+    </div>
 </xsl:template>
 
 <xsl:template name="esp2-head-content">
-  <xsl:param name="params"/>
+  <xsl:param name="parameters"/>
   <xsl:param name="project"/>
   <xsl:param name="glossary-page" select="false()"/>
   <xsl:param name="techterms-page" select="false()"/>
@@ -144,10 +149,12 @@
     <xsl:copy-of select="link[@rel='stylesheet']"/>
     
     <!-- javascript -->
+    <xsl:if test="false()"> <!-- what was this script with a commented var for?? -->
     <script type="text/javascript"><esp:comment>
 	var sRoot = '<xsl:value-of select="$parameters/param:root"/>';
     // </esp:comment></script>
-    <script type="text/javascript" src="/js/library.js"/>
+    </xsl:if>
+    <script type="text/javascript" src="/js/library.js">&#xa0;</script>
     <!-- ICRA tag (assert 'none of the above' in all categories) -->
     <meta http-equiv="pics-label" content='(pics-1.1 "http://www.icra.org/ratingsv02.html" l gen true for "{$parameters/param:host}{$relpath}" r (nz 1 vz 1 lz 1 oz 1 cz 1))'/>
     <!-- shortcut icon document relation -->
@@ -199,10 +206,12 @@
     <!-- common headers -->
     <xsl:copy-of select="$parameters/param:common-headers/node ()"/>
     <!-- process rest of content (if any) -->
-    <xsl:apply-templates/>
+    <xsl:if test="local-name(..)='head'">
+      <xsl:apply-templates/>
+    </xsl:if>
     <!-- add Google Analytics block -->
 <!-- Google tag (gtag.js) -->
-<script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-0QKC3P5HJ1"></script>
+<script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-0QKC3P5HJ1">&#xa0;</script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}

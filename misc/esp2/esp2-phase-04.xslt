@@ -59,7 +59,7 @@
 <xsl:template match="head">
   <xsl:copy>
     <xsl:call-template name="esp2-head-content">
-      <xsl:with-param name="params" select="$parameters"/>
+      <xsl:with-param name="parameters" select="$parameters"/>
       <xsl:with-param name="project" select="$project"/>
       <xsl:with-param name="glossary-page" select="$glossary-page"/>
       <xsl:with-param name="techterms-page" select="$techterms-page"/>
