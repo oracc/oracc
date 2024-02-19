@@ -211,7 +211,7 @@ ox_options(int argc, char **argv)
 	  odt_serial = 1;
 	  break;
 	case '2':
-	  report_all_label_errors = 1;
+	  odt_serial = 3 /*report_all_label_errors = 1*/;
 	  break;
 	case '3':
 	  ++cuneify_notices;
