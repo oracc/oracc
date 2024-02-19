@@ -62,6 +62,9 @@
 
       <!-- content <div> -->
       <div id="Content">
+	<xsl:if test="$parameters/param:menu-dropdown='yes'">
+	  <xsl:attribute name="class">dd</xsl:attribute>
+	</xsl:if>
         <!-- stylesheet warning -->
         <xsl:if test="not ( $current-page/ancestor::struct:page[1] )">
           <div id="StyleSheetWarning">

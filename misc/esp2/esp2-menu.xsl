@@ -7,7 +7,6 @@
 	xmlns="http://www.w3.org/1999/xhtml"
 	version="1.0"
 >
-
   <xsl:template name="menu">
     <xsl:param name="menu-page"/>
     <xsl:param name="current-page"/>
