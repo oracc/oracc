@@ -735,6 +735,12 @@
   <xsl:apply-templates mode="print" select="id(@note:ref)"/>
 </xsl:template>
 
+<xsl:template match="g:gloss">
+  <text:span style-name="sup">
+    <xsl:apply-templates/>
+  </text:span>
+</xsl:template>
+
 <!--
 <xsl:template name="deep-g-delim">
   <xsl:value-of select="@g:delim"/>
