@@ -85,7 +85,7 @@
 	#HeadTitle {
 		margin: 0px;
 		padding: 0px;
-		padding-left: 4px;
+		padding-left: 1.5em;
 		position: relative;
 		top: 0.5em;
 		font-size: 1.6em;
@@ -105,6 +105,17 @@
 		font-weight: normal;
 		font-size: 1.2em;
 		color: #ffffff; /* $page */
+	}
+	/* without the dd class */
+	#Content:not([class]) {
+		width: 75%;
+		margin-left: 22vw;
+		padding-left: 1em;
+	}
+	body:dir(rtl) #Content:not([class]) {
+		width: 75%;
+		margin-right: 22vw;
+		padding-right: 1em;
 	}
 	#Menu {
 		float: left;
@@ -128,9 +139,6 @@
 		font-weight: bold;
 		width: 70%;
 		border-bottom: 2px solid $light;
-	}
-	#MenuCaption::after {
-		content: "Main menu";
 	}
 	#Menu ul ul {
 		padding: 0.25em 0 0 4em;

@@ -279,7 +279,8 @@ a:visited:hover {
 	width: 100%;
 	text-align: center;
 }
-#Content {
+#Content,
+#Content.dd {
 	margin-inline: 2.5em;
 	width: 90%;
 }
@@ -299,15 +300,16 @@ a:visited:hover {
 #Menu ul {
 	padding: 0;
 	margin: 0;
-	display: none;
-	position: absolute;
 	color: #111;
 	background: #fff;
 	list-style-type: none;
 }
-/* this is for the dropdown */
-#MenuCaption:hover ~ ul,
-#Menu:hover ul {
+/* this is for displaying the dropdown */
+#Menu.dd ul {
+	display: none;
+	position: absolute;
+}
+#Menu.dd:hover ul {
 	display: block;
 	position: absolute;
 	border-radius: 5px;
