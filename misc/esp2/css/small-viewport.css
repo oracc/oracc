@@ -57,8 +57,20 @@
 		width: 95%;
 		border-bottom: 2px solid $light;
 	}
-	#MenuCaption::after {
-		content: "☰";
+	#Menu ul {
+		padding: 0;
+		margin: 0;
+		color: #111;
+		background: #fff;
+		list-style-type: none;
+		display: none;
+		position: absolute;
+	}
+	#Menu:hover ul {
+		display: block;
+		position: absolute;
+		border-radius: 5px;
+		background-color: #fcfaf1;
 	}
 	#Menu ul ul {
 		padding: 0.25em 0 0 4em;
