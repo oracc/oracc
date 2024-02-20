@@ -47,6 +47,12 @@ fi
 #    o2-asl.sh
 #fi
 #o2-web.sh
+
+aslauto=`oraccopt . asl-auto`
+if [ "$aslauto" = "yes" ]; then
+    odo-corpus-signlist.sh
+fi
+
 o2-web-corpus.sh
 #o2-prm.sh
 o2-weblive.sh
