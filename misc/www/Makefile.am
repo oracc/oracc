@@ -26,7 +26,7 @@ css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
 
 data_DATA = tidy.conf
 
-img_DATA = blogspot-icon.jpg blogspot-icon.png breaks.png		\
+img_DATA = blogspot-icon.jpg blogspot-icon.png blank.gif breaks.png		\
 	cdli-icon.png cdli.png dbl-l-arrow.png dbl-r-arrow.png f_logo.png	\
 	lar40x22.png oclose.png oopen.png Qcat-icon.png rar40x22.png		\
 	strut.png twitter-bird-dark-bgs.png twitter-bird-light-bgs.png		\
