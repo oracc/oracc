@@ -56,7 +56,7 @@
 	    <xsl:call-template name="menu">
 	      <xsl:with-param name="menu-page" select="."/>
 	      <xsl:with-param name="current-page" select="$current-page"/>
-	      <xsl:with-param name="first-link-page" select="$first-link-page"/>
+	      <xsl:with-param name="first-link-page" select="false()"/>
 	    </xsl:call-template>
 	  </xsl:if>
 	</li>
