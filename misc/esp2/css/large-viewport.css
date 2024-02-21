@@ -122,8 +122,11 @@
 		width: 20%;
 		margin: 0.1px 0 0.1px 0;
 		padding: 0 1em;
-		color: #fff;
+		color: #000;
 		position: relative;
+	}
+	#Menu.dd {
+		color: #fff;
 	}
 	body:dir(rtl) #Menu {
 		float: right;
