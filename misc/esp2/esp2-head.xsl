@@ -32,6 +32,7 @@
   <xsl:param name="parameters"/>
   <xsl:param name="current-page"/>
   <xsl:param name="nomenu" select="false()"/>
+  <xsl:param name="top-index-link" select="''"/>
   <!--<xsl:message>esp2-banner-div 1 slform=<xsl:value-of select="$parameters/param:slform"/></xsl:message>-->
   <div>
     <xsl:choose>
@@ -64,6 +65,11 @@
 		    <esp:link page="{/struct:page/@id}" nesting="{count($current-page/ancestor::struct:page)}">
 		      <xsl:copy-of select="$parameters/param:title/node()"/>
 		    </esp:link>
+		  </xsl:when>
+		  <xsl:when test="string-length($top-index-link)>0">
+		    <a href="{$top-index-link}">
+		      <xsl:copy-of select="$parameters/param:title/node()"/>
+		    </a>
 		  </xsl:when>
 		  <xsl:otherwise>
 		    <xsl:copy-of select="$parameters/param:title/node()"/>
