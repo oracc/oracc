@@ -212,8 +212,8 @@
     <!-- common headers -->
     <xsl:copy-of select="$parameters/param:common-headers/node ()"/>
     <!-- process rest of content (if any) -->
-    <xsl:if test="local-name(..)='head'">
-      <xsl:apply-templates/>
+    <xsl:if test="local-name(..)='html'">
+      <xsl:copy-of select="*"/>
     </xsl:if>
     <!-- add Google Analytics block -->
 <!-- Google tag (gtag.js) -->
