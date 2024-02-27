@@ -111,8 +111,6 @@ AC_CONFIG_FILES([Makefile
 	   c/include/Makefile
 	   c/lib/Makefile
 	   c/lib/collate/Makefile 
-	   c/lib/collate/mktablst 
-	   c/lib/collate/seq2c
 	   c/lib/expat/Makefile
 	   c/lib/gsl/Makefile
 	   c/lib/libstemmer_c/Makefile

@@ -14,7 +14,7 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/l2/{form,ilem,link,ngram,prop,psus,sigs,word,xcl2}
 
 
-bin_PROGRAMS=concord pqxpand haslinks haslinks1 isogmt \
+bin_PROGRAMS=pqxpand haslinks haslinks1 isogmt \
 	jpegsize linkfiles gdf labeltable unittable \
 	newext oraccopt pqunion sigfixer sigmap xmlnl \
 	xmlns xmlsplit utf8v xfrag filesize listdir \
@@ -35,8 +35,8 @@ pqoutline.c: pqoutline.c.in
 sigmap.c: sigmap.c.in
 	$(ORACCIFY) sigmap.c.in
 
-concord_SOURCES=concord.c
-concord_LDADD=@top_srcdir@/c/lib/liboracc.la @top_srcdir@/../oracc2/lib/liboracc2.la 
+#concord_SOURCES=concord.c
+#concord_LDADD=@top_srcdir@/c/lib/liboracc.la @top_srcdir@/../oracc2/lib/liboracc2.la 
 
 gdf_LDADD=@top_srcdir@/c/lib/liboracc.la
 

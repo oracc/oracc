@@ -15,7 +15,8 @@ AM_CPPFLAGS=-I@top_srcdir@/c/include \
 	-I@top_srcdir@/c/lib/expat/xmlparse \
 	-I@top_srcdir@/c/expat/xmlparse \
 	-I@top_srcdir@/c/otf/{chr,gdl,lib,run} \
-	-I@top_srcdir@/../oracc2/lib/{include,std,sys,lng}
+	-I@top_srcdir@/../oracc2/lib/{std,sys,lng} \
+	-I@top_srcdir@/../oracc2/include \
 	-I/usr/local/include
 
 AM_LDFLAGS=-L/opt/local/lib

@@ -59,7 +59,7 @@ Hash_table *arg_hash = NULL;
 char *ibase = NULL;
 List *arglist;
 Dbi_index *dip;
-const char *iname, *indexname, *project, *curr_project, *curr_index;
+const char *iname, *indexname, *name, *project, *curr_project, *curr_index;
 
 static void do_index (List *arglist);
 static void setup_args (char *const*argv);
