@@ -54,15 +54,26 @@ for a in 02pub/cbd/[a-z]* ; do
 	chmod -R o+r 02pub/cbd/$lang
     fi
 done
-hproj=`/bin/echo -n $project | tr / -`
-if [ -r 02pub/sl/$hproj-db.tsv ]; then
-    echo indexing signlist
-    if [ "$project" == "ogsl" ]; then
-	slix -boot
-    else
-	cat 02pub/sl/$hproj-db.tsv | slix $project
-    fi
+
+#hproj=`/bin/echo -n $project | tr / -`
+#if [ -r 02pub/sl/$hproj-db.tsv ]; then
+#    echo indexing signlist
+#    if [ "$project" == "ogsl" ]; then
+#	slix -boot
+#    else
+#	cat 02pub/sl/$hproj-db.tsv | slix $project
+#    fi
+#    chmod -R o+r 02pub/sl
+#fi
+
+if [ -r 02pub/sl/sl.tsv ]; then
+    slix 02pub/sl/sl.tsv
     chmod -R o+r 02pub/sl
+fi
+
+if [ -r 02pub/oid-index.tab ]; then
+    dbix -d 02pub/oid -n oid 02pub/oid-index.tab
+    chmod -R o+r 02pub
 fi
 
 echo o2-indexes-boot.sh: done.
