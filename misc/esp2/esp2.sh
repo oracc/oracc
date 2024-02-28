@@ -1,4 +1,5 @@
-# 
+#!/bin/sh
+#
 # XML Site Architecture Project
 # George MacKerron 2005
 #
@@ -118,7 +119,12 @@ xsltproc $XSL/esp2-fix-sort.xsl $XMLSAP/01tmp/source-tree-30.xml >$XMLSAP/01tmp/
 java -jar $SAXONJAR $XMLSAP/01tmp/source-tree-31.xml $XSL/esp2-phase-04.xslt \
     output-file=file:$XMLSAP/01tmp/source-tree-40.xml output-directory=file:$HTTPROOT $SAXONPARAMS
 
-cunhtmlx <$XMLSAP/01tmp/source-tree-40.xml >$XMLSAP/01tmp/source-tree-41.xml
+ivs=`oraccopt . gvl-ivs`
+if [ "$ivs" != "" ]; then
+    cunhtmlx <$XMLSAP/01tmp/source-tree-40.xml >$XMLSAP/01tmp/source-tree-41.xml
+else
+    ln -sf $XMLSAP/01tmp/source-tree-40.xml $XMLSAP/01tmp/source-tree-41.xml
+fi
 
 # echo phase 5
 
