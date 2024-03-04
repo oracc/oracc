@@ -20,6 +20,8 @@
 const char *project = NULL;
 int verbose;
 
+int has_headings = 0;
+
 struct kwic_range
 {
   struct wid start;
@@ -280,7 +282,12 @@ main (int argc, char **argv)
 	unit_controller(id_arg);
       else
 	while (NULL != (id = fgets(idbuf,_MAX_ID,infp)))
-	  unit_controller(no_newline(id));
+	  {
+	    if ('#' == *id)
+	      fprintf(outfp, "%s", id);
+	    else
+	      unit_controller(no_newline(id));
+	  }
       unit_term();
     }
   else if (wm_type == KU_KWIC)
@@ -290,7 +297,10 @@ main (int argc, char **argv)
 	kwic_controller(id_arg);
       else
 	while (NULL != (id = fgets(idbuf,_MAX_ID,infp)))
-	  kwic_controller(no_newline(id));
+	  if ('#' == *id)
+	    fprintf(outfp, "%s", id);
+	  else
+	    kwic_controller(no_newline(id));
       kwic_term();
     }
   else if (wm_type == KU_LINE)
@@ -299,7 +309,10 @@ main (int argc, char **argv)
 	line_controller(id_arg);
       else
 	while (NULL != (id = fgets(idbuf,_MAX_ID,infp)))
-	  line_controller(no_newline(id));      
+	  if ('#' == *id)
+	    fprintf(outfp, "%s", id);
+	  else
+	    line_controller(no_newline(id));      
     }
   else
     {
@@ -314,6 +327,9 @@ opts(int argc, char *arg)
 {
   switch (argc)
     {
+    case 'h':
+      has_headings = 1;
+      break;
     case 'i':
       input = arg;
       break;
