@@ -110,14 +110,11 @@ AC_CONFIG_FILES([Makefile
 	   c/bin/util/Makefile
 	   c/include/Makefile
 	   c/lib/Makefile
-	   c/lib/collate/Makefile 
 	   c/lib/expat/Makefile
-	   c/lib/gsl/Makefile
 	   c/lib/libstemmer_c/Makefile
 	   c/lib/oracc/Makefile
 	   c/lib/rnv/Makefile
 	   c/lib/sas/Makefile
-	   c/lib/skl/Makefile
 	   c/otf/Makefile
 	   c/otf/atf/Makefile
 	   c/otf/chr/Makefile

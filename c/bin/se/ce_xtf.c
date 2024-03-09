@@ -20,12 +20,14 @@
 
 enum wm_format cetype;
 
+int lheading = 0;
+
 const char *wm_names[5];
 
 unsigned char *buf = NULL;
 int buf_len = 0;
 
-char curr_label[1024], label[1024], last_label[1024], 
+char curr_label[2048], label[2048], last_label[1024], 
   text_name[1024], text_id[128], text_project[1024], text_desc[1024];
 
 const char *ce_l_tag = NULL;
@@ -637,14 +639,27 @@ ce_xtf_sH(void *userData, const char *name, const char **atts)
       
       /* This can be gdl:w or xtf:l(g) */
       charData_discard();
-      
+
+      if (h && lheading)
+	{
+	  unsigned char *s = h;
+	  while (*s)
+	    if ('_' == *s)
+	      *s++ = ' ';
+	    else if ('\t' == *s)
+	      *s++ = '/';
+	    else
+	      ++s;
+	  fprintf(ce_out_fp, "<ce:heading>%s</ce:heading>",  (const char *)xmlify((const unsigned char *)h));
+	}
+
       /* if it is xtf:l(g) we may not have dumped ce:data yet;
 	 this can only happen here if we are doing a line 
 	 range
        */
       if (!echoing)
 	ce_data(xid);
-
+      
       if (h)
 	fprintf(ce_out_fp, "<ce:start ref=\"%s\" h=\"%s\"/>", 
 		xid, (const char *)xmlify((const unsigned char *)h));
@@ -836,12 +851,12 @@ ce_xtf_term(void)
 int
 main(int argc, char * const*argv)
 {
-  struct xpd *cfg = NULL;
+  /*struct xpd *cfg = NULL;*/
   exit_on_error = TRUE;
 
   init_wm_names();
   cetype = KU_LINE;
-  options(argc, argv, "23c:f:i:lkm:p:tuvx");
+  options(argc, argv, "234c:f:i:lkm:p:tuvx");
 
   if (!project || (!ce_index && !xtf_context))
     {
@@ -913,6 +928,10 @@ opts(int argc, char *arg)
       break;
     case '3':
       p3 = 1;
+      break;
+    case '4':
+      p3 = 1;
+      lheading = 1;
       break;
     case 'c':
       id = arg;
