@@ -90,17 +90,14 @@
 	      </span>
  
 	      <span class="p3arrow">
-		<!--<button type="button" name="ilarrow" onclick="p3action('itemback')">&lt;&lt;</button>-->
 		<img class="p3icon" src="/img/p3-backward.png" alt="Item back" title="Item back" name="ilarrow" id="ilarrow"
 			onclick="p3action('itemback')"/>
 	      </span>
 	      
 	      <!--Item-->
 	      <input id="item" name="item" type="text" onchange="p3action('itemset')" size="2" p3:value="@@cgivar:item@@"/>
-	      <!--of <span p3:value="@@runtime:items@@"/>-->
 	      
 	      <span class="p3arrow">
-		<!--<button type="button" name="irarrow" onclick="p3action('itemfwd')">>></button>-->
 		<img class="p3icon" src="/img/p3-forward.png" alt="Item forward" title="Item forward" name="irarrow" id="irarrow"
 			onclick="p3action('itemfwd')"/>
 	      </span>
@@ -121,13 +118,6 @@
 		<button type="submit" name="unzoom" onclick="p3zoom('0')">All Results</button>
 	      </span>
 
-	      <!--
-	      <span class="p3arrow">
-		<button type="button" name="p3pagesview" id="p3pagesview" value="page"
-			onclick="p3action('viewstateItems')"
-			>Pages</button>
-	      </span>
-	      -->
 	      <span class="p3arrow">
 		<img class="p3icon" src="/img/p3-pageitem.png" alt="Toggle Page/Item view" title="Toggle Page/Item view" name="p3pagesview" id="p3pagesview"
 			onclick="p3action('viewstateItems')"/>
@@ -135,7 +125,6 @@
 	 
 	      <span class="p3arrow">
 
-		<!--<button type="button" name="plarrow" onclick="p3action('pageback')">&lt;&lt;</button>-->
 		<img class="p3icon" src="/img/p3-backward.png" alt="Page back" title="Page back" name="plarrow" id="plarrow"
 			onclick="p3action('pageback')"/>
 
@@ -143,10 +132,7 @@
 	      
 	      <!--Page-->
 	      <input id="pageset" name="pageset" type="text" onchange="p3action('pageset')" size="2" p3:value="@@cgivar:page@@"/>
-	      <!--of <span p3:value="@@runtime:pages@@"/>-->
-
 	      <span class="p3arrow">
-		<!--<button type="button" name="prarrow" onclick="p3action('pagefwd')">>></button>-->
 		<img class="p3icon" src="/img/p3-forward.png" alt="Page forward" title="Page forward" name="prarrow" id="prarrow"
 			onclick="p3action('pagefwd')"/>
 	      </span>
@@ -157,8 +143,6 @@
 
 	      [<span class="resultcount" p3:value="@@runtime:resultcount@@"/> matches]
 	      
-	      <!--Page-size: <input name="pagesize" type="text" onchange="p3action('pagesize')" size="3" p3:value="@@cgivar:pagesize@@"/>-->
-
 	      <span class="cetype">
 		<select id="p3cetype" name="p3cetype"  onchange="p3action('cestate')">
 		  <option value="line">Line</option>
