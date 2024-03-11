@@ -61,7 +61,7 @@ my $xids = 0;
 # xco chorasmian
 # * neo
 #
-my @domains = qw/sl sux akk arc egy grc hit qca qpc qpe elx peo plq qam qcu qeb qka xco xht xhu xur qur xlu hlu uga/;
+my @domains = qw/sl sux akk arc egy grc hit qca qpc qpe elx peo plq qam qcu qeb qka qpn xco xht xhu xur qur xlu hlu uga/;
 my %domains = (); @domains{@domains} = ();
 
 my %domain_authorities = (

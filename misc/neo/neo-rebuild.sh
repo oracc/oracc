@@ -9,6 +9,7 @@ xmdmanager2.plx
 xsltproc ${ORACC}/lib/scripts/xmd-summaries.xsl 01bld/cdlicat.xmd >01bld/cat-sum.xml
 xsltproc ${ORACC}/lib/scripts/xmd-HTML-summaries.xsl 01bld/cat-sum.xml >01bld/cat-sum.html
 neo-sigs.plx
+neo-oids.sh
 l2p1-simple-from-project.sh
 l2p2.sh
 o2-web.sh
