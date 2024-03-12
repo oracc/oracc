@@ -715,8 +715,8 @@ compute_and_print_entry_data {
 #				foreach my $ff (split(/\s+/,$f)) {
 #				    print "<f ref=\"$form_ids{$ff}\"/>";
 #				} 
-## šeri[separate//separately]AJ'AV sense šeri[separate]AJ => x0034659
-			    #				print '</f>';
+#
+#				print '</f>';
 #			    } else {
 			    if ($form_ids{$f} && defined($freq) && defined($ipct) && $xrefid) {
 				my $fx = xmlify($f);
