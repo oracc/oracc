@@ -16,7 +16,13 @@ while (<>) {
     chomp;
     s/\t.*$//;
     my %s = parse_sig($_);
-    if ($s{'lang'}) {
+    if ($s{'pos'} && $s{'pos'} =~ /^[A-Z]N$/) {
+	my $l = 'qpn';
+	my $w = "$s{'cf'}\[$s{'gw'}\]$s{'pos'}\tword";
+	++${$o{$l}{$w}};
+	my $s = "$s{'cf'}\[$s{'gw'}//$s{'sense'}\]$s{'pos'}'$s{'epos'}\tsense\t$w";
+	++${$o{$l}{$s}};
+    } elsif ($s{'lang'}) {
 	my $l = $s{'lang'}; $l =~ s/-.*$//;
 	my $w = "$s{'cf'}\[$s{'gw'}\]$s{'pos'}\tword";
 	++${$o{$l}{$w}};

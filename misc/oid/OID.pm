@@ -256,7 +256,7 @@ sub oid_add {
 
     foreach my $a (@oid_add) {
 	my($dom,$key,$typ,$ext) = @$a;
-	next if $xids && $typ eq 'sense';
+	# next if $xids && $typ eq 'sense'; # changes in IS handling require XIDs for sense type as well
 	my $this_oid = oid_next_available();
 	$ext = '' unless $ext;
 	warn "add $dom $key $typ $ext => $this_oid\n";

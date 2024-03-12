@@ -685,7 +685,9 @@ compute_and_print_entry_data {
 		    print "</$f>";
 		} else {
 		    if ($f eq 'norm') {
-			printf "<norm xml:id=\"$xid\" icount=\"$icount\" ipct=\"$ipct\" xis=\"$xrefid\"";
+			my $nk = xmlify($k);
+			$nk =~ tr/ /_/;
+			printf "<norm xml:id=\"$xid\" n=\"$nk\" icount=\"$icount\" ipct=\"$ipct\" xis=\"$xrefid\"";
 			if ($entrynormstems{$entry,$k}) {
 			    printf " stem=\"$entrynormstems{$entry,$k}\"";
 			}
@@ -713,10 +715,13 @@ compute_and_print_entry_data {
 #				foreach my $ff (split(/\s+/,$f)) {
 #				    print "<f ref=\"$form_ids{$ff}\"/>";
 #				} 
-#				print '</f>';
+## šeri[separate//separately]AJ'AV sense šeri[separate]AJ => x0034659
+			    #				print '</f>';
 #			    } else {
 			    if ($form_ids{$f} && defined($freq) && defined($ipct) && $xrefid) {
-				print "<f cbd:id=\"$xid\" ref=\"$form_ids{$f}\"";
+				my $fx = xmlify($f);
+				$fx =~ s/^\%.*?://;
+				print "<f n=\"$fx\" cbd:id=\"$xid\" ref=\"$form_ids{$f}\"";
 				xis_attr(%xis_info);
 				print '/>';
 #				icount=\"$freq\" ipct=\"$ipct\" xis=\"$xrefid\"/>";
