@@ -26,6 +26,8 @@ FILE *fdbg = NULL;
 FILE *fpag = NULL;
 Hash_table *seen = NULL;
 
+char *gcbd, *gxis;
+
 struct item *items = NULL;
 int items_used = 0;
 struct sortinfo *sip;
@@ -346,6 +348,18 @@ opts(int argc, char *arg)
       break;
     case 'f':
       fragment = 1;
+      break;
+
+    case 'g':
+      gcbd = strdup(arg); 
+      gxis = strchr(gcbd, '.');
+      if (gxis)
+	*gxis++ = '\0';
+      else
+	{
+	  fprintf(stderr, "pg2: bad gxis format, should be cbd.rid but got '%s'\n", arg);
+	  exit(1);
+	}
       break;
 #if 0
       /* This option is bogus because heading_keys must always

@@ -9,7 +9,7 @@
 #define xmlify(x) (x)
 
 extern int zoomid, xml_outline, p3;
-extern const char *outline_keys[];
+extern const char *outline_keys[], *gcbd, *gxis, *project;
 int uzpage = -1;
 int zprev = -1;
 int znext = -1;
@@ -127,11 +127,20 @@ pg_outline_dump(FILE *fp, struct outline *o, int nlevels)
 	      else
 		{
 		  if (p3)
-		    fprintf(fp, "<p%s><a href=\"javascript://\" onclick=\"p3zoom(%d)\">%s [%ld]</a></p>", 
-			    zoomstr,
-			    o[i].sic->id + 1,
-			    (char*)xmlify(&sip->pool[o[i].poffsets[j]]),
-			    (long)o[i].count);
+		    {
+		      if (gxis)
+			fprintf(fp, "<p%s><a href=\"javascript://\" onclick=\"p3zoomgx(%s,%s,%s,%d)\">%s [%ld]</a></p>", 
+				project, gcbd, gxis, zoomstr,
+				o[i].sic->id + 1,
+				(char*)xmlify(&sip->pool[o[i].poffsets[j]]),
+				(long)o[i].count);
+		      else
+			fprintf(fp, "<p%s><a href=\"javascript://\" onclick=\"p3zoom(%d)\">%s [%ld]</a></p>", 
+				zoomstr,
+				o[i].sic->id + 1,
+				(char*)xmlify(&sip->pool[o[i].poffsets[j]]),
+				(long)o[i].count);
+		    }
 		  else
 		    fprintf(fp, "<p%s><a href=\"javascript://\" onclick=\"pz(1,%d)\">%s [%ld]</a></p>", 
 			    zoomstr,

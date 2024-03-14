@@ -131,6 +131,21 @@ function p3item4(type,nth,id,ref) {
     }
 }
 
+// Variant p3zoom function for use with gxis
+function p3zoomgx(project,glos,gxis,zoom) {
+    p3PageControls();
+    if (z === '0') {
+	document.getElementById('zoom').value = z;
+	document.getElementById('page').value = document.getElementById('uzpage').value;
+	document.getElementById('p3form').submit();
+    } else {
+	document.getElementById('zoom').value = z;
+	document.getElementById('uzpage').value = document.getElementById('page').value;
+	document.getElementById('page').value = '1';
+	document.getElementById('p3form').submit();
+    }
+}
+
 function p3zoom(z) {
     p3PageControls();
 

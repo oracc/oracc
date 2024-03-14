@@ -1382,6 +1382,8 @@ setup_pg_args {
     push @pg_args, "-z$p{'zoom'}" if $p{'zoom'};
     push @pg_args, '-3';
 
+    push @pg_args, "-g$p{'gxis'}" if $p{'gxis'};
+    
     push(@pg_args, '-C', $p{'#config'}) if $p{'#config'};
 
 }
