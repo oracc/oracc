@@ -36,6 +36,8 @@ my $oraccpub = "@@ORACC@@/pub";
 my $oraccwww = "@@ORACC@@/www";
 my $oraccxml = "@@ORACC@@/xml";
 
+my $p4 = 0;
+
 my $force_page = 0;
 my $fragid = '';
 my $jumpfile = '';
@@ -112,23 +114,29 @@ if ($rt{'prod'} eq 'list') {
     if ($p{'glos'}) {
 	$rt{'cetype'} = $p{'p3cetype'};
 	if ($p{'gxis'}) {
-	    $rt{'itemtype'} = $p{'itemtype'} = $rt{'#list_type'} = 'xtf';
-	    my $pubcbdxdir = "@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}";
-	    my $tis_file = "$pubcbdxdir/$p{'glos'}.tis";
-	    if (-r $tis_file) {
-		xsystem("@@ORACC@@/bin/xisdb $tis_file $p{'gxis'} >$p{'tmpdir'}/results.lst");
-	    } elsif ($p{'glos'} eq 'tok') {
-		# warn "TOK FOUND TOKID=$p{'gxis'}\n";
-		xsystem("@@ORACC@@/bin/dbx", '-w', '-d', "@@ORACC@@/pub/$p{'project'}/tok", '-n',
-			'tok', '-o', "$p{'tmpdir'}/results.lst", '-v', "$p{'gxis'}");
+	    if ($p{'zoom'} > 0) {
+		$p4 = 1;
+		warn "p3-pager calling ispx\n";
+		xsystem("$oraccbin/ispx -3 -j $project -l $gxis -z$p{'zoom'} -p$p{'page'}");
 	    } else {
-		xsystem("@@ORACC@@/bin/xis", '-f', 
-			"@@ORACC@@/bld/$p{'project'}/$p{'glos'}/$p{'glos'}.xis", '-i', $p{'gxis'}, 
-			'-o', "$p{'tmpdir'}/results.lst");
+		$rt{'itemtype'} = $p{'itemtype'} = $rt{'#list_type'} = 'xtf';
+		my $pubcbdxdir = "@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}";
+		my $tis_file = "$pubcbdxdir/$p{'glos'}.tis";
+		if (-r $tis_file) {
+		    xsystem("@@ORACC@@/bin/xisdb $tis_file $p{'gxis'} >$p{'tmpdir'}/results.lst");
+		} elsif ($p{'glos'} eq 'tok') {
+		    # warn "TOK FOUND TOKID=$p{'gxis'}\n";
+		    xsystem("@@ORACC@@/bin/dbx", '-w', '-d', "@@ORACC@@/pub/$p{'project'}/tok", '-n',
+			    'tok', '-o', "$p{'tmpdir'}/results.lst", '-v', "$p{'gxis'}");
+		} else {
+		    xsystem("@@ORACC@@/bin/xis", '-f', 
+			    "@@ORACC@@/bld/$p{'project'}/$p{'glos'}/$p{'glos'}.xis", '-i', $p{'gxis'}, 
+			    '-o', "$p{'tmpdir'}/results.lst");
+		}
+		$p{'#list'} = "$p{'tmpdir'}/results.lst";
+		set_list_items();
+		$p{'uimode'} = 'mini';
 	    }
-	    $p{'#list'} = "$p{'tmpdir'}/results.lst";
-	    set_list_items();
-	    $p{'uimode'} = 'mini';
 	} else {
 	    $rt{'#list_type'} = 'cbd';
 	    $rt{'itemtype'} = $p{'itemtype'} = 'cbd';
@@ -250,36 +258,38 @@ if ($rt{'prod'} eq 'list') {
 }
 
 # set up the Slicer inputs
-if (!$ood_mode && (!$p{'glos'} || $p{'gxis'})) {
-    if ($rt{'#list_type'} eq 'xtf' && !$p{'item'}) {
-	my $ce_arg = set_ce_arg();
-	xsystem('@@ORACC@@/bin/wm', "-p$p{'project'}", $ce_arg, "-i$p{'tmpdir'}/results.lst", "-o$p{'tmpdir'}/wm.out");
-	$p{'#list'} = "$p{'tmpdir'}/wm.out";
+if (!$p4) {
+    if (!$ood_mode && (!$p{'glos'} || $p{'gxis'})) {
+	if ($rt{'#list_type'} eq 'xtf' && !$p{'item'}) {
+	    my $ce_arg = set_ce_arg();
+	    xsystem('@@ORACC@@/bin/wm', "-p$p{'project'}", $ce_arg, "-i$p{'tmpdir'}/results.lst", "-o$p{'tmpdir'}/wm.out");
+	    $p{'#list'} = "$p{'tmpdir'}/wm.out";
+	}
+	if ($p{'item'} && $rt{'#list_type'} =~ /^tra|xtf$/) {
+	    xsystem('@@ORACC@@/bin/p3-collapse.plx', "$p{'tmpdir'}/results.lst", "$p{'tmpdir'}/collapsed.out");
+	    $p{'#list'} = "$p{'tmpdir'}/collapsed.out";
+	    set_list_items();
+	}
+	if ($p{'#listitems'}) {
+
+	    setup_pg_args();
+	    my($pg_order,$input) = ORACC::P3::Slicer::page_setup($p{'tmpdir'}, $p{'#list'}, $p{'cetype'} eq 'kwic');
+
+	    dbgitems(1);
+	    
+	    # set up the input for the content maker
+	    ORACC::P3::Slicer::page_info($p{'tmpdir'}, $pg_order, $input, $p{'cetype'} eq 'kwic', $p{'project'}, @pg_args);
+
+	    dbgitems(2);
+	    
+	    # generate the outline
+	    ORACC::P3::Slicer::page_outline($pg_order, @pg_args);
+
+	    dbgitems(3);
+	}
+    } else {
+	ORACC::P3::Slicer::glos_info(%p);
     }
-    if ($p{'item'} && $rt{'#list_type'} =~ /^tra|xtf$/) {
-	xsystem('@@ORACC@@/bin/p3-collapse.plx', "$p{'tmpdir'}/results.lst", "$p{'tmpdir'}/collapsed.out");
-	$p{'#list'} = "$p{'tmpdir'}/collapsed.out";
-	set_list_items();
-    }
-    if ($p{'#listitems'}) {
-
-	setup_pg_args();
-	my($pg_order,$input) = ORACC::P3::Slicer::page_setup($p{'tmpdir'}, $p{'#list'}, $p{'cetype'} eq 'kwic');
-
-	dbgitems(1);
-	
-	# set up the input for the content maker
-	ORACC::P3::Slicer::page_info($p{'tmpdir'}, $pg_order, $input, $p{'cetype'} eq 'kwic', $p{'project'}, @pg_args);
-
-	dbgitems(2);
-	
-	# generate the outline
-	ORACC::P3::Slicer::page_outline($pg_order, @pg_args);
-
-	dbgitems(3);
-    }
-} else {
-    ORACC::P3::Slicer::glos_info(%p);
 }
 
 dbgitems(4);
