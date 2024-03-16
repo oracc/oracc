@@ -117,7 +117,7 @@ if ($rt{'prod'} eq 'list') {
 	    if ($p{'zoom'} > 0) {
 		$p4 = 1;
 		warn "p3-pager calling ispx\n";
-		xsystem("$oraccbin/ispx -3 -j $project -l $gxis -z$p{'zoom'} -p$p{'page'}");
+		xsystem("$oraccbin/ispx -3 -j $p{'project'} -l $p{'gxis'} -z$p{'zoom'} -p$p{'page'}");
 	    } else {
 		$rt{'itemtype'} = $p{'itemtype'} = $rt{'#list_type'} = 'xtf';
 		my $pubcbdxdir = "@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}";
