@@ -4,7 +4,7 @@
 #  1997 under the GNU General Public License (see /psd/COPYING).
 # 
 #  $Id: Makefile.am,v 0.6 1998/11/10 03:17:41 s Exp $
-SUBDIRS =  pg rnv se sort util
+SUBDIRS =  pg rnv sort util
 
 # needs porting:
 # lemmer matrix
