@@ -114,29 +114,14 @@ if ($rt{'prod'} eq 'list') {
     if ($p{'glos'}) {
 	$rt{'cetype'} = $p{'p3cetype'};
 	if ($p{'gxis'}) {
-	    if ($p{'zoom'} > 0) {
-		$p4 = 1;
-		warn "p3-pager calling ispx\n";
-		xsystem("$oraccbin/ispx -v -3 -j $p{'project'} -l $p{'gxis'} -z$p{'zoom'} -p$p{'page'}");
-	    } else {
-		$rt{'itemtype'} = $p{'itemtype'} = $rt{'#list_type'} = 'xtf';
-		my $pubcbdxdir = "@@ORACC@@/pub/$p{'project'}/cbd/$p{'glos'}";
-		my $tis_file = "$pubcbdxdir/$p{'glos'}.tis";
-		if (-r $tis_file) {
-		    xsystem("@@ORACC@@/bin/xisdb $tis_file $p{'gxis'} >$p{'tmpdir'}/results.lst");
-		} elsif ($p{'glos'} eq 'tok') {
-		    # warn "TOK FOUND TOKID=$p{'gxis'}\n";
-		    xsystem("@@ORACC@@/bin/dbx", '-w', '-d', "@@ORACC@@/pub/$p{'project'}/tok", '-n',
-			    'tok', '-o', "$p{'tmpdir'}/results.lst", '-v', "$p{'gxis'}");
-		} else {
-		    xsystem("@@ORACC@@/bin/xis", '-f', 
-			    "@@ORACC@@/bld/$p{'project'}/$p{'glos'}/$p{'glos'}.xis", '-i', $p{'gxis'}, 
-			    '-o', "$p{'tmpdir'}/results.lst");
-		}
-		$p{'#list'} = "$p{'tmpdir'}/results.lst";
-		set_list_items();
-		$p{'uimode'} = 'mini';
-	    }
+	    $p4 = 1;
+	    warn "p3-pager calling ispx\n";
+	    $p{'p4isp'} = `$oraccbin/ispx -v -3 -j $p{'project'} -l $p{'gxis'} -z$p{'zoom'} -p$p{'page'}`;
+	    warn "p3-pager got p4isp = $p{'p4isp'}\n";
+	    $p{'#content_url'} = $p{'p4isp'}; $p{'#content_url'} =~ s/:::.*//;
+	    $p{'#outline_url'} = $p{'p4isp'}; $p{'#outline_url'} =~ s/^.*?::://;
+	    # exit 1;
+	    $p{'uimode'} = 'mini';
 	} else {
 	    $rt{'#list_type'} = 'cbd';
 	    $rt{'itemtype'} = $p{'itemtype'} = 'cbd';
@@ -631,7 +616,7 @@ run_form_maker {
 	} elsif (m#<p>\@</p>#) {
 	    if ($p{'glos'} && !$p{'gxis'}) {
 		warn "run_form_maker: glos\n";
-		print '<div id="p3left" class="border-right">';
+		print '<div id="p3left" class="border-right a">';
 		if ($jumpfile) {
 		    system 'cat', $jumpfile;
 		} else {
@@ -655,20 +640,29 @@ run_form_maker {
 		print '</div>';
 	    } else {
 		warn "run_form_maker: non-glos\n";
-		print '<div id="p3left" class="border-right">';
-		if ($rt{'#outline_url'}) {
-		    system 'cat', $rt{'#outline_url'};
+		print '<div id="p3left" class="border-right b">';
+		if ($p4) {
+		    warn "p4 echo $p{'#outline_url'} and $p{'#content_url'}\n";
+		    system 'cat', $p{'#outline_url'};
 		} else {
-		    system 'cat', "$p{'tmpdir'}/outline.html";
+		    if ($rt{'#outline_url'}) {
+			system 'cat', $rt{'#outline_url'};
+		    } else {
+			system 'cat', "$p{'tmpdir'}/outline.html";
+		    }
 		}
 		print '</div><div id="p3right" class="p3right80">';
-		if ($rt{'#content_url'}) {
-		    system 'cat', $rt{'#content_url'};
+		if ($p4) {
+		    system 'cat', $p{'#content_url'};
 		} else {
-		    if ($proxy_host) {
-			xsystem "$oraccbin/proxyhost.plx", $proxy_host, "$p{'tmpdir'}/results.html";
+		    if ($rt{'#content_url'}) {
+			system 'cat', $rt{'#content_url'};
 		    } else {
-			xsystem 'cat', "$p{'tmpdir'}/results.html";
+			if ($proxy_host) {
+			    xsystem "$oraccbin/proxyhost.plx", $proxy_host, "$p{'tmpdir'}/results.html";
+			} else {
+			    xsystem 'cat', "$p{'tmpdir'}/results.html";
+			}
 		    }
 		}
 		print '</div>';
