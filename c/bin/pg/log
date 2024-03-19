@@ -1,5 +1,0 @@
-/usr/bin/install: cannot create regular file `/usr/local/bin/concord': Permission denied
-make[3]: *** [install-binPROGRAMS] Error 1
-make[2]: *** [install-am] Error 2
-make[1]: *** [install-recursive] Error 1
-make: *** [install-recursive] Error 1
