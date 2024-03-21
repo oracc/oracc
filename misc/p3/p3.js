@@ -131,6 +131,12 @@ function p3item4(type,nth,id,ref) {
     }
 }
 
+// p3is P3 Instance Set function which collects info from new ISP-enabled P3 page
+function p3is() {
+    p3PageControls();
+    
+}
+
 // Variant p3zoom function for use with gxis
 function p3zoomgx(project,glos,gxis,zoom) {
     p3PageControls();

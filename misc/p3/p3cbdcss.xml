@@ -20,9 +20,11 @@ p.summary { margin-left: 1.1em; text-indent: -1em;
 	    margin-top: 3px; margin-bottom: 5px;
 	  }
 
+#ispCEContent.ce    { margin-left: 0em; }
+
 div.ce    { margin-left: 2em; }
 
-p.norms    { width: 90%; margin: auto; }
+p.norms   { width: 90%; margin: auto; }
 
 div.morphology { width: 90%; margin: auto; }
 

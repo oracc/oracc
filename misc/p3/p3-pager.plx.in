@@ -55,7 +55,7 @@ my $verbose = 1;
 
 warn "==== BEGIN P3 PAGER CALL =====\n";
 
-my $itemsdbg = 0;
+my $itemsdbg = 1;
 sub
 dbgitems {
     if ($itemsdbg) {
@@ -118,9 +118,11 @@ if ($rt{'prod'} eq 'list') {
 	    warn "p3-pager calling ispx\n";
 	    $p{'p4isp'} = `$oraccbin/ispx -v -3 -j $p{'project'} -l $p{'gxis'} -z$p{'zoom'} -p$p{'page'}`;
 	    warn "p3-pager got p4isp = $p{'p4isp'}\n";
-	    $p{'#content_url'} = $p{'p4isp'}; $p{'#content_url'} =~ s/:::.*//;
-	    $p{'#outline_url'} = $p{'p4isp'}; $p{'#outline_url'} =~ s/^.*?::://;
-	    # exit 1;
+	    my($i,$c,$o) = ($p{'p4isp'} =~ m/^(.*?):(.*?):::(.*?)$/);
+	    $p{'items'} = $rt{'items'} = $i;
+	    $p{'pages'} = $rt{'pages'} = $i / 25 + (($i%25)?1:0);
+	    $p{'#content_url'} = $c;
+	    $p{'#outline_url'} = $o;
 	    $p{'uimode'} = 'mini';
 	} else {
 	    $rt{'#list_type'} = 'cbd';
@@ -278,7 +280,7 @@ if (!$p4) {
 }
 
 dbgitems(4);
-set_runtime_vars();
+set_runtime_vars() unless $p4;
 dbgitems(5);
 
 if ($ENV{'HTTP_REFERER'}) {
@@ -347,7 +349,7 @@ sub
 decode_args {
     my %tmp = ();
     foreach my $a (@_) {
-	warn "decode_args: $a\n";
+	#warn "decode_args: $a\n";
        	my($k,$v) = ($a =~ /^(.*?)=(.*)$/);
 	$tmp{$k} = $v;
     }
@@ -1230,24 +1232,26 @@ set_results_xml_info {
 
 sub
 set_runtime_vars {
-    $rt{'itemdisplay'} = 'items';
-    if (open(P, "$p{'tmpdir'}/pg.info")) {
-	# note that when this sets rt{'items'} the number of items can be less
-	# than the number of search results because pg2 uses LINE IDs not WORD
-	# IDs.  If two words in a line match, the line results are fewer than
-	# the se results.
-	while (<P>) {
-	    next if /^\#/;
-	    chomp;
-	    my($k,$v) = (/^(\S+)\s+(\S+)$/);
-	    $rt{$k} = $v;
+    if (!$p4) {
+	$rt{'itemdisplay'} = 'items';
+	if (open(P, "$p{'tmpdir'}/pg.info")) {
+	    # note that when this sets rt{'items'} the number of items can be less
+	    # than the number of search results because pg2 uses LINE IDs not WORD
+	    # IDs.  If two words in a line match, the line results are fewer than
+	    # the se results.
+	    while (<P>) {
+		next if /^\#/;
+		chomp;
+		my($k,$v) = (/^(\S+)\s+(\S+)$/);
+		$rt{$k} = $v;
+	    }
+	    close(P);
+	} else {
+	    # this is a search with 0 results
+	    @rt{qw/pages items uzpage zprev znext/} = (0,0,0,0,0);
+	    $rt{'#outline_url'} = "@@ORACC@@/www/empty.div";
+	    $rt{'#content_url'} = "@@ORACC@@/www/noresults.div";
 	}
-	close(P);
-    } else {
-	# this is a search with 0 results
-	@rt{qw/pages items uzpage zprev znext/} = (0,0,0,0,0);
-	$rt{'#outline_url'} = "@@ORACC@@/www/empty.div";
-	$rt{'#content_url'} = "@@ORACC@@/www/noresults.div";
     }
 }
 
