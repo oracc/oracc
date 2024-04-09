@@ -51,6 +51,9 @@ fi
 aslauto=`oraccopt . asl-auto`
 if [ "$aslauto" = "yes" ]; then
     odo-corpus-signlist.sh
+elif [ "$project" == "pcsl" ]; then
+    mcu-slix.sh pcsl
+    odo-corpus-signlist.sh
 fi
 
 o2-web-corpus.sh
