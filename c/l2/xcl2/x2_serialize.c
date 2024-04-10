@@ -220,6 +220,8 @@ singleton_phrase_children(struct xcl_c*cp, int *pi)
   int i;
   int nphrases = 0;
   *pi = 0;
+  if (!cp->children)
+    return 0;
   for (i = 0; i < cp->nchildren; ++i)
     {
       switch (cp->children[i].c->node_type)
