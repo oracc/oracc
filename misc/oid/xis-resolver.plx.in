@@ -41,12 +41,12 @@ unless (-r $instances) {
     $count = `@@ORACC@@/bin/xisdb $tisfile -c $xis`;
     xml_error("bad xis in request") unless $count;
     my $xisdir = "$projwdir/cbd/$lang/xis";
-    mkdir $xisdir unless -d $xisdir;
-    xml_error("failed to find or create xis cache") unless -d $xisdir;
-    mkdir $bucketpath unless -d $bucketpath;
-    xml_error("failed to find or create xis bucket") unless -d $bucketpath;
-    mkdir $xisdata unless -d $xisdata;
-    xml_error("failed to find or create xis data") unless -d $xisdata;
+    system('mkdir', '-p', $xisdir) unless -d $xisdir;
+    xml_error("failed to find or create xis cache $xisdir") unless -d $xisdir;
+    system('mkdir', '-p', $bucketpath) unless -d $bucketpath;
+    xml_error("failed to find or create xis bucket $bucketpath") unless -d $bucketpath;
+    system('mkdir', '-p', $xisdata) unless -d $xisdata;
+    xml_error("failed to find or create xis data $xisdata") unless -d $xisdata;
     xis_init($xisdata);    
 } else {
     my $n = `cat $xisdata/count`; chomp $n;
