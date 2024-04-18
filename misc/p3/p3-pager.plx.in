@@ -115,7 +115,7 @@ if ($rt{'prod'} eq 'list') {
 	$rt{'cetype'} = $p{'p3cetype'};
 	if ($p{'gxis'}) {
 	    $p4 = 1;
-	    warn "p3-pager calling ispx\n";
+	    warn "p3-pager calling $oraccbin/ispx -v -3 -j $p{'project'} -l $p{'gxis'} -z$p{'zoom'} -p$p{'page'}\n";
 	    $p{'p4isp'} = `$oraccbin/ispx -v -3 -j $p{'project'} -l $p{'gxis'} -z$p{'zoom'} -p$p{'page'}`;
 	    warn "p3-pager got p4isp = $p{'p4isp'}\n";
 	    my($i,$c,$o) = ($p{'p4isp'} =~ m/^(.*?):(.*?):::(.*?)$/);
