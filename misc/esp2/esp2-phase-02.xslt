@@ -49,11 +49,17 @@
 			      </xsl:otherwise>
 			    </xsl:choose>
 			  </xsl:variable>
-			  <xsl:variable name="processed-name" select="esp:make-alphanumeric ( $url-or-name )"/>
+			  <xsl:variable name="processed-name"
+					select="esp:alpha-only($url-or-name)"
+					/>
+			  <!--select="esp:make-alphanumeric ( $url-or-name )"-->
 			  <xsl:value-of select="$processed-name"/>
 			  <xsl:variable name="num-same-names" 
 					select="count ( preceding-sibling::struct:page
-						[esp:make-alphanumeric ( esp:name ) = $processed-name] )"/>
+						[esp:alpha-only(esp:name) = $processed-name] )"
+					/>
+			  <!--select="count ( preceding-sibling::struct:page
+			      [esp:make-alphanumeric ( esp:name ) = $processed-name] )"-->
 			  <xsl:if test="$num-same-names">
 			    <xsl:value-of select="$num-same-names + 1"/>
 			  </xsl:if>

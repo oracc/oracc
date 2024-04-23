@@ -9,6 +9,11 @@
 	xpath-default-namespace="http://www.w3.org/1999/xhtml"
 >
 
+<xsl:function name="esp:alpha-only">
+  <xsl:param name="in-string"/>
+  <xsl:value-of select="translate($in-string, ' &#x9;!@#$%^&amp;*()/?&lt;>|&quot;','')"/>
+</xsl:function>
+  
 <xsl:function name="esp:make-alphanumeric">
   <xsl:param name="in-string"/>
   <xsl:variable name="out-string">
