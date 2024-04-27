@@ -62,6 +62,8 @@ foreach my $c (sort keys %classes) {
 	    } elsif ($c eq 'bborder') {
 		print ".bborder-top { border-top: 2px solid $colours{${$classes{$c}}{'only'}}; }\n";
 		print ".bborder-bot { border-bottom: 2px solid $colours{${$classes{$c}}{'only'}}; }\n";
+		print ".bbborder-top { border-top: 4px solid $colours{${$classes{$c}}{'only'}}; }\n";
+		print ".bbborder-bot { border-bottom: 4px solid $colours{${$classes{$c}}{'only'}}; }\n";
 	    } else {
 		print "$dot$mapped_c { color: $colours{${$classes{$c}}{'only'}}; }\n";
 	    }
