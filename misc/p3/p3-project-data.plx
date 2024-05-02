@@ -19,6 +19,9 @@ if ($project) {
     exit 1;
 }
 
+# NEW PX TO REPLACE P3 LANG DATA
+system "$ENV{'ORACC_BUILDS'}/home/oracc/bin/pxlangs.sh";
+
 my $trans_default_lang = `oraccopt . trans-default-lang`; $trans_default_lang = 'en' unless $trans_default_lang;
 
 my $umbrella = (`oraccopt . build-approved-policy` eq 'umbrella');

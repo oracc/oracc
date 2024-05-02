@@ -22,6 +22,9 @@
 	      select="concat('@@ORACC@@/xml/',$project,'/','views.xml')"/>-->
 
 <xsl:template match="/">
+  <xsl:if test="string-length($project)=0">
+    <xsl:message terminate="yes">p3-xmd-div.xsl: project not set. Stop.</xsl:message>
+  </xsl:if>
   <xsl:apply-templates mode="xmd"/>
 </xsl:template>
 

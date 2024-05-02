@@ -125,6 +125,9 @@
 -->
 
 <xsl:template match="xtf:xtf">
+  <xsl:if test="string-length($project)=0">
+    <xsl:message terminate="yes">g2-xtf-HTML.xsl: project not set. Stop.</xsl:message>
+  </xsl:if>
   <xsl:apply-templates/>
 </xsl:template>
 
@@ -138,6 +141,9 @@
 </xsl:template>
 
 <xsl:template match="xtf:transliteration|xtf:composite">
+  <xsl:if test="string-length($project)=0">
+    <xsl:message terminate="yes">g2-xtf-HTML.xsl: project not set. Stop</xsl:message>
+  </xsl:if>
   <xsl:choose>
     <xsl:when test="$standalone">
       <xsl:call-template name="make-html">
@@ -1707,7 +1713,7 @@
 -->
 
 <xsl:template name="key-after">
-  <xsl:message>key-after <xsl:value-of select="local-name()"/></xsl:message>
+  <!--<xsl:message>key-after <xsl:value-of select="local-name()"/></xsl:message>-->
   <xsl:variable name="key-after" select="xtf:protocols/xtf:protocol[@type='after' or @type='see']"/>
   <xsl:for-each select="$key-after">
     <tr class="noncolumn">
