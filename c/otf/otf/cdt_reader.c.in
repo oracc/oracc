@@ -15,7 +15,7 @@
 #include "proj_context.h"
 
 extern const char *output_dir;
-
+extern int verbose;
 struct run_context *cdt_run;
 
 static List *curr_section_stack = NULL;
@@ -154,7 +154,8 @@ process_cdt_list(struct run_context *run,
 		      const char *style = "00lib/project.sty";
 		      if (xaccess(style,R_OK,0))
 			style = "@@ORACC@@/lib/config/default.sty";
-		      fprintf(stderr, "using style file %s\n", style);
+		      if (verbose)
+			fprintf(stderr, "using style file %s\n", style);
 		      process_cdt_input(run, style, nodelist, metalist, np);
 		    }
 		}
@@ -240,22 +241,30 @@ process_cdt_list(struct run_context *run,
 		  if (np->code == cdt_end_tag)
 		    {
 		      struct cdt_node *endnode;
-		      if (in_document && !strcmp((char*)np->text, "document")
-			  && !strcmp(end_tag,"section"))
-			np->text = (unsigned char *)"section";
-		      if (end_tag && strcmp((const char *)np->text, 
-					    (const char *)end_tag))
-			cdt_warning(np->file,np->lnum,
-				    "mismatched end tag (expected %s found %s)", 
-				    end_tag, np->text);
-		      else if (!end_tag)
-			cdt_warning(np->file,np->lnum,"junk after @end tag");
-		      end_tag = NULL;
-		      endnode = list_pop(nodelist);
-		      free(endnode);
-		      endnode = NULL;
-		      curr_section = list_pop(curr_section_stack);
-		      goto ret;
+		      if (!end_tag)
+			{
+			  cdt_warning(np->file, np->lnum, "missing end tag");
+			  goto ret;
+			}
+		      else
+			{
+			  if (in_document && !strcmp((char*)np->text, "document")
+			      && !strcmp(end_tag,"section"))
+			    np->text = (unsigned char *)"section";
+			  if (end_tag && strcmp((const char *)np->text, 
+						(const char *)end_tag))
+			    cdt_warning(np->file,np->lnum,
+					"mismatched end tag (expected %s found %s)", 
+					end_tag, np->text);
+			  else if (!end_tag)
+			    cdt_warning(np->file,np->lnum,"junk after @end tag");
+			  end_tag = NULL;
+			  endnode = list_pop(nodelist);
+			  free(endnode);
+			  endnode = NULL;
+			  curr_section = list_pop(curr_section_stack);
+			  goto ret;
+			}
 		    }
 #if 0
 		  else if (np->code == cdt_xml_file)
