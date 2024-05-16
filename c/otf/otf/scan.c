@@ -86,6 +86,8 @@ scan_square(struct cdt_node *np, unsigned char *endtok, unsigned char **text_sta
 		    newline[-1] = newline[0] = ' ';
 		  else
 		    cdt_warning(np->file,np->lnum,"newline in attribute group (missing ']'?)");
+		  while ('\n' == *newline)
+		    ++newline;
 		  newline = (unsigned char *)strchr((const char *)newline,'\n');
 		}
 	    }
