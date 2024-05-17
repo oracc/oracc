@@ -85,6 +85,11 @@ finish_atf(struct cdt_node *np)
   fflush(f_xml);
   fseek(f_xml,0L,SEEK_END);
   flen = ftell(f_xml);
+  if (-1 == flen)
+    {
+      np->children = NULL;
+      return;
+    }
   if (verbose)
     fprintf(stderr, "cdt_atf: ATF flen = %ld\n", flen);
   fseek(f_xml,0L,SEEK_SET);

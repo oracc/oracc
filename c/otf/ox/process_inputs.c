@@ -11,6 +11,7 @@
 #include "run.h"
 #include "ox.h"
 extern int optind;
+extern int use_legacy;
 
 #define ucc(x) ((unsigned const char*)x)
 char *input_file;
@@ -137,6 +138,7 @@ process_either(struct run_context *run, unsigned const char *input)
   else if (cdtfile)
     {
       ++files_processed;
+      use_legacy = 1;
       process_otf(run);
     }
 }

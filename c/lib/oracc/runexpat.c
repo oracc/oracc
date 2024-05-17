@@ -69,7 +69,7 @@ findAttr(const char **atts, const char *name)
 {
   while (*atts)
     {
-      if (verbose)
+      if (verbose > 1)
 	fprintf(stderr, "findAttr testing attr %s looking for %s\n", *atts, name);
       if (!strcmp(*atts,name))
 	return atts[1];
