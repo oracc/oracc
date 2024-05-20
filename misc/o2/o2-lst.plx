@@ -19,6 +19,8 @@ BEGIN {
 
 my $listdir = '01bld/lists';
 
+my %proxy_atf = ();
+
 my $atfsources = '01bld/atfsources.lst';
 my $bin = "$ENV{'ORACC'}/bin";
 my $cat_ids = "$listdir/cat-ids.lst";
@@ -36,6 +38,7 @@ atf_sources();
 create_have_atf();
 proxy_lists();
 update_lists();
+outlined_list();
 lemindex_list();
 
 ##############################################################
@@ -251,6 +254,7 @@ proxy_lists {
 		warn "$proxy_lst:$lnum: ignoring duplicate ATF proxy for $p_atf_proj:$p_id\n";
 	    } else {
 		print PA "$p_atf_proj:$p_id\n";
+		$proxy_atf{$p_id} = $p_atf_proj;
 	    }
 
 	    if ($explicit_cat && $p_cat_proj ne $project) {
@@ -460,6 +464,20 @@ qualify_approved {
 	print A $a, "\n";
     }
     close(A);
+}
+
+sub outlined_list {
+    my @o = map { s/^.*?://; $_ } `cat 01bld/lists/outlined.lst`; chomp @o;
+    my %u = (); @u{@o} = ();
+    open(O,'>01bld/lists/outlined.lst') || die;
+    foreach my $pqx (sort keys %u) {
+	if ($proxy_atf{$pqx}) {
+	    print O "$proxy_atf{$pqx}:$pqx\n";
+	} else {
+	    print O "$project:$pqx\n";
+	}
+    }
+    close(O);
 }
 
 sub

@@ -622,7 +622,9 @@ close(VALTAB);
 #close(V);
 
 if (scalar keys %valtab) {
-    system "@@ORACC@@/bin/pgcsi $results/sortinfo.tab";
+    my $p4proj = `@@ORACC@@/bin/wx-is-p4-project.sh`; chomp($p4proj); # 156491
+    my $p4 = length $p4proj ? "x" : "";
+    system "@@ORACC@@/bin/pgcsi$p4 $results/sortinfo.tab";
     system 'mv', "$results/sortinfo.csi", '02pub'
 	if -r "$results/sortinfo.csi";
     if ($project eq 'cdli') {
