@@ -133,7 +133,9 @@ create_have_atf {
 sub set_proxy_atf {
     foreach my $p (@_) {
 	my($j,$i) = split(/:/,$p);
-	$proxy_atf{$i} = $j;
+	if ($i) {
+	    $proxy_atf{$i} = $j;
+	}
     }
 }
 sub
