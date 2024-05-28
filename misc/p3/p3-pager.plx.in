@@ -548,7 +548,7 @@ p3srch {
     } else {
 	$rt{'#index'} = 'cat' unless $rt{'#index'};
 	open(S, ">$p{'tmpdir'}/search.txt");
-	print S "#$p{'project'} !$rt{'#index'} $rt{'srchtext'}";
+	print S "-j $p{'project'} -i $rt{'#index'} $rt{'srchtext'}";
 	close(S);
 	
 	warn "search.txt in $rt{'#index'} mode=", `cat $p{'tmpdir'}/search.txt`, "\n";

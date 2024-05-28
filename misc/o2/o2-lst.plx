@@ -93,6 +93,7 @@ create_have_atf {
 		    my @a = `cat $u/01bld/lists/have-atf.lst`;
 		    chomp(@a);
 		    @have_atf{ @a } = ();
+		    set_proxy_atf(@a);
 		}
 		if (-r "$u/01bld/lists/have-lem.lst") {
 		    my @a = `cat $u/01bld/lists/have-lem.lst`;
@@ -128,7 +129,13 @@ create_have_atf {
 	close(L);
     }
 }
-
+# For umbrella and perhaps search projects also
+sub set_proxy_atf {
+    foreach my $p (@_) {
+	my($j,$i) = split(/:/,$p);
+	$proxy_atf{$i} = $j;
+    }
+}
 sub
 lemindex_list {
     my %proxy_lem_atfs = ();
