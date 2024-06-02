@@ -35,13 +35,14 @@ function xsf_scores {
     done
 }
 
-p=`oraccopt`
-if [[ $p == cdli* || $p == epsd2* ]]; then
-    echo "USING LAZY HTML FOR PROJECT $p"
-else
-    xtfmanager.plx -proj $p -list 01bld/lists/have-xtf.lst 2>01tmp/xtfmanager.log
-    [ -s 01tmp/xtfmanager.log ] && wc -l 01tmp/xtfmanager.log
-fi
+## P4 will do precomputation of .txh/.html differently if at all
+#p=`oraccopt`
+#if [[ $p == cdli* || $p == epsd2* ]]; then
+#    echo "USING LAZY HTML FOR PROJECT $p"
+#else
+#    xtfmanager.plx -proj $p -list 01bld/lists/have-xtf.lst 2>01tmp/xtfmanager.log
+#    [ -s 01tmp/xtfmanager.log ] && wc -l 01tmp/xtfmanager.log
+#fi
 
 wid2err <01bld/lists/have-xtf.lst >01bld/wid2err.tab
 wid2lem <01bld/lists/have-lem.lst >01bld/wid2lem.tab

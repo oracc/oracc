@@ -17,4 +17,5 @@ if [ -r 00lib/names.xml ]; then
     cp 00lib/names.xml 02pub
     chmod o+r 02pub/names.xml
 fi
+lx-atfdata.sh
 exit 0
