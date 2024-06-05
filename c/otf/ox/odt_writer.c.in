@@ -420,7 +420,7 @@ preamble(void)
   else
     xslpi ="<?xml-stylesheet type=\"text/xml\" href=\"#otfODTstylerParallel\"?>";
 
-  if (odt_serial < 2)
+  if (odt_serial && odt_serial < 2)
     sprintf(xslinc1,
 	    "<xi:include xmlns:xi=\"http://www.w3.org/2001/XInclude\"\n  "
 	    "href=\"%s\"/>",otfODTstylerSerial());
