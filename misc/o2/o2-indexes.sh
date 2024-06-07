@@ -1,6 +1,11 @@
 #!/bin/sh
 shopt -s nullglob
 project=`oraccopt`
+
+qindex.sh
+
+exit 0
+
 #gunzip -c 01bld/cdlicat.xmd.gz | secatx -s -p $project
 cat 01bld/cdlicat.xmd | secatx -s -p $project
 pqxrecurse.plx $project

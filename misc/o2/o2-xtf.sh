@@ -81,25 +81,35 @@ rm -f 01tmp/scoregen.log 01bld/lists/sxh-scores.lst
 # indexes
 dir=$ORACC/pub/$project
 
-if [ -s 01bld/lists/lemindex.lst ]; then
-    echo o2-xtf.sh: selemx ...
-    sort -t: -k2 -o 01bld/lists/lemindex.lst 01bld/lists/lemindex.lst
+(cd 01bld/lists ;
+ if [ -r xtfindex.lst ]; then
+     lx -u xtfindex.lst +? lemindex.lst >txtindex.lst
+ elif [ -r lemindex.lst ]; then
+     lx -u lemindex.lst > txtindex.lst
+ fi
+ )
+
+if [ -s 01bld/lists/txtindex.lst ]; then
+    echo o2-xtf.sh: qlemx ...
+#    sort -t: -k2 -o 01bld/lists/lemindex.lst 01bld/lists/lemindex.lst
     mkdir -p $dir/lem
-    cat 01bld/lists/lemindex.lst | selemx -p $project
+    cat 01bld/lists/txtindex.lst | qlemx -p $project
     sort -u -o 02pub/lem/mangle.tab 02pub/lem/mangle.tab
+    sort -u -o 01tmp/signmap.x 01tmp/signmap.log
+    rm -f 01tmp/signmap.log
 fi
 
 if [ -s 01bld/lists/xtfindex.lst ]; then
     mkdir -p $dir/tra
-    echo o2-xtf.sh: setrax ...
-    cat 01bld/lists/xtfindex.lst | setrax -p $project
+    echo o2-xtf.sh: qtrax ...
+    cat 01bld/lists/xtfindex.lst | qtrax -p $project
     sort -u -o 02pub/tra/mangle.tab 02pub/tra/mangle.tab
-    mkdir -p $dir/txt
-    echo o2-xtf.sh: setxtx ...
-    cat 01bld/lists/xtfindex.lst | setxtx -p $project
-    sort -u -o 02pub/txt/mangle.tab 02pub/txt/mangle.tab
-    sort -u -o 01tmp/signmap.x 01tmp/signmap.log
-    rm -f 01tmp/signmap.log
+#    mkdir -p $dir/txt
+#    echo o2-xtf.sh: setxtx ...
+#    cat 01bld/lists/xtfindex.lst | setxtx -p $project
+#    sort -u -o 02pub/txt/mangle.tab 02pub/txt/mangle.tab
+#    sort -u -o 01tmp/signmap.x 01tmp/signmap.log
+#    rm -f 01tmp/signmap.log
 fi
 
 # must do this for EST project search

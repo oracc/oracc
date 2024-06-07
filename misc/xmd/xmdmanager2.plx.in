@@ -595,7 +595,7 @@ if ($onebigfile) {
 	system 'cp', '-p', "@@ORACC@@/bld/$project/cat/vid.dat", "@@ORACC@@/pub/$project/cat";
 	system 'cp', '-p', "@@ORACC@@/bld/$project/cat/proxy-xmd.map", "@@ORACC@@/pub/$project/cat";
 	#FIXME: does this work with subprojects?
-	system "@@ORACC@@/bin/secatx -s -p $xproject <$xmdfile";
+	system "@@ORACC@@/bin/qcatx -s -p $xproject <$xmdfile";
 	system "@@ORACC@@/bin/pqxrecurse.plx $xproject";
 	my $mangletab = "@@ORACC@@/pub/$project/cat/mangle.tab";
 	system "sort -u -o $mangletab $mangletab";
