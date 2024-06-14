@@ -3,6 +3,9 @@ use warnings; use strict; use open 'utf8'; use utf8; use feature 'unicode_string
 binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
 use lib "$ENV{'ORACC_BUILDS'}/lib";
 
+## P4 update: the new architecture with 02pub/atf-data.tab obviates
+## the need for this script.
+
 # Take a project as argument and recursively find all the proxies in the pqid list
 # then rewrite the list with the mappings already resolved.
 

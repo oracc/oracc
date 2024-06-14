@@ -1,7 +1,7 @@
 #!/bin/sh
 project=`oraccopt`
 p3-project-data.plx
-pxp3p4.sh $project
+##pxp3p4.sh $project
 xsltproc ${ORACC}/lib/scripts/p3-hub.xsl 02xml/project-data.xml >02www/hub.html
 if [ -r 00lib/project.css ]; then
     projcss=true
