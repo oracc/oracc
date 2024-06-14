@@ -33,5 +33,7 @@ mkdir -p 02www/lists
 grep -v ^neo: 01bld/lists/outlined.lst >02www/lists/outlined.lst
 chmod -R o+r 02www/lists
 
+#docker restart oracc-ingest
+
 #o2-json.sh
 #neo-portals.sh
