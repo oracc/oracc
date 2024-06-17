@@ -40,6 +40,8 @@ $oracc/bin/qindex.sh
 
 $oracc/bin/pxtsvdbs.sh
 
+$oracc/bin/pxreset.sh $project
+
 #$oracc/bin/o2-indexes-boot.sh
 # $oracc/bin/est-project-web.sh
 

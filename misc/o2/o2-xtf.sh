@@ -83,7 +83,7 @@ dir=$ORACC/pub/$project
 
 (cd 01bld/lists ;
  if [ -r xtfindex.lst ]; then
-     lx -u xtfindex.lst +? lemindex.lst >txtindex.lst
+     lx -u xtfindex.lst '+?' lemindex.lst >txtindex.lst
  elif [ -r lemindex.lst ]; then
      lx -u lemindex.lst > txtindex.lst
  fi
