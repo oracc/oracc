@@ -486,7 +486,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
       <xsl:for-each select="cbd:periods/*">
 	<h2>
 	  <a class="icountu" 
-	     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+	     href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}">
 	    <xsl:apply-templates/>
 	    <xsl:text> (</xsl:text>
 	    <xsl:value-of select="concat(@icount,'x/',@ipct,'%')"/>	
@@ -531,7 +531,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 <xsl:template match="cbd:form|cbd:form-sans">
   <xsl:choose>
     <xsl:when test="@n='*'">
-      <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')"><!--@xml:id-->
+      <a class="icountu" href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}"><!--@xml:id-->
 	<span class="asterisk"><xsl:text>&#x2217;</xsl:text></span> <!-- ASTERISK OPERATOR for ASTERISK -->
       </a>
     </xsl:when>
@@ -544,7 +544,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
     </xsl:when>
     <xsl:otherwise>
       <a class="icountu" 
-	 href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+	 href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}">
 	<xsl:apply-templates/>
       </a>
     </xsl:otherwise>
@@ -564,7 +564,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
       <xsl:for-each select="cbd:cof-form-norm">
 	<xsl:choose>
 	  <xsl:when test="@xis">
-	    <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')"><!--@xml:id-->
+	    <a class="icountu" href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}"><!--@xml:id-->
 	      <xsl:value-of select="@n"/>
 	    </a>
 	  </xsl:when>
@@ -731,14 +731,14 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 
 <xsl:template name="cbd-morph-sub">
   <a class="icountu" 
-     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+     href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}">
     <xsl:value-of select="@n"/>
   </a>
   <xsl:if test="string-length(@morph2)>0">
     <xsl:text> (</xsl:text>
     <xsl:for-each select="id(@morph2)">
       <a class="icountu"
-	 href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+	 href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}">
 	<xsl:value-of select="@n"/>
       </a>
       <xsl:if test="position() &lt; last()">
@@ -768,7 +768,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 
 <xsl:template match="cbd:prefix">
   <a class="icountu" 
-     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')"
+     href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}"
      ><xsl:value-of select="@n"
 		  /></a>
 </xsl:template>
@@ -788,7 +788,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 
 <xsl:template match="cbd:pref">
   <a class="icountu" 
-     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+     href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}">
     <xsl:apply-templates/>
   </a>
 </xsl:template>
@@ -814,7 +814,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 
 <xsl:template match="cbd:stem">
   <a class="icountu" 
-     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+     href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}">
     <xsl:value-of select="@n"/>
   </a>
 </xsl:template>
@@ -836,7 +836,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 
 <xsl:template match="cbd:cont">
   <a class="icountu" 
-     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+     href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}">
     <xsl:value-of select="@n"/>
   </a>
 </xsl:template>
@@ -879,7 +879,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 <xsl:template match="cbd:norm">
   <xsl:choose>
     <xsl:when test="@icount > 0">
-      <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+      <a class="icountu" href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}">
 	<xsl:call-template name="cbd-norm-1"/>
       </a>
     </xsl:when>
@@ -894,7 +894,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 <!--
       <xsl:choose>
 	<xsl:when test="@icount > 0">
-	  <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+	  <a class="icountu" href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}">
 	    <xsl:apply-templates select="id(@ref)"/>
 	  </a>
 	</xsl:when>
@@ -960,7 +960,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 </xsl:template>
 
 <xsl:template name="base-para-sub">
-  <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+  <a class="icountu" href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}">
     <xsl:choose>
       <xsl:when test="cbd:text|cbd:t">
 	<span class="orth1">
@@ -1265,7 +1265,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 	<xsl:choose>
 	  <xsl:when test="@icount>0">
 	    <a class="icountu" 
-	       href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+	       href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}">
 	      <xsl:call-template name="format-sense"/>
 	      <xsl:if test="@icount>0">
 		<xsl:text> (</xsl:text>
@@ -1522,7 +1522,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <a class="icount" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')"> <!--@xml:id-->
+  <a class="icount" href="javascript://" onclick="act_isid(event)" data-lang="{@xml:lang}" data-isid="{@xis}"> <!--@xml:id-->
     <xsl:choose>
       <xsl:when test="string-length($content)>0">
 	<xsl:value-of select="$content"/>
