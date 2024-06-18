@@ -54,6 +54,7 @@ if [ -s 01bld/lists/xtfindex.lst ]; then
     wmapper -i 01bld/lists/xtfindex.lst -p $project
     # linkbase
     proj-linkbase.sh
+    [ -s 01bld/list/linktexts.lst ] && precompute-link-txh.sh
     xsltproc -o 01bld/lists/has-sources.lst $ORACC/lib/scripts/lst-sources.xsl  01bld/linkbase.xml
 elif [ -s 01bld/lists/proxy-atf.lst ]; then
     sort -t: -k2 -o 01bld/lists/proxy-atf.lst 01bld/lists/proxy-atf.lst
