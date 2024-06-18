@@ -11,7 +11,7 @@ bin_SCRIPTS = harvest-links.plx proj-linkbase.sh tlit-sort.sh cleanlinks.plx \
 	gvl-ogsl-needs-uncomp.plx gvl-ogsl-needs-x.plx gvl-fix-should-be.plx \
 	pctc-signs.sh pctc-xis.plx pctc-divs.sh pctc-xis-data.sh tmp-xis-web.sh \
 	pctc-count-data.sh pctc-counts.sh pctc-pages.sh unxpnd.sh \
-	precompute-link-txh.sh
+	precompute-txh.sh
 
 # pctc-alldata.sh
 

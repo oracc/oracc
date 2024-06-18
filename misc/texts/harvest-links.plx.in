@@ -77,6 +77,10 @@ open(L, '>01tmp/indexed.dump');
 print L Dumper(\%indexed);
 close(L);
 
+open(T,'>01bld/lists/need-txh.lst');
+print T join("\n", sort keys %indexed), "\n";
+close(T);
+
 open(L, '>01tmp/ignore.dump');
 print L Dumper(\%ignore);
 close(L);
