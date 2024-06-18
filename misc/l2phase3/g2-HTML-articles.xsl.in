@@ -394,7 +394,7 @@
   <xsl:param name="no-stem" select="false()"/>
   <xsl:choose>
     <xsl:when test="@n='*'">
-      <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')"><!--@xml:id-->
+      <a class="icountu" href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}"><!--@xml:id-->
 	<span class="asterisk"><xsl:text>&#x2217;</xsl:text></span> <!-- ASTERISK OPERATOR for ASTERISK -->
       </a>
     </xsl:when>
@@ -407,7 +407,7 @@
     </xsl:when>
     <xsl:otherwise>
       <a class="icountu" 
-	 href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+	 href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}">
 	<xsl:apply-templates/>
       </a>
     </xsl:otherwise>
@@ -425,7 +425,7 @@
       <xsl:for-each select="cbd:cof-form-norm">
 	<xsl:choose>
 	  <xsl:when test="@xis">
-	    <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')"><!--@xml:id-->
+	    <a class="icountu" href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}"><!--@xml:id-->
 	      <xsl:value-of select="@n"/>
 	    </a>
 	  </xsl:when>
@@ -598,14 +598,14 @@
 
 <xsl:template name="cbd-morph-sub">
   <a class="icountu" 
-     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+     href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}">
     <xsl:value-of select="@n"/>
   </a>
   <xsl:if test="string-length(@morph2)>0">
     <xsl:text> (</xsl:text>
     <xsl:for-each select="id(@morph2)">
       <a class="icountu"
-	 href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+	 href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}">
 	<xsl:value-of select="@n"/>
       </a>
       <xsl:if test="position() &lt; last()">
@@ -635,7 +635,7 @@
 
 <xsl:template match="cbd:prefix">
   <a class="icountu" 
-     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')"
+     href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}"
      ><xsl:value-of select="@n"
 		  /></a>
 </xsl:template>
@@ -655,7 +655,7 @@
 
 <xsl:template match="cbd:pref">
   <a class="icountu" 
-     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+     href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}">
     <xsl:apply-templates/>
   </a>
 </xsl:template>
@@ -681,7 +681,7 @@
 
 <xsl:template match="cbd:stem">
   <a class="icountu" 
-     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+     href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}">
     <xsl:value-of select="@n"/>
   </a>
 </xsl:template>
@@ -703,7 +703,7 @@
 
 <xsl:template match="cbd:cont">
   <a class="icountu" 
-     href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+     href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}">
     <xsl:value-of select="@n"/>
   </a>
 </xsl:template>
@@ -746,7 +746,7 @@
 <xsl:template match="cbd:norm">
   <xsl:choose>
     <xsl:when test="@icount > 0">
-      <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+      <a class="icountu" href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}">
 	<xsl:call-template name="cbd-norm-1"/>
       </a>
     </xsl:when>
@@ -768,7 +768,7 @@
 <!--
       <xsl:choose>
 	<xsl:when test="@icount > 0">
-	  <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+	  <a class="icountu" href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}">
 	    <xsl:apply-templates select="id(@ref)"/>
 	  </a>
 	</xsl:when>
@@ -827,7 +827,7 @@
   <p class="norms">
     <span class="iheader">Base forms:</span>
     <xsl:for-each select="cbd:base">
-      <a class="icountu" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')">
+      <a class="icountu" href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}">
 	<xsl:choose>
 	  <xsl:when test="cbd:text|cbd:t">
 	    <span class="orth1">
@@ -1388,7 +1388,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
-  <a class="icount" href="javascript:distprof2('{$basename}','{/*/@xml:lang}','{@xis}')"> <!--@xml:id-->
+  <a class="icount" href="javascript://" onclick="act_isid(event)" data-lang="{/*/@xml:lang}" data-isid="{@xis}"> <!--@xml:id-->
     <xsl:choose>
       <xsl:when test="string-length($content)>0">
 	<xsl:value-of select="$content"/>
