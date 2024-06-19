@@ -77,6 +77,13 @@ cache_sort_codes {
     }
 }
 
+sub sb_attr {
+    my($a,$b) = @_;
+    $a->setAttribute('href',"javascript://");
+    $a->setAttribute('onclick', "act_block(event)");
+    $a->setAttribute('data-bloc', $b);
+}
+
 sub
 exemplar_links {
     foreach my $e (keys %exemplar_links) {
@@ -128,7 +135,8 @@ exemplar_links {
 		} else {
 		    $xproject = $project;
 		}
-		$a->setAttribute('href',"javascript:showblock('$xproject','$Q','sb.$Qnoproj')");
+		# $a->setAttribute('href',"javascript:showblock('$xproject','$Q','sb.$Qnoproj')");
+		sb_attr($a, "sb.$Qnoproj");
 	    } else {
 		print STDERR "expected a node not found in exemplar_links for $$el[0]\n";
 	    }
@@ -294,7 +302,8 @@ create_scores {
 		my $xQ = $Q;
 		$xQ =~ s/^.*?://;
 		$xQ =~ s/\..*$//;
-		$a->setAttribute('href',"javascript:showblock('$project','$xQ','sb.$id')");
+		#$a->setAttribute('href',"javascript:showblock('$project','$xQ','sb.$id')");
+		sb_attr($a, "sb.$id");
 	    } elsif ($t->getAttribute('class') ne 'nonl') {
 		my $txh_id = xid($t);
 		print STDERR "$Q: $txh_id: expected <a> not found\n";
@@ -509,7 +518,7 @@ print_html_header {
 <link rel="stylesheet" type="text/css" href="/css/p3cbd.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="/css/score.css" />
 <link rel="stylesheet" type="text/css" href="/$project/css/p3colours.css"/>
-<script src="/js/p3.js" type="text/javascript">
+<script src="/js/p4.js" type="text/javascript">
 </script>
 <!-- Google tag (gtag.js) -->
 <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-0QKC3P5HJ1"></script>

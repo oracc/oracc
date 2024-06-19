@@ -62,7 +62,7 @@ elif [ -s 01bld/lists/proxy-atf.lst ]; then
 fi
 
 if [ -s 01bld/lists/lemindex.lst ]; then
-    rm 02pub/bgrm-*.ngm
+    rm -f 02pub/bgrm-*.ngm
     if [ -r 00lib/derived.lst ]; then
 	atflists.plx -U 01bld/lists/lemindex.lst - 00lib/derived.lst | \
 	    bigrams -p $project
