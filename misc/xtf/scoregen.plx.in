@@ -417,7 +417,7 @@ dump_tr {
 	my $pqid = $lid;
 	$pqid =~ s/\..*$//;
 #	my $type = ($pqid =~ /^Q/ ? 'composite' : 'exemplar');
-	$label = "<a href=\"javascript:showexemplar('$project','$pqid','$lid','$ce_cid')\">$label</a>";
+	$label = "<a href=\"javascript://\" onclick=\"act_iref(event)\" data-iref=\"$lid\">$label</a>";
 	print "<td class=\"enum\">$label</td>";
 	print "</tr>";
     }
