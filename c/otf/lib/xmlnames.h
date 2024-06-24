@@ -20,6 +20,7 @@ enum a_type
   n_xtr,
   a_alt,
   a_base,
+  a_c,
   a_class,
   a_cols,
   a_contrefs,

@@ -1,7 +1,7 @@
 include ../../oracc-am-rules.txt
 
-bin_SCRIPTS = tei-project.sh teitexts.sh tei-bigfile.sh tei-dist.sh tei-merge.sh \
-	tei-no-trim.sh tei-trim.sh tei-xmd-headers.sh teimanager.plx \
+bin_SCRIPTS = tei-project.sh teitexts.sh tei-bigfile.sh tei-dist.sh	\
+	tei-merge.sh tei-no-trim.sh tei-trim.sh tei-xmd-headers.sh	\
 	tei-translations.sh
 css_DATA = xtf2tei.css
 scriptdata_DATA = xtf2tei.xsl cbd2listNym.xsl cbd2listPerson.xsl prev-cbd2listNym.xsl \
@@ -49,7 +49,6 @@ EXTRA_DIST = \
 	teicolours.html \
 	teicorpus-header.xsl \
 	teicorpus.xsl \
-	teimanager.plx \
 	teirefs.xsl \
 	teitexts.sh.in \
 	trim-listNym.xsl \

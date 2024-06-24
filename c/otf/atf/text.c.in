@@ -681,6 +681,7 @@ andline(struct node *lnode, unsigned char *lp)
       xstrcat(line_id_buf,".");
       line_id_insertp = line_id_buf + xxstrlen(line_id_buf);
       setAttr(lnode,a_xml_id,ucc(idbase));
+      setAttr(lnode,a_c,ucc("noto"));
 
       tok = NULL;
       if (s < end)

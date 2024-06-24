@@ -27,6 +27,7 @@ struct xname anames[] =
   { "xmlns:xtr", "xmlns:xtr" },
   { "alt", "alt" },
   { "base", "base" },
+  { "c", "c" },
   { "class", "class" },
   { "cols", "cols" },
   { "contrefs", "contrefs" },
@@ -321,6 +322,7 @@ struct attr abases[] =
   { { anames[148].qname,NULL } , { anames[148].pname,NULL } },
   { { anames[149].qname,NULL } , { anames[149].pname,NULL } },
   { { anames[150].qname,NULL } , { anames[150].pname,NULL } },
+  { { anames[151].qname,NULL } , { anames[151].pname,NULL } },
 };
 struct xname enames[] =
 {

@@ -89,11 +89,11 @@
 <xsl:template name="tei-handler">
   <xsl:param name="corpus" select="@project"/>
   <xsl:param name="datestamp" 
-	     select="document('http://@@ORACC_HOST@@/datestamp')/*"/>
+	     select="document('/datestamp')/*"/>
   <xsl:param name="source" select="concat(@project,'/',@xml:id,'.xtf')"/>
   <xsl:param name="root-node"/>
   <xsl:processing-instruction name="xml-stylesheet"
-   >href="http://oracc.museum.upenn.edu/css/xtf2tei.css" type="text/css"</xsl:processing-instruction>
+   >href="/css/xtf2tei.css" type="text/css"</xsl:processing-instruction>
   <xsl:text>&#xa;</xsl:text>
   <TEI>
     <xsl:choose>
@@ -107,10 +107,10 @@
 	      <title>
 		<note type="helplink" 
 		      xl:type="simple" 
-		      xl:href="http://oracc.museum.upenn.edu/doc/user/teicolours.html" 
+		      xl:href="/doc/user/teicolours.html" 
 		      xl:show="new">(A key to the colourization may be found at: 
-		http://oracc.museum.upenn.edu/doc/user/teicolours.html.)</note>
-		<name xl:type="simple" xl:href="http://cdli.ucla.edu/{@xml:id}" 
+		/doc/user/teicolours.html.)</note>
+		<name xl:type="simple" xl:href="https://cdli.mpiwg-berlin.mpg.de/{@xml:id}" 
 		      xl:show="new" type="cdlicat:id_text"><xsl:value-of select="@xml:id"/></name>
 		<xsl:text> = </xsl:text>
 		<name type="cdlicat:primary_publication"><xsl:value-of select="@n"/></name>
