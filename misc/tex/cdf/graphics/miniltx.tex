@@ -2,19 +2,19 @@
 %%%
 %%% Parts of LaTeX: Slightly changed/simplified in places.
 %%% Changes 
-%%%    Copyright 1996 David Carlisle
+%%%    Copyright 1996-2022 David Carlisle LaTeX3 Project
 %%% Original Code
 %%%    Copyright 1993-1996 LaTeX3 Project and original authors
 %%%
-%%%  Under no circumstances should any problems relating to this file
-%%%  be sent to the LaTeX bugs address, or any other LaTeX related
-%%%  support address.
+%%%  Problems relating to this fileshould not be sent to the LaTeX bugs address,
+%%%  or any other LaTeX related support address.
 %%%
-%%% Problems can be sent to me directly at david@dcarlisle.demon.co.uk
-%%% (but I don't promise to fix them).
+%%% Problems should be reported as issues at
+%%% https://github.com/davidcarlisle/graphics-pln/issues
+%%% 
 %%%
 %%% This file may be distributed under the terms of the LPPL, see
-%%% 00readme.txt for details.
+%%% README.txt for details.
 
 %  1996/01/29 initial version
 %  1996/05/09 a few missing commands added
@@ -23,16 +23,30 @@
 % (http://sourceforge.net/projects/asymptote/forums/forum/409349/topic/3405573)
 %  2010/01/07 import was incomplete [KB]
 %  2010/02/03 accept *-form of \ProcessOptions [KB/DL]
+%  2016/08/17 fix catcode @ handling (again), document github address [DC]
+%  2017/06/01 assorted updates to cover updated latex drivers
+%  2019/07/20 more updates for latex drivers
+%  2020/03/02 move to own git repository and add newcommand fix from issue #2
+%  2021/11/15 Define \@backslashchar for issue #4
+%  2022/06/13 Define \@ehd error help (usedby color errors)
+%             Define fallback \mathcolor so color package does not require expl3
+%  2022/09/28 Make \newdimen non-\outer for new .def files
+%  2023/11/09Guard against \@hash@ already being let to #
 
 \edef\resetatcatcode{\catcode`\noexpand\@\the\catcode`\@\relax}
-\ifx\miniltx\undefined\else\endinput\fi
-\let\miniltx\box
 
 \def\makeatletter{\catcode`\@11\relax}
 \def\makeatother{\catcode`\@12\relax}
 \makeatletter
 
+
+% 2016/08/17 move after \makeatletter
+% so \input graphicx \input color works.
+\ifx\miniltx\undefined\else\endinput\fi
+\let\miniltx\box
+
 \def\@makeother#1{\catcode`#1=12\relax}
+
 
 \def\@ifnextchar#1#2#3{%
   \let\reserved@d=#1%
@@ -54,10 +68,7 @@
 \def\:{\@xifnch} \expandafter\gdef\: {\futurelet\@let@token\@ifnch}
 \endgroup
 
-%\def\AtEndOfPackage{%                                                                                                                                              
-%  \expandafter\g@addto@macro\csname\@currname.\@currext-h@@k\endcsname}
 
-%\let\@currname\@empty
 
 \def\@ifstar#1{\@ifnextchar *{\@firstoftwo{#1}}}
 \long\def\@dblarg#1{\@ifnextchar[{#1}{\@xdblarg{#1}}}
@@ -70,13 +81,17 @@
 \long\def\@firstoftwo#1#2{#1}
 \long\def\@secondoftwo#1#2{#2}
 
+\edef\@backslashchar{\expandafter\@gobble\string\\}
+
 \def\NeedsTeXFormat#1{\@ifnextchar[\@needsf@rmat\relax}
 \def\@needsf@rmat[#1]{}
 \def\ProvidesPackage#1{\@ifnextchar[%
     {\@pr@videpackage{#1}}{\@pr@videpackage#1[]}}
 \def\@pr@videpackage#1[#2]{\wlog{#1: #2}}
 \let\ProvidesFile\ProvidesPackage
-\def\PackageInfo#1#2{\wlog{#1: #2}}
+\def\PackageInfo#1#2{{%
+   \newlinechar`\^^J\def\MessageBreak{^^J#1: }%
+   \wlog{#1: #2}}}
 
 \let\DeclareOption\@gobbletwo
 \def\ProcessOptions{\@ifstar\relax\relax}
@@ -108,6 +123,8 @@
   #1%
   \ifx#2\@empty\else\expandafter\zap@space\fi
   #2}
+
+\def\strip@prefix#1>{}
 
 \let\@empty\empty
 \def\@pkgextension{sty}
@@ -170,6 +187,7 @@
   \else
     \@x@protect#1%
   \fi}
+\let\@hash@\relax
 \long\def\@yargdef#1#2#3{%
   \@tempcnta#3\relax
   \advance \@tempcnta \@ne
@@ -237,6 +255,17 @@
     {\def\reserved@a{\renew@command\reserved@a}}%
    \reserved@a}%
 
+% Missing \x@protect definition added 2020/03/02
+\def\x@protect#1{%
+  \ifx\protect\@typeset@protect\else
+    \@x@protect#1%
+  \fi
+}
+\def\@x@protect#1\fi#2#3{%
+  \fi\protect#1%
+}
+\let\@typeset@protect\relax
+
 \def\@ifundefined#1{%
   \expandafter\ifx\csname#1\endcsname\relax
     \expandafter\@firstoftwo
@@ -299,10 +328,19 @@
 
 \let\ExecuteOptions\@gobble
 
-\def\PackageError#1#2#3{%
-  \errhelp{#3}\errmessage{#1: #2}}
-\def\@latex@error#1#2{%
-  \errhelp{#2}\errmessage{#1}}
+\def\on@line{ on input line \the\inputlineno}
+\ifx\@ehc\@undefined\def\@ehc{}\fi
+% 2022/06/13
+\ifx\@ehd\@undefined\def\@ehd{}\fi
+
+\def\PackageError#1#2#3{{%
+  \newlinechar`\^^J\def\MessageBreak{^^J\space\space#1: }%
+  \errhelp{#3}\errmessage{#1: #2}}}
+\def\@latex@error#1#2{\bgroup%
+  \newlinechar`\^^J\def\MessageBreak{^^J\space\space#1: }%
+  \edef\reserved@a{\egroup\errhelp{#2}\errmessage{#1}}%
+  \reserved@a}
+
 
 \bgroup\uccode`\!`\%\uppercase{\egroup
 \def\@percentchar{!}}
@@ -496,3 +534,31 @@
 
 % 1996/11/21
 \def\@warning{\immediate\write16}
+
+% 2019/07/20
+\def\quote@name#1{"\quote@@name#1\@gobble""}
+\def\quote@@name#1"{#1\quote@@name}
+\def\unquote@name#1{\quote@@name#1\@gobble"}
+
+\ifx\set@curr@file\@undefined
+ \def\set@curr@file#1{\xdef\@curr@file{#1}}
+\fi
+
+% 2022/06/13
+\ifx\mathcolor\@undefined
+  % simplified version of \mathcolor
+% 2022/12/02
+  \csname protected\endcsname\def\mathcolor{\begingroup\@ifnextchar[\mlx@mathcolora\mlx@mathcolorb}
+  \long\def\mlx@mathcolora[#1]#2#3{\color[#1]{#2}#3\endgroup}
+  \long\def\mlx@mathcolorb#1#2{\color{#1}#2\endgroup}
+\fi
+
+% 2022/09/28
+% remove outerness
+\expandafter\def\expandafter\newdimen\expandafter{\newdimen}
+
+% 2024/06/19
+% more latex emulation
+\providecommand\DeclareRelease[3]{}
+\providecommand\DeclareCurrentRelease[2]{}
+\providecommand\@spaces{\space\space\space\space}
