@@ -31,6 +31,8 @@
 
 <xsl:template match="/">
   <xsl:call-template name="make-html">
+    <xsl:with-param name="IDp4Pager" select="true()"/>
+    <xsl:with-param name="p4Glossary" select="/*/@xml:lang"/>
     <xsl:with-param name="project" select="$project"/>
     <xsl:with-param name="with-hr" select="false()"/>
     <xsl:with-param name="with-trailer" select="false()"/>    

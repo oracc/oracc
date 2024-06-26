@@ -26,7 +26,7 @@
 	    				'/',$project,'/cbd/',/*/@xml:lang,'/',@ref,'.html',
 					$jsEnd)"/>
 	</xsl:variable>
-	<a href="{$href}">
+	<a href="javascript://" onclick="act_article('{@ref}')" data-item="{@ref}">
 	  <xsl:apply-templates select="cbd:cf|cbd:gw|cbd:pos|cbd:root"/>
 	</a>
 	<xsl:if test="@rws">
