@@ -56,7 +56,9 @@
 	<link rel="stylesheet" type="text/css" href="/epsd2/epsd1-cbd.css" />
 	<script src="/epsd2/epsd1-cbd.js" type="text/javascript"><![CDATA[ ]]></script>
       </xsl:if>
-      <script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript"><![CDATA[ ]]></script>
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript">
+	<xsl:text> </xsl:text>
+      </script>
       <script src="/js/p4.js" type="text/javascript">
 	<xsl:text> </xsl:text>
       </script>
