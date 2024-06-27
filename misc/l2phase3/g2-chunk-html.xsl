@@ -73,6 +73,8 @@
 		 doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
 		 indent="yes">
       <xsl:call-template name="make-html">
+	<xsl:with-param name="IDp4Pager" select="true()"/>
+	<xsl:with-param name="p4Glossary" select="/*/@xml:lang"/>
 	<xsl:with-param name="project" select="$project"/>
 	<xsl:with-param name="webtype" select="'cbd'"/>
 	<xsl:with-param name="with-trailer" select="false()"/>

@@ -16,6 +16,7 @@
   exclude-result-prefixes="cbd dc ex i xl stt">
 
 <xsl:param name="dateversion"/>
+<xsl:param name="project"/>
 
 <xsl:output method="xml" encoding="utf-8"
    doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -23,7 +24,15 @@
    indent="yes"/>
 
 <xsl:template match="xh:body">
-  <body class="obf">
+  <body id="p4Pager" class="obf">
+    <xsl:choose>
+      <xsl:when test="string-length(@data-proj)>0">
+	<xsl:copy-of select="@data-proj"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:attribute name="data-proj"><xsl:value-of select="$project"/></xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
     <div class="obf-header">
       <h1><xsl:value-of select="/*/xh:head/xh:title"/></h1>
       <h2>Version of <xsl:value-of select="$dateversion"/></h2>

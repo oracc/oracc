@@ -20,6 +20,8 @@
 
 <xsl:template match="xh:div">
   <xsl:call-template name="make-html">
+    <xsl:with-param name="IDp4Pager" select="true()"/>
+    <xsl:with-param name="p4Glossary" select="/*/@xml:lang"/>
     <xsl:with-param name="project" select="$project"/>
     <xsl:with-param name="title" select="'TOC'"/>
   </xsl:call-template>
