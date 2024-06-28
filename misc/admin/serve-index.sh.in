@@ -36,7 +36,7 @@ exec 1>$logfile
 exec 2>&1
 
 cd $oracc_builds/$project
-$oracc/bin/qindex.sh
+$oracc/bin/qindex.sh $project
 
 $oracc/bin/pxtsvdbs.sh
 

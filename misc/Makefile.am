@@ -44,6 +44,7 @@ SUBDIRS = \
 	saxon \
 	schemas \
 	se \
+	sl \
 	sma \
 	sma2 \
 	ssa3 \
