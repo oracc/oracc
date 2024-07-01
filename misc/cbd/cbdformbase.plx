@@ -25,6 +25,10 @@ while (<>) {
     } elsif (/^(.*?):(.*?): form's BASE (\S+) should be (\S+)\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
 	fix_in_form($file,$line,$alt,$pri);
+    } elsif (/^(.*?):(.*?): \(atf error\) \(gvl\) \[sb[25]\] (\S+?): should be (\S+)$/
+	|| /^(.*?):(.*?): \(atf error\) \(gvl\) \[sb[25]\] (\S+?): should be (\S+) .*$/) {
+	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
+	fix_in_form_form($file,$line,$alt,$pri);
     } elsif (/^(.*?):(.*?): \(bases\) compound (\S+) should be (\S+)\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
 	fix_in_base($file,$line,$alt,$pri);
@@ -179,6 +183,33 @@ sub fix_in_form {
 	    fix_set_line($l,"$prebase/$base $postbase");
 	} else {
 	    warn "$f:$l: $bad not found as /BASE in form (base=$base)\n";
+	}
+    } else {
+	warn "$f:$l: not a \@form line\n" if $verbose;
+    }
+}
+
+sub fix_in_form_form {
+    my($f,$l,$bad,$good) = @_;
+    warn "fix_in_form_form: bad=$bad; good=$good\n";
+    my $ln = fix_get_line($f,$l);
+    if ($ln =~ /^\@form/ || $ln =~ /\t\@form/) {
+	my ($preform,$form,$postform) = $ln =~ m#^(.*?\@form\s+)(\S+)(\s+.*?)$#;
+	my $orig_form = $form;
+	my $badQ = quotemeta($bad);
+	my $nfix = 0;
+	my $n = 0;
+	$good = fix_hide_bound($good);
+	do {
+	    $n = ($form =~ s#(^|$bound)$badQ($|$bound)#$1$good$2#);
+	    ++$nfix if $n;
+	} while ($n);
+	$form = fix_show_bound($form);
+	if ($nfix) {
+	    warn "form $orig_form => $form\n";
+	    fix_set_line($l,"$preform $form $postform");
+	} else {
+	    warn "$f:$l: $bad not found as FORM in form (form=$form)\n";
 	}
     } else {
 	warn "$f:$l: not a \@form line\n" if $verbose;
