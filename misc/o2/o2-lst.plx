@@ -445,6 +445,8 @@ update_lists {
     } elsif ($opt =~ /\.ol/) {
 	## ol('outlined.lst', $opt);
 	warn "o2-lst.plx: .ol lists not yet implemented\n";
+    } elsif ($opt =~ /^catalog/) {
+	xsystem 'cp', '01bld/lists/cat-ids.lst', $out_outlined;	
     } else {
 	warn "o2-lst.plx: unknown build-outlined-policy value `$opt'\n";
     }
