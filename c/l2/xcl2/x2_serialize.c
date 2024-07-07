@@ -190,7 +190,7 @@ serialize_one_l(FILE *f_xcl, struct xcl_l*lp)
 }
 
 static void
-serialize_m(unsigned char *key,void*val)
+serialize_m(const unsigned char *key,void*val)
 {
   if ('#' != *key)
     fprintf(static_f_xcl,"<m k=\"%s\">%s</m>",key,xmlify((char*)val));
