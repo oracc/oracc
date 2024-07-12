@@ -57,13 +57,13 @@ foreach my $c (@cand) {
 
 # no concept of not-in-glo when cbd-mode is dynamic
 unless ($dynamic) {
-    open(XLOG, '>01bld/xtf-sigs-not-in-glo.log');
-    open(PLOG, '>01bld/prx-sigs-not-in-glo.log');
+    open(XLOG, '>01bld/xtf-sigs-not-in-glo.log') || die "$0: can't write in 01bld\n";
+    open(PLOG, '>01bld/prx-sigs-not-in-glo.log') || die "$0: can't write in 01bld\n";
 }
 
 foreach my $s (@sigs) {
     $state = set_state($s);
-    open(S,$s);
+    open(S,$s) || die "$0: failed to open '$s'\n";
     my $fields = <S>;
     while (<S>) {
 	next if /^\s*$/;
@@ -97,7 +97,7 @@ foreach my $s (@sigs) {
 	    %{$sigs{$1}} = ();
 	    $ranks{$1} = $2;
 	} else {
-	    warn "$s:$.: ignoring bad .sig file line\n";
+	    # warn "$s:$.: ignoring bad .sig file line\n";
 	}
     }
   SIGFILE_END:
@@ -116,7 +116,7 @@ unless ($dynamic) {
 #    $langs{$l} = $fh;
 #}
 
-open(P, '>01bld/project.sig');
+open(P, '>01bld/project.sig') || die "$0: can't write 01bld/project.sig\n";
 print P "\@fields sig rank freq inst\n";
 foreach my $s (sort keys %sigs) {
     next if $s =~ /^\@field/;

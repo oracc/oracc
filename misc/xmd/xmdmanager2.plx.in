@@ -52,6 +52,7 @@ my %merge_periods_all = (
     'Kassite'=>'Kassite',
     'First Millennium'=>'Neo-Assyrian',
     'Standard Babylonian'=>'Neo-Assyrian',
+    'Early Neo-Babylonian'=>'Neo-Babylonian',
     'Neo-Babylonian'=>'Neo-Babylonian',
     'Neo-Assyrian'=>'Neo-Assyrian',
     'Persian'=>'Persian',
