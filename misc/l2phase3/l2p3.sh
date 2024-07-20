@@ -53,9 +53,9 @@ if [ "$g2c" != "" ]; then
 	    if [ "$inlinesenses" == "yes" ]; then
 		l2p3-inline-senses.sh $webdir $l
 	    fi
-	    if [ "$lexdata" == "yes" ]; then
-		lex-xincludes.plx 02www/cbd $l 2>lex-includes.log
-	    fi	    
+#	    if [ "$lexdata" == "yes" ]; then
+#		lex-xincludes.plx 02www/cbd $l 2>lex-includes.log
+#	    fi	    
 	fi
     done
 fi
