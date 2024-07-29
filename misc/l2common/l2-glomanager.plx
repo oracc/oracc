@@ -289,15 +289,15 @@ foreach my $p (@{$cfg{'process'}}) {
 	die "l2-glomanager.plx: no such XSL $p{'action'}\n" unless $styler;
 	my $subject = $cbd;
 	if ($p{'input'}) {
-	    if ($results{$p{'input'}}) {
-		$subject = $results{$p{'input'}};
-		warn "using cached input $p{'input'}\n" if $verbose;
-	    } else {
+#	    if ($results{$p{'input'}}) {
+#		$subject = $results{$p{'input'}};
+#		warn "using cached input $p{'input'}\n" if $verbose;
+#	    } else {
 		warn "loading input $p{'input'}\n" if $verbose;
 		$subject = load_xml($p{'input'});
 		die "l2-glomanager.plx: load_xml failed on $p{'input'}\n"
 		    unless $subject;
-	    }
+#	    }
 	}
 	my %process_params = ();
 	if ($p{'params'}) {

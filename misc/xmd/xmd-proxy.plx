@@ -107,11 +107,23 @@ xmd_from_list {
 	    print P $_;
 	    ++$n_p;
 	} elsif ($proxyid =~ /^Q/) {
-	    s/id_text/id_composite/g; # force all Q-texts to use id_composite
+	    if (/<id_text/) {
+		if (/<id_composite.*?>[PQX]/) {
+		    s#<id_text.*?</id_text>##; # if a cat has id_composite and id_text, delete id_text
+		} else {
+		    s/id_text/id_composite/g; # else coerce id_text to id_composite
+		}
+	    } 
 	    print Q $_;
 	    ++$n_q;
 	} else {
-	    s/id_composite/id_text/g; # force all X-texts to use id_text
+	    if (/<id_composite/) {
+		if (/<id_text.*?>[PQX]/) {
+		    s#<id_composite.*?</id_composite>##; #delete id_composite 
+		} else {
+		    s/id_composite/id_text/g; # else coerce id_composite to id_text
+		}
+	    } 	    
 	    print X $_;
 	    ++$n_x;
 	}

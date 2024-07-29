@@ -107,7 +107,7 @@ x2d_serialize_one_l(FILE *f_dbg, struct xcl_l*lp)
 }
 
 static void
-x2d_serialize_m(unsigned char *key,void*val)
+x2d_serialize_m(const unsigned char *key,void*val)
 {
   if ('#' != *key)
     fprintf(static_f_dbg,"<m k=\"%s\">%s</m>",key,(char*)val);

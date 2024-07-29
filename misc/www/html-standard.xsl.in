@@ -26,6 +26,8 @@
   <xsl:param name="standalone" select="false()"/>
   <xsl:param name="body-class" select="''"/>
   <xsl:param name="with-epsd1" select="false()"/>
+  <xsl:param name="IDp4Pager" select="false()"/>
+  <xsl:param name="p4Glossary" select="''"/>
 
   <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -48,13 +50,15 @@
 	<!-- <link rel="stylesheet" type="text/css" href="/{$project}/p3.css" media="screen"/> -->
 	<link rel="stylesheet" type="text/css" href="/{$project}/css/p3colours.css" media="screen"/>
       </xsl:if>
-      <link rel="stylesheet" type="text/css" href="/css/p3.css" media="screen"/>
+      <link rel="stylesheet" type="text/css" href="/css/p4.css" media="screen"/>
       <link rel="stylesheet" type="text/css" href="/css/p3colours.css" media="screen"/>
       <xsl:if test="$with-epsd1">
 	<link rel="stylesheet" type="text/css" href="/epsd2/epsd1-cbd.css" />
 	<script src="/epsd2/epsd1-cbd.js" type="text/javascript"><![CDATA[ ]]></script>
       </xsl:if>
-      <script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript"><![CDATA[ ]]></script>
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript">
+	<xsl:text> </xsl:text>
+      </script>
       <script src="/js/p4.js" type="text/javascript">
 	<xsl:text> </xsl:text>
       </script>
@@ -88,6 +92,13 @@
       </xsl:if>
     </head>
     <body>
+      <xsl:if test="$IDp4Pager">
+	<xsl:attribute name="id"><xsl:text>p4Pager</xsl:text></xsl:attribute>
+	<xsl:attribute name="data-proj"><xsl:value-of select="$project"/></xsl:attribute>
+	<xsl:if test="string-length($p4Glossary)>0">
+	  <xsl:attribute name="data-glos"><xsl:value-of select="$p4Glossary"/></xsl:attribute>
+	</xsl:if>
+      </xsl:if>
       <xsl:choose>
 	<xsl:when test="string-length($body-class) > 0">
 	  <xsl:attribute name="class"><xsl:value-of select="$body-class"/></xsl:attribute>

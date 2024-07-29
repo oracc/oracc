@@ -185,7 +185,7 @@ note_parse_tlit(struct node *parent, int current_level, unsigned char **lines)
 {
   int nlines = 0;
   struct node *n;
-  char tagbuf[8], *m = tagbuf;
+  char tagbuf[strlen((char*)lines[0])+1], *m = tagbuf;
   unsigned char *notelabel = NULL, *notetext = NULL;
   const unsigned char *tag = NULL, *mark = NULL;
 

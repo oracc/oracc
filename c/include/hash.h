@@ -12,7 +12,7 @@
 #include <list.h>
 
 typedef void hash_exec_func(void *);
-typedef void hash_exec2_func(Uchar*,void *);
+typedef void hash_exec2_func(const Uchar*,void *);
 typedef void hash_free_func(void *);
 
 #define HASH_DEBUG	0

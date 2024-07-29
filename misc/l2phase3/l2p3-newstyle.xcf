@@ -32,14 +32,20 @@
   </set>
 
   <set var="process">
-    <key k="action"   to="$scripts/ns-g2-HTML-articles.xsl"/>
-    <key k="input"    to="01bld/$cbdlang/articles-with-periods.xml"/>
-    <key k="output"   to="$webcbd/$cbdlang/articles.html"/>
-    <key k="cbdresult" to="1"/>
+    <key k="action"    to="$scripts/ns-g2-HTML-articles.xsl"/>
+    <key k="input"     to="01bld/$cbdlang/articles-with-periods.xml"/>
+    <key k="cbdresult" to="0"/>
+    <key k="output"    to="$webcbd/$cbdlang/articles.html"/>
   </set>
 
   <set var="process">
-    <key k="action"   to="$scripts/g2-split-html.xsl"/>
+    <key k="action"    to="$oracc/bin/lex-provides.sh"/>
+  </set>
+
+  <set var="process">
+    <key k="input"     to="$webcbd/$cbdlang/articles.html"/>
+    <key k="action"    to="$scripts/g2-split-html.xsl"/>
+    <key k="cbdresult" to="1"/>
   </set>
 
   <set var="process">

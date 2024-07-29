@@ -14,6 +14,8 @@ use ORACC::XMD::Util;
 use ORACC::XMD::Fields;
 use ORACC::XVL::AVL;
 
+sub xsystem;
+
 use Data::Dumper;
 my $catd_debug = 0;
 open(CATDUMP,'>cat.dump')
@@ -50,6 +52,7 @@ my %merge_periods_all = (
     'Kassite'=>'Kassite',
     'First Millennium'=>'Neo-Assyrian',
     'Standard Babylonian'=>'Neo-Assyrian',
+    'Early Neo-Babylonian'=>'Neo-Babylonian',
     'Neo-Babylonian'=>'Neo-Babylonian',
     'Neo-Assyrian'=>'Neo-Assyrian',
     'Persian'=>'Persian',
@@ -248,15 +251,15 @@ foreach my $c (split(/,/,$pub_cat)) {
     my @res = ("02pub/$c");
     if ($type eq 'fxr') {
 	$res[0] =~ s#\.[^./]+$#.xml#;
-	system 'unfxr.plx', '-fxr', $cat_c, '-res', $res[0];
+	xsystem 'unfxr.plx', '-fxr', $cat_c, '-res', $res[0];
     } else {
-	system 'cp', '-p', $cat_c, '02pub';
+	xsystem 'cp', '-p', $cat_c, '02pub';
     }
     if (-r '00lib/keydata.xml') {
-	system 'cp', '-p', '00lib/keydata.xml', '02pub';
+	xsystem 'cp', '-p', '00lib/keydata.xml', '02pub';
 	push @res, '02pub/keydata.xml';
     }
-    system 'chmod', 'o+r', @res;
+    xsystem 'chmod', 'o+r', @res;
 }
 my $projtype = `oraccopt . type`;
 my $cat_policy = `oraccopt . catalog-build-policy`;
@@ -296,7 +299,7 @@ if ($cat_policy eq 'auto') {
 }
 
 if (-r '01bld/lists/proxy-cat.lst') {
-    system 'xmd-proxy.plx';
+    xsystem 'xmd-proxy.plx';
     push @catalogs, map { { 'file'=>$_ } } <01bld/cat/proxy-*.xml>;
 #    open(P,'01bld/lists/proxy-cat.lst');
     open(P,'01bld/lists/proxy-atf.lst');
@@ -326,7 +329,7 @@ if (-r '01bld/lists/proxy-cat.lst') {
 
 # check that all the approved texts are in a catalogue somewhere, and make a dynacat of any we need
 if ($cat_policy eq 'mixed') {
-    system '@@ORACC@@/bin/atflists.plx', '-o01bld/lists/cat-needed.lst', '01bld/lists/approved.lst', '-', '01bld/lists/cat-ids.lst';
+    xsystem '@@ORACC@@/bin/atflists.plx', '-o01bld/lists/cat-needed.lst', '01bld/lists/approved.lst', '-', '01bld/lists/cat-ids.lst';
     my @todo = `cat 01bld/lists/cat-needed.lst`; chomp @todo;
     if ($#todo >= 0) {
 	make_dynacat(@todo);
@@ -566,6 +569,7 @@ warn "$0: xmdfile = $xmdfile\n";
 warn "$0: xmdsplit = $xmlsplit\n";
 
 if ($onebigfile) {
+    warn "$0: onebigfile\n" if $verbose;
     if (!$split) {
 	if ($skip_xmd) {
 	    # open(RS,">/dev/null");
@@ -590,21 +594,22 @@ if ($onebigfile) {
     close(XOUT);
     if (scalar keys %valtab) {
 	my $xproject = ($project ? $project : 'cdli');
-	system 'mkdir', '-p', "@@ORACC@@/pub/$project/cat";
+	xsystem 'mkdir', '-p', "@@ORACC@@/pub/$project/cat";
 	dump_vid("@@ORACC@@/bld/$project/cat/vid.dat");
-	system 'cp', '-p', "@@ORACC@@/bld/$project/cat/vid.dat", "@@ORACC@@/pub/$project/cat";
-	system 'cp', '-p', "@@ORACC@@/bld/$project/cat/proxy-xmd.map", "@@ORACC@@/pub/$project/cat";
+	xsystem 'cp', '-p', "@@ORACC@@/bld/$project/cat/vid.dat", "@@ORACC@@/pub/$project/cat";
+	xsystem 'cp', '-p', "@@ORACC@@/bld/$project/cat/proxy-xmd.map", "@@ORACC@@/pub/$project/cat";
 	#FIXME: does this work with subprojects?
-	system "@@ORACC@@/bin/qcatx -s -p $xproject <$xmdfile";
-	system "@@ORACC@@/bin/pqxrecurse.plx $xproject";
+	xsystem "@@ORACC@@/bin/qcatx -s -p $xproject <$xmdfile";
+	xsystem "@@ORACC@@/bin/pqxrecurse.plx $xproject";
 	my $mangletab = "@@ORACC@@/pub/$project/cat/mangle.tab";
 	system "sort -u -o $mangletab $mangletab";
-#	system 'gzip', '-f9', $xmdfile;
+#	xsystem 'gzip', '-f9', $xmdfile;
     }
 }
 
 print LOG '</log>';
 close LOG;
+warn "$0: closed $logfile\n" if $verbose;
 #print KEYS '</keys>';
 #close(KEYS);
 sortkeys();
@@ -622,18 +627,19 @@ close(VALTAB);
 #close(V);
 
 if (scalar keys %valtab) {
-    my $p4proj = `@@ORACC@@/bin/wx-is-p4-project.sh`; chomp($p4proj); # 156491
-    my $p4 = length $p4proj ? "x" : "";
-    system "@@ORACC@@/bin/pgcsi$p4 $results/sortinfo.tab";
-    system 'mv', "$results/sortinfo.csi", '02pub'
+    warn "$0: processing valtab\n" if $verbose;
+    # default to p4 pgcsix
+    xsystem "@@ORACC@@/bin/pgcsix $results/sortinfo.tab";
+    xsystem 'mv', "$results/sortinfo.csi", '02pub'
 	if -r "$results/sortinfo.csi";
     if ($project eq 'cdli') {
-	system "@@ORACC@@/bin/catvec.plx";
+	xsystem "@@ORACC@@/bin/catvec.plx";
     }
 }
 print STDERR "\n" if $verbose;
 
 # format the log file
+warn "$0: formatting log file\n" if $verbose;
 my $lxsl = load_xsl($log_xsl);
 my $lxml = load_xml($logfile);
 my $lhtml = $lxsl->transform($lxml);
@@ -1266,13 +1272,13 @@ make_dynacat {
     print P "</catalog>"; close(P);
     print Q "</catalog>"; close(Q);
     ## FIXME: need to validate X-numbers if project-x is used instead of xcat
-    system 'xcat.plx' unless -e "00cat/$project-x.xml";
+    xsystem 'xcat.plx' unless -e "00cat/$project-x.xml";
     unlink $pcat unless $n_p;
     unlink $qcat unless $n_q;
     ## Note that we do not edit project-x.xml; only edit cats that are in 01bld/cat
     if (-r "00bin/edit-dynacat.sh") {
 	foreach my $c ($pcat, $qcat, '01bld/cat/dynamic-x.xml') {
-	    system('00bin/edit-dynacat.sh', $c) if -r $c;
+	    xsystem('00bin/edit-dynacat.sh', $c) if -r $c;
 	}
     }
     foreach my $c ($pcat, $qcat, '01bld/cat/dynamic-x.xml', "00cat/$project-x.xml") {
@@ -1428,7 +1434,7 @@ vid_pad {
 #
 sub
 dump_vid {
-    system 'mkdir', '-p', '01bld/cat';
+    xsystem 'mkdir', '-p', '01bld/cat';
     open(XMDMAP, ">01bld/cat/proxy-xmd.map");
     open(V,">$_[0]") || die "dump_vid: can't open '$_[0]'\n";
     my @qvid = map { qualify_vid($_) } @vid;
@@ -2392,6 +2398,12 @@ dump_translist {
 	push @{$xmd_outputs{$curr_xmd}},
 		"<trans>", map({ "<tr>$_</tr>" } keys %$tl), '</trans>';
     }
+}
+
+sub
+xsystem {
+    warn "system @_\n" if $verbose;
+    system @_;
 }
 
 1;
