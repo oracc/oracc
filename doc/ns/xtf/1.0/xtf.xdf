@@ -488,6 +488,7 @@ class="cookbook">#note: @notelabel{i 1} A note to column 1 line
 <d:rnc>
 comments = cmt | notetext
 cmt = element cmt { text }
+cuneifont = attribute c { text }
 notelabel = attribute note:label { text }
 notemark  = attribute note:mark { text }
 noteauto  = attribute note:auto { text }
@@ -551,6 +552,7 @@ transliteration =
   element transliteration {
     attribute xml:id   { xsd:ID },
     attribute n        { text },
+    cuneifont?,
     attribute hand     { text }?,
     attribute xml:lang { xsd:NMTOKEN },
     textdesc?,
@@ -587,6 +589,7 @@ composite =
 composite-attlist &amp;=
   attribute xml:id { xsd:ID },
   attribute n { text },
+  cuneifont?,
   attribute xml:lang { xsd:NMTOKEN }?
 
 </d:rnc>
@@ -1535,6 +1538,7 @@ score =
 score-attlist &amp;=
   attribute xml:id { xsd:ID },
   attribute n { text },
+  cuneifont?,
   score_mode,
   score_type,
   score_word?,
@@ -1554,6 +1558,7 @@ synopticon =
 synopticon-attlist &amp;=
   attribute xml:id { xsd:ID },
   attribute n { text },
+  cuneifont?,
   attribute xml:lang { xsd:NMTOKEN }?
 sigdef = element sigdef { sigdef-attlist, empty }
 sigdef-attlist &amp;=
