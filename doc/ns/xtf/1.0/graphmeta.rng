@@ -87,6 +87,9 @@
     <optional>
       <ref name="a_spform"/>
     </optional>
+    <optional>
+      <ref name="cuneifont"/>
+    </optional>
   </define>
   <define name="accented">
     <attribute name="g:accented"/>

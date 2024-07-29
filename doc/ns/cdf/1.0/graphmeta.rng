@@ -88,7 +88,7 @@
       <ref name="a_spform"/>
     </optional>
     <optional>
-      <ref name="c"/>
+      <ref name="cuneifont"/>
     </optional>
   </define>
   <define name="accented">
@@ -103,9 +103,6 @@
     <attribute name="g:breakEnd">
       <data type="IDREF"/>
     </attribute>
-  </define>
-  <define name="c">
-    <attribute name="c"/>
   </define>
   <define name="damageStart">
     <attribute name="g:damageStart">

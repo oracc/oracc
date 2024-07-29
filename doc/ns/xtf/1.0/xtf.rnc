@@ -48,6 +48,7 @@ proto.version= element protocol { attribute type { "version" }, text }
 
 comments = cmt | notetext
 cmt = element cmt { text }
+cuneifont = attribute c { text }
 notelabel = attribute note:label { text }
 notemark  = attribute note:mark { text }
 noteauto  = attribute note:auto { text }
@@ -70,6 +71,7 @@ transliteration =
   element transliteration {
     attribute xml:id   { xsd:ID },
     attribute n        { text },
+    cuneifont?,
     attribute hand     { text }?,
     attribute xml:lang { xsd:NMTOKEN },
     textdesc?,
@@ -106,6 +108,7 @@ composite =
 composite-attlist &=
   attribute xml:id { xsd:ID },
   attribute n { text },
+  cuneifont?,
   attribute xml:lang { xsd:NMTOKEN }?
 
 object = 
@@ -357,6 +360,7 @@ score =
 score-attlist &=
   attribute xml:id { xsd:ID },
   attribute n { text },
+  cuneifont?,
   score_mode,
   score_type,
   score_word?,
@@ -376,6 +380,7 @@ synopticon =
 synopticon-attlist &=
   attribute xml:id { xsd:ID },
   attribute n { text },
+  cuneifont?,
   attribute xml:lang { xsd:NMTOKEN }?
 sigdef = element sigdef { sigdef-attlist, empty }
 sigdef-attlist &=

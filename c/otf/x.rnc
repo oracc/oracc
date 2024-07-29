@@ -1,14 +1,14 @@
 #Concatenated cdf.rnc schema built by mk_cdfrnc_c.plx
 #See http://enlil.museum.upenn.edu/cdl/doc/CDF/ for more info
 default namespace = "http://oracc.org/ns/xtf/1.0"
+namespace g = "http://oracc.org/ns/gdl/1.0"
+namespace c = "http://oracc.org/cdf/1.0"
+namespace ci = "http://oracc.org/cdf-inline/1.0"
 namespace n = "http://oracc.org/ns/norm/1.0"
+namespace xh = "http://www.w3.org/1999/xhtml"
+namespace syn = "http://oracc.org/ns/syntax/1.0"
 namespace xtr = "http://oracc.org/ns/xtr/1.0"
 namespace note = "http://oracc.org/ns/note/1.0"
-namespace ci = "http://oracc.org/cdf-inline/1.0"
-namespace c = "http://oracc.org/cdf/1.0"
-namespace g = "http://oracc.org/ns/gdl/1.0"
-namespace syn = "http://oracc.org/ns/syntax/1.0"
-namespace xh = "http://www.w3.org/1999/xhtml"
 lV = xsd:string {
    pattern = "[aeiu]([\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}][\x{2080}\x{2081}\x{2082}\x{2083}\x{2084}\x{2085}\x{2086}\x{2087}\x{2088}\x{2089}]?|\x{208A})?"
 }
@@ -57,7 +57,7 @@ punct    = element g:p { p.model }
 lang     = attribute xml:lang { xsd:language }
 gsurro   = 
   element g:surro {
-    delim? , (s|c|n|punct) , groupgroup
+    delim? , (s|c|n|punct|group) , groupgroup
   }
 
 # Values
@@ -98,7 +98,8 @@ mods     = modifier | allograph | formvar
 
 modifier = element g:m { xsd:string { pattern = "[a-z]|[0-9]{1,3}" } }
 
-allograph= element g:a { xsd:string { pattern = "[a-wyz0-9]+" } }
+allograph= element g:a { xsd:string { pattern = "[a-wyz0-9]+" } 
+			| xsd:string { pattern = "[\+\-]" } }
 
 formvar = element g:f { xsd:string { pattern = "[a-z0-9]+" } }
 
@@ -132,7 +133,7 @@ o.binary =
 
 # Punctuation
 p.model =
-    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/"|":r:" } , 
+    attribute g:type { "*"|":"|":'"|':"'|":."|"::"|"|"|"/"|":r:"|"·" } , 
     g.meta , 
     (v|q|s|n|c)?
 g.meta = 
@@ -145,7 +146,7 @@ g.meta =
   damageStart? , damageEnd? ,
   surroStart? , surroEnd? ,
   statusStart? , statusEnd? ,
-  accented?
+  accented? , a_oid? , a_spoid? , a_spform? , cuneifont?
 
 accented = attribute g:accented { text }
 breakStart = attribute g:breakStart { "1" }
@@ -157,6 +158,10 @@ surroEnd = attribute g:surroEnd { xsd:IDREF }
 statusStart = attribute g:statusStart { "1" }
 statusEnd = attribute g:statusEnd { xsd:IDREF }
 
+a_oid = attribute oid { text }
+a_spoid = attribute spoid { text }
+a_spform = attribute spform { text }
+
 break = attribute g:break  { "damaged" | "missing" }
 opener = attribute g:o     { text }
 closer = attribute g:c     { text }
@@ -165,6 +170,7 @@ hsqb_c = attribute g:hc    { "1" }
 emhyph = attribute g:em    { "1" }
 sign_attr = attribute g:sign  { text }
 utf8   = attribute g:utf8  { text }
+oid    = attribute oid  { text }
 delim  = attribute g:delim { text }
 varnum = (
   attribute g:varo { text }? , 
@@ -175,7 +181,11 @@ varnum = (
 status.flags =
   attribute g:collated { xsd:boolean } ? ,
   attribute g:queried  { xsd:boolean } ? ,
-  attribute g:remarked { xsd:boolean } ?
+  attribute g:remarked { xsd:boolean } ? ,
+  attribute g:uflag1 { xsd:boolean } ? ,
+  attribute g:uflag2 { xsd:boolean } ? ,
+  attribute g:uflag3 { xsd:boolean } ? ,
+  attribute g:uflag4 { xsd:boolean } ? 
 
 gloss = det | glo
 pos = attribute g:pos { "pre" | "post" | "free" }
@@ -184,7 +194,7 @@ pos = attribute g:pos { "pre" | "post" | "free" }
 det = element g:d { pos , dtyp , delim? , emhyph? , surroStart? , g.meta ,
                     (word.content*)}
 dtyp= attribute g:role { "phonetic" | "semantic" }
-glo = element g:gloss { attribute g:type { "lang" | "text" } , delim? , pos , words }
+glo = element g:gloss { attribute g:type { "lang" | "text" } , surroEnd? , delim? , pos , words }
 
 status.spans =
   attribute g:status {
@@ -206,8 +216,8 @@ proximity.attr =
 
 nongrapheme = 
   element g:x {
-    ( attribute g:type { "disambig" | "empty" | "linebreak" | "newline" | "user" }
-    | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" } 
+    ( attribute g:type { "disambig" | "empty" | "linebreak" | "newline" | "user" | "dollar" | "comment" }
+    | ( attribute g:type { "ellipsis" | "word-absent" | "word-broken" | "word-linecont" | "word-linefrom" } 
         , status.spans , opener? , closer? , break? )),
     delim? , text? , varnum? ,
     attribute xml:id { xsd:ID }? ,
@@ -220,7 +230,7 @@ nongrapheme =
 
 word.content = text | group | grapheme | nongrapheme
 
-words = (word | sword.head | sword.cont | nonword | nongrapheme)*
+words = (word | sword.head | sword.cont | nonword | nongrapheme | normword)*
 
 word = 
   element g:w {
@@ -250,6 +260,7 @@ sword.cont =
 word.attributes = 
     attribute xml:id { xsd:ID } ,
     attribute xml:lang { xsd:language } ,
+    attribute fwhost { xsd:language }? ,
     attribute form  { text }? ,
     attribute lemma { text }? ,
     attribute guide { text }? ,
@@ -295,7 +306,7 @@ groupgroup =
   element g:gg {
     attribute g:type { "group" } ,
     g.meta ,
-    (group | grapheme | normword)+
+    (group | grapheme | normword | normseg)+
   }
 
 syntax.attributes = 
@@ -309,7 +320,7 @@ normword =
     word.attributes , 
     break? , status.flags? , status.spans? , opener? , closer? , 
     hsqb_o? , hsqb_c? ,
-    (normwordword | normwordgroup | gloss | nongrapheme | group)* ,
+    (gsurro | normwordword | normwordgroup | gloss | nongrapheme | group)* ,
     syntax.attributes*,
     breakStart? , breakEnd? ,
     damageStart? , damageEnd? ,
@@ -352,6 +363,7 @@ translation =
     attribute n        { text },
     attribute project  { text },
     attribute xml:lang { xsd:NMTOKEN },
+    attribute dir      { xsd:NMTOKEN }?,
     attribute xtr:code { xsd:NMTOKEN },
     attribute xtr:type { 
       "interlinear" | "parallel" | "labeled" | "unitary" 
@@ -415,7 +427,7 @@ h-model = (id? , ctr , ( ref | hdr-ref)? , new-labels? , htext)
 innerp = element xh:innerp { htext | (comment, text) }
 htext = (text | trword | trcell | foreign | literal | xtr-notelink 
          | supplied | uncertain | rspan | bspan | ispan | sign
-	 | bispan | smaller | sc | gdlspan | sup | lab | cun 
+	 | bispan | bibspan | smaller | sc | gdlspan | sup | lab | cun
 	 | xtr-notelink | xtr-notemark)*
 
 trword    = element xh:span { attribute class      { "w" },  
@@ -423,9 +435,9 @@ trword    = element xh:span { attribute class      { "w" },
 			      attribute xtr:disamb { text }?,
 			      attribute xtr:form   { text }?,
 			      id,
-			      (text | rspan | bspan | ispan | bispan | smaller | sc | sup | lab)* }
+			      (text | rspan | bspan | ispan | bispan | bibspan | smaller | sc | sup | lab)* }
 
-trcell	  = element xh:span { attribute class { "cell" },  
+trcell	  = element xh:span { attribute class { "cell" }, attribute dir { "rtl" }?,
 			      attribute xtr:span { xsd:nonNegativeInteger }?,
 			      htext }
 comment   = attribute class { "tr-comment" }
@@ -437,6 +449,7 @@ rspan     = element xh:span { attribute class { "r" },        htext }
 bspan     = element xh:span { attribute class { "b" },        htext }
 ispan     = element xh:span { attribute class { "i" },        htext }
 bispan    = element xh:span { attribute class { "bi" },       htext }
+bibspan   = element xh:span { attribute class { "bib" },      htext }
 gdlspan   = element xh:span { attribute class { "gdl" },      l.inner }
 lab       = element xh:span { attribute class { "lab" },      htext }
 sc        = element xh:span { attribute class { "sc" },       htext }
@@ -516,7 +529,14 @@ proto.atf    = element protocol { attribute type { "atf" }    , text }
 proto.basket = element protocol { attribute type { "basket" } , text }
 proto.bib    = element protocol { attribute type { "bib" }    , text }
 proto.etcsl  = element protocol { attribute type { "etcsl" }  , text }
-proto.key    = element protocol { attribute type { "key" }    , text }
+proto.key    = element protocol { ( attribute type { "key" }  , text )
+				  |(attribute type { "key" } , 
+				    attribute kkey { xsd:NMTOKEN } , 
+				    text )
+				  |(attribute type { "after"|"see" } ,
+				    attribute url { text }? ,
+				    text )
+				}
 proto.lem    = element protocol { attribute type { "lem" }    , text }
 proto.psu    = element protocol { attribute type { "psu" }    , text }
 proto.lemmatizer
@@ -530,6 +550,7 @@ proto.version= element protocol { attribute type { "version" }, text }
 
 comments = cmt | notetext
 cmt = element cmt { text }
+cuneifont = attribute c { text }
 notelabel = attribute note:label { text }
 notemark  = attribute note:mark { text }
 noteauto  = attribute note:auto { text }
@@ -552,8 +573,11 @@ transliteration =
   element transliteration {
     attribute xml:id   { xsd:ID },
     attribute n        { text },
+    cuneifont?,
     attribute hand     { text }?,
     attribute xml:lang { xsd:NMTOKEN },
+    textdesc?,
+    textname?,
     project?,
     implicit?,
     haslinks?,
@@ -564,7 +588,10 @@ n.attr = attribute n { text }
 n.attr.lc = attribute n { xsd:string { pattern="[a-z]" }}
 haslinks = attribute haslinks { xsd:boolean }
 maxcells = attribute cols { xsd:nonNegativeInteger }
-project = attribute project { xsd:string { pattern="[a-z][a-z0-9/]+" } }
+textdesc = attribute textdesc { text }
+textname = attribute textname { text }
+project = attribute project { xsd:string { pattern="[a-z][a-z0-9/]+" } } ,
+	attribute c { text }?
 
 composite =
   element composite {
@@ -583,6 +610,7 @@ composite =
 composite-attlist &=
   attribute xml:id { xsd:ID },
   attribute n { text },
+  cuneifont?,
   attribute xml:lang { xsd:NMTOKEN }?
 
 object = 
@@ -659,7 +687,7 @@ hdr = element h {
 milestone = m | m.discourse
 
 m = element m { 
-  attribute type { "division" | "locator" },
+  attribute type { "division" | "locator" | "textname" },
   attribute subtype { text }?,
   attribute n { text }?,
   text
@@ -763,9 +791,11 @@ lg = element lg {
     | (l,gus?,nts?,(proto.link?,bil+)+)
     | (l,gus?,lgs) 
     | (l,gus?,nts,lgs) 
-    | (l,gus?, (e | comments)*)),
+    | (l,gus?, (e | comments)*)
+    | (l,(bil|var|notetext|cmt)*)
+    ),
   proto.inter*,
-  var*
+  (var|notetext|cmt)*
 }
 bil = element l { attribute type { "bil" } , l.inner* }
 nts = element l { attribute type { "nts" } , (ag | l.inner)* }
@@ -775,7 +805,8 @@ var = element v {
   attribute varnum { text | "*" } ,
   attribute label  { text } ,
   attribute ex_label { text }? ,
-  (l.inner | cell+)
+  e-attlist , 
+  (cell+ | f+ | (ag | l.inner)*)
 }
 
 # alignment groups
@@ -831,6 +862,7 @@ score =
 score-attlist &=
   attribute xml:id { xsd:ID },
   attribute n { text },
+  cuneifont?,
   score_mode,
   score_type,
   score_word?,
@@ -850,6 +882,7 @@ synopticon =
 synopticon-attlist &=
   attribute xml:id { xsd:ID },
   attribute n { text },
+  cuneifont?,
   attribute xml:lang { xsd:NMTOKEN }?
 sigdef = element sigdef { sigdef-attlist, empty }
 sigdef-attlist &=
@@ -861,9 +894,7 @@ eg-attlist &= attribute xml:id { xsd:ID }?
 e =
   element e {
     e-attlist,
-    (l.inner
-     | cell+
-     | f+)
+    (cell+ | f+ | (ag | l.inner)*)
   }
 e-attlist &=
   attribute xml:id { xsd:ID }?,
@@ -872,6 +903,7 @@ e-attlist &=
   attribute l { text }?,
   attribute p { text }?,
   attribute hlid { text }?,
+  attribute fragid { text }?,
   attribute plid { text }?
 # include "xtf.rnc"
 cdf-inline = (text | rspan | ispan | sign | bispan | gdl )*

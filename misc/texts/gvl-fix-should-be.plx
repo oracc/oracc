@@ -18,8 +18,14 @@ GetOptions(
 my $curr_file = '';
 my @lines = ();
 
+my $from = '(?:\[.*?\])?';
+
 while (<>) {
-    if (/(.*?):(.*?):.*?\(gvl\)\s+(\S+): should be (\S+)\s*$/) {
+    if (/(.*?):(.*?):.*?\(gvl\)\s+(\S+): should be (\S+)\s*$from?$/) {
+	my($file,$line,$bad,$good) = ($1,$2,$3,$4);
+	$good = reset_good_qual($good) if $original_qualifier;
+	fix_in_atf($file,$line,$bad,$good);
+    } elsif (/(.*?):(.*?):.*?\(gvl\)\s+\[sb[0-9]\]\s+(\S+): should be (\S+)\s*$from?$/) {
 	my($file,$line,$bad,$good) = ($1,$2,$3,$4);
 	$good = reset_good_qual($good) if $original_qualifier;
 	fix_in_atf($file,$line,$bad,$good);
@@ -38,7 +44,7 @@ close_and_dump() if $curr_file;
 sub fix_in_atf {
     my($f,$l,$b,$g) = @_;
     my $ln = fix_get_line($f,$l);
-    #warn "fixing $b to $g\n";
+    warn "fixing $b to $g\n";
     my $ok = $ln =~ s/\Q$b/$g/;
     unless ($ok) {
 	my $bx = $b; $bx =~ s/\(.*$/(/;
