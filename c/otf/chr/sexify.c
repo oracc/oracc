@@ -4,7 +4,7 @@
 
 static unsigned char ret[1024];
 
-#define szargal_str "(šar₂{gal})"
+#define szargal_str "(šargal)"
 #define szaru_str   "(šaru)"
 #define szar2_str   "(šar₂)"
 #define geszu_str   "(gešʾu)"

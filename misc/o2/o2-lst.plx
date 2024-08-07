@@ -272,7 +272,7 @@ proxy_lists {
 		} elsif ($px_seen{$p_id}++) {
 		    warn "$proxy_lst:$lnum: ignoring duplicate CAT proxy for $p_atf_proj:$p_id\n";
 		} else {
-		    print PX "$p_cat_proj:$p_id\n";
+		    print PX "$p_atf_proj:$p_id\@$p_cat_proj\n";
 		}
 	    }
 	}
