@@ -94,8 +94,7 @@
 
 <xsl:key name="oid" match="oid" use="@xml:id"/>
 
-<xsl:output method="xml" encoding="utf-8"
-   indent="no"/>
+<xsl:output method="xml" encoding="utf-8" indent="no"/>
 
 
 <!--<xsl:variable name="lex-dir" select="'/@@ORACC_BUILDS@@/www/dcclt/'"/>-->
@@ -293,8 +292,6 @@
 
     <xsl:apply-templates select="cbd:equivs"/>
 
-    <LEXDATA xmlns=""/>
-    
     <!--
     
     <xsl:if test="string-length($lex-provides-base)>0">
@@ -313,6 +310,8 @@
 
     <xsl:apply-templates select="cbd:bib"/>
 
+    <LEXDATA xmlns=""/>
+    
     <xsl:if test="starts-with(/*/@project, 'epsd2')">
       <div class="purl">
 	<p><xsl:text>Word ID: </xsl:text><xsl:value-of select="@oid"/>

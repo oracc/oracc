@@ -32,17 +32,24 @@
   </set>
 
   <set var="process">
-    <key k="action"   to="$scripts/g2-HTML-articles.xsl"/>
-    <key k="input"    to="01bld/$cbdlang/articles.xml"/>
-    <key k="output"   to="$webcbd/$cbdlang/articles.html"/>
+    <key k="action"    to="$scripts/g2-HTML-articles.xsl"/>
+    <key k="input"     to="01bld/$cbdlang/articles.xml"/>
+    <key k="cbdresult" to="0"/>
+    <key k="output"    to="$webcbd/$cbdlang/articles.html"/>
+  </set>
+
+  <set var="process">
+    <key k="action"    to="$oracc/bin/lex-provides.sh"/>
+  </set>
+
+  <set var="process">
+    <key k="input"     to="$webcbd/$cbdlang/articles.html"/>
+    <key k="action"    to="$scripts/g2-split-html.xsl"/>
     <key k="cbdresult" to="1"/>
   </set>
 
   <set var="process">
-    <key k="action"   to="$scripts/g2-split-html.xsl"/>
-  </set>
-
-  <set var="process">
+    <key k="input"    to="$webcbd/$cbdlang/articles.html"/>
     <key k="action"   to="$scripts/cbd-HTML-OBF.xsl"/>
     <key k="output"   to="$webcbd/$cbdlang/onebigfile.html"/>
   </set>
@@ -59,7 +66,9 @@
     <key k="output"    to="$webcbd/$cbdlang/p2-toc.html"/>
   </set>
 
-  <!-- move next three to l2p2? -->
+  <!-- this now happens partly in o2-lex.sh and partly in qindex.sh -->
+
+  <!--
 
   <set var="process">
     <key k="action" to="mkdir -p $oracc/pub/$project/cbd/$cbdlang"/>
@@ -69,7 +78,7 @@
     <key k="action"   to="$oracc/bin/secbdx"/>
     <key k="args"     to="-p $basename -l $cbdlang 01bld/$cbdlang/articles.xml"/>
   </set>
-
+  
   <set var="process">
     <key k="action"   to="$oracc/bin/lex-tis.sh"/>
   </set>
@@ -82,5 +91,7 @@
   <set var="process">
     <key k="action" to="chmod -R o+r $oracc/pub/$project/cbd/$cbdlang"/>
   </set>
+
+   -->
 
 </xcf>

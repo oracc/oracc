@@ -98,7 +98,7 @@
     <key k="action"   to="$scripts/g2-split-html.xsl"/>
   </set>
 
-  <!-- move next three to l2p2? -->
+  <!--
 
   <set var="process">
     <key k="action" to="mkdir -p $oracc/pub/$project/cbd/$cbdlang"/>
@@ -107,7 +107,7 @@
   <set var="process">
     <key k="action"   to="$oracc/bin/secbdx"/>
     <key k="args"     to="-p $basename -l $cbdlang 01bld/$cbdlang/articles.xml"/>
-  </set>
+    </set>
 
   <set var="process">
     <key k="action"   to="$oracc/bin/lex-tis.sh"/>
@@ -121,5 +121,7 @@
   <set var="process">
     <key k="action" to="chmod -R o+r $oracc/pub/$project/cbd/$cbdlang"/>
   </set>
+
+  -->
 
 </xcf>

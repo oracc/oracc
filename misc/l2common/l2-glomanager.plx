@@ -100,6 +100,8 @@ GetOptions(
 
 #    'xff+'=>\$xff,
 
+$verbose = 1 if $ENV{'VERBOSE'};
+
 $ORACC::L2GLO::Builtins::bare = $bare;
 $ORACC::L2GLO::debug = $debug;
 $ORACC::L2GLO::Builtins::noletters = $noletters;
