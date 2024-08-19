@@ -99,13 +99,6 @@ AC_CONFIG_FILES([Makefile
 	   c/bin/server/ccgi/Makefile
 	   c/bin/pg/Makefile
 	   c/bin/rnv/Makefile
-	   c/bin/se/Makefile
-	   c/bin/se/secatx/Makefile
-	   c/bin/se/secbdx/Makefile
-	   c/bin/se/segdfx/Makefile
-	   c/bin/se/selemx/Makefile
-	   c/bin/se/setxtx/Makefile
-	   c/bin/se/setrax/Makefile
 	   c/bin/sort/Makefile 
 	   c/bin/util/Makefile
 	   c/include/Makefile
