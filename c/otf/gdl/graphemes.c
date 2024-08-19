@@ -906,7 +906,17 @@ gparse(register unsigned char *g, enum t_type type)
 	{
 	  appendAttr(gp->xml,gattr(a_oid, (unsigned const char *)gb_oid));
 	  if (gb_oid && *gb_oid)
-	    appendAttr(gp->xml,gattr(a_g_sign, gvl_bridge_oid_name(gb_oid)));
+	    {
+	      unsigned char *nm = gvl_bridge_oid_name(gb_oid);
+	      if (nm)
+		appendAttr(gp->xml,gattr(a_g_sign, gvl_bridge_oid_name(gb_oid)));
+	      else
+		{
+		  vwarning("OID %s does not have a name in the current sign list; defaulting to %s",
+			   gb_oid,gp->atf);
+		  appendAttr(gp->xml,gattr(a_g_sign, gp->atf));
+		}
+	    }
 	  if (gb_spoid)
 	    {
 	      appendAttr(gp->xml,gattr(a_spoid, (unsigned const char *)gb_spoid));

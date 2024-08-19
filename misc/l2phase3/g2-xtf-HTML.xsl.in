@@ -1340,7 +1340,7 @@
 	    <xsl:apply-templates select=".">
 	      <xsl:with-param name="allow-space" select="false()"/>
 	    </xsl:apply-templates>
-	    <xsl:value-of select="@gdl:delim"/>>
+	    <xsl:value-of select="@gdl:delim"/>
 	  </xsl:for-each>
 	  <xsl:text>]]</xsl:text>
 	  <xsl:text>&#xa0;</xsl:text>
