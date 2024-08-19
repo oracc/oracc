@@ -97,8 +97,8 @@ rootnode_LDADD=@top_srcdir@/c/lib/liboracc.la
 
 xfrag_LDADD=@top_srcdir@/c/lib/liboracc.la
 
-xisdb_SOURCES=xisdb.c
-xisdb_LDADD = @top_srcdir@/c/lib/liboracc.la
+#xisdb_SOURCES=xisdb.c
+#xisdb_LDADD = @top_srcdir@/c/lib/liboracc.la
 
 xns_SOURCES=xns.c
 xns_LDADD = @top_srcdir@/c/lib/liboracc.la

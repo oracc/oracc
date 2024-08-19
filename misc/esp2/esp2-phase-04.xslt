@@ -275,7 +275,7 @@
 	<xsl:attribute name="name" select="@name"/>
 	<xsl:attribute name="id" select="@name"/>
       </xsl:if>
-      <xsl:copy-of select="@class|@target"/>
+      <xsl:copy-of select="@class|@target|@data-*"/>
       <xsl:choose>
 	<xsl:when test="$tag-has-content">
 	  <xsl:apply-templates mode="content"/>

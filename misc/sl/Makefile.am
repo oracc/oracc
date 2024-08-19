@@ -11,7 +11,7 @@ include ../../oracc-am-rules.txt
 #	sl-signdata.plx sl-db2.plx
 
 # cgibin_SCRIPTS=slse
-texdata_DATA = slmac.tex repmac.tex
+#texdata_DATA = slmac.tex repmac.tex
 
 #scriptdata_DATA = sl-TeX.xsl rep-sl.xsl sl-HTML.xsl sl-sort.xsl \
 #	sl-number.xsl sl-missing-sort.xsl rep-TeX.xsl \
