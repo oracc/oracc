@@ -275,7 +275,12 @@
 	<xsl:attribute name="name" select="@name"/>
 	<xsl:attribute name="id" select="@name"/>
       </xsl:if>
-      <xsl:copy-of select="@class|@target|@data-*"/>
+      <xsl:copy-of select="@class|@target"/>
+      <xsl:for-each select="@*">
+	<xsl:if test="starts-with(local-name(), 'data-')">
+	  <xsl:copy-of select="."/>
+	</xsl:if>
+      </xsl:for-each>
       <xsl:choose>
 	<xsl:when test="$tag-has-content">
 	  <xsl:apply-templates mode="content"/>
