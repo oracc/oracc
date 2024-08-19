@@ -371,6 +371,13 @@
 	    <xsl:attribute name="target"><xsl:text>_blank</xsl:text></xsl:attribute>
 	  </xsl:if>
 	  <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
+	  <!--<xsl:copy-of select="@class|@target"/>-->
+	  <xsl:copy-of select="@onclick"/>
+	  <xsl:for-each select="@*">
+	    <xsl:if test="starts-with(local-name(), 'data-')">
+	      <xsl:copy-of select="."/>
+	    </xsl:if>
+	  </xsl:for-each>
 	  <xsl:if test="string ( @accesskey )">
 	    <xsl:attribute name="accesskey" select="@accesskey"/>
 	  </xsl:if>
