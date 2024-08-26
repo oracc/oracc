@@ -3,6 +3,7 @@
 #include <ctype128.h>
 #include <stdio.h>
 #include "globals.h"
+#include "xpd2.h"
 #include "memblock.h"
 #include "l2.h"
 #include "tree.h"
@@ -310,6 +311,15 @@ process_text(struct run_context *run, unsigned char **lines)
 #if 0
       appendAttr(text,attr(a_hand,ucc(current_state.hand)));
 #endif
+
+      if (run->proj && run->proj->xpd)
+	{
+	  unsigned const char *font = xpd_option(run->proj->xpd, "cuneify-font");
+	  if (!font)
+	    font = xpd_option(run->proj->xpd, "asl-font");
+	  setAttr(text,a_c,font ? font : ucc("noto"));
+	}
+      
       if (text_protocols && text_protocols->children.lastused)
 	appendChild(text,text_protocols);
       if (!project || !*project)
@@ -681,7 +691,6 @@ andline(struct node *lnode, unsigned char *lp)
       xstrcat(line_id_buf,".");
       line_id_insertp = line_id_buf + xxstrlen(line_id_buf);
       setAttr(lnode,a_xml_id,ucc(idbase));
-      setAttr(lnode,a_c,ucc("noto"));
 
       tok = NULL;
       if (s < end)

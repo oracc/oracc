@@ -110,8 +110,8 @@ initialize_fields {
 }
 
 sub tsv_cdli {
-    Text::CSV_XS->new({ sep_char=>"\t" , auto_diag=>1 , allow_loose_quotes=>0 , 
-			quote_char=>'"' , escape_char=>'"'  , binary=>1 });
+    Text::CSV_XS->new({ sep_char=>"\t" , auto_diag=>1 , allow_loose_quotes=>1 , 
+			quote_char=>undef , escape_char=>undef , binary=>1 });
 }
 
 sub tsv_default {

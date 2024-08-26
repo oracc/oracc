@@ -5,7 +5,7 @@ use ORACC::XML;
 use ORACC::NS;
 use Data::Dumper;
 
-my $fieldnames = '00lib/fieldnames.row';
+my $fieldnames = ''; # '00lib/fieldnames.row';
 my @fields = ();
 my %fields = ();
 my $file;
@@ -25,20 +25,23 @@ clean_periods {
 sub
 internalize {
     $file = shift;
-    open(F,$fieldnames) 
-	|| die "XMD::CSV: can't open fieldnames file '$fieldnames'\n";
-    initialize_fields(<F>);
-    close(F);
+    open(F, $file) || die "$0: unable to open $file to internalize it\n";
+    if ($fieldnames) {
+	open(FN,$fieldnames) 
+	    || die "XMD::CSV: can't open fieldnames file '$fieldnames'\n";
+	initialize_fields(<FN>);
+	close(FN);
+    } else {
+	my $fn = <F>;
+	initialize_fields($fn);
+    }
+
     my @rows = ();
     my $csv = Text::CSV_XS->new({ binary=>1 });
     
-#    open my $fh, "<:encoding(utf8)", $file 
-#	or die "XMD::CSV: can't open CSV file '$file'\n";
     my @xmd = ();
     my $i = 0;
-    open(F, $file);
     while (1) {
-	#	my $xmd = $csv->getline($fh);
 	my $ln = <F>;
 	last unless $ln;
 	my $res = $csv->parse($ln);
