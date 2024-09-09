@@ -244,17 +244,22 @@ walk {
 		$last_l = $c;
 		# don't step further down into the tree
 	    } elsif ($name eq 'lg') {
-		my $cc = $c->firstChild();
-		while ($cc) {
-		    if ($cc->isa('XML::LibXML::Element')
-			&& $cc->localName() eq 'l'
-			&& xid($cc)) {
-			$last_l = $cc;
-			last;
-		    } else {
-			$cc = $cc->nextSibling();
-		    }
-		}
+		$last_l = $c;
+		my @lg_protocol = tags($c,$XTF,'protocol');
+		foreach my $lgp (@lg_protocol) {
+		    process_protocol($prj,$pqx,$lgp);
+		}		    
+#		my $cc = $c->firstChild();
+#		while ($cc) {
+#		    if ($cc->isa('XML::LibXML::Element')
+#			&& $cc->localName() eq 'l'
+#			&& xid($cc)) {
+#			$last_l = $cc;
+#			last;
+#		    } else {
+#			$cc = $cc->nextSibling();
+#		    }
+#		}
 	    } else {
 		walk($prj,$pqx,$c);
 	    }
@@ -286,8 +291,9 @@ index_text {
 		foreach my $l (tags($xt,$XTF,'l')) {
 		    my $label = $l->getAttribute('label');
 		    if ($label) {
-			$linkindex{"$prj:$pqx~$label"} = xid($l);
-			print STDERR "indexing $prj:$pqx~$label => ", xid($l), "\n" if $debug;
+			my $l_or_lg_xid = ($l->parentNode()->nodeName() eq 'lg') ? xid($l->parentNode()) : xid($l);
+			$linkindex{"$prj:$pqx~$label"} = $l_or_lg_xid;
+			print STDERR "indexing $prj:$pqx~$label => $l_or_lg_xid\n" if $debug;
 		    } else {
 			my $t = $l->getAttribute('type');
 			if ($t ne 'lgs' && $t ne 'bil') {

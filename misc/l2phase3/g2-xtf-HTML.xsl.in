@@ -566,13 +566,17 @@
 </xsl:template>
 
 <!-- 2021-06-27: is there any harm always emitting a spacer? -->
+<!-- 2024-09-09: wrap lg in tbody; this may make score-spacer unnecessary because we can css the tbody -->
 <xsl:template match="xtf:lg">
   <xsl:param name="maxcols" select="0"/>
-  <xsl:apply-templates>
-    <xsl:with-param name="maxcols" select="$maxcols"/>
-  </xsl:apply-templates>
-<!--  <xsl:if test="self::xtf:lg and /xtf:score[not(@score-type='legacy')]"> -->
-    <tr class="score-spacer"><td> </td></tr>
+  <tbody class="lg">
+    <xsl:copy-of select="@xml:id"/>
+    <xsl:apply-templates>
+      <xsl:with-param name="maxcols" select="$maxcols"/>
+    </xsl:apply-templates>
+    <!--  <xsl:if test="self::xtf:lg and /xtf:score[not(@score-type='legacy')]"> -->
+  </tbody>
+  <tr class="score-spacer"><td> </td></tr>
 <!--  </xsl:if> -->
 </xsl:template>
 

@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 use warnings; use strict; use open 'utf8';
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+binmode $DB::OUT, ':utf8' if $DB::OUT;
 use lib '@@ORACC@@/lib';
 use ORACC::XML;
 use ORACC::NS;
@@ -19,7 +21,7 @@ my $linkbase = '01bld/linkbase.xml';
 my $project = `oraccopt`;
 my $quiet = 0;
 my $xtl_only = 0;
-my $verbose = 0;
+my $verbose = 1;
 
 die "scoregen.plx: must be run from a project directory\n"
     unless $project;
@@ -78,7 +80,16 @@ cache_sort_codes {
 }
 
 sub sb_attr {
-    my($a,$b) = @_;
+    my($a,$b,$caller) = @_;
+    if ($a->nodeName() ne 'a') {
+	my @a = tags($a,$XHTML,'a');
+	if ($#a >= 0) {
+	    $a = $a[0];
+	} else {
+	    warn "sb_attr called on ", $a->nodeName(), " by $caller\n";
+	    return;
+	}
+    }
     $a->setAttribute('href',"javascript://");
     $a->setAttribute('onclick', "act_block(event)");
     $a->setAttribute('data-bloc', $b);
@@ -136,7 +147,7 @@ exemplar_links {
 		    $xproject = $project;
 		}
 		# $a->setAttribute('href',"javascript:showblock('$xproject','$Q','sb.$Qnoproj')");
-		sb_attr($a, "sb.$Qnoproj");
+		sb_attr($a, "sb.$Qnoproj", "A");
 	    } else {
 		print STDERR "expected a node not found in exemplar_links for $$el[0]\n";
 	    }
@@ -235,9 +246,9 @@ create_rel_lists {
 	}
     }
     open(D,'>01tmp/exemplar_lists.dump');
-    print Dumper \%exemplar_lists;
-    print Dumper \%exemplar_links;
-    print Dumper \%Q;
+    print D Dumper \%exemplar_lists;
+    print D Dumper \%exemplar_links;
+    print D Dumper \%Q;
     close(D);
 }
 
@@ -303,7 +314,7 @@ create_scores {
 		$xQ =~ s/^.*?://;
 		$xQ =~ s/\..*$//;
 		#$a->setAttribute('href',"javascript:showblock('$project','$xQ','sb.$id')");
-		sb_attr($a, "sb.$id");
+		sb_attr($a, "sb.$id", "B");
 	    } elsif ($t->getAttribute('class') ne 'nonl') {
 		my $txh_id = xid($t);
 		print STDERR "$Q: $txh_id: expected <a> not found\n";
@@ -378,6 +389,7 @@ dump_exemplars {
     return unless $aref && ref($aref) eq 'ARRAY';
     %seen_line = ();
     foreach my $e (sort { &ecmp($a,$b) } @$aref) {
+	warn "scoregen: exemplar: $e\n";
 	dump_tr($e,'e','');
     }
 }
@@ -400,26 +412,53 @@ dump_tr {
     if ($label =~ /NO LINE FOR/ || !$p) {
 #	warn "scoregen.plx: no line for $lid\n";
     } else {
-	$p =~ s/<p(?:\s+.*?)?>//g;
-	$p =~ s,</p>,,g;
-	print "<tr class=\"$class\">";
+	#	$p =~ s/<p(?:\s+.*?)?>//g;
+	#	$p =~ s,</p>,,g;
+	#	print "<tr class=\"$class\">";
+	my $tbody = '';
+	my $ctbody = '';
+	my $tr = '';
+	my $ctr = '';
+
+	if ($p =~ s/^(<tbody.*?>)//) {
+	    $tbody = $1;
+	    # warn "scoregen: removed tbody and tbody=$tbody\n";
+	    $p =~ s#</tbody>$##;
+	    $ctbody = '</tbody>';
+	}
+
+	if ($p =~ s/^(<tr.*?>)//) {
+	    $tr = $1;
+	    # warn "scoregen: removed tr and tr=$tr\n";
+	    $p =~ s#</tr>$##;
+	    $ctr = '</tr>';
+	}
+
+	# Now the leading <td> should be the lnum one so remove it
+	$p =~ s#^<td.*?</td>##;
+	
+	# warn "scoregen: tbody=$tbody; tr=$tr; ctbody=$ctbody; ctr=$ctr; p=$p\n";
+	
+	if ($p !~ /<td/) {
+	    $p = "<td>$p</td>";
+	}
+
 	if ($td1) {
-	    print "<td class=\"parallel\">$td1</td>";
+	    $p = "<td class=\"parallel\">$td1</td>$p";
 	} else {
-	    print "<td/>";
+	    $p = "<td/>$p";
 	}
-	if ($p =~ /<td/) {
-	    print $p;
-	} else {
-	    print "<td>$p</td>";
-	}
+
+	print "$tbody$tr$p";
+	
 	$label =~ s/^\((.*?)\s*\)$/$1/;
 	my $pqid = $lid;
 	$pqid =~ s/\..*$//;
-#	my $type = ($pqid =~ /^Q/ ? 'composite' : 'exemplar');
 	$label = "<a href=\"javascript://\" onclick=\"act_iref(event)\" data-iref=\"$lid\">$label</a>";
 	print "<td class=\"enum\">$label</td>";
-	print "</tr>";
+	
+	print "$ctr$ctbody";
+	
     }
 }
 
@@ -477,10 +516,12 @@ sprefs {
 	    $ex_attr = " sig=\"$x\"";
 	}
 	my $have_atf = '';
-	my $xtf = "$path/$r.xtf";
+	my $xtf = "$path/$r_pq.xtf";
 	if (-r $xtf) {
+	    # warn "sprefs: have_atf: found $xtf\n";
 	    $have_atf = " have_atf=\"yes\"";
 	} else {
+	    # warn "sprefs: have_atf: no file $xtf\n";
 	    $have_atf = " have_atf=\"no\"";	    
 	}
 	if ($$xmd{'designation'}) {
@@ -514,9 +555,9 @@ print_html_header {
 <link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
 <link rel="stylesheet" type="text/css" href="/css/oraccscreen.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="/css/oraccprint.css" media="print" />
-<link rel="stylesheet" type="text/css" href="/css/p3.css" media="screen" />
-<link rel="stylesheet" type="text/css" href="/css/p3cbd.css" media="screen" />
-<link rel="stylesheet" type="text/css" href="/css/score.css" />
+<link rel="stylesheet" type="text/css" href="/css/p4.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/css/p4cbd.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/css/p4score.css" />
 <link rel="stylesheet" type="text/css" href="/$project/css/p3colours.css"/>
 <script src="/js/p4.js" type="text/javascript">
 </script>

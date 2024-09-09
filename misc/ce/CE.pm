@@ -4,6 +4,9 @@ use warnings; use strict;
 use ORACC::Expand2;
 use ORACC::XML;
 
+binmode STDIN, ':utf8'; binmode STDOUT, ':utf8'; binmode STDERR, ':utf8';
+binmode $DB::OUT, ':utf8' if $DB::OUT;
+
 my $kwic_window = 3;
 my $min_prev_rows = 3;
 my %loaded = ();
@@ -22,9 +25,13 @@ kwic {
     die "CDL:CE: kwic context not yet implemented\n";
 }
 
+# 2024-09-09 changes to this routine mean it only works for
+# scoregen.plx--but that is the only place it is used these days
+
 sub
 line {
     my($id,$select,$project) = @_;
+    warn("CE.pm: proj=$project; id=$id\n");
     my @ret = ();
     my $cid = $id;
     if ($cid =~ /^Q.*?\.c.*?/) {
@@ -53,6 +60,9 @@ line {
     my $c = $txh->getElementsById($cid);
     return "<label></label><p>(NO LINE FOR $cid)</p>" unless $c;
     my $cid_node = $c;
+    my $cn_name = $c->nodeName();
+    my $pn_name = $c->parentNode()->nodeName();
+    warn("CE.pm: cid_node name=$cn_name; parent=$pn_name\n");
     for (my $i = $min_prev_rows; $i; ) {
 	$cid_node = $cid_node->previousSibling();
 	if ($cid_node) {
@@ -71,12 +81,14 @@ line {
 	$cid = '';
     }
     my $lp = $c->toString();
-    $lp =~ s,^<span,<span,;
-    $lp =~ s,</tr>,,;
+##    warn("CE.pm: lp=$lp\n");
+#    $lp =~ s,^<span,<span,;
+#    $lp =~ s,</tr>,,;
     $lp =~ m,<span class="xlabel">(.*?)</span>,;
     my $label = $1;
     my $line = $lp;
-    $line =~ s#^.*?</td>##s;
+##    warn("CE.pm: returning line=$line\n");
+#    $line =~ s#^.*?</td>##s;
 #    $line =~ s/xml:id/id/g;
     if ($label && $line) {
 	$line =~ s/class=\"w\"(?= id=\"$id\")/class=\"selected\"/
@@ -94,7 +106,7 @@ line {
 	
 	$label_base =~ s/\s+\[\]$//;
 	$label = "($label_base $label)";
-	($label,"<p>$line</p>",$lid,$cid);
+	($label,$line,$lid,$cid);
     } else {
 	warn("CE: bad label/line in $lp\n");
 	('bad','<p>bad</p>','','')
