@@ -71,7 +71,7 @@ h-model = (id? , ctr , ( ref | hdr-ref)? , new-labels? , htext)
 
 innerp = element xh:innerp { htext | (comment, text) }
 htext = (text | trword | trcell | foreign | literal | xtr-notelink 
-         | supplied | uncertain | rspan | bspan | ispan | sign
+         | supplied | uncertain | langspan | rspan | bspan | ispan | sign
 	 | bispan | bibspan | smaller | sc | gdlspan | sup | lab | cun
 	 | xtr-notelink | xtr-notemark)*
 
@@ -102,6 +102,7 @@ sign      = element xh:span { attribute class { "sign" },     htext }
 smaller   = element xh:span { attribute class { "smaller" },  htext }
 sup       = element xh:span { attribute class { "sup" | "up" },      htext }
 cun       = element xh:span { attribute class { "cun" },      htext }
+langspan  = element xh:span { attribute class { "sux" | "akk" }, htext }
 
 xtr-notelink = 
   element xh:span {

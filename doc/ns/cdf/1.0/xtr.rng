@@ -224,6 +224,7 @@
         <ref name="xtr-notelink"/>
         <ref name="supplied"/>
         <ref name="uncertain"/>
+        <ref name="langspan"/>
         <ref name="rspan"/>
         <ref name="bspan"/>
         <ref name="ispan"/>
@@ -422,6 +423,17 @@
     <element name="xh:span">
       <attribute name="class">
         <value>cun</value>
+      </attribute>
+      <ref name="htext"/>
+    </element>
+  </define>
+  <define name="langspan">
+    <element name="xh:span">
+      <attribute name="class">
+        <choice>
+          <value>sux</value>
+          <value>akk</value>
+        </choice>
       </attribute>
       <ref name="htext"/>
     </element>

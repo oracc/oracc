@@ -129,6 +129,7 @@ my %arg_vfields = ();
 my %allow = ();
 my %bad_compounds = ();
 my %bases = ();
+my %bases_nodots = ();
 my %basedata = ();
 my %basesigs = ();
 my @bffs = ();
@@ -581,6 +582,15 @@ sub trsig {
     $t;
 }
 
+sub nodots_base {
+    my $b = shift;
+    my $d = $b;
+    if ($b =~ tr/·°//d) {
+	# warn "nodots_base $b => $d\n";
+	$bases_nodots{$b} = $d;
+    }
+}
+
 sub v_bases {
     my($tag,$arg) = @_;
 
@@ -662,6 +672,7 @@ sub v_bases {
 #			qualcheck($pri) if $pri =~ /\(/;
 			%{$vbases{$pri}} = ();
 			$vbases{"$pri#code"} = ++$pricode;
+			nodots_base($pri);
 		    }
 		    foreach my $a (split(/,\s+/,$alt)) {
 			if ($a =~ /\s/ && !$is_compound) {
@@ -700,6 +711,7 @@ sub v_bases {
 		pp_warn("space in base `$b'");
 		$pri = $alt = '';
 	    } else {
+		nodots_base($b);
 		++$bases{$b};
 		$bases{$b,'*'} = $stem
 		    if $stem;
@@ -998,8 +1010,12 @@ sub v_form {
 		    pp_warn("/BASE not allowed in \@form belonging to compound word (b=$b)");
 		} else {
 		    if (!$bases{$b}) { ###  || $ORACC::SL::report_all
-			if (!${$ORACC::CBD::bases{$curr_cfgw}}{$b}) { ### || $ORACC::SL::report_all) {
-			    my $warned = 0;
+			my $warned = 0;
+			if ($bases_nodots{$b}) {
+			    pp_warn("BASE $b should be primary $bases_nodots{$b}");
+			    $warned = 1;
+			}
+			elsif (!${$ORACC::CBD::bases{$curr_cfgw}}{$b}) { ### || $ORACC::SL::report_all) {
 			    my $a = $bases{"#$b"} || ${$ORACC::CBD::bases{$curr_cfgw}}{"#$b"};
 			    # warn "alt for $b == $a\n";
 			    if ($a) {
@@ -1020,21 +1036,29 @@ sub v_form {
 				# my $nkeys = scalar keys %{$ORACC::CBD::bases{$curr_cfgw}};
 				# warn "curr_cfgw == $curr_cfgw; nkeys = $nkeys\n";
 				foreach my $c (keys %{$ORACC::CBD::bases{$curr_cfgw}}) {
+				    $c =~ s/^#//;
 				    $c =~ s/^\%.*?://;
-				    my $csig = $tlit_sigs{$c};
-				    unless ($csig) {
-					$csig = ORACC::SL::Tlitsig::sig('',$c);
-					if ($csig) {
-					    $tlit_sigs{$c} = $csig;
+				    $c =~ s/^\%//;
+				    $c =~ tr/·°//d;
+				    $c =~ s/\x{1c}%//;
+				    if ($c) {
+					warn "tlit_sig '$c'\n"
+					    unless $c =~ /^[-+a-zšḫŋṣṭ₀-₉ₓʾ{}().@×|~]+$/i;
+					my $csig = $tlit_sigs{$c};
+					unless ($csig) {
+					    $csig = ORACC::SL::Tlitsig::sig('',$c);
+					    if ($csig) {
+						$tlit_sigs{$c} = $csig;
+					    }
 					}
-				    }
-				    
-				    # warn "csig for $c == $csig\n";
-				    if ($tsig && $csig && $tsig eq $csig && $b ne $c) {
-					$c =~ s/^\#//;
-					pp_warn "form's BASE $b should be $c";
-					$warned = 1;
-					last;
+
+					# warn "csig for $c == $csig\n";
+					if ($tsig && $csig && $tsig eq $csig && $b ne $c) {
+					    $c =~ s/^\#//;
+					    pp_warn "form's BASE $b should be $c";
+					    $warned = 1;
+					    last;
+					}
 				    }
 				}
 				pp_sl_messages();
@@ -1446,6 +1470,7 @@ sub v_end {
     $in_entry = $seen_bases = $seen_morph2 = $seen_sense = 0;
     %allow = ();
     %bases = ();
+    %bases_nodots = ();
 }
 
 sub v_deprecated {

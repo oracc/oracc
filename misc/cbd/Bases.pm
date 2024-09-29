@@ -238,7 +238,8 @@ sub bases_align {
 			    my %bmap = %{$$b{'#map'}};
 			    foreach my $b (keys %bmap) {
 				if ($use_map_fh) {
-				    print $map_fh "map base $p_entry => $b ~ $bmap{$b}\n";
+				    print $map_fh pp_file().':'.pp_line().": map base $p_entry => $b ~ $bmap{$b}\n";
+				    print $map_fh $$args{'base'}.':'.$base_i.": is base $b better than $bmap{$b}?\n";
 				} else {
 				    pp_warn("$p_entry: map base $b ~ $bmap{$b}");
 				}

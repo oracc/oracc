@@ -1,2 +1,10 @@
 #!/bin/sh
-se \#cdli \!cat `echo $* | tr ' ' _`
+stdin=$1
+if [ "$stdin" = "-s" ]; then
+    while read line; do
+	P $line
+    done
+else
+    /bin/echo -n "$*	" ; qx -j cdli -i cat `echo $* | tr ' ' _` ; echo
+fi
+

@@ -270,7 +270,7 @@ sub map_sense {
 	    $to_sig =~ s#](\S+)#//$sense_b]$1'$epos_b#;
 	    warn "Senses[$code]: mapping $from_sig => base $to_sig\n" if $ORACC::CBD::PPWarn::trace;
 	    # print MAP_FH '@'.project($$args{'cbd'}).'%'.lang().":$from_sig => $to_sig\n";
-	    print $map_fh "map sense $from_sig => $to_sig\n";
+	    print $map_fh pp_file().':'.pp_line().": map sense $from_sig => $to_sig\n";
 	} else {
 	    $entry =~ s/\s+\[/[/; $entry =~ s/\]\s+/]/;
 	    if ($code == 0) { # this SENSE was mapped based on history.all

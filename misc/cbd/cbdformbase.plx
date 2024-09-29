@@ -19,7 +19,8 @@ my $verbose = 0;
 
 my %log = ();
 while (<>) {
-    if (/(.*?):(.*?): alt BASE (\S+) should be primary (\S+)\s*$/) {
+    if (/(.*?):(.*?): alt BASE (\S+) should be primary (\S+)\s*$/
+	|| /(.*?):(.*?): BASE (\S+) should be primary (\S+)\s*$/) {
 	my($file,$line,$alt,$pri) = ($1,$2,$3,$4);
 	fix_in_form($file,$line,$alt,$pri);
     } elsif (/^(.*?):(.*?): form's BASE (\S+) should be (\S+)\s*$/) {

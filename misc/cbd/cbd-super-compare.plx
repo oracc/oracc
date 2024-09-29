@@ -118,7 +118,7 @@ sub do_one {
 	close(MAP_FH);
 	return;
     }
-
+    
     # Now that the *_align routines do multiple duty we need to be sure apply is switched
     # off when this program calls them.
     my $saved_args_apply = $args{'apply'};

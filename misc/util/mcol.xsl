@@ -15,7 +15,14 @@
   <!--<xsl:message>mcol setting <xsl:value-of select="count($nodes)"/> nodes in <xsl:value-of select="$columns"/> columns</xsl:message>-->
   <table>
     <xsl:if test="string-length($width)>0"><xsl:attribute name="width"><xsl:value-of select="$width"/></xsl:attribute></xsl:if>
-    <xsl:if test="string-length($class)>0"><xsl:attribute name="class"><xsl:value-of select="$class"/></xsl:attribute></xsl:if>
+    <xsl:choose>
+      <xsl:when test="string-length($class)>0">
+	<xsl:attribute name="class"><xsl:value-of select="concat($class,' mcol', $columns)"/></xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:attribute name="class"><xsl:value-of select="concat('mcol',$columns)"/></xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:for-each select="$nodes[local-name()=$tag][(position() - 1) mod $columns = 0]">
       <!--<xsl:message>mcol first @n = <xsl:value-of select="@n"/></xsl:message>-->
       <xsl:apply-templates select="." mode="mcol-first">
