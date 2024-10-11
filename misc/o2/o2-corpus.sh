@@ -36,25 +36,17 @@ else
 fi
 o2-glo.sh
 o2-xtf.sh $*
-corpussignlist=`oraccopt . corpus-signlist`
-if [ "$corpussignlist" == "yes" ]; then
-    echo $0: running o2-corpus-signlist.sh
-    o2-corpus-signlist.sh
-fi
 project=`oraccopt`
-#if [ "$project" == "pctc" ]; then
-#    echo 'Running o2-asl.sh in pctc'
-#    o2-asl.sh
-#fi
-#o2-web.sh
 
-aslauto=`oraccopt . asl-auto`
-if [ "$aslauto" = "yes" ]; then
-    odo-corpus-signlist.sh
-elif [ "$project" == "pcsl" ]; then
-    mcu-slix.sh pcsl
-    odo-corpus-signlist.sh
-fi
+#aslauto=`oraccopt . asl-auto`
+#if [ "$aslauto" = "yes" ]; then
+#    odo-corpus-signlist.sh
+#elif [ "$project" == "pcsl" ]; then
+#    mcu-slix.sh pcsl
+#    odo-corpus-signlist.sh
+#fi
+
+odo-signlist.sh
 
 qindex.sh $project
 
