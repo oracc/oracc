@@ -50,11 +50,20 @@ else
     jsonzip=""
 fi
 
-
 if [ "$subs" == "" ]; then
     servesubs=`oraccopt . serve-subs`
 else
     servesubs="#all"
+fi
+
+if [ -d signlist ]; then
+    echo $0: found signlist/
+    if [[ "$servesubs" != *"signlist"* ]]; then
+	echo "$0: adding signlist to servesubs '$servesubs'"	
+	servesubs="$servesubs signlist"
+    else
+	echo $0: "did not add signlist to servesubs '$servesubs'"
+    fi
 fi
 
 if [ "$servesubs" == "" ]; then
