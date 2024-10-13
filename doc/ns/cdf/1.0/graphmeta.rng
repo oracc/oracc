@@ -79,6 +79,9 @@
       <ref name="accented"/>
     </optional>
     <optional>
+      <ref name="a_key"/>
+    </optional>
+    <optional>
       <ref name="a_oid"/>
     </optional>
     <optional>
@@ -133,6 +136,9 @@
     <attribute name="g:statusEnd">
       <data type="IDREF"/>
     </attribute>
+  </define>
+  <define name="a_key">
+    <attribute name="key"/>
   </define>
   <define name="a_oid">
     <attribute name="oid"/>

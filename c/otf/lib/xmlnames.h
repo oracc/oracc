@@ -76,6 +76,7 @@ enum a_type
   a_headref,
   a_hlid,
   a_implicit,
+  a_key,
   a_kkey,
   a_l,
   a_label,

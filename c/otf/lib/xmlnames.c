@@ -83,6 +83,7 @@ struct xname anames[] =
   { "headref", "headref" },
   { "hlid", "hlid" },
   { "implicit", "implicit" },
+  { "key", "key" },
   { "kkey", "kkey" },
   { "l", "l" },
   { "label", "label" },
@@ -323,6 +324,7 @@ struct attr abases[] =
   { { anames[149].qname,NULL } , { anames[149].pname,NULL } },
   { { anames[150].qname,NULL } , { anames[150].pname,NULL } },
   { { anames[151].qname,NULL } , { anames[151].pname,NULL } },
+  { { anames[152].qname,NULL } , { anames[152].pname,NULL } },
 };
 struct xname enames[] =
 {

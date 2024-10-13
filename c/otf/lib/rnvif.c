@@ -89,7 +89,7 @@ rnv_xmsg(void)
       }
     }
   }
-  ret = list_concat(x);
+  ret = (char*)list_concat(x);
   list_free(xm,free);
   return ret;
 }

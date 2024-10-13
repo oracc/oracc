@@ -1034,7 +1034,7 @@ g.meta =
   damageStart? , damageEnd? ,
   surroStart? , surroEnd? ,
   statusStart? , statusEnd? ,
-  accented? , a_oid? , a_spoid? , a_spform? , cuneifont?
+  accented? , a_key? , a_oid? , a_spoid? , a_spform? , cuneifont?
 
 accented = attribute g:accented { text }
 breakStart = attribute g:breakStart { "1" }
@@ -1046,6 +1046,7 @@ surroEnd = attribute g:surroEnd { xsd:IDREF }
 statusStart = attribute g:statusStart { "1" }
 statusEnd = attribute g:statusEnd { xsd:IDREF }
 
+a_key = attribute key { text }
 a_oid = attribute oid { text }
 a_spoid = attribute spoid { text }
 a_spform = attribute spform { text }

@@ -562,28 +562,31 @@ gparse(register unsigned char *g, enum t_type type)
   
   unsigned const char *gb_cun = NULL;
   unsigned const char *gb_a2u = NULL;
-  const char *gb_oid = NULL, *gb_spoid = NULL;
+  const char *gb_key = NULL, *gb_oid = NULL, *gb_spoid = NULL;
 
   render_canonically = compound_warnings;
-#if 1
   if (curr_lang->core->sindex != -1 && !gdl_bootstrap)
-#else
-  if (curr_lang->signlist && '#' == *curr_lang->signlist && !gdl_bootstrap)
-#endif
     {
       const char *mess = c1c2gvl(file,lnum,g,curr_lang->core->sindex);
       gb_oid = gvl_bridge_oid();
       gb_spoid = gvl_bridge_spoid();
+
+      if (g_v == type || g_n == type)
+	{
+	  gb_key = gvl_bridge_key();
+	  if (!strstr(gb_key, ".."))
+	    {
+	      gb_spoid = pool_copy(gb_key);
+	      char *x = strchr(gb_spoid, '.');
+	      *x = '\0';
+	    }
+	}
 	  
       if (mess && !inner_qual && !inner_parse)
 	vwarning("(gvl) %s",mess);
       gb_a2u = gvl_bridge_atf2utf();
       if (do_cuneify)
 	gb_cun = gvl_bridge_cuneify();
-#if 0
-      if (do_signnames)
-	gb_signname = gvl_bridge_signname();
-#endif
     }
   
   if (type == type_top)
@@ -963,6 +966,8 @@ gparse(register unsigned char *g, enum t_type type)
 #if 1
 		  if (gb_cun)
 		    appendAttr(gp->xml,gattr(a_g_utf8,gb_cun));
+		  if (gb_key)
+		    appendAttr(gp->xml,gattr(a_key,gb_key));
 #else
 		  static const unsigned char *cattr = NULL;
 		  if (gp->type == g_q)
