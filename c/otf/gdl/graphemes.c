@@ -573,13 +573,17 @@ gparse(register unsigned char *g, enum t_type type)
 
       if (g_v == type || g_n == type)
 	{
-	  gb_key = gvl_bridge_key();
-	  if (!strstr(gb_key, ".."))
+	  if ((gb_key = gvl_bridge_key()))
 	    {
-	      gb_spoid = pool_copy(gb_key);
-	      char *x = strchr(gb_spoid, '.');
-	      *x = '\0';
+	      if (!strstr(gb_key, ".."))
+		{
+		  gb_spoid = pool_copy(gb_key);
+		  char *x = strchr(gb_spoid, '.');
+		  *x = '\0';
+		}
 	    }
+	  else
+	    vwarning("(gvl) unable to make key from grapheme %s", g);
 	}
 	  
       if (mess && !inner_qual && !inner_parse)
