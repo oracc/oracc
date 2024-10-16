@@ -303,12 +303,14 @@ process_mods(struct node*e,int nmods, struct mods *mods)
 	  struct node *t = gtextNode(ucc(mods[i].data));
 	  appendChild(m,t);
 	  appendChild(e,m);
+	  if (mods[i].type == g_f)
+	    appendAttr(e,attr(a_g_gtag,mods[i].data));
 	}
     }
 }
 
 static int
-gmods(register unsigned char *g, struct mods *modsbuf)
+gmods(unsigned char *g, struct mods *modsbuf)
 {
   struct mods *mp = modsbuf;
   char *datap = NULL;
@@ -398,16 +400,15 @@ gmods(register unsigned char *g, struct mods *modsbuf)
 	  ++mp;
 	  break;
 	case '\\':
+	  *g = '\0'; ++g;
 	  datap = mp->data;
 	  if (backslash_is_formvar)
 	    {
 	      mp->type =  g_f;
-	      *g++ = '\0';
 	    }
 	  else
 	    {
 	      mp->type = g_disamb;
-	      *g++ = '\0';
 	      *datap++ = '\\';
 	    }
 	  while (*g < 128 && (isalnum(*g) || '\\' == *g))

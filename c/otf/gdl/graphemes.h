@@ -10,7 +10,7 @@
 enum t_ops { OPS o_top };
 #undef C
 
-#define MAX_MOD_DATA 6
+#define MAX_MOD_DATA 32
 
 struct mods
 {

@@ -184,6 +184,21 @@
   <define name="utf8">
     <attribute name="g:utf8"/>
   </define>
+  <define name="gtag">
+    <attribute name="g:gtag"/>
+  </define>
+  <define name="oivs">
+    <attribute name="g:oivs"/>
+  </define>
+  <define name="salt">
+    <attribute name="g:salt"/>
+  </define>
+  <define name="script">
+    <attribute name="g:script"/>
+  </define>
+  <define name="sset">
+    <attribute name="g:sset"/>
+  </define>
   <define name="oid">
     <attribute name="oid"/>
   </define>
