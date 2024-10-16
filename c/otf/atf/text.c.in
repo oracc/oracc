@@ -316,7 +316,10 @@ process_text(struct run_context *run, unsigned char **lines)
 	{
 	  unsigned const char *font = xpd_option(run->proj->xpd, "cuneify-font");
 	  if (!font)
-	    font = xpd_option(run->proj->xpd, "asl-font");
+	    font = xpd_option(run->proj->xpd, "asl-script");
+	  /* This is between implementations; asl-script is really a
+	     styleset in OSL-noto; one day we will actually support
+	     different fonts as well */
 	  setAttr(text,a_c,font ? font : ucc("noto"));
 	}
       

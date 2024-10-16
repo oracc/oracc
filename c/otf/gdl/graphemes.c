@@ -571,7 +571,7 @@ gparse(register unsigned char *g, enum t_type type)
       gb_oid = gvl_bridge_oid();
       gb_spoid = gvl_bridge_spoid();
 
-      if (g_v == type || g_n == type)
+      if (g_s == type || g_v == type || g_n == type)
 	{
 	  if ((gb_key = gvl_bridge_key()))
 	    {
