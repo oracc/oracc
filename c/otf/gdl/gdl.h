@@ -15,6 +15,9 @@ extern int use_unicode;
 #define gdl_string	c1_gdl_string
 #define gdl_term 	c1_gdl_term
 
+#define ccp const char *
+#define uccp unsigned const char *
+
 extern void gdl_init(void);
 extern void gdl_term(void);
 extern struct node *gdl(unsigned char *gdlin, int frag_ok);

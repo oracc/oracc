@@ -31,6 +31,7 @@
 #include "run.h"
 #include "proj_context.h"
 #include "xmd.h"
+#include <gvl_bridge.h>
 
 #define QVEC_BYTES	5000
 #define QVEC_SIZ	(QVEC_BYTES*8)
@@ -322,6 +323,8 @@ process_text(struct run_context *run, unsigned char **lines)
 	     styleset in OSL-noto; one day we will actually support
 	     different fonts as well */
 	  setAttr(text,a_c,font ? font : ucc("noto"));
+	  if (font)
+	    gvl_set_script(font);
 	}
       
       if (text_protocols && text_protocols->children.lastused)

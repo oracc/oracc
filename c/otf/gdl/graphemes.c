@@ -304,7 +304,7 @@ process_mods(struct node*e,int nmods, struct mods *mods)
 	  appendChild(m,t);
 	  appendChild(e,m);
 	  if (mods[i].type == g_f)
-	    appendAttr(e,attr(a_g_gtag,mods[i].data));
+	    appendAttr(e,attr(a_g_gtag,(uccp)mods[i].data));
 	}
     }
 }
@@ -563,7 +563,7 @@ gparse(register unsigned char *g, enum t_type type)
   
   unsigned const char *gb_cun = NULL;
   unsigned const char *gb_a2u = NULL;
-  const char *gb_key = NULL, *gb_oid = NULL, *gb_spoid = NULL;
+  const char *gb_key = NULL, *gb_oid = NULL, *gb_spoid = NULL, *gb_ucode = NULL;
 
   render_canonically = compound_warnings;
   if (curr_lang->core->sindex != -1 && !gdl_bootstrap)
@@ -571,6 +571,7 @@ gparse(register unsigned char *g, enum t_type type)
       const char *mess = c1c2gvl(file,lnum,g,curr_lang->core->sindex);
       gb_oid = gvl_bridge_oid();
       gb_spoid = gvl_bridge_spoid();
+      gb_ucode = gvl_bridge_ucode();
 
       if (g_s == type || g_v == type || g_n == type)
 	{
@@ -578,7 +579,7 @@ gparse(register unsigned char *g, enum t_type type)
 	    {
 	      if (!strstr(gb_key, ".."))
 		{
-		  gb_spoid = pool_copy(gb_key);
+		  gb_spoid = (ccp)pool_copy(gb_key);
 		  char *x = strchr(gb_spoid, '.');
 		  *x = '\0';
 		}
@@ -915,7 +916,7 @@ gparse(register unsigned char *g, enum t_type type)
 	  appendAttr(gp->xml,gattr(a_oid, (unsigned const char *)gb_oid));
 	  if (gb_oid && *gb_oid)
 	    {
-	      unsigned char *nm = gvl_bridge_oid_name(gb_oid);
+	      unsigned const char *nm = gvl_bridge_oid_name(gb_oid);
 	      if (nm)
 		appendAttr(gp->xml,gattr(a_g_sign, gvl_bridge_oid_name(gb_oid)));
 	      else
@@ -972,7 +973,16 @@ gparse(register unsigned char *g, enum t_type type)
 		  if (gb_cun)
 		    appendAttr(gp->xml,gattr(a_g_utf8,gb_cun));
 		  if (gb_key)
-		    appendAttr(gp->xml,gattr(a_key,gb_key));
+		    appendAttr(gp->xml,gattr(a_key,(uccp)gb_key));
+		  if (gb_ucode)
+		    {
+		      struct oiv_data *oip = gvl_get_script(gb_ucode);
+		      if (oip)
+			{
+			  if (oip->salt)
+			    appendAttr(gp->xml,gattr(a_g_salt,(uccp)oip->salt));
+			}
+		    }
 #else
 		  static const unsigned char *cattr = NULL;
 		  if (gp->type == g_q)
@@ -1031,6 +1041,17 @@ gparse(register unsigned char *g, enum t_type type)
 		{
 #if 1
 		  appendAttr(gp->xml,gattr(a_g_utf8,gb_cun?gb_cun:(unsigned const char *)"X"));
+		  if (gb_key)
+		    appendAttr(gp->xml,gattr(a_key,(uccp)gb_key));
+		  if (gb_ucode)
+		    {
+		      struct oiv_data *oip = gvl_get_script(gb_ucode);
+		      if (oip)
+			{
+			  if (oip->salt)
+			    appendAttr(gp->xml,gattr(a_g_salt,(uccp)oip->salt));
+			}
+		    }
 #else		  
 		  if (cbd_rules)
 		    {
