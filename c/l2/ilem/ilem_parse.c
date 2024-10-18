@@ -378,9 +378,10 @@ ilem_parse(struct xcl_context *xc, struct xcl_ilem /*ilem_form*/ *xi, int first_
 
 	  /* Instance parsing cannot result in a form with && being
 	     processed using f2_parse_cof, so we can just pass a NULL
-	     final argument */
+	     final argument; 2024-10-18: this turns out to be a lie so
+	     pass xc->sigs */
 	  f2_parse((Uchar*)lp->f->file, lp->f->lnum, lem, &curr_f->f2, 
-		   (Uchar**)&curr_f->psu_sense, NULL);
+		   (Uchar**)&curr_f->psu_sense, xc->sigs);
 
 	  if (check_cf((char*)lp->f->file, lp->f->lnum, (char*)curr_f->f2.cf))
 	    BIT_SET(curr_f->f2.flags, F2_FLAGS_INVALID);

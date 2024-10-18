@@ -26,7 +26,7 @@ sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
   if (ifp && lem_extended)
     xli_ilem(xcp, ifp, fp);
 
-  if (strstr((const char *)fp->lang, "-949"))
+  if (fp->lang && strstr((const char *)fp->lang, "-949"))
     wild_form = 1;
 
   if (!fp->project)
@@ -60,7 +60,7 @@ sig_one(struct xcl_context *xcp, struct ilem_form *ifp, struct f2 *fp, int tail)
 	  (char*)(fp->pos ? fp->pos : (Uchar*)"X"),
 	  (char*)(fp->epos ? fp->epos : (Uchar*)"X"));
 
-  if (BIT_ISSET(fp->core->features,LF_BASE)
+  if (fp->core && BIT_ISSET(fp->core->features,LF_BASE)
       && !fp->base)
     {
       if (fp->pos && !strcmp((char *)fp->pos, "n"))

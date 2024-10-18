@@ -573,7 +573,7 @@ gparse(register unsigned char *g, enum t_type type)
       gb_spoid = gvl_bridge_spoid();
       gb_ucode = gvl_bridge_ucode();
 
-      if (g_s == type || g_v == type || g_n == type)
+      if (g_s == type || g_v == type || g_n == type || g_c == type)
 	{
 	  if ((gb_key = gvl_bridge_key()))
 	    {
@@ -584,7 +584,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  *x = '\0';
 		}
 	    }
-	  else
+	  else if (!strchr(g, 'X'))
 	    vwarning("(gvl) unable to make key from grapheme %s", g);
 	}
 	  
