@@ -14,7 +14,3 @@ for l in `cut -f1 01bld/sigoid.tab | sort -u` ; do
 	echo neo-oids.sh not processing sux
     fi
 done
-
-#	else
-#          cat 01bld/$l/need-oid.tab | ssh -C build sudo /home/oracc/bin/orc oid.plx -x -p neo -dom $l >/dev/null
-# (cd $ORACC_BUILDS/oid ; scp build:/home/oracc/oid/* .)

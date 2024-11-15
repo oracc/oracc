@@ -462,6 +462,7 @@ parse_flags(unsigned char *fptr, int *nflags)
 	  abort();
 	}
     }
+
   *nflags = fptr - start;
   if (hash)
     {
@@ -1494,6 +1495,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 			{
 			  unsigned char save = *following;
 			  struct token *gtokp = NULL;
+			  extern int inner_bang;
 			  extern int inner_parse;
 			  *following = '\0';
 			  gtokp = hash_lookup(g2,&table);
@@ -1501,7 +1503,9 @@ tokenize(register unsigned char *l,unsigned char *e)
 			    {
 			      int save_inner_parse = inner_parse;
 			      inner_parse = 1;
+			      inner_bang = 1;
 			      gtokp = /*s_*/create_token(text, t, gparse(pool_copy(g2),t));
+			      inner_bang = 0;
 			      inner_parse = save_inner_parse;
 			    }
 #if 0

@@ -488,7 +488,10 @@ class="cookbook">#note: @notelabel{i 1} A note to column 1 line
 <d:rnc>
 comments = cmt | notetext
 cmt = element cmt { text }
-cuneifont = attribute c { text }
+cuneifont = (
+	attribute scr { text } ,
+	attribute fnt { text } ,
+	attribute mag { text })
 notelabel = attribute note:label { text }
 notemark  = attribute note:mark { text }
 noteauto  = attribute note:auto { text }

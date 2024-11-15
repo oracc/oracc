@@ -166,6 +166,7 @@ process_attr {
     chomp $aline;
     if ($aline =~ /attribute\s+(\S+)\s*/) {
 	my $n = $1;
+	warn "attr $n\n";
 	$a{$n} = a_nsify($n);
 	$max_n = length($n) if length($n) > $max_n;
 	$max_q = (length($a{$n})+length($n)) 

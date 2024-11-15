@@ -53,8 +53,12 @@
   </ex:document>
 </xsl:template>
 
+<!-- 2024-11-15 modify call-back to use new div#p4Article -->
 <xsl:template name="call-back">
-  <xsl:copy-of select="*"/>
+  <xsl:copy>
+    <xsl:copy-of select="@class|@id|@name|@data-cf|@data-gw|@data-pos"/>
+    <xsl:copy-of select="*"/>
+  </xsl:copy>
 </xsl:template>
 
 </xsl:stylesheet>

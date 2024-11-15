@@ -46,6 +46,8 @@ int backslash_is_formvar = 1;
 static struct npool *graphemes_pool;
 struct node *pending_disamb = NULL;
 
+int inner_bang = 0;
+
 int gvl_mode = 0;
 int gdl_strict_compound_warnings = 0;
 
@@ -584,7 +586,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  *x = '\0';
 		}
 	    }
-	  else if (!strchr(g, 'X'))
+	  else if (!strchr((ccp)g, 'X') && !inner_bang)
 	    vwarning("(gvl) unable to make key from grapheme %s", g);
 	}
 	  

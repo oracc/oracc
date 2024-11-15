@@ -316,15 +316,27 @@ process_text(struct run_context *run, unsigned char **lines)
 
       if (run->proj && run->proj->xpd)
 	{
-	  unsigned const char *font = (uccp)xpd_option(run->proj->xpd, "cuneify-font");
+	  const char *script = xpd_option(run->proj->xpd, "asl-script");
+	  const char *font = xpd_option(run->proj->xpd, "cuneify-font");
+	  const char *mag = xpd_option(run->proj->xpd, "cuneify-mag");
+
 	  if (!font)
-	    font = (uccp)xpd_option(run->proj->xpd, "asl-script");
+	    font = "ofs-noto"; /* CSS code */
+	  if (!mag)
+	    mag = "ofs-120";
+	  if (!script)
+	    script = "middle";
+	  
 	  /* This is between implementations; asl-script is really a
 	     styleset in OSL-noto; one day we will actually support
 	     different fonts as well */
-	  setAttr(text,a_c,font ? font : ucc("noto"));
-	  if (font)
-	    gvl_set_script(font);
+	  setAttr(text,a_fnt,(uccp)font);
+	  setAttr(text,a_mag,(uccp)mag);
+	  setAttr(text,a_scr,(uccp)script);
+#if 0
+	  if (scr)
+	    gvl_set_script(scr);
+#endif
 	}
       
       if (text_protocols && text_protocols->children.lastused)

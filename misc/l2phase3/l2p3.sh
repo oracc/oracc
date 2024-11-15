@@ -16,7 +16,12 @@ glostyle=`oraccopt . type`
 if [ "$glostyle" == "superglo" ]; then
     xcf=l2p3-newstyle.xcf
 else
-    xcf=l2p3.xcf 
+    cbdnewstyle=`oraccopt . cbd-new-style`
+    if [ "$cbdnewstyle" == "yes" ]; then
+	xcf=l2p3-newstyle.xcf
+    else
+	xcf=l2p3.xcf
+    fi
 fi
 
 inlinesenses=`oraccopt . cbd-inline-senses`

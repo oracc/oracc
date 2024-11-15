@@ -36,6 +36,7 @@ struct xname anames[] =
   { "ex_label", "ex_label" },
   { "extent", "extent" },
   { "flags", "flags" },
+  { "fnt", "fnt" },
   { "form", "form" },
   { "fragid", "fragid" },
   { "from", "from" },
@@ -95,6 +96,7 @@ struct xname anames[] =
   { "lemma", "lemma" },
   { "level", "level" },
   { "lid", "lid" },
+  { "mag", "mag" },
   { "morph", "morph" },
   { "n", "n" },
   { "n:num", "http://oracc.org/ns/norm/1.0:num" },
@@ -117,6 +119,7 @@ struct xname anames[] =
   { "score-mode", "score-mode" },
   { "score-type", "score-type" },
   { "score-word", "score-word" },
+  { "scr", "scr" },
   { "sense", "sense" },
   { "sexified", "sexified" },
   { "sigref", "sigref" },
@@ -333,6 +336,9 @@ struct attr abases[] =
   { { anames[154].qname,NULL } , { anames[154].pname,NULL } },
   { { anames[155].qname,NULL } , { anames[155].pname,NULL } },
   { { anames[156].qname,NULL } , { anames[156].pname,NULL } },
+  { { anames[157].qname,NULL } , { anames[157].pname,NULL } },
+  { { anames[158].qname,NULL } , { anames[158].pname,NULL } },
+  { { anames[159].qname,NULL } , { anames[159].pname,NULL } },
 };
 struct xname enames[] =
 {

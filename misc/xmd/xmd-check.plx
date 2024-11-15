@@ -64,7 +64,7 @@ if (-r '01bld/lists/proxy-atf.lst') {
 	s/^(.*?):// && ($xtf_project = $1);
 	s/\@(.*)$// && ($xmd_project = $1);
 	unless ($in_cat{$_}) {
-	    warn "01bld/lists/proxy-atf.lst:$.: $fullname is not in the $xmd_project catalogue\n";
+	    warn "01bld/lists/proxy-atf.lst:$.: $_ is not in the $xmd_project catalogue\n";
 	    ++$seen{$_};
 	}
     }

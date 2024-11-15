@@ -323,12 +323,20 @@
   </xsl:template>
 
   <!-- process headings -->
-  <xsl:template match="esp:h | esp:sh">
+  <xsl:template match="esp:h | esp:sh | esp:ssh | esp:sssh">
     <xsl:variable name="heading-text">
       <xsl:apply-templates mode="dummy"/>
     </xsl:variable>
     <esp:bookmark id="h_{esp:make-alphanumeric ( $heading-text )}" hide-highlight="yes"/>
-    <xsl:element name="{if ( self::esp:h ) then 'h2' else 'h3'}">
+    <xsl:variable name="hlevel">
+      <xsl:choose>
+	<xsl:when test="self::esp:h">h2</xsl:when>
+	<xsl:when test="self::esp:sh">h3</xsl:when>
+	<xsl:when test="self::esp:ssh">h4</xsl:when>
+	<xsl:otherwise>h5</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:element name="{$hlevel}">
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
