@@ -14,15 +14,15 @@ bin_SCRIPTS = atf.plx cdlhtml.plx cfgwview.plx cuneify.plx		\
 	atfpaste.sh datestamp.plx htmlbase.plx index-downloads.plx \
 	atftemplate.plx voltemplate.plx weblists.sh cdli-scraper.plx
 
-css_DATA = anyproj.css atfedit.css cbd.css ctxt.css cuneiform.css	\
-	cuneify-mixed.css cuneify-na.css cuneify-ob.css cuneify.css		\
-	cuneitab.css doc.css epsd.css help.css image.css na.css nafilled.css	\
-	ncdl.css ncdlprint.css oraccbase.css oraccpod.css oraccprint.css	\
-	oraccscreen.css orig-SHU-white.css outline.css ppcs-print.css		\
-	ppcs.css pqpager.css preformat.css psdview.css score-block.css		\
-	SHU-white.css signlist.css stve.css undefined.css x.css xdf-print.css	\
-	xmd.css xo.css xtl.css oracchome.css oraccscreencss.xml oraccbasecss.xml \
-	cuneiformcss.xml oracc3home.css wwwhome.css oraccdoc.css
+css_DATA = anyproj.css atfedit.css cbd.css ctxt.css doc.css epsd.css	\
+	help.css image.css na.css nafilled.css ncdl.css ncdlprint.css	\
+	oraccbase.css oraccpod.css oraccprint.css oraccscreen.css	\
+	orig-SHU-white.css outline.css ppcs-print.css ppcs.css		\
+	pqpager.css preformat.css psdview.css score-block.css		\
+	SHU-white.css signlist.css stve.css undefined.css x.css		\
+	xdf-print.css xmd.css xo.css xtl.css oracchome.css		\
+	oraccscreencss.xml oraccbasecss.xml cuneiformcss.xml		\
+	oracc3home.css wwwhome.css oraccdoc.css
 
 data_DATA = tidy.conf
 

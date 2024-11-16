@@ -222,19 +222,6 @@
     <xsl:if test="$parameters/param:menu-dropdown='yes'">
       <xsl:attribute name="class">dd</xsl:attribute>
     </xsl:if>
-    <xsl:if test="$parameters/param:cuneify/@switcher='yes'">
-      <p id="switcherul">
-	<span id="CuneiformSwitcher">
-	  <xsl:text>Cuneiform script: </xsl:text>
-	  <span class="switcherlink" id="switcherOB">
-	    <a href="#" onclick="setActiveStyleSheet('oldbabylonian'); return false;" title="Old Babylonian script">&#160;OB&#160;</a>
-	  </span>
-	  <span class="switcherlink" id="switcherNA">
-	  <a href="#" onclick="setActiveStyleSheet('neoassyrian'); return false;" title="Neo Assyrian script">&#160;NA&#160;</a></span>
-	</span>
-      </p>
-    </xsl:if>
-
     <xsl:if test="$parameters/param:main-menu-caption">
       <div id="MenuCaption">
         <xsl:copy-of select="$parameters/param:main-menu-caption/node()"/>
