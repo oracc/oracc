@@ -586,7 +586,7 @@ gparse(register unsigned char *g, enum t_type type)
 		  *x = '\0';
 		}
 	    }
-	  else if (!strchr((ccp)g, 'X') && !inner_bang)
+	  else if (!strchr((ccp)g, 'X') && !inner_bang && !strchr((ccp)g, 'N'))
 	    vwarning("(gvl) unable to make key from grapheme %s", g);
 	}
 	  
@@ -930,8 +930,18 @@ gparse(register unsigned char *g, enum t_type type)
 	    }
 	  if (gb_spoid)
 	    {
-	      appendAttr(gp->xml,gattr(a_spoid, (unsigned const char *)gb_spoid));
-	      appendAttr(gp->xml,gattr(a_spform, gvl_bridge_oid_name(gb_spoid)));
+	      unsigned const char *spnm = gvl_bridge_oid_name(gb_spoid);
+	      if (!spnm)
+		spnm = gvl_bridge_spoid_name(gb_spoid);
+	      if (spnm)
+		{
+		  appendAttr(gp->xml,gattr(a_spoid, (unsigned const char *)gb_spoid));
+		  appendAttr(gp->xml,gattr(a_spform, spnm));
+		}
+	      else
+		{
+		  vwarning("OID %s does not have a name in the current sign list", gb_spoid);
+		}
 	    }
 	}
 
