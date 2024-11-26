@@ -46,6 +46,11 @@ project=`oraccopt`
 #    odo-corpus-signlist.sh
 #fi
 
+csltoks=`oraccopt . asl-corpus`
+if [ "$csltoks" = "yes" ]; then
+    sx-tok.sh
+fi
+
 # the o2 arg means call sx-slix.sh which may sometimes be redundant
 # but should always be harmless
 odo-signlist.sh o2

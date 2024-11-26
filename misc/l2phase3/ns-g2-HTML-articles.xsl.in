@@ -502,7 +502,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 	<h2>
 	  <a class="icountu" 
 	     href="javascript://" onclick="act_isid(event)"
-	     data-type="period" data-name="{cbd:p}" data-lang="{/*/@xml:lang}" data-isid="{@xis}">
+	     data-type="period" data-name="{.}" data-lang="{/*/@xml:lang}" data-isid="{@xis}">
 	    <xsl:apply-templates/>
 	    <xsl:text> (</xsl:text>
 	    <xsl:value-of select="concat(@icount,'x/',@ipct,'%')"/>	
