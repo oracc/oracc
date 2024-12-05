@@ -498,7 +498,7 @@ static int
 cuneifiable(struct lang_context *lang)
 {
   if (lang && lang->core 
-      && BIT_ISSET(lang->core->features,LF_SAC)
+      && (BIT_ISSET(lang->core->features,LF_SAC) || BIT_ISSET(lang->core->features, LF_PC))
       && (!lang->script || strcmp(lang->script, "949"))) /* This is not quite good enough; need to check for non-SAC */
     return 1;
   else
