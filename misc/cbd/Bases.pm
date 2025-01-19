@@ -63,7 +63,7 @@ sub bases_sigs {
     my %x = %$x;
     my $l = ORACC::CBD::Util::lang();
     unless ($$args{'bases'} && $$args{'stdout'}) {
-	open(B,">01bld/$l/base-sigs.tab") || die "$0: open failed on 01bld/$l/base-sigs.tab\n";
+	open(B,">01bld/$l/base-sigs.tab") || die "$0: unable to write 01bld/$l/base-sigs.tab\n";
 	select B;
     }
     foreach my $c (sort keys %x) {

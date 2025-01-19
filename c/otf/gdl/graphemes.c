@@ -98,9 +98,10 @@ int bad_grapheme = 0;
 static int is_bad_cg[256];
 static const char *bad_cg_chars = "[]<>{}#!?*";
 
+/* 2025-01-19: add '^' to grapheme_base_chars to support parse of RSP350^a etc */
 static int is_grapheme_base[256];
 static const char *grapheme_base_chars
-  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',";
+  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',^";
 
 static int is_compound_base[256];
 static const char *compound_base_chars
@@ -205,37 +206,7 @@ const unsigned char *
 g2utf(const unsigned char *g)
 {
   const unsigned char *utf8g = NULL;
-
-#if 1
   utf8g = atf2utf(mloc_file_line(file,lnum),g,0);
-#else
-  unsigned const char *g_dig = NULL, *g_end = NULL;
-  /* mods and alts are not converted */
-  g_end = g;
-  while (*g_end && *g_end != '~' && *g_end != '\\'
-	 && (*g_end != '@' || g_end[1] > 0x80 || isupper(g_end[1])))
-    ++g_end;
-
-  if (*g_end)
-    g_dig = g_end;
-  else
-    g_dig = g_end = g+strlen((const char *)g);
-
-  /* subdigs are converted separately */
-  while (g_dig > g && (isdigit(g_dig[-1]) 
-		       || ('x' == g_dig[-1] && (g_dig-1 > g))))
-    --g_dig;
-  utf8g = natf2utf((const char*)g,(const char *)g_dig,0,file,lnum);
-
-  if (utf8g && *g_dig)
-    {
-      if (!is_signlist(utf8g))
-	utf8g = subdig(g_dig,g_end);
-      else
-	utf8g = cpydig(g_dig,g_end);
-    }
-#endif
-
   return pool_copy(utf8g);
 }
 
@@ -684,65 +655,12 @@ gparse(register unsigned char *g, enum t_type type)
 		  }
 	      }
 	  }
-#if 0
-	else if (curr_lang->values
-		 && !hash_find(curr_lang->values,g))
-	  {
-	    if ((*g != 'x' || g[1])
-		&& ((*g != 'n' && *g != 'N') || (g[1] && g[1] != '(')))
-	      {
-		vwarning("%s: grapheme value not in %s",
-			 g,curr_lang->signlist);
-		exit_status = 1;
-		--status;
-	      }
-	    if (g_ok)
-	      g_ok = pool_copy(g_ok);
-	    gp = singleton(g,g_v);
-	  }
-#endif
 	else
 	  {
 	    if (g_ok)
 	      g_ok = pool_copy(g_ok);
 	    gp = singleton(g,type);
 	  }
-#if 0
-	if (g_ok)
-	  {
-	    if (cw_proper_c)
-	      list_add(cw_proper_c, npool_copy(g_ok, graphemes_pool));
-
-	    if (gdl_grapheme_sign_names && !inner_qual)
-	      {
-		list_add(gdl_sign_names, (void*)pool_copy(psl_get_sname(g_ok)));
-	      }
-	    else
-	      {
-		const char *gid = psl_get_id(g_ok);
-		if (gid)
-		  {
-		    if (gdl_grapheme_sigs && !inner_qual)
-		      {
-			/*fprintf(stderr, "[3] %s => %s\n", g_ok, gid);*/
-			list_add(gdl_sig_list, (void*)gid);
-			list_add(gdl_sig_deep, (void*)gid);
-		      }
-		  }
-		else
-		  {
-		    if (gdl_grapheme_sigs && !inner_qual)
-		      {
-			/*fprintf(stderr, "[4] %s => %s\n", g_ok, "q99");*/
-			list_add(gdl_sig_list, "q99");
-			list_add(gdl_sig_deep, (void*)gid);
-		      }
-		  }
-	      }
-	  }
-	else if (cw_proper_c)
-	  list_add(cw_proper_c, npool_copy(g, graphemes_pool));
-#endif
       }
       break;
     case g_n:
@@ -751,59 +669,11 @@ gparse(register unsigned char *g, enum t_type type)
     case g_s:
       /* canonicalize sign names up here? */
       /*fprintf(stderr, "g_s: reached with g=%s; local_render=%d\n", g, local_render);*/
-#if 0
-      if (compound_warnings)
-	{
-	  signified = signify(g);
-	  if (signified && strcmp((char*)signified,(char*)g))
-	    {
-	      /* vnotice("coercing non-canonical sign-name %s to canonical %s", g, signified); */
-	      /* g = (unsigned char *)signified; */
-	    }
-	}
-#endif      
       if (is_signlist(g) && psl_is_sname(g))
 	{
 	  gp = singleton(g,type); /* FIXME?: should we preserve the info that
 				     this is a signlist sign name */
 	}
-#if 0
-      else if (curr_lang->snames)
-	{
-	  if (!hash_find(curr_lang->snames,g))
-	    {
-	      const unsigned char *utf8g = (gb_a2u ? gb_a2u : g2utf(g)), *lc;
-	      if (utf8g)
-		{
-		  lc = utf_lcase(utf8g);
-		  if (lc)
-		    lc = utf2atf(lc);
-		  else
-		    lc = g;
-		}
-	      else
-		lc = g;
-	      if (hash_find(curr_lang->values,lc))
-		{
-		  /* we're OK, this is an upcased 
-		     project value used as a name */
-		}
-	      else if (psl_get_sname(lc))
-		{
-		  vwarning("%s: sign is in OGSL but not in %s",
-			   g, curr_lang->signlist);
-		}
-	      else
-		{
-		  vwarning("%s: grapheme name not in %s",
-			   g,curr_lang->signlist);
-		  --status;
-		  exit_status = 1;
-		}
-	    }
-	  gp = singleton(g,type);
-	}
-#endif
       else
 	{
 	  unsigned char *gcheck = g, *g_end,*g_utf;

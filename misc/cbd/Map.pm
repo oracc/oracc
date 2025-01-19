@@ -257,7 +257,8 @@ sub map_load {
 	} elsif (/: add base (.*)\s=>\s+(\S+)/) {
 	    # now handled above
 	} else {
-	    warn "$map:$.: syntax error: bad command\n";
+	    warn "$map:$.: syntax error: bad command\n"
+		unless /base/ && /better than/;
 	}
     }
     close(M);

@@ -11,7 +11,7 @@ my $oracc_colours = "@@ORACC@@/lib/data/p3colours.txt";
 my %colours = ();
 my %classes = ();
 my %map_c = (
-    href=>'a:link',
+    href=>'a:link', #  a:link[href]',
     hover=>'a[onclick]:hover a[href]:hover',
     visited=>'a:visited',
     'lemm-href'=>'a.cbd:link',
@@ -41,6 +41,11 @@ while (<C>) {
 	    } else {
 		${$classes{$t}}{'only'} = $colour;
 	    }
+	}
+	# only override link-blue if 'colour-bind-link' is
+	# explicitly given in p3colours.txt
+	if ($colour eq 'link') {
+	    push @{$map_c{'href'}}, 'a:link[href]';
 	}
     }
 }
