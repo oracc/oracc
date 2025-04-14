@@ -42,7 +42,6 @@ SUBDIRS = \
 	print \
 	ptb \
 	saxon \
-	schemas \
 	se \
 	sl \
 	sma \

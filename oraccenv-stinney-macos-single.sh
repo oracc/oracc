@@ -1,6 +1,6 @@
 #!/bin/sh
 ORACC=/Users/stinney/orc
-ORACC_HOME=/Users/stinney/oracc-projects
+ORACC_HOME=/Users/stinney/orc
 ORACC_MODE=single
 ORACC_USER=no
 ORACC_HOST=localhost
