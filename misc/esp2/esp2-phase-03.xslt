@@ -169,8 +169,18 @@
         <div id="EndContentSpace"> </div>
       </div>
       <!-- back to top link (screen only) -->
+      <xsl:variable name="back-to-top">
+	<xsl:choose>
+	  <xsl:when test="string-length($parameters/param:back-to-top)>0">
+	    <xsl:value-of select="$parameters/param:back-to-top"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:text>Back to top ^^</xsl:text>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </xsl:variable>
       <div id="BackToTop">
-        <esp:link bookmark="top" title="">Back to top ^^</esp:link>
+        <esp:link bookmark="top" title=""><xsl:value-of select="$back-to-top"/></esp:link>
       </div>
       <!-- footers (including right footer for screen only) -->
       <div id="FooterWhole"> </div>
