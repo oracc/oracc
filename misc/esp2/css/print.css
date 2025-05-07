@@ -160,6 +160,10 @@ table.pretty th {
     text-align: left;
 }
 
+body:dir(rtl) table.pretty th {
+    text-align: right;
+}
+
 table.pretty caption {
     margin-left: inherit;
     margin-right: inherit;

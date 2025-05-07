@@ -166,6 +166,10 @@ table.pretty th {
 	font-weight: normal;
 }
 
+body:dir(rtl) table.pretty th {
+	text-align: right;
+}
+
 table.pretty caption {
 	margin-left: inherit;
 	margin-right: inherit;
