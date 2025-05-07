@@ -148,8 +148,7 @@
 
 	body:dir(rtl) #Content:not([class]) {
 		width: 75%;
-		margin-right: 22vw;
-		padding-right: 1em;
+		margin-right: 25vw;
 	}
 
 	#Menu {
