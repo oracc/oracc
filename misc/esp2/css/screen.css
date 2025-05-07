@@ -113,6 +113,7 @@ div.imagefloat {
 	clear: right;
 	page-break-inside: avoid;
 }
+
 body:dir(rtl) .imagefloat {
 	float: left;
 	clear: left;
@@ -129,7 +130,8 @@ div.imagefloat img {
 	display: block;
 	/* This width:100% is needed to make images grow to the width of their grid div; */
 	/* If used with inline images it makes all images 100% instead of respecting the grid class */
-	/*width:100%;*/ /* Commented out sjt 20191223 */
+	/*width:100%;*/
+	/* Commented out sjt 20191223 */
 	margin: 0;
 	padding: 0;
 	max-width: 100%;
@@ -193,11 +195,13 @@ h1 {
 	line-height: 1.3em;
 	margin: 1.5em 0 1.3em;
 }
+
 h2 {
 	font-size: 1.1em;
 	line-height: 1.2em;
 	margin: 1.7em 0 0.7em;
 }
+
 h3 {
 	font-size: 1em;
 	line-height: 1.1em;
@@ -279,6 +283,7 @@ a:visited:hover {
 	width: 100%;
 	text-align: center;
 }
+
 #Content,
 #Content.dd {
 	margin-inline: 2.5em;
@@ -288,11 +293,13 @@ a:visited:hover {
 #Menu a {
 	text-decoration: none;
 }
+
 #Menu a.open:hover,
 #Menu a.closed:hover {
 	color: $medium;
 	background-color: $light;
 }
+
 #Menu a.open {
 	background: $light;
 }
@@ -304,11 +311,13 @@ a:visited:hover {
 	background: #fff;
 	list-style-type: none;
 }
+
 /* this is for displaying the dropdown */
 #Menu.dd ul {
 	display: none;
 	position: absolute;
 }
+
 #Menu.dd:hover ul {
 	display: block;
 	position: absolute;
@@ -322,6 +331,7 @@ a:visited:hover {
 	list-style-image: url(/img/blank.gif);
 	/* IE Win does weird stuff with list-style-type: none */
 }
+
 #Menu li.only {
 	font-weight: normal;
 }
@@ -329,14 +339,12 @@ a:visited:hover {
 #SelfInMenu {
 	font-weight: bold;
 }
+
 #SelfInMenu.open {
 	background-color: $light;
 }
 
-@file small-viewport.css
-@file large-viewport.css
-
-#Search {
+@file small-viewport.css @file large-viewport.css #Search {
 	float: right;
 	padding: 0.5em 6em 0.5em 1em;
 	margin: 0.3em 0 0 -3px;
@@ -346,7 +354,8 @@ a:visited:hover {
 
 #Search label {
 	font-weight: bold;
-	color: #ffffff; /* $page */
+	color: #ffffff;
+	/* $page */
 }
 
 #StyleSheetWarning {
@@ -363,7 +372,7 @@ a:visited:hover {
 	list-style: none;
 }
 
-#SiteMap > ul {
+#SiteMap>ul {
 	padding-left: 0;
 }
 
@@ -392,11 +401,13 @@ a:visited:hover {
 }
 
 #AccessKeys th {
-	border-bottom: solid 2px #333333; /* $text */
+	border-bottom: solid 2px #333333;
+	/* $text */
 }
 
 #AccessKeys tr.odd {
-	background: #eeeeee; /* $alternate */
+	background: #eeeeee;
+	/* $alternate */
 }
 
 #Index h2,
@@ -410,7 +421,8 @@ a:visited:hover {
 #Vocablist h2 {
 	margin: 0;
 	line-height: 1.3em;
-	color: #333333; /* $text */
+	color: #333333;
+	/* $text */
 }
 
 #Vocablist h2.empty {
@@ -445,8 +457,11 @@ a:visited:hover {
 	border-top: dotted 1px $dark;
 	margin: 2.5em 0 0;
 	padding: 1em 0 0;
-	font-style: italic;
 	font-size: 0.9em;
+
+	&:not(body:dir(rtl)) {
+		font-style: italic;
+	}
 }
 
 #CiteAs {
