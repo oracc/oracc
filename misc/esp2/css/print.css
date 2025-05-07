@@ -186,7 +186,10 @@ h3 {
     margin: 1.7em 0 0.7em;
     font-size: 1.1em;
     line-height: 1.2em;
-    font-style: italic;
+
+    &:not(body:dir(rtl)) {
+        font-style: italic;
+    }
 }
 
 li h2,
