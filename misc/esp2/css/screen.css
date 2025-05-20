@@ -145,6 +145,10 @@ div.imageinline img {
 }
 
 /* Styling for prettier tables. RH 9.7.2009 */
+body:dir(rtl) th {
+	text-align: right;
+}
+
 table.pretty {
 	/*margin: 2em 2em 2em 3em; */
 	background: #f5f5f5;
