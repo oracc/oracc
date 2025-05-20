@@ -1,311 +1,411 @@
 /* revised print stylesheet, April 2014, RAH */
 html {
-font-size: 0.9em;
+    font-size: 0.9em;
 }
+
 body {
-/* width: 100%; */
-margin: 0;
-padding: 0.2em 0 1em 0;
-font-size: 1em;
-font-family: "Palatino Linotype", Palatino, "Times New Roman", Times, serif;
-color: #000000;
-background: #ffffff;
+    /* width: 100%; */
+    margin: 0;
+    padding: 0.2em 0 1em 0;
+    font-size: 1em;
+    font-family: "Palatino Linotype", Palatino, "Times New Roman", Times, serif;
+    color: #000000;
+    background: #ffffff;
 }
+
 code {
-font-family: "Courier New",Courier,mono;
-font-size: 1.2em }
+    font-family: "Courier New", Courier, mono;
+    font-size: 1.2em
+}
+
 ol {
-list-style-type: decimal;
+    list-style-type: decimal;
 }
+
 ol ol {
-list-style-type: lower-alpha;
+    list-style-type: lower-alpha;
 }
+
 ol ol ol {
-list-style-type: lower-roman;
+    list-style-type: lower-roman;
 }
+
 ol ol ol ol {
-list-style-type: upper-alpha;
+    list-style-type: upper-alpha;
 }
+
 pre.listing {
-margin-left: 1em;
-margin-right: 1em;
-padding-top: 5px;
-padding-bottom: 5px;
-padding-left: 2px;
-background-color: #f5f5dc;
-color: black;
+    margin-left: 1em;
+    margin-right: 1em;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 2px;
+    background-color: #f5f5dc;
+    color: black;
 }
+
 pre.example {
-margin-left: 1em;
-margin-right: 1em;
-padding-top: 5px;
-padding-bottom: 5px;
-padding-left: 2px;
-background-color: #eee;
-color: black;
+    margin-left: 1em;
+    margin-right: 1em;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 2px;
+    background-color: #eee;
+    color: black;
 }
+
 pre.cookbook {
-margin-left: 1em;
-margin-right: 1em;
-padding-top: 5px;
-padding-bottom: 5px;
-padding-left: 2px;
-background-color: #daf3e0;
-color: black;
+    margin-left: 1em;
+    margin-right: 1em;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 2px;
+    background-color: #daf3e0;
+    color: black;
 }
+
 td.cookbook {
-background-color: #daf3e0;
-color: black;
-vertical-align: middle;
+    background-color: #daf3e0;
+    color: black;
+    vertical-align: middle;
 }
+
 .cookbook {
-background-color: #daf3e0;
-color: black;
+    background-color: #daf3e0;
+    color: black;
 }
+
 .transcript {
     border: 1px #000000 solid;
     padding: 1em;
 }
+
 .example {
-background-color: #eee;
-color: black;
+    background-color: #eee;
+    color: black;
 }
+
 p.firstpara {
-font-weight: bold;
+    font-weight: bold;
 }
+
 p {
-margin: 0 0 1.3em;
+    margin: 0 0 1.3em;
 }
+
 dt {
     font-weight: bold;
 }
+
 blockquote {
-margin: 0 2em 1.3em;
-font-size: 0.9em;
+    margin: 0 2em 1.3em;
+    font-size: 0.9em;
 }
+
 input {
-font-size: inherit;
+    font-size: inherit;
 }
+
 div.imagefloat {
-margin: 0 0 0.5em 1em;
-float: right;
-clear: right;
-page-break-inside: avoid;
+    margin: 0 0 0.5em 1em;
+    float: right;
+    clear: right;
+    page-break-inside: avoid;
 }
+
 div.imageinline {
-margin: 1em 0;
-page-break-inside: avoid;
+    margin: 1em 0;
+    page-break-inside: avoid;
 }
-div.imageinline img, div.imagefloat img {
-display: block;
-/* commenting out all of the responsive code from screen.css */
-/* keeping the code that KnP uses for print.css */
-/*width:100%;
+
+div.imageinline img,
+div.imagefloat img {
+    display: block;
+    /* commenting out all of the responsive code from screen.css */
+    /* keeping the code that KnP uses for print.css */
+    /*width:100%;
 margin: 0;
 padding: 0;
 max-width:100%; */
 }
+
 img {
-border-width: 0;
+    border-width: 0;
 }
+
 div.imagecaption {
-margin: 0.5em 0 1.25em;
-font-size: 0.9em;
-line-height: normal;
+    margin: 0.5em 0 1.25em;
+    font-size: 0.9em;
+    line-height: normal;
 }
- /* .imagecaption p {
+
+/* .imagecaption p {
 width: 95%;
 } */
 /* Styling for prettier tables. RH 9.7.2009 */
 table.pretty {
-margin: 2em 2em 2em 3em;
-background: #f5f5f5;
-border-collapse: collapse;
+    margin: 2em 2em 2em 3em;
+    background: #f5f5f5;
+    border-collapse: collapse;
 }
-table.pretty th, table.pretty td {
-border: 1px #c0c0c0 solid;
-padding: 0.2em;
+
+table.pretty th,
+table.pretty td {
+    border: 1px #c0c0c0 solid;
+    padding: 0.2em;
 }
+
 table.pretty th {
-background: #dcdcdc;
-text-align: left;
+    background: #dcdcdc;
+    text-align: left;
 }
+
+body:dir(rtl) table.pretty th {
+    text-align: right;
+}
+
 table.pretty caption {
-margin-left: inherit;
-margin-right: inherit;
+    margin-left: inherit;
+    margin-right: inherit;
 }
+
 form {
-margin: 0;
+    margin: 0;
 }
+
 h1 {
-font-family: Georgia, Times, "Times New Roman", serif;
-margin: 1.5em 0 1.3em;
-font-size: 1.4em;
-line-height: 1.3em;
+    font-family: Georgia, Times, "Times New Roman", serif;
+    margin: 1.5em 0 1.3em;
+    font-size: 1.4em;
+    line-height: 1.3em;
 }
+
 h2 {
-margin: 1.7em 0 0.7em;
-font-size: 1.2em;
-line-height: 1.2em;
+    margin: 1.7em 0 0.7em;
+    font-size: 1.2em;
+    line-height: 1.2em;
 }
+
 h3 {
-margin: 1.7em 0 0.7em;
-font-size: 1.1em;
-line-height: 1.2em;
-font-style: italic;
+    margin: 1.7em 0 0.7em;
+    font-size: 1.1em;
+    line-height: 1.2em;
+
+    &:not(body:dir(rtl)) {
+        font-style: italic;
+    }
 }
-li h2, li h3 {
-margin-top: 0;
+
+li h2,
+li h3 {
+    margin-top: 0;
 }
-span.glossarylink, span.techtermslink, span.indexlink, span.switcherlink {
-display: none;
+
+span.glossarylink,
+span.techtermslink,
+span.indexlink,
+span.switcherlink {
+    display: none;
 }
+
 a:link {
-color: #000000;
+    color: #000000;
 }
+
 a:visited {
-color: #000000;
+    color: #000000;
 }
+
 #AccessLinks {
-display: none;
+    display: none;
 }
+
 #Banner {
-width: 100%;
-text-align: center;
+    width: 100%;
+    text-align: center;
 }
+
 #Breadcrumb {
-display: none;
+    display: none;
 }
+
 #TextSize {
-display: none;
+    display: none;
 }
+
 #CuneiformSwitcher {
-display: none;
+    display: none;
 }
+
 #Header {
-border-bottom: 1px solid #000000;
-margin: 0 1em;
+    border-bottom: 1px solid #000000;
+    margin: 0 1em;
 }
-#HeadTitle a:link, #HeadTitle a:visited {
-text-decoration: none;
+
+#HeadTitle a:link,
+#HeadTitle a:visited {
+    text-decoration: none;
 }
+
 #HeadSubtitle {
-font-weight: normal;
+    font-weight: normal;
 }
+
 #Search {
-display: none;
+    display: none;
 }
+
 #Menu {
-display: none;
+    display: none;
 }
+
 #ReferenceLinks {
-display: none;
+    display: none;
 }
+
 #StyleSheetWarning {
-display: none;
+    display: none;
 }
+
 #Content {
     margin: 2em;
 }
+
 #SiteMap a {
-text-decoration: none;
+    text-decoration: none;
 }
+
 #SiteMap ul {
-margin: 0;
-padding-left: 2em;
-list-style: none;
+    margin: 0;
+    padding-left: 2em;
+    list-style: none;
 }
-#SiteMap > ul {
-padding-left: 0;
+
+#SiteMap>ul {
+    padding-left: 0;
 }
+
 #SiteMap h2 {
-margin: 0.3em 0;
+    margin: 0.3em 0;
 }
+
 #SiteMap h3 {
-margin: 0.2em 0;
+    margin: 0.2em 0;
 }
+
 #SiteMap div {
-margin: 0.1em 0;
+    margin: 0.1em 0;
 }
+
 #AccessKeys {
-border: 0;
-margin: 0 1em;
-padding: 0;
+    border: 0;
+    margin: 0 1em;
+    padding: 0;
 }
-#AccessKeys th, #AccessKeys td {
-padding: 0 1em;
-text-align: left;
+
+#AccessKeys th,
+#AccessKeys td {
+    padding: 0 1em;
+    text-align: left;
 }
+
 #AccessKeys th {
-border-bottom: solid 2px #000000;
+    border-bottom: solid 2px #000000;
 }
+
 #AccessKeys tr.odd {
-background: #dcdcdc;
+    background: #dcdcdc;
 }
-#Index h2, #Glossary h2, #Techterms h2 {
-float: left;
-margin: 0;
-color: #ccc;
+
+#Index h2,
+#Glossary h2,
+#Techterms h2 {
+    float: left;
+    margin: 0;
+    color: #ccc;
 }
+
 #Vocablist h2 {
-margin: 0;
-line-height: 1.3em;
-color: #000000;
+    margin: 0;
+    line-height: 1.3em;
+    color: #000000;
 }
+
 #Vocablist h2.empty {
-margin: 0 0 2.5em;
-line-height: 1.3em;
-color: #ccc;
+    margin: 0 0 2.5em;
+    line-height: 1.3em;
+    color: #ccc;
 }
-#Index h3, #Glossary dl, #Techterms dl {
-margin: 0 0 0 3em;
+
+#Index h3,
+#Glossary dl,
+#Techterms dl {
+    margin: 0 0 0 3em;
 }
-#Index ul, #Vocablist ul {
-list-style-type: none;
-margin: 0 0 1em 4em;
-padding: 0;
+
+#Index ul,
+#Vocablist ul {
+    list-style-type: none;
+    margin: 0 0 1em 4em;
+    padding: 0;
 }
+
 #Glossary dt {
-font-weight: bold;
+    font-weight: bold;
 }
+
 #Techterms dt {
-font-weight: bold;
+    font-weight: bold;
 }
+
 #Authors {
-clear: both;
-border-top: dotted 1px #000;
-margin: 2.5em 0 0;
-padding: 1em 0 0;
-font-style: italic;
-font-size: 0.9em;
+    clear: both;
+    border-top: dotted 1px #000;
+    margin: 2.5em 0 0;
+    padding: 1em 0 0;
+    font-style: italic;
+    font-size: 0.9em;
+
+    &:not(body:dir(rtl)) {
+        font-style: italic;
+    }
 }
+
 #CiteAs {
-font-size: 0.9em;
+    font-size: 0.9em;
 }
+
 #Alphabet {
-display: none;
+    display: none;
 }
+
 #BackToTop {
-display: none;
+    display: none;
 }
+
 #EndContentSpace {
-clear: both;
-height: 1em;
+    clear: both;
+    height: 1em;
 }
+
 #FooterWhole {
-border-bottom: solid 1px #000000;
-clear: both;
-height: 1em;
+    border-bottom: solid 1px #000000;
+    clear: both;
+    height: 1em;
 }
+
 #FooterLeft {
-padding: 0 1em;
+    padding: 0 1em;
 }
+
 #FooterRight {
-display: none;
+    display: none;
 }
+
 #PageLinks {
-display: none;
+    display: none;
 }
+
 #URL {
-margin: 0 1em;
+    margin: 0 1em;
 }
