@@ -454,6 +454,7 @@ dump_tr {
 	$label =~ s/^\((.*?)\s*\)$/$1/;
 	my $pqid = $lid;
 	$pqid =~ s/\..*$//;
+	$label = xmlify($label);
 	$label = "<a href=\"javascript://\" onclick=\"act_iref(event)\" data-iref=\"$lid\">$label</a>";
 	print "<td class=\"enum\">$label</td>";
 	
