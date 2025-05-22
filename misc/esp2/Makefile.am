@@ -27,6 +27,7 @@ install-data-local:
 	scp -r css $(libesp2)
 	scp -r images $(libesp2)
 	scp -r js $(libesp2)
+	chmod -R o+r $(libesp2)
 
 EXTRA_DIST = \
 	ImageInfo.class \
