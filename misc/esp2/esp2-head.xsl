@@ -217,7 +217,8 @@
 
 <xsl:template name="insert-menu">
   <xsl:param name="current-page"/>
-  <!-- main menu (screen only) -->      
+  <!-- main menu (screen only) -->
+  <div id="menu-button">&#x2261;</div>
   <div id="Menu">
     <xsl:if test="$parameters/param:menu-dropdown='yes'">
       <xsl:attribute name="class">dd</xsl:attribute>
