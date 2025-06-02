@@ -141,14 +141,7 @@
 
 	/* without the dd class */
 	#Content:not([class]) {
-		width: 75%;
-		margin-left: 22vw;
-		padding-left: 1em;
-	}
-
-	body:dir(rtl) #Content:not([class]) {
-		width: 75%;
-		margin-right: 25vw;
+		margin-inline: 6%;
 	}
 
 	#menu-button {
