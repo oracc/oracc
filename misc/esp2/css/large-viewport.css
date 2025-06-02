@@ -151,6 +151,12 @@
 		margin-right: 25vw;
 	}
 
+	#menu-button {
+		cursor: pointer;
+		font-size: 1.5rem;
+		padding-inline-start: 1rem;
+	}
+
 	#Menu {
 		float: left;
 		width: 20%;
@@ -158,6 +164,14 @@
 		padding: 0 1em;
 		color: #000;
 		position: relative;
+	}
+
+	#Menu.hidden {
+		left: -100vw;
+	}
+
+	body:dir(rtl) #Menu.hidden {
+		right: 100vw;
 	}
 
 	#Menu.dd {
