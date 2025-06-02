@@ -150,6 +150,12 @@
 		padding-inline-start: 1rem;
 	}
 
+	#menu-button {
+		cursor: pointer;
+		font-size: 1.5rem;
+		padding-inline-start: 1rem;
+	}
+
 	#Menu {
 		float: left;
 		width: 20%;
