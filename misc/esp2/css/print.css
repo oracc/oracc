@@ -268,7 +268,7 @@ a:visited {
 }
 
 #Content {
-    margin: 2em;
+    margin-inline: 2em;
 }
 
 #SiteMap a {

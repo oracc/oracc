@@ -3,21 +3,26 @@
 	.pc30 {
 		width: 100%;
 	}
+
 	/* remove LH indent for lists */
 	ul,
 	ol {
 		margin-left: 5%;
 		padding-left: 0;
 	}
+
 	table.pretty {
 		margin: 2em 0;
 	}
+
 	#Breadcrumb {
 		display: none;
 	}
+
 	#Banner {
 		text-align: center;
 	}
+
 	#Header {
 		padding: 0.5em 4%;
 		background: $dark;
@@ -25,22 +30,28 @@
 		height: 3.5em;
 		border-bottom: 0.5em solid $light;
 	}
+
 	#HeadTitle {
 		font-size: 1.2em;
-		color: #ffffff; /* $page */
+		color: #ffffff;
+		/* $page */
 	}
+
 	#HeadTitle a:link,
 	#HeadTitle a:visited {
 		color: #ffffff;
 		background: $dark;
 		text-decoration: none;
 	}
+
 	#HeadSubtitle {
 		font-style: italic;
 		font-weight: normal;
 		font-size: 1.2em;
-		color: #ffffff; /* $page */
+		color: #ffffff;
+		/* $page */
 	}
+
 	#Menu {
 		width: 95%;
 		margin: 0.1px 0 0.1px 0;
@@ -48,6 +59,15 @@
 		color: #fff;
 		position: relative;
 	}
+
+	#Menu.hidden {
+		left: -100vw;
+	}
+
+	body:dir(rtl) #Menu.hidden {
+		right: 100vw;
+	}
+
 	#MenuCaption {
 		margin-left: 5%;
 		margin-bottom: 0.5em;
@@ -57,6 +77,7 @@
 		width: 95%;
 		border-bottom: 2px solid $light;
 	}
+
 	#Menu ul {
 		padding: 0;
 		margin: 0;
@@ -66,28 +87,33 @@
 		display: none;
 		position: absolute;
 	}
+
 	#Menu:hover ul {
 		display: block;
 		position: absolute;
 		border-radius: 5px;
 		background-color: #fcfaf1;
 	}
+
 	#Menu ul ul {
 		padding: 0.25em 0 0 4em;
 		margin-bottom: 0.25em;
 		border: 1px solid $light;
 		border-top: 0;
 	}
+
 	#Menu ul ul ul {
 		border-right: 0;
 		padding: 0.25em 0 0 1em;
 	}
+
 	#Menu ul a,
 	ul #SelfInMenu {
 		display: block;
 		padding: 0.35em 1em 0.35em 5%;
 		line-height: normal;
 	}
+
 	#Menu ul ul a,
 	ul ul #SelfInMenu {
 		padding: 0.35em 1em 0.35em 5%;
@@ -96,26 +122,32 @@
 	#AccessLinks {
 		display: none;
 	}
+
 	#ReferenceLinks {
 		display: none;
 	}
+
 	#BackToTop {
 		text-align: right;
 		margin: 0 5%;
 	}
+
 	#EndContentSpace {
 		clear: both;
 		height: 1em;
 	}
+
 	#FooterWhole {
 		border-bottom: solid 1px $dark;
 		margin: 0 5% 0.2em 5%;
 		clear: both;
 		height: 1em;
 	}
+
 	#FooterLeft {
 		padding: 0 1em 0 5%;
 	}
+
 	#FooterRight {
 		float: right;
 		padding: 0 6em 0 5%;
