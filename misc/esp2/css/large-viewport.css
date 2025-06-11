@@ -169,6 +169,7 @@
 		padding: 0 1em;
 		color: #000;
 		position: relative;
+		background-color: #fff;
 	}
 
 	#Menu.hidden {
