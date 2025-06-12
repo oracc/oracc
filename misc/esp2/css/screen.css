@@ -295,10 +295,8 @@ a:visited:hover {
 	text-align: center;
 }
 
-#Content,
 #Content.dd {
 	margin-inline: 2.5em;
-	width: 90%;
 }
 
 #Menu a {
