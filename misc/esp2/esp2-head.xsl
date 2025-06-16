@@ -212,6 +212,18 @@
   gtag('js', new Date());
 
   gtag('config', 'G-0QKC3P5HJ1');
+
+  function addMenuListener() {
+	let menubutton = document.querySelector("#menu-button");
+	if (menubutton) {
+		menubutton.addEventListener("click", function () {
+			var menu = document.querySelector("#Menu");
+			menu.classList.toggle("hidden");
+		});
+	}
+}
+
+addMenuListener();
 </script>
 </xsl:template>
 
