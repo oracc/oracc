@@ -5,16 +5,6 @@ function doOnLoad() {
 	unobfuscateEmailSpans();
 }
 
-function addMenuListener() {
-	let menubutton = document.querySelector("#menu-button");
-	if (menubutton) {
-		menubutton.addEventListener("click", function () {
-			var menu = document.querySelector("#Menu");
-			menu.classList.toggle("hidden");
-		});
-	}
-}
-
 /*
 Highlighting for elements related to an active anchor tag
 */
