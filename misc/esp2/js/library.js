@@ -5,6 +5,18 @@ function doOnLoad() {
 	unobfuscateEmailSpans();
 }
 
+function addMenuListener() {
+	console.log("addMenuListener called");
+	let menubutton = document.querySelector("#menu-button");
+	console.log("menu button:", menubutton);
+	if (menubutton) {
+		menubutton.addEventListener("click", function () {
+			var menu = document.querySelector("#Menu");
+			menu.classList.toggle("hidden");
+		});
+	}
+}
+
 /*
 Highlighting for elements related to an active anchor tag
 */
