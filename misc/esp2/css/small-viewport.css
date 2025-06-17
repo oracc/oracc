@@ -88,13 +88,6 @@
 		position: absolute;
 	}
 
-	#Menu:hover ul {
-		display: block;
-		position: absolute;
-		border-radius: 5px;
-		background-color: #fcfaf1;
-	}
-
 	#Menu ul ul {
 		padding: 0.25em 0 0 4em;
 		margin-bottom: 0.25em;
@@ -117,6 +110,10 @@
 	#Menu ul ul a,
 	ul ul #SelfInMenu {
 		padding: 0.35em 1em 0.35em 5%;
+	}
+
+	#Content {
+		padding-inline: 4%;
 	}
 
 	#AccessLinks {

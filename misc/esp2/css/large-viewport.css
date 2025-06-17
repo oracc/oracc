@@ -144,23 +144,7 @@
 		margin-inline: 6%;
 	}
 
-	#menu-button {
-		cursor: pointer;
-		font-size: 1.5rem;
-		padding-inline-start: 1rem;
-	}
 
-	#menu-button {
-		cursor: pointer;
-		font-size: 1.5rem;
-		padding-inline-start: 1rem;
-	}
-
-	#menu-button {
-		cursor: pointer;
-		font-size: 1.5rem;
-		padding-inline-start: 1rem;
-	}
 
 	#Menu {
 		float: left;
@@ -169,10 +153,10 @@
 		padding: 0 1em;
 		color: #000;
 		position: absolute;
-		background-color: #fff;
+		background-color: #fcfaf1;
 		transition: left 0.5s ease;
 		left: 0;
-		box-shadow: 5px 5px 8px 0px #5a5959;
+		box-shadow: 4px 4px 6px 0px #48443e;
 	}
 
 	#Menu.hidden {
