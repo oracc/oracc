@@ -360,7 +360,10 @@ a:visited:hover {
 	background-color: $light;
 }
 
-@file small-viewport.css @file large-viewport.css #Search {
+@file small-viewport.css 
+@file large-viewport.css 
+
+#Search {
 	float: right;
 	padding: 0.5em 6em 0.5em 1em;
 	margin: 0.3em 0 0 -3px;
