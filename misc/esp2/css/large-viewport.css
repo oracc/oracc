@@ -144,38 +144,34 @@
 		margin-inline: 6%;
 	}
 
-
-
 	#Menu {
 		float: left;
 		width: 20%;
 		margin: 0.1px 0 0.1px 0;
-		padding: 0 1em;
+		padding: 0.5em 1em;
 		color: #000;
 		position: absolute;
 		background-color: #fcfaf1;
 		transition: left 0.5s ease;
 		left: 0;
-		box-shadow: 4px 4px 6px 0px #48443e;
+		border: 2px solid #f4e6b8;
 	}
 
 	#Menu.hidden {
 		left: -100vw;
 	}
 
+	body:dir(rtl) #Menu {
+		right: -1rem;
+		transition: right 0.5s ease;
+	}
+
 	body:dir(rtl) #Menu.hidden {
-		right: 100vw;
+		right: -100vw;
 	}
 
 	#Menu.dd {
 		color: #fff;
-	}
-
-	body:dir(rtl) #Menu {
-		float: right;
-		width: 20vw;
-		padding-right: 1.5em;
-		margin-right: 1em;
 	}
 
 	#MenuCaption {
