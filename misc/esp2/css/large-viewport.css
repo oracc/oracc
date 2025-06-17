@@ -168,8 +168,11 @@
 		margin: 0.1px 0 0.1px 0;
 		padding: 0 1em;
 		color: #000;
-		position: relative;
+		position: absolute;
 		background-color: #fff;
+		transition: left 0.5s ease;
+		left: 0;
+		box-shadow: 5px 5px 8px 0px #5a5959;
 	}
 
 	#Menu.hidden {
@@ -192,7 +195,6 @@
 	}
 
 	#MenuCaption {
-		margin-left: 3em;
 		margin-bottom: 0.5em;
 		padding-left: 0;
 		font-size: 0.9em;
@@ -216,13 +218,15 @@
 	#Menu ul a,
 	ul #SelfInMenu {
 		display: block;
-		padding: 0.35em 1em 0.35em 3em;
+		padding-block: 0.5rem;
 		line-height: normal;
+		margin-inline: 0.4rem;
 	}
 
 	#Menu ul ul a,
 	ul ul #SelfInMenu {
-		padding: 0.35em 1em 0.35em 1em;
+		padding-block: 0.5rem;
+		margin-inline: 0.4rem;
 	}
 
 	#AccessLinks {
