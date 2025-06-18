@@ -144,55 +144,37 @@
 		margin-inline: 6%;
 	}
 
-	#menu-button {
-		cursor: pointer;
-		font-size: 1.5rem;
-		padding-inline-start: 1rem;
-	}
-
-	#menu-button {
-		cursor: pointer;
-		font-size: 1.5rem;
-		padding-inline-start: 1rem;
-	}
-
-	#menu-button {
-		cursor: pointer;
-		font-size: 1.5rem;
-		padding-inline-start: 1rem;
-	}
-
 	#Menu {
 		float: left;
 		width: 20%;
 		margin: 0.1px 0 0.1px 0;
-		padding: 0 1em;
+		padding: 0.5em 1em;
 		color: #000;
-		position: relative;
-		background-color: #fff;
+		position: absolute;
+		background-color: #fcfaf1;
+		transition: left 0.5s ease;
+		left: 0;
+		border: 2px solid #f4e6b8;
 	}
 
 	#Menu.hidden {
 		left: -100vw;
 	}
 
+	body:dir(rtl) #Menu {
+		right: -1rem;
+		transition: right 0.5s ease;
+	}
+
 	body:dir(rtl) #Menu.hidden {
-		right: 100vw;
+		right: -100vw;
 	}
 
 	#Menu.dd {
 		color: #fff;
 	}
 
-	body:dir(rtl) #Menu {
-		float: right;
-		width: 20vw;
-		padding-right: 1.5em;
-		margin-right: 1em;
-	}
-
 	#MenuCaption {
-		margin-left: 3em;
 		margin-bottom: 0.5em;
 		padding-left: 0;
 		font-size: 0.9em;
@@ -216,13 +198,15 @@
 	#Menu ul a,
 	ul #SelfInMenu {
 		display: block;
-		padding: 0.35em 1em 0.35em 3em;
+		padding-block: 0.5rem;
 		line-height: normal;
+		margin-inline: 0.4rem;
 	}
 
 	#Menu ul ul a,
 	ul ul #SelfInMenu {
-		padding: 0.35em 1em 0.35em 1em;
+		padding-block: 0.5rem;
+		margin-inline: 0.4rem;
 	}
 
 	#AccessLinks {

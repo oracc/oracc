@@ -299,6 +299,14 @@ a:visited:hover {
 	margin-inline: 2.5em;
 }
 
+
+#menu-button {
+	cursor: pointer;
+	font-size: 1.5rem;
+	padding-inline-start: 1rem;
+}
+
+
 #Menu a {
 	text-decoration: none;
 }
@@ -317,7 +325,6 @@ a:visited:hover {
 	padding: 0;
 	margin: 0;
 	color: #111;
-	background: #fff;
 	list-style-type: none;
 }
 
@@ -353,9 +360,8 @@ a:visited:hover {
 	background-color: $light;
 }
 
-@file small-viewport.css
-
-@file large-viewport.css
+@file small-viewport.css 
+@file large-viewport.css 
 
 #Search {
 	float: right;
