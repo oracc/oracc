@@ -100,7 +100,6 @@ my $geojson_first = 1;
 my $json_first = 1;
 
 my $no_xmd = 0;
-my $onebigfile = 1;
 my $output_all = 1;
 my %output_records = ();
 my $pacifier = 0;
@@ -133,6 +132,7 @@ my %unknown_langs = ();
 my %ns_types = (
     'http://www.filemaker.com/fmpxmlresult'=>'fxr',
     'http://oracc.org/ns/xmd/1.0'=>'xmd',
+    'http://oracc.org/ns/ood/1.0'=>'ood',
     );
 
 my $xmlsplit = "@@ORACC@@/bin/xmlsplit";
@@ -178,6 +178,11 @@ my %tix_warned = ();
 
 my %orig = ();
 
+my $projtype = `oraccopt . type`;
+my $oodmode = $projtype eq 'ood'; $no_xmd = $oodmode;
+my $cat_policy = $oodmode ? 'ood' : `oraccopt . catalog-build-policy`;
+my $onebigfile = !$oodmode; # onebigfile is the only thing that makes output these days
+
 GetOptions(
     'config:s'=>\$config,
     'dynacat:s'=>\$dynacat,
@@ -191,7 +196,7 @@ GetOptions(
     'verbose' =>\$verbose,
     ) || pod2usage(1);
 
-$catdir  = '00cat'; # ${$r{'catdir'}}[0];
+$catdir  = $oodmode ? '02pub' : '00cat'; # ${$r{'catdir'}}[0];
 $results = '01bld'; # ${$r{'results'}}[0];
 $public = '02pub'; # ${$r{'results'}}[0];
 $xml = '02xml'; # ${$r{'results'}}[0];
@@ -261,8 +266,6 @@ foreach my $c (split(/,/,$pub_cat)) {
     }
     xsystem 'chmod', 'o+r', @res;
 }
-my $projtype = `oraccopt . type`;
-my $cat_policy = `oraccopt . catalog-build-policy`;
 
 unless ($cat_policy) {
     if ($projtype eq 'superglo') {
@@ -285,7 +288,9 @@ print LOG
     "\">\n";
 my $locator = undef;
 
-if ($cat_policy eq 'auto') {
+if ($oodmode) {
+    @catalogs = map { { 'file'=>$_ } } '02pub/data.xml';
+} elsif ($cat_policy eq 'auto') {
     make_dynacat();
 } elsif ($cat_policy eq 'virtual') {
     make_vcat();
@@ -345,7 +350,7 @@ if ($#catalogs >= 0) {
 	$$c{'locator'} = ORACC::Log::Util::create_locator(file=>$$c{'file'});
 	if ($$c{'type'} eq 'fxr') {
 	    $$c{'icat'} = [ ORACC::FXR::Util::internalize($$c{'file'}) ];
-	} elsif ($$c{'type'} eq 'xmd' || $$c{'type'} eq 'xml') {
+	} elsif ($$c{'type'} eq 'xmd' || $$c{'type'} eq 'xml' || $$c{'type'} eq 'ood') {
 	    $$c{'icat'} = [ ORACC::XMD::Util::internalize($$c{'file'}) ];
 	} elsif ($$c{'type'} eq 'csv') {
 	    $$c{'icat'} = [ ORACC::XMD::CSV::internalize($$c{'file'}) ];
@@ -469,7 +474,7 @@ foreach my $k ($kdoc->getElementsByTagNameNS($kd_uri,
 }
 
 open_tab_files()
-    unless $cat_policy eq 'none';
+    unless $cat_policy eq 'ood';
 
 foreach my $c (@catalogs) {
     $locator = $$c{'locator'};
@@ -478,22 +483,20 @@ foreach my $c (@catalogs) {
 	$$c{'icat'} = imports($$c{'icat'});
 	$$c{'icat'} = inherits($$c{'icat'});
 #	use Data::Dumper; print Dumper($$c{'icat'});
-	xproject_bis($$c{'icat'},$$c{'file'});
+	xproject_bis($$c{'icat'},$$c{'file'}) unless $oodmode;
     } else {
-	xproject($$c{'icat'},$$c{'file'});
+	xproject($$c{'icat'},$$c{'file'}) unless $oodmode;
     }
     check_vals($$c{'icat'});
 }
 
-unless ($cat_policy eq 'none') {
+unless ($cat_policy eq 'ood') {
     close(QNMTAB);
     close(PNMTAB);
     close(PERTAB);
     close(LOCTAB);
     dump_bad();
 }
-
-exit 0 if $no_xmd;
 
 # generate the sort codes for the known values of each key
 foreach my $si (keys %sortable_types) {
@@ -613,7 +616,6 @@ warn "$0: closed $logfile\n" if $verbose;
 #print KEYS '</keys>';
 #close(KEYS);
 sortkeys();
-
 print VALTAB "#nmembers ", scalar(keys %valtab), "\n"; # $total_rows\n";
 print VALTAB map { XIFY_P($valtab{$_}) } sort { XIFY_ID($a) <=> XIFY_ID($b) } keys %valtab;
 print VALTAB "#nstring $stringpool_index\n";
@@ -629,7 +631,8 @@ close(VALTAB);
 if (scalar keys %valtab) {
     warn "$0: processing valtab\n" if $verbose;
     # default to p4 pgcsix
-    xsystem "@@ORACC@@/bin/pgcsix $results/sortinfo.tab";
+    my $oarg = $oodmode ? ' -o' : '';
+    xsystem "@@ORACC@@/bin/pgcsix$oarg $results/sortinfo.tab";
     xsystem 'mv', "$results/sortinfo.csi", '02pub'
 	if -r "$results/sortinfo.csi";
     if ($project eq 'cdli') {
@@ -650,8 +653,8 @@ close(OUT);
 
 ########################################################
 
-sub
-XIFY_ID {
+sub XIFY_ID {
+    return $_[0] if $oodmode;
     my($p,$n) = ($_[0] =~ /^(.)(.*?)$/);
     if ($p eq 'X') {
 	$n + 2000000;
@@ -720,8 +723,11 @@ check_vals {
 	}
 	++$i;
     }
+    
     warn("VALTAB fields @nvt\n") if $verbose;
+    open(VALTAB,">$results/sortinfo.tab");
     print VALTAB "#nfields $typindex\n", "#nmapentries $nvt_fields\n", @nvt unless $did_valtab++;
+    
     # save these arrays for output time
     push @$cat, [@slice,-1], [@sort_types];
     foreach my $r (@$rows) {
@@ -819,7 +825,8 @@ dump_xmd {
     # for P this is id_text, for Q this is id_composite
     for (my $i = 0; $i <= $#$fields; ++$i) {
 	$item_index = $i and last 
-	    if $$fields[$i] =~ /^id_(?:text|composite)$/;
+	    if $$fields[$i] =~ /^id_(?:text|composite)$/
+	    || $oodmode && $$fields[$i] eq 'id'; # local-name is used when internalizing XML 
     }
     $item_index = -1 if $item_index > $#$fields;
     warn("xmdmanager: catalog $file has no id_text or id_composite field\n") and return
@@ -1466,7 +1473,6 @@ open_tab_files {
     open(QNMTAB,">$public/Qnames.tab");
     open(PUBIMG,">$public/public_image.lst");
     open(PRVIMG,">$public/private_image.lst");
-    open(VALTAB,">$results/sortinfo.tab");
 }
 
 sub
@@ -1621,11 +1627,13 @@ type_from_ns {
 sub
 xmd_begin {
     my ($id,$langs,$row) = @_;
-    # This is a hack to handle 2013-vintage CDLI mysql db output
-    if ($id =~ /^\d/) {
- 	$id = "P$id";
-    }
-    if ($id !~ /^[PQX]\d\d\d\d\d\d$/) {
+    # Withdrawn because ood ids are all digit
+    #    # This is a hack to handle 2013-vintage CDLI mysql db output
+    #    if ($id =~ /^\d/) {
+    # 	$id = "P$id";
+    #    }
+    
+    if (!$oodmode && $id !~ /^[PQX]\d\d\d\d\d\d$/) {
 	if ($id =~ /^P(\d+)$/) {
 	    my $nid = $1;
 	    $nid = 'P'.('0'x(6-length($nid))).$nid;
@@ -1679,7 +1687,8 @@ xmd_begin {
 	;
     }
     if (!$onebigfile) {
-	print '<?xml version="1.0" encoding="utf-8"?>',"\n";
+	print '<?xml version="1.0" encoding="utf-8"?>',"\n"
+	    unless $oodmode;
     }
     my $pattr = '';
     if ($id_projects{$id,'xtf'}) {
@@ -1696,14 +1705,8 @@ sub
 xmd_end {
     my $id = shift;
 
-    if ($id =~ /^\d/) {
-	my $nid = $id;
-	$id = sprintf("P%06d", $id);
-    }
-#    print VALTAB "\n";
-    
     $valtab{$id} = join("\t",$id,@currvt)."\n";
-#    warn "$id => $valtab{$id}";
+
     @currvt = ();
     dump_images($id);
 
@@ -1780,7 +1783,7 @@ xmd_sort {
     } else {
 	@b = splitkeys($b);
     }
-    # @a and @b are now lists of doubles [ intflag , value ]
+    # @a and @b are now lists of doubletons [ intflag , value ]
     # intflag is 1 if the value is entirely numeric
     for (my $i = 0; $i <= $#a && $i <= $#b; ++$i) {
 	if (${$a[$i]}[0]) {
@@ -1833,7 +1836,7 @@ xproject {
     # find the ID field for this catalog
     for (my $i = 0; $i <= $#$fields; ++$i) {
 	$item_index = $i and last 
-	    if $$fields[$i] =~ /^id_(?:text|composite)$/;
+	    if $$fields[$i] =~ /^id_(?:text|composite)$/ || $oodmode && $$fields[$i] eq 'id';
     }
     $item_index = -1 if $item_index > $#$fields;
 
@@ -1857,69 +1860,66 @@ xproject {
 	unless $item_index >= 0;
 
     # if it is the main cat, we will dump ID:NAME table here also
- #   if (${$$rows[0]}[$item_index] =~ /^P/) {
-	for (my $i = 0; $i <= $#$fields; ++$i) {
-#	    warn "x: trying $$fields[$i]\n" if $file =~ /-x/;
-	    $name_index = $i and last 
-		if $$fields[$i] eq 'designation';
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	$name_index = $i and last 
+	    if $$fields[$i] eq 'designation' || $oodmode && $$fields[$i] eq 'n';
+    }
+    $name_index = -1 if $name_index > $#$fields;
+
+    warn("xmdmanager: catalog $file lacks required designation field\n") and return
+	unless $name_index >= 0;
+
+    for (my $i = 0; $i <= $#$fields; ++$i) {
+	if ($$fields[$i] eq 'primary_publication') {
+	    $pripub_index = $i;
+	} elsif (exists $musno_fields{$$fields[$i]}) {
+	    push @musno_indices, $i;
 	}
-	$name_index = -1 if $name_index > $#$fields;
-	warn("xmdmanager: catalog $file lacks required designation field\n") and return
-	    unless $name_index >= 0;
-	for (my $i = 0; $i <= $#$fields; ++$i) {
-	    if ($$fields[$i] eq 'primary_publication') {
-		$pripub_index = $i;
-	    } elsif (exists $musno_fields{$$fields[$i]}) {
-		push @musno_indices, $i;
-	    }
-	}
-#    } else {
-#	for (my $i = 0; $i <= $#$fields; ++$i) {
-#	    $name_index = $i and last 
-#		if $$fields[$i] eq 'name';
-#	}
-#    }
+    }
+
     my $xprojects_index = $#$fields+1;
     push @$fields, 'xproject';
 
-    foreach my $r (@$rows) {
-	my $pq = $$r[$item_index];
-	next unless $pq;
-	if ($$r[$period_index]) {
-	    print PERTAB "$pq\t$$r[$period_index]\n";
-	} else {
-	    print PERTAB "$pq\tunknown\n";
-	}
-	my $pl = $$r[$place_index] || 'unknown';
-	print LOCTAB "$pq\t$pl\n";
-	if ($pq =~ /(?:^|:)P/) {
-	    my $pname = $$r[$name_index];
-	    if ($pname) {
-		$pname =~ s/^\s*(.*?)\s*$/$1/;
-		$pname =~ s/&apos;/'/g;
-		$pname =~ s/&amp;/&/g;
+    unless ($cat_policy eq 'ood') {
+	foreach my $r (@$rows) {
+	    my $pq = $$r[$item_index];
+	    next unless $pq;
+	    if ($$r[$period_index]) {
+		print PERTAB "$pq\t$$r[$period_index]\n";
 	    } else {
-		$pname = '';
+		print PERTAB "$pq\tunknown\n";
 	    }
-	    $$r[$xprojects_index] = $xproject{$pq} || 'CDLI';
-	    print PNMTAB "$pq\t$pname\n";
-	    print PRITAB "$pq\t", strip0($$r[$pripub_index]),"\n"
-		if $$r[$pripub_index];
-	    foreach my $m (@musno_indices) {
-		print MUSTAB "$pq\t",strip0($$r[$m]),"\n"
-		    if $$r[$m];
-	    }
-	    if ($pubimg_index >= 0 && $$r[$pubimg_index] && $$r[$pubimg_index] eq 'yes') {
-		print PUBIMG "$pq\n";
-		++$pubimg{$pq};
+	    my $pl = $$r[$place_index] || 'unknown';
+	    print LOCTAB "$pq\t$pl\n";
+	    if ($pq =~ /(?:^|:)P/) {
+		my $pname = $$r[$name_index];
+		if ($pname) {
+		    $pname =~ s/^\s*(.*?)\s*$/$1/;
+		    $pname =~ s/&apos;/'/g;
+		    $pname =~ s/&amp;/&/g;
+		} else {
+		    $pname = '';
+		}
+		$$r[$xprojects_index] = $xproject{$pq} || 'CDLI';
+		print PNMTAB "$pq\t$pname\n";
+		print PRITAB "$pq\t", strip0($$r[$pripub_index]),"\n"
+		    if $$r[$pripub_index];
+		foreach my $m (@musno_indices) {
+		    print MUSTAB "$pq\t",strip0($$r[$m]),"\n"
+			if $$r[$m];
+		}
+		if ($pubimg_index >= 0 && $$r[$pubimg_index] && $$r[$pubimg_index] eq 'yes') {
+		    print PUBIMG "$pq\n";
+		    ++$pubimg{$pq};
+		} else {
+		    print PRVIMG "$pq\n";
+		}
 	    } else {
-		print PRVIMG "$pq\n";
+		my $qname = $$r[$name_index];
+		#	    warn "printing $pq\t$qname to QNMTAB\n";
+		print QNMTAB "$pq\t$qname\n" if $pq =~ /(?:^|:)Q/;
+		$$r[$xprojects_index] = $xproject{$pq} || '';
 	    }
-	} else {
-	    my $qname = $$r[$name_index];
-#	    warn "printing $pq\t$qname to QNMTAB\n";
-	    print QNMTAB "$pq\t$qname\n" if $pq =~ /(?:^|:)Q/;
-	    $$r[$xprojects_index] = $xproject{$pq} || '';
 	}
     }
 }
@@ -2398,6 +2398,19 @@ dump_translist {
 	push @{$xmd_outputs{$curr_xmd}},
 		"<trans>", map({ "<tr>$_</tr>" } keys %$tl), '</trans>';
     }
+}
+
+# This is called in oodmode
+sub sortinfo_tab {
+    open(VALTAB,">$results/sortinfo.tab");
+    print VALTAB "#nfields $typindex\n", "#nmapentries $nvt_fields\n", @nvt unless $did_valtab++;
+    print VALTAB "#nmembers ", scalar(keys %valtab), "\n"; # $total_rows\n";
+    print VALTAB map { XIFY_P($valtab{$_}) } sort { XIFY_ID($a) <=> XIFY_ID($b) } keys %valtab;
+    print VALTAB "#nstring $stringpool_index\n";
+    foreach my $k (sort {$stringpool{$a} <=> $stringpool{$b} } keys %stringpool) {
+	print VALTAB "$k\000";
+    }
+    close(VALTAB);
 }
 
 sub
