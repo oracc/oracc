@@ -16,6 +16,8 @@ data_DATA = esp2-structure.xml esp-*-template.xml
 
 java_DATA = ImageInfo.class
 
+js_DATA = js/library.js
+
 libesp2=$(DESTDIR)$(prefix)/lib/esp2
 
 ImageInfo.class: ImageInfo.java

@@ -148,7 +148,7 @@
 	var sRoot = '<xsl:value-of select="$parameters/param:root"/>';
     // </esp:comment></script>
     </xsl:if>
-    <!--<script type="text/javascript" src="/js/library.js">&#xa0;</script>-->
+    <script type="text/javascript" src="/js/library.js">&#xa0;</script>
     <!-- ICRA tag (assert 'none of the above' in all categories) -->
     <meta http-equiv="pics-label" content='(pics-1.1 "http://www.icra.org/ratingsv02.html" l gen true for "{$parameters/param:host}{$relpath}" r (nz 1 vz 1 lz 1 oz 1 cz 1))'/>
     <!-- shortcut icon document relation -->
