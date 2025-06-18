@@ -222,10 +222,10 @@
   <xsl:variable name="menu-mode">
     <xsl:choose>
       <xsl:when test="$parameters/param:menu-drop-down='always'">
-	<xsl:text>dd-always</xsl:text>
+	<xsl:text>dd-always hidden</xsl:text>
       </xsl:when>
       <xsl:when test="$parameters/param:menu-drop-down='mobile'">
-	<xsl:text>dd-mobile</xsl:text>
+	<xsl:text>dd-mobile hidden</xsl:text>
       </xsl:when>
       <xsl:otherwise>
 	<xsl:text>classic</xsl:text>
