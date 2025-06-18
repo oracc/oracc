@@ -50,11 +50,13 @@
 	<!--<xsl:message>esp2-banner-div 3</xsl:message>-->
 	<xsl:attribute name="id"><xsl:text>Header</xsl:text></xsl:attribute>
 
+	<!--
 	<xsl:if test="not($nomenu) and $parameters/param:menu-dropdown='yes'">
 	  <xsl:call-template name="insert-menu">
 	    <xsl:with-param name="current-page" select="$current-page"/>
 	  </xsl:call-template>
-	</xsl:if>
+	  </xsl:if>
+	-->
 
 	<xsl:choose>
 	  <xsl:when test="$parameters/param:slform='yes'">
@@ -217,12 +219,22 @@
 
 <xsl:template name="insert-menu">
   <xsl:param name="current-page"/>
+  <xsl:variable name="menu-mode">
+    <xsl:choose>
+      <xsl:when test="$parameters/param:menu-drop-down='always'">
+	<xsl:text>dd-always</xsl:text>
+      </xsl:when>
+      <xsl:when test="$parameters/param:menu-drop-down='mobile'">
+	<xsl:text>dd-mobile</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:text>classic</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   <!-- main menu (screen only) -->
-  <div id="menu-button">&#x2261;</div>
-  <div id="Menu" class="hidden">
-    <xsl:if test="$parameters/param:menu-dropdown='yes'">
-      <xsl:attribute name="class">dd</xsl:attribute>
-    </xsl:if>
+  <div id="menu-button" class="{$menu-mode}">&#x2261;</div>
+  <div id="Menu" class="{$menu-mode}">
     <xsl:if test="$parameters/param:main-menu-caption">
       <div id="MenuCaption">
         <xsl:copy-of select="$parameters/param:main-menu-caption/node()"/>

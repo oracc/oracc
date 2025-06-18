@@ -1,5 +1,6 @@
 #!/bin/sh
 #o2-json.sh
+ood.sh
 pxp3p4.sh `oraccopt`
 pxreset.sh `oraccopt`
 oid-pub.sh
