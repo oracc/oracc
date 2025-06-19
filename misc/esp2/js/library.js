@@ -1,8 +1,6 @@
 onload = doOnLoad;
 function doOnLoad() {
 	addMenuListener();
-	highlight();
-	unobfuscateEmailSpans();
 }
 
 function addMenuListener() {
@@ -14,4 +12,3 @@ function addMenuListener() {
 		});
 	}
 }
-
