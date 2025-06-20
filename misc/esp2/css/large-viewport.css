@@ -154,13 +154,13 @@
 		border: 2px solid #f4e6b8;
 	}
 
-	.dd-always {
+	#Menu.dd-always {
 		position: absolute;
 		transition: left 0.5s ease;
 		left: 0;
 	}
 
-	.dd-always.hidden {
+	#Menu.dd-always.hidden {
 		left: -100vw;
 	}
 
@@ -170,14 +170,15 @@
 
 	#Menu.classic {
 		margin-inline-end: 1rem;
+		height: 100vh;
 	}
 
-	body:dir(rtl) .dd-always {
+	body:dir(rtl) #Menu.dd-always {
 		right: -1rem;
 		transition: right 0.5s ease;
 	}
 
-	body:dir(rtl) .dd-always.hidden {
+	body:dir(rtl) #Menu.dd-always.hidden {
 		right: -100vw;
 	}
 
