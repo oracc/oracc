@@ -60,14 +60,28 @@
 		position: relative;
 	}
 
-	.dd-always.hidden,
-	.dd-mobile.hidden {
+	#menu-button.classic {
+		display: block;
+	}
+
+	#Menu.dd-always.hidden,
+	#Menu.dd-mobile.hidden {
 		left: -100vw;
 	}
 
 	body:dir(rtl) .dd-always.hidden,
 	body:dir(rtl) .dd-mobile.hidden {
 		right: 100vw;
+	}
+
+	.dd-always ul,
+	.dd-mobile ul,
+	.classic ul {
+		display: block
+	}
+
+	.hidden ul {
+		display: none;
 	}
 
 	#MenuCaption {
@@ -81,13 +95,13 @@
 	}
 
 	#Menu ul {
-		padding: 0;
+		padding: 0.5rem;
 		margin: 0;
 		color: #111;
 		background: #fff;
 		list-style-type: none;
-		display: none;
 		position: absolute;
+		min-width: fit-content;
 	}
 
 	#Menu ul ul {
