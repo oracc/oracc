@@ -723,10 +723,12 @@ check_vals {
 	}
 	++$i;
     }
-    
-    warn("VALTAB fields @nvt\n") if $verbose;
-    open(VALTAB,">$results/sortinfo.tab");
-    print VALTAB "#nfields $typindex\n", "#nmapentries $nvt_fields\n", @nvt unless $did_valtab++;
+
+    unless ($did_valtab++) {
+	warn("VALTAB fields @nvt\n") if $verbose;
+	open(VALTAB,">$results/sortinfo.tab");
+	print VALTAB "#nfields $typindex\n", "#nmapentries $nvt_fields\n", @nvt;
+    }
     
     # save these arrays for output time
     push @$cat, [@slice,-1], [@sort_types];
