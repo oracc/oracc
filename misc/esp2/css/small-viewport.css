@@ -70,6 +70,15 @@
 		right: 100vw;
 	}
 
+	.dd-always ul,
+	.dd-mobile ul {
+		display: block
+	}
+
+	.hidden ul {
+		display: none;
+	}
+
 	#MenuCaption {
 		margin-left: 5%;
 		margin-bottom: 0.5em;
@@ -86,7 +95,6 @@
 		color: #111;
 		background: #fff;
 		list-style-type: none;
-		display: none;
 		position: absolute;
 	}
 
