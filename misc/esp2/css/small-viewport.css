@@ -60,11 +60,13 @@
 		position: relative;
 	}
 
-	#Menu.hidden {
+	.dd-always.hidden,
+	.dd-mobile.hidden {
 		left: -100vw;
 	}
 
-	body:dir(rtl) #Menu.hidden {
+	body:dir(rtl) .dd-always.hidden,
+	body:dir(rtl) .dd-mobile.hidden {
 		right: 100vw;
 	}
 

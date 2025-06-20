@@ -150,28 +150,27 @@
 		margin: 0.1px 0 0.1px 0;
 		padding: 0.5em 1em;
 		color: #000;
-		position: absolute;
 		background-color: #fcfaf1;
-		transition: left 0.5s ease;
-		left: 0;
 		border: 2px solid #f4e6b8;
 	}
 
-	#Menu.hidden {
+	.dd-always {
+		position: absolute;
+		transition: left 0.5s ease;
+		left: 0;
+	}
+
+	.dd-always.hidden {
 		left: -100vw;
 	}
 
-	body:dir(rtl) #Menu {
+	body:dir(rtl) .dd-always {
 		right: -1rem;
 		transition: right 0.5s ease;
 	}
 
-	body:dir(rtl) #Menu.hidden {
+	body:dir(rtl) .dd-always.hidden {
 		right: -100vw;
-	}
-
-	#Menu.dd {
-		color: #fff;
 	}
 
 	#MenuCaption {
