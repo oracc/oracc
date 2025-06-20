@@ -164,6 +164,14 @@
 		left: -100vw;
 	}
 
+	#menu-button.classic {
+		display: none;
+	}
+
+	#Menu.classic {
+		margin-inline-end: 1rem;
+	}
+
 	body:dir(rtl) .dd-always {
 		right: -1rem;
 		transition: right 0.5s ease;
