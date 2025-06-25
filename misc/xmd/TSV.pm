@@ -78,6 +78,8 @@ internalize {
 	$id_type = 'artifact_id';
 	$$fields_row[0] = 'id_text';
 	warn "ORACC::XMD::TSV: value of fields_row[0] is now $$fields_row[0]\n";
+    } elsif ($ORACC::XMD::oodmode && $$fields_row[0] ne 'o:id') {
+	die "ORACC::XMD::TSV: value of fields_row[0] is must be o:id\n";
     }
     $xmd = [ @xmd ];
 

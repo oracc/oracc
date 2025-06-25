@@ -58,6 +58,7 @@ odo-signlist.sh o2
 qindex.sh $project
 
 o2-web-corpus.sh
+o2-web.sh
 #o2-prm.sh
 o2-weblive.sh
 o2-finish.sh

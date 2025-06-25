@@ -1,4 +1,7 @@
 #!/bin/sh
+PARENT_CMD=$(ps -o args= $PPID)
+echo "$0 parent command: $PARENT_CMD"
+
 [ -r 01bld/cancel ] && exit 1
 [ -r .nobuild ] && exit 1
 shopt -s nullglob

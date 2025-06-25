@@ -16,6 +16,8 @@ use ORACC::XVL::AVL;
 
 sub xsystem;
 
+$ORACC::XMD::oodmode = 0;
+
 use Data::Dumper;
 my $catd_debug = 0;
 open(CATDUMP,'>cat.dump')
@@ -180,6 +182,7 @@ my %orig = ();
 
 my $projtype = `oraccopt . type`;
 my $oodmode = $projtype eq 'ood'; $no_xmd = $oodmode;
+$ORACC::XMD::oodmode = $oodmode;
 my $cat_policy = $oodmode ? 'ood' : `oraccopt . catalog-build-policy`;
 my $onebigfile = !$oodmode; # onebigfile is the only thing that makes output these days
 
@@ -825,10 +828,14 @@ dump_xmd {
     
     # determine the index of the field that has the P/Q number
     # for P this is id_text, for Q this is id_composite
-    for (my $i = 0; $i <= $#$fields; ++$i) {
-	$item_index = $i and last 
-	    if $$fields[$i] =~ /^id_(?:text|composite)$/
-	    || $oodmode && $$fields[$i] eq 'id'; # local-name is used when internalizing XML 
+    if ($oodmode) {
+	$item_index = 0; # guaranteed by ood TSV loader; need to check XML loader
+    } else {
+	for (my $i = 0; $i <= $#$fields; ++$i) {
+	    $item_index = $i and last 
+		if $$fields[$i] =~ /^id_(?:text|composite)$/
+		|| $oodmode && $$fields[$i] eq 'id'; # local-name is used when internalizing XML 
+	}
     }
     $item_index = -1 if $item_index > $#$fields;
     warn("xmdmanager: catalog $file has no id_text or id_composite field\n") and return

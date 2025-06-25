@@ -1,6 +1,7 @@
 #!/bin/sh
 #o2-json.sh
-ood.sh
+#ood.sh
+echo $0
 pxp3p4.sh `oraccopt`
 pxreset.sh `oraccopt`
 oid-pub.sh

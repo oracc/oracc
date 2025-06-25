@@ -50,9 +50,14 @@ rm -f 02www/_test
 cp -Rv $espdev/* 02www | cut -d'>' -f2 | grep / | sed 's/ //' >$log
 
 # copy files for revised signlist interface
-cp -fa 00web/slmain.html 00web/slform.html $webdir
+if [ -r 00web/slmain.html ]; then
+    cp -fa 00web/slmain.html 00web/slform.html $webdir
+fi
 
-cp -fp 00lib/thumb.png $webdir
+if [ -r 00lib/thumb.png ]; then
+    cp -fp 00lib/thumb.png $webdir
+fi
+
 p3-colours.plx $webdir
 cp -fp 00web/css/* $webdir/css
 odo-chmod.sh -R o+r $webdir/
