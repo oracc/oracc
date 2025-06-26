@@ -8,6 +8,8 @@ shift 1
 if [ "$webdir" == "" ]; then
     echo l2p3.sh: defaulting to webdir=01bld/www
     webdir=01bld/www
+else
+    echo l2p3.sh: arg webdir=01bld/www
 fi
 
 cp -f 02xml/config.xml $webdir ; chmod o+r $webdir/config.xml
@@ -44,9 +46,10 @@ if [ "$g2c" != "" ]; then
 		echo editing file tags into xincludes
 		cbdfile.plx -w 02www -l $l
 	    fi	    
-	    echo producing web version of $l
-#	    echo "l2-glomanager -webdir=$webdir -conf $xcf -cbdlang $l $*"
+	    echo producing web version of $l in $webdir/cbd/$l
+	    echo "l2-glomanager.plx -webdir=$webdir -conf $xcf -cbdlang $l $*"
 	    l2-glomanager.plx -webdir=$webdir -conf $xcf -cbdlang $l $*
+#	    ls -l $webdir/cbd/$l
 #	    echo g2c-sig-map
 	    xsltproc $ORACC/lib/scripts/g2c-sig-map.xsl 01bld/$l/articles.xml >$webdir/cbd/$l/$l.map
 	    

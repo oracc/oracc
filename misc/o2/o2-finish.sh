@@ -10,3 +10,4 @@ if [ -r 01bld/cat.geojson ]; then
 fi
 oraccopt >01bld/buildstamp
 touch $ORACC_BUILDS/snc/`oraccopt | tr / -`
+touch .o2finish

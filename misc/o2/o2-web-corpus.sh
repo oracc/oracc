@@ -3,7 +3,7 @@
 # version of o2-web.sh for use with project-type=corpus
 
 [ -r 01bld/cancel ] && exit 1
-webdir=01bld/www
+webdir=01bld/www  ; rm -fr $webdir ; mkdir -p $webdir
 buildpolicy=`oraccopt . build-approved-policy`;
 
 #if [ "$buildpolicy" != "search" ]; then

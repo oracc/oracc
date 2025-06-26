@@ -1,5 +1,6 @@
 #!/bin/sh
 o2-prepare.sh
+rm -f .o2finish
 buildpolicy=`oraccopt . build-approved-policy`;
 if [ "$buildpolicy" != "search" ]; then
     umbrella=`oraccopt . cbd-super`;
@@ -56,9 +57,11 @@ fi
 odo-signlist.sh o2
 
 qindex.sh $project
-
+# o2-web-corpus.sh removes 01bld/www before creating new cbd etc
 o2-web-corpus.sh
 o2-web.sh
 #o2-prm.sh
 o2-weblive.sh
-o2-finish.sh
+if [ ! -r .o2finish ]; then
+    o2-finish.sh
+fi
