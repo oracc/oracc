@@ -54,23 +54,23 @@
 <div class="menu"><a href="/projectlist.html" title=
 "List of Oracc projects" accesskey="2" class=
 "only">Projects</a></div>
-<div class="item"><a href="doc/search/index.html" title=
+<div class="item"><a href="/search" title=
 "Search Oracc" accesskey="3" class="closed">Search</a></div>
-<div class="menu"><a href="doc/help/index.html" title=
+<div class="menu"><a href="doc/Help/index.html" title=
 "Help page overview" accesskey="4" class="closed">Help</a></div>
-<div class="menu"><a href="doc/about/index.html" title=
+<div class="menu"><a href="doc/About/index.html" title=
 "About Oracc: Essentials for Oracc users" accesskey="6" class=
 "closed">About</a></div>
 <div class="closed"><a href="doc/tools/index.html" title=
 "Oracc webtools" class="closed">Tools</a></div>
 </div>
 <div id="Content">
-<div id="hp_search">
-<form method="get" action="/find" id="hp_search" name="hp_search">
+<div id="hp_search"><p/>
+<!--<form method="get" action="/find" id="hp_search" name="hp_search">
 <p><span class="button">Search Oracc</span> <input class="textbox"
 name="phrase" id="phrase" type="text" size="20" accesskey="s"
 value="" /></p>
-</form>
+</form>-->
 </div>
 <div id="hp_blurb">
 <p>Oracc is a collaborative effort to develop a complete corpus of
