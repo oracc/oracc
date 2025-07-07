@@ -350,6 +350,7 @@
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
+
   <!-- process site map -->
   <xsl:template match="esp:site-map">
     <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
@@ -360,6 +361,7 @@
       </xsl:call-template>
     </div>
   </xsl:template>
+  
   <!-- process reference links -->
   <xsl:template match="esp:ref">
     <xsl:variable name="current-body" select="ancestor::body[1]"/>
@@ -377,8 +379,10 @@
       </xsl:if>
     </xsl:for-each>
   </xsl:template>
+
   <!-- process (strip) further reading elements -->
   <xsl:template match="esp:reading"/>
+
   <!-- glossary links -->
   <xsl:template match="esp:glossary">
     <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>
@@ -394,6 +398,7 @@
       </esp:link>
     </span>
   </xsl:template>
+
   <!-- process glossary page -->
   <xsl:template match="esp:glossary-list">
     <xsl:variable name="usedletters" as="xs:string *">
@@ -438,6 +443,7 @@
       </xsl:for-each-group>
     </div>
   </xsl:template>
+
   <!-- techterms links -->
   <xsl:template match="esp:techterms">
     <xsl:variable name="current-page" select="ancestor::struct:page[1]"/>

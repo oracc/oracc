@@ -124,7 +124,7 @@
   <xsl:param name="root" select="$parameters/param:root"/>
   <xsl:param name="url" select="@url"/>
   <xsl:choose>
-    <xsl:when test="starts-with($url,'http://') or @type='link'">
+    <xsl:when test="starts-with($url,'http') or @type='link'">
       <xsl:value-of select="$url"/>
     </xsl:when>
     <xsl:when test="starts-with($url,'/') and @type='link'">
