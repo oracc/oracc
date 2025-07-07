@@ -50,7 +50,7 @@
 	      </xsl:choose>
 	    </xsl:variable>
 	    <xsl:choose>
-	      <xsl:when test="$parameters/param:case-fold-urls">
+	      <xsl:when test="$parameters/param:case-fold-urls='yes'">
 		<xsl:variable name="processed-name"
 			      select="esp:make-alphanumeric($url-or-name)"
 			      />
