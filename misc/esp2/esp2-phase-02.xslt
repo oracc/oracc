@@ -28,6 +28,7 @@
 
   <!-- add url attributes to esp:pages -->
   <xsl:template match="struct:page">
+    <xsl:variable name="parameters" select="document ( concat($projesp, '/00web/00config/parameters.xml') )/param:parameters"/>
     <xsl:copy>
       <xsl:if test="count(ancestor::struct:page)=0">
 	<xsl:variable name="parameters" select="document ( concat($projesp, '/00web/00config/parameters.xml') )/param:parameters"/>
