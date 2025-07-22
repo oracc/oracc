@@ -41,7 +41,6 @@ SUBDIRS = \
 	p3 \
 	print \
 	ptb \
-	saxon \
 	se \
 	sl \
 	sma \

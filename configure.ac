@@ -177,8 +177,6 @@ AC_CONFIG_FILES([Makefile
 	misc/p3/Makefile
 	misc/print/Makefile
 	misc/ptb/Makefile
-	misc/saxon/Makefile
-	misc/schemas/Makefile
 	misc/se/Makefile
 	misc/sl/Makefile
 	misc/sma/Makefile
