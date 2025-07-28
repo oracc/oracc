@@ -3,6 +3,7 @@ namespace dc = "http://purl.org/dc/elements/1.1"
 namespace dcterms = "http://purl.org/dc/terms/"
 namespace esp = "http://oracc.org/ns/esp/1.0"
 namespace xh = "http://www.w3.org/1999/xhtml"
+namespace eb = "http://oracc.org/ns/esp-biblatex/1.0"
 
 include "xhtml/rnc/xhtml-strict.rnc" {
   start = empty
@@ -21,12 +22,12 @@ default-attr =
 esp-block = 
   esp-accesskeys-listing | esp-site-map | esp-index-list | esp-author
   | esp-content-last-modified | esp-h | esp-sh | esp-image | esp-glossary-list
-  | esp-techterms-list | esp-reading | esp-ref
+  | esp-techterms-list | esp-reading | esp-ref | eb-references
 
 esp-inline = 
   esp-content-last-modified | esp-link | esp-twitter | esp-bookmark
   | esp-glossary | esp-index | esp-techterms | esp-email | esp-page-name
-  | esp-page-title
+  | esp-page-title | eb-cite | eb-nocite
 
 esp-accesskeys-listing = 
   element accesskeys-listing { default-attr, empty }?
@@ -230,3 +231,23 @@ esp-techterms-list =
       Inline.model
     }*
   }?
+
+eb-cite =
+  element eb:cite {
+    eb-cite-model
+  }
+
+eb-nocite =
+  element eb:nocite {
+    eb-cite-model
+  }
+
+eb-cite-model =
+    attribute key { text },
+    attribute pp { text }?,
+    attribute star { "*" }?,
+    text
+
+eb-references =
+  element eb:references { text }
+

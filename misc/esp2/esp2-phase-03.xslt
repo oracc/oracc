@@ -4,17 +4,21 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
   xmlns:esp="http://oracc.org/ns/esp/1.0" 
+  xmlns:eb="http://oracc.org/ns/esp-biblatex/1.0"
   xmlns:struct="http://oracc.org/ns/esp-struct/1.0" 
   xmlns:param="http://oracc.org/ns/esp-param/1.0" 
   xmlns="http://www.w3.org/1999/xhtml" 
   xsi:schemaLocation="http://www.w3.org/1999/XSL/Transform http://www.w3.org/2005/02/schema-for-xslt20.xsd" 
   version="2.0"
   xpath-default-namespace="http://www.w3.org/1999/xhtml">
+  
   <xsl:include href="esp2-functions.xslt"/>
   <xsl:include href="esp2-head.xsl"/>
   <xsl:include href="esp2-references.xslt"/>
   <xsl:include href="esp2-alphabet.xslt"/>
   <xsl:include href="esp2-site-map.xslt"/>
+  <xsl:include href="esp2-biblatex.xsl"/>
+
   <xsl:output method="xml" encoding="utf-8" indent="no"/>
   <xsl:param name="oracc"/>
   <xsl:param name="project"/>
@@ -221,13 +225,6 @@
         <xsl:value-of select="$parameters/param:root"/>
         <xsl:value-of select="$current-page/@url"/>
       </div>
-      <!-- google analytics script: account number should be UA-602782-2 for enlil dev site and UA-602782-3 for PRS servers at Leeds
-  <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-  </script>
-  <script type="text/javascript">
-  _uacct = "UA-602782-3";
-  urchinTracker();
-  </script>-->
     </xsl:copy>
   </xsl:template>
 

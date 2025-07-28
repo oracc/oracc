@@ -6,6 +6,7 @@
     xmlns:esp="http://oracc.org/ns/esp/1.0"
     xmlns:param="http://oracc.org/ns/esp-param/1.0"
     xmlns:struct="http://oracc.org/ns/esp-struct/1.0"
+    xmlns:eb="http://oracc.org/ns/esp-biblatex/1.0"
     xmlns="http://www.w3.org/1999/xhtml"
     version="2.0" 
     xpath-default-namespace="http://www.w3.org/1999/xhtml"
