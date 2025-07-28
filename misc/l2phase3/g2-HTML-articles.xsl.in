@@ -64,22 +64,6 @@
   </xsl:call-template>
 </xsl:param>
 
-<xsl:param name="cbd-hide-forms">
-  <xsl:call-template name="xpd-option">
-    <xsl:with-param name="config-xml" select="$config-file"/>
-    <xsl:with-param name="option" select="'cbd-hide-forms'"/>
-    <xsl:with-param name="default" select="'yes'"/>
-  </xsl:call-template>
-</xsl:param>
-
-<xsl:param name="cbd-hide-norms">
-  <xsl:call-template name="xpd-option">
-    <xsl:with-param name="config-xml" select="$config-file"/>
-    <xsl:with-param name="option" select="'cbd-hide-norms'"/>
-    <xsl:with-param name="default" select="'yes'"/>
-  </xsl:call-template>
-</xsl:param>
-
 <xsl:param name="cbd-inline-senses">
   <xsl:call-template name="xpd-option">
     <xsl:with-param name="config-xml" select="$config-file"/>
@@ -399,30 +383,14 @@
 	</xsl:if>
       </p>
     </xsl:if>
-    <xsl:choose>
-      <xsl:when test="$cbd-hide-forms='yes'">
-	<h2 class="hsheader hiding">
-	  <a class="hide-button" href="javascript://" onclick="act_hide_show(event)">Written forms:</a>
-	</h2>
-	<p class="forms hide">
-	  <xsl:for-each select="cbd:form|cbd:form-sans">
-	    <xsl:apply-templates select="."/>
-	    <xsl:if test="not(position()=last())">; </xsl:if>
-	  </xsl:for-each>
-	  <xsl:text>.</xsl:text>
-	</p>
-      </xsl:when>
-      <xsl:otherwise>
-	<p class="forms">
-	  <span class="iheader">Written forms:</span>
-	  <xsl:for-each select="cbd:form|cbd:form-sans">
-	    <xsl:apply-templates select="."/>
-	    <xsl:if test="not(position()=last())">; </xsl:if>
-	  </xsl:for-each>
-	  <xsl:text>.</xsl:text>
-	</p>
-      </xsl:otherwise>
-    </xsl:choose>
+    <p class="forms">
+      <span class="iheader">Written forms:</span>
+      <xsl:for-each select="cbd:form|cbd:form-sans">
+	<xsl:apply-templates select="."/>
+	<xsl:if test="not(position()=last())">; </xsl:if>
+      </xsl:for-each>
+      <xsl:text>.</xsl:text>
+    </p>
   </div>
 </xsl:template>
 
