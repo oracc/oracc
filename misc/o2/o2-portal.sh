@@ -32,7 +32,11 @@ if [ -d 00web/00config ]; then
     echo calling esp2-live.sh `oraccopt` force ...
     esp2-live.sh `oraccopt` force
     p3-wrapup.sh
-    o2-finish.sh
+    if [[ "$project" == "neo" ]]; then
+	echo Skipping o2-finish.sh processing for project $project
+    else
+	o2-finish.sh
+    fi
 elif [ -d 00web/esp ]; then
     echo o2-portal.sh: esp version 1.0 is no longer supported.  Please contact your liaison to upgrade.
     exit 1

@@ -65,13 +65,13 @@
 "Oracc webtools" class="closed">Tools</a></div>
 </div>
 <div id="Content">
-<div id="hp_search"><p/>
-<!--<form method="get" action="/find" id="hp_search" name="hp_search">
+<!--<div id="hp_search"><p/>
+<form method="get" action="/find" id="hp_search" name="hp_search">
 <p><span class="button">Search Oracc</span> <input class="textbox"
 name="phrase" id="phrase" type="text" size="20" accesskey="s"
 value="" /></p>
-</form>-->
-</div>
+</form>
+</div>-->
 <div id="hp_blurb">
 <p>Oracc is a collaborative effort to develop a complete corpus of
 cuneiform whose rich annotation and open licensing support the next
