@@ -751,7 +751,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 	</xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
-	<p class="norms">
+	<p class="morphs">
 	  <xsl:for-each select="cbd:morph">
 	    <xsl:apply-templates select="."/>
 	  </xsl:for-each>
@@ -827,7 +827,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 </xsl:template>
 
 <xsl:template match="cbd:prefs">
-  <p class="norms">
+  <p class="prefs">
     <span class="iheader">Verbal prefixes:</span>
     <xsl:for-each select="cbd:pref">
       <xsl:apply-templates select="."/>
@@ -853,7 +853,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 
 <xsl:template match="cbd:stems">
   <xsl:if test="not(@defaulted)">
-    <p class="norms">
+    <p class="stems">
       <span class="iheader">Stems:</span>
       <xsl:for-each select="cbd:stem">
 	<xsl:apply-templates select="."/>
@@ -876,7 +876,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 
 <xsl:template match="cbd:conts">
   <xsl:if test="$cbd-bases-table='no'">
-    <p class="norms">
+    <p class="conts">
       <span class="iheader">Continuations:</span>
       <xsl:for-each select="cbd:cont">
 	<xsl:apply-templates select="."/>
@@ -919,16 +919,34 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 </xsl:template>
 
 <xsl:template match="cbd:norms">
-  <p class="norms"> <!-- {ancestor-or-self::*[@xml:lang]/@xml:lang}"> -->
-    <span class="iheader">Normalized forms:</span>
-    <xsl:for-each select="cbd:norm">
-      <xsl:apply-templates select="."/>
-      <xsl:if test="position() &lt; last()">
-	<span class="punct-sc"><xsl:text>; </xsl:text></span>
-      </xsl:if>
-    </xsl:for-each>
-    <xsl:text>.</xsl:text>
-  </p>
+  <xsl:choose>
+    <xsl:when test="$cbd-hide-norms='yes'">
+      <h2 class="hsheader hiding">
+	<a class="hide-button" href="javascript://" onclick="act_hide_show(event)">Normalized forms:</a>
+      </h2>
+      <p class="norms hide">
+	<xsl:for-each select="cbd:norm">
+	  <xsl:apply-templates select="."/>
+	  <xsl:if test="position() &lt; last()">
+	    <span class="punct-sc"><xsl:text>; </xsl:text></span>
+	  </xsl:if>
+	</xsl:for-each>
+	<xsl:text>.</xsl:text>
+      </p>
+    </xsl:when>
+    <xsl:otherwise>
+      <p class="norms">
+	<span class="iheader">Normalized forms:</span>
+	<xsl:for-each select="cbd:norm">
+	  <xsl:apply-templates select="."/>
+	  <xsl:if test="position() &lt; last()">
+	    <span class="punct-sc"><xsl:text>; </xsl:text></span>
+	  </xsl:if>
+	</xsl:for-each>
+	<xsl:text>.</xsl:text>
+      </p>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!-- icountu is the icount which is unmarked in CSS -->
@@ -1006,7 +1024,7 @@ THIS NEEDS TO BE INTEGRATED WITH SENSES RENDERING
 
 <xsl:template name="bases-para">
   <xsl:if test="cbd:bases/cbd:base">
-    <p class="norms">
+    <p class="bases">
       <span class="iheader">Base forms:</span>
       <xsl:for-each select="cbd:base">
 	<xsl:call-template name="base-para-sub"/>
