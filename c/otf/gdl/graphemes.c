@@ -665,6 +665,12 @@ gparse(register unsigned char *g, enum t_type type)
       break;
     case g_n:
       gp = numerical(g);
+      if (!strcmp(((struct attr*)gp->xml->attr.nodes[0])->valpair[1], "diszless"))
+	{
+	  gb_oid = NULL;
+	  gb_cun = NULL;
+	  gb_key = NULL;
+	}
       break;
     case g_s:
       /* canonicalize sign names up here? */
@@ -827,19 +833,6 @@ gparse(register unsigned char *g, enum t_type type)
 	  if (strpbrk((const char *)orig,bad_cg_chars))
 	    /*tmpcg = */cleang = gclean(cleang);
 
-#if 0
-	  if (curr_lang->values && !hash_find(curr_lang->values,cleang))
-	    {
-	      if (!curr_lang->snames || !hash_find(curr_lang->snames,cleang))
-		{
-		  if ((*cleang != 'x' || cleang[1])
-		      && ((*cleang != 'n' && *cleang != 'N') 
-			  || (cleang[1] && cleang[1] != '(')))
-		    vwarning("%s: grapheme not in %s",
-			     cleang,curr_lang->signlist);
-		}
-	    }
-#endif
 	  insertp = render_g(gp->xml, insertp, buf);
 	  *insertp = '\0';
 	  if (*buf)
@@ -851,7 +844,6 @@ gparse(register unsigned char *g, enum t_type type)
 
 	      if (do_cuneify && cuneifiable(curr_lang))
 		{
-#if 1
 		  if (gb_cun)
 		    appendAttr(gp->xml,gattr(a_g_utf8,gb_cun));
 		  if (gb_key)
@@ -865,31 +857,7 @@ gparse(register unsigned char *g, enum t_type type)
 			    appendAttr(gp->xml,gattr(a_g_salt,(uccp)oip->salt));
 			}
 		    }
-#else
-		  static const unsigned char *cattr = NULL;
-		  if (gp->type == g_q)
-		    {
-		      if (gp->g.q.q->type == g_n)
-			cattr = cuneify(gp->g.q.q->atf);
-		      else
-			cattr = cuneify(gp->g.q.q->g.s.base);
-		    }
-		  else
-		    cattr = cuneify(buf);
-		  if (cattr)
-		    appendAttr(gp->xml,gattr(a_g_utf8,cattr));
-#endif
 		}
-
-#if 0
-	      if (do_signnames)
-		{
-		  if (gb_signname)
-		    appendAttr(gp->xml,gattr(a_g_sign,gb_signname));
-		  else if (gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
-		    vwarning("unable to signify %s", gp);
-		}
-#endif
 
 	      if (!inner_parse && f_graphemes)
 		fprintf(f_graphemes,"%s ",buf);
@@ -901,27 +869,14 @@ gparse(register unsigned char *g, enum t_type type)
 	    {
 	      static unsigned char buf[1024] = { '\0' };
 	      unsigned char *ibufp = NULL;
-#if 0
-	      const unsigned char *cattr = NULL;
-#endif
 	      
 	      ibufp = buf;
 	      ibufp = render_g(gp->xml,ibufp,ibufp);
 	      *ibufp = '\0';
 
-#if 0
-	      if (do_signnames)
-		{
-		  if (gb_signname)
-		    appendAttr(gp->xml,gattr(a_g_sign,gb_signname));
-		  else if (gp->type != g_c && (gp->type != g_q || gp->g.q.q->type != g_c))
-		    vwarning("(inner) unable to signify %s", gp);
-		}
-#endif
 	      
 	      if (do_cuneify && cuneifiable(curr_lang))
 		{
-#if 1
 		  appendAttr(gp->xml,gattr(a_g_utf8,gb_cun?gb_cun:(unsigned const char *)"X"));
 		  if (gb_key)
 		    appendAttr(gp->xml,gattr(a_key,(uccp)gb_key));
@@ -934,43 +889,6 @@ gparse(register unsigned char *g, enum t_type type)
 			    appendAttr(gp->xml,gattr(a_g_salt,(uccp)oip->salt));
 			}
 		    }
-#else		  
-		  if (cbd_rules)
-		    {
-		      unsigned char *a = utf2atf(buf);
-		      if (a)
-			{
-			  const unsigned char *m = g2utf(a);
-			  if (m)
-			    strcpy((char*)buf,(const char *)m);
-			}
-		    }
-		  if (*buf)
-		    {
-		      const unsigned char *cattr = cuneify(buf);
-		      if (cattr)
-			appendAttr(gp->xml,gattr(a_g_utf8,cattr));
-
-		    }
-		  else
-		    {
-		      if (gp->type == g_p)
-			{
-			  const unsigned char *cattr = cuneify(getAttr(gp->xml,"g:type"));
-			  if (cattr)
-			    appendAttr(gp->xml,gattr(a_g_utf8,cattr));
-
-#if 0
-			  if (do_signnames)
-			    {
-			      cattr = signify(getAttr(gp->xml,"g:type"));
-			      if (cattr)
-				appendAttr(gp->xml,gattr(a_g_sign,cattr));
-			    }
-#endif
-			}
-		    }
-#endif
 		}
 	      if (f_graphemes)
 		{
@@ -992,26 +910,6 @@ gparse(register unsigned char *g, enum t_type type)
 		  ibufp = ibuf;
 		  ibufp = render_g(gp->xml,ibufp,ibufp);
 		  *ibufp = '\0';
-#if 0
-		  if (curr_lang->signlist && '#' == *curr_lang->signlist)
-		    {
-		      const unsigned char *cattr = signify(ibuf);
-
-		      if (cattr && strcmp((const char*)cattr,(const char*)ibuf)
-			   && compound_warnings) /* overload compound_warnings to cover sign names as well */
-			{
-			  if (cattr)
-			    {
-			      if (!gvl_mode)
-				vwarning("%s: compound sign name element should be %s", ibuf, cattr);
-			      if (render_canonically)
-				strcpy((char *)ibufp, (char*)cattr);
-			    }
-			  else
-			    vwarning("%s: compound sign name element not in OGSL",ibuf);
-			}
-		    }
-#endif
 		}
 	    } 
 	    
@@ -1115,6 +1013,7 @@ graphemes_init(void)
   gtags[g_f] = e_g_f;
   gtags[g_g] = e_g_g;
   gtags[g_b] = e_g_b;
+  gtags[g_t] = e_g_t;
 
   gvl_bridge_init();
 }
@@ -1205,28 +1104,12 @@ compound(register unsigned char *g)
   gp->xml = gelem(gtags[g_c],NULL,lnum,GRAPHEME);
   if ((gid = (unsigned const char *)psl_get_id(g)))
     {
-#if 0
-      if (gdl_grapheme_sign_names && !inner_qual)
-	list_add(gdl_sign_names, (void*)pool_copy(g));
-      if (gdl_grapheme_sigs && !inner_qual)
-	{
-	  /*fprintf(stderr, "[5] %s => %s\n", g, gid);*/
-	  list_add(gdl_sig_list, (void*)gid);
-	  /* don't add this to gdl_sig_deep */
-	}
-#endif
+      ; /* rest deleted as pre-gdl */
     }
   else
     {
       if (gdl_strict_compound_warnings)
 	vwarning("[cw2] unknown compound %s", g);
-#if 0
-      if (gdl_grapheme_sigs && !inner_qual)
-	{
-	  list_add(gdl_sig_list, "q99");
-	  /* don't add this to gdl_sig_deep */
-	}
-#endif
     }
   suppress_psl_id = 1;
   status = cparse(gp->xml,g+1,'|',NULL);
@@ -1848,6 +1731,109 @@ punct(register unsigned char *g)
   return gp;
 }
 
+/* return a g:gg @type=diszless and child nodes g:t,g:n+ giving the
+ * text literal and number sequence respectively
+ */
+static struct grapheme *
+diszless_n_group(const char *t, unsigned char *s, int nmods, struct mods *mods)
+{
+  struct grapheme *gp = galloc();
+  gp->type = g_g;
+  gp->xml = gelem(e_g_gg,NULL,lnum,GRAPHEME);
+  appendAttr(gp->xml,gattr(a_g_type,(uccp)"diszless"));
+  appendChild(gp->xml, build_singleton((uccp)t,g_t,0,NULL));
+  unsigned char *s2 = (unsigned char *)strdup((char*)s);
+  unsigned char *g = s2;
+  while (*s2)
+    {
+      struct node *cp;
+      char *sp = strchr((char*)s2,' ');
+      if (sp)
+	{
+	  *sp++ = '\0';
+	  cp = appendChild(gp->xml, build_singleton((uccp)(g=s2),g_v,0,NULL));	  
+	  s2 = (unsigned char *)sp;
+	}
+      else
+	{
+	  cp = appendChild(gp->xml, build_singleton((uccp)(g=s2),g_v,nmods,mods));
+	  s2 += strlen((ccp)s2);
+	}
+      unsigned const char *gb_cun = NULL;
+      const char *gb_key = NULL, *gb_oid = NULL, *gb_spoid = NULL, *gb_ucode = NULL;
+      const char *mess = c1c2gvl(file,lnum,g,curr_lang->core->sindex);
+      gb_oid = gvl_bridge_oid();
+      gb_spoid = gvl_bridge_spoid();
+      gb_ucode = gvl_bridge_ucode();
+
+      if ((gb_key = gvl_bridge_key()))
+	{
+	  if (!strstr(gb_key, ".."))
+	    {
+	      gb_spoid = (ccp)pool_copy(gb_key);
+	      char *x = strchr(gb_spoid, '.');
+	      *x = '\0';
+	    }
+	}
+      
+      if (mess)
+	vwarning("(gvl) %s",mess);
+      if (do_cuneify)
+	gb_cun = gvl_bridge_cuneify();
+      
+      if (gb_oid)
+	{
+	  appendAttr(cp,gattr(a_oid, (unsigned const char *)gb_oid));
+	  if (gb_oid && *gb_oid)
+	    {
+	      unsigned const char *nm = gvl_bridge_oid_name(gb_oid);
+	      if (nm)
+		appendAttr(cp,gattr(a_g_sign, gvl_bridge_oid_name(gb_oid)));
+	      else
+		{
+		  vwarning("OID %s does not have a name in the current sign list; defaulting to %s",
+			   gb_oid,gp->atf);
+		  appendAttr(cp,gattr(a_g_sign, gp->atf));
+		}
+	    }
+	  if (gb_spoid)
+	    {
+	      unsigned const char *spnm = gvl_bridge_oid_name(gb_spoid);
+	      if (!spnm)
+		spnm = gvl_bridge_spoid_name(gb_spoid);
+	      if (spnm)
+		{
+		  appendAttr(cp,gattr(a_spoid, (unsigned const char *)gb_spoid));
+		  appendAttr(cp,gattr(a_spform, spnm));
+		}
+	      else
+		{
+		  vwarning("OID %s does not have a name in the current sign list", gb_spoid);
+		}
+	    }
+	}
+
+      if (do_cuneify && cuneifiable(curr_lang))
+	{
+	  if (gb_cun)
+	    appendAttr(cp,gattr(a_g_utf8,gb_cun));
+	  if (gb_key)
+	    appendAttr(cp,gattr(a_key,(uccp)gb_key));
+	  if (gb_ucode)
+	    {
+	      struct oiv_data *oip = gvl_get_script(gb_ucode);
+	      if (oip)
+		{
+		  if (oip->salt)
+		    appendAttr(cp,gattr(a_g_salt,(uccp)oip->salt));
+		}
+	    }
+	}
+
+    }
+  return gp;
+}
+
 static struct grapheme *
 numerical(register unsigned char *g)
 {
@@ -1956,7 +1942,7 @@ numerical(register unsigned char *g)
 	{
 	  /* in SAA mode any unadorned sexagesimal number is OK;
 	     in math_mode they should be limited to 60 */
-	  struct node *r;
+	  /*struct node *r;*/
 	  int nmods = 0;
 	  static struct mods modsbuf[MODS_MAX];
 	  unsigned char *qnum = NULL, *qtmp = NULL;
@@ -1982,22 +1968,24 @@ numerical(register unsigned char *g)
 	      unsigned char *sx = sexify(atoi((char*)gp->g.n.r), "disz");
 	      if (!sx)
 		sx = (unsigned char *)"00(disz)";
+
+	      /* This adds @v to the 9(disz) that comes from 9@v or from 49@v */
 	      qnum = malloc(strlen((char*)sx) + 3);
 	      if (nmods == 1 && modsbuf[0].data[0] == 'v')
 		sprintf((char*)qnum, "%s@v", (char*)sx);
 	      else
 		strcpy((char*)qnum, (char*)sx);
 	    }
-#if 0
-	  if (gdl_grapheme_sigs || gdl_sign_names)
-	    gdl_sig_str = pool_copy(qnum);
-#endif
+#if 1
+	  gp = diszless_n_group((ccp)gp->g.n.r, qnum, nmods,modsbuf);
+#else
 	  r = gtextElem(e_g_r,NULL,lnum,GRAPHEME,gp->g.n.r);
 	  gp->g.n.n = NULL;
 	  gp->xml = build_singleton((unsigned char*)"",g_n,nmods,modsbuf);
 	  gp->type = g_n;
 	  /* replace the empty text child with the "n" node in g:r */
 	  replaceChild(gp->xml,0,r);
+#endif
 	  gsetAttr(gp->xml,a_sexified,qnum);
 	  if (qtmp)
 	    free(qtmp);
@@ -2014,41 +2002,6 @@ numerical(register unsigned char *g)
 	  gp = NULL;
 	}
     }
-
-#if 0
-  if (gdl_sign_names)
-    {
-      const unsigned char *sn = NULL;
-      if (!gdl_sig_str)
-	gdl_sig_str = orig_g;
-      if (!psl_is_sname(gdl_sig_str))
-	sn = psl_get_sname(gdl_sig_str);
-      else
-	sn = gdl_sig_str;
-      if (sn)
-	list_add(gdl_sign_names, (void*)pool_copy(sn));
-      else
-	vwarning("no sign name found for %s", gdl_sig_str);
-    }
-  else if (gdl_grapheme_sigs && !inner_qual)
-    {
-      const char *id = NULL;
-      if (!gdl_sig_str)
-	gdl_sig_str = orig_g;
-      id = psl_get_id(gdl_sig_str);
-      if (id)
-	{
-	  if (!suppress_psl_id)
-	    list_add(gdl_sig_list, (void*)id);
-	  list_add(gdl_sig_deep, (void*)id);
-	}
-      else
-	vwarning("no sign name found for %s", gdl_sig_str);
-    }
-
-  if (cw_paren_pending)
-    list_add(cw_proper_c, ")");
-#endif
   
   return gp;
 }
@@ -2181,6 +2134,9 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 	if (np->children.nodes)
 	  insertp = render_g_text(np->children.nodes[0], insertp, startp);
 	break;
+      case 't':
+	insertp = render_g_text(np->children.nodes[0], insertp, startp);
+	break;
       case 'v':
       case 's':
 	if (np->names->pname[3] && !strcmp(np->names->pname,"g:surro")
@@ -2268,8 +2224,8 @@ _render_g(struct node *np, unsigned char *insertp, unsigned char *startp, const 
 		    insertp = render_g(np->children.nodes[i], insertp, startp);
 		  }
 	      }
-	    else if (!xstrcmp(gtype, "correction"))
-	      /*omit second element in form rendering*/
+	    else if (!xstrcmp(gtype, "correction") || !xstrcmp(gtype, "diszless"))
+	      /*omit second+ element in form rendering*/
 	      insertp = render_g(np->children.nodes[0], insertp, startp);
 	    else if (!xstrcmp(gtype,"alternation"))
 	      {

@@ -22,7 +22,7 @@ const enum t_type g_ftype_m[] = { ftype , type_top };
 const enum t_type g_boundary_m[] = { space , colon , hyphen , slash , plus , period ,
 				     cell , field , eol , ilig , type_top };
 const enum t_type g_grapheme_m[] = { g_c , g_v , g_n , g_s , g_q , g_p,
-				     g_corr , g_g , ellipsis , linebreak , newline , icmt ,
+				     g_corr , g_g , g_t , ellipsis , linebreak , newline , icmt ,
 				     norm, noop , g_disamb , 
 				     wm_absent , wm_broken , wm_linecont , wm_linefrom ,
 				     surro_mark ,

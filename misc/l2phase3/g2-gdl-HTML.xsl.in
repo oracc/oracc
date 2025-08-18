@@ -529,6 +529,9 @@
         </xsl:if>
       </xsl:for-each>
     </xsl:when>
+    <xsl:when test="@g:type='diszless'">
+      <xsl:value-of select="g:t"/>
+    </xsl:when>
     <xsl:otherwise>
       <xsl:message>g2-gdl-HTML: group type <xsl:value-of select="@g:type"/> not handled</xsl:message>
     </xsl:otherwise>

@@ -325,7 +325,8 @@ definition of the GDL schema does not use a default namespace.</p>
 <d:rnc>
 namespace g = "http://oracc.org/ns/gdl/1.0"
 
-grapheme = v | q | s | n | c | gloss | g | nongrapheme | punct | gsurro
+grapheme = v | q | s | n | c | gloss | g | nongrapheme | punct | gsurro | t
+t	 = element g:t { text }
 form     = attribute form { text }
 sb       = element g:b { s.model }
 vb       = element g:b { v.model }
@@ -1034,7 +1035,7 @@ g.meta =
   damageStart? , damageEnd? ,
   surroStart? , surroEnd? ,
   statusStart? , statusEnd? ,
-  accented? , a_key? , a_oid? , a_spoid? , a_spform? , cuneifont?
+  accented? , a_key? , a_oid? , a_spoid? , a_spform? , cuneifont? , a_seq?
 
 accented = attribute g:accented { text }
 breakStart = attribute g:breakStart { "1" }
@@ -1048,6 +1049,7 @@ statusEnd = attribute g:statusEnd { xsd:IDREF }
 
 a_key = attribute key { text }
 a_oid = attribute oid { text }
+a_seq = attribute seq { text }
 a_spoid = attribute spoid { text }
 a_spform = attribute spform { text }
 
@@ -1713,7 +1715,7 @@ nonword =
 group = 
   element g:gg {
     attribute g:type { 
-      "correction" | "alternation" | "group" | "reordering" | "ligature" | "implicit-ligature" | "logo" | "numword"
+      "correction" | "alternation" | "diszless" | "group" | "reordering" | "ligature" | "implicit-ligature" | "logo" | "numword"
     } ,
     g.meta ,
     (group | grapheme | normseg)+
