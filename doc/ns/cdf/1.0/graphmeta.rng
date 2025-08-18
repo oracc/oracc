@@ -93,6 +93,9 @@
     <optional>
       <ref name="cuneifont"/>
     </optional>
+    <optional>
+      <ref name="a_seq"/>
+    </optional>
   </define>
   <define name="accented">
     <attribute name="g:accented"/>
@@ -142,6 +145,9 @@
   </define>
   <define name="a_oid">
     <attribute name="oid"/>
+  </define>
+  <define name="a_seq">
+    <attribute name="seq"/>
   </define>
   <define name="a_spoid">
     <attribute name="spoid"/>

@@ -12,7 +12,13 @@
       <ref name="nongrapheme"/>
       <ref name="punct"/>
       <ref name="gsurro"/>
+      <ref name="t"/>
     </choice>
+  </define>
+  <define name="t">
+    <element name="g:t">
+      <text/>
+    </element>
   </define>
   <define name="form">
     <attribute name="form"/>

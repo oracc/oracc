@@ -71,7 +71,7 @@ nonword =
 group = 
   element g:gg {
     attribute g:type { 
-      "correction" | "alternation" | "group" | "reordering" | "ligature" | "implicit-ligature" | "logo" | "numword"
+      "correction" | "alternation" | "diszless" | "group" | "reordering" | "ligature" | "implicit-ligature" | "logo" | "numword"
     } ,
     g.meta ,
     (group | grapheme | normseg)+

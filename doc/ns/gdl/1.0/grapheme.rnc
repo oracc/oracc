@@ -1,6 +1,7 @@
 namespace g = "http://oracc.org/ns/gdl/1.0"
 
-grapheme = v | q | s | n | c | gloss | g | nongrapheme | punct | gsurro
+grapheme = v | q | s | n | c | gloss | g | nongrapheme | punct | gsurro | t
+t	 = element g:t { text }
 form     = attribute form { text }
 sb       = element g:b { s.model }
 vb       = element g:b { v.model }

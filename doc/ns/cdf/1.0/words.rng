@@ -188,6 +188,7 @@
         <choice>
           <value>correction</value>
           <value>alternation</value>
+          <value>diszless</value>
           <value>group</value>
           <value>reordering</value>
           <value>ligature</value>
