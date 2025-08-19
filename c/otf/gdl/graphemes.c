@@ -665,7 +665,8 @@ gparse(register unsigned char *g, enum t_type type)
       break;
     case g_n:
       gp = numerical(g);
-      if (!strcmp(((struct attr*)gp->xml->attr.nodes[0])->valpair[1], "diszless"))
+      if (gp->xml && gp->xml->attr.nodes && gp->xml->attr.nodes[0]
+	  && !strcmp(((struct attr*)gp->xml->attr.nodes[0])->valpair[1], "diszless"))
 	{
 	  gb_oid = NULL;
 	  gb_cun = NULL;
