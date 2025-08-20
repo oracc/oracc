@@ -8,11 +8,13 @@ o2-xtf-lst.sh
 
 [ -r 01bld/cancel ] && exit 1
 
+mkdir -p 01log
+
 # make .txh files world-readable
 umask 0022
 shopt -s nullglob
 project=`oraccopt`
-rm -f 01tmp/xtfmanager.log
+rm -f 01log/xtfmanager.log
 
 function has_score {
     for a in `cat 01bld/lists/sxh-scores.lst`; do
@@ -72,8 +74,8 @@ if [ -s 01bld/lists/lemindex.lst ]; then
 fi
 
 # scores
-rm -f 01tmp/scoregen.log 01bld/lists/sxh-scores.lst
-[ -s 01bld/lists/linktexts.lst ] && scoregen.plx 2>01tmp/scoregen.log | xmlsplit
+rm -f 01log/scoregen.log 01bld/lists/sxh-scores.lst
+[ -s 01bld/lists/linktexts.lst ] && scoregen.plx 2>01log/scoregen.log | xmlsplit
 # [ -s 01tmp/scoregen.log ] && wc -l 01tmp/scoregen.log
 [ -s 01bld/lists/xsf-scores.lst ] && xsf_scores
 [ -s 01bld/lists/sxh-scores.lst ] && has_score
@@ -96,8 +98,8 @@ if [ -s 01bld/lists/txtindex.lst ]; then
     mkdir -p $dir/lem
     cat 01bld/lists/txtindex.lst | qlemx -p $project
     sort -u -o 02pub/lem/mangle.tab 02pub/lem/mangle.tab
-    sort -u -o 01tmp/signmap.x 01tmp/signmap.log
-    rm -f 01tmp/signmap.log
+    sort -u -o 01log/signmap.x 01log/signmap.log
+    rm -f 01log/signmap.log
 fi
 
 if [ -s 01bld/lists/xtfindex.lst ]; then

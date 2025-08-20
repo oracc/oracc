@@ -80,7 +80,7 @@ cache_sort_codes {
 }
 
 sub sb_attr {
-    my($a,$b,$caller) = @_;
+    my($a,$p,$b,$caller) = @_;
     if ($a->nodeName() ne 'a') {
 	my @a = tags($a,$XHTML,'a');
 	if ($#a >= 0) {
@@ -92,6 +92,11 @@ sub sb_attr {
     }
     $a->setAttribute('href',"javascript://");
     $a->setAttribute('onclick', "act_block(event)");
+    if ($p) {
+	my $t = $b; $t =~ s/^sb.//; $t =~ s/\..*$//;
+	$a->setAttribute('data-bprj', $p);
+	$a->setAttribute('data-btxt', $t);
+    }
     $a->setAttribute('data-bloc', $b);
 }
 
@@ -138,16 +143,19 @@ exemplar_links {
 		my $Q = $id;
 		$Q =~ s/^.*?://;
 		$Q =~ s/\..*$//;
-		my $xproject = $$el[1];
+		my $xproject = $$el[2];
 		my $Qnoproj = $$el[1];
 		if ($xproject =~ /:/) {
 		    $xproject =~ s/:.*$//;
-		    $Qnoproj =~ s/^.*?://;
+		    # $Qnoproj =~ s/^.*?://; # don't do this here now that we are setting $xproject as to/@ref
 		} else {
 		    $xproject = $project;
 		}
+		if ($Qnoproj =~ /:/) {
+		    $Qnoproj =~ s/^.*?://;
+		}
 		# $a->setAttribute('href',"javascript:showblock('$xproject','$Q','sb.$Qnoproj')");
-		sb_attr($a, "sb.$Qnoproj", "A");
+		sb_attr($a, $xproject, "sb.$Qnoproj", "A");
 	    } else {
 		print STDERR "expected a node not found in exemplar_links for $$el[0]\n";
 	    }
@@ -214,7 +222,7 @@ create_rel_lists {
 	    ++$Q{$to_ref};
 	    if ($rel eq 'goesto') {
 		push @{$exemplar_lists{$to_line}}, $from_line;
-		push @{$exemplar_links{$from_ref}}, [ $from_line, $to_line ];
+		push @{$exemplar_links{$from_ref}}, [ $from_line, $to_line , $to_ref ];
 #		push @{$exemplar_lists{$to_compounded}}, $from_compounded;
 #		push @{$exemplar_links{$from_ref}}, [ $from_compounded, $to_compounded ];
 #		${$sources{$to_ref}}{$from_ref} = 1;
@@ -260,7 +268,8 @@ create_scores {
     print '<scores>';
     foreach my $Q (sort keys %Q) {
 	print STDERR "create_score key = $Q\n";
-	next unless $Q =~ /(^|:)[QX]/; # is this hairy? or does the ID letter really not matter?
+	## 2025-08-20 Niek wants to make OBEL scores in P-manuscripts
+	## next unless $Q =~ /(^|:)[QX]/; # is this hairy? or does the ID letter really not matter?
 	print STDERR "generating score for $Q\n" unless $quiet;
 	my $fname = '';
 	if ($Q =~ /:/) {
@@ -284,6 +293,7 @@ create_scores {
 	    }
 	}
 	my $n = xmlify($txh_table_node->getAttribute('n'));
+	print STDERR "setting destfile to $sxh\n" unless $quiet;
 	print "<?destfile $sxh?>";
 	print_html_header($n, $project);
 	foreach my $t ($txh_table_node->childNodes()) {
@@ -314,7 +324,7 @@ create_scores {
 		$xQ =~ s/^.*?://;
 		$xQ =~ s/\..*$//;
 		#$a->setAttribute('href',"javascript:showblock('$project','$xQ','sb.$id')");
-		sb_attr($a, "sb.$id", "B");
+		sb_attr($a, undef, "sb.$id", "B");
 	    } elsif ($t->getAttribute('class') ne 'nonl') {
 		my $txh_id = xid($t);
 		print STDERR "$Q: $txh_id: expected <a> not found\n";
