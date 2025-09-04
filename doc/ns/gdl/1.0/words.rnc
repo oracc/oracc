@@ -73,7 +73,7 @@ group =
     attribute g:type { 
       "correction" | "alternation" | "diszless" | "group" | "reordering" | "ligature" | "implicit-ligature" | "logo" | "numword"
     } ,
-    g.meta ,
+    g.meta , sexified? , form? ,
     (group | grapheme | normseg)+
   }
 

@@ -198,6 +198,12 @@
         </choice>
       </attribute>
       <ref name="g.meta"/>
+      <optional>
+        <ref name="sexified"/>
+      </optional>
+      <optional>
+        <ref name="form"/>
+      </optional>
       <oneOrMore>
         <choice>
           <ref name="group"/>
