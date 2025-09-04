@@ -169,8 +169,9 @@
 	}
 
 	#Menu.classic {
+		width: 15%;
 		margin-inline-end: 1rem;
-		height: 100vh;
+		min-height: 100vh;
 	}
 
 	body:dir(rtl) #Menu.dd-always {
