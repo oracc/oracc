@@ -10,7 +10,7 @@ scriptdata_DATA = esp2-alphabet.xslt esp2-chars-iso-8859-1.xslt esp2-chars-marku
 	esp2-phase-02.xslt esp2-phase-03.xslt esp2-phase-04.xslt esp2-phase-05.xslt \
 	esp2-references.xslt esp2-saxon-collate.xslt esp2-site-map.xslt \
 	esp2-fix-sort.xsl esp2-params.xsl esp2-home.xsl esp2-head.xsl esp2-menu.xsl \
-	esp2-phase-01.xsl esp2-for-json.xsl esp-HTML-div.xsl
+	esp2-phase-01.xsl esp2-for-json.xsl esp-HTML-div.xsl esp2-biblatex.xsl
 
 data_DATA = esp2-structure.xml esp-*-template.xml
 
