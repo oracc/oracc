@@ -1,6 +1,12 @@
 /* @media block for small viewports (max 624px) */
 @media screen and (max-width: 624px) {
-	.pc30 {
+
+    #menu-content-wrapper {
+	display: grid;
+	grid-template-columns: 2fr 5fr;
+    }
+
+    .pc30 {
 		width: 100%;
 	}
 
@@ -129,7 +135,8 @@
 	}
 
 	#Content {
-		padding-inline: 4%;
+	    padding-inline: 4%;
+	    word-break: break-word;
 	}
 
 	#AccessLinks {

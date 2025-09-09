@@ -1,6 +1,12 @@
 /* @media block for larger viewport sizes (625px and above)*/
 @media screen and (min-width: 625px) {
-	.pc05 {
+
+    #menu-content-wrapper {
+	display: grid;
+	grid-template-columns: 1fr 5fr;
+    }
+
+    .pc05 {
 		width: 05%;
 	}
 
@@ -144,10 +150,17 @@
 		margin-inline: 6%;
 	}
 
+	#Content {
+	    word-break: break-word;
+	}
+
+	
 	#Menu {
+	    /*
 		float: left;
 		width: 20%;
 		margin: 0.1px 0 0.1px 0;
+	   */
 		padding: 0.5em 1em;
 		color: #000;
 		background-color: #fcfaf1;
@@ -169,9 +182,11 @@
 	}
 
 	#Menu.classic {
+	    /* removed with intro of menu-content-wrapper
 		width: 15%;
 		margin-inline-end: 1rem;
 		min-height: 100vh;
+	   */
 	}
 
 	body:dir(rtl) #Menu.dd-always {

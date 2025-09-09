@@ -58,7 +58,9 @@
 	<xsl:with-param name="current-page" select="$current-page"/>
       </xsl:call-template>
 
-      	<xsl:if test="not($parameters/param:menu-dropdown='yes')">
+      <div id="menu-content-wrapper">
+	
+       	<xsl:if test="not($parameters/param:menu-dropdown='yes')">
 	  <xsl:call-template name="insert-menu">
 	    <xsl:with-param name="current-page" select="$current-page"/>
 	  </xsl:call-template>
@@ -82,7 +84,7 @@
 	<xsl:if test="$parameters/param:navbar='yes'">
 	  <xsl:copy-of select="div[@id='NavBar']"/>
 	</xsl:if>
-      
+	
         <!-- breadcrumb (screen only) -->
 	<xsl:if test="not ( $parameters/param:breadcrumbs = 'no' )">
           <xsl:if test="count ( $current-page/ancestor::struct:page )">
@@ -99,9 +101,9 @@
             </div>
           </xsl:if>
 	</xsl:if>
-<!-- sjt: I think this is what Ruth commented out to make room for cuneify
-     font switching but I'm not sure -->
-<!--        <esp:bookmark id="maincontent" title="main content" hide-highlight="yes"/>  -->
+	<!-- sjt: I think this is what Ruth commented out to make room for cuneify
+	     font switching but I'm not sure -->
+	<!--        <esp:bookmark id="maincontent" title="main content" hide-highlight="yes"/>  -->
         <!-- main heading -->
         <h1>
           <xsl:value-of select="$current-page/esp:title"/>
@@ -158,10 +160,10 @@
               <xsl:value-of select="$parameters/param:root"/>
               <xsl:value-of select="$current-page/@url"/>
               <!--<span id="JSDate"><script type="text/javascript"><esp:comment>
-            var aMonthNames = new Array ( 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' );
-            var dToday = new Date ();
-            document.write ( ', accessed ' + dToday.getDate () + ' ' + aMonthNames [ dToday.getMonth () ] + ' ' + dToday.getFullYear() );
-          // </esp:comment></script></span>-->
+		  var aMonthNames = new Array ( 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' );
+		  var dToday = new Date ();
+		  document.write ( ', accessed ' + dToday.getDate () + ' ' + aMonthNames [ dToday.getMonth () ] + ' ' + dToday.getFullYear() );
+		  // </esp:comment></script></span>-->
               <!--<xsl:text>, accessed </xsl:text>-->
               <esp:comment>#config timefmt=", accessed %d %B %Y" </esp:comment>
               <esp:comment>#echo var="DATE_LOCAL" </esp:comment>
@@ -172,6 +174,7 @@
         <!-- clearing spacer -->
         <div id="EndContentSpace"> </div>
       </div>
+    </div>
       <!-- back to top link (screen only) -->
       <xsl:variable name="back-to-top">
 	<xsl:choose>

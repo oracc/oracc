@@ -49,15 +49,6 @@
       <xsl:otherwise>
 	<!--<xsl:message>esp2-banner-div 3</xsl:message>-->
 	<xsl:attribute name="id"><xsl:text>Header</xsl:text></xsl:attribute>
-
-	<!--
-	<xsl:if test="not($nomenu) and $parameters/param:menu-dropdown='yes'">
-	  <xsl:call-template name="insert-menu">
-	    <xsl:with-param name="current-page" select="$current-page"/>
-	  </xsl:call-template>
-	  </xsl:if>
-	-->
-
 	<xsl:choose>
 	  <xsl:when test="$parameters/param:slform='yes'">
 	    <div id="HeadTitleForm">
