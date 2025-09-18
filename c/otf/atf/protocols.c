@@ -434,6 +434,20 @@ protocol(struct run_context *run,
 	    {
 	      ; /*ez_psu_store(line,get_state(s_text).lang);*/
 	    }
+	  else if (!xstrcmp(type,"cfy"))
+	    {
+	      if (!xstrncmp(line, "ccf", 3))
+		{
+		  line = line+3;
+		  while (isspace(*line))
+		    ++line;
+		}
+	      else
+		{
+		  suppress_output = 1;
+		  vwarning("bad #cfy protocol %s", line);
+		}
+	    }
 	  else
 	    {
 	      vwarning("unknown protocol '%s'", type);
