@@ -935,8 +935,11 @@ $ start of reverse missing
 		      concat_continuations(lines);
 		      lem_save_line(lines[0]);
 		      note_initialize_line();
-		      line_bil(*lines);
-		      skip_blank();		      
+		      if (lines[0][1] == ':')
+			line_lgs(*lines);
+		      else
+			line_bil(*lines);
+		      skip_blank();
 		    }
 		  else /* lines[1][0] == '#' */
 		    {
@@ -2024,6 +2027,7 @@ line_lgs(unsigned char *lp)
 	  int i;
 	  *end = '\0';
 	  tlit_parse_inline(s,end,lnode,3001, NO_WORD_LIST,uc(line_id_buf));
+#if 0
 	  /* this gives us g:w wrappers; unwrap and check there were only
 	     space boundaries */
 	  for (i = 0; i < lnode->children.lastused; ++i)
@@ -2040,6 +2044,7 @@ line_lgs(unsigned char *lp)
 		  lnode->children.nodes[i] = tmp;
 		}
 	    }
+#endif
 	}
     }  
   appendChild(current,lnode);
