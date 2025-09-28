@@ -81,6 +81,8 @@ struct xname anames[] =
   { "g:varc", "http://oracc.org/ns/gdl/1.0:varc" },
   { "g:vari", "http://oracc.org/ns/gdl/1.0:vari" },
   { "g:varo", "http://oracc.org/ns/gdl/1.0:varo" },
+  { "g:zwnj", "http://oracc.org/ns/gdl/1.0:zwnj" },
+  { "g:zws", "http://oracc.org/ns/gdl/1.0:zws" },
   { "guide", "guide" },
   { "hand", "hand" },
   { "haslinks", "haslinks" },
@@ -341,6 +343,8 @@ struct attr abases[] =
   { { anames[158].qname,NULL } , { anames[158].pname,NULL } },
   { { anames[159].qname,NULL } , { anames[159].pname,NULL } },
   { { anames[160].qname,NULL } , { anames[160].pname,NULL } },
+  { { anames[161].qname,NULL } , { anames[161].pname,NULL } },
+  { { anames[162].qname,NULL } , { anames[162].pname,NULL } },
 };
 struct xname enames[] =
 {

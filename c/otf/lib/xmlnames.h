@@ -74,6 +74,8 @@ enum a_type
   a_g_varc,
   a_g_vari,
   a_g_varo,
+  a_g_zwnj,
+  a_g_zws,
   a_guide,
   a_hand,
   a_haslinks,

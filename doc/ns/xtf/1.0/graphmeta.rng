@@ -47,6 +47,9 @@
       <ref name="delim"/>
     </optional>
     <optional>
+      <ref name="zwnj"/>
+    </optional>
+    <optional>
       <attribute name="xml:id">
         <data type="ID"/>
       </attribute>
@@ -210,6 +213,16 @@
   </define>
   <define name="delim">
     <attribute name="g:delim"/>
+  </define>
+  <define name="zwnj">
+    <attribute name="g:zwnj">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="zws">
+    <attribute name="g:zws">
+      <value>1</value>
+    </attribute>
   </define>
   <define name="varnum">
     <optional>

@@ -20,7 +20,7 @@ enum t_group
 const enum t_type g_block_m[] = { cell , field , nong , type_top };
 const enum t_type g_ftype_m[] = { ftype , type_top };
 const enum t_type g_boundary_m[] = { space , colon , hyphen , slash , plus , period ,
-				     cell , field , eol , ilig , type_top };
+				     cell , field , eol , ilig , zspace , zhyphen , type_top };
 const enum t_type g_grapheme_m[] = { g_c , g_v , g_n , g_s , g_q , g_p,
 				     g_corr , g_g , g_t , ellipsis , linebreak , newline , icmt ,
 				     norm, noop , g_disamb , 
@@ -162,6 +162,7 @@ tokcheck_init()
 	case ftype:
 	case sol:
 	case space:
+	case zspace:
 	  allow_token(t,ub_plus);
 	  allow_token(t,ub_minus);
 	  if (use_legacy)
@@ -176,6 +177,7 @@ tokcheck_init()
 	  allow_token(t,icmt);
 	  break;
 	case hyphen:
+	case zhyphen:
 	case colon:
 	case period:
 	  allow_group(t,g_opener);
@@ -540,7 +542,7 @@ check(enum t_type prev,enum t_type curr, int index)
   if (!legaltoks[prev][curr] && !except(prev,curr,index)
       && (!in_split_word || curr != hyphen) /* allow leading - after preceding -;<EOL> */
       && (!agroups || (prev != maybeo && curr != damago))
-      && (!gdl_fragment_ok || prev != sol || curr != hyphen)
+      && (!gdl_fragment_ok || prev != sol || curr != hyphen || curr != zhyphen)
       && (index && ((!tokens[index-1]->lang || tokens[index-1]->lang->mode != m_alphabetic
 		     || (!tokens[index]->lang || tokens[index]->lang->mode != m_alphabetic))))
       )

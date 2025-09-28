@@ -44,6 +44,8 @@ int last_token;
 
 int temp_no_norm = 0;
 
+enum t_type ztoken = notoken;
+
 static List *meta_graphemes = NULL;
 
 static char *one,*damaged;
@@ -422,13 +424,13 @@ lex_shorthand(unsigned char *l, int *tokindexp)
 }
 
 static struct token*
-newtoken()
+newtoken(void)
 {
   return mb_new(tok_mem);
 }
 
 static struct token*
-s_newtoken()
+s_newtoken(void)
 {
   return mb_new(s_tok_mem);
 }
@@ -596,7 +598,7 @@ print_token(struct token *tp)
 }
 
 void
-showtoks()
+showtoks(void)
 {
   int i;
   for (i = 0; i < tokindex; ++i)
@@ -641,7 +643,7 @@ icmt_check(char *c)
 }
 
 void
-tokenize_init()
+tokenize_init(void)
 {
   volatile int i;
   register int c;
@@ -786,7 +788,7 @@ tokenize_init()
 }
 
 void
-tokenize_reinit()
+tokenize_reinit(void)
 {
   mb_reset(tok_mem);
   tokindex = 0;
@@ -830,7 +832,7 @@ text_free(void *vp)
 #endif
 
 void
-tokenize_term()
+tokenize_term(void)
 {
   npool_term(tokpool);
   tokpool = NULL;
@@ -1715,7 +1717,13 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      else
 		{
 		  last_text_or_bound = bound;
-		  tokens[tokindex++] = clone_token(static_tokens[boundary[*l]]);
+		  tokens[tokindex] = clone_token(static_tokens[boundary[*l]]);
+		  if (ztoken)
+		    {
+		      tokens[tokindex]->type = ztoken;
+		      ztoken = notoken;
+		    }
+		  ++tokindex;
 		}
 	      if (left_square_pending)
 		{
@@ -2201,9 +2209,16 @@ tokenize(register unsigned char *l,unsigned char *e)
 	    case '\\':
 	      if (backslash_is_formvar)
 		{
-		  vwarning("orphan formvar at %s",l);
-		  while (isalnum(*l) || '\\' == *l)
-		    ++l;
+		  if (' ' == l[1])
+		    {
+		      ztoken = zspace;
+		      ++l;
+		    }
+		  else if ('-' == l[1])
+		    {
+		      ztoken = zhyphen;
+		      ++l;
+		    }
 		}
 	      else
 		{
@@ -2467,6 +2482,14 @@ tokenize_grapheme(register unsigned char*l,
       --l;
       *following = l;
     }
+
+  /* 20250924 '\-' and '\ ' are now handled as special ZWNJ/ZWS boundaries */
+  if (l[-1] == '\\')
+    {
+      --l;
+      *following = l;
+    }
+
   if (gp && *gp && (l - *gp) >= 3
       && l[-3] == 0xe2
       && l[-2] == 0xb8
@@ -2537,7 +2560,7 @@ push_surrimpl(enum t_type t)
 }
 
 static enum t_type 
-pop_surrimpl()
+pop_surrimpl(void)
 {
   if (surrimpl_top >= 0)
     return surrimpl_stack[surrimpl_top--];

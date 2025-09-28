@@ -44,7 +44,7 @@ word.attributes =
     attribute morph { text }? ,
     attribute base  { text }? ,
     attribute norm  { text }? ,
-    delim? ,
+    delim? , zws?, 
     syntax.attributes*
 
 nonword = 

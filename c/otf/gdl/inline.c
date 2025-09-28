@@ -31,7 +31,7 @@ extern char *new_note_id(int);
 
 int ods_cols = 0;
 int ods_mode = 0;
-
+static int z_pending = 0;
 int suppress_lem = 0;
 
 static int grouped_det = 0; /* a bandaid to separate 
@@ -321,7 +321,7 @@ grapheme_id(void)
 }
 
 static int
-has_cells()
+has_cells(void)
 {
   struct token **tp = tokens;
   while (*tp)
@@ -333,7 +333,7 @@ has_cells()
 }
 
 static int
-has_fields()
+has_fields(void)
 {
   struct token **tp = tokens;
   while (*tp)
@@ -345,7 +345,7 @@ has_fields()
 }
 
 void
-forms_init()
+forms_init(void)
 {
   /*FIXME: formsbuf needs to be resized dynamically with tests against
     overflow */
@@ -355,7 +355,7 @@ forms_init()
 }
 
 void
-forms_term()
+forms_term(void)
 {
   free(formsbuf);
   forms_insertp = formsbuf = NULL;
@@ -363,7 +363,7 @@ forms_term()
 }
 
 void
-inline_init()
+inline_init(void)
 {
   fixed_attr_n[implo]  = a_g_status;
   fixed_attr_n[supplo] = a_g_status;
@@ -390,7 +390,7 @@ inline_init()
 }
 
 void
-inline_term()
+inline_term(void)
 {
   if (line_words)
     {
@@ -1424,11 +1424,10 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 	    }
 	  break;
 	case bound:
-	  if (tp->type != space)
-	    {
-	    }
 	  switch (tp->type)
 	    {
+	    case zspace:
+	      z_pending = 1;
 	    case space:
 	      if (wp)
 		{
@@ -1445,67 +1444,86 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		    }
 		  wrapup_word(wp, space);
 		  setAttr(wp,a_g_delim,tp->data);
+		  if (z_pending)
+		    {
+		      setAttr(wp, a_g_zws, (void*)"1");
+		      z_pending = 0;
+		    }
 		}
 	      else if (last_wp)
 		{
 		  struct token *prev = tokens[start-1];
 		  if (prev->class != meta 
 		      || (prev->type != ub_plus && prev->type != ub_minus))
-		    setAttr(last_wp,a_g_delim,tp->data);
+		    {
+		      setAttr(last_wp,a_g_delim,tp->data);
+		      if (z_pending)
+			{
+			  setAttr(last_wp, a_g_zws, (void*)"1");
+			  z_pending = 0;
+			}
+		    }
 		  last_wp = NULL;
 		}
 	      last_g = wp = NULL;
 	      group_flag = notoken;
 	      /*group_node = NULL;*/
 	      atpt = NULL;
-#if 0
-	      if (((char*)tp->data)[1])
-		setAttr(lastChild(wp),a_g_em,ucc("1"));
-#endif
 	      break;
+	    case zhyphen:
+	      z_pending = 1;
 	    case hyphen:
-	      if (atpt)
-		{
-		  if (tp->data)
-		    {
-		      struct node *hyphme = lastGrapheme(atpt)/*lastChild(atpt)*/;
-		      if (!hyphme)
-			hyphme = atpt;
-		      setAttr(hyphme,a_g_delim,tp->data);
-		      if (((char*)tp->data)[1])
-			setAttr(hyphme,a_g_em,ucc("1"));
-		    }
-		}
-	      else if (wp)
-		{
-		  struct node *hyphme = lastGrapheme(wp)/*lastChild(wp)*/;
-		  if (!hyphme)
-		    hyphme = wp;
-		  setAttr(hyphme,a_g_delim,tp->data);
-		  if (((char*)tp->data)[1])
-		    setAttr(hyphme,a_g_em,ucc("1"));
-		}
-	      else if (last_wp)
-		{
-		  struct node *hyphme = lastGrapheme(last_wp)/*lastChild(last_wp)*/;
-		  if (!hyphme)
-		    hyphme = last_wp;
-		  setAttr(hyphme,a_g_delim,tp->data);
-		  if (((char*)tp->data)[1])
-		    setAttr(hyphme,a_g_em,ucc("1"));
-		  last_wp = NULL;
-		}
-	      else if (gdl_fragment_ok)
-		{
-		  wp = init_word_func(parent, tp, &pending_varo, varo_tok, 
-				      &logo_word, with_word_list);
-		  np = elem(e_g_x,NULL,lnum,GRAPHEME);
-		  appendAttr(np,attr(a_g_type,ucc("empty")));
-		  appendChild(wp ? wp : parent,np);
-		  setAttr(lastChild(wp),a_g_delim,tp->data);
-		  if (((char*)tp->data)[1])
-		    setAttr(lastChild(wp),a_g_em,ucc("1"));
-		}
+	      {
+		struct node *hyphme;
+		if (atpt)
+		  {
+		    if (tp->data)
+		      {
+			hyphme = lastGrapheme(atpt)/*lastChild(atpt)*/;
+			if (!hyphme)
+			  hyphme = atpt;
+			setAttr(hyphme,a_g_delim,tp->data);
+			if (((char*)tp->data)[1])
+			  setAttr(hyphme,a_g_em,ucc("1"));
+		      }
+		  }
+		else if (wp)
+		  {
+		    hyphme = lastGrapheme(wp)/*lastChild(wp)*/;
+		    if (!hyphme)
+		      hyphme = wp;
+		    setAttr(hyphme,a_g_delim,tp->data);
+		    if (((char*)tp->data)[1])
+		      setAttr(hyphme,a_g_em,ucc("1"));
+		  }
+		else if (last_wp)
+		  {
+		    hyphme = lastGrapheme(last_wp)/*lastChild(last_wp)*/;
+		    if (!hyphme)
+		      hyphme = last_wp;
+		    setAttr(hyphme,a_g_delim,tp->data);
+		    if (((char*)tp->data)[1])
+		      setAttr(hyphme,a_g_em,ucc("1"));
+		    last_wp = NULL;
+		  }
+		else if (gdl_fragment_ok)
+		  {
+		    wp = init_word_func(parent, tp, &pending_varo, varo_tok, 
+					&logo_word, with_word_list);
+		    np = elem(e_g_x,NULL,lnum,GRAPHEME);
+		    appendAttr(np,attr(a_g_type,ucc("empty")));
+		    appendChild(wp ? wp : parent,np);
+		    hyphme = lastChild(wp);
+		    setAttr(hyphme,a_g_delim,tp->data);
+		    if (((char*)tp->data)[1])
+		      setAttr(lastChild(wp),a_g_em,ucc("1"));
+		  }
+		if (z_pending)
+		  {
+		    setAttr(hyphme, a_g_zwnj, "1");
+		    z_pending = 0;
+		  }
+	      }
 	      if (atpt && !grouped_det)
 		{
 		  if (atpt->parent && atpt->parent->etype == e_g_gg)
@@ -2502,7 +2520,7 @@ finish_word(struct node *wp)
 	  unsigned char *h = NULL;
 	  if (use_legacy)
 	    {
-	      if ((h = unheth(form)))
+	      if ((h = (ucp)unheth(form)))
 		lemm_form = h;
 	    }
 	  appendAttr(wp,attr(a_form, h ? h : form));
@@ -2601,7 +2619,7 @@ wrapup_word(struct node *wp, enum t_type trigger)
 }
 
 void
-reset_forms_insertp()
+reset_forms_insertp(void)
 {
   forms_insertp = formsbuf;
 }

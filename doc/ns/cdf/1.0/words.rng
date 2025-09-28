@@ -107,6 +107,9 @@
     <optional>
       <ref name="delim"/>
     </optional>
+    <optional>
+      <ref name="zws"/>
+    </optional>
     <zeroOrMore>
       <ref name="syntax.attributes"/>
     </zeroOrMore>

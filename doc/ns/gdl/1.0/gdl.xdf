@@ -1029,7 +1029,7 @@ g.meta =
   break? , status.flags? , status.spans? , 
   paleography.attr? , linguistic.attr? , proximity.attr? ,
   opener? , closer? , hsqb_o?, hsqb_c? , emhyph? ,
-  varnum? , sign_attr? , utf8? , delim? ,
+  varnum? , sign_attr? , utf8? , delim? , zwnj? ,
   attribute xml:id { xsd:ID }? ,
   breakStart? , breakEnd? ,
   damageStart? , damageEnd? ,
@@ -1108,6 +1108,8 @@ script = attribute g:script { text }
 sset   = attribute g:sset  { text }
 oid    = attribute oid  { text }
 delim  = attribute g:delim { text }
+zwnj   = attribute g:zwnj { "1" }
+zws    = attribute g:zws { "1" }
 varnum = (
   attribute g:varo { text }? , 
   attribute g:vari { text }? ,  
@@ -1688,7 +1690,7 @@ word.attributes =
     attribute morph { text }? ,
     attribute base  { text }? ,
     attribute norm  { text }? ,
-    delim? ,
+    delim? , zws?, 
     syntax.attributes*
 
 nonword = 
