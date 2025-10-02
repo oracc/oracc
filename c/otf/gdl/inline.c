@@ -1520,7 +1520,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  }
 		if (z_pending)
 		  {
-		    setAttr(hyphme, a_g_zwnj, "1");
+		    setAttr(hyphme, a_g_zwnj, ucc("1"));
 		    z_pending = 0;
 		  }
 	      }
@@ -1721,7 +1721,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  b_or_g = next_b_or_g(start);
 		  if (b_or_g == noop)
 		    {
-		      if (((enum t_class)wp->user&(~SPLIT_BIT)) == noop)
+		      if (((enum t_class)(uintptr_t)wp->user&(~SPLIT_BIT)) == noop)
 			{
 			  if (split_flag)
 			    {
@@ -1736,7 +1736,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		    }
 		  else
 		    {
-		      if (((enum t_class)wp->user&(~SPLIT_BIT)) != noop)
+		      if (((enum t_class)(uintptr_t)wp->user&(~SPLIT_BIT)) != noop)
 			{
 			  if (split_flag)
 			    {

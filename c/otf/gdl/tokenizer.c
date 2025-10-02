@@ -22,6 +22,11 @@
 #undef curr_lang
 #define curr_lang curr_lang_ctxt
 
+/* %00 .. %99 font switches are handled by keep curr_font as NULL
+    unless %01 is given in which case g:font is set on any grapheme
+    node in its scope */
+static const char *curr_font = NULL;
+
 #define NEW_ERROR_RECOVERY
 extern int gdl_fragment_ok;
 struct lang_context *saved_lang;
@@ -269,6 +274,34 @@ static unsigned char *tokenize_normalized(register unsigned char*l,
 static void printer(char *string, void *data);
 static void showhash(void);
 #endif
+
+/* Preliminary implementation of %[0-9]{1,3} = font switch;
+   protect against longer sequences */
+static const char *
+font_percent(const char *l, const char **end)
+{
+  static char font[4];
+  const char *start = l;
+  int i = 0;
+  memset(font,'\0',4);
+  while (isdigit(*l))
+    {
+      if (i < 3)
+	font[i++] = *l++;
+      else
+	{
+	  vwarning("%s: unknown lex shorthand", font);
+	  break;
+	}
+    }
+  font[i] = '\0';
+  if (l > start)
+    {
+      *end = l;
+      return font;
+    }
+  return NULL;
+}
 
 int
 is_uflag(unsigned char *p)
@@ -1201,6 +1234,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 		    {
 		      struct token *puncttok = NULL;
 		      puncttok = /*s_*/create_token(text,t,gparse(pool_copy(g),t));
+		      if (curr_font)
+			appendAttr(((struct grapheme *)puncttok->data)->xml,gattr(a_g_font,curr_font));
 		      tokens[tokindex++] = puncttok;
 		    }
 		  else
@@ -1215,6 +1250,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      else
 			{
 			  tokens[tokindex++] = /*s_*/create_token(text, t, gp);
+			  if (curr_font)
+			    appendAttr(gp->xml,gattr(a_g_font,curr_font));
 #if 0
 			  = hash_insert(pool_copy(g),
 					  s_create_token(text,t,gp),
@@ -1764,7 +1801,8 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      break;
 	    case '}':
 	      if (!(curr_lang = lang_pop()))
-		curr_lang = text_lang;	    
+		curr_lang = text_lang;
+	      curr_font = NULL;
 	      last_text_or_bound = meta;
 	      if ('}' == l[1])
 		{
@@ -1894,8 +1932,11 @@ tokenize(register unsigned char *l,unsigned char *e)
 		  last_text_or_bound = meta;
 		  tokens[tokindex++] = clone_token(static_tokens[pop_surrimpl()]);
 		  if (tokindex && tokens[tokindex-1]->type == surrc)
-		    if (!(curr_lang = lang_pop()))
-		      curr_lang = text_lang;
+		    {
+		      if (!(curr_lang = lang_pop()))
+			curr_lang = text_lang;
+		      curr_font = NULL;
+		    }
 		  l+=2;
 		}
 	      else if ('}' == l[1])
@@ -1905,6 +1946,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 		  */
 		  if (!(curr_lang = lang_pop()))
 		    curr_lang = text_lang;
+		  curr_font = NULL;
 		  last_text_or_bound = meta;
 		  tokens[tokindex++] = clone_token(static_tokens[smetac]);
 		  l+=2;
@@ -2052,6 +2094,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 		    {
 		      if (!(curr_lang = lang_pop()))
 			curr_lang = text_lang;
+		      curr_font = NULL;
 		    }
 		  else
 		    {
@@ -2068,21 +2111,33 @@ tokenize(register unsigned char *l,unsigned char *e)
 	      ++l;
 	      break;
 	    case '%':
-	      if (in_uscore && curr_lang->core->uppercase == m_logo)
-		{
-		  effective_lang = logo_lang = lang_switch(curr_lang,(const char*)l,&taglen,file,lnum);
-		  curr_lang->altlang = logo_lang->tag->tag;
-		}
-	      else
-		{
-		  if (!(curr_lang = lang_switch(curr_lang,(const char*)l,&taglen,file,lnum)))
-		    effective_lang = curr_lang = text_lang;
-		  else
-		    effective_lang = curr_lang;
-		}
-	      l += taglen;
-	      while (isspace(*l))
-		++l;
+	      {
+		const char *ef;
+		const char *f = font_percent((const char *)l+1, &ef);
+		if (f)
+		  {
+		    l = (unsigned char *)ef;
+		    if (strcmp(f, "00"))
+		      curr_font = (const char *)pool_copy((const unsigned char *)f);
+		    else
+		      curr_font = NULL;
+		  }
+		else if (in_uscore && curr_lang->core->uppercase == m_logo)
+		  {
+		    effective_lang = logo_lang = lang_switch(curr_lang,(const char*)l,&taglen,file,lnum);
+		    curr_lang->altlang = logo_lang->tag->tag;
+		  }
+		else
+		  {
+		    if (!(curr_lang = lang_switch(curr_lang,(const char*)l,&taglen,file,lnum)))
+		      effective_lang = curr_lang = text_lang;
+		    else
+		      effective_lang = curr_lang;
+		  }
+		l += taglen;
+		while (isspace(*l))
+		  ++l;
+	      }
 	      break;
 	    case '&':
 	      tokens[tokindex++] = clone_token(static_tokens[cell]);

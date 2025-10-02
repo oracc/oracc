@@ -9,7 +9,7 @@ struct sw_node
 } *sw_head = NULL, *sw_curr;
 
 struct node *
-sw_get_head()
+sw_get_head(void)
 {
   return sw_head->wp;
 }
@@ -33,7 +33,7 @@ sw_add(struct node *wp)
 }
 
 void
-sw_free()
+sw_free(void)
 {
   struct sw_node *tmp;
   for (sw_curr = sw_head; sw_curr; sw_curr = tmp)
@@ -45,7 +45,7 @@ sw_free()
 }
 
 char *
-sw_refs()
+sw_refs(void)
 {
   int alloced = 0;
   char *ret = NULL;
@@ -86,7 +86,7 @@ sw_last_open_curly(char *r)
 }
 
 char *
-sw_form()
+sw_form(void)
 {
   int alloced = 0;
   char *ret = NULL;

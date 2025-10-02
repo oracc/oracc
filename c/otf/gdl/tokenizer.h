@@ -124,6 +124,7 @@ struct token
   const char *altlang;
   const char *fwhost;
   const void *grapheme;
+  const char *font; /* default is NULL; user switches are %01, %32, etc. stored as 01, 32, etc. */
   int lnum;
 };
 
