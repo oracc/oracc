@@ -619,6 +619,7 @@ warn "$0: closed $logfile\n" if $verbose;
 #print KEYS '</keys>';
 #close(KEYS);
 sortkeys();
+open(V,'>vtab.dump'); print V Dumper \%valtab; close(V);
 print VALTAB "#nmembers ", scalar(keys %valtab), "\n"; # $total_rows\n";
 print VALTAB map { XIFY_P($valtab{$_}) } sort { XIFY_ID($a) <=> XIFY_ID($b) } keys %valtab;
 print VALTAB "#nstring $stringpool_index\n";
@@ -829,12 +830,11 @@ dump_xmd {
     # determine the index of the field that has the P/Q number
     # for P this is id_text, for Q this is id_composite
     if ($oodmode) {
-	$item_index = 0; # guaranteed by ood TSV loader; need to check XML loader
+	$item_index = 0; # guaranteed by ood TSV loader; XML loader no longer used for ood
     } else {
 	for (my $i = 0; $i <= $#$fields; ++$i) {
 	    $item_index = $i and last 
-		if $$fields[$i] =~ /^id_(?:text|composite)$/
-		|| $oodmode && $$fields[$i] eq 'id'; # local-name is used when internalizing XML 
+		if $$fields[$i] =~ /^id_(?:text|composite)$/;
 	}
     }
     $item_index = -1 if $item_index > $#$fields;
