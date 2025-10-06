@@ -47,7 +47,12 @@ initialize_fields {
     if ($_[0]) {
 	foreach my $f ($_[0]->childNodes()) {
 	    next unless $f->isa('XML::LibXML::Element');
-	    my $fname = $f->localName();
+	    my $fname;
+	    if ($f->nodeName() eq 'o:id') {
+		$fname = $f->nodeName();
+	    } else {
+		$fname = $f->localName();
+	    }
 	    $fields[$i] = $fname;
 	    $fields{$fname} = $i++;
 	}
@@ -66,7 +71,12 @@ xmd_records {
 #	my $rec_project = $r->getAttribute('project');
 	foreach my $f ($r->childNodes()) {
 	    next unless $f->isa('XML::LibXML::Element');
-	    my $fname = $f->localName();
+	    my $fname = '';
+	    if ($f->nodeName() eq 'o:id') {
+		$fname = $f->nodeName();
+	    } else {
+		$fname = $f->localName();
+	    }
 	    if (!defined $fields{$fname}) {
 		push @fields, $fname;
 		$fields{$fname} = $#fields;
