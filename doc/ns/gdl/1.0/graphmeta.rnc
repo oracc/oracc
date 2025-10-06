@@ -3,7 +3,7 @@ g.meta =
   break? , status.flags? , status.spans? , 
   paleography.attr? , linguistic.attr? , proximity.attr? ,
   opener? , closer? , hsqb_o?, hsqb_c? , emhyph? ,
-  varnum? , sign_attr? , utf8? , delim? , zwnj? ,
+  varnum? , sign_attr? , utf8? , font? , delim? , zwnj? ,
   attribute xml:id { xsd:ID }? ,
   breakStart? , breakEnd? ,
   damageStart? , damageEnd? ,
@@ -35,6 +35,7 @@ hsqb_c = attribute g:hc    { "1" }
 emhyph = attribute g:em    { "1" }
 sign_attr = attribute g:sign  { text }
 utf8   = attribute g:utf8  { text }
+font   = attribute g:font  { text }
 gtag   = attribute g:gtag  { text }
 oivs   = attribute g:oivs  { text }
 salt   = attribute g:salt  { text }

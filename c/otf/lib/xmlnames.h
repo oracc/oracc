@@ -44,6 +44,7 @@ enum a_type
   a_g_damageStart,
   a_g_delim,
   a_g_em,
+  a_g_font,
   a_g_gtag,
   a_g_hc,
   a_g_ho,

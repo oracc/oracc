@@ -44,6 +44,9 @@
       <ref name="utf8"/>
     </optional>
     <optional>
+      <ref name="font"/>
+    </optional>
+    <optional>
       <ref name="delim"/>
     </optional>
     <optional>
@@ -192,6 +195,9 @@
   </define>
   <define name="utf8">
     <attribute name="g:utf8"/>
+  </define>
+  <define name="font">
+    <attribute name="g:font"/>
   </define>
   <define name="gtag">
     <attribute name="g:gtag"/>
