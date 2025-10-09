@@ -845,8 +845,7 @@ gparse(register unsigned char *g, enum t_type type)
 
 	      if (do_cuneify && cuneifiable(curr_lang))
 		{
-		  if (gb_cun)
-		    appendAttr(gp->xml,gattr(a_g_utf8,gb_cun));
+		  appendAttr(gp->xml,gattr(a_g_utf8,gb_cun?gb_cun:(unsigned const char *)"X"));
 		  if (gb_key)
 		    appendAttr(gp->xml,gattr(a_key,(uccp)gb_key));
 		  if (gb_ucode)
@@ -1816,8 +1815,7 @@ diszless_n_group(const char *t, unsigned char *s, int nmods, struct mods *mods)
 
       if (do_cuneify && cuneifiable(curr_lang))
 	{
-	  if (gb_cun)
-	    appendAttr(cp,gattr(a_g_utf8,gb_cun));
+	  appendAttr(cp,gattr(a_g_utf8,gb_cun?gb_cun:(unsigned const char *)"X"));
 	  if (gb_key)
 	    appendAttr(cp,gattr(a_key,(uccp)gb_key));
 	  if (gb_ucode)
