@@ -576,6 +576,7 @@ sub gdl_howtos {
     $$howto{'gdl_q'} = { type=>'{',  nam=>'q', val=>'@form', chld=>['qualified','['], att=>$gdlattr.' form' };
     $$howto{'gdl_r'} = { type=>'{' , nam=>'r', val=>'text()', chld=>['mods','['], att=>$gdlattr };
     $$howto{'gdl_s'} = { type=>'{' , nam=>'s', val=>'text()', chld=>['mods','['], att=>$gdlattr };
+    $$howto{'gdl_t'} = { type=>'{' , nam=>'t', val=>'text()' };
     $$howto{'gdl_v'} = { type=>'{' , nam=>'v', val=>'text()', chld=>['mods','['], att=>$gdlattr };
     $$howto{'gdl_w'} = {
 	type=>'' , nam=>'#ignore', val=>'#ignore', att=>'-id',chld=>['gdl','['],

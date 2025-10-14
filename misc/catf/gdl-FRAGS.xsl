@@ -275,6 +275,9 @@
       <xsl:apply-templates/>
       <xsl:call-template name="logo-close"/>
     </xsl:when>
+    <xsl:when test="@g:type='diszless'">
+      <xsl:value-of select="g:t"/>
+    </xsl:when>
     <xsl:otherwise>
       <xsl:call-template name="error">
 	<xsl:with-param name="msg" select="concat('g:gg with @g:type=', @g:type, ' not handled')"/>
