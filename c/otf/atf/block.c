@@ -2215,7 +2215,7 @@ milestone(unsigned char *l,struct block_token*bp)
 	      if (!m_object_index)
 		m_label_col_index = 0;
 	      update_mlabel(e_surface,
-			    blocktokp->nano ? ucc(blocktokp->nano) : type);
+			    blocktokp->nano ? ucc(blocktokp->nano) : (sub_n ? sub_n : subtype));
 	      break;
 	    case e_column:
 	      subtype = type;
