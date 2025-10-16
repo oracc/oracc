@@ -214,7 +214,7 @@ map_uscore(const unsigned char *vbar)
 }
 
 void
-block_term()
+block_term(void)
 {
   (void)scan_comment(NULL,NULL,0);
   (void)ntoken(NULL,NULL,0,0);
@@ -1644,7 +1644,7 @@ block_current_trans_clear(void)
 }
 
 static struct node *
-c_attach_point()
+c_attach_point(void)
 {
   while (current->parent 
 	 && (current->level != DIVISION && current->level != TEXT))
@@ -1903,6 +1903,12 @@ line_mts(unsigned char *lp)
     {
       ap = attr(a_label,curr_line_label);
       appendAttr(lnode,ap);
+      extern char *label2;
+      if (label2)
+	{
+	  ap = attr(a_label2,(unsigned const char *)label2);
+	  appendAttr(lnode,ap);
+	}
       register_label(labtab,uc(xid->valpair[1]),uc(ap->valpair[1]));
       free((char*)curr_line_label);
       curr_line_label = ucc(ap->valpair[1]);
@@ -2024,7 +2030,6 @@ line_lgs(unsigned char *lp)
 	--end;
       if (end > s)
 	{
-	  int i;
 	  *end = '\0';
 	  tlit_parse_inline(s,end,lnode,3001, NO_WORD_LIST,uc(line_id_buf));
 #if 0
@@ -2494,7 +2499,7 @@ ntoken(unsigned char *s,unsigned char *eol,int multi,enum a_type a)
 }
 
 void
-reset_lninfo()
+reset_lninfo(void)
 {
   memset(&lninfo,'\0',sizeof(struct lno));
   m_object_index = 0;

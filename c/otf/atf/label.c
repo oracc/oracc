@@ -16,6 +16,7 @@
 static Hash_table *my_label_table = NULL;
 static Hash_table *xid_to_label_table = NULL;
 static char m_label[1024];
+char m_label2[1024];
 int m_label_col_index = 0;
 unsigned char line_label_buf[1024];
 static unsigned char frag_buf[128];
@@ -23,6 +24,7 @@ static enum block_levels frag_level = bl_top;
 static char ncname[256];
 static int complained_already = 0;
 extern unsigned char last_label_buf[128];
+char *label2 = NULL;
 
 void
 ncname_init(void)
@@ -143,9 +145,9 @@ prepend_text_id(unsigned const char *s)
 }
 
 void
-reset_mlabel()
+reset_mlabel(void)
 {
-  *m_label = '\0';
+  *m_label2 = *m_label = '\0';
   m_label_col_index = 0;
 }
 
@@ -157,12 +159,15 @@ update_mlabel(enum e_type type, unsigned const char *tok)
     case e_object:
       /*      break; */
     case e_surface:
+      m_label_col_index = 0;
     case e_div:
       m_label_col_index += sprintf(m_label+m_label_col_index,"%s ",tok);
       break;
     case e_column:
       sprintf(m_label+m_label_col_index,"%s ",
 	      isdigit(*tok) ? cc(roman[atoi(cc(tok))]) : cc(tok));
+      strcpy(m_label2, isdigit(*tok) ? cc(roman[atoi(cc(tok))]) : cc(tok));
+      strcat(m_label2, " ");
       break;
     case e_enum_top:
       sprintf(m_label+strlen(m_label),"%s ",tok);
@@ -190,6 +195,10 @@ line_label(const unsigned char *tok,
     {
       label = malloc(xxstrlen(m_label)+xxstrlen(tok)+2);
       sprintf((char*)label,"%s%s",m_label,(char*)tok);
+      if (label2)
+	free(label2);
+      label2 = malloc(xxstrlen(m_label2)+xxstrlen(tok)+2);
+      sprintf((char*)label2,"%s%s",m_label2,(char*)tok);
     }
   else
     {
