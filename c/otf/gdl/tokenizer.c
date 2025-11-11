@@ -171,8 +171,8 @@ const char *const type_data[] =
     "%", "$", "~", 
     "{", "{{", "[", "[#", "<", "<(", "{(", "(", "<<", "_", "a(", "<(", "<$", "(=", "((",
     "}", "}}", "]", "#]", ">", ")>", ")}", ")", ">>", "_", "a)", ")>", "$>", ")", "))",
-    " ", "-", "/", ":", "...", "//", ";", "(#...#)","+",".","",NULL,NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "---", "[-]","-->",
+    " ", "-", "/", ":", "...", "//", ";", "(#...#)","+",".","",
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "\<", "\>", "---", "[-]","-->",
     NULL, NULL, NULL, NULL,
     NULL, NULL, "$","<(=>",
     "#sol", "#eol",
@@ -2264,15 +2264,24 @@ tokenize(register unsigned char *l,unsigned char *e)
 	    case '\\':
 	      if (backslash_is_formvar)
 		{
-		  if (' ' == l[1])
+		  switch (l[1])
 		    {
+		    case ' ':
 		      ztoken = zspace;
 		      ++l;
-		    }
-		  else if ('-' == l[1])
-		    {
+		      break;
+		    case '-':
 		      ztoken = zhyphen;
 		      ++l;
+		      break;
+		    case '<':
+		      tokens[tokindex++] = create_token(meta,spkill,"\\<");
+		      l+=2;
+		      break;
+		    case '>':
+		      tokens[tokindex++] = create_token(meta,spforce,"\\>");
+		      l+=2;
+		      break;
 		    }
 		}
 	      else

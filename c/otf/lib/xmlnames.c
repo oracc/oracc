@@ -67,6 +67,8 @@ struct xname anames[] =
   { "g:salt", "http://oracc.org/ns/gdl/1.0:salt" },
   { "g:script", "http://oracc.org/ns/gdl/1.0:script" },
   { "g:sign", "http://oracc.org/ns/gdl/1.0:sign" },
+  { "g:spforce", "http://oracc.org/ns/gdl/1.0:spforce" },
+  { "g:spkill", "http://oracc.org/ns/gdl/1.0:spkill" },
   { "g:sset", "http://oracc.org/ns/gdl/1.0:sset" },
   { "g:status", "http://oracc.org/ns/gdl/1.0:status" },
   { "g:statusEnd", "http://oracc.org/ns/gdl/1.0:statusEnd" },
@@ -95,6 +97,7 @@ struct xname anames[] =
   { "kkey", "kkey" },
   { "l", "l" },
   { "label", "label" },
+  { "label2", "label2" },
   { "lang", "lang" },
   { "lemma", "lemma" },
   { "level", "level" },
@@ -347,6 +350,9 @@ struct attr abases[] =
   { { anames[161].qname,NULL } , { anames[161].pname,NULL } },
   { { anames[162].qname,NULL } , { anames[162].pname,NULL } },
   { { anames[163].qname,NULL } , { anames[163].pname,NULL } },
+  { { anames[164].qname,NULL } , { anames[164].pname,NULL } },
+  { { anames[165].qname,NULL } , { anames[165].pname,NULL } },
+  { { anames[166].qname,NULL } , { anames[166].pname,NULL } },
 };
 struct xname enames[] =
 {

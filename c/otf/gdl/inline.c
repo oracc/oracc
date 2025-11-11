@@ -957,6 +957,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
   int pending_varo = 0, varo_tok = -1;
   enum t_type group_flag = notoken;
   char *http = NULL;
+  int spforce_t = 0, spkill_t = 0;
   
   atpt = NULL;
   in_hash = logoline = 0;
@@ -1446,9 +1447,20 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  setAttr(wp,a_g_delim,tp->data);
 		  if (z_pending)
 		    {
-		      setAttr(wp, a_g_zws, (void*)"1");
+		      if (tp->type == zspace)
+			setAttr(wp, a_g_zws, (void*)"1");
 		      z_pending = 0;
 		    }
+		if (spkill_t)
+		  {
+		    setAttr(wp, a_g_spkill, (void*)"1");
+		    spkill_t = 0;
+		  }
+		if (spforce_t)
+		  {
+		    setAttr(wp, a_g_spforce, (void*)"1");
+		    spforce_t = 0;
+		  }
 		}
 	      else if (last_wp)
 		{
@@ -1462,6 +1474,16 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 			  setAttr(last_wp, a_g_zws, (void*)"1");
 			  z_pending = 0;
 			}
+		    }
+		  if (spkill_t)
+		    {
+		      setAttr(wp, a_g_spkill, (void*)"1");
+		      spkill_t = 0;
+		    }
+		  if (spforce_t)
+		    {
+		      setAttr(wp, a_g_spforce, (void*)"1");
+		      spforce_t = 0;
 		    }
 		  last_wp = NULL;
 		}
@@ -1520,8 +1542,19 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		  }
 		if (z_pending)
 		  {
-		    setAttr(hyphme, a_g_zwnj, ucc("1"));
+		    if (tp->type == zhyphen)
+		      setAttr(hyphme, a_g_zwnj, ucc("1"));
 		    z_pending = 0;
+		  }
+		if (spkill_t)
+		  {
+		    setAttr(hyphme, a_g_spkill, (void*)"1");
+		    spkill_t = 0;
+		  }
+		if (spforce_t)
+		  {
+		    setAttr(hyphme, a_g_spforce, (void*)"1");
+		    spforce_t = 0;
 		  }
 	      }
 	      if (atpt && !grouped_det)
@@ -2332,6 +2365,12 @@ process_words(struct node *parent, int start, int end, int with_word_list)
 		appendChild(m,t);
 		pending_disamb = m;
 	      }
+	      break;
+	    case spforce:
+	      spforce_t = 1;
+	      break;
+	    case spkill:
+	      spkill_t = 1;
 	      break;
 	    default:
 	      vwarning("unhandled token type %s", type_names[tp->type]);

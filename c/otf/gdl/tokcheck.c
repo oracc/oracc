@@ -20,14 +20,15 @@ enum t_group
 const enum t_type g_block_m[] = { cell , field , nong , type_top };
 const enum t_type g_ftype_m[] = { ftype , type_top };
 const enum t_type g_boundary_m[] = { space , colon , hyphen , slash , plus , period ,
-				     cell , field , eol , ilig , zspace , zhyphen , type_top };
+				     cell , field , eol , ilig , zspace , zhyphen ,
+				     type_top };
 const enum t_type g_grapheme_m[] = { g_c , g_v , g_n , g_s , g_q , g_p,
 				     g_corr , g_g , g_t , ellipsis , linebreak , newline , icmt ,
 				     norm, noop , g_disamb , 
 				     wm_absent , wm_broken , wm_linecont , wm_linefrom ,
 				     surro_mark ,
 				     type_top };
-const enum t_type g_flag_m[] = { flag, uflag, type_top };
+const enum t_type g_flag_m[] = { flag, uflag, spforce, spkill, type_top };
 const enum t_type g_opener_m[] = { deto , glosso , damago , hdamago , supplo , exciso ,
 				   implo , smetao , maybeo , uscoreo , agroupo, 
 				   surro , eraso , varo , normo , someo , type_top };
@@ -212,8 +213,7 @@ tokcheck_init()
 	case wm_linefrom:
 	case wm_linecont:
 	  allow_token(t,newline);
-	  allow_token(t,flag);
-	  allow_token(t,uflag);
+	  allow_group(t,g_flag);
 	  allow_token(t,prox);
 	  allow_group(t,g_boundary);
 	  /* FIXME: this should really look ahead to check for det after opener */
@@ -295,6 +295,8 @@ tokcheck_init()
 	  allow_token(t,newline);
 	  allow_token(t,notemark);
 	  allow_token(t,norm);
+	  allow_token(t,spforce);
+	  allow_token(t,spkill);
 	  allow_group(t,g_grapheme);
 	  break;
 	case ellipsis:
@@ -366,6 +368,10 @@ tokcheck_init()
 	case noop:
 	  allow_group(t,g_opener);
 	  allow_group(t,g_grapheme);
+	  break;
+	case spkill:
+	case spforce:
+	  allow_group(t, g_boundary);
 	  break;
 	case g_b:
 	case g_m:

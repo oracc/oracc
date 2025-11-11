@@ -35,7 +35,7 @@
 #define T_SHIFT  C(percent)C(sforce)C(lforce)
 #define T_O      C(deto)C(glosso)C(damago)C(hdamago)C(supplo)C(implo)C(smetao)C(maybeo)C(exciso)C(uscoreo)C(agroupo)C(surro)C(eraso)C(normo)C(someo)
 #define T_C      C(detc)C(glossc)C(damagc)C(hdamagc)C(supplc)C(implc)C(smetac)C(maybec)C(excisc)C(uscorec)C(agroupc)C(surrc)C(erasc)C(normc)C(somec)
-#define T_BOUND  C(space)C(hyphen)C(slash)C(colon)C(ellipsis)C(linebreak)C(newline)C(icmt)C(plus)C(period)C(ilig)C(zspace)C(zhyphen)
+#define T_BOUND  C(space)C(hyphen)C(slash)C(colon)C(ellipsis)C(linebreak)C(newline)C(icmt)C(plus)C(period)C(ilig)C(zspace)C(zhyphen)C(spforce)C(spkill)
 #define T_GRAPH  C(g_c)C(g_v)C(g_n)C(g_s)C(g_q)C(g_corr)C(g_g)C(g_p)C(wm_absent)C(wm_broken)C(wm_linecont)C(wm_linefrom)C(g_t)
 #define T_MODS   C(g_b)C(g_m)C(g_a)C(g_f)
 #define T_DISAMB C(g_disamb)
