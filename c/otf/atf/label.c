@@ -207,7 +207,11 @@ line_label(const unsigned char *tok,
       label = (unsigned char *)buf;
     }
   if (check_label(label,transtype,xid))
-    return label;
+    {
+      if (*m_label)
+	(void)check_label((unsigned const char *)label2,transtype,xid);
+      return label;
+    }
   else
     {
       free((void*)label);
