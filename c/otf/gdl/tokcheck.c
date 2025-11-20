@@ -132,7 +132,7 @@ allow_token(enum t_type t, enum t_type ok)
 }
 
 static void
-check_in_group()
+check_in_group(void)
 {
   enum t_type t = 0;
   while (t < type_top)
@@ -144,7 +144,7 @@ check_in_group()
 }
 
 void
-tokcheck_init()
+tokcheck_init(void)
 {
   enum t_type t = 0;
   while (t < type_top)
@@ -373,6 +373,7 @@ tokcheck_init()
 	case spforce:
 	  allow_group(t, g_boundary);
 	  break;
+	case g_t:
 	case g_b:
 	case g_m:
 	case g_a:
@@ -420,7 +421,7 @@ tokcheck_init()
 }
 
 static void
-clmap_init()
+clmap_init(void)
 {
   enum t_type t = 0;
   while (t < sizeof(o2cmap)/sizeof(struct clmap))
@@ -568,7 +569,7 @@ check(enum t_type prev,enum t_type curr, int index)
 }
 
 int
-tokcheck()
+tokcheck(void)
 {
   extern int in_split_word;
   int start = 1, end = last_token;

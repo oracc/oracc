@@ -22,7 +22,7 @@
 #undef curr_lang
 #define curr_lang curr_lang_ctxt
 
-/* %00 .. %99 font switches are handled by keep curr_font as NULL
+/* %00 .. %99 font switches are handled by keeping curr_font as NULL
     unless %01 is given in which case g:font is set on any grapheme
     node in its scope */
 static const char *curr_font = NULL;
@@ -166,20 +166,20 @@ const char *const type_names[] =
 
 const char *const type_data[] =
   {
-    "(nothing)",
-    "&", NULL, ",", NULL, NULL, NULL, NULL,
-    "%", "$", "~", 
-    "{", "{{", "[", "[#", "<", "<(", "{(", "(", "<<", "_", "a(", "<(", "<$", "(=", "((",
-    "}", "}}", "]", "#]", ">", ")>", ")}", ")", ">>", "_", "a)", ")>", "$>", ")", "))",
-    " ", "-", "/", ":", "...", "//", ";", "(#...#)","+",".","",
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "\<", "\>", "---", "[-]","-->",
-    NULL, NULL, NULL, NULL,
-    NULL, NULL, "$","<(=>",
-    "#sol", "#eol",
-    "(:", ":)",
-    "+.", "-.",
-    "^^",
-    "\\0",
+    D_MISC /*"(nothing)", "&", NULL, ",", NULL, NULL, NULL, NULL,*/
+    D_SHIFT /*"%", "$", "~",*/
+    D_O     /*"{", "{{", "[", "[#", "<", "<(", "{(", "(", "<<", "_", "a(", "<(", "<$", "(=", "((",*/
+    D_C     /*"}", "}}", "]", "#]", ">", ")>", ")}", ")", ">>", "_", "a)", ")>", "$>", ")", "))",*/
+    D_BOUND /*" ", "-", "/", ":", "...", "//", ";", "(#...#)","+",".","",NULL,NULL,NULL,*/
+    D_GRAPH /*NULL,  NULL, NULL, NULL, NULL, NULL, NULL, NULL,"\\<", "\\>", "---", "[-]","-->",*/
+    D_MODS  /*NULL, NULL, NULL, NULL,*/
+    D_DISAMB D_NORM /*NULL, NULL,*/
+    D_PROX  /*"$","<(=>",*/
+    D_OL    /*"#sol", "#eol",*/
+    D_VAR   /*"(:", ":)",*/
+    D_UB    /*"+.", "-.",*/
+    D_NMARK /*"^^",*/
+    D_NOOP  "\\0"
   };
 
 /* array of characters which can be boundaries */
@@ -1235,7 +1235,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 		      struct token *puncttok = NULL;
 		      puncttok = /*s_*/create_token(text,t,gparse(pool_copy(g),t));
 		      if (curr_font)
-			appendAttr(((struct grapheme *)puncttok->data)->xml,gattr(a_g_font,curr_font));
+			appendAttr(((struct grapheme *)puncttok->data)->xml,gattr(a_g_font,(const unsigned char *)curr_font));
 		      tokens[tokindex++] = puncttok;
 		    }
 		  else
@@ -1251,7 +1251,7 @@ tokenize(register unsigned char *l,unsigned char *e)
 			{
 			  tokens[tokindex++] = /*s_*/create_token(text, t, gp);
 			  if (curr_font)
-			    appendAttr(gp->xml,gattr(a_g_font,curr_font));
+			    appendAttr(gp->xml,gattr(a_g_font,(const unsigned char *)curr_font));
 #if 0
 			  = hash_insert(pool_copy(g),
 					  s_create_token(text,t,gp),

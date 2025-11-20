@@ -32,22 +32,49 @@
 #define C(x) x,
 
 #define T_MISC   C(notoken)C(cell)C(cellspan)C(field)C(ftype)C(nong)C(flag)C(uflag)
-#define T_SHIFT  C(percent)C(sforce)C(lforce)
-#define T_O      C(deto)C(glosso)C(damago)C(hdamago)C(supplo)C(implo)C(smetao)C(maybeo)C(exciso)C(uscoreo)C(agroupo)C(surro)C(eraso)C(normo)C(someo)
-#define T_C      C(detc)C(glossc)C(damagc)C(hdamagc)C(supplc)C(implc)C(smetac)C(maybec)C(excisc)C(uscorec)C(agroupc)C(surrc)C(erasc)C(normc)C(somec)
-#define T_BOUND  C(space)C(hyphen)C(slash)C(colon)C(ellipsis)C(linebreak)C(newline)C(icmt)C(plus)C(period)C(ilig)C(zspace)C(zhyphen)C(spforce)C(spkill)
-#define T_GRAPH  C(g_c)C(g_v)C(g_n)C(g_s)C(g_q)C(g_corr)C(g_g)C(g_p)C(wm_absent)C(wm_broken)C(wm_linecont)C(wm_linefrom)C(g_t)
-#define T_MODS   C(g_b)C(g_m)C(g_a)C(g_f)
-#define T_DISAMB C(g_disamb)
-#define T_NORM   C(norm)
-#define T_PROX   C(prox)C(surro_mark)
-#define T_OL     C(sol)C(eol)
-#define T_VAR    C(varo)C(varc)
-#define T_UB	 C(ub_plus)C(ub_minus)
-#define T_NMARK  C(notemark)
-#define T_NOOP	 C(noop)
+#define D_MISC	 "(notok)","&",   NULL,      ",",    NULL,   NULL,  NULL,  NULL,
 
-#define SPLIT_BIT (1<<16)
+#define T_SHIFT  C(percent)C(sforce)C(lforce)
+#define D_SHIFT  "%", "$", "~",
+
+#define T_O      C(deto)C(glosso)C(damago)C(hdamago)C(supplo)C(implo)C(smetao)C(maybeo)C(exciso)C(uscoreo)C(agroupo)C(surro)C(eraso)C(normo)C(someo)
+#define D_O      "{", "{{", "[", "[#", "<", "<(", "{(", "(", "<<", "_", "a(", "<(", "<$", "(=", "((",
+
+#define T_C      C(detc)C(glossc)C(damagc)C(hdamagc)C(supplc)C(implc)C(smetac)C(maybec)C(excisc)C(uscorec)C(agroupc)C(surrc)C(erasc)C(normc)C(somec)
+#define D_C     "}", "}}", "]", "#]", ">", ")>", ")}", ")", ">>", "_", "a)", ")>", "$>", ")", "))",
+
+#define T_BOUND  C(space)C(hyphen)C(slash)C(colon)C(ellipsis)C(linebreak)C(newline)C(icmt)C(plus)C(period)C(ilig)C(zspace)C(zhyphen)C(spforce)C(spkill)
+#define D_BOUND  " ", "-", "/", ":", "...", "//", ";", "(#...#)","+",".","",NULL,NULL,NULL,
+
+#define T_GRAPH  C(g_c)C(g_v)C(g_n)C(g_s)C(g_q)C(g_corr)C(g_g)C(g_p)C(wm_absent)C(wm_broken)C(wm_linecont)C(wm_linefrom)C(g_t)
+#define D_GRAPH  NULL, NULL, NULL, NULL, NULL, NULL,    NULL, NULL, "\\<",      "\\>",      "---",        "[-]",        "-->",
+
+#define T_MODS   C(g_b)C(g_m)C(g_a)C(g_f)
+#define D_MODS   NULL, NULL, NULL, NULL,
+
+#define T_DISAMB C(g_disamb)
+#define D_DISAMB NULL,
+
+#define T_NORM   C(norm)
+#define D_NORM   NULL,
+
+#define T_PROX   C(prox)C(surro_mark)
+#define D_PROX	 "$","<(=>",
+
+#define T_OL     C(sol)C(eol)
+#define D_OL     "#sol", "#eol",
+
+#define T_VAR    C(varo)C(varc)
+#define D_VAR    "(:", ":)",
+
+#define T_UB	 C(ub_plus)C(ub_minus)
+#define D_UB 	 "+.", "-.",
+
+#define T_NMARK  C(notemark)
+#define D_NMARK  "^^",
+
+#define T_NOOP	 C(noop)
+#define D_NOOP  "\\0"
 
 enum t_type
   {
@@ -55,6 +82,8 @@ enum t_type
     T_NORM T_PROX T_OL T_VAR T_UB T_NMARK T_NOOP
     type_top
   };
+
+#define SPLIT_BIT (1<<16)
 
 #define T_CLASSES C(text)C(bound)C(meta)
 enum t_class
