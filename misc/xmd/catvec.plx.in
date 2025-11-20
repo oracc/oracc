@@ -10,7 +10,7 @@ while (<P>) {
 close(P);
 
 #warn "vec is ", length($vec), " bytes\n";
-my $vecfile = '@@ORACC@@/pub/cdli/catpnums.vec';
+my $vecfile = '@@ORACC@@/lib/data/catpnums.vec';
 open(V,">$vecfile");
 print V $vec;
 close(V);
