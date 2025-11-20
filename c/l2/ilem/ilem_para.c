@@ -9,7 +9,8 @@
 #include "pool.h"
 #include "xmlutil.h"
 
-static int bracketing_level = 0;
+static int bracketing_level = 0, last_bracketing_level_lnum = 0;
+static void ilem_reset_bracketing_level(void);
 
 #undef C
 #define C(x) #x,
@@ -119,9 +120,19 @@ add_lp_label(struct ilem_para **lp, unsigned const char *c)
 }
 
 void
+ilem_eof_bracketing_level(void)
+{
+  if (bracketing_level)
+    {
+      vwarning2(file, last_bracketing_level_lnum, "mismatched phrase bracketing originated here");
+      ilem_reset_bracketing_level();
+    }
+}
+
+static void
 ilem_reset_bracketing_level(void)
 {
-  bracketing_level = 0;
+  bracketing_level = last_bracketing_level_lnum = 0;
 }
 
 static unsigned char *longprop(unsigned char *c)
@@ -202,7 +213,7 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 		  {
 		    longprop_val = longprop(c);
 		    if (!longprop_val)
-		      kpval = kp->val;
+		      kpval = (unsigned char*)kp->val;
 		  }
 		if (longprop_val)
 		  add_lp(&lp, LPC_property, LPT_long_prop, (unsigned char*)kp->key, bracketing_level);
@@ -337,10 +348,12 @@ ilem_para_parse(struct xcl_context *xc, unsigned const char *s, unsigned char **
 	  break;
 	case '(':
 	  add_lp(&lp, LPC_syntax, LPT_brack_o, (unsigned char*)"(", bracketing_level++);
+	  last_bracketing_level_lnum = err_lnum;
 	  c = add_lp_label(&lp, c);
 	  break;
 	case ')':
 	  add_lp(&lp, LPC_syntax, LPT_brack_c, (unsigned char*)")", --bracketing_level);
+	  last_bracketing_level_lnum = err_lnum;
 	  break;
 	case '%':
 	  if (c[1] == '%')

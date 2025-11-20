@@ -53,6 +53,12 @@
       <ref name="zwnj"/>
     </optional>
     <optional>
+      <ref name="spforce"/>
+    </optional>
+    <optional>
+      <ref name="spkill"/>
+    </optional>
+    <optional>
       <attribute name="xml:id">
         <data type="ID"/>
       </attribute>
@@ -227,6 +233,16 @@
   </define>
   <define name="zws">
     <attribute name="g:zws">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="spforce">
+    <attribute name="g:spforce">
+      <value>1</value>
+    </attribute>
+  </define>
+  <define name="spkill">
+    <attribute name="g:spkill">
       <value>1</value>
     </attribute>
   </define>

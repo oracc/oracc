@@ -61,4 +61,6 @@ extern struct ilem_para *ilem_para_find(struct xcl_l *lp, enum ilem_para_class c
 extern void ilem_para_dump_text_ante(FILE *fp, struct xcl_l *lp);
 extern void ilem_para_dump_text_post(FILE *fp, struct xcl_l *lp);
 
+extern void ilem_eof_bracketing_level(void);
+
 #endif/*ILEM_PARA_*/

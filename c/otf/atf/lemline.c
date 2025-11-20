@@ -153,6 +153,7 @@ lemline_init(void)
 void
 lemline_term(void)
 {
+  ilem_eof_bracketing_level();
   npool_term(lemline_xcp->pool);
   free(lemline_xcp);
   lemline_xcp = NULL;

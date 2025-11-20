@@ -964,7 +964,7 @@ process_words(struct node *parent, int start, int end, int with_word_list)
   prev_g = last_word = NULL;
   /* For cfy a leading \> means right-justify so we generate an empty
      word to carry the g:spforce attribute */
-  if (spforce == tokens[start]->type)
+  if (tokens[start] && spforce == tokens[start]->type)
     {
       /*fprintf(stderr, "process_words: detected leading spforce in word list\n");*/
       wp = elem(e_g_nonw,NULL,lnum,WORD);
