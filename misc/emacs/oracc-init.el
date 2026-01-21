@@ -30,13 +30,14 @@
 (setq oracc-prefix "slash")
 ; (setq oracc-prefix "comma")
 
-(load-library "~/cuneitex.el")
-(load-library "~/cuneitex_de.el")
-(load-library "~/outline-magic.el")
-(load-library "~/xml-rpc.el")
-(load-library "~/atf-mode.el")
-(load-library "~/cbd-mode.el")
-(load-library "~/oracc-project.el")
-(load-library "~/oracc-defaults.el")
+;; Load the rest of the ORACC el files based on where the this script is located
+(load-library (concat (file-name-directory load-file-name) "cuneitex.el"))
+(load-library (concat (file-name-directory load-file-name) "cuneitex_de.el"))
+(load-library (concat (file-name-directory load-file-name) "outline-magic.el"))
+(load-library (concat (file-name-directory load-file-name) "xml-rpc.el"))
+(load-library (concat (file-name-directory load-file-name) "atf-mode.el"))
+(load-library (concat (file-name-directory load-file-name) "cbd-mode.el"))
+(load-library (concat (file-name-directory load-file-name) "oracc-project.el"))
+(load-library (concat (file-name-directory load-file-name) "oracc-defaults.el"))
 
 (set-fontset-font "fontset-default" 'cuneiform "Noto Sans Cuneiform")
