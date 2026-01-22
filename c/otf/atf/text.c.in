@@ -252,7 +252,7 @@ process_text(struct run_context *run, unsigned char **lines)
   note_initialize_text();
   galloc_init();
   set_tr_id(NULL);
-
+  reset_mlabel();
   trans_dollar_fifo = has_trans_labeled(lines);
 
   phase = NULL;

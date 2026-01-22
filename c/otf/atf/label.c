@@ -149,6 +149,11 @@ reset_mlabel(void)
 {
   *m_label2 = *m_label = '\0';
   m_label_col_index = 0;
+  if (label2)
+    {
+      free(label2);
+      label2 = NULL;
+    }
 }
 
 void
