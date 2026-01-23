@@ -213,8 +213,13 @@ line_label(const unsigned char *tok,
     }
   if (check_label(label,transtype,xid))
     {
+#if 0
+      /* 20260123 does label2 have to be unique? Its role is not
+	 clearly defined except in the cunx; P4 should probably not
+	 use label2 for display without further evaluation. */
       if (*m_label)
 	(void)check_label((unsigned const char *)label2,transtype,xid);
+#endif
       return label;
     }
   else
