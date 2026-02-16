@@ -18,7 +18,7 @@ my $dynamic = (`oraccopt . cbd-mode` eq 'dynamic');
 # this behaviour
 # $dynamic = 1 if $type eq 'superglo';
 
-#warn "l2p1-project-sig.plx: dynamic=$dynamic\n";
+warn "l2p1-project-sig.plx: dynamic=$dynamic\n";
 
 my %langs = ();
 my $lemm_only = 0;

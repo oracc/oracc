@@ -124,7 +124,7 @@
   <xsl:param name="root" select="$parameters/param:root"/>
   <xsl:param name="url" select="@url"/>
   <xsl:choose>
-    <xsl:when test="starts-with($url,'http') or @type='link'">
+    <xsl:when test="starts-with($url,'/') or starts-with($url,'http://') or starts-with($url,'https://') or @type='link'">
       <xsl:value-of select="$url"/>
     </xsl:when>
     <xsl:when test="starts-with($url,'/') and @type='link'">
@@ -259,6 +259,7 @@
     </xsl:if>
   </xsl:variable>
   <xsl:if test="self::esp:link">
+    <xsl:message>esp:link linked-page-URL=<xsl:value-of select="$linked-page-URL"/></xsl:message>
     <a href="{$linked-page-URL}{$anchor-name}">
       <xsl:attribute name="id"><xsl:value-of select="generate-id(.)"/></xsl:attribute>
       <xsl:if test="string ( $link-title )">
@@ -328,10 +329,11 @@
       <xsl:attribute name="accesskey" select="@accesskey"/>
     </xsl:if>
     <xsl:variable name="link-title">
-      <xsl:if test="substring ( @url, 1, 7 ) = 'http://'">
+      <xsl:if test="substring ( @url, 1, 7 ) = 'http://' or substring ( @url, 1, 8 ) = 'https://'">
 	<xsl:text>Link opens in new window</xsl:text>
       </xsl:if>
-      <xsl:if test="substring ( @url, 1, 7 ) = 'http://' and ( string ( @title ) or ( $tag-has-content and string ( @site-name ) ) )">
+      <xsl:if test="( substring ( @url, 1, 7 ) = 'http://' or substring ( @url, 1, 8 ) = 'https://')
+		    and ( string ( @title ) or ( $tag-has-content and string ( @site-name ) ) )">
 	<xsl:text>: </xsl:text>
       </xsl:if>
       <xsl:choose>
@@ -382,10 +384,11 @@
 	    <xsl:attribute name="accesskey" select="@accesskey"/>
 	  </xsl:if>
 	  <xsl:variable name="link-title">
-	    <xsl:if test="substring ( @url, 1, 7 ) = 'http://'">
+	    <xsl:if test="substring ( @url, 1, 7 ) = 'http://'
+			  or substring ( @url, 1, 8 ) = 'https://'">
 	      <xsl:text>Link opens in new window</xsl:text>
 	    </xsl:if>
-	    <xsl:if test="substring ( @url, 1, 7 ) = 'http://' and ( string ( @title ) or ( $tag-has-content and string ( @site-name ) ) )">
+	    <xsl:if test="( substring ( @url, 1, 7 ) = 'http://' or substring ( @url, 1, 8 ) = 'https://') and ( string ( @title ) or ( $tag-has-content and string ( @site-name ) ) )">
 	      <xsl:text>: </xsl:text>
 	    </xsl:if>
 	    <xsl:choose>
