@@ -22,7 +22,7 @@
 
 (when (eq window-system 'x)
   (setq atf-default-font
-	"-unknown-DejaVu Sans Mono-normal-r-normal-*-*-*-*-*-m-0-*-*"))
+	"-*-DejaVu Sans Mono-normal-r-normal-*-*-*-*-*-m-0-*-*"))
 
 (set-language-environment "utf-8")
 (if atf-default-font
